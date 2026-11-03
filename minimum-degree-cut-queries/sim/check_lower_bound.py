@@ -248,7 +248,7 @@ def check_kernel(path):
     lam = np.array([3, 3, 3, -3, -3, -3, 2, 2, 2, -2, -2, -2])
     assert len(Y) == 12 and rank_q(Yh) == 11 and (Yh @ lam == 0).all()
     assert all((int(l) * D[v]) % 1 == 0 for l, v in zip(lam, Y))
-    G = math.lcm(*range(1, n + 1))
+    G = math.factorial(n)
     assert all((G * x) % 1 == 0 for x in D)  # G removes every denominator here
     return len(Y), rank_q(Yh)
 
@@ -257,7 +257,7 @@ def check_near(n, q, k, R, trials, rng):
     """t = a/q rounded to Z_{2^k}: u is tiny, D_v is near a multiple of 1/q; the count obeys the bound."""
     E, basis, keys, Bv = setup(n)
     N = 2 ** k
-    G = math.lcm(*range(1, n + 1))
+    G = math.factorial(n)
     seen, worst = 0, 0
     for _ in range(trials):
         X = rng.integers(0, 2, (R, n))
@@ -274,7 +274,7 @@ def check_near(n, q, k, R, trials, rng):
             Gbig = [v for v in range(n) if min(G * D[v] % N, N - G * D[v] % N) > G * 100 * R]
             worst = max(worst, len(big))
             seen += bool(big)
-            assert len(big) <= 1.5 * (R + 1) * (1 + math.log(max(n, 2)) / (2 * math.log(2))) + 1
+            assert len(big) <= 2 * R + 3
             assert len(Gbig) == 0 or q > n  # G kills every denominator q <= n
     return seen, worst
 

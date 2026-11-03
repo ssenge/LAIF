@@ -1,11 +1,14 @@
-"""Numerical checks for the modular cut-oracle analysis in ../NOTES.md.
+"""Numerical checks for the modular model of Section 6 of the write-up.
 
 Model: weights A in Z_M^E, M = 2^k. Oracle phase omega^(z cut_A(S)). A uniform on {deg(A) = d}.
 
 check_lemma: if sum_s Z_s delta_{x^s} = beta_u + beta_v (mod M) on all pairs u != v, then
-    #{v : 2 beta_v != 0 mod M} <= T + 2.  Tested by exhaustive small search, and tightness by singletons.
+    #{v : 2 beta_v != 0 mod M} <= T + 2.  Tested by exhaustive small search. T singletons give |Y| = T, so the bound is close to sharp there.
 check_effective: the averaged final density matrix of a random algorithm equals the one from the
     effective model on quotient labels, |S,z>|L> -> omega^(beta.d) |S,z>|L + [z delta_S]>.
+
+Limits: only small n, M and T are tried, so a pass is evidence for the identities and proves nothing. The proofs are the
+Lean files.
 """
 import itertools
 import sys

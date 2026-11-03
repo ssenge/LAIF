@@ -3,9 +3,8 @@ import Mathlib
 /-!
 # Algebraic core of the sparsity lemma for cut relations
 
-Notation follows `QC/cutquery/RESULTS.md`, Section 3. `A` is an abelian group, in the application `ℝ/ℤ`.
-Vectors `c v` carry a form with coefficients `H`; a dependency among them forces `λ_u • D_u` to vanish,
-or to be small in the normed case.
+Notation follows Section 3 of the write-up. `A` is an abelian group, in the application `ℝ/ℤ`.
+Vectors `c v` carry a form with coefficients `H`; a dependency among them forces `λ_u • D_u` to vanish.
 -/
 
 open Finset
@@ -51,33 +50,6 @@ theorem smul_diag_eq_zero (c : W → ι → ℤ) (H : ι → A) (D : W → A) (l
     rw [ho u v (ne_of_mem_erase hv).symm, smul_zero]
 
 end Form
-
-section Norm
-
-variable [Fintype W] [Fintype ι] [DecidableEq W] [SeminormedAddCommGroup A]
-
-/-- Near case: with off-diagonal entries of norm at most `η`, `‖λ_u • D_u‖ ≤ ‖λ‖₁ η`. -/
-theorem norm_smul_diag_le (c : W → ι → ℤ) (H : ι → A) (D : W → A) (lam : W → ℤ) (η : ℝ) (hη : 0 ≤ η)
-    (hl : IsDep c lam) (hd : ∀ u, pr c H u u = D u) (ho : ∀ u v, u ≠ v → ‖pr c H u v‖ ≤ η) (u : W) :
-    ‖lam u • D u‖ ≤ (∑ v, |(lam v : ℝ)|) * η := by
-  have h := sum_smul_pr_eq_zero c H lam hl u
-  rw [← add_sum_erase _ _ (mem_univ u), hd] at h
-  have h' : lam u • D u = -∑ v ∈ univ.erase u, lam v • pr c H u v := eq_neg_of_add_eq_zero_left h
-  rw [h', norm_neg]
-  calc ‖∑ v ∈ univ.erase u, lam v • pr c H u v‖
-      ≤ ∑ v ∈ univ.erase u, ‖lam v • pr c H u v‖ := norm_sum_le _ _
-    _ ≤ ∑ v ∈ univ.erase u, |(lam v : ℝ)| * η := by
-        refine sum_le_sum fun v hv => ?_
-        have h1 : ‖lam v • pr c H u v‖ ≤ |(lam v : ℝ)| * ‖pr c H u v‖ := by
-          have := norm_zsmul_le (lam v) (pr c H u v)
-          simpa [Int.norm_eq_abs] using this
-        exact h1.trans (mul_le_mul_of_nonneg_left (ho u v (ne_of_mem_erase hv).symm) (abs_nonneg _))
-    _ ≤ ∑ v, |(lam v : ℝ)| * η :=
-        sum_le_sum_of_subset_of_nonneg (erase_subset _ _) fun _ _ _ =>
-          mul_nonneg (abs_nonneg _) hη
-    _ = (∑ v, |(lam v : ℝ)|) * η := by rw [sum_mul]
-
-end Norm
 
 section TwoGroup
 
@@ -206,17 +178,6 @@ theorem pr_yhat_diag (x : ι → V → ℤ) (t : ι → A) (β : V → A) (ε : 
   rw [pr_yhat x t (β o) o (fun s => hx s o), hself, hF v o hvo, two_smul, two_smul, two_smul]
   abel
 
-/-- Decomposition (1): choosing `β_v = F_ov - β_o` with `2 β_o = F_o1 + F_o2 - F_12` gives
-`F_uv = β_u + β_v + ε_uv`, where `ε_uv = F_uv - F_ou - F_ov + F_o1 + F_o2 - F_12` is the label of `b_uv`. -/
-theorem decomposition (F : V → V → A) (o p q : V) (βo : A) (h : (2 : ℤ) • βo = F o p + F o q - F p q)
-    (u v : V) :
-    F u v = (F o u - βo) + (F o v - βo) + (F u v - F o u - F o v + F o p + F o q - F p q) := by
-  have h' : βo + βo = F o p + F o q - F p q := by rw [← two_smul ℤ βo]; exact h
-  have : F u v = F u v - F o u - F o v + (F o u + F o v) := by abel
-  calc F u v = F u v - F o u - F o v + F o u + F o v := by abel
-    _ = (F o u - βo) + (F o v - βo) + (F u v - F o u - F o v + (βo + βo)) := by abel
-    _ = _ := by rw [h']; abel
-
 end CutForm
 
 /-- Exact 2-group case of the sparsity lemma. If all labels vanish, the vertices `Y` other than the
@@ -241,48 +202,5 @@ theorem exact_sparsity_two_group [Fintype ι] [AddCommGroup A] [DecidableEq V]
       simpa [pr] using this)
     (fun u => hne u u.2) (fun u => hpow u u.2)
   simpa [Fintype.card_option] using this
-
-/-- Near case of the sparsity lemma. With `F = β_u + β_v + ε`, labels of norm at most `η` and `ε_vo = 0`,
-any dependency among the `ŷ_v` satisfies `‖λ_u • 2 β_u‖ ≤ ‖λ‖₁ η`. -/
-theorem near_divisibility [Fintype ι] [SeminormedAddCommGroup A] [DecidableEq V]
-    (x : ι → V → ℤ) (t : ι → A) (β : V → A) (ε : V → V → A) (o : V) (η : ℝ) (hη : 0 ≤ η)
-    (hx : ∀ s v, x s v = 0 ∨ x s v = 1)
-    (hF : ∀ a b, a ≠ b → cutSum x t a b = β a + β b + ε a b)
-    (hε : ∀ a b, ‖ε a b‖ ≤ η) (hεo : ∀ a, ε a o = 0)
-    (Y : Finset V) (hYo : o ∉ Y) (lam : Y → ℤ)
-    (hl : IsDep (fun v : Y => yhat x o (v : V)) lam) (u : Y) :
-    ‖lam u • ((2 : ℤ) • β (u : V))‖ ≤ (∑ v, |(lam v : ℝ)|) * η := by
-  have hvo : ∀ v : Y, (v : V) ≠ o := fun v h => hYo (h ▸ v.2)
-  refine norm_smul_diag_le (fun v : Y => yhat x o (v : V)) (Hhat t (β o))
-    (fun v => (2 : ℤ) • β (v : V)) lam η hη hl ?_ ?_ u
-  · intro w
-    have := pr_yhat_diag x t β ε o hx hF (hvo w)
-    rw [hεo, smul_zero, add_zero] at this
-    exact this
-  · intro a b hab
-    have hne' : (a : V) ≠ b := fun h => hab (Subtype.ext h)
-    have := pr_yhat_offdiag x t β ε o (fun s => hx s o) hF hne' (hvo a) (hvo b)
-    rw [hεo, hεo, zero_add, zero_sub] at this
-    have h2 : ‖pr (fun v : Y => yhat x o (v : V)) (Hhat t (β o)) a b‖ = ‖ε a b‖ := by
-      have h3 : pr (fun v : Y => yhat x o (v : V)) (Hhat t (β o)) a b
-          = pr (yhat x o) (Hhat t (β o)) a b := rfl
-      rw [h3, this, norm_neg]
-    exact h2.le.trans (hε _ _)
-
-/-- Passing from a divisor `g` of `G` to `G`: `‖G • a‖ ≤ |G| ‖g • a‖`. This is the step `g_u ≤ m` in Lemma 2. -/
-theorem norm_smul_of_dvd [SeminormedAddCommGroup A] {g G : ℤ} (hg : g ∣ G) (hG : G ≠ 0) (a : A) :
-    ‖G • a‖ ≤ |(G : ℝ)| * ‖g • a‖ := by
-  obtain ⟨k, rfl⟩ := hg
-  have hg0 : g ≠ 0 := left_ne_zero_of_mul hG
-  have hk0 : k ≠ 0 := right_ne_zero_of_mul hG
-  have h1 : ‖(g * k) • a‖ ≤ |(k : ℝ)| * ‖g • a‖ := by
-    rw [mul_comm, mul_smul]
-    have := norm_zsmul_le k (g • a)
-    simpa [Int.norm_eq_abs] using this
-  refine h1.trans (mul_le_mul_of_nonneg_right ?_ (norm_nonneg _))
-  have hg1 : (1 : ℝ) ≤ |(g : ℝ)| := by exact_mod_cast Int.one_le_abs hg0
-  push_cast
-  rw [abs_mul]
-  nlinarith [abs_nonneg (k : ℝ)]
 
 end CutQuery
