@@ -26,4 +26,4 @@ Copyright 2026 Sebastian Senge. Apache License 2.0; see [`LICENSE`](LICENSE).
 
 ## Use of AI
 
-Claude Opus 5.5 (Anthropic) was used throughout this research: to explore approaches, to develop and check proofs, to write the simulation scripts and the Lean formalization, and to draft the text. No person has reviewed the proofs.
+Claude Opus 5.5 (Anthropic) was used throughout this research: to explore approaches, to develop and check proofs, to write the simulation scripts and the Lean formalization, and to draft the text.
