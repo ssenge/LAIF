@@ -1,0 +1,13 @@
+graph                   n    mode  dominators ok  strong ok  queries
+directed cycle          6  matrix           True       True     3895
+directed cycle          6   array           True       True     1652
+cycle with chords       6  matrix           True       True     3653
+cycle with chords       6   array           True       True     1696
+random 0                7  matrix           True       True     2227
+random 0                7   array           True       True      952
+random 1                7  matrix           True       True     4894
+random 1                7   array           True       True     2240
+random 2                7  matrix           True       True     2910
+random 2                7   array           True       True     1313
+
+20 runs, 0 wrong; at most 4 qubits; 12614 circuits; 25432 oracle applications

@@ -1,0 +1,50 @@
+random small: runs 4000 ok, max iterations - ceil(log2 n) = 0
+networkx: runs 300 ok
+random     n=   8 iterations=0 ceil(log2 n)=3
+random     n=  16 iterations=1 ceil(log2 n)=4
+random     n=  33 iterations=0 ceil(log2 n)=6
+random     n=  64 iterations=2 ceil(log2 n)=6
+random     n= 128 iterations=0 ceil(log2 n)=7
+random     n= 256 iterations=2 ceil(log2 n)=8
+chain      n=   8 iterations=1 ceil(log2 n)=3
+chain      n=  16 iterations=1 ceil(log2 n)=4
+chain      n=  33 iterations=1 ceil(log2 n)=6
+chain      n=  64 iterations=1 ceil(log2 n)=6
+chain      n= 128 iterations=1 ceil(log2 n)=7
+chain      n= 256 iterations=1 ceil(log2 n)=8
+blocks2    n=   8 iterations=2 ceil(log2 n)=3
+blocks2    n=  16 iterations=2 ceil(log2 n)=4
+blocks2    n=  33 iterations=2 ceil(log2 n)=6
+blocks2    n=  64 iterations=2 ceil(log2 n)=6
+blocks2    n= 128 iterations=2 ceil(log2 n)=7
+blocks2    n= 256 iterations=2 ceil(log2 n)=8
+blocks8    n=   8 iterations=1 ceil(log2 n)=3
+blocks8    n=  16 iterations=2 ceil(log2 n)=4
+blocks8    n=  33 iterations=2 ceil(log2 n)=6
+blocks8    n=  64 iterations=2 ceil(log2 n)=6
+blocks8    n= 128 iterations=2 ceil(log2 n)=7
+blocks8    n= 256 iterations=2 ceil(log2 n)=8
+blocks√n   n=   8 iterations=2 ceil(log2 n)=3
+blocks√n   n=  16 iterations=2 ceil(log2 n)=4
+blocks√n   n=  33 iterations=2 ceil(log2 n)=6
+blocks√n   n=  64 iterations=2 ceil(log2 n)=6
+blocks√n   n= 128 iterations=2 ceil(log2 n)=7
+blocks√n   n= 256 iterations=2 ceil(log2 n)=8
+hierarchy  n=   8 iterations=2 ceil(log2 n)=3
+hierarchy  n=  16 iterations=3 ceil(log2 n)=4
+hierarchy  n=  33 iterations=4 ceil(log2 n)=6
+hierarchy  n=  64 iterations=5 ceil(log2 n)=6
+hierarchy  n= 128 iterations=6 ceil(log2 n)=7
+hierarchy  n= 256 iterations=7 ceil(log2 n)=8
+bidirected n=   8 iterations=1 ceil(log2 n)=3
+bidirected n=  16 iterations=2 ceil(log2 n)=4
+bidirected n=  33 iterations=1 ceil(log2 n)=6
+bidirected n=  64 iterations=2 ceil(log2 n)=6
+bidirected n= 128 iterations=3 ceil(log2 n)=7
+bidirected n= 256 iterations=4 ceil(log2 n)=8
+hub 8 1
+sparse 8 0
+hub 32 1
+sparse 32 1
+hub 128 1
+sparse 128 2

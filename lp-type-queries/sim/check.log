@@ -1,0 +1,17 @@
+the classical solver agreed with brute force on 2250 small inputs
+clarkson agreed with the solver on 640 of 640 runs, 0 ran out of rounds
+largest number of rounds by dimension: {1: 13, 2: 13, 3: 11, 5: 14}
+
+queries / sqrt(n), budget 16, mean of 5; last column: fitted exponent
+family          d     1024     4096    16384    65536   262144  1048576   exponent
+gaussian        2     1701     2038     2801     3272     3950     4610      0.647
+sphere          2      213      216      226      229      225      234      0.512
+one outlier     2     1521     2272     2864     3261     3720     4195      0.638
+gaussian        3     1625     2181     2994     3360     4199     5142      0.662
+sphere          3      241      243      245      255      245      252      0.506
+one outlier     3     1260     2081     2612     3633     4287     3914      0.668
+gaussian        5     1818     2372     3319     4494     5128     5757      0.673
+sphere          5      281      287      299      298      299      299      0.509
+one outlier     5      891     1982     2500     3409     4080     5694      0.742
+wrong answers in those runs: 0; most rounds: 23
+ok

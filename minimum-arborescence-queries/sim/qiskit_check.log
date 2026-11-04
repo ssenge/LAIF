@@ -1,0 +1,34 @@
+Grover circuit against the formula, 3 index + 3 value qubits
+  j=0: success 0.377, formula 0.375
+  j=1: success 0.840, formula 0.844
+  j=2: success 0.024, formula 0.023
+  j=3: success 0.990, formula 0.990
+
+full algorithm, every search a circuit
+family       n seed    cost   exact applications circuits
+random       4    0      12      12          330      156
+random       4    1      12      12          330      140
+random       4    2      12      12          332      142
+random       5    0      21      21          296      124
+random       5    1      21      21          295      125
+random       5    2      21      21          292      128
+random       6    0      23      23          671      299
+random       6    1      23      23          673      271
+random       6    2      23      23          671      309
+chain        5    0       8       8          804      314
+chain        5    1       8       8          811      293
+chain        5    2       8       8          808      284
+chain        7    0      12      12         1376      486
+chain        7    1      12      12         1378      502
+chain        7    2      12      12         1367      517
+blocks2      7    0      15      15         1560      554
+blocks2      7    1      15      15         1552      540
+blocks2      7    2      15      15         1541      539
+bidirected   6    0      18      18          638      244
+bidirected   6    1      18      18          641      273
+bidirected   6    2      18      18          648      266
+hierarchy    6    0      35      35         1234      450
+hierarchy    6    1      35      35         1226      474
+hierarchy    6    2      35      35         1223      441
+
+24 runs, 0 wrong; at most 9 qubits; 7871 circuits executed

@@ -1,0 +1,23 @@
+family           n   want r2    got r2 rounds  queries
+gaussian        40    3.7191    3.7191      2     2756
+gaussian        40    3.7191    3.7191      2     2973
+sphere          40    1.0000    1.0000      1     1723
+sphere          40    1.0000    1.0000      1     1523
+one outlier     40   26.0460   26.0460      1     1725
+one outlier     40   26.0460   26.0460      3     4329
+lattice         40   12.2500   12.2500      1     1654
+lattice         40   12.2500   12.2500      1     1647
+same point      40    0.0000    0.0000      1     1545
+same point      40    0.0000    0.0000      1     1556
+gaussian        64    5.1012    5.1012      5     8093
+gaussian        64    5.1012    5.1012      1     1715
+sphere          64    1.0000    1.0000      1     1901
+sphere          64    1.0000    1.0000      1     1750
+one outlier     64   26.6270   26.6270      2     3534
+one outlier     64   26.6270   26.6270      3     5125
+lattice         64   12.2500   12.2500      3     4788
+lattice         64   12.2500   12.2500      2     3282
+same point      64    0.0000    0.0000      1     1963
+same point      64    0.0000    0.0000      1     1864
+
+20 runs, 0 wrong, 0 ran out of rounds; at most 7 qubits; 11260 circuits

@@ -1,0 +1,12 @@
+chain        512 notes  T/m=   5.51 G/n=  33.82 sqrt(TG)/n^1.5=  13.62 L=10 extra=0
+chain        512 fo     T/m=   5.51 G/n=  34.04 sqrt(TG)/n^1.5=  13.67 L=10 extra=1
+chain       1024 notes  T/m=   6.00 G/n=  41.49 sqrt(TG)/n^1.5=  15.77 L=11 extra=0
+chain       1024 fo     T/m=   6.01 G/n=  41.16 sqrt(TG)/n^1.5=  15.71 L=11 extra=1
+hierarchy    512 notes  T/m=   9.00 G/n=  48.16 sqrt(TG)/n^1.5=  20.78 L=10 extra=0
+hierarchy    512 fo     T/m=  32.41 G/n=  71.30 sqrt(TG)/n^1.5=  47.97 L=10 extra=8
+hierarchy   1024 notes  T/m=  10.00 G/n=  58.07 sqrt(TG)/n^1.5=  24.07 L=11 extra=0
+hierarchy   1024 fo     T/m=  38.88 G/n=  89.42 sqrt(TG)/n^1.5=  58.90 L=11 extra=9
+binmerge     512 notes  T/m=   9.00 G/n=  42.17 sqrt(TG)/n^1.5=  19.44 L=10 extra=0
+binmerge     512 fo     T/m=  32.41 G/n=  57.61 sqrt(TG)/n^1.5=  43.12 L=10 extra=8
+binmerge    1024 notes  T/m=  10.00 G/n=  49.91 sqrt(TG)/n^1.5=  22.32 L=11 extra=0
+binmerge    1024 fo     T/m=  38.88 G/n=  70.04 sqrt(TG)/n^1.5=  52.13 L=11 extra=9

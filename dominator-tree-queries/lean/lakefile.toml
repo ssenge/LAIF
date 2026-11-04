@@ -1,0 +1,10 @@
+name = "Dominators"
+defaultTargets = ["Dominators"]
+
+[[require]]
+name = "mathlib"
+scope = "leanprover-community"
+rev = "d875a8de5222f62cf1c2fafc7984588adadc990a"
+
+[[lean_lib]]
+name = "Dominators"
