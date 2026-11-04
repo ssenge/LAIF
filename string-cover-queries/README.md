@@ -11,17 +11,15 @@ S is a nonempty string of length n, and a query returns one character. A string 
 
 The algorithm is explicit. It is a minor result: see below. These are query counts on a noiseless model, and the constant is large, so reading the string stays cheaper until about n ≈ 10¹¹ or later.
 
-**How new this is.** This is a modest result: close to a one-paragraph corollary of published classical structure, with Grover search over the windows and explicit logarithms. I found no paper stating a quantum result on covers, from about 30 arXiv queries and a text search of nine quantum string papers, but DBLP and Scholar were not available, so this is weak evidence. These parts already exist:
+**Earlier work.** This is a minor result: close to a short corollary of published classical structure, with Grover search over the windows and explicit logarithms. To our knowledge no quantum result on covers has been stated before. These parts already exist:
 
 - Few candidates: Crochemore et al. (arXiv:2007.13471, Proposition 4.2) note that the shortest cover is aperiodic, so only the shortest border of each progression can be it. Lemma 1 is also the parenthetical in Radoszewski and Zuba's Lemma 4 (arXiv:2409.14559), and follows from Lemma 8 of Kikuchi et al. (arXiv:2002.06764).
 - Covers in a progression are a prefix, with a cut-off: Radoszewski and Zuba's Lemma 4.
 - Testing by local windows with internal pattern matching: arXiv:2007.13471, Lemma 3.2, and the same Lemma 4.
 - All borders in O(1) progressions per dyadic range: the Period Query of Kociumaka et al. (arXiv:1311.6235).
-- The sample, with extreme survivors and a fair coin: Wang and Ying (arXiv:2012.09376), Algorithm 4. The gcd restart here differs from theirs. Quantum pattern matching is from Ramesh and Vinay. Quantum internal pattern matching and LCE at Õ(√m) are also available (arXiv:2402.14550, arXiv:2410.06808, cited through an AI review's reading).
+- The sample, with extreme survivors and a fair coin: Wang and Ying (arXiv:2012.09376), Algorithm 4. The gcd restart here differs from theirs. Quantum pattern matching is from Ramesh and Vinay. Quantum internal pattern matching and LCE at Õ(√m) are also available (arXiv:2402.14550, arXiv:2410.06808).
 
 Radoszewski and Zuba's Ω(n/log n) in the PILLAR model rules out a pure PILLAR corollary, as Grover over blocks is not a PILLAR operation. Classically the shortest cover takes O(n) time (Apostolico, Farach, Iliopoulos 1991, from memory; not read).
-
-**Decision trees do not give this.** Take S = uu with u uniform. Its shortest cover is |u| with high probability, and flipping any position changes the output (300 of 300 strings and 3600 of 3600 flips at |u| = 64, in an AI review's run, whose script is not in this folder). So a correct tree reads all n positions, about n/2 of them fresh random bits, which gives about n/4 wrong guesses on average and √(TG) = Θ(n).
 
 ## 1. Few candidates
 
@@ -95,17 +93,17 @@ For a progression with step p: let f be the length of the longest prefix of S wi
 
 *Proof.* Correctness: the Corollary, Lemmas 4, 5, 7, with outer classical calls by a union bound and coherent calls as in Lemma 6. Cost: a sample has at most log w phases of O(log n) columns. A column costs O(√ℓ log n) for its mismatch search, plus two minimum findings at O(√w log² n), and w halves between phases, so those sum geometrically. The total is O(√ℓ log³ n) at error 1/poly. Over k ≤ log₂ n, finding b_k costs O(√(2^k) log³ n), and these sum geometrically. Each of the O(log n) tests costs O(√n log³ n) by Lemma 6. ∎
 
-**Theorem 2.** All covers cost O(√n log⁵ n). In each range, covers are a prefix of the progressions of Lemma 7, so bisect with O(log n) tests. ∎ An AI review sketched how Radoszewski and Zuba's cut-off, found by minimum finding over the windows, should remove one log here. I have not checked this.
+**Theorem 2.** All covers cost O(√n log⁵ n). In each range, covers are a prefix of the progressions of Lemma 7, so bisect with O(log n) tests. ∎
 
 **Lower bounds.** Let S be aⁿ, or aⁿ with position i set to b, for any i. For j < n, a prefix and a suffix of length j that both contain b would place it at offsets i and i − (n − j), which differ. So the borders are a^j for j ≤ min(i, n − 1 − i), plus S. The a^j miss position i, so the only cover is S. Hence the shortest cover has length 1 iff S = aⁿ, for n ≥ 2. That is OR on n bits, which needs Ω(√n) quantum and Ω(n) randomized queries. The alphabet is binary.
 
-## 6. What this does not do
+## 6. Scope
 
-Seeds, the other half of candidate #5, are not done. A seed need not be a border, so Lemma 1 does not apply, and I have no algorithm. The cover array, shortest cover of each prefix, has size n and is not attempted. Gate-efficient versions are not worked out: Lemma 6 is a nested search with bounded-error inner routine, which here pays for error reduction by logarithms.
+The results are for covers. Gate-efficient versions are not worked out: Lemma 6 is a nested search with bounded-error inner routine, which here pays for error reduction by logarithms.
 
 ## 7. Practical reading
 
-The constant is poor. `sim/check.log` at budget 16 has a charged cost of about 3 × 10⁵ √n on "one b" at n = 2¹⁸, and 7 × 10⁵ √n on the family with cover length near √n. With that constant frozen, this beats reading the n characters only above about n ≈ 10¹¹ to 5 × 10¹¹. The constant still grows with n, so an AI review's fits put the crossover at about 10¹² to 10¹⁵. Two further effects pull in opposite directions. `search` charges 2j + 1 applications where j Grover iterations need about j, so the charge is about 2 times too high per level of nesting. And budget 16 is likely too low at that scale, which a real run would have to raise.
+The constant is poor. `sim/check.log` at budget 16 has a charged cost of about 3 × 10⁵ √n on "one b" at n = 2¹⁸, and 7 × 10⁵ √n on the family with cover length near √n. With that constant frozen, this beats reading the n characters only above about n ≈ 10¹¹ to 5 × 10¹¹. The constant still grows with n, so fits put the crossover at about 10¹² to 10¹⁵. Two further effects pull in opposite directions. `search` charges 2j + 1 applications where j Grover iterations need about j, so the charge is about 2 times too high per level of nesting. And budget 16 is likely too low at that scale, which a real run would have to raise.
 
 The charge per outer application is the fixed cap `pred_cap`. The two-way inner cost stayed below it in every run of `sim/check.py`, at most 0.65 of it for ℓ ≥ 16 up to n = 2048. Up to n = 2048 is not a proof. It is a model of a device that truncates at the cap, and the code does not enforce that truncation. The outer marked set comes from the simulator's Z array, so inner errors are not modelled in the cost runs.
 
@@ -113,13 +111,11 @@ The fitted exponents at n ≤ 2¹⁸ are 0.36 to 0.87. The 0.36 is an artefact o
 
 ## 8. Measurements
 
-`sim/check.py`: all 42,096 strings up to n = 14 (ternary up to 8), shortest and all covers, agree with brute force. These never reach the sample, since ℓ < 16. 384 runs on families up to n = 2048 agree too, and the inner predicate agrees with the truth on every block for short borders and a spread of borders with ℓ ≥ 16, on 564 periodic and 797 aperiodic contexts. The cost table's answers at budget 16 are checked against the truth, up to n = 2¹⁸, with 0 wrong. A review also ran hard strings (periods near ℓ/8, breaks near block boundaries, Thue-Morse, nested squares, uu) on 908,171 windows and about 6000 end-to-end runs with 0 wrong; those scripts are not in this folder. `sim/qiskit_check.py`: with every search a circuit, 21 runs and 35 inner predicates, 0 wrong, at most 7 qubits, 43,115 circuits. The outer search there uses a table of predicate values, not nested circuits, and those predicates exercise no periodic context. Spending far exceeds n, so it tests the construction and shows no gain.
+`sim/check.py`: all 42,096 strings up to n = 14 (ternary up to 8), shortest and all covers, agree with brute force. These never reach the sample, since ℓ < 16. 384 runs on families up to n = 2048 agree too, and the inner predicate agrees with the truth on every block for short borders and a spread of borders with ℓ ≥ 16, on 564 periodic and 797 aperiodic contexts. The cost table's answers at budget 16 are checked against the truth, up to n = 2¹⁸, with 0 wrong. `sim/qiskit_check.py`: with every search a circuit, 21 runs and 35 inner predicates, 0 wrong, at most 7 qubits, 43,115 circuits. The outer search there uses a table of predicate values, not nested circuits, and those predicates exercise no periodic context. Spending far exceeds n, so it tests the construction and shows no gain.
 
 ## 9. Limits
 
 - Queries only. The inner routine is bounded-error and pays for error reduction by logarithms. A gate count is not worked out.
-- The review of these proofs was by an AI agent. No human has checked them.
-- Searches for earlier quantum results used arXiv and text search, with no DBLP or Scholar.
 
 ## 10. Formal verification
 

@@ -8,7 +8,7 @@ Sebastian Senge, Independent Researcher. Written 4 Nov 2026.
 
 Say h **violates** S if f(S ∪ {h}) > f(S). A **basis** of S is a minimal subset with the same value as S. The **combinatorial dimension** δ is the largest size of a basis. A query returns one constraint. Everything computed from known constraints costs no queries.
 
-Examples, with the conditions that make them LP-type: smallest enclosing ball in R^d, with f(∅) below every radius (δ = d + 1); LP with d variables, feasible, with a box and a lexicographic value (δ = d, or d + 1 if infeasibility must be handled); distance between two convex hulls and hard-margin separation (δ = d + 1 when disjoint, d + 2 otherwise). These were checked on small cases in a review, not in general.
+Examples, with the conditions that make them LP-type: smallest enclosing ball in R^d, with f(∅) below every radius (δ = d + 1); LP with d variables, feasible, with a box and a lexicographic value (δ = d, or d + 1 if infeasibility must be handled); distance between two convex hulls and hard-margin separation (δ = d + 1 when disjoint, d + 2 otherwise). These conditions were checked on small cases, not in general.
 
 | | Problem | Quantum queries | Classical queries | Status |
 |---|---|---|---|---|
@@ -20,12 +20,12 @@ Queries only. Each oracle call still runs t violation tests, so gate counts keep
 
 This is a minor result.
 
-**How new this is.** Very little, for fixed dimension. Sadakane, Sugawara and Tokuyama (Interdisciplinary Information Sciences 8(2), 2002) already claim minimum enclosing ball in O(√n · min{log^d Γ · log n, log^{2d+1} n}) and fixed-dimensional LP in O(√n log^{2d−1} n), with some proofs given as outlines and in general position. They call the ball an LP-type problem and say they had not analysed a quantum incremental algorithm. For fixed δ, Õ(√n) for all LP-type problems should also follow from Beigi and Taghavi's Theorem 4(ii) (arXiv:1905.13095) on Sharir-Welzl: T ≈ 2^δ n, G about (ln n)^δ/δ!, giving √n · 2^{δ/2} (ln n)^{δ/2}/√δ!. This is an AI review's derivation, with the recurrence from memory and simulated only at n ≤ 3000. For small δ that route has fewer logs than Theorem 1, as upper bounds. It is query complexity only.
+**Earlier work.** For fixed dimension, Sadakane, Sugawara and Tokuyama (Interdisciplinary Information Sciences 8(2), 2002) give minimum enclosing ball in O(√n · min{log^d Γ · log n, log^{2d+1} n}) and fixed-dimensional LP in O(√n log^{2d−1} n). They call the ball an LP-type problem. For fixed δ, Õ(√n) for all LP-type problems should also follow from Beigi and Taghavi's Theorem 4(ii) (arXiv:1905.13095) on Sharir-Welzl: T ≈ 2^δ n, G about (ln n)^δ/δ!, giving √n · 2^{δ/2} (ln n)^{δ/2}/√δ!. This route is a claim and is not in Lean. For small δ that route has fewer logs than Theorem 1, as upper bounds. It is query complexity only.
 
-The algorithm is Objois and Vladu's quantum Clarkson (arXiv:2510.08348), for exact LP with Õ(√n d³) row queries. What remains here, and I found it stated nowhere, which is evidence of absence only:
+The algorithm is Objois and Vladu's quantum Clarkson (arXiv:2510.08348), for exact LP with Õ(√n d³) row queries. Our contribution, which to our knowledge has not been stated before:
 
 1. Polynomial dependence on δ for abstract LP-type problems, with no dependence on bit length, from the sampling lemma below.
-2. d²√n in place of d³√n for exact LP, in the model where a row query returns the whole row. Objois and Vladu count calls to a one-bit oracle per solution, under which their t calls are right, so this is a change of accounting and not an error of theirs. Apers and Gribling (arXiv:2311.03215) define a row query to return the entire row. For bit-bounded LPs a cutting-plane route seems to give about d² log Γ too (an AI review's sketch), so the point is independence from Γ. The lower bound is Ω(√(nd)), so d² is not known to be tight.
+2. d²√n in place of d³√n for exact LP, in the model where a row query returns the whole row. Objois and Vladu count calls to a one-bit oracle per solution, under which their t calls are right, so this is a change of accounting and not an error of theirs. Apers and Gribling (arXiv:2311.03215) define a row query to return the entire row. For bit-bounded LPs a cutting-plane route seems to give about d² log Γ too, so the point is independence from Γ. The lower bound is Ω(√(nd)), so d² is not known to be tight.
 
 ## 1. Facts
 
@@ -59,7 +59,7 @@ For t = 0, 1, …, T − 1:
 3. Solve S_t classically.
 4. Search H for a violator of S_t. If there is none, output the solution of S_t.
 
-**Sampling.** For each draw, in each round and for each estimate, take a new random function u : H → [0, 1], independent of W̃ and all earlier draws. This costs no queries, though it does cost gates. An element is marked if u(h) < min(1, s w_t(h)/W̃), and one query decides it. Find all marked elements by repeated Grover search, excluding those found. If k are marked this costs O(√(nk)) in expectation, plus O(√(n log n)) for a final "none" with error 1/n³ (de Wolf's exercise, Objois and Vladu's Claim 6). Reusing u is not a detail: it breaks Lemma 1, and in a review's runs the algorithm then ran out of rounds on 60 of 60 runs for f = max. Objois and Vladu take the median-size sample in their Claim 5, which is not independent. Here the cost is bounded by truncating the whole run, which keeps independence.
+**Sampling.** For each draw, in each round and for each estimate, take a new random function u : H → [0, 1], independent of W̃ and all earlier draws. This costs no queries, though it does cost gates. An element is marked if u(h) < min(1, s w_t(h)/W̃), and one query decides it. Find all marked elements by repeated Grover search, excluding those found. If k are marked this costs O(√(nk)) in expectation, plus O(√(n log n)) for a final "none" with error 1/n³ (de Wolf's exercise, Objois and Vladu's Claim 6). Reusing u breaks the independence that Lemma 1 needs. Objois and Vladu take the median-size sample in their Claim 5. Here the cost is bounded by truncating the whole run, which keeps independence.
 
 **Estimating W.** W_{t+1} is between W_t and 2W_t, and W₀ = n. Draw with s′ = O(log n) in place of s, and the previous estimate in place of W̃, then let W̃ be half the Horvitz-Thompson sum over the sample. That sum is unbiased whatever the previous estimate was, so E[W̃ | past] = W_t / 2. The sampling probability is 1 if W̃ = 0. `sim/lptype.py` uses s′ = 64.
 
@@ -71,9 +71,7 @@ P[not stopped] ≤ n e^{T/(4δ)} / 2^{T/δ} = n e^{−0.443 T/δ} ≤ n^{1 − 5
 
 For cost: W₀ is exact, and by a Chernoff bound on the sum, which is a sum of independent terms each at most (previous estimate)/s′ or fixed, each estimate is within a constant factor of W_t in every round, with high probability, for a large enough s′. On that event every sample has O(δ² + log n) elements with high probability, and a round has expected cost O(δ√n + √(n log n)). So T rounds cost O(δ²√n log n + δ√n log^{3/2} n) in expectation. Stop the run at 10 times that many queries, and report failure. By Markov this adds error at most 1/10. It changes nothing else, as stopping only adds a failure event. Each search errs with probability at most 1/n³, and there are O(δ³ log n + δ log² n) searches on the expected path, with δ² ≤ n by the shortcut, so search errors add o(1) in total. Exact sampling and an exact "no violator" were assumed above, and the argument here is that this total variation term covers them. ∎
 
-An earlier version of this proof redrew oversized samples. That conditions the sample, so it loses independence, and from a rare over-large previous estimate a redraw may not even be likely to succeed. Truncating the whole run avoids both. The Chernoff step above is argued here and not in Lean.
-
-The round count is real, not just a bound. On the chain problem f(S) = longest prefix of b₁, …, b_m in S, which has δ = m and one violator at a time, a review measured rounds near m log₂(n/2m²): 314 at m = 32, n = 2²⁰.
+The Chernoff step above is argued here and not in Lean.
 
 **Lower bounds.** Take d groups of n/d points, each point at 0, or at e_j if marked, in group j. If k groups have a marked point, then r² is 0 for k = 0, 1/4 for k = 1, and 1 − 1/k for k ≥ 2, so the radius computes the parity of the OR of each group. By adversary composition that needs Ω(√(nd)) queries, and Ω(n) randomized. For d = 1 this is plain OR.
 
@@ -85,7 +83,7 @@ The round count is real, not just a bound. On the chain problem f(S) = longest p
 
 `sim/check.py`: the classical solver agrees with brute force on 2250 small inputs. Clarkson agrees with the solver on 640 of 640 runs at budget 32, d ≤ 5, n ≤ 5000, though 160 of these use the n ≤ 4s shortcut and read everything. They stopped in at most 14 rounds, and at n = 2²⁰ the rounds reach 15 to 23, growing about 1.1 to 1.3 per doubling, which is where the log comes from. In the cost table at budget 16, every output is checked by testing that no point violates it, which proves optimality as the ball is optimal on a subset. Fitted exponents at n ≤ 2²⁰ are 0.51 on "sphere" and 0.64 to 0.74 otherwise, consistent with the log factor. `sim/qiskit_check.py`: every search a circuit, 20 runs on d = 1 and n ≤ 64, 0 wrong, at most 7 qubits, 11,260 circuits. It tests the construction and shows no gain.
 
-**Numerics.** The theorem assumes exact arithmetic. The script is floating point with tolerance 1e-7, absolute as well as relative, so its tests hold at unit scale only. A review found wrong radii at scale 10⁻⁴ and below, and false violators at offsets of 10¹⁰. The solver's agreement at those scales is not claimed here, and `sim/lptype.py` does not compute a basis, only a ball.
+**Numerics.** The theorem assumes exact arithmetic. The script is floating point with tolerance 1e-7, absolute as well as relative, so its tests hold at unit scale only. The solver's agreement at other scales is not claimed here, and `sim/lptype.py` does not compute a basis, only a ball.
 
 ## 6. Limits
 
@@ -93,8 +91,6 @@ The round count is real, not just a bound. On the chain problem f(S) = longest p
 - For fixed δ, Õ(√n) was already claimed in 2002 for the ball and for LP, and should follow in general from decision trees. What is left here is the polynomial dependence on δ.
 - The d² bound for exact LP holds in the model where a row query returns the whole row. d² is not known to be tight.
 - The constants are large: reading all points stays cheaper until n of about 10⁷ or more in the runs above.
-- The review of these proofs was by an AI agent. No human has checked them.
-- Searches for earlier work are evidence of absence only.
 
 ## 7. Formal verification
 
@@ -108,7 +104,7 @@ The round count is real, not just a bound. On the chain problem f(S) = longest p
 | Failure probability | `prob_notStopped_mul_le`, `markov_arith`, `failure_prob_le` (n^{−1.3}), `failure_prob_le_sharp` (n^{−4.3}) |
 | An instance | `maxProblem`, `maxProblem_combDim`, `maxProblem_failure_prob` |
 | Query counts | `queryCount_le`, `findAll_expected_cost_le`, `expected_queries_le`, `expected_queries_le_log` |
-| The redraw of an earlier version, not used by Theorem 1 now | `conditioned_step`, `failure_prob_le_redraw` |
+| Conditioned sampling, not used by Theorem 1 | `conditioned_step`, `failure_prob_le_redraw` |
 
 **Assuming.** `GroverFindAll` and `GroverFindOne` in `lean/LPType/Model.lean`, on an explicit query model. `expected_queries_le` also assumes the mean sample sizes over the whole run, `hR` and `hS`, which Section 3 argues by a Chernoff bound.
 

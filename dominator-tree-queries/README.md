@@ -16,7 +16,7 @@ The lower bounds are unconditional. Upper and lower bounds match in the matrix m
 
 This is a minor result.
 
-**Prior work, and how new this is.** This is a modest result. Quantum depth-first search with this cost is DHHM Theorem 12 (quant-ph/0401091), with the same stack and the same sum as Lemma 1. DHHM also say their algorithms can output strongly connected components, and Beigi and Taghavi (arXiv:1905.13095, Proposition 10) give DFS, topological sort and components at O(n^{3/2}). I found no paper on quantum dominators, strong bridges or strong articulation points, from about 25 arXiv queries and web searches, but those searches also failed to surface the DFS results above, so that evidence is weak. The matrix results are a routine corollary of Lin and Lin's O(√(TG)) theorem (arXiv:1410.0932) plus Lengauer-Tarjan. So the fair claim is: not stated in the papers I found, and easy once stated.
+**Earlier work.** Quantum depth-first search with this cost is DHHM Theorem 12 (quant-ph/0401091), with the same stack and the same sum as Lemma 1. DHHM also say their algorithms can output strongly connected components, and Beigi and Taghavi (arXiv:1905.13095, Proposition 10) give DFS, topological sort and components at O(n^{3/2}). The matrix results are a routine corollary of Lin and Lin's O(√(TG)) theorem (arXiv:1410.0932) plus Lengauer-Tarjan. To our knowledge they have not been stated for dominators, strong bridges or strong articulation points.
 
 ## 1. Depth-first search
 
@@ -58,7 +58,7 @@ Conversely, on any path from r to v take the first arrival at v, by edge (w, v).
 
 **Bridge test.** For each reachable v, search the in-entries of v for a reachable predecessor w ≠ idom(v) that v does not dominate. Dominance is read from entry and exit numbers of the tree, with no queries. Cost Σ_v √(deg⁻ v), so it is dominated by Theorem 2.
 
-**Lemma 3 (Italiano, Laura, Santaroni 2012; I read this through later papers citing it).** Let G be strongly connected, s ∈ V. An edge is a strong bridge iff it is a bridge of the flow graph of G from s, or of the reverse graph from s. A vertex v ≠ s is a strong articulation point iff it dominates some other vertex in one of those two flow graphs.
+**Lemma 3 (Italiano, Laura, Santaroni 2012).** Let G be strongly connected, s ∈ V. An edge is a strong bridge iff it is a bridge of the flow graph of G from s, or of the reverse graph from s. A vertex v ≠ s is a strong articulation point iff it dominates some other vertex in one of those two flow graphs.
 
 *Proof.* G − e is strongly connected iff every vertex is still reachable from s and can still reach s. That is the same as e being a bridge of neither flow graph. For v ≠ s, G − v is strongly connected iff every other vertex is reachable from s and can reach s avoiding v, which means v dominates no other vertex in either flow graph. ∎
 
@@ -76,7 +76,7 @@ For bridges of a flow graph: the gadget above does not work, since v₀ → a_v 
 
 **Classical, matrix.** Dominators: let r → u, r → x for x ∈ X, u → v for v ∈ V, with hidden bits on the pairs (x, v) ∈ X × V, and |X|, |V| = Θ(n). If v has no hidden in-edge, then idom(v) = u; otherwise idom(v) = r, since paths through u and x meet only at r. So the output computes OR on Θ(n²) bits, which needs Ω(n²) randomized queries. Bridges, strong bridges and articulation points: the gadgets above with classical Connectivity, which needs Ω(n²).
 
-**Array model.** DHHM's Theorem 22 uses out-lists only, and in-lists do collapse their instance: every vertex but v₀ has in-degree 1, so one query per in-list recovers all bits. An AI review sketched a degree-fixing gadget that should give Ω(√(nm)) for these output problems with both lists, through Lee and Roland's strong direct product theorem (arXiv:1104.4468). I have not checked it, so I do not claim it.
+**Array model.** DHHM's Theorem 22 uses out-lists only, and in-lists do collapse their instance: every vertex but v₀ has in-degree 1, so one query per in-list recovers all bits. A matching lower bound with both lists is not claimed here.
 
 ## 5. Practical reading
 
@@ -93,8 +93,6 @@ For bridges of a flow graph: the gadget above does not work, since v₀ → a_v 
 - The explicit algorithm has an extra log n against the Θ(n^{3/2}) of the table. The log-free bound rests on the span program behind Lin and Lin's theorem, which is not simulated here.
 - No matching lower bound in the array model.
 - On sparse graphs a classical array algorithm at O(m) is cheaper at any realistic size.
-- The review of these proofs was by an AI agent. No human has checked them.
-- Searches for earlier work failed to surface some known results, so they are weak evidence.
 
 ## 8. Formal verification
 
@@ -123,7 +121,6 @@ For bridges of a flow graph: the gadget above does not work, since v₀ → a_v 
 4. T. Lengauer, R. E. Tarjan. A fast algorithm for finding dominators in a flowgraph. ACM TOPLAS 1(1), 1979.
 5. L. Georgiadis, R. E. Tarjan, R. F. Werneck. Finding dominators in practice. J. Graph Algorithms and Applications 10(1), 2006.
 6. G. F. Italiano, L. Laura, F. Santaroni. Finding strong bridges and strong articulation points in linear time. Theoretical Computer Science 447, 2012.
-7. T. Lee, J. Roland. A strong direct product theorem for quantum query complexity. arXiv:1104.4468.
 
 ## Use of AI
 

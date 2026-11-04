@@ -13,8 +13,8 @@ A round draws a sample `R` for the estimate and then the sample `S`, both from p
 with new independent randomness. The quantum searches are taken to be exact here: `R` and `S` have
 exactly these laws and "no violator" is decided correctly. The errors of the searches are not modelled.
 
-The process `clarkson` does not redraw, so `S` given `W̃` is independent, as Lemma 1 needs. The
-redraw of an earlier version of the notes is treated at the end with `Kernel.conditioned`.
+The process `clarkson` does not redraw, so `S` given `W̃` is independent, as Lemma 1 needs.
+Redrawing is treated at the end with `Kernel.conditioned`.
 
 After a stop the process keeps drawing, which does not change the law of the event that it did not
 stop within the first `T` rounds.
@@ -366,9 +366,9 @@ theorem failure_prob_le_sharp [Nonempty H] (hδ : 1 ≤ P.combDim) (Z : ℝ) :
   field_simp
   ring
 
-/-! ## The redraw of an earlier version
+/-! ## Redrawing
 
-An earlier version of the notes redrew when `|S_t|` was too large, and the notes now avoid it. Conditioning breaks independence, so the step
+Consider redrawing when `|S_t|` is too large. Conditioning breaks independence, so the step
 `E[W_{t+1} | past] ≤ W_t (1 + δ / (2 s))` does not follow for that process. What does hold is the same
 step with an extra factor `1 / P[accept | past]`. With `P[accept | past] ≥ 1/2` this is exactly the
 factor `2` that `failure_prob_le` wastes, so `n^{-1.3}` survives. Acceptance is a hypothesis below,
