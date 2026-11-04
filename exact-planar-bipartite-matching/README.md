@@ -42,6 +42,16 @@ Two bounds improve under the **Label Hypothesis**, an assumption stated in the c
 
 Maximum matching does not follow from the Õ(D) row, since free vertices would need a super source, which is not planar.
 
+## Before and after
+
+| Category | Problem | Before | After | Scope | Status |
+|---|---|---|---|---|---|
+| Distributed algorithms, CONGEST | Maximum matching on bipartite planar networks | Õ(D³) from the separator scheme with one exact shortest-path computation per inserted vertex; Õ(D⁷) implied by the treewidth bound of [arXiv:2205.14897](https://arxiv.org/abs/2205.14897) | Õ(D²) | Planar bipartite networks; deterministic once the decomposition is given | Claim, with simulation; combinatorial core in Lean; paper in the folder |
+| Distributed algorithms, CONGEST | Maximum matching on general planar networks, with the Gallai-Edmonds sets | Õ(s*) for a maximum matching of size s* [arXiv:2311.04140](https://arxiv.org/abs/2311.04140) | Õ(D²), randomized, with no error once the decomposition is given | Planar networks | Claim, with simulation; the matrix steps in Lean |
+| Distributed algorithms, CONGEST | Maximum matching on networks of treewidth τ | Õ(τ⁴D + τ⁷), bipartite only [arXiv:2205.14897](https://arxiv.org/abs/2205.14897) | Õ(τ³D + τ⁵), randomized | Networks of treewidth τ, not necessarily planar | Claim |
+| Distributed algorithms, CONGEST | Maximum weight matching on bipartite planar networks | Õ(D³) implied by the same scheme, with a proof deferred to a full version | Õ(D³) with a complete proof; Õ(D² + W·D) for edge weights at most W; Õ(D²) for weights on the vertices | Planar bipartite networks, polynomial integer weights | Claim, with simulation; the dual update in Lean |
+| Distributed algorithms, CONGEST | Tools on planar digraphs: one simple directed s-t path; exact distance labels; depth-first search; dominators | Õ(D²) for a path through an exact shortest-path computation; exact labels for digraphs with a proof deferred to a full version; no bound in D alone known to us for directed search and dominators | Õ(D) for the path; Õ(D²) for the labels with a complete proof; Õ(D) for depth-first search and dominators | Planar digraphs | Claims, with simulation; cores in Lean; the general search has one step only sketched |
+
 ## How it works
 
 ![How the results depend on each other: published decompositions and labels on top, the Path Lemma, exact labels and Tutte elimination in the middle, the four main theorems at the bottom](figures/overview.svg)

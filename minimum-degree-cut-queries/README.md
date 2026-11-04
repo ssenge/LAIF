@@ -16,6 +16,19 @@ In [1] it is conjectured that computing the minimum degree of a simple graph req
 
 All lower bounds and lemmas below are machine-checked in Lean, assuming two classical theorems as explicit hypotheses: the approximate degree of AND_n and the randomized communication complexity of disjointness. The O(√n) upper bound from quantum minimum finding is cited and not machine-checked, and the words "tight" and "separation" rest on it. The same holds for Proposition 9, which also uses minimum finding. Section 9 gives the theorem names and the scope. The scripts in `sim/` test the identities on small instances, and their limits are listed in their docstrings. All sums in the proofs are finite.
 
+## Before and after
+
+| Category | Problem | Before | After | Scope | Status |
+|---|---|---|---|---|---|
+| Quantum query complexity | Exact minimum degree with quantum cut queries | O(√n) by quantum minimum finding [1]; no lower bound, Ω(√n) conjectured for simple graphs [1] | Ω(√n), so Θ(√n) | Integer weights of O(n² log n) bits. Simple graphs stay open | Lower bound: Lean, assuming the approximate degree of AND. O(√n): cited |
+| Quantum query complexity | Global minimum cut value with quantum cut queries | No Ω(√n) lower bound known to us | Ω(√n) | Same weights | Lean, assuming the approximate degree of AND |
+| Quantum query complexity | Promise decision problem on degrees mod M, modular model | No lower bound known to us | Ω(√n) | Weights in Z_M, oracle returns the cut mod M, M = 2^k ≥ 4. Nothing follows for integer oracles | Lean, assuming the approximate degree of AND |
+| Quantum query complexity | Exact minimum degree on simple graphs, each query returning the cut mod 4 | No lower bound known to us; Ω(√n) conjectured for integer answers [1] | Θ(√n) | Simple graphs, any query sets. Integer answers stay open | Lower bound: Lean, assuming the approximate degree of AND. O(√n): on paper, using quantum minimum finding |
+| Lattice lemma | Sparsity of near-solutions of the cut relations | Not available | At most 2R + 3 vertices with a visible degree shift, for R query terms | General tool for the bounds above | Lean |
+| Classical query complexity | Exact minimum degree with randomized cut queries, large weights | O(n) by singleton queries; Ω(n/log n) from the simple-graph row below | At least n/7 − 2, so Θ(n) | Integer weights of O(n log n) bits and above | Lean |
+| Classical query complexity | Exact minimum degree with randomized cut queries, simple graphs | O(n) by singleton queries; no lower bound stated in the sources known to us | Ω(n/log n) | Simple graphs | Lean, assuming the communication complexity of disjointness |
+| Quantum-classical separation | Exact minimum degree with cut queries | O(√n) quantum and O(n) classical upper bounds, without matching lower bounds | Θ(√n) quantum against Θ(n) classical | Integer weights of O(n² log n) bits | Both lower bounds: Lean, as above. O(√n): cited |
+
 ## Model
 
 The vertex set is V with |V| = n, E is the set of unordered pairs, and a graph is a vector A ∈ Z_{≥0}^E. For x ∈ {0,1}^n let δ_x ∈ {0,1}^E be the indicator of the pairs separated by x, so that cut_A(x) = ⟨A, δ_x⟩. The input class is the set of graphs with weights in [0, W], and N = n²W, which exceeds every cut value. A query is the unitary

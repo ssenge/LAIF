@@ -111,6 +111,17 @@ overcome in order to obtain better distributed planar algorithms", and suggests 
 improve the $\tilde O(D^2)$ bound of the (easier) directed SSSP problem (even with
 non-negative weights)".
 
+## Before and after
+
+| Category | Problem | Before | After | Scope | Status |
+|---|---|---|---|---|---|
+| Distributed algorithms, CONGEST | Exact single-source shortest paths on directed planar networks, nonnegative weights | Õ(D²) [8] | Õ(D), given the Label Hypothesis stated in this folder, which is modelled on the labels of [1]; this folder completes the proof of [1], one lemma of which is false as stated | Directed planar networks, polynomial integer weights; deterministic relative to the labels | Claim; the virtual-source lemma and the discretized boosting in Lean; paper arXiv:2611.02256 |
+| Distributed algorithms, CONGEST | Exact maximum st-flow on directed planar networks, with the flow on every edge | Õ(D²) [9] | min{Õ(D²), D·n^{o(1)}}; Õ(D) when s and t lie on a common face; Õ(D) with high probability in a later note | Given the Label Hypothesis | Claim; the dual weighting lemma in Lean |
+| Distributed algorithms, CONGEST | Exact minimum st-cut and minimum cut value on undirected planar networks | (1 − o(1))-approximation in Õ(D) [18]; exact in Õ(D²) [9] | Õ(D), given the Label Hypothesis, with two repairs of [18]: its auxiliary graph at the terminals, and its recursion, which as we read it can miss the minimum cut | Undirected planar networks | Claim; the recursion argument in Lean |
+| Distributed algorithms, CONGEST | Negative weights, minimum arborescences and replacement paths on planar digraphs | D·n^{o(1)} for negative weights through a general reduction; no bound in D alone known to us for the others | Õ(D) with high probability for negative weights and for arborescences, given the Label Hypothesis; replacement paths exactly in Õ(D·min(h, D)) and within 1 + ε in Õ(D/ε) | Planar digraphs | Claims in notes; cores in Lean |
+| Distributed algorithms, CONGEST | Diameter and all eccentricities of unweighted undirected planar networks | Õ(D³) [arXiv:2608.07187](https://arxiv.org/abs/2608.07187) | Õ(D²), with no hypothesis; within 1 + ε in Õ(D + 1/ε⁴) | Unweighted undirected planar networks | Claim |
+| Corrections | Lemma 14 and a decomposition property of [1]; the auxiliary graph and the recursion of [18] | As stated | Counterexamples, and repairs: tiles in place of the hub network and region bags for the round count of [1]; a repaired auxiliary graph at the terminals and two more shortest-path computations per level of the recursion of [18] | As we read the texts | Counterexamples checked by scripts; repairs on paper, the recursion repair in Lean |
+
 ## Results
 
 | Result | Rounds | Previous | Rating |

@@ -20,6 +20,13 @@ So the complexity of the maximum is Θ̃(√n), against Θ(n) classically. Theor
 
 **Earlier work.** To our knowledge there is no earlier quantum result on totally monotone matrix search, or on convex polygon diameter. The closest result known to us is Õ(n^{3/4}) for the diameter of a general point set [5].
 
+## Before and after
+
+| Category | Problem | Before | After | Scope | Status |
+|---|---|---|---|---|---|
+| Quantum query complexity | Is the maximum of a totally monotone or inverse Monge matrix at least θ? | Θ(n) classically by SMAWK; √(rc) by plain quantum search; no quantum result known to us | O(√n log n), Ω(√n) | n = max(r, c), any finite ordered entries. Queries only: the algorithm goes through the adversary bound | Lean, assuming Lee et al. Q = Θ(Adv±) |
+| Quantum query complexity | Maximum of a totally monotone matrix, and the diameter of a convex polygon | Θ(n) classically; Õ(n^{3/4}) for the diameter of a general point set | Õ(√n), Ω(√n); explicit nested search at √n · n^{o(1)} | Queries only | Claim, with the core lemmas in Lean |
+
 ## 1. Lower bounds
 
 **Theorem 2.** For h ∈ {0,1}^n let M_h[i, j] = −(i − j)² for i ≠ j and M_h[i, i] = h_i. Then M_h is inverse Monge and its maximum is OR(h). So computing the maximum needs Ω(n) classical randomized and Ω(√n) quantum queries.

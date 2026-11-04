@@ -19,6 +19,13 @@ Unconditional on paper, and the algorithm is explicit: Õ(n) entry reads and Gro
 
 The natural baseline is Õ(n^{3/2}), since the certificate has 4 vertices. Magniez, Santha and Szegedy [3] state this for non-induced copies and monotone properties, and an alternating 4-cycle uses non-edges, so it does not apply as stated.
 
+## Before and after
+
+| Category | Problem | Before | After | Scope | Status |
+|---|---|---|---|---|---|
+| Quantum query complexity | Recognizing threshold graphs and chain graphs from the adjacency matrix | Θ(n²) classically; about n^{3/2} suggested by the 4-vertex certificate, not stated for these induced patterns; no quantum result known to us | O(n log⁴ n) and Õ(n), Ω(n), so Θ̃(n) against Θ(n²) | Explicit algorithm; queries only | Correctness given correct searches, and the expected count for threshold graphs: Lean, assuming BBHT and the OR bound. Bounded error and the chain cost: Claim |
+| Quantum query complexity | Learning and recognizing nested a × b matrices, with equal rows allowed | Θ(n log n) for half graphs, that is with all rows and columns distinct, by Mande, Sanyal, Zamaraev; Θ(ab) classically with ties | O((a + b) log³(a + b)); recognition Θ̃(n) for a, b = Θ(n) | Explicit algorithm; queries only | As above |
+
 ## 1. Positions
 
 **Lemma 1.** M is nested iff there are integer positions p on rows and q on columns, with p even and q odd, such that M[r, c] = 1 ⇔ p(r) > q(c).
