@@ -553,15 +553,16 @@ standard axioms (`propext`, `Classical.choice`, `Quot.sound`). There is no `sorr
   - `Net` is a graph with rotation lists, and `toRot` is its rotation system on the darts of the
     graph (`tail_eq_iff`, `toRot_connected`). `triNet_planar` is an instance.
 - `lean/SsspFlow/LabelHypothesis.lean`: statements in this model.
-  - `LabelHypothesis`, for one algorithm per $n,W,e,D$ on all planar networks with these
-    parameters, with the word sizes and the rounds as part of the statement. It is stated here, not
-    proved.
+  - `LabelHypothesis`, for one algorithm per $n,e,D$ on all planar networks with these parameters and
+    with arc lengths at most $(n+2)^K$, with the word sizes and the rounds as part of the statement.
+    It is stated here, not proved.
   - `lemmaV_chain₂` and `LabelWitness.query_bound` prove Lemma V for the values that the labels
     hold. `labelsOK_oneBag` and `labelsOK_triNet` show that correct labels exist on small networks.
   - The results of the literature that are used are stated as propositions and not proved
     (`RealizationBox`, `DistanceLabelBox`, `FaceIdBox`, `EmbeddingBox`, `AggBox`, `SmoothingBox`,
     `NegReduction`). `ExactSsspBound`, `NegSsspBound` and `MaxFlowBound` are the round bounds of
-    Theorems A, B and C as definitions, and no theorem here asserts them.
+    Theorems A, B and C as definitions, and no theorem here asserts them. `not_negSsspBound_zero` and
+    `not_maxFlowBound_zero` show that the two randomized definitions fail with no rounds.
 
 Not formalized: the CONGEST algorithms and their round counts, planarity and the diameter
 bound of $\hat G$, the decomposition, the construction of the tiles and the rest of Lemma 14′, and

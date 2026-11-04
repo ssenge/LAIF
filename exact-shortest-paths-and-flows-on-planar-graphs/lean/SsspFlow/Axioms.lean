@@ -164,3 +164,6 @@ Expected output for each: `propext`, `Classical.choice`, `Quot.sound` (or a subs
 #print axioms SsspFlow.Congest.labelsOK_triNet
 #print axioms SsspFlow.Congest.LabelHypothesis
 #print axioms SsspFlow.Congest.ExactSsspBound
+#print axioms SsspFlow.Congest.exists_good₂
+#print axioms SsspFlow.Congest.not_negSsspBound_zero
+#print axioms SsspFlow.Congest.not_maxFlowBound_zero

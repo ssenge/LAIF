@@ -1,4 +1,5 @@
 import Mathlib.Basic.Real.ENatENNReal
+import Mathlib.Tactic.FinCases
 import SsspFlow.Congest
 import SsspFlow.Crossing
 import SsspFlow.LemmaVChain
@@ -6,21 +7,21 @@ import SsspFlow.LemmaVChain
 /-!
 # The Label Hypothesis and the round bounds in the message model
 
-Statements in the model of `SsspFlow.Congest`. An algorithm is fixed for given numbers `n`, `W`, `e`,
-`D` before the network, it runs on the identifiers `Fin n`, and a round moves exactly `B` bits per
-edge and direction. Bounds are stated with the scale `L = logScale n W e`, and polylogarithmic means
-`C * L ^ c` with absolute constants. A message of `C * L ^ c` bits splits into `O(L ^ c)` messages of
-`O(log n)` bits, so this is CONGEST up to polylogarithmic factors in the rounds. The field `out` of
-`Cslib.Congest.Algorithm` is meant for decision problems and is not used; results are read from the
-final states.
+Statements in the model of `SsspFlow.Congest`. An algorithm is fixed for given numbers before the
+network, it runs on the identifiers `Fin n`, and a round moves exactly `B` bits per edge and direction.
+Lengths and weights have polynomial size: they are at most `(n + 2) ^ K`. Bounds are stated with the
+scale `L = logN n`, and polylogarithmic means `C * L ^ c`, with constants that may depend on `K`. A
+message of `C * L ^ c` bits splits into `O(L ^ c)` messages of `O(log n)` bits, so this is CONGEST up
+to polylogarithmic factors in the rounds. The field `out` of `Cslib.Congest.Algorithm` is meant for
+decision problems and is not used; results are read from the final states.
 
 * `LabelWitness`, `LabelsOK`, `LabelHypothesis`: the hypothesis of the paper.
   The bags are named by numbers. `tree x` is a connected subgraph that joins the vertices of the bag
   `x`, and it need not be a tree: a breadth-first tree of it costs as many rounds as its diameter.
   Leaves carry labels like all other bags: a leaf has few vertices, and broadcasting its arcs over its
   subgraph gives exact values. Estimates are natural numbers without loss, since the floor of an
-  estimate keeps both bounds. Lengths are not restricted to a polynomial range, as `L` contains
-  `log W`.
+  estimate keeps both bounds. The algorithm is deterministic. The paper also allows a randomized
+  one, and `notes/LEMMA15.md` §9.6 gives a deterministic one from the deterministic form of (G6).
 * `queryC₂`, `lemmaV_chain₂`: Lemma V with the value `toH` held by the start of a path and the value
   `fromH` held by its end, as the labels provide them.
 * `LabelWitness.query_bound`: the query computed from the labels is `(1 + 1/e)`-approximate.
@@ -32,20 +33,23 @@ final states.
 These are classical or published results, stated as propositions and not proved here.
 
 * `RealizationBox`: planar realization of distance matrices with terminals in a given order, [10].
-* `DistanceLabelBox`: `(1 + ε)`-approximate distance labels on planar digraphs, [1, Lemma 11].
+* `DistanceLabelBox`: `(1 + ε)`-approximate distance labels on planar digraphs, [13], as used in
+  [1, Lemma 11].
 * `FaceIdBox`: identifiers of faces, [9, Lemma 5.11], deterministically [18, Lemma 3.17].
 * `EmbeddingBox`: a planar embedding, computed in `Õ(D)` rounds.
 * `AggBox`: minima per key over low congestion subgraphs, by a convergecast and a broadcast.
 * `SmoothingBox`: smooth estimates from an approximate oracle, [3, Thm 1.7, Alg. 3].
 * `NegReduction`: negative weights from exact nonnegative SSSP with a factor `τ` in the rounds. The
   reduction of [6, Thm 2], with the term `√n + D` replaced by `Õ(D)` through [9, Cor. 4.6, Lemma 4.8]
-  and with [6, Cor. 33] in repaired form, gives `τ = tauSubpoly C` for an absolute constant `C`.
-  `notes/NEGATIVE.md` gives `τ = tauPolylog c`.
+  and with the base case of [6, Cor. 33] as in Section 8 of `notes/NEGATIVE.md`, gives
+  `τ = tauSubpoly C` for an absolute constant `C`. `notes/NEGATIVE.md` gives `τ = tauPolylog c`.
 
 ## Round bounds
 
 `ExactSsspBound`, `NegSsspBound` and `MaxFlowBound` state the round bounds of the paper in this
-model. They are definitions here, and this file does not assert them.
+model. They are definitions here, and this file does not assert them. `not_negSsspBound_zero` and
+`not_maxFlowBound_zero` show that the two randomized definitions have content: they fail with no
+rounds.
 -/
 
 set_option autoImplicit false
@@ -109,8 +113,8 @@ end RHierarchy
 
 namespace Congest
 
-/-- The scale of a problem with `n` nodes, lengths up to `W` and accuracy `1/e`. -/
-def logScale (n W e : ℕ) : ℕ := Nat.log 2 (n + W + e) + 1
+/-- The scale of a problem with `n` nodes. -/
+def logN (n : ℕ) : ℕ := Nat.log 2 (n + 2) + 1
 
 /-- Natural lengths as lengths in `[0, ∞]`. -/
 def lenOf {V : Type} (ℓ : V → V → ℕ) : V → V → ℝ≥0∞ := fun a b => (ℓ a b : ℝ≥0∞)
@@ -217,17 +221,18 @@ def LabelsOK (N : Net V) (ℓ : V → V → ℕ) (e h s w : ℕ) (out : V → La
 
 end Labels
 
-/-- **The Label Hypothesis.** For given `n`, `W`, `e`, `D`, one algorithm computes on every planar
-network with `n` nodes, diameter at most `D` and arc lengths in `[1, W]` labels with accuracy `1/e`,
-in `Õ(D e)` rounds, with height `O(L)`, subgraph diameter and hub number `Õ(D)`, and words of `O(L)`
-bits. -/
+/-- **The Label Hypothesis.** For given `n`, `e`, `D`, one algorithm computes on every planar network
+with `n` nodes, diameter at most `D` and arc lengths in `[1, (n + 2) ^ K]` labels with accuracy `1/e`,
+for `e ≤ (n + 2) ^ K`, in `Õ(D e)` rounds, with height `O(L)`, subgraph diameter and hub number
+`Õ(D)`, and words of polylogarithmically many bits. -/
 def LabelHypothesis : Prop :=
-  ∃ C c : ℕ, ∀ n W e D : ℕ, 1 ≤ W → 1 ≤ e → 1 ≤ D →
-    ∃ (σ : Type) (A : Algorithm (Fin n) (LocalIn (Fin n)) σ (C * logScale n W e ^ c))
+  ∀ K : ℕ, ∃ C c : ℕ, ∀ n e D : ℕ, 1 ≤ e → e ≤ (n + 2) ^ K → 1 ≤ D →
+    ∃ (σ : Type) (A : Algorithm (Fin n) (LocalIn (Fin n)) σ (C * logN n ^ c))
       (out : Fin n → σ → LabelOut (Fin n)),
-      ∀ (N : Net (Fin n)) (ℓ : Fin n → Fin n → ℕ), N.toRot.Planar → N.DiamLE D → N.LensIn ℓ W →
-        LabelsOK N ℓ e (C * logScale n W e) (C * logScale n W e ^ c * D) (C * logScale n W e)
-          (fun v => out v (A.run N.G (N.localIn ℓ) (C * logScale n W e ^ c * D * e) v))
+      ∀ (N : Net (Fin n)) (ℓ : Fin n → Fin n → ℕ), N.toRot.Planar → N.DiamLE D →
+        N.LensIn ℓ ((n + 2) ^ K) →
+        LabelsOK N ℓ e (C * logN n) (C * logN n ^ c * D) (C * logN n ^ c)
+          (fun v => out v (A.run N.G (N.localIn ℓ) (C * logN n ^ c * D * e) v))
 
 section Query
 
@@ -477,8 +482,8 @@ def RealizationBox (C : ℕ) : Prop :=
       K.numVertices ≤ C * k ^ 6 ∧ K.DiskDrawn (List.ofFn l) ∧
         ∀ i j, K.walkDist g (K.tail (l i)) (K.tail (l j)) = d i j
 
-/-- (G5) [1, Lemma 11]. `(1 + 1/e)`-approximate distance labels on planar digraphs with lengths in
-`{0, …, N, ∞}`, of `Õ(e)` words of `O(log S)` bits. The query is fixed before the map. -/
+/-- (G5) [13], as used in [1, Lemma 11]. `(1 + 1/e)`-approximate distance labels on planar digraphs
+with lengths in `{0, …, N, ∞}`, of `Õ(e)` words of `O(log S)` bits. The query is fixed before the map. -/
 def DistanceLabelBox (C c : ℕ) : Prop :=
   ∀ e : ℕ, 1 ≤ e → ∃ query : List ℕ → List ℕ → ℕ∞,
     ∀ (D : Type) [Fintype D] [DecidableEq D] (R : RotSystem D) (N : ℕ) (g : D → ℕ∞),
@@ -491,27 +496,29 @@ def DistanceLabelBox (C c : ℕ) : Prop :=
           (1 + (e : ℝ≥0∞)⁻¹) * R.walkDist (fun x => (g x : ℝ≥0∞)) u v
 
 /-- (G6) [9, Lemma 5.11], [18, Lemma 3.17]. From the rotation lists, in `Õ(D)` rounds, every node
-learns for each dart at it the identifier of its face, of `O(L)` bits. -/
+learns for each dart at it the identifier of its face, of polylogarithmically many bits. Here a face
+is an orbit of the face permutation `rot⁻¹ ∘ rev`. -/
 def FaceIdBox : Prop :=
   ∃ C c : ℕ, ∀ n D : ℕ, 1 ≤ D →
-    ∃ (σ : Type) (A : Algorithm (Fin n) (List (Fin n)) σ (C * logScale n 0 0 ^ c))
+    ∃ (σ : Type) (A : Algorithm (Fin n) (List (Fin n)) σ (C * logN n ^ c))
       (out : Fin n → σ → Fin n → ℕ),
       ∀ N : Net (Fin n), N.toRot.Planar → N.DiamLE D →
         ∀ d d' : N.G.Dart,
-          let T := C * logScale n 0 0 ^ c * D
+          let T := C * logN n ^ c * D
           let id := fun x : N.G.Dart => out x.fst (A.run N.G N.rotList T x.fst) x.snd
-          (id d = id d' ↔ N.toRot.faceOf d = N.toRot.faceOf d') ∧ id d < 2 ^ (C * logScale n 0 0)
+          (id d = id d' ↔ N.toRot.faceOf d = N.toRot.faceOf d') ∧ id d < 2 ^ (C * logN n ^ c)
 
 /-- A planar embedding in `Õ(D)` rounds: from its neighbours in any order, every node of a planar
-network learns a rotation list, and these lists form a plane network on the same graph. -/
+network learns a rotation list, and these lists form a plane network on the same graph. The other
+statements of this file take the rotation lists as input. -/
 def EmbeddingBox : Prop :=
   ∃ C c : ℕ, ∀ n D : ℕ, 1 ≤ D →
-    ∃ (σ : Type) (A : Algorithm (Fin n) (List (Fin n)) σ (C * logScale n 0 0 ^ c))
+    ∃ (σ : Type) (A : Algorithm (Fin n) (List (Fin n)) σ (C * logN n ^ c))
       (out : Fin n → σ → List (Fin n)),
       ∀ N : Net (Fin n), N.toRot.Planar → N.DiamLE D →
         ∀ nb : Fin n → List (Fin n), (∀ v w, w ∈ nb v ↔ N.G.Adj v w) →
           ∃ N' : Net (Fin n), N'.G = N.G ∧ N'.toRot.Planar ∧
-            ∀ v, N'.rotList v = out v (A.run N.G nb (C * logScale n 0 0 ^ c * D) v)
+            ∀ v, N'.rotList v = out v (A.run N.G nb (C * logN n ^ c * D) v)
 
 /-- The input of a node for one aggregation over many subgraphs. -/
 structure AggIn (V : Type) where
@@ -551,7 +558,7 @@ convergecast of the minima in the order of the keys, and a broadcast. An edge se
 subgraphs in turn, in sorted order. Every member of a subgraph learns the minimum per key. -/
 def AggBox : Prop :=
   ∃ C : ℕ, ∀ n s c k b : ℕ,
-    ∃ (σ : Type) (A : Algorithm (Fin n) (AggIn (Fin n)) σ (C * (b + logScale n 0 0)))
+    ∃ (σ : Type) (A : Algorithm (Fin n) (AggIn (Fin n)) σ (C * (b + logN n)))
       (out : Fin n → σ → ℕ → ℕ → Option ℕ),
       ∀ (N : Net (Fin n)) (inp : Fin n → AggIn (Fin n)), AggIn.Valid N inp s c k b →
         ∀ v, ∀ x ∈ (inp v).member, ∀ κ,
@@ -611,16 +618,17 @@ def ExactOracleOK {σ : Type} {B : ℕ} (n W D T : ℕ) (A : Algorithm (Fin n) (
 estimates `d` for finite offsets, in units of one half, with `2 d(σ, v) ≤ d v`,
 `d b ≤ d a + 4 ℓ(a, b)` and `d v ≤ 4 φ v`. So `d / 2` does not underestimate and is `2`-smooth on the
 arcs and on the arcs from the virtual source, which is the contract of `Boost.Run` with a constant
-`α`. -/
+`α`. In [3] weights and offsets are real numbers. This form follows by scaling and floors, and the
+smoothness above leaves room for the floor because lengths are at least `1`. -/
 def SmoothingBox : Prop :=
-  ∃ C c : ℕ, ∀ n W D T B : ℕ, ∀ (σ : Type) (A : Algorithm (Fin n) (OracleIn (Fin n)) σ B)
+  ∀ K : ℕ, ∃ C c : ℕ, ∀ n D T B : ℕ, ∀ (σ : Type) (A : Algorithm (Fin n) (OracleIn (Fin n)) σ B)
     (out : Fin n → σ → ℕ∞),
-    ApproxOracleOK n ((n + W + 2) ^ C) (C * logScale n W 0) D T A out →
-    ∃ (σ' : Type) (Q : Algorithm (Fin n) (OracleIn (Fin n)) σ' (B + C * logScale n W 0 ^ c))
+    ApproxOracleOK n ((n + 2) ^ C) (C * logN n) D T A out →
+    ∃ (σ' : Type) (Q : Algorithm (Fin n) (OracleIn (Fin n)) σ' (B + C * logN n ^ c))
       (out' : Fin n → σ' → ℕ),
       ∀ (N : Net (Fin n)) (ℓ : Fin n → Fin n → ℕ∞) (φ : Fin n → ℕ∞),
-        N.toRot.Planar → N.DiamLE D → OracleValid N 1 W ℓ φ → (∀ v, φ v ≠ ⊤) →
-        let d := fun v => out' v (Q.run N.G (N.oracleIn ℓ φ) (C * logScale n W 0 * (T + D + 1)) v)
+        N.toRot.Planar → N.DiamLE D → OracleValid N 1 ((n + 2) ^ K) ℓ φ → (∀ v, φ v ≠ ⊤) →
+        let d := fun v => out' v (Q.run N.G (N.oracleIn ℓ φ) (C * logN n * (T + D + 1)) v)
         (∀ v, 2 * N.dsrcTop ℓ φ v ≤ (d v : ℝ≥0∞)) ∧
           (∀ a b, N.G.Adj a b → (d b : ℕ∞) ≤ d a + 4 * ℓ a b) ∧
           ∀ v, (d v : ℕ∞) ≤ 4 * φ v
@@ -650,6 +658,27 @@ noncomputable def strCount {V ρ : Type} [Fintype V] [DecidableEq V] [Fintype ρ
     (bad : (V → ρ) → Prop) : ℕ := by
   classical
   exact (Finset.univ.filter bad).card
+
+/-- If each of two properties holds for at most a quarter of the private strings, some string has
+neither. This needs at least one string, which is why the statements below ask for `Nonempty ρ`. -/
+theorem exists_good₂ {V ρ : Type} [Fintype V] [DecidableEq V] [Fintype ρ] [Nonempty ρ]
+    {bad₁ bad₂ : (V → ρ) → Prop} (h₁ : strCount bad₁ * 4 ≤ Fintype.card (V → ρ))
+    (h₂ : strCount bad₂ * 4 ≤ Fintype.card (V → ρ)) : ∃ r, ¬ bad₁ r ∧ ¬ bad₂ r := by
+  classical
+  by_contra hall
+  have hcover : (Finset.univ : Finset (V → ρ)) ⊆
+      Finset.univ.filter bad₁ ∪ Finset.univ.filter bad₂ := by
+    intro r _
+    by_contra hr
+    simp only [Finset.mem_union, Finset.mem_filter, Finset.mem_univ, true_and, not_or] at hr
+    exact hall ⟨r, hr⟩
+  have hc := (Finset.card_le_card hcover).trans (Finset.card_union_le _ _)
+  have hpos : 0 < Fintype.card (V → ρ) := Fintype.card_pos
+  rw [Finset.card_univ] at hc
+  unfold strCount at h₁ h₂
+  have h₁' : (Finset.univ.filter bad₁).card * 4 ≤ Fintype.card (V → ρ) := by convert h₁
+  have h₂' : (Finset.univ.filter bad₂).card * 4 ≤ Fintype.card (V → ρ) := by convert h₂
+  omega
 
 section Neg
 
@@ -686,21 +715,21 @@ def tauSubpoly (C x : ℕ) : ℕ := (Nat.log 2 x + 1) ^ (C * (Nat.sqrt (Nat.log 
 /-- `(log x)^c`, the factor of the reduction of `notes/NEGATIVE.md`. -/
 def tauPolylog (c x : ℕ) : ℕ := (Nat.log 2 x + 1) ^ c
 
-/-- Negative weights from exact nonnegative SSSP: for every exponent `k`, an exact oracle in `T`
-rounds gives an algorithm with private strings in `C * τ(n + W + 2) * (T + Õ(D))` rounds, wrong on at
+/-- Negative weights from exact nonnegative SSSP: for all exponents `K` and `k`, an exact oracle in
+`T` rounds gives an algorithm with private strings in `C * τ(n + 2) * (T + Õ(D))` rounds, wrong on at
 most a fraction `1 / (n + 1) ^ k` of the strings. -/
 def NegReduction (τ : ℕ → ℕ) : Prop :=
-  ∀ k : ℕ, ∃ C c : ℕ, ∀ n W D T B : ℕ, 1 ≤ D →
+  ∀ K k : ℕ, ∃ C c : ℕ, ∀ n D T B : ℕ, 1 ≤ D →
     ∀ (σ : Type) (A : Algorithm (Fin n) (OracleIn (Fin n)) σ B) (out : Fin n → σ → ℕ∞),
-    ExactOracleOK n ((n + W + 2) ^ C) D T A out →
-    ∃ (ρ : Type) (_ : Fintype ρ) (σ' : Type)
-      (P : Algorithm (Fin n) (NegIn (Fin n) × ρ) σ' (B + C * logScale n W 0 ^ c))
+    ExactOracleOK n ((n + 2) ^ C) D T A out →
+    ∃ (ρ : Type) (_ : Fintype ρ) (_ : Nonempty ρ) (σ' : Type)
+      (P : Algorithm (Fin n) (NegIn (Fin n) × ρ) σ' (B + C * logN n ^ c))
       (out' : Fin n → σ' → Option (Option ℤ)),
       ∀ (N : Net (Fin n)) (w : Fin n → Fin n → Option ℤ) (s : Fin n),
-        N.toRot.Planar → N.DiamLE D → N.NegValid W w →
+        N.toRot.Planar → N.DiamLE D → N.NegValid ((n + 2) ^ K) w →
         strCount (fun r : Fin n → ρ => ¬ N.NegSpec w s (fun v =>
           out' v (P.run N.G (fun u => (N.negIn w s u, r u))
-            (C * τ (n + W + 2) * (T + C * logScale n W 0 ^ c * D)) v))) * (n + 1) ^ k ≤
+            (C * τ (n + 2) * (T + C * logN n ^ c * D)) v))) * (n + 1) ^ k ≤
         Fintype.card (Fin n → ρ)
 
 /-! ### Round bounds -/
@@ -755,45 +784,200 @@ def Net.FlowSpec (N : Net V) (c : V → V → ℕ) (s t : V) (r : V → ℕ × (
 
 end Bounds
 
-/-- Exact SSSP from a virtual source with lengths in `{0, …, W, ∞}` in `Õ(D)` rounds,
-deterministically: the Exact SSSP Theorem. -/
+/-- Exact SSSP from a virtual source with lengths in `{0, …, (n + 2) ^ K, ∞}` in `Õ(D)` rounds,
+deterministically: the Exact SSSP Theorem, with the rotation lists as input. -/
 def ExactSsspBound : Prop :=
-  ∃ C c : ℕ, ∀ n W D : ℕ, 1 ≤ D →
-    ∃ (σ : Type) (A : Algorithm (Fin n) (OracleIn (Fin n)) σ (C * logScale n W 0 ^ c))
+  ∀ K : ℕ, ∃ C c : ℕ, ∀ n D : ℕ, 1 ≤ D →
+    ∃ (σ : Type) (A : Algorithm (Fin n) (OracleIn (Fin n)) σ (C * logN n ^ c))
       (out : Fin n → σ → ℕ∞ × Option (Fin n)),
       ∀ (N : Net (Fin n)) (ℓ : Fin n → Fin n → ℕ∞) (φ : Fin n → ℕ∞),
-        N.toRot.Planar → N.DiamLE D → OracleValid N 0 W ℓ φ →
+        N.toRot.Planar → N.DiamLE D → OracleValid N 0 ((n + 2) ^ K) ℓ φ →
         N.ExactSpec ℓ φ (fun v =>
-          out v (A.run N.G (N.oracleIn ℓ φ) (C * logScale n W 0 ^ c * D) v))
+          out v (A.run N.G (N.oracleIn ℓ φ) (C * logN n ^ c * D) v))
 
-/-- Negative weights in `C * τ(n + W + 2) * Õ(D)` rounds with high probability: the Negative Weights
-Theorem for `τ = tauSubpoly C`. -/
+/-- Negative weights in `C * τ(n + 2) * Õ(D)` rounds with high probability: the Negative Weights
+Theorem for `τ = tauSubpoly C`, with the rotation lists as input. -/
 def NegSsspBound (τ : ℕ → ℕ) : Prop :=
-  ∀ k : ℕ, ∃ C c : ℕ, ∀ n W D : ℕ, 1 ≤ D →
-    ∃ (ρ : Type) (_ : Fintype ρ) (σ : Type)
-      (P : Algorithm (Fin n) (NegIn (Fin n) × ρ) σ (C * logScale n W 0 ^ c))
+  ∀ K k : ℕ, ∃ C c : ℕ, ∀ n D : ℕ, 1 ≤ D →
+    ∃ (ρ : Type) (_ : Fintype ρ) (_ : Nonempty ρ) (σ : Type)
+      (P : Algorithm (Fin n) (NegIn (Fin n) × ρ) σ (C * logN n ^ c))
       (out : Fin n → σ → Option (Option ℤ)),
       ∀ (N : Net (Fin n)) (w : Fin n → Fin n → Option ℤ) (s : Fin n),
-        N.toRot.Planar → N.DiamLE D → N.NegValid W w →
+        N.toRot.Planar → N.DiamLE D → N.NegValid ((n + 2) ^ K) w →
         strCount (fun r : Fin n → ρ => ¬ N.NegSpec w s (fun v =>
           out v (P.run N.G (fun u => (N.negIn w s u, r u))
-            (C * τ (n + W + 2) * logScale n W 0 ^ c * D) v))) * (n + 1) ^ k ≤
+            (C * τ (n + 2) * logN n ^ c * D) v))) * (n + 1) ^ k ≤
         Fintype.card (Fin n → ρ)
 
-/-- Maximum flow with capacities in `{0, …, W}` in `C * τ(n + W + 2) * Õ(D)` rounds with high
-probability: the value and the flow on every edge, as in the Maximum Flow Theorem for
-`τ = tauSubpoly C`. -/
+/-- Maximum flow with capacities in `{0, …, (n + 2) ^ K}` in `C * τ(n + 2) * Õ(D)` rounds with high
+probability: the value and the flow on every edge, with the rotation lists as input. For
+`τ = tauSubpoly C` this is the branch `D n^{o(1)}` of the Maximum Flow Theorem. -/
 def MaxFlowBound (τ : ℕ → ℕ) : Prop :=
-  ∀ k : ℕ, ∃ C c : ℕ, ∀ n W D : ℕ, 1 ≤ D →
-    ∃ (ρ : Type) (_ : Fintype ρ) (σ : Type)
-      (P : Algorithm (Fin n) (FlowIn (Fin n) × ρ) σ (C * logScale n W 0 ^ c))
+  ∀ K k : ℕ, ∃ C c : ℕ, ∀ n D : ℕ, 1 ≤ D →
+    ∃ (ρ : Type) (_ : Fintype ρ) (_ : Nonempty ρ) (σ : Type)
+      (P : Algorithm (Fin n) (FlowIn (Fin n) × ρ) σ (C * logN n ^ c))
       (out : Fin n → σ → ℕ × (Fin n → ℤ)),
       ∀ (N : Net (Fin n)) (cap : Fin n → Fin n → ℕ) (s t : Fin n),
-        N.toRot.Planar → N.DiamLE D → (∀ a b, N.G.Adj a b → cap a b ≤ W) → s ≠ t →
+        N.toRot.Planar → N.DiamLE D → (∀ a b, N.G.Adj a b → cap a b ≤ (n + 2) ^ K) → s ≠ t →
         strCount (fun r : Fin n → ρ => ¬ N.FlowSpec cap s t (fun v =>
           out v (P.run N.G (fun u => (N.flowIn cap s t u, r u))
-            (C * τ (n + W + 2) * logScale n W 0 ^ c * D) v))) * (n + 1) ^ k ≤
+            (C * τ (n + 2) * logN n ^ c * D) v))) * (n + 1) ^ k ≤
         Fintype.card (Fin n → ρ)
+
+/-! ### The randomized bounds have content -/
+
+section NoRounds
+
+private theorem WalkZ.pot_le {V : Type} {adj : V → V → Prop} {w : V → V → Option ℤ} (pot : V → ℤ)
+    (h : ∀ a b x, w a b = some x → pot a ≤ x + pot b) {a b : V} {y : ℤ}
+    (hp : WalkZ adj w a b y) : pot a ≤ y + pot b := by
+  induction hp with
+  | nil a => simp
+  | cons _ hw _ ih =>
+    have := h _ _ _ hw
+    linarith
+
+/-- On the triangle, the arc `0 → 1` has weight `x` and the arc `1 → 2` weight `1`. There are no other
+arcs. -/
+private def triW (x : ℤ) : Fin 3 → Fin 3 → Option ℤ := fun a b =>
+  if a = 0 ∧ b = 1 then some x else if a = 1 ∧ b = 2 then some 1 else none
+
+private def triPot (x : ℤ) : Fin 3 → ℤ := ![x + 1, 1, 0]
+
+private theorem triW_pot (x : ℤ) (a b : Fin 3) (y : ℤ) (h : triW x a b = some y) :
+    triPot x a ≤ y + triPot x b := by
+  unfold triW at h
+  split_ifs at h with h1 h2
+  · obtain ⟨rfl, rfl⟩ := h1
+    cases h
+    simp [triPot]
+  · obtain ⟨rfl, rfl⟩ := h2
+    cases h
+    simp [triPot]
+
+/-- A correct answer on this instance reports the distance `x + 1` at the node `2`. -/
+private theorem triNeg_value {x : ℤ} {r : Fin 3 → Option (Option ℤ)}
+    (h : triNet.NegSpec (triW x) 0 r) : r 2 = some (some (x + 1)) := by
+  have hwalk : WalkZ triNet.G.Adj (triW x) 0 2 (x + (1 + 0)) :=
+    .cons (b := 1) (by decide) (by simp [triW]) (.cons (b := 2) (by decide) (by simp [triW]) (.nil 2))
+  rcases h with ⟨⟨a, y, hy, hneg⟩, -⟩ | ⟨-, h⟩
+  · have := WalkZ.pot_le (triPot x) (triW_pot x) hy
+    omega
+  · rcases h 2 with ⟨-, hno⟩ | ⟨d, hd, hmem, hlow⟩
+    · exact absurd hwalk (hno _)
+    · have h1 := WalkZ.pot_le (triPot x) (triW_pot x) hmem
+      have h2 := hlow hwalk
+      have h3 : d = x + 1 := by
+        simp only [triPot] at h1
+        simp at h1
+        omega
+      rw [hd, h3]
+
+private theorem triNeg_input (x y : ℤ) :
+    triNet.negIn (triW x) 0 2 = triNet.negIn (triW y) 0 2 := by
+  simp only [Net.negIn]
+  congr 1
+  funext u
+  fin_cases u <;> simp [triW]
+
+/-- With no rounds, negative weights cannot be solved. So `NegSsspBound` has content. -/
+theorem not_negSsspBound_zero : ¬ NegSsspBound (fun _ => 0) := by
+  intro h
+  obtain ⟨C, c, h⟩ := h 1 1
+  obtain ⟨ρ, _, _, σ, P, out, hP⟩ := h 3 1 le_rfl
+  have hv : ∀ x : ℤ, |x| ≤ 5 → triNet.NegValid ((3 + 2) ^ 1) (triW x) := by
+    intro x hx a b _ y hy
+    unfold triW at hy
+    split_ifs at hy
+    · cases hy
+      simpa using hx
+    · cases hy
+      simp
+  have hT : C * (fun _ : ℕ => 0) (3 + 2) * logN 3 ^ c * 1 = 0 := by simp
+  have h₁ := hP triNet (triW 1) 0 triNet_planar triNet_diam (hv 1 (by norm_num))
+  have h₂ := hP triNet (triW 2) 0 triNet_planar triNet_diam (hv 2 (by norm_num))
+  rw [hT] at h₁ h₂
+  obtain ⟨r, g₁, g₂⟩ := exists_good₂ h₁ h₂
+  have e₁ := triNeg_value (not_not.1 g₁)
+  have e₂ := triNeg_value (not_not.1 g₂)
+  have e₁' : out 2 (P.init 2 (triNet.negIn (triW 1) 0 2, r 2)) = some (some (1 + 1)) := e₁
+  have e₂' : out 2 (P.init 2 (triNet.negIn (triW 2) 0 2, r 2)) = some (some (2 + 1)) := e₂
+  rw [triNeg_input 2 1, e₁'] at e₂'
+  simp at e₂'
+
+/-- On the triangle, the arc `0 → 1` has capacity `x` and the arc `1 → 2` capacity `2`. Other arcs
+have capacity `0`. -/
+private def triC (x : ℕ) : Fin 3 → Fin 3 → ℕ := fun a b =>
+  if a = 0 ∧ b = 1 then x else if a = 1 ∧ b = 2 then 2 else 0
+
+private theorem tri_nbr0 : triNet.G.neighborFinset 0 = {1, 2} := by decide
+private theorem tri_nbr1 : triNet.G.neighborFinset 1 = {0, 2} := by decide
+
+/-- A flow of value `x` on this instance. -/
+private def triF (x : ℕ) : Fin 3 → Fin 3 → ℤ :=
+  ![![0, x, 0], ![-x, 0, x], ![0, -x, 0]]
+
+private theorem triF_isFlow {x : ℕ} (hx : x ≤ 2) : triNet.IsFlow (triC x) 0 2 (triF x) x where
+  skew a b _ := by
+    fin_cases a <;> fin_cases b <;> simp [triF]
+  cap a b _ := by
+    fin_cases a <;> fin_cases b <;> simp [triF, triC]
+    omega
+  cons v h0 h2 := by
+    obtain rfl : v = 1 := by
+      revert h0 h2
+      revert v
+      decide
+    rw [tri_nbr1, Finset.sum_pair (by decide)]
+    simp [triF]
+  val := by
+    rw [tri_nbr0, Finset.sum_pair (by decide)]
+    simp [triF]
+
+/-- A correct answer on this instance reports the value `x` at the node `2`. -/
+private theorem triFlow_value {x : ℕ} (hx : x ≤ 2) {r : Fin 3 → ℕ × (Fin 3 → ℤ)}
+    (h : triNet.FlowSpec (triC x) 0 2 r) : (r 2).1 = x := by
+  obtain ⟨β, hβ, hflow, hmax⟩ := h
+  have h1 : (x : ℤ) ≤ β := hmax _ _ (triF_isFlow hx)
+  have h2 := hflow.val
+  rw [tri_nbr0, Finset.sum_pair (by decide)] at h2
+  have h3 := hflow.cap 0 1 (by decide)
+  have h4 := hflow.cap 0 2 (by decide)
+  simp only [triC] at h3 h4
+  simp at h3 h4
+  rw [hβ]
+  omega
+
+private theorem triFlow_input (x y : ℕ) :
+    triNet.flowIn (triC x) 0 2 2 = triNet.flowIn (triC y) 0 2 2 := by
+  simp only [Net.flowIn]
+  congr 1
+  funext u
+  fin_cases u <;> simp [triC]
+
+/-- With no rounds, maximum flow cannot be solved. So `MaxFlowBound` has content. -/
+theorem not_maxFlowBound_zero : ¬ MaxFlowBound (fun _ => 0) := by
+  intro h
+  obtain ⟨C, c, h⟩ := h 1 1
+  obtain ⟨ρ, _, _, σ, P, out, hP⟩ := h 3 1 le_rfl
+  have hv : ∀ x : ℕ, x ≤ 2 → ∀ a b, triNet.G.Adj a b → triC x a b ≤ (3 + 2) ^ 1 := by
+    intro x hx a b _
+    simp only [triC]
+    split_ifs <;> omega
+  have hT : C * (fun _ : ℕ => 0) (3 + 2) * logN 3 ^ c * 1 = 0 := by simp
+  have hne : (0 : Fin 3) ≠ 2 := by decide
+  have h₁ := hP triNet (triC 1) 0 2 triNet_planar triNet_diam (hv 1 (by norm_num)) hne
+  have h₂ := hP triNet (triC 2) 0 2 triNet_planar triNet_diam (hv 2 le_rfl) hne
+  rw [hT] at h₁ h₂
+  obtain ⟨r, g₁, g₂⟩ := exists_good₂ h₁ h₂
+  have e₁ := triFlow_value (by norm_num) (not_not.1 g₁)
+  have e₂ := triFlow_value le_rfl (not_not.1 g₂)
+  have e₁' : (out 2 (P.init 2 (triNet.flowIn (triC 1) 0 2 2, r 2))).1 = 1 := e₁
+  have e₂' : (out 2 (P.init 2 (triNet.flowIn (triC 2) 0 2 2, r 2))).1 = 2 := e₂
+  rw [triFlow_input 2 1, e₁'] at e₂'
+  omega
+
+end NoRounds
 
 end Congest
 

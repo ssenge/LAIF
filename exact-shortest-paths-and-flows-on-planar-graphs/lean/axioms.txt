@@ -159,3 +159,6 @@
 'SsspFlow.Congest.labelsOK_triNet' depends on axioms: [propext, Classical.choice, Quot.sound]
 'SsspFlow.Congest.LabelHypothesis' depends on axioms: [propext, Classical.choice, Quot.sound]
 'SsspFlow.Congest.ExactSsspBound' depends on axioms: [propext, Classical.choice, Quot.sound]
+'SsspFlow.Congest.exists_good₂' depends on axioms: [propext, Classical.choice, Quot.sound]
+'SsspFlow.Congest.not_negSsspBound_zero' depends on axioms: [propext, Classical.choice, Quot.sound]
+'SsspFlow.Congest.not_maxFlowBound_zero' depends on axioms: [propext, Classical.choice, Quot.sound]
