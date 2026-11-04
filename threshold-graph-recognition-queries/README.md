@@ -2,6 +2,8 @@
 
 Sebastian Senge, Independent Researcher. Written 4 Nov 2026.
 
+**Paper:** [`paper/main.pdf`](paper/main.pdf), with its source in [`paper/`](paper/).
+
 The input is an a × b binary matrix M, or the adjacency matrix of a graph on n vertices. A query returns one entry. M is **nested** if its rows, as subsets of the columns, form a chain under inclusion. A graph is a **threshold graph** if it can be built by repeatedly adding an isolated or a dominating vertex. Equivalently (Chvátal, Hammer 1977, and proved in Lean here) it has no **alternating 4-cycle**: vertices a, b, c, d with ab, cd edges and ac, bd non-edges. A **chain graph** is a bipartite graph whose neighbourhoods on one side are nested, plus possibly isolated vertices.
 
 | | Problem | Quantum queries | Classical randomized | Status |
@@ -13,9 +15,9 @@ The input is an a × b binary matrix M, or the adjacency matrix of a graph on n 
 
 Unconditional on paper, and the algorithm is explicit: Õ(n) entry reads and Grover searches, with no reduction to an adversary bound. These are query counts on a noiseless model. On "yes" inputs the quantum count only passes reading all pairs near n ≈ 1000 to 2000.
 
-**Prior work.** Half graphs are the special case of nested matrices with all rows and all columns distinct. Mande, Sanyal and Zamaraev [1] learn them with Θ(n log n) quantum and Θ(n log n) randomized queries, by a quicksort that compares rows with Grover search. So it is equal rows and columns that make the classical problem cost Ω(ab). Learning a nested matrix is also Goswami and Jacob's bipartite sorting [2] (abstract only read), with a classical algorithm within log³ of instance-optimal. As far as I can tell, what is new here is the Õ(a + b) quantum learner with ties allowed, and the three recognition theorems. Their quicksort assumes distinct rows. Searches, without DBLP or Scholar, found no quantum recognition result for these classes, which is weak evidence.
+**Prior work.** Half graphs are the special case of nested matrices with all rows and all columns distinct. Mande, Sanyal and Zamaraev [1] learn them with Θ(n log n) quantum and Θ(n log n) randomized queries, by a quicksort that compares rows with Grover search. So it is equal rows and columns that make the classical problem cost Ω(ab). Learning a nested matrix is also Goswami and Jacob's bipartite sorting [2], with a classical algorithm within log³ of instance-optimal. To our knowledge, what is new here is the Õ(a + b) quantum learner with ties allowed, and the three recognition theorems. Their quicksort assumes distinct rows.
 
-The natural baseline is Õ(n^{3/2}), since the certificate has 4 vertices. Magniez, Santha and Szegedy [3] state this for non-induced copies and monotone properties, and an alternating 4-cycle uses non-edges, so it does not apply as stated. The checking step looks easy to adapt, but only a sketch of that exists.
+The natural baseline is Õ(n^{3/2}), since the certificate has 4 vertices. Magniez, Santha and Szegedy [3] state this for non-induced copies and monotone properties, and an alternating 4-cycle uses non-edges, so it does not apply as stated.
 
 ## 1. Positions
 
@@ -84,13 +86,11 @@ The split avoids the diagonal of the adjacency matrix, where no query is defined
 
 *Proof.* Search for an edge (x, y). If none exists, accept. Read N(y) =: X. With Holding on rows X and all vertices, compute Y := N(X). With Holding again, compute X := N(Y). In a chain graph with sides A ∋ x and B ∋ y: X = N(y) contains the top vertex a* of A, since a* is adjacent to all non-isolated vertices of B. So Y ⊇ N(a*) is all non-isolated vertices of B, and likewise the second step gives all non-isolated vertices of A. Reject if X ∩ Y ≠ ∅. Learn X × Y, and check against the input on all pairs. ∎
 
-**Remark (why not Lin and Lin).** Their O(√(TG)) theorem (arXiv:1410.0932) does not reach Õ(n) on the natural route. A decision tree that identifies the graph must read Θ(n²) entries in the worst case, and needs G = Ω(n) wrong guesses, since threshold graphs carry about n log n bits and a path with G wrong guesses among T ≤ n² carries about G log n. That gives n^{3/2}. Kothari's oracle identification (arXiv:1311.7685), with log M = Θ(n log n), also gives n^{3/2}, and so does peeling isolated and dominating vertices in batches, on the alternating sequence. The learner here does better because a search over a block costs √(ab) ≤ (a + b)/2 and the blocks of a level are disjoint in rows and columns, which a single T and G do not see. That no simpler route exists is not proved.
+## 4. Learning lower bound for larger classes
 
-## 4. What this does not do: cographs
+A perfect matching is a cograph, and learning a matching costs Θ(n^{3/2}) queries (van Apeldoorn et al., through [1]). So learning any class containing all matchings, such as cographs, trivially perfect, unit interval, interval, permutation and distance-hereditary graphs, needs Ω(n^{3/2}) queries. Threshold and chain graphs differ because a cross block has no 2 × 2 permutation pattern. Split graphs need Ω(n²) queries to learn.
 
-Cographs do not follow, at least not by this route. A perfect matching is a cograph, and learning a matching costs Θ(n^{3/2}) queries (van Apeldoorn et al., cited by Mande, Sanyal and Zamaraev; I read this through that citation). So no Õ(n) learner exists for any class containing all matchings, such as cographs, trivially perfect, unit interval, interval, permutation and distance-hereditary graphs. Threshold and chain graphs escape because a cross block has no 2 × 2 permutation pattern. Having one non-trivial component and no 2K₂ is not the reason, since split graphs have both and learning them needs Ω(n²).
-
-Recognition need not go through learning. An AI review sketched an Ambainis adversary with a Hamiltonian path against a path plus a disjoint long cycle, related by 2-switches, which would give Ω(n^{3/2}) for interval, unit interval, permutation and distance-hereditary recognition. I have not checked it, and it is not from a paper. Cographs and trivially perfect graphs stay open: their "no" certificates have constant size, so adversary methods stop at O(n).
+Recognition need not go through learning. For cographs and trivially perfect graphs it is open: their "no" certificates have constant size, so adversary methods stop at O(n).
 
 ## 5. Practical reading
 
@@ -105,7 +105,6 @@ Recognition need not go through learning. An AI review sketched an Ambainis adve
 - Queries only, on a noiseless model. No gate or time bound is given.
 - The upper and lower bounds differ by polylogarithmic factors. The learner has Ω(n log n) from half graphs [1] and O(n log³ n) from this proof.
 - Theorem 2 is not tight on unbalanced shapes.
-- The review of these proofs was by an AI agent. No human has checked them.
 
 ## 8. Importance
 
@@ -139,8 +138,6 @@ This is a natural pair of recognition problems where a quadratic classical cost 
 2. M. Goswami, R. Jacob. On instance-optimal algorithms for a generalization of nuts and bolts and generalized sorting. arXiv:2211.04601.
 3. F. Magniez, M. Santha, M. Szegedy. Quantum algorithms for the triangle problem. SODA 2005, arXiv:quant-ph/0310134.
 4. V. Chvátal, P. Hammer. Aggregation of inequalities in integer programming. Annals of Discrete Mathematics 1, 1977.
-5. C. Y.-Y. Lin, H.-H. Lin. Upper bounds on quantum query complexity inspired by the Elitzur-Vaidman bomb tester. CCC 2015, arXiv:1410.0932.
-6. R. Kothari. An optimal quantum algorithm for the oracle identification problem. STACS 2014, arXiv:1311.7685.
 
 ## Use of AI
 

@@ -1,0 +1,18 @@
+\begin{tikzpicture}[x=0.42cm,y=-0.42cm]
+  % blocks left after the row maxima of rows 3 and 6
+  \fill[black!12] (0,0) rectangle (4,2);
+  \fill[black!12] (3,3) rectangle (9,5);
+  \fill[black!12] (8,6) rectangle (12,9);
+  \foreach \x in {1,...,11} \draw[faint] (\x,0) -- (\x,9);
+  \foreach \y in {1,...,8} \draw[faint] (0,\y) -- (12,\y);
+  \draw[e] (0,0) rectangle (12,9);
+  \fill[black!45] (0,2) rectangle (12,3);
+  \fill[black!45] (0,5) rectangle (12,6);
+  \node[d,white,minimum size=5pt] at (3.5,2.5) {};
+  \node[d,white,minimum size=5pt] at (8.5,5.5) {};
+  \foreach \i/\l in {0.5/1,2.5/3,5.5/6,8.5/9} \node[lab,left] at (0,\i) {\l};
+  \node[lab,above] at (3.5,0) {$p(3)$};
+  \node[lab,above] at (8.5,0) {$p(6)$};
+  \draw[arc] (-1.7,0) -- node[lab,left] {rows} (-1.7,3);
+  \draw[arc] (5,-1.2) -- node[lab,above] {columns} (8,-1.2);
+\end{tikzpicture}

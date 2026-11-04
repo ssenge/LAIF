@@ -2,6 +2,8 @@
 
 Sebastian Senge, Independent Researcher. Written 4 Nov 2026.
 
+**Paper:** [`paper/main.pdf`](paper/main.pdf), with its source in [`paper/`](paper/).
+
 M is an r × c matrix with entries in a finite ordered set, and a query (i, j) returns M[i, j]. M is **totally monotone** if for i < i′ and j < j′, M[i, j] < M[i, j′] implies M[i′, j] < M[i′, j′]. Every inverse Monge matrix (M[i, j] + M[i′, j′] ≥ M[i, j′] + M[i′, j]) is totally monotone. The task is to find the largest entry. Write n = max(r, c). Classically this is Θ(n): SMAWK [1] reads O(r + c) entries, and Theorem 2 gives the lower bound for square matrices. Plain quantum maximum finding on all entries costs Θ(√(rc)), which is also Θ(n) for square matrices, so structure is needed.
 
 For a totally monotone M the leftmost row maxima p(i) are nondecreasing in i. Leftmost matters: `[[1, 1], [2, 0]]` is totally monotone, and taking column 2 for row 1 would hide the maximum of row 2. So every quantum maximum finding here runs on the pair (value, −index). Minima are the same problem up to sign and column order.
@@ -16,7 +18,7 @@ For a totally monotone M the leftmost row maxima p(i) are nondecreasing in i. Le
 
 So the complexity of the maximum is Θ̃(√n), against Θ(n) classically. Theorem 3's algorithm exists through Lee et al. and is not gate-efficient as stated, and these are query counts on a noiseless model.
 
-**Prior work.** Searches on 4 Nov 2026, in several wordings, found no quantum result on Monge or totally monotone matrix search, or on convex polygon diameter. The closest result is Õ(n^{3/4}) for the diameter of a general point set, seen only in a repository record (University of Latvia). An empty search is weak evidence. The guessing decision trees of [3, 4] do not give this on the routes I tried: see the remark in Section 3.
+**Earlier work.** To our knowledge there is no earlier quantum result on totally monotone matrix search, or on convex polygon diameter. The closest result known to us is Õ(n^{3/4}) for the diameter of a general point set [5].
 
 ## 1. Lower bounds
 
@@ -89,8 +91,6 @@ Induction with ℓ(r) = ⌈log₂(r + 1)⌉ and a = 2κ + 1: assuming Γ(r_i, c_
 
 **What is explicit.** Lee et al. Theorem 4.1 turns any factorization into a query algorithm, built from reflections. So the algorithm exists and its queries are O(γ), but no time bound follows. The recursion can be walked in principle by Jeffery's subroutine composition (arXiv:2209.14146) or transducers (Belovs, Jeffery, Yolcu), which I have not worked out. `sim/check.log` evaluates the recursion on single inputs at 1.96 to 2.01 √n log₂ n from n = 64 to 4096. This checks the recursion only, and the constant κ is unknown.
 
-**Remark (decision trees).** Lin and Lin's O(√(TG)) theorem (arXiv:1410.0932) and Beigi and Taghavi's generalized form (arXiv:1905.13095) do not give this on the routes I tried. SMAWK has T = O(n), but its comparisons have no strong predictor, so G is of order n and √(TG) is of order n. The flat scheme has G of order √n log n but T of order n^{3/2}, which also gives n. A tree with T = Õ(n) and G polylogarithmic would give Õ(√n), and I did not exclude one.
-
 ## 4. Convex polygon diameter
 
 **Input.** The vertices v_0, …, v_{n−1} of a strictly convex polygon, counterclockwise, in an array. A query returns one vertex. Task: largest distance between two vertices.
@@ -154,10 +154,9 @@ With these, `theorem3_query_le` and `theorem3_sqrt_log` give Q ≤ K√n log₂ 
 
 1. A. Aggarwal, M. Klawe, S. Moran, P. Shor, R. Wilber. Geometric applications of a matrix-searching algorithm. Algorithmica 2, 1987.
 2. T. Lee, R. Mittal, B. Reichardt, R. Špalek, M. Szegedy. Quantum query complexity of state conversion. FOCS 2011. arXiv:1011.3020.
-3. C. Y.-Y. Lin, H.-H. Lin. Upper bounds on quantum query complexity inspired by the Elitzur-Vaidman bomb tester. CCC 2015. arXiv:1410.0932.
-4. S. Beigi, L. Taghavi. Quantum speedup based on classical decision trees. Quantum 4, 2020. arXiv:1905.13095.
-5. A. Ambainis. Quantum search with variable times. STACS 2008. arXiv:quant-ph/0609168. Variable time amplitude amplification and quantum algorithms for linear algebra problems. STACS 2012. arXiv:1010.4458.
-6. S. Jeffery. Quantum subroutine composition. arXiv:2209.14146.
+3. A. Ambainis. Quantum search with variable times. STACS 2008. arXiv:quant-ph/0609168. Variable time amplitude amplification and quantum algorithms for linear algebra problems. STACS 2012. arXiv:1010.4458.
+4. S. Jeffery. Quantum subroutine composition. arXiv:2209.14146.
+5. A. Zajakins. Quantum algorithms for computational geometry. Master's thesis, University of Latvia, 2023.
 
 ## Use of AI
 

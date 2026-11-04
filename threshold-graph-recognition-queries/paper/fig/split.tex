@@ -1,0 +1,21 @@
+\begin{tikzpicture}[x=0.5cm,y=-0.5cm]
+  % positions grow to the right (columns) and downwards (rows); an entry is 1 iff p(r) > q(c)
+  \fill[black!6] (0,0) -- (10,0) -- (10,10) -- cycle;
+  \fill[black!35] (0,0) -- (0,10) -- (10,10) -- cycle;
+  \draw[e] (0,0) rectangle (3,3);
+  \draw[e] (3,3) rectangle (6,6);
+  \draw[e] (6,6) rectangle (10,10);
+  \draw[e] (0,0) rectangle (10,10);
+  \draw[line width=1pt] (0,3) -- (10,3);
+  \draw[line width=1pt] (6,0) -- (6,10);
+  \node[lab,left] at (0,1.5) {$R_0$};
+  \node[lab,left] at (0,6.5) {$R_1$};
+  \node[lab,above] at (3,0) {$C_1$};
+  \node[lab,above] at (8,0) {$C_0$};
+  \node[lab] at (8,1.5) {recorded $0$};
+  \node[lab] at (1.5,1.0) {$B_1$};
+  \node[lab] at (4.6,4.0) {$B_2$};
+  \node[lab] at (8.6,7.2) {$B_3$};
+  \node[lab,right] at (10,3) {$q(w)$};
+  \node[lab,below] at (6,10) {$p(x)$};
+\end{tikzpicture}
