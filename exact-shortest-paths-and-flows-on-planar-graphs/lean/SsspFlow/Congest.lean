@@ -14,6 +14,10 @@ program.
 
 * `Algorithm.widen`, `Algorithm.seq`: wider messages and sequential composition, with their
   semantics `run_widen`, `run_seq_lt`, `run_seq`.
+* `Algorithm.keep`: inputs read from richer data that stays in the state (`run_keep`).
+* `Algorithm.stopAt`: a run that ends after `T` rounds (`run_stopAt`).
+* `Algorithm.exch`: one round in which every node tells its neighbours a number (`run_exch`).
+* `Algorithm.iter`: an algorithm repeated with new inputs every `T` rounds (`run_iter`).
 * `Algorithm.run_congr`: the state of a node after `t` rounds depends only on the inputs within `t`
   hops and on the edges at nodes within `t - 1` hops.
 * `Net V`: a simple graph on the identifiers whose nodes list their neighbours in rotation order, and
@@ -122,6 +126,167 @@ theorem run_seq : ∀ t,
       some ((A.seq T f A').send w ((A.seq T f A').run G inp (T + t) w) v) else none) = _
     rw [ih]
     rfl
+
+/-- Run `A` on inputs read from `J`, with the input kept in the state. -/
+def keep (A : Algorithm V I σ B) (g : V → J → I) : Algorithm V J (J × σ) B where
+  init v j := (j, A.init v (g v j))
+  send v s w := A.send v s.2 w
+  step v s m := (s.1, A.step v s.2 m)
+  out v s := A.out v s.2
+
+theorem run_keep (A : Algorithm V I σ B) (g : V → J → I) (G : SimpleGraph V) [DecidableRel G.Adj]
+    (inp : V → J) : ∀ t,
+    (A.keep g).run G inp t = fun v => (inp v, A.run G (fun v => g v (inp v)) t v)
+  | 0 => rfl
+  | t + 1 => by
+    funext v
+    have ih := run_keep A g G inp t
+    show (A.keep g).step v ((A.keep g).run G inp t v) (fun w => if G.Adj w v then
+      some ((A.keep g).send w ((A.keep g).run G inp t w) v) else none) = _
+    rw [ih]
+    rfl
+
+/-- Run `A` for `T` rounds and keep the state from then on. -/
+def stopAt (A : Algorithm V I σ B) (T : ℕ) : Algorithm V I (ℕ × σ) B where
+  init v i := (0, A.init v i)
+  send v s w := A.send v s.2 w
+  step v s m := if s.1 < T then (s.1 + 1, A.step v s.2 m) else s
+  out v s := A.out v s.2
+
+theorem run_stopAt (A : Algorithm V I σ B) (T : ℕ) (G : SimpleGraph V) [DecidableRel G.Adj]
+    (inp : V → I) : ∀ t,
+    (A.stopAt T).run G inp t = fun v => (min t T, A.run G inp (min t T) v)
+  | 0 => by
+    funext v
+    simp only [Nat.zero_min]
+    rfl
+  | t + 1 => by
+    funext v
+    have ih := run_stopAt A T G inp t
+    show (A.stopAt T).step v ((A.stopAt T).run G inp t v) (fun w => if G.Adj w v then
+      some ((A.stopAt T).send w ((A.stopAt T).run G inp t w) v) else none) = _
+    rw [ih]
+    show (if min t T < T then _ else _) = _
+    by_cases h : t < T
+    · rw [ite_eq_left (by omega), min_eq_left h.le, min_eq_left (by omega : t + 1 ≤ T)]
+      rfl
+    · rw [ite_eq_right (by omega), min_eq_right (by omega : T ≤ t),
+        min_eq_right (by omega : T ≤ t + 1)]
+
+/-- A number as a message: its lowest `B` bits. -/
+def toMsg (B x : ℕ) : Msg B := fun i => x.testBit i
+
+theorem toMsg_inj {B x y : ℕ} (hx : x < 2 ^ B) (hy : y < 2 ^ B) (h : toMsg B x = toMsg B y) :
+    x = y := by
+  refine Nat.eq_of_testBit_eq fun i => ?_
+  by_cases hi : i < B
+  · exact congrFun h ⟨i, hi⟩
+  · have hB : 2 ^ B ≤ 2 ^ i := Nat.pow_le_pow_right (by norm_num) (by omega)
+    rw [Nat.testBit_lt_two_pow (hx.trans_le hB), Nat.testBit_lt_two_pow (hy.trans_le hB)]
+
+open Classical in
+/-- The number below `2 ^ B` that a message encodes. -/
+noncomputable def ofMsg {B : ℕ} (m : Msg B) : ℕ :=
+  if h : ∃ x, x < 2 ^ B ∧ toMsg B x = m then h.choose else 0
+
+theorem ofMsg_toMsg {B x : ℕ} (hx : x < 2 ^ B) : ofMsg (toMsg B x) = x := by
+  have h : ∃ y, y < 2 ^ B ∧ toMsg B y = toMsg B x := ⟨x, hx, rfl⟩
+  rw [ofMsg, dite_eq_left h]
+  exact toMsg_inj h.choose_spec.1 hx h.choose_spec.2
+
+/-- One round in which every node tells its neighbours a number. -/
+noncomputable def exch (V : Type*) (B : ℕ) : Algorithm V ℕ (ℕ × (V → Option ℕ)) B where
+  init _ x := (x, fun _ => none)
+  send _ s _ := toMsg B s.1
+  step _ s m := (s.1, fun u => (m u).map ofMsg)
+  out _ _ := true
+
+/-- After the exchange a node knows the numbers of its neighbours, if they fit into `B` bits. -/
+theorem run_exch (G : SimpleGraph V) [DecidableRel G.Adj] (inp : V → ℕ) (h : ∀ v, inp v < 2 ^ B)
+    (v : V) :
+    (exch V B).run G inp 1 v = (inp v, fun u => if G.Adj u v then some (inp u) else none) := by
+  show (inp v, fun u => (if G.Adj u v then some (toMsg B (inp u)) else none).map ofMsg) = _
+  congr 1
+  funext u
+  split_ifs <;> simp [ofMsg_toMsg (h u)]
+
+/-- Repeat `A` for `T` rounds at a time. Its inputs are read from data in `J`, and after `T` rounds
+`u` computes new data from the old data and the state. -/
+def iter (A : Algorithm V I σ B) (T : ℕ) (g : V → J → I) (u : V → J → σ → J) :
+    Algorithm V J (J × ℕ × σ) B where
+  init v j := (j, 0, A.init v (g v j))
+  send v s w := A.send v s.2.2 w
+  step v s m :=
+    if s.2.1 + 1 = T then
+      (u v s.1 (A.step v s.2.2 m), 0, A.init v (g v (u v s.1 (A.step v s.2.2 m))))
+    else (s.1, s.2.1 + 1, A.step v s.2.2 m)
+  out v s := A.out v s.2.2
+
+/-- The data of `iter` after `k` repetitions. -/
+def iterData (A : Algorithm V I σ B) (T : ℕ) (g : V → J → I) (u : V → J → σ → J)
+    (G : SimpleGraph V) [DecidableRel G.Adj] (j₀ : V → J) : ℕ → V → J
+  | 0 => j₀
+  | k + 1 => fun v =>
+    u v (iterData A T g u G j₀ k v)
+      (A.run G (fun v => g v (iterData A T g u G j₀ k v)) T v)
+
+/-- After `k` repetitions and `t` further rounds, `iter` holds the data of the repetition `k` and the
+state of `A` after `t` rounds on these data. -/
+theorem run_iter (A : Algorithm V I σ B) {T : ℕ} (g : V → J → I) (u : V → J → σ → J)
+    (G : SimpleGraph V) [DecidableRel G.Adj] (j₀ : V → J) (hT : 0 < T) (k t : ℕ) (ht : t < T) :
+    (A.iter T g u).run G j₀ (k * T + t) = fun v =>
+      (iterData A T g u G j₀ k v, t,
+        A.run G (fun v => g v (iterData A T g u G j₀ k v)) t v) := by
+  have succ_run : ∀ r t' k', (A.iter T g u).run G j₀ r = (fun v =>
+      (iterData A T g u G j₀ k' v, t',
+        A.run G (fun v => g v (iterData A T g u G j₀ k' v)) t' v)) → ∀ v,
+      (A.iter T g u).run G j₀ (r + 1) v =
+        if t' + 1 = T then
+          (u v (iterData A T g u G j₀ k' v)
+            (A.run G (fun v => g v (iterData A T g u G j₀ k' v)) (t' + 1) v), 0,
+            A.init v (g v (u v (iterData A T g u G j₀ k' v)
+              (A.run G (fun v => g v (iterData A T g u G j₀ k' v)) (t' + 1) v))))
+        else (iterData A T g u G j₀ k' v, t' + 1,
+          A.run G (fun v => g v (iterData A T g u G j₀ k' v)) (t' + 1) v) := by
+    intro r t' k' h v
+    show (A.iter T g u).step v ((A.iter T g u).run G j₀ r v) (fun w => if G.Adj w v then
+      some ((A.iter T g u).send w ((A.iter T g u).run G j₀ r w) v) else none) = _
+    rw [h]
+    rfl
+  have all_t : ∀ k', (A.iter T g u).run G j₀ (k' * T) = (fun v =>
+      (iterData A T g u G j₀ k' v, 0,
+        A.run G (fun v => g v (iterData A T g u G j₀ k' v)) 0 v)) → ∀ t', t' < T →
+      (A.iter T g u).run G j₀ (k' * T + t') = fun v =>
+      (iterData A T g u G j₀ k' v, t',
+        A.run G (fun v => g v (iterData A T g u G j₀ k' v)) t' v) := by
+    intro k' h0 t'
+    induction t' with
+    | zero => exact fun _ => h0
+    | succ t' ih =>
+      intro ht'
+      funext v
+      have := succ_run _ t' k' (ih (by omega)) v
+      rw [ite_eq_right (by omega)] at this
+      exact this
+  have all_k : ∀ k', (A.iter T g u).run G j₀ (k' * T) = (fun v =>
+      (iterData A T g u G j₀ k' v, 0,
+        A.run G (fun v => g v (iterData A T g u G j₀ k' v)) 0 v)) := by
+    intro k'
+    induction k' with
+    | zero =>
+      rw [Nat.zero_mul]
+      rfl
+    | succ k' ih =>
+      funext v
+      have hr : (k' + 1) * T = k' * T + (T - 1) + 1 := by
+        rw [Nat.succ_mul]
+        omega
+      rw [hr]
+      have := succ_run _ (T - 1) k' (all_t k' ih (T - 1) (by omega)) v
+      rw [ite_eq_left (by omega)] at this
+      rw [this, Nat.sub_add_cancel hT]
+      rfl
+  exact all_t k (all_k k) t ht
 
 /-- **Locality.** The state of `v` after `t` rounds depends only on the inputs within `t` hops and
 on the edges at nodes within `t - 1` hops. -/

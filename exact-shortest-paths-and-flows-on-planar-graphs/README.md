@@ -115,7 +115,7 @@ non-negative weights)".
 
 | Category | Problem | Before | After | Scope | Status |
 |---|---|---|---|---|---|
-| Distributed algorithms, CONGEST | Exact single-source shortest paths on directed planar networks, nonnegative weights | Õ(D²) [8] | Õ(D), given the Label Hypothesis stated in this folder, which is modelled on the labels of [1]; this folder completes the proof of [1], with a repair of one lemma | Directed planar networks, polynomial integer weights; deterministic relative to the labels | Claim; the virtual-source lemma and the discretized boosting in Lean; paper arXiv:2611.02256 |
+| Distributed algorithms, CONGEST | Exact single-source shortest paths on directed planar networks, nonnegative weights | Õ(D²) [8] | Õ(D), given the Label Hypothesis stated in this folder, which is modelled on the labels of [1]; this folder completes the proof of [1], with a repair of one lemma | Directed planar networks, polynomial integer weights; deterministic relative to the labels | Claim; in Lean the virtual-source lemma, the discretized boosting, and the round bound from the Label Hypothesis and two cited results; paper arXiv:2611.02256 |
 | Distributed algorithms, CONGEST | Exact maximum st-flow on directed planar networks, with the flow on every edge | Õ(D²) [9] | min{Õ(D²), D·n^{o(1)}}; Õ(D) when s and t lie on a common face; Õ(D) with high probability in a later note | Given the Label Hypothesis | Claim; the dual weighting lemma in Lean |
 | Distributed algorithms, CONGEST | Exact minimum st-cut and minimum cut value on undirected planar networks | (1 − o(1))-approximation in Õ(D) [18]; exact in Õ(D²) [9] | Õ(D), given the Label Hypothesis, with two repairs of [18]: its auxiliary graph at the terminals, and its recursion, which as we read it can miss the minimum cut | Undirected planar networks | Claim; the recursion argument in Lean |
 | Distributed algorithms, CONGEST | Negative weights, minimum arborescences and replacement paths on planar digraphs | D·n^{o(1)} for negative weights through a general reduction; no bound in D alone known to us for the others | Õ(D) with high probability for negative weights and for arborescences, given the Label Hypothesis; replacement paths exactly in Õ(D·min(h, D)) and within 1 + ε in Õ(D/ε) | Planar digraphs | Claims in notes; cores in Lean |
@@ -480,10 +480,10 @@ standard axioms (`propext`, `Classical.choice`, `Quot.sound`). There is no `sorr
   separation property of the child bags enters as a closure hypothesis on arcs. The region
   form of Lemma 16′ is not formalized.
 - `lean/SsspFlow/Boost.lean`, theorem `SsspFlow.Boost.Run.exact`: the discretized boosting of
-  [3] with base $\ell_i+\eta$. Lengths stay nonnegative (`Run.len_nonneg`), every vertex
-  contracts by a factor $1-1/\alpha$ up to an additive $(n-1)\eta$, and the final rounding is
-  exact once the stated bounds hold. `c1_negative` is the one-arc instance where base $\ell_i$
-  gives $-\eta$.
+  [3] with base $\ell_i+\eta$, for a run of $J$ iterations. Lengths stay nonnegative
+  (`Run.len_nonneg`), every vertex contracts by a factor $1-1/\alpha$ up to an additive
+  $(n-1)\eta$, and the final rounding is exact once the stated bounds hold. `c1_negative` is the
+  one-arc instance where base $\ell_i$ gives $-\eta$.
 
 - `lean/SsspFlow/LemmaVRegion.lean`, theorem `SsspFlow.RHierarchy.lemmaV`: Lemma V for region
   bags. Bags carry arc sets, and an arc of a bag between two non-hubs lies in a common child.
@@ -548,8 +548,11 @@ standard axioms (`propext`, `Classical.choice`, `Quot.sound`). There is no `sorr
 - `lean/SsspFlow/Congest.lean`: algorithms in this model, with exactly $B$ bits per edge, direction
   and round, and fixed before the network.
   - `run_widen`, `run_seq_lt` and `run_seq` give the semantics of wider messages and of sequential
-    composition. `run_congr` says that after $t$ rounds a node depends only on the inputs within
-    $t$ hops.
+    composition. `run_keep`, `run_stopAt` and `run_iter` do the same for keeping an input, for
+    stopping after a number of rounds and for repeating an algorithm on data that change between
+    the repetitions. `run_exch` is one round in which every node tells its neighbours a number of
+    at most $B$ bits. `run_congr` says that after $t$ rounds a node depends only on the inputs
+    within $t$ hops.
   - `Net` is a graph with rotation lists, and `toRot` is its rotation system on the darts of the
     graph (`tail_eq_iff`, `toRot_connected`). `triNet_planar` is an instance.
 - `lean/SsspFlow/LabelHypothesis.lean`: statements in this model.
@@ -561,13 +564,30 @@ standard axioms (`propext`, `Classical.choice`, `Quot.sound`). There is no `sorr
   - The results of the literature that are used are stated as propositions and not proved
     (`RealizationBox`, `DistanceLabelBox`, `FaceIdBox`, `EmbeddingBox`, `AggBox`, `SmoothingBox`,
     `NegReduction`). `ExactSsspBound`, `NegSsspBound` and `MaxFlowBound` are the round bounds of
-    Theorems A, B and C as definitions, and no theorem here asserts them. `not_negSsspBound_zero` and
-    `not_maxFlowBound_zero` show that the two randomized definitions fail with no rounds.
+    Theorems A, B and C as definitions. No theorem here asserts `NegSsspBound` or `MaxFlowBound`.
+    `not_negSsspBound_zero` and `not_maxFlowBound_zero` show that the two randomized definitions
+    fail with no rounds.
+- `lean/SsspFlow/LabelOracle.lean`, theorem `approxOracle`: `LabelHypothesis` and `AggBox` give a
+  $(1+1/e)$-approximate oracle for shortest paths from a virtual source, with polynomial lengths and
+  offsets, in $\tilde O(De)$ rounds and with words of polylogarithmically many bits. One aggregation
+  over the subgraphs of all bags computes the query of Lemma V (`labelAnswer_eq`). Unreachable nodes
+  are found by replacing $\infty$ with a large number (`capped_bounds`).
+- `lean/SsspFlow/ExactSssp.lean`, theorem `exactSsspBound`: `LabelHypothesis`, `AggBox` and
+  `SmoothingBox` give `ExactSsspBound`, that is exact distances and the parents of a shortest-path
+  forest in $\tilde O(D)$ rounds, with words of polylogarithmically many bits, by one fixed algorithm
+  per $n$ and $D$ on all planar networks of diameter at most $D$. Lengths and offsets are in
+  $\{0,\dots,(n+2)^K,\infty\}$.
+  - Lengths are scaled to $(n+1)\ell+1$ (`walk_scale`, `scale_top`, `scale_finite`). This gives a
+    strict decrease along parents (`exactSpec_of_ndsrc`).
+  - The iterations stay in natural numbers (`itSeq`). `it_main` applies `Boost.Run.exact` to them,
+    and `it_bounds` shows that their lengths stay polynomial.
+  - `exactAlg` is the algorithm. `itRel_iter` shows that the nodes hold these iterations, and
+    `exactAlg_ok` is its correctness.
 
-Not formalized: the CONGEST algorithms and their round counts, planarity and the diameter
-bound of $\hat G$, the decomposition, the construction of the tiles and the rest of Lemma 14′, and
-Lemmas R5 and R7. Of Theorem D, only the recursion argument of Lemma S2 is formalized; Lemmas N, R,
-O and S1 are on paper.
+Not formalized: the proofs of `LabelHypothesis` and of the propositions above, the CONGEST algorithms
+and round counts of Theorems B and C, planarity and the diameter bound of $\hat G$, the decomposition,
+the construction of the tiles and the rest of Lemma 14′, and Lemmas R5 and R7. Of Theorem D, only the
+recursion argument of Lemma S2 is formalized; Lemmas N, R, O and S1 are on paper.
 
 ## Numerical checks (`sim/`)
 

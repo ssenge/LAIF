@@ -154,6 +154,10 @@ Expected output for each: `propext`, `Classical.choice`, `Quot.sound` (or a subs
 #print axioms Cslib.Congest.Algorithm.run_seq_lt
 #print axioms Cslib.Congest.Algorithm.run_seq
 #print axioms Cslib.Congest.Algorithm.run_congr
+#print axioms Cslib.Congest.Algorithm.run_keep
+#print axioms Cslib.Congest.Algorithm.run_stopAt
+#print axioms Cslib.Congest.Algorithm.run_exch
+#print axioms Cslib.Congest.Algorithm.run_iter
 #print axioms SsspFlow.Congest.Net.tail_eq_iff
 #print axioms SsspFlow.Congest.Net.toRot_connected
 #print axioms SsspFlow.Congest.triNet_planar
@@ -167,3 +171,12 @@ Expected output for each: `propext`, `Classical.choice`, `Quot.sound` (or a subs
 #print axioms SsspFlow.Congest.exists_good₂
 #print axioms SsspFlow.Congest.not_negSsspBound_zero
 #print axioms SsspFlow.Congest.not_maxFlowBound_zero
+#print axioms SsspFlow.Congest.labelAggIn_valid
+#print axioms SsspFlow.Congest.labelAnswer_eq
+#print axioms SsspFlow.Congest.capped_bounds
+#print axioms SsspFlow.Congest.approxOracle
+#print axioms SsspFlow.Congest.exactSpec_of_ndsrc
+#print axioms SsspFlow.Congest.it_main
+#print axioms SsspFlow.Congest.itRel_iter
+#print axioms SsspFlow.Congest.exactAlg_ok
+#print axioms SsspFlow.Congest.exactSsspBound
