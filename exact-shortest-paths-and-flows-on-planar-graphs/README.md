@@ -499,11 +499,25 @@ standard axioms (`propext`, `Classical.choice`, `Quot.sound`). There is no `sorr
     and reversing the cycle swaps the sides (`mem_outside_reverseCycle_iff`).
   - `triangle` is an instance with a dart on each side, so these statements are not vacuous.
   - Not here: that a side is connected, which side is bounded, and any embedding in the plane.
+- `lean/SsspFlow/Splice.lean`: splitting a rotation system at a set of corners, with no drawing.
+  `firstReturn f S` is the first return of a permutation to a set. `split` closes the rotation
+  at the corners of $\Gamma$, and `skeleton` is the hypermap on $\Gamma$ of the first returns of
+  rotation and face. $\psi$ (`psi`) is their product.
+  - `genus_split` is the identity
+    $g(G)+C(P)+C(\mathrm{skeleton})=g(P)+g(\mathrm{skeleton})+C(G)+\mathrm{orb}(\psi)$, with $P$ the
+    split system, $g$ the genus and $C$ the number of components.
+  - The components of $P$ are the tiles of Lemma 14′ (`gcomp_split_iff`). For a planar connected
+    system and a nonempty connected $\Gamma$, $P$ is planar with exactly one $\psi$-orbit per tile
+    (`split_planar`). This is (T3) in combinatorial form.
+  - `glue_planar` and `replace_planar` replace the tiles by planar maps with the same ports in the
+    same cyclic order and keep planarity. This is Lemma R3 in combinatorial form.
+  - `triangle_split_two_tiles` and `triangle_replace` are instances. The instance of the
+    replacement has a map replacing itself.
 
 Not formalized: the CONGEST algorithms and their round counts, planarity and the diameter
-bound of $\hat G$, the decomposition, Lemma 14′ and everything else in the repair that uses
-planarity (Lemmas R3, R5, R7, and the Monge condition). Of Theorem D, only the recursion
-argument of Lemma S2 is formalized; Lemmas N, R, O and S1 are on paper.
+bound of $\hat G$, the decomposition, the construction of the tiles and the rest of Lemma 14′,
+Lemmas R5 and R7, and the Monge condition. Of Theorem D, only the recursion argument of Lemma S2
+is formalized; Lemmas N, R, O and S1 are on paper.
 
 ## Numerical checks (`sim/`)
 

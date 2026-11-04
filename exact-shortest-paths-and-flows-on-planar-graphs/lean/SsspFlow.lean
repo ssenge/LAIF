@@ -11,3 +11,4 @@ import SsspFlow.Arborescence
 import SsspFlow.Replacement
 import SsspFlow.Recursion
 import SsspFlow.PlanarMap
+import SsspFlow.Splice
