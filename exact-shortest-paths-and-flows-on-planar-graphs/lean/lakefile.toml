@@ -12,3 +12,6 @@ name = "SsspFlow"
 [[lean_lib]]
 name = "FourColor"
 leanOptions = { autoImplicit = false }
+
+[[lean_lib]]
+name = "Cslib"

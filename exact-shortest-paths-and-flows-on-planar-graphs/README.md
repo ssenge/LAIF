@@ -290,6 +290,11 @@ Lemma V solves in $\tilde O(D)$. In [6], the term $\sqrt n+D$ comes only from si
 minor-aggregation steps. On planar networks these cost $\tilde O(D)$ through low-congestion
 shortcuts [9, Cor. 4.6, Lemma 4.8]. Negative cycles are already reported by [6, Thm 60].
 
+The reduction uses [6, Cor. 33]. As we read its base case, two sets of one recursion level can get
+equal labels, which hints at a possible gap in its proof. A leader identifier in the label closes
+this, see Section 8 of [`notes/NEGATIVE.md`](notes/NEGATIVE.md), where the paper is cited as [3].
+We use the corollary in that form, and the statement of [6, Thm 2] as it stands.
+
 ### Lemma D, Theorem C and Theorem C′ (maximum flow)
 
 The bound of Theorem C below is that of the paper. [`notes/NEGATIVE.md`](notes/NEGATIVE.md) claims $\tilde O(D)$ with high probability.
@@ -416,7 +421,8 @@ Beyond the results cited in the proofs, these enter as black boxes:
 - **(G3) Realization**, [10, Thm 1]. It gives existence only, so a bag centre searches
   exhaustively, which takes exponential local time (CONGEST does not count it).
 - **(G4)** Distances in a graph drawn in a disk satisfy the Monge condition in boundary order.
-  This is standard, and the notes give the proof.
+  This is standard. The notes give the proof, and `lean/SsspFlow/Crossing.lean` proves it for
+  rotation systems.
 - **(G5) Distance oracles** for planar digraphs [13], as used in [1, Lemma 11].
 - **(G6) Face identifiers** in $\tilde O(D)$ rounds [9, Lemma 5.11].
 
@@ -512,11 +518,44 @@ standard axioms (`propext`, `Classical.choice`, `Quot.sound`). There is no `sorr
     same cyclic order and keep planarity. This is Lemma R3 in combinatorial form.
   - `triangle_split_two_tiles` and `triangle_replace` are instances. The instance of the
     replacement has a map replacing itself.
+- `lean/SsspFlow/Chord.lean`: adding and removing edges of a rotation system, with no drawing.
+  - The transposition lemma: multiplying a permutation by a transposition splits an orbit or
+    merges two (`orb_mul_swap_of_fconnect`, `orb_mul_swap_of_not_fconnect`).
+  - A chord between two corners of one face keeps the genus and splits the face
+    (`genus_chord_of_fconnect`, `fconnect_chord_cases`). A chord between two faces of one
+    component raises the genus by one (`genus_chord_of_not_fconnect`).
+  - A restriction to a set of darts does not raise the genus (`genus_restrict_le`). Two corners of
+    one face of a planar map lie in one face of every connected restriction
+    (`fconnect_predIn_of_fconnect`). Two chords between the same two corners in the same order at
+    both ends raise the genus (`genus_twisted`).
+- `lean/SsspFlow/Crossing.lean`: (G4) for rotation systems. `DiskDrawn` says that darts name corners
+  of one face of a connected planar map, in a given cyclic order. Walks between crossing pairs of
+  corners share a vertex (`DiskDrawn.crossing`), so distances over walks with dart lengths in
+  $[0,\infty]$ satisfy the Monge condition (`DiskDrawn.monge`). `triangle_diskDrawn` is an instance.
+- `lean/Cslib/`: the CONGEST model of a fork of CSLib, vendored unchanged under its Apache-2.0
+  licence with its notices. The source and the commit are in `lean/Cslib/PORTING.md`.
+- `lean/SsspFlow/Congest.lean`: algorithms in this model, with exactly $B$ bits per edge, direction
+  and round, and fixed before the network.
+  - `run_widen`, `run_seq_lt` and `run_seq` give the semantics of wider messages and of sequential
+    composition. `run_congr` says that after $t$ rounds a node depends only on the inputs within
+    $t$ hops.
+  - `Net` is a graph with rotation lists, and `toRot` is its rotation system on the darts of the
+    graph (`tail_eq_iff`, `toRot_connected`). `triNet_planar` is an instance.
+- `lean/SsspFlow/LabelHypothesis.lean`: statements in this model.
+  - `LabelHypothesis`, for one algorithm per $n,W,e,D$ on all planar networks with these
+    parameters, with the word sizes and the rounds as part of the statement. It is stated here, not
+    proved.
+  - `lemmaV_chain₂` and `LabelWitness.query_bound` prove Lemma V for the values that the labels
+    hold. `labelsOK_oneBag` and `labelsOK_triNet` show that correct labels exist on small networks.
+  - The results of the literature that are used are stated as propositions and not proved
+    (`RealizationBox`, `DistanceLabelBox`, `FaceIdBox`, `EmbeddingBox`, `AggBox`, `SmoothingBox`,
+    `NegReduction`). `ExactSsspBound`, `NegSsspBound` and `MaxFlowBound` are the round bounds of
+    Theorems A, B and C as definitions, and no theorem here asserts them.
 
 Not formalized: the CONGEST algorithms and their round counts, planarity and the diameter
-bound of $\hat G$, the decomposition, the construction of the tiles and the rest of Lemma 14′,
-Lemmas R5 and R7, and the Monge condition. Of Theorem D, only the recursion argument of Lemma S2
-is formalized; Lemmas N, R, O and S1 are on paper.
+bound of $\hat G$, the decomposition, the construction of the tiles and the rest of Lemma 14′, and
+Lemmas R5 and R7. Of Theorem D, only the recursion argument of Lemma S2 is formalized; Lemmas N, R,
+O and S1 are on paper.
 
 ## Numerical checks (`sim/`)
 

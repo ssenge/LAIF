@@ -1227,7 +1227,7 @@ theorem mem_inside_reverseCycle_iff (hR : R.Planar) (hconn : R.Connected) (hc : 
 
 section Instance
 
-private theorem fconnect_iff_label {α β : Type*} (f : α → α) (label : α → β)
+theorem fconnect_iff_label {α β : Type*} (f : α → α) (label : α → β)
     (hinv : ∀ x, label (f x) = label x) (hconn : ∀ x y, label x = label y → ∃ n, f^[n] x = y)
     (x y : α) : fconnect f x y ↔ label x = label y := by
   constructor
@@ -1238,7 +1238,7 @@ private theorem fconnect_iff_label {α β : Type*} (f : α → α) (label : α �
   · intro h
     exact fconnect_iff_iterate.2 (hconn x y h)
 
-private theorem fcard_eq_card_image {α β : Type*} [Fintype α] [DecidableEq β] {f : α → α}
+theorem fcard_eq_card_image {α β : Type*} [Fintype α] [DecidableEq β] {f : α → α}
     (hs : ConnectSym (frel f)) (label : α → β) (h : ∀ x y, fconnect f x y ↔ label x = label y) :
     fcard f Set.univ = (Finset.univ.image label).card := by
   have hk : ∀ x ∈ (Set.univ : Set α), ∀ y ∈ (Set.univ : Set α),

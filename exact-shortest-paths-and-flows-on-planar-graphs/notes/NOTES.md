@@ -326,6 +326,10 @@ solves nonnegative SSSP from a virtual source in T(n,D) rounds.
   low-congestion shortcuts ([9, Cor. 4.6], Ghaffari-Haeupler). A minor-aggregation round
   therefore costs Õ(D) ([9, Lemma 4.8]).
 
+**[6, Cor. 33].** As we read its base case, two sets of one recursion level can get equal labels,
+which hints at a possible gap in its proof. A leader identifier in the label closes this
+(`notes/NEGATIVE.md`, Section 8, where the paper is cited as [3]). We use the corollary in that form.
+
 **Negative cycles.** This needs no new argument. [6, Thm 60 / Alg. 5] already outputs
 ERROR whenever there is a negative cycle, by checking the price function (Alg. 5, line 9).
 Otherwise it computes distances w.h.p. Its other global steps (a few min/AND aggregations in
