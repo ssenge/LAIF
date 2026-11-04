@@ -1,0 +1,87 @@
+budget 8*sqrt(N) per search
+family       n  applications  /n^0.75  wrong
+monge       16           168     21.0   2/30
+monge       32           290     21.6   3/30
+monge       64           486     21.5   3/30
+monge      128           791     20.8   3/30
+monge      256          1270     19.8   5/30
+monge      512          2096     19.5   2/10
+monge     1024          3219     17.8   0/10
+monge     2048          5438     17.9   1/10
+  fitted exponent over the last 4 sizes: 0.691
+warped      16           168     21.0   1/30
+warped      32           288     21.4   2/30
+warped      64           484     21.4   1/30
+warped     128           796     20.9   1/30
+warped     256          1275     19.9   3/30
+warped     512          2114     19.6   1/10
+warped    1024          3196     17.7   2/10
+warped    2048          5375     17.7   4/10
+  fitted exponent over the last 4 sizes: 0.682
+hard1       16           167     20.8   0/30
+hard1       32           305     22.7   0/30
+hard1       64           518     22.9   0/30
+hard1      128           895     23.5   0/30
+hard1      256          1564     24.4   0/30
+hard1      512          2691     25.0   0/10
+hard1     1024          4630     25.6   0/10
+hard1     2048          8037     26.4   0/10
+  fitted exponent over the last 4 sizes: 0.787
+budget 16*sqrt(N) per search
+family       n  applications  /n^0.75  wrong
+monge       16           325     40.7   0/30
+monge       32           562     41.7   0/30
+monge       64           948     41.9   0/30
+monge      128          1558     40.9   0/30
+monge      256          2503     39.1   0/30
+monge      512          4149     38.5   0/10
+monge     1024          6295     34.8   0/10
+monge     2048         10758     35.3   0/10
+  fitted exponent over the last 4 sizes: 0.691
+warped      16           325     40.6   0/30
+warped      32           560     41.7   0/30
+warped      64           955     42.2   0/30
+warped     128          1568     41.2   0/30
+warped     256          2510     39.2   0/30
+warped     512          4152     38.6   0/10
+warped    1024          6318     34.9   0/10
+warped    2048         10746     35.3   0/10
+  fitted exponent over the last 4 sizes: 0.690
+hard1       16           324     40.5   0/30
+hard1       32           587     43.7   0/30
+hard1       64          1010     44.6   0/30
+hard1      128          1766     46.4   0/30
+hard1      256          3069     48.0   0/30
+hard1      512          5353     49.7   0/10
+hard1     1024          9081     50.2   0/10
+hard1     2048         15658     51.4   0/10
+  fitted exponent over the last 4 sizes: 0.782
+budget 32*sqrt(N) per search
+family       n  applications  /n^0.75  wrong
+monge       16           637     79.7   0/30
+monge       32          1099     81.7   0/30
+monge       64          1856     82.0   0/30
+monge      128          3051     80.2   0/30
+monge      256          4908     76.7   0/30
+monge      512          8101     75.3   0/10
+monge     1024         12381     68.4   0/10
+monge     2048         20946     68.8   0/10
+  fitted exponent over the last 4 sizes: 0.689
+warped      16           637     79.6   0/30
+warped      32          1097     81.5   0/30
+warped      64          1857     82.1   0/30
+warped     128          3053     80.2   0/30
+warped     256          4888     76.4   0/30
+warped     512          8141     75.6   0/10
+warped    1024         12338     68.2   0/10
+warped    2048         21087     69.3   0/10
+  fitted exponent over the last 4 sizes: 0.693
+hard1       16           632     79.0   0/30
+hard1       32          1152     85.7   0/30
+hard1       64          1981     87.5   0/30
+hard1      128          3455     90.8   0/30
+hard1      256          6010     93.9   0/30
+hard1      512         10494     97.5   0/10
+hard1     1024         17880     98.8   0/10
+hard1     2048         30806    101.2   0/10
+  fitted exponent over the last 4 sizes: 0.784

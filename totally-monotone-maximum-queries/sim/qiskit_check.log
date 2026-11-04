@@ -1,0 +1,33 @@
+instance          n     found      true classical reads
+monge             4   1502044   1502044              16
+monge             4   1502044   1502044              16
+monge             4   1502044   1502044              16
+monge             6   1769357   1769357              36
+monge             6   1769357   1769357              36
+monge             6   1769357   1769357              36
+monge             8   1423337   1423337              64
+monge             8   1423337   1423337              64
+monge             8   1423337   1423337              64
+monge             8   1346725   1346725              64
+monge             8   1346725   1346725              64
+monge             8   1346725   1346725              64
+hidden bit        6         1         1              36
+hidden bit        6         1         1              36
+hidden bit        6         1         1              36
+hidden bit        8         1         1              64
+hidden bit        8         1         1              64
+hidden bit        8         1         1              64
+hidden bit        8         1         1              64
+hidden bit        8         1         1              64
+hidden bit        8         1         1              64
+hidden bit        8         1         1              64
+hidden bit        8         1         1              64
+hidden bit        8         1         1              64
+hidden bit none   8         0         0              64
+hidden bit none   8         0         0              64
+hidden bit none   8         0         0              64
+polygon chains    6       673       673              36
+polygon chains    6       673       673              36
+polygon chains    6       673       673              36
+
+30 runs, 0 wrong; at most 8 qubits; 2976 circuits; 6883 oracle applications

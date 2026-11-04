@@ -1,0 +1,37 @@
+global maximum agreed with brute force on 1500 runs
+hard family: inverse Monge, maximum = OR(h)
+polygon diameter agreed with brute force and calipers on 144 runs
+
+cost at C=1 (exact evaluation of the recursion); predicted exponent 1/2 + 1/(2d+2)
+family    d   pred    fit           64        128        256        512       1024       2048       4096
+monge     0  1.000  1.000           64        128        256        512       1024       2048       4096
+monge     1  0.750  0.660           57         94        147        251        375        641        966
+monge     2  0.667  0.636           57         91        145        220        352        549        826
+monge     3  0.625  0.618           58         91        142        220        337        535        788
+monge     4  0.600  0.617           58         92        145        221        349        533        798
+monge     6  0.571  0.614           56         91        144        225        347        532        806
+hard      0  1.000  1.000           64        128        256        512       1024       2048       4096
+hard      1  0.750  0.774           60        106        184        321        546        942       1602
+hard      2  0.667  0.710           61        102        168        276        455        746       1208
+hard      3  0.625  0.670           61         99        164        266        427        677       1075
+hard      4  0.600  0.673           60         99        161        253        410        654       1025
+hard      6  0.571  0.646           56         95        155        249        395        618        952
+
+witness recursion of Theorem 3 on single inputs (b0 = 1): value / (sqrt(n) log2 n), then fit
+monge     2.014  1.992  1.957  1.959  1.955  1.957  1.956   exponent fit 0.638
+hard      1.973  1.975  1.978  1.981  1.983  1.984  1.986   exponent fit 0.640
+
+best explicit depth at C = 4: cost / sqrt(n)
+      n best d  cost/sqrt n  n^(1/4) (flat)
+     64      0          8.0             2.8
+    128      0         11.3             3.4
+    256      0         16.0             4.0
+    512      0         22.6             4.8
+   1024      0         32.0             5.7
+   2048      1         42.0             6.7
+   4096      1         48.9             8.0
+
+polygon diameter at d = 3, C = 1
+  n:          64      128      256      512     1024     2048
+  cost:       51       94      160      271      447      729   fit 0.729, classical reads n
+ok
