@@ -1,5 +1,0 @@
-s= 12 sqrt= 3.5 worst min-cost=  2 (cost_d, cost_pass, pure)=(2, 3, 3) m=28
-s= 20 sqrt= 4.5 worst min-cost=  2 (cost_d, cost_pass, pure)=(2, 3, 3) m=42
-s= 30 sqrt= 5.5 worst min-cost=  2 (cost_d, cost_pass, pure)=(2, 3, 3) m=51
-s= 45 sqrt= 6.7 worst min-cost=  2 (cost_d, cost_pass, pure)=(2, 3, 3) m=104
-s= 70 sqrt= 8.4 worst min-cost=  2 (cost_d, cost_pass, pure)=(2, 3, 5) m=111

@@ -29,14 +29,13 @@ Results on open problems in algorithms and complexity. Each folder holds one top
 | Distributed algorithms, LOCAL | Round exponent κ of the (7 + ε)-approximation of minimum dominating set on planar graphs, (c/ε)^κ rounds | κ ≈ 25.81 [9] | κ < 5.89, same ratio | Planar graphs, deterministic | Proved on paper; core inequalities in Lean; paper in the folder | [minimum-dominating-set-on-planar-graphs](minimum-dominating-set-on-planar-graphs/) |
 | Distributed algorithms, LOCAL | Rounds of the (1 + ε)-approximations of [9] as a function of ε | (c/ε)^25.81; dependence on ε open | At least 1/ε − 4 rounds on every minor-closed class that contains all paths; Θ(1/ε) on forests and on outerplanar graphs | Minor-closed classes; forests; outerplanar graphs | Lower bound in Lean | [minimum-dominating-set-on-planar-graphs](minimum-dominating-set-on-planar-graphs/) |
 | Distributed algorithms, LOCAL | Best ratio of deterministic constant-round algorithms for minimum dominating set on planar graphs of girth at least g | (3g − 2)/(g − 2) [9]; lower bound 3 | 3.51 for g = 5, 3.23 for g = 6, 3.04 for every g ≥ 30, 3.03 for every g ≥ 1000 | Planar graphs of girth at least g | LP certificates in exact rational arithmetic; the soundness argument is on paper, and the ratios are not claimed as theorems | [minimum-dominating-set-on-planar-graphs](minimum-dominating-set-on-planar-graphs/) |
-| Fine-grained complexity | Algorithmic consequences of the October 2026 claims [10, 11] that the Exponential Time Hypothesis is false | Time 2^{o(n)} for these problems would contradict ETH | One Turing machine in time 2^{εn} for: counting proper k-colourings with k growing with n; counting homomorphisms with the target in the input; counting CNF solutions at clause density n·2^{(lg n)^{1/4}/(lg lg n)²}; the MaxSAT spectrum; the parities of Hamiltonian cycles, connected solutions, connected dominating sets and feedback vertex sets, with one-sided randomized decision versions; and a barrier for Cut & Count with few colours | Conditional on the unrefereed claims [10, 11]; some results have since turned out to be known or superseded, see the folder | Lean, as theorems about Turing machines on top of the formalized algorithm of [11] | [eth-corollaries](eth-corollaries/) |
+| Fine-grained complexity | Algorithmic consequences of the October 2026 claims [10, 11] that the Exponential Time Hypothesis is false | Time 2^{o(n)} for these problems would contradict ETH | One Turing machine in time 2^{εn} for: counting proper k-colourings with k growing with n; counting homomorphisms with the target in the input; counting CNF solutions at clause density n·2^{(lg n)^{1/4}/(lg lg n)²}; the MaxSAT spectrum; and the parities of Hamiltonian cycles, connected solutions, connected dominating sets and feedback vertex sets, with one-sided randomized decision versions | Conditional on the unrefereed claims [10, 11]; some results have since turned out to be known or superseded, see the folder | Lean, as theorems about Turing machines on top of the formalized algorithm of [11] | [eth-corollaries](eth-corollaries/) |
 
-## Negative and minor results
+## Minor results
 
-| Problem | Outcome | Details |
+| Problem | Result | Details |
 |---|---|---|
-| Maximum matching on general graphs with adjacency-matrix quantum queries: O(n^{7/4}) [12] against the lower bound Ω(n^{3/2}) | No improvement. A guessing tree that beats n^{7/4} with "no edge" guesses would give a deterministic o(n^{3/2}) edge-partition communication protocol; Õ(n^{3/2}√(1 + n/g)) queries at odd girth g from a half-integral warm start; measurements against LP rounds with small odd-set families | [quantum-matching-queries](quantum-matching-queries/) |
-| Solovay-Kitaev exponent: 1.13747 for a qubit [13], 1.44042 for SU(d) [14] | No improvement. No finite-order symmetry of the kind behind [13] exists on SU(d) for d ≥ 3, and on SU(2) such symmetries are half-turns; the words of [13] stall at order 6 for d ≥ 3; no recursion in the tested classes beats tribonacci growth | [solovay-kitaev-exponent](solovay-kitaev-exponent/) |
+| Maximum matching on general graphs with adjacency-matrix quantum queries, where the general bound is O(n^{7/4}) [12] | Õ(n^{3/2}√(1 + n/g)) queries at odd girth g, below n^{7/4} for g ≥ n^{1/2+Ω(1)}; O(n log² n + (n²/g) log n) bits of deterministic edge-partition communication at odd girth g; a decision tree with at most I wrong "no edge" guesses gives an edge-partition protocol with O(I log T) bits | [quantum-matching-queries](quantum-matching-queries/) |
 
 ## Former repositories
 
@@ -56,8 +55,6 @@ The folders `exact-planar-bipartite-matching`, `exact-shortest-paths-and-flows-o
 10. OpenAI. The Exponential Time Hypothesis is False. Preprint, 17 October 2026, revised 25 October 2026. https://github.com/openai/math, family 378.
 11. Anthropic. A 2^{o(n)} Time Algorithm for 3-SAT. hexagon:2610.00577v1, 26 October 2026.
 12. S. Kimmel, R. T. Witter. A Query-Efficient Quantum Algorithm for Maximum Matching on General Graphs. arXiv:2010.02324.
-13. Yehuda. arXiv:2607.15811.
-14. G. Kuperberg. Breaking the cubic barrier in the Solovay-Kitaev algorithm. arXiv:2306.13158.
 
 ## License
 

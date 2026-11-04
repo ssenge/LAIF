@@ -1,17 +1,16 @@
 # Quantum query complexity of maximum matching on general graphs
 
-Minor results from an attempt to improve the O(n^{7/4}) bound of [1] on adjacency-matrix quantum queries for maximum matching on general graphs, against the lower bound Ω(n^{3/2}). No bound was improved. Results 1 to 3 have proofs below; none is formalized in Lean, and no human has checked them. Result 4 is measurement only. No dedicated search for earlier statements of these results was made, so none is claimed as new; results 1 and 2 are short enough to be folklore.
+Minor results on maximum matching with adjacency-matrix quantum queries on general graphs. The general bound stays O(n^{7/4}) [1], against the lower bound Ω(n^{3/2}). The results below have written proofs. None is formalized in Lean, and no human has checked them. They are short enough to be folklore, so none is claimed as new.
 
-| # | Result | Status | Importance |
-|---|---|---|---|
-| 1 | Guessing trees give communication protocols, so a large class of trees cannot beat n^{7/4} without new communication bounds | proved below | minor |
-| 2 | Õ(n^{3/2}√(1+κ)) queries from a half-integral warm start, hence Õ(n^{3/2}√(1+n/g)) at odd girth g | proved below | minor |
-| 3 | Approximate-then-finish needs a (1−ε)-approximation with n/ε^c reveals and c < 1 | calculation | minor |
-| 4 | LP rounds with a small odd-set family do not give hybrid cost o(√n) | measured | minor |
+| # | Result | Status |
+|---|---|---|
+| 1 | A decision tree with at most I wrong "no edge" guesses gives a deterministic edge-partition protocol with O(I log T) bits | proved below |
+| 2 | Õ(n^{3/2}√(1+κ)) queries from a half-integral warm start, hence Õ(n^{3/2}√(1+n/g)) at odd girth g, with the corresponding communication bound | proved below |
+| 3 | In a guessing tree with T = Θ(n²), a (1−ε)-approximation with n/ε^c edge reveals and c < 1 gives n^{7/4−Ω(1)} queries | calculation |
 
 Setting: an n-vertex graph, adjacency-matrix queries. The guessing tree theorem ([2]; Theorem 1 in [1]) turns a decision tree of depth T with at most I wrong guesses per path into O(√(T·I)) quantum queries. The tree of [1] has T ≤ n² and I = O(n^{3/2}), which is where n^{7/4} comes from.
 
-## 1. Barrier for the guessing tree route
+## 1. From guessing trees to communication protocols
 
 **Proposition.** Take a decision tree computing a function of the edge set, with depth T and at most I wrong guesses per path.
 
@@ -20,13 +19,11 @@ Setting: an n-vertex graph, adjacency-matrix queries. The guessing tree theorem 
 
 *Proof.* The players keep a common position in the tree. From there, each follows the guessed path and finds the first node where its own data contradicts the guess: in (a) a queried pair that it holds as an edge, in (b) a pair assigned to it whose status differs from the guess. It sends that depth, which takes log T bits. The earlier of the two depths is the true first wrong guess. If neither player reports one, the guessed path runs to a leaf. Both players move to the node just after the wrong guess, using the true answer. Each exchange uses up one wrong guess, so there are at most I+1 exchanges. ∎
 
-**Consequence.** The matrix-model tree of [1] guesses "no edge" throughout. A tree of that kind with T = Θ(n²) that beats n^{7/4} polynomially has I = n^{3/2−Ω(1)}, so by (a) it gives a deterministic o(n^{3/2}) edge-partition protocol for general matching. The best known is Õ(n^{3/2}) [3]. Improving it is stated as open in [3] and in [4].
+**Consequence.** The matrix-model tree of [1] guesses "no edge" throughout. A tree of that kind with T = Θ(n²) and n^{7/4−Ω(1)} queries has I = n^{3/2−Ω(1)}, so by (a) it gives a deterministic o(n^{3/2}) edge-partition protocol for general matching. The best known protocol has Õ(n^{3/2}) bits [3], and improving it is stated as open in [3] and in [4].
 
-**Why (a) needs "no edge" guesses.** To refute a guess "edge", both players must confirm they do not hold the pair. A player cannot find the first such node alone, and finding it looks like a set-intersection problem over T elements. An argument that ignores this distinction is wrong.
+**Why (a) needs "no edge" guesses.** To refute a guess "edge", both players must confirm they do not hold the pair. A player cannot find the first such node alone, and finding it looks like a set-intersection problem over T elements.
 
-**What this does not say.** It is not a lower bound on queries, and n^{7/4} may still be far from optimal. Two loopholes remain:
-1. Smaller T. With T = n^{2−Ω(1)}, I can stay at n^{3/2} or above.
-2. Trees that guess "edge" somewhere. Then only (b) applies, and improving matching in the assigned-pair model may be easier than in the usual model.
+**Scope.** This is not a lower bound on queries. It does not cover trees with T = n^{2−Ω(1)}, where I can stay at n^{3/2} or above, or trees that guess "edge" somewhere, where only (b) applies.
 
 ## 2. Warm start and odd girth
 
@@ -42,59 +39,15 @@ Step 3 does not depend on the analysis of [1]. That analysis also allows an arbi
 
 **Corollary (communication).** The deterministic edge-partition complexity of maximum matching is O(n log² n + n(1+κ) log n), so O(n log² n + (n²/g) log n) at odd girth g. This is below n^{3/2} once g ≫ √n log n. *Proof.* Theorem 1.1 of [4] finds a matching of the double cover with O(n log² n) bits. Each edge of G becomes two cover edges at the same player. Then apply Proposition 1(a) to step 3.
 
-**Limits.** This is a parameterized statement and does not touch the general case. Graphs with many disjoint short odd cycles get no gain, and such graphs are the hard ones.
+**Scope.** This is a parameterized statement and does not touch the general case. Graphs with many disjoint short odd cycles get no gain.
 
-## 3. Approximate-then-finish needs c < 1
+## 3. From an approximation to an exact matching
 
 Let R be the number of edge reveals, so that the query bound is O(n√R) when T = Θ(n²). From deficiency d, at most d+1 further searches of at most n reveals each finish the job, so R ≤ R_approx(d) + n(d+1).
 
-Beating R = n^{3/2} needs d = o(√n), that is ε = o(n^{−1/2}). If R_approx = n·ε^{−c}, this needs n^{1+c/2} = o(n^{3/2}), so **c < 1**.
+Reaching R = n^{3/2−Ω(1)} takes d = n^{1/2−Ω(1)}, that is ε = n^{−1/2−Ω(1)}. If R_approx = n·ε^{−c} with **c < 1**, a small enough polynomial choice of ε gives this, and the query bound is n^{7/4−Ω(1)}.
 
-The first phase of [3] reveals n² ln n / k edges for deficiency k. That is c = 1, and the balance sits exactly at n^{3/2}. Semi-streaming reductions, judged from their abstracts only, have c far above 1. So a (1−ε)-approximation with n/ε^c reveals and c < 1 would be enough, and we know of none.
-
-## 4. LP rounds with a small odd-set family fail as stated
-
-**The route.** Solve the blossom LP on a family F of O(n) odd sets, growing F over r rounds. If one LP solve cost Õ(n) reveals (never proved), then Q = Õ(n^{3/2}√cost), where cost = min_r[(r+1) + d_r] and d_r is the deficiency of the best matching on the edges revealed by round r. The route needs worst-case cost o(√n).
-
-**Measurements** (scripts in `sim/`, each with self-checks; Python with scipy and networkx):
-
-*Hidden bridges* (`flat.py`, `flat.log`). Two odd sets joined by one edge that a perfect matching needs, adversarial objective, worst of 3 seeds. The run was stopped during k = 7, s = 21; rows shown are for 2 chords per vertex unless noted.
-
-| k, s | n | cut odd support components: rounds | also cut Gallai-Edmonds D-components: rounds |
-|---|---|---|---|
-| 1, 41 | 82 | 300 (cap) | 4 |
-| 1, 81 | 162 | 300 (cap) | 4 |
-| 3, 21 (noise 0.3) | 126 | 300 (cap) | 5 |
-| 3, 41 | 246 | 300 (cap) | 4 |
-
-*Nested ears* (`ear_chain.py`, `ear_chain.log`) defeat the better rule. r_primal is the first round whose accumulated support contains a maximum matching.
-
-| n | 14 | 22 | 38 | 70 | 134 | 262 | 518 |
-|---|---|---|---|---|---|---|---|
-| worst of 10 random objectives | 2 | 4 | 6 | 12 | 24 | 46 | 93 |
-| depth-penalty objective | 2 | 3 | 4 | 7 | 12 | 23 | 44 |
-
-Both rows grow linearly in n, so random perturbation chosen by the algorithm does not help.
-
-*Copies of nested ears* (`ear_copies.py`, `ear_copies.log`, random objective, no noise edges). The last planned row, k = 32, m = 16, noise 2.0, hit the time limit.
-
-| k, m | n | √n | cost_d | cost_pass | passes without LP |
-|---|---|---|---|---|---|
-| 8, 16 | 560 | 23.7 | 9 | 3 | 5 |
-| 16, 16 | 1120 | 33.5 | 17 | 3 | 5 |
-| 32, 16 | 2240 | 47.3 | 30 | 3 | 5 |
-
-cost_d tracks k. So the LP does not remove the deficiency on this family, and cost = o(√n) fails if each unit of deficiency costs one search.
-
-**What this does not show.**
-- It is not a proof. It covers two specific cut rules and finite sizes, with no lower bound over all cut rules.
-- cost_pass stays small on these disjoint copies, because one pass of disjoint augmentations fixes them all. With noise edges pure passes reach 17 at n = 1216, and cost_pass reaches 11 at n = 1120. That is too few points to fit an exponent. Passes have no known worst-case bound, and any remaining hope sits there, not in the LP.
-- Low costs on the earlier gadget families (`hybrid.py`, `copies.py`) say nothing in favour of the LP, since passes with no LP finish those instances in at most 5.
-- `adversary2.py` stayed at score 2 up to s = 70. The objective is nearly flat, so that result is uninformative.
-
-## What to try first if this is reopened
-
-Result 1(a) means a guess-no-edge tree at T = Θ(n²) must also improve general-matching communication. So the matching communication question comes first, or else a tree with small T on the paths that have many reveals.
+We know of no such approximation. The first phase of [3] reveals n² ln n / k edges for deficiency k, which is c = 1, where the balance sits exactly at n^{3/2}.
 
 ## References
 
