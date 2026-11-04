@@ -485,7 +485,20 @@ standard axioms (`propext`, `Classical.choice`, `Quot.sound`). There is no `sorr
   (`Snip`), gluing two maps along a border with additive genus (`Sew`, `Patch`), and dart
   deletion (`Walkup`). It builds unchanged on the pinned toolchain, and
   `lean/FourColor/axioms.txt` lists the axioms of its main results. It is the foundation for
-  the planarity statements listed as not formalized below; none of our files uses it yet.
+  the planarity statements.
+- `lean/SsspFlow/PlanarMap.lean`: the bridge from graphs with a rotation system to those maps.
+  `RotSystem` has darts, a reversal and a rotation, `toHypermap` is its plain hypermap, and
+  `Planar` means genus zero. `euler` is $V+F=E+2$ for connected planar systems and
+  `planar_iff_euler` is the converse. `ofMap` and `toSetup` relate this to the map of
+  `LemmaD.lean`.
+  - For a simple cycle, `inside` and `outside` are the two sides, read off the cut of the dual
+    map. Every dart off the cycle lies on exactly one side (`exactly_one_side`), and both darts
+    of an edge off the cycle lie on the same side (`edge_exactly_one_side`).
+  - On a planar system, a walk from one side to the other passes through a vertex of the cycle
+    (`isWalk_meets_cycle`). Each side is a planar map (`insideMap_planar`, `outsideMap_planar`),
+    and reversing the cycle swaps the sides (`mem_outside_reverseCycle_iff`).
+  - `triangle` is an instance with a dart on each side, so these statements are not vacuous.
+  - Not here: that a side is connected, which side is bounded, and any embedding in the plane.
 
 Not formalized: the CONGEST algorithms and their round counts, planarity and the diameter
 bound of $\hat G$, the decomposition, Lemma 14′ and everything else in the repair that uses

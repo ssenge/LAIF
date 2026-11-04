@@ -10,3 +10,4 @@ import SsspFlow.NegScaling
 import SsspFlow.Arborescence
 import SsspFlow.Replacement
 import SsspFlow.Recursion
+import SsspFlow.PlanarMap
