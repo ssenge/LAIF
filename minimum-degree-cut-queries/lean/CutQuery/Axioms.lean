@@ -21,3 +21,6 @@ import CutQuery
 #print axioms CutQuery.exists_small_gamma
 #print axioms CutQuery.isMinCut_liftW
 #print axioms CutQuery.GenAlg.errAt_sim
+#print axioms CutQuery.mod4_simple_bound
+#print axioms CutQuery.isSimple_tri
+#print axioms CutQuery.card_diag_le

@@ -2,7 +2,7 @@
 
 Sebastian Senge, Independent Researcher. Written 3 Nov 2026.
 
-In [1] it is conjectured that computing the minimum degree of a simple graph requires Ω(√n) quantum cut queries. This file proves the bound for integer-weighted graphs with weights of O(n² log n) bits. The simple-graph question stays open.
+In [1] it is conjectured that computing the minimum degree of a simple graph requires Ω(√n) quantum cut queries. This file proves the bound for integer-weighted graphs with weights of O(n² log n) bits, and for simple graphs when each query returns the cut only mod 4. The question for simple graphs with integer answers stays open.
 
 | # | Result | Status |
 |---|---|---|
@@ -12,8 +12,9 @@ In [1] it is conjectured that computing the minimum degree of a simple graph req
 | 4 | Ω(√n) for a promise decision problem on degrees mod M, with weights in Z_M and the oracle returning the cut mod M, M = 2^k ≥ 4 | proved in Section 6 |
 | 5 | n/7 − 2 classical randomized cut queries on the same kind of family, so a Θ(√n) against Θ(n) separation | lower bounds proved in Section 10, O(√n) upper bound cited |
 | 6 | Ω(n/log n) classical randomized cut queries on simple graphs, by a reduction from set disjointness | proved in Section 10 |
+| 7 | Θ(√n) quantum queries on simple graphs when each query returns the cut mod 4, with no restriction on the query sets | lower bound proved in Section 11, upper bound on paper there |
 
-All lower bounds and lemmas below are machine-checked in Lean, assuming two classical theorems as explicit hypotheses: the approximate degree of AND_n and the randomized communication complexity of disjointness. The O(√n) upper bound from quantum minimum finding is cited and not machine-checked, and the words "tight" and "separation" rest on it. Section 9 gives the theorem names and the scope. The scripts in `sim/` test the identities on small instances, and their limits are listed in their docstrings. All sums in the proofs are finite.
+All lower bounds and lemmas below are machine-checked in Lean, assuming two classical theorems as explicit hypotheses: the approximate degree of AND_n and the randomized communication complexity of disjointness. The O(√n) upper bound from quantum minimum finding is cited and not machine-checked, and the words "tight" and "separation" rest on it. The same holds for Proposition 9, which also uses minimum finding. Section 9 gives the theorem names and the scope. The scripts in `sim/` test the identities on small instances, and their limits are listed in their docstrings. All sums in the proofs are finite.
 
 ## Model
 
@@ -137,14 +138,14 @@ Let the algorithm accept when it reports (n−1)W₀. With probability at least 
 
 ## 7. Limits
 
-- **Simple graphs are not covered.** The question in [1] is about simple graphs. Weights here have Θ(n² log n) bits, and I know no reduction from these weights to simple graphs on poly(n) vertices. A blow-up has to answer queries that split blocks, and those are not cut queries on the original graph.
+- **Simple graphs are covered only with answers mod 4.** The question in [1] is about simple graphs with integer answers, and Section 11 explains where its argument stops. Weights in Theorem 1 have Θ(n² log n) bits, and I know no reduction from these weights to simple graphs on poly(n) vertices. A blow-up has to answer queries that split blocks, and those are not cut queries on the original graph.
 - **What breaks for small weights.** Keeping a in range needs JN/(2mL) ≤ 1/100, and N/L is about 24n⁴, so m = Ω(n⁶). The sum over labels in Section 4 has total mass m^J, and each term carries an error of about nτ, which is proportional to m/N. So N has to exceed m^J, which gives log W ≳ J log m = Θ(n² log n).
 - **Weight scale.** I did not try to minimize the bits. Using fewer than J hidden directions would shorten them, but a sublattice weakens Lemma 2, and getting to poly(n) values would need a different argument for the error term.
 - **Consistency with known upper bounds.** The polylog(n) approximation of the minimum degree discussed in [1, Section 2.4] is for simple graphs. The routine of [4, Lemma 15] counts nonzero row entries at a cost that grows with log M, which is about n² log n queries at this scale. So neither contradicts Theorem 1. Degree parity costs one query, and all degrees here have fixed parity.
 
 ## 8. Importance
 
-Modest. It settles a weighted variant of a conjecture in [1] with a tight bound, using a short argument. The stated simple-graph version remains open, and the weights are far larger than anything an application would use. To my knowledge the integer-weighted lower bound is new. The classical results add little: Proposition 7 is elementary and may well be folklore, although I have not seen it stated, and Theorem 6 only removes its log factor, for huge weights.
+Modest. It settles a weighted variant of a conjecture in [1] with a tight bound, using a short argument. The stated simple-graph version remains open, and the weights are far larger than anything an application would use. To my knowledge the integer-weighted lower bound is new. The classical results add little: Proposition 7 is elementary and may well be folklore, although I have not seen it stated, and Theorem 6 only removes its log factor, for huge weights. Theorem 8 is a tight bound on simple graphs with no restriction on query sets, also new to my knowledge, but its oracle is weaker than the one in [1], so it leaves the conjecture open.
 
 ## 9. Formal verification
 
@@ -162,6 +163,7 @@ The results are machine-checked end to end in `lean/`, with Lean 4.36.0-rc1 and 
 | Theorem 1 for any answer interface: a query multiplies \|s⟩ by any unit-modulus function of s and the cut, simulated with two phase queries | `quantum_bound_general`, `GenAlg.errAt_sim` | `AndApproxDegree` |
 | Global minimum cut, on 2n vertices | `quantum_mincut_bound`, `isMinCut_liftW` | `AndApproxDegree` |
 | Modular model | `modular_bound` | `AndApproxDegree` |
+| Theorem 8, simple graphs with answers mod 4 | `mod4_simple_bound`, `isSimple_tri`, `card_diag_le` | `AndApproxDegree` |
 | Lemma 2 | `sparsity_cut` | none |
 | Lemmas 3 and 5 | `exists_small_gamma` | none |
 | Lemma 4 | `visible_card` | none |
@@ -172,7 +174,7 @@ The results are machine-checked end to end in `lean/`, with Lean 4.36.0-rc1 and 
 | n singleton queries compute the minimum degree | `singleton_upper_bound` | none |
 | n phase queries compute the minimum degree with error 0, so the premise of Theorem 1 can be met for every n and C | `readAll_errAt`, `quantum_premise_holds` | none |
 
-**Not machine-checked:** the O(√n) upper bound from quantum minimum finding. It is cited, and it is what makes the quantum bound tight and gives the Θ(√n) side of every separation claim. The Lean files prove only that n phase queries suffice.
+**Not machine-checked:** the O(√n) upper bound from quantum minimum finding. It is cited, and it is what makes the quantum bound tight and gives the Θ(√n) side of every separation claim. The Lean files prove only that n phase queries suffice. Proposition 9 is proved on paper and uses minimum finding, so it is not machine-checked either.
 
 **What the check does not cover.** Lean checks the proofs against the definitions in `Model.lean`, so the theorems mean what those definitions say. Their modelling choices are these. A classical algorithm is a distribution with finite support over deterministic adaptive algorithms making exactly T queries, and a shorter algorithm can pad its queries. A quantum algorithm acts on a finite basis, alternates unitaries with diagonal queries, and measures in the basis at the end. A graph is a function from pairs u < v to the integers. The Model section's simulation of other answer registers is checked in the direction a lower bound needs, from an answer-register algorithm to phase queries (`GenAlg.sim`). The converse is not formalized. Apart from the theorems that name C, the constants are existential.
 
@@ -225,6 +227,46 @@ Quantum minimum finding over singleton queries takes O(√n) queries, so simple 
 
 **Scope.** `sim/check_classical.py` tests Lemmas 3 to 5 and the coupling on adaptive trees at small sizes, with the limits listed in its docstring. Theorem 6 needs huge weights, and on simple graphs the classical bound is Proposition 7. A plain information count gives only O(1) at any answer length, since the output is about one bit.
 
+## 11. Simple graphs with answers mod 4
+
+Here a query is |x, z⟩ → i^{z cut_A(x)} |x, z⟩ with z ∈ Z₄, and A is a simple graph. This is the model of Section 1 with N = 4, so N no longer exceeds the cut values and the integer cut cannot be recovered. Query sets are unrestricted, and algorithms may be adaptive and use workspace.
+
+**Theorem 8.** A quantum algorithm that computes the minimum degree of every n-vertex simple graph with error at most 1/3, where each query returns the cut mod 4, makes Ω(√n) queries.
+
+**The graph.** Assume n ≥ 6 and let L = ⌊n/3⌋. Name 3L vertices v_ℓ, a_ℓ, c_ℓ for ℓ = 1, …, L. The base graph A₀ is a clique on the v_ℓ together with a clique on all other vertices. Write e(u, w) for the unit vector of a pair, with e(u, u) = 0. For ℓ ≤ m let
+
+    G(ℓ, m) = e(v_ℓ, c_m) + e(a_ℓ, v_m) − e(v_ℓ, v_m) − e(a_ℓ, c_m).
+
+For an upper triangular bit matrix U let A(U) = A₀ + Σ_{ℓ≤m} U_ℓm G(ℓ, m).
+
+Each pair lies in the support of at most one gadget. The pairs v_ℓc_m and a_ℓv_m with ℓ ≤ m have base value 0 and coefficient +1. The pairs v_ℓv_m with ℓ < m and a_ℓc_m with ℓ ≤ m have base value 1 and coefficient −1. So A(U) is a simple graph.
+
+A gadget with ℓ < m preserves all degrees, and G(ℓ, ℓ) raises the degree of v_ℓ by 2 and leaves the others unchanged. Hence deg v_ℓ = L − 1 + 2U_ℓℓ, and every other vertex has degree n − L − 1 ≥ L + 1. The minimum degree is L + 1 if every diagonal bit is 1, and L − 1 otherwise.
+
+**The queries.** Let Y_ℓ = x(v_ℓ) − x(a_ℓ) and Q_m = x(v_m) − x(c_m). Checking the 16 cases of four bits gives ⟨G(ℓ, m), δ_x⟩ = 2 Y_ℓ Q_m, so
+
+    cut_{A(U)}(x) = cut_{A₀}(x) + 2 Yᵀ U Q.
+
+Mod 4 this term is 2 yᵀ U q, where y and q reduce Y and Q mod 2. A query therefore evaluates a bilinear form of a hidden triangular matrix over F₂, with the bits to be tested on its diagonal.
+
+*Proof of Theorem 8.* Write U as h on the diagonal and uniform independent bits a above it. Expand the acceptance probability over pairs of paths as in Section 2. A pair has coefficients w_s ∈ Z₄ on at most 2T query sets, and it contributes a phase independent of U times (−1)^{Σ_{ℓ≤m} U_ℓm M_ℓm}, where M = Σ_s w_s y^s (q^s)ᵀ over F₂. So rank M ≤ 2T.
+
+Averaging over a multiplies the term by 0 unless M_ℓm = 0 for all ℓ < m. In that case M is lower triangular. Let I = {ℓ : M_ℓℓ = 1}. The submatrix of M on I is lower triangular with unit diagonal, so |I| ≤ rank M ≤ 2T, and the term is a constant times (−1)^{Σ_{ℓ∈I} h_ℓ}.
+
+Thus P(h) = E_a acc(A(U)) is a real polynomial in h of degree at most 2T, with values in [0, 1]. Let the algorithm accept when it reports L − 1. Then P(h) ≥ 2/3 if some h_ℓ = 0 and P(1^L) ≤ 1/3, so 1 − P approximates AND_L within 1/3. The approximate degree of AND_L gives 2T = Ω(√L). ∎
+
+The exact zeros come from evenness: ⟨G(ℓ, m), δ_x⟩ is always even, so at phases of order 4 a hidden bit contributes 1 or −1, and these cancel or add up.
+
+**Proposition 9.** With answers mod 4, O(√n) queries suffice on every simple graph.
+
+*Proof.* Singleton queries do not suffice, since they give degrees only mod 4. For a vertex u and a set S not containing u, cut(S ∪ {u}) − cut(S) = deg u − 2 e(u, S), where e(u, S) counts the edges from u to S. Two queries on a uniform superposition of S thus prepare i^{deg u} Σ_S (−1)^{e(u,S)} |S⟩. A Hadamard transform reads the neighbours of u exactly, which gives deg u, and two more queries uncompute. So 4 queries compute deg u coherently and without error, and quantum minimum finding over u finishes. ∎
+
+**Relation to matrix queries.** In [8] it is shown that trace, determinant and rank need Ω(n) quantum queries with matrix-vector or bilinear access to a general matrix over a finite field. On the family above, fixing x(v) = 0 makes y and q free, and one query with q in superposition reads yᵀU. The determinant bound of [8] does not transfer, because det U = AND(h) here for triangular U, and Grover search over the diagonal takes O(√L) queries. What Theorem 8 adds is a simple graph that puts the degrees on the diagonal of such a matrix, together with the triangular rank bound.
+
+**Where it stops.** The integer oracle of [1] also allows z with z/N outside (1/4)Z. For a pair of paths let M_ℓm = Σ_s (w_s / N) Y^s_ℓ Q^s_m with w_s ∈ Z. A hidden bit then contributes the factor (1 + e(2 M_ℓm))/2, of modulus |cos(2π M_ℓm)|, which is zero only when 2 M_ℓm ≡ 1/2 mod 1. Other pairs are damped but do not vanish, so P need not have degree at most 2T. `sim/check_mod4.py` shows this at phase 1/8, where weight above 2T is nonzero. With about n² hidden bits this damping can be large, but an absolute sum over paths loses a factor exponential in Tn, and I have no bound on the coherent sum.
+
+`sim/check_mod4.py` tests the graph, the identity, the polynomial degree on random unitaries and the routine of Proposition 9, on small instances listed in its docstring.
+
 ## References
 
 [1] S. Apers, Y. Efron, P. Gawrychowski, T. Lee, S. Mukhopadhyay, D. Nanongkai. Cut query algorithms with star contraction. FOCS 2022. arXiv:2201.05674.
@@ -240,6 +282,8 @@ Quantum minimum finding over singleton queries takes O(√n) queries, so simple 
 [6] A. Razborov. On the distributional complexity of disjointness. Theoretical Computer Science, 1992.
 
 [7] A. Auza, T. Lee. On the query complexity of connectivity with global queries. arXiv:2109.02115, 2021.
+
+[8] A. M. Childs, S.-H. Hung, T. Li. Quantum query complexity with matrix-vector products. arXiv:2102.11349, 2021.
 
 ## Use of AI
 

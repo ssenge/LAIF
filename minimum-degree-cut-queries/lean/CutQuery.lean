@@ -16,3 +16,4 @@ import CutQuery.ClassicalBound
 import CutQuery.SimpleBound
 import CutQuery.UpperBound
 import CutQuery.Separation
+import CutQuery.SimpleMod4
