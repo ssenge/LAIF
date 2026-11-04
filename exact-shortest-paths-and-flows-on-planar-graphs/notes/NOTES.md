@@ -251,9 +251,8 @@ model that can run the oracle.
 - **How much is new.** Little. The proof is about a page: a two-paper combination plus Lemma V.
 - **Risks.**
   1. It depends on [1], which is four months old and unrefereed.
-  2. The authors of [1] can be expected to notice this soon.
-  3. [1, Lemma 14] has a possible gap as stated, so (L) is conditional on Lemma 14′ (LEMMA15.md).
-  4. Property 6 of [1, Lemma 9] seems not to hold for induced bags, so the Õ(D/ε) round bound of (L)
+  2. [1, Lemma 14] has a possible gap as stated, so (L) is conditional on Lemma 14′ (LEMMA15.md).
+  3. Property 6 of [1, Lemma 9] seems not to hold for induced bags, so the Õ(D/ε) round bound of (L)
      needed a new parallel schedule (LEMMA15.md, (S9)). The region bags of LEMMA15.md §9
      give it, with the deterministic separator of Lemma B5.
 
