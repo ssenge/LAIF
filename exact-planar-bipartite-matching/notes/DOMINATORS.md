@@ -1,6 +1,6 @@
 # Dominator trees of planar digraphs in Õ(D) rounds
 
-**Status.** Claim, written 3 Nov 2026. Proofs below, simulation in `sim/dom.py`. Combinatorial core in Lean. No human has checked it. It uses the General Search Theorem of `notes/GENERAL_DFS.md`, itself a claim, through its paths and classes. Importance: solid if it survives. The dominator tree is a basic tool, and we found no bound for it in CONGEST. The proof is elementary, and its step along one path has sequential relatives, see Context.
+**Status.** Claim, written 3 Nov 2026. Proofs below, simulation in `sim/dom.py`. Combinatorial core in Lean. It uses the General Search Theorem of `notes/GENERAL_DFS.md`, itself a claim, through its paths and classes. Importance: solid if it survives. The dominator tree is a basic tool, and we found no bound for it in CONGEST. The proof is elementary, and its step along one path has sequential relatives, see Context.
 
 The model is CONGEST on a connected planar network G with n vertices and hop diameter D, with a known embedding. Õ hides factors polylogarithmic in n. A *digraph on G* has its arcs on edges of G. D is the diameter of the undirected G. Identifiers are distinct.
 

@@ -254,7 +254,7 @@ def charges(adj, U, rank, rho, x, info, zord):
 
 
 def regress(rho, x, info, zord):
-    """The counterexamples of the referee pass against v6f (discharge_r13z): a Q_h leaf next to a
+    """The counterexamples against v6f (discharge_r13z): a Q_h leaf next to a
     light W-hub (v6f: charge -0.085), a "u"-type next to a light W-hub, and stars of heavy U-hubs
     (coefU). U is every vertex except the named W-hubs; all graphs are trees."""
     def tree(edges, notU):

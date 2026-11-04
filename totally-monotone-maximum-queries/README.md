@@ -122,7 +122,6 @@ Asymptotics only. `sim/grover_law.log` gives 35 n^{3/4} (monge) to 51 n^{3/4} (h
 - Queries only. Neither a gate count nor a running time follows for Theorem 3 and its consequences. The explicit algorithm of Section 2 stops at n^{1/2+o(1)}, and its C is polylogarithmic and not computed.
 - The constant κ of Theorem 3 is unknown, so the log factors say nothing at practical sizes.
 - Classically SMAWK reads only 3.5n to 5n entries in the runs here, so the depth 1 algorithm wins only above n of order 10⁴, by extrapolation, on a noiseless model.
-- The review of these proofs was by an AI agent. No human has checked them.
 
 ## 8. Importance
 

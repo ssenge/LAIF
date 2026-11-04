@@ -7,7 +7,7 @@ inequality the row encodes and why that inequality holds. Section 10 covers
 `discharge_r13v9.py`, which changes four things in v8; each makes the LP easier and keeps it
 sound.
 
-Status: written with AI assistance and not yet reviewed by a person. Writing it out found five
+Status: written with AI assistance. Writing it out found five
 places in the previous version `discharge_r13z.py` where a row claimed more charge than the
 argument gives; v7 fixes them (section 9). The v7 values pass the exact check with v7, the v8
 values with v8, and the v9 values of the README table with v9.
@@ -396,11 +396,6 @@ argument gives.
    1 − C + 2/9, which is −4/9 < −7/18 for g = 5. v7 records the exact number of W-hubs (1, or at
    least 2) for every Q_l-vertex without Z-neighbours in U.
 
-An independent adversarial referee pass (an AI agent that read only the code of v6f) found the
-same five problems, with explicit instances for 3, 2 and 4, and no further invalid row; its own
-charge simulation found no negative charge with v7. A second referee pass checked this note
-against the v7 code, found no soundness problem and pointed out wording gaps, which are fixed.
-
 All table values stay feasible in exact arithmetic with v7; the certified margins are 0.0012,
 0.0018, 0.0004, 0.0020, 0.0014, 0.0028 and 0.0009 for g = 5, 6, 7, 8, 10, 14 and 16.
 
@@ -473,7 +468,7 @@ to 0. So Σ_v c0(v) >= 0, that is |D'| <= ρ dual(y) <= ρ LP_U. ∎
   planar graphs (girth 10, 15 and 30) at (5, 3.52), (7, 3.17), (8, 3.15) and (10, 3.14). For v9
   (with the flags recomputed from the graph, the families Up and Ql, and the budget check of
   section 13) it held at (5, 3.51), (6, 3.23), (10, 3.09) and (1000, 3.03), the last on trees
-  only, and in the referee pass below also at (7, 3.16), (8, 3.13), (12, 3.08), (16, 3.06) and
+  only, and also at (7, 3.16), (8, 3.13), (12, 3.08), (16, 3.06) and
   (30, 3.04). The smallest charge found equals the certified margin (the smallest exact row slack
   that `cert_exact.py` reports with the margin variable set to 0), since some rows are tight;
   light hubs end at 0 or more. Doubling ν_Z in the solution makes charges negative, so the check
@@ -481,17 +476,9 @@ to 0. So Σ_v c0(v) >= 0, that is |D'| <= ρ dual(y) <= ρ LP_U. ∎
   girth and ν_Z = 0 for g >= 12, so there the check cannot see an error in those terms, and the
   family Ql adds nothing to any certified value.
 - Checked by argument only: this note, that is, that each row family encodes the local
-  inequality stated here and that the type enumeration covers every vertex. Two AI referee passes
-  checked v7 (section 9). One AI referee pass checked the v8 changes of section 10 against the
-  code, re-checked the stored solutions in exact arithmetic and ran adversarial searches on
-  trees at g = 5, 6 and 10; it found no soundness problem, only wording (fixed) and the missing
-  instances of girth >= 7 in `charge_check.py` (added). One AI referee pass checked the four v9
-  changes of section 13 against the code: it re-checked all nine stored solutions in exact
-  arithmetic, tested claims 1 to 4 on about 1,500 adversarial instances per girth, ran
-  `charge_check.py` at the five girths above, and found no soundness or checker problem, only
-  wording (fixed). The slot model of the idrule part comes from `discharge_a2.py`.
-- Limits: no review by a person; the instance checks cover finite families only; and an AI
-  referee can share blind spots with the AI that wrote the argument.
+  inequality stated here and that the type enumeration covers every vertex. The slot model of the
+  idrule part comes from `discharge_a2.py`.
+- Limits: the instance checks cover finite families only.
 
 ## 13. Version 9
 

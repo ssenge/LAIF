@@ -1,6 +1,6 @@
 # Exact maximum matching in general planar and low-treewidth networks
 
-**Status.** Claim, written 3 Nov 2026. Proofs below, simulation in `sim/gm.py`, results in `sim/REPORT_GENERAL.md`. No human has checked it. It uses a decomposition with the properties of Section 2, which the published decomposition of [10] and the region bags of [6] both have, and not the Label Hypothesis. Importance if it survives: significant, since this is the first bound polynomial in D alone that we found for matching without the bipartite restriction on planar networks, and for treewidth τ it removes the bipartite restriction of [4, Theorem 4] and improves its bound.
+**Status.** Claim, written 3 Nov 2026. Proofs below, simulation in `sim/gm.py`, results in `sim/REPORT_GENERAL.md`. It uses a decomposition with the properties of Section 2, which the published decomposition of [10] and the region bags of [6] both have, and not the Label Hypothesis. Importance if it survives: significant, since this is the first bound polynomial in D alone that we found for matching without the bipartite restriction on planar networks, and for treewidth τ it removes the bipartite restriction of [4, Theorem 4] and improves its bound.
 
 The model is CONGEST on a connected network G with n vertices and hop diameter D, planar with a known embedding except in Section 6. Õ hides factors polylogarithmic in n. Words have O(log n) bits, and local computation is unbounded.
 

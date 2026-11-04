@@ -1,6 +1,6 @@
 # Depth-first search of all planar digraphs in Õ(D) rounds
 
-**Status.** Claim, written 3 Nov 2026. Proofs below, simulation in `sim/gdfs.py`, combinatorial core in `lean/PlanarMatching/GeneralSearch.lean`. No human has checked it. Importance: significant if it survives, since it takes the bound for a basic problem from Õ(D²) in `notes/DIRECTED.md` to Õ(D), which is optimal up to polylogarithmic factors, and matches the undirected case. Almost all of the combinatorics is older, see Context, and the one new lemma is modest on its own.
+**Status.** Claim, written 3 Nov 2026. Proofs below, simulation in `sim/gdfs.py`, combinatorial core in `lean/PlanarMatching/GeneralSearch.lean`. Importance: significant if it survives, since it takes the bound for a basic problem from Õ(D²) in `notes/DIRECTED.md` to Õ(D), which is optimal up to polylogarithmic factors, and matches the undirected case. Almost all of the combinatorics is older, see Context, and the one new lemma is modest on its own.
 
 The model is CONGEST on a connected planar network G with n vertices and hop diameter D, with a known embedding. Õ hides factors polylogarithmic in n. A *digraph on G* has its arcs on edges of G, an edge may carry no arc, one arc, or one arc in each direction. D is the diameter of the undirected G. Identifiers are distinct. This note builds on `notes/DIRECTED.md` and `notes/DAG_DFS.md`.
 

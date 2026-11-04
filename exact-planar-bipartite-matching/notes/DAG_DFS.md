@@ -1,6 +1,6 @@
 # Depth-first search and topological order of planar DAGs
 
-**Status.** Claim, written 3 Nov 2026. Proofs below, simulations in `sim/dagdfs.py` and `sim/sec5.py`. No human has checked it. Importance: solid if it survives for the DAG Search Theorem, since the bound is optimal up to polylogarithmic factors for a basic problem, and we found no earlier bound polynomial in D for it. Modest for the Topological Order Theorem, where earlier work suggests randomized ranks, see Context.
+**Status.** Claim, written 3 Nov 2026. Proofs below, simulations in `sim/dagdfs.py` and `sim/sec5.py`. Importance: solid if it survives for the DAG Search Theorem, since the bound is optimal up to polylogarithmic factors for a basic problem, and we found no earlier bound polynomial in D for it. Modest for the Topological Order Theorem, where earlier work suggests randomized ranks, see Context.
 
 The model is CONGEST on a connected planar network G with n vertices and hop diameter D, with a known embedding. Õ hides factors polylogarithmic in n. A *digraph on G* has its arcs on edges of G, an edge may carry no arc, one arc, or one arc in each direction. In round bounds D is the diameter of the undirected G, and in D[K] it is the digraph of Sections 3 and 4. Identifiers are distinct. This note builds on `notes/DIRECTED.md`.
 

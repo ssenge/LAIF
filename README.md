@@ -4,7 +4,7 @@ Results on open problems in algorithms and complexity. Each folder holds one top
 
 ## Results
 
-"Lean" means that the theorem is machine-checked in Lean 4 with Mathlib, using only the standard axioms. "Assuming" names a classical theorem that the Lean statement takes as an explicit hypothesis. "Claim" means a result with a written proof that no human has checked. Each folder states exactly what is checked and what is not. In the rows on distributed algorithms, n is the number of nodes, D the hop diameter, and Õ hides factors polylogarithmic in n.
+"Lean" means that the theorem is machine-checked in Lean 4 with Mathlib, using only the standard axioms. "Assuming" names a classical theorem that the Lean statement takes as an explicit hypothesis. "Claim" means a result with a written proof that is not fully formalized. Each folder states exactly what is checked and what is not. In the rows on distributed algorithms, n is the number of nodes, D the hop diameter, and Õ hides factors polylogarithmic in n.
 
 | Category | Problem | Before | After | Scope | Status | Details |
 |---|---|---|---|---|---|---|

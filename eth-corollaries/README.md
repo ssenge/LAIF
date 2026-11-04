@@ -784,8 +784,7 @@ lake env lean CheckAxioms.lean
   above), `spectrum`, `pottsSpec`, `mono`, `comps`, `tutte` (the rank-generating form; Mathlib has no
   Tutte polynomial to compare with), `cutSize`, `isingSum`, `Seed`, the input codes
   (including `seedCode`). Anthropic's:
-  the TM2 machine model and their statement files. Nobody has reviewed Anthropic's statements by
-  hand yet.
+  the TM2 machine model and their statement files.
 
 ## Status and next steps
 

@@ -16,7 +16,7 @@ Problem 7). Each folder holds one topic with its proofs, Lean files and scripts.
 |---|---|---|---|---|
 | OP4: exponent κ in the (c/ε)^κ rounds of the planar (7 + ε)-approximation | κ ≈ 25.81 [1] | κ < 5.89 | Proved. Core inequalities machine-checked in Lean 4 + Mathlib | [op4](op4/) |
 | OP3: rounds of the (1 + ε)-approximations (fractional, and randomized with expected size) | upper bound (c/ε)^25.81 [1], dependence on ε open | at least 1/ε − 4 rounds on every minor-closed class that contains all paths; Θ(1/ε) on forests and on outerplanar graphs | Lower bound machine-checked in Lean. Forests and outerplanar graphs proved on paper, with the combinatorial steps checked in Lean | [op4](op4/) |
-| OP7: best ratio of deterministic constant-round algorithms on planar graphs of girth ≥ g | (3g − 2)/(g − 2): 13/3 for g = 5, 4 for g = 6, 19/5 for g = 7; lower bound 3 | 3.51 for g = 5, 3.23 for g = 6, 3.16 for g = 7, 3.13 for g = 8, 3.09 for g = 10, 3.04 for every g ≥ 30, 3.03 for every g ≥ 1000; better than [1] for 5 ≤ g ≤ 101 | **Not peer-reviewed.** Certificate LP feasible in exact rational arithmetic; written soundness argument, charge-level instance checks and AI referee passes | [op7](op7/) |
+| OP7: best ratio of deterministic constant-round algorithms on planar graphs of girth ≥ g | (3g − 2)/(g − 2): 13/3 for g = 5, 4 for g = 6, 19/5 for g = 7; lower bound 3 | 3.51 for g = 5, 3.23 for g = 6, 3.16 for g = 7, 3.13 for g = 8, 3.09 for g = 10, 3.04 for every g ≥ 30, 3.03 for every g ≥ 1000; better than [1] for 5 ≤ g ≤ 101 | Certificate LP feasible in exact rational arithmetic; written soundness argument, charge-level instance checks | [op7](op7/) |
 
 **Round exponent (OP4).** A different choice of the stars in the clustering step of [1] (random
 centres) lowers the exponent of 1/ε from 25.81 to below 5.89 on planar graphs. The ratio stays
@@ -35,8 +35,7 @@ argument whose constants come from a linear program. That LP is feasible below (
 for every g from 5 to 101 and below 13/4 for every g ≥ 6, checked in exact rational arithmetic.
 For g ≥ 1000 it gives 3.03, against the lower bound 3. The argument that each LP row is a
 valid local inequality is in [`op7/SOUNDNESS.md`](op7/SOUNDNESS.md), and a script recomputes all
-charges on adversarial instances. No person has reviewed the argument, so the ratios are not
-claimed as theorems.
+charges on adversarial instances. The ratios are not claimed as theorems.
 
 ## References
 

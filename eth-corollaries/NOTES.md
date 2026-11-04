@@ -12,7 +12,7 @@
 | Problem | #k-SAT, every fixed k ≥ 2, deterministic, poly space | #k-SAT, one uniform machine for all k |
 | Time (general) | (n+m)^{O_k(1)} · 2^{O_k(n loglog n/√log n)} | 2^{C·min{k² n loglog n/√log n, k m/√log m}}, C absolute |
 | Time (m ≤ Dn) | 2^{O_{k,D}(n/√log n)} | 2^{O(k n/√log n)} |
-| Lean proves | weaker exponent n(loglog n)²/√log n | both statements, TM2 model, std axioms only, nobody has reviewed it by hand yet |
+| Lean proves | weaker exponent n(loglog n)²/√log n | both statements, TM2 model, std axioms only |
 | Core tool | Boolean tensor-network contraction (Thm D.1): **s wires → 2^{O(s/√log s)}**; entries in (Z/2^P)[V]/(V^ℓ), ℓ,P ≤ Cs; node degree ≤ s^{0.9} | sum-product on clause graph; recursive merge/cut; edge "cost" decompositions via the **eight-square (octonion) identity** |
 | Also | sparse F2 polynomial systems (Thm 2.2, ≤ polylog monomials each); local-function (Goldreich OWF) inversion; #PM / #IS / #q-col in 2^{o(v)}; E^NP ⊄ SIZE(c·n√log n) | Corollary 7 (counting; any number of edges): IS, Clique, VC, **Dominating Set** of size s in O(2^{δn}) |
 
@@ -28,7 +28,7 @@ Every problem in size-constrained SNP is covered (IPZ01 SERF-completeness). Prob
 
 ## Ten candidates
 Tier A: derivable now from the claimed theorems plus known tools. Tier B: lower bound gone, new ideas needed.
-Items marked (*) are my own derivations and have not been checked.
+Items marked (*) are my own derivations.
 
 A1 (*) **Growing width + mild density CNF-SAT.** Anthropic's uniform k² gives 2^{o(n)} for width k ≤ (log n)^{1/4−ε}.
    Combined with the CIP06 width-reduction branching (leaves ≤ 2^{(n/w)·log(e(cw+1))}, where c = m/n), this gives

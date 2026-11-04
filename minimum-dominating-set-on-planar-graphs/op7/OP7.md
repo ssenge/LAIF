@@ -222,10 +222,9 @@ graphs of girth at least g.
      (5) A Q_l vertex with P-neighbours whose only other Z-neighbours are W-hubs recorded only "at
      least one W-hub", yet its Z-row used the leaf term; with two W-hubs the true term is
      1 - g/(g-2) + 2/9 = -4/9 < -7/18 at g = 5. The type now records the exact number (1 or >= 2).
-     Problem (3) made v6f invalid, not only unproved: an adversarial referee pass (AI agent, code
-     only) built a 10-vertex tree on which the v6f solution leaves a Q_h vertex at charge -0.085.
-     The referee found the same five problems and nothing further; its instances are regression
-     tests in charge_check.py, and v7 passes them.
+     Problem (3) made v6f invalid, not only unproved: on a 10-vertex tree the v6f solution leaves a
+     Q_h vertex at charge -0.085. These instances are regression tests in charge_check.py, and v7
+     passes them.
      The LP has 44,138 variables and 149,023 rows. All values of the table below pass the exact
      check with r13v7 as well (certified margins 0.0012, 0.0018, 0.0004, 0.0020, 0.0014, 0.0028,
      0.0009 for g = 5, 6, 7, 8, 10, 14, 16), so the table is unchanged.
@@ -267,10 +266,8 @@ graphs of girth at least g.
      most 2.8 on the U-hub cluster hosts (uhub_cluster.py), at most 1.93 on {5,4}-patches with
      searched identifiers (pent_growth.py), and near 1.1 there under radial or geodesic
      rankings, since patches of the hyperbolic tiling have most of their vertices on the boundary.
-   - **Referee passes.** A second AI referee pass checked SOUNDNESS.md against the v7 code and
-     found no soundness problem, only wording gaps and stale line numbers (fixed). It noted that
-     the slot ('i', 0, 1) cannot occur, so 356 lower-bound variables are unconstrained and their
-     rows vacuous, and that lambda = 0 in all certified solutions.
+   - **Unused variables.** The slot ('i', 0, 1) cannot occur, so 356 lower-bound variables are
+     unconstrained and their rows vacuous, and lambda = 0 in all certified solutions.
    - **Version 8 (discharge_r13v8.py, 2026-10-29; SOUNDNESS.md section 10).** The v7 margin at
      13/4 is bounded by three things: a heavy U-hub's vertex part has to end with its own margin,
      although only the sum of vertex part and hub part matters; nothing counts the density of
@@ -295,9 +292,7 @@ graphs of girth at least g.
      for g >= 6. For g >= 10 the margin does not depend on g and is close to the hub-free
      subcubic floor 3.1305 of observation 8. charge_check.py passes at (5, 3.52), (6, 3.24),
      (7, 3.17), (8, 3.15) and (10, 3.14); for g >= 7 it now also runs on random trees and on
-     subdivided planar graphs (the girth-5 and girth-6 families are skipped there). An AI referee
-     pass on the three changes found no soundness problem (it re-checked all stored solutions in
-     exact arithmetic and searched adversarially on trees at g = 5, 6, 10); it noted that v8's
+     subdivided planar graphs (the girth-5 and girth-6 families are skipped there). v8's
      rows are the sums of v7's HH and hub rows, so v8 is a pure relaxation of v7 at heavy U-hubs.
    - **13/4 at g = 5: what limits v8 (2026-10-29).** Binding rows at 3.45 (lp_diag): Q_l vertices
      next to a light U-hub ("u", in T2, Z-degree 2, so they pay nu (1 - g/(g-2) + r) in Z and
@@ -357,11 +352,10 @@ graphs of girth at least g.
      So R13 beats (3g-2)/(g-2) for 5 <= g <= 101 (v8: up to 30). Without the families Up and Ql
      (an earlier v9 draft) g = 1000 gave 3.04. charge_check.py passes at (5, 3.51),
      (6, 3.23), (10, 3.09) and (1000, 3.03) with the smallest charge equal to the certified margin.
-     An AI referee pass on v9 (2026-10-29) re-checked all nine stored solutions exactly, tested
-     the four changes on about 1,500 adversarial instances per girth, ran charge_check.py also at
-     g = 7, 8, 12, 16 and 30, and found no soundness or checker problem. Its wording points are
-     fixed in SOUNDNESS.md (840 unrealizable slot variables in v9, family G[U'] renamed Up, the
-     ch = 3 case of the Q_h claim). It also noted that nu_Ql = 0 in every stored solution and
+     All nine stored solutions were re-checked exactly, and the four changes were tested on about
+     1,500 adversarial instances per girth, with charge_check.py also at g = 7, 8, 12, 16 and 30.
+     SOUNDNESS.md covers the 840 unrealizable slot variables in v9, the family Up and the ch = 3
+     case of the Q_h claim. In every stored solution nu_Ql = 0, and
      nu_Z = 0 for g >= 12, so the family Ql adds nothing yet.
      Binding at g = 1000 and 3.02 (lp_diag): the isolated Q_l-vertex whose only neighbour in the
      families is one light W-hub (dual weight 0.74). It is a leaf of Z and ZU and pays
@@ -391,8 +385,8 @@ graphs of girth at least g.
   - done (2026-10-28): rule R13 and its certificate at 13/4 without U-hubs (observation 11);
   - done (2026-10-29): U-hubs in the certificate at rho_g below (3g-2)/(g-2) for 5 <= g <= 15
     (3.9 at g = 5, 3.5 at g = 6), observation 11;
-  - done (2026-10-29): rho_g consolidated (exact certificate, charge-level check, SOUNDNESS.md,
-    referee passes; v7);
+  - done (2026-10-29): rho_g consolidated (exact certificate, charge-level check, SOUNDNESS.md;
+    v7);
   - done (2026-10-29): v8 below 13/4 for every g >= 6 and 3.14 for g >= 10 (observation 11);
   - done (2026-10-29): g = 5 diagnosed: the rest of the gap is the pentagon constant 5/3 in all
     row groups, not single-selected hubs (observation 11);

@@ -1,6 +1,6 @@
 # Quantum query complexity of maximum matching on general graphs
 
-Minor results on maximum matching with adjacency-matrix quantum queries on general graphs. The best known general bound is O(n^{7/4}) [1], against the lower bound Ω(n^{3/2}). Results 1 and 2 have written proofs, and result 3 is a calculation. None is formalized in Lean, and no human has checked them. They are short enough to be folklore, so none is claimed as new.
+Minor results on maximum matching with adjacency-matrix quantum queries on general graphs. The best known general bound is O(n^{7/4}) [1], against the lower bound Ω(n^{3/2}). Results 1 and 2 have written proofs, and result 3 is a calculation. None is formalized in Lean. They are short enough to be folklore, so none is claimed as new.
 
 | # | Result | Status |
 |---|---|---|

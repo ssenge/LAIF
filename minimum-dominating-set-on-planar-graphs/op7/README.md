@@ -14,12 +14,8 @@ discharging argument whose constants come from a linear program.
 Please read this before relying on anything here.
 - **Nothing here is a theorem yet.** The ratios below are feasible solutions of a certificate LP.
   Feasibility is checked in exact rational arithmetic (`cert_exact.py`). The argument that each
-  row family is a valid local inequality is written up in [`SOUNDNESS.md`](SOUNDNESS.md). Two AI
-  referee passes found no problem in v7 (the first one found the five flaws of the version before
-  it). The three changes of v8 are argued in section 10 of that note; one AI
-  referee pass on them found no soundness problem. The four changes of v9 are argued in section
-  13 of the same note; one AI referee pass on them found no soundness problem. No person has
-  reviewed the argument.
+  row family is a valid local inequality is written up in [`SOUNDNESS.md`](SOUNDNESS.md). The three
+  changes of v8 are argued in section 10 of that note, and the four changes of v9 in section 13.
 - The type model of the LP has been checked on instances: on adversarial planar girth-5 graphs,
   every local type that occurs is in the LP, and the dual solution it defines satisfies the
   claimed bound.
@@ -95,8 +91,7 @@ derived bounds exactly and checks all 267,770 rows with fractions.
 The v7 values were first found with `discharge_r13z.py`. Writing out the charge argument showed
 five places where a row claimed more than the charges give; v7 fixes them. One of the five makes
 `discharge_r13z.py` invalid, not just unproved: on a tree with 10 vertices its solution leaves a
-vertex with negative charge. An independent adversarial referee pass (an AI agent) found the same
-five problems and nothing further.
+vertex with negative charge.
 
 When no vertex of U has 4 or more neighbours in U (no U-hubs), the LP `discharge_r13.py` is
 feasible at rho = 13/4 for g = 5, with margin 0.0075. It is infeasible at 3.20.

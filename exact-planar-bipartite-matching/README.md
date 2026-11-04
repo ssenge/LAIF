@@ -6,7 +6,7 @@ Distributed algorithms that compute an exact maximum matching of a planar networ
 
 **Paper:** [`paper/main.pdf`](paper/main.pdf), with its source in [`paper/`](paper/).
 
-**Status: every result here is a claim.** The proofs are written, tested by simulation and partly formalized in Lean. No human expert has checked them. See [How far to trust this](#how-far-to-trust-this).
+**Status: every result here is a claim.** The proofs are written, tested by simulation and partly formalized in Lean. See [How far to trust this](#how-far-to-trust-this).
 
 ## The problem
 

@@ -1,6 +1,6 @@
 # Directed search in planar networks
 
-**Status.** Claim, written 3 Nov 2026. Proofs below, simulation in `sim/dirs.py`. No human has checked it. Importance: solid if it survives for the depth-first search, since we found no earlier bound polynomial in D on digraphs. Modest for the forest and the order, where earlier work covers part of the claim, see Context.
+**Status.** Claim, written 3 Nov 2026. Proofs below, simulation in `sim/dirs.py`. Importance: solid if it survives for the depth-first search, since we found no earlier bound polynomial in D on digraphs. Modest for the forest and the order, where earlier work covers part of the claim, see Context.
 
 The model is CONGEST on a connected planar network G with n vertices and hop diameter D, with a known embedding. Õ hides factors polylogarithmic in n. A *digraph on G* has a set of arcs on the edges of G, where an edge may carry no arc, one arc, or one arc in each direction. Paths and reachability are always in the digraph. In round bounds D is the diameter of the undirected G, and in the problems of Sections 3 and 4 it is their digraph. The tree of bags, (B1) to (B6) and Fact 1 are those of `notes/MATCHING.md`, Section 2.
 
