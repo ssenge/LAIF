@@ -249,7 +249,7 @@ namespace Problem
 
 /-- **The expected query count over the process.** Let `K` be the process, with or without redraw.
 Suppose each round's samples have mean size at most `c (2 δ² + ln n)`, over the whole run: `hR` and `hS`.
-These are the hypotheses that the README obtain from the lower tail of `W̃`, not proved here. If a round
+These are the hypotheses that the README obtains from the lower tail of `W̃`, not proved here. If a round
 with samples of sizes `r` and `k` costs `roundCost`, as `search_cost_le_roundCost` says, then `T` rounds
 cost in expectation at most `C · T (δ √n + √(n log n))`, with `C = roundConst κ c`. The hypotheses are
 means over the whole run because a bound from every reachable state is false: see `Theorem1.lean`. -/

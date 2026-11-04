@@ -20,7 +20,7 @@ There are two layers.
 
 These are published theorems, used as hypotheses only. Only `ORBound` enters a proof here, in `LowerBoundQuery.lean`.
 
-**Accounting layer.** The README nest searches, and a nested search with a bounded-error inner routine is a statement
+**Accounting layer.** The README nests searches, and a nested search with a bounded-error inner routine is a statement
 about programs, not about one `QAlg`. The accounting does not model that. It uses abstract routines:
 
 * `search N x δ` and `minFind N f δ` are distributions on outcomes.

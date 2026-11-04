@@ -19,7 +19,7 @@ What is proved here:
 * `sum_recordCount_le`, `mean_rounds_le`: over a uniform order, the mean number of rounds is at most
   `H_r ≤ 1 + ln r`. This is the expected-halving step, proved rather than assumed;
 * `mean_cost_le`, `maximum_mean_cost`: the expected query count `O(√n log³ n · E)`, where `E` is the
-  repetition factor for a decision. The README take `E = O(log log n)`.
+  repetition factor for a decision. The README takes `E = O(log log n)`.
 
 What is not proved: the query bound as a statement about `queryQ`. That would also need bounded-error
 adaptive composition with error reduction and a first moment step from the mean to a worst case, in the
@@ -475,7 +475,7 @@ theorem mean_cost_le (v : Fin r → α) (hr : 0 < r) {n : ℕ} (hrn : r ≤ n) (
 a strict decision on any set of rows costs at most `K₁ √n log₂ n` queries in the model; and the loop
 over a uniform order, charging `E` such decisions for each decision and `κ₀ √n` for each maximum
 finding, has mean total at most `K₂ √n (log₂ n)³ E`. Neither constant depends on the alphabet, so no
-factor `log W` appears. The README take `E = O(log log n)`. -/
+factor `log W` appears. The README takes `E = O(log log n)`. -/
 theorem maximum_mean_cost {C κ₀ : ℝ} (hC : 0 ≤ C) (hκ₀ : 0 ≤ κ₀) (hLQ : LeeQueryAdv C)
     (hLG : LeeAdvGamma) (hDH : DurrHoyer κ₀) :
     ∃ K₁ K₂ : ℝ, 0 ≤ K₁ ∧ 0 ≤ K₂ ∧

@@ -7,7 +7,7 @@ import Arborescence.Model
 the sets are nonempty and avoid the root, `y ≥ 0` on non-singletons, and inequality (1) holds for all
 edges `(u, v)` with `u ≠ v`, `v ≠ root`.
 
-The nonemptiness is a hypothesis that the README leave implicit, since there every set is a node. Without it
+The nonemptiness is a hypothesis that the README leaves implicit, since there every set is a node. Without it
 the statement is false: the empty set with `y = 1` satisfies all the other conditions.
 -/
 

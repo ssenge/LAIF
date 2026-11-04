@@ -4,7 +4,7 @@ import Monge.TotallyMonotone
 # The hard family (Theorem 2, upper part)
 
 `M_h[i, j] = -(i - j)²` off the diagonal and `M_h[i, i] = h_i`. It has the reverse quadrangle inequality for every `h`,
-its maximum is `OR(h)`, and one entry reveals at most one bit of `h`. The README check adjacent
+its maximum is `OR(h)`, and one entry reveals at most one bit of `h`. The README checks adjacent
 blocks; here all blocks are checked directly.
 -/
 

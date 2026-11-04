@@ -39,7 +39,7 @@ structure IsSmallestPeriod (P : List α) (p : ℕ) : Prop where
   per : P.HasPeriod p
   min : ∀ q, 0 < q → P.HasPeriod q → p ≤ q
 
-/-- **The periodicity lemma**, from Mathlib, in the form the README use: `p + q ≤ |P|`. -/
+/-- **The periodicity lemma**, from Mathlib, in the form the README uses: `p + q ≤ |P|`. -/
 theorem fine_wilf {P : List α} {p q : ℕ} (hp : P.HasPeriod p) (hq : P.HasPeriod q)
     (h : p + q ≤ P.length) : P.HasPeriod (p.gcd q) :=
   hp.gcd hq (by omega)

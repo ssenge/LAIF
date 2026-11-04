@@ -6,7 +6,7 @@ import Arborescence.Algorithm
 For any oracle that returns items with distinct types (`Oracle.Structural`), correct or not, every reachable state
 of the algorithm has a partition into containers and groups, and its builds are `allBuilds us evs` for a run `evs` of
 the abstract machine of `Counting.lean`. So the cost bound for the algorithm holds with no assumption that TopK
-answers correctly, as the README claim in the proof of Theorem 1. `SInv` is that invariant.
+answers correctly, as the README claims in the proof of Theorem 1. `SInv` is that invariant.
 -/
 
 set_option linter.unusedSectionVars false

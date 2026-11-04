@@ -10,7 +10,7 @@ import Mathlib.Tactic.NormNum
 Section "Setting" and the first Fact of `README.md`. Strings are `List α`. Positions are natural numbers and indexing is
 `S[i]?`, so an out-of-range position gives `none`.
 
-The README say that a cover is a border. That needs `S ≠ []`: every string covers the empty string vacuously
+The README says that a cover is a border. That needs `S ≠ []`: every string covers the empty string vacuously
 (`covers_nil`), and only `[]` is a border of it. See `Covers.isBorder` and `not_isBorder_of_covers_nil`.
 -/
 

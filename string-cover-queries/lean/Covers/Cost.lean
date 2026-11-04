@@ -20,7 +20,7 @@ What is hypothesized is `GroverCost` and `MinCost`, and the charge itself. What 
 
 ## The count of a sample
 
-The README say "`log w` phases of `O(log n)` columns, each column `O(√ℓ log n)` queries". One column has a search over the
+The README says "`log w` phases of `O(log n)` columns, each column `O(√ℓ log n)` queries". One column has a search over the
 overlap at `O(√ℓ log n)`, but also two minimum findings at `O(√w log² n)`, since a survivor check reads `O(log n)` columns.
 The total `O(√ℓ log³ n)` still holds, because `w` halves between phases, so the minimum findings sum geometrically.
 `sampleQ_le` proves that.
