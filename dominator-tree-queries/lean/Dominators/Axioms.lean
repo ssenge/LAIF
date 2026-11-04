@@ -27,7 +27,7 @@ import Dominators
 #print axioms Dominators.forest_searches_le
 #print axioms Dominators.run_stack_nil
 #print axioms Dominators.dfs_isDfsTree
--- Kosaraju
+-- Components
 #print axioms Dominators.round1_order
 #print axioms Dominators.kosaraju_correct
 #print axioms Dominators.kosaraju_same_iff

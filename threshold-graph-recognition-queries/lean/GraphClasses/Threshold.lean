@@ -3,8 +3,8 @@ import GraphClasses.Recognition
 /-!
 # Threshold graphs
 
-A threshold graph is built by repeatedly adding an isolated or a dominating vertex. Equivalently (Chvátal, Hammer
-1977, proved here as `threshold_iff_noAlt`) it has no alternating 4-cycle. The recursive split sends each pair to
+A threshold graph is built by repeatedly adding an isolated or a dominating vertex. Equivalently (proved here as
+`threshold_iff_noAlt`) it has no alternating 4-cycle. The recursive split sends each pair to
 exactly one cross block, and each cross block of a threshold graph is nested.
 -/
 
@@ -176,7 +176,7 @@ theorem thresholdOn_of_noAltOn [DecidableEq V] {G : SimpleGraph V} [DecidableRel
     · exact ThresholdOn.isolated _ hrec fun u hu => hi u (hsub hu)
     · exact ThresholdOn.dominating _ hrec fun u hu => hd u (hsub hu) (ne_of_mem_erase hu)
 
-/-- **Chvátal, Hammer 1977.** A graph is a threshold graph iff it has no alternating 4-cycle. -/
+/-- **Characterization.** A graph is a threshold graph iff it has no alternating 4-cycle. -/
 theorem threshold_iff_noAlt [Fintype V] [DecidableEq V] (G : SimpleGraph V) [DecidableRel G.Adj] :
     IsThreshold G ↔ NoAlt G := by
   constructor

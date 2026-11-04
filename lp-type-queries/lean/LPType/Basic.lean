@@ -5,7 +5,7 @@ import Mathlib.Data.Finset.Max
 /-!
 # LP-type problems: definitions and Facts 1 to 4
 
-The universe of constraints is a `Fintype H`, so `H` of the notes is `Finset.univ`. The value type
+The universe of constraints is a `Fintype H`, so `H` of the README is `Finset.univ`. The value type
 only needs a partial order: strict comparisons in the definitions behave as in a linear order
 because `f` is monotone. There is no assumption on `f ∅`.
 -/

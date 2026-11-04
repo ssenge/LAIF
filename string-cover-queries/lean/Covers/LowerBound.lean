@@ -5,7 +5,7 @@ import Covers.Range
 
 `aⁿ` has shortest cover `a`. With one `b ≠ a` at any position `i`, the only cover is the whole string, and the borders
 are `a^j` for `j ≤ min(i, n - 1 - i)` and `S` itself. So for `n ≥ 2` the shortest cover has length 1 iff `S = aⁿ`. This is
-the form of the revised notes. It implies the earlier form, length `> n/3` for a middle position.
+the form of the README. It implies the form with length `> n/3` for a middle position.
 -/
 
 namespace Strings
@@ -91,7 +91,7 @@ theorem oneB_shortest_length_gt_third {n i : ℕ} {a b : α} {C : List α} (hab 
   have hlen : C.length = n := by rw [this, length_oneB]
   omega
 
-/-- **Revised notes.** The shortest cover has length 1 on `aⁿ` and not on `aⁿ` with one `b`, for `n ≥ 2`. -/
+/-- The shortest cover has length 1 on `aⁿ` and not on `aⁿ` with one `b`, for `n ≥ 2`. -/
 theorem oneB_shortest_length_ne_one {n i : ℕ} {a b : α} {D : List α} (hab : a ≠ b) (hi : i < n) (hn : 2 ≤ n)
     (hD : IsShortestCover D (oneB n i a b)) : D.length ≠ 1 := by
   rw [oneB_cover_eq hab hi hD.1, length_oneB]

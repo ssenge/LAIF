@@ -6,7 +6,7 @@ import Dominators.DfsTree
 An executable form of Section 2 of `README.md`. Vertices are processed in decreasing preorder, and `sd w` is
 found by a minimum search over the predecessors of `w`. The minimum search is a parameter with a specification,
 `IsMinFind`, as the search of `DFS.lean` is. Then `idom` is computed in increasing preorder as a nearest common
-ancestor. Main result: `dominators_correct`. It assumes no theorem of Lengauer and Tarjan: the two facts it
+ancestor. Main result: `dominators_correct`. It assumes no classical theorem on dominators: the two facts it
 needs are `IsDfsTree.sdom_formula` and `IsDfsTree.idom_iff_nca`.
 -/
 
@@ -377,7 +377,7 @@ def dominators (search : V → Finset V → Option V) (minFind : V → (V → Wi
 
 /-- **Correctness of the dominator algorithm.** With a search and a minimum finding that meet their
 specifications and `2n` fuel, the output is exactly the immediate dominator of each reachable non-root vertex,
-and `none` for the others. No result of Lengauer and Tarjan is assumed. -/
+and `none` for the others. No classical result on dominators is assumed. -/
 theorem dominators_correct {search : V → Finset V → Option V}
     {minFind : V → (V → WithTop ℕ) → WithTop ℕ} (hS : IsSearch E search) (hM : IsMinFind E minFind)
     {fuel : ℕ} (hf : 2 * Fintype.card V ≤ fuel) (r u w : V) :

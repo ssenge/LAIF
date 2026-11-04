@@ -3,7 +3,7 @@ import GraphClasses.Split
 /-!
 # The learner: Search, Holding, Trim, Learn
 
-The search is a parameter with a specification: it returns a marked item if one exists, none otherwise. BBHT provides
+The search is a parameter with a specification: it returns a marked item if one exists, none otherwise. Quantum search provides
 this with high probability, which is a separate matter (see `Model.lean`, `Cost.lean`). The pivots are a parameter as
 well: all correctness theorems hold for every choice of pivots, and so for every outcome of the random choices.
 -/

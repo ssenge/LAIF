@@ -7,8 +7,8 @@ import Mathlib.LinearAlgebra.UnitaryGroup
 # The quantum model and the quantum facts taken as hypotheses
 
 Bounded-error quantum query complexity `Q` over a finite alphabet, the general adversary bound
-`Adv±`, and three named hypotheses: the two theorems of Lee, Mittal, Reichardt, Špalek, Szegedy
-(arXiv:1011.3020) and Dürr-Høyer maximum finding. These three are not proved. They are `Prop`s passed
+`Adv±`, and three named hypotheses: the two theorems of arXiv:1011.3020
+and maximum finding. These three are not proved. They are `Prop`s passed
 as arguments, and `Axioms.lean` confirms no axiom is added. The two theorems at the end only chain
 them together.
 
@@ -80,21 +80,21 @@ noncomputable def advPM (D : Set (J → Fin k)) (f : (J → Fin k) → E) : ℝ 
 
 /-! ## The hypotheses -/
 
-/-- **Lee et al., Theorem 1.1.** `Q(f) = Θ(Adv±(f))`, with a constant `C` that is universal over
+/-- **arXiv:1011.3020, Theorem 1.1.** `Q(f) = Θ(Adv±(f))`, with a constant `C` that is universal over
 index sets, alphabets, domains and functions. -/
 def LeeQueryAdv (C : ℝ) : Prop :=
   ∀ (J : Type) [Fintype J] [DecidableEq J] (k : ℕ) (E : Type) [Fintype E] [DecidableEq E]
     (D : Set (J → Fin k)) (f : (J → Fin k) → E),
     (queryQ D f : ℝ) ≤ C * advPM D f ∧ advPM D f ≤ C * (queryQ D f : ℝ)
 
-/-- **Lee et al., Theorem 3.4.** `Adv±(f) ≤ γ(f) ≤ 2 Adv±(f)`, where `γ` is the filtered `γ₂` with
+/-- **arXiv:1011.3020, Theorem 3.4.** `Adv±(f) ≤ γ(f) ≤ 2 Adv±(f)`, where `γ` is the filtered `γ₂` with
 constraints on all pairs. -/
 def LeeAdvGamma : Prop :=
   ∀ (J : Type) [Fintype J] [DecidableEq J] (k : ℕ) (E : Type) [Fintype E] [DecidableEq E]
     (D : Set (J → Fin k)) (f : (J → Fin k) → E),
     advPM D f ≤ gam D f ∧ gam D f ≤ 2 * advPM D f
 
-/-- **Dürr-Høyer maximum finding**, on the pairs (value, minus index) so that it returns the
+/-- **Maximum finding**, on the pairs (value, minus index) so that it returns the
 leftmost maximum: for `c` positions `w` of the input, the leftmost maximum costs at most `κ √c`
 queries, with `κ` universal. The bound does not depend on the alphabet. -/
 def DurrHoyer (κ : ℝ) : Prop :=

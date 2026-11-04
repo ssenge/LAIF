@@ -7,7 +7,7 @@ import Mathlib.Analysis.Convex.SpecificFunctions.Pow
 # The query count
 
 Plain arithmetic: `T (δ √n + √(n log n))` with `T = ⌈12 δ ln n⌉` is at most
-`14 (δ² √n log n + δ √n log^{3/2} n)`. Grover's cost enters only through `GroverFindAll` and
+`14 (δ² √n log n + δ √n log^{3/2} n)`. The cost of search enters only through `GroverFindAll` and
 `GroverFindOne` of `LPType.Model`. The size of the samples enters through hypotheses
 (`hR`, `hS` in `expected_queries_le`): the bound on `E[|S_t|]` needs the lower tail of `W̃`, which is
 not proved here. The unconditional part, `E[|S|] ≤ s W / Z` for a fixed `Z > 0`, is `sum_inclProb_le`.
@@ -17,9 +17,9 @@ open Finset
 
 namespace LPType
 
-/-! ## Jensen -/
+/-! ## Concavity -/
 
-/-- **Jensen for the square root**: `E[√a] ≤ √E[a]`, on a finite probability space. -/
+/-- **Concavity of the square root**: `E[√a] ≤ √E[a]`, on a finite probability space. -/
 theorem sum_mul_sqrt_le {Ω : Type*} [Fintype Ω] {ρ a : Ω → ℝ} (hρ : ∀ u, 0 ≤ ρ u)
     (hsum : ∑ u, ρ u = 1) (ha : ∀ u, 0 ≤ a u) :
     ∑ u, ρ u * √(a u) ≤ √(∑ u, ρ u * a u) := by
@@ -44,11 +44,11 @@ theorem sum_inclProb_le {H : Type*} [Fintype H] {s Z : ℝ} {w : H → ℝ} (hZ 
   rw [mul_sum, sum_div]
   exact sum_le_sum fun h _ => inclProb_le_div hZ h
 
-/-! ## Grover's cost, in expectation over the marks -/
+/-! ## the cost of quantum search, in expectation over the marks -/
 
 /-- From `GroverFindAll`: when the marks depend on a random seed `u`, drawn independently of the
 input, the expected cost of finding all marked elements is at most
-`κ (√(n E[k]) + √(n log n))`, by Jensen. This is the round cost of the notes. -/
+`κ (√(n E[k]) + √(n log n))`, by concavity. This is the round cost of the README. -/
 theorem findAll_expected_cost_le {κ : ℝ} (hκ : 0 ≤ κ) (hG : GroverFindAll κ) {n k : ℕ} (hn : 2 ≤ n)
     {Ω : Type*} [Fintype Ω] {ρ : Ω → ℝ} (hρ : ∀ u, 0 ≤ ρ u) (hsum : ∑ u, ρ u = 1)
     (m : Ω → Fin n → Fin k → Bool) (x : Fin n → Fin k) :
@@ -131,7 +131,7 @@ theorem sqrt_sample_le {n c δ L : ℝ} (hn : 0 ≤ n) (hc : 0 ≤ c) (hδ : 0 �
 noncomputable def roundConst (κ c : ℝ) : ℝ := 4 * (κ + 1) * √c + 3 * κ
 
 /-- **One round, in expectation.** If both samples have mean size at most `c (2 δ² + L)`, the bound
-after Jensen is at most `C (δ √n + √(n L))`. -/
+after using concavity is at most `C (δ √n + √(n L))`. -/
 theorem round_bound_le {κ n c δ L K K' : ℝ} (hκ : 0 ≤ κ) (hn : 0 ≤ n) (hc : 0 ≤ c) (hδ : 0 ≤ δ)
     (hL : 0 ≤ L) (hK : K ≤ c * (2 * δ ^ 2 + L)) (hK' : K' ≤ c * (2 * δ ^ 2 + L)) :
     (κ + 1) * (√(n * K') + √(n * K)) + 3 * κ * √(n * L)
@@ -151,7 +151,7 @@ theorem round_bound_le {κ n c δ L K K' : ℝ} (hκ : 0 ≤ κ) (hn : 0 ≤ n) 
   have h7 := mul_le_mul_of_nonneg_left h5 (by linarith : 0 ≤ κ + 1)
   nlinarith
 
-/-- The query count of the notes: `T (δ √n + √(n log n))`. -/
+/-- The query count of the README: `T (δ √n + √(n log n))`. -/
 noncomputable def queryCount (T δ n : ℕ) : ℝ :=
   T * (δ * √(n : ℝ) + √((n : ℝ) * Real.log n))
 
@@ -202,7 +202,7 @@ theorem expect_sum {ι : Type*} (s : Finset ι) (T : ℕ) (σ : State) (φ : ι 
   simp only [K.expect_eq_sum_paths, mul_sum]
   rw [sum_comm]
 
-/-- **Jensen over the whole run**: `E[√φ] ≤ √E[φ]`. -/
+/-- **Concavity over the whole run**: `E[√φ] ≤ √E[φ]`. -/
 theorem expect_sqrt_le (T : ℕ) (σ : State) {φ : List Step → ℝ} (hφ : ∀ l, 0 ≤ φ l) :
     K.expect T σ (fun l => √(φ l)) ≤ √(K.expect T σ φ) := by
   have := Real.strictConcaveOn_sqrt.concaveOn.le_map_sum (t := paths (Step := Step) T)
@@ -221,7 +221,7 @@ theorem sum_map_eq_sum_range {α : Type*} (c : α → ℝ) (d : α) (l : List α
 
 end Kernel
 
-/-! ## Grover's cost as a round cost -/
+/-! ## the cost of quantum search as a round cost -/
 
 /-- What `GroverFindAll` and `GroverFindOne` give for one round: the three searches have error at most
 `1/n³` each, and for fixed marks and input the expected queries, with the samples read, are at most
@@ -249,7 +249,7 @@ namespace Problem
 
 /-- **The expected query count over the process.** Let `K` be the process, with or without redraw.
 Suppose each round's samples have mean size at most `c (2 δ² + ln n)`, over the whole run: `hR` and `hS`.
-These are the hypotheses that the notes obtain from the lower tail of `W̃`, not proved here. If a round
+These are the hypotheses that the README obtain from the lower tail of `W̃`, not proved here. If a round
 with samples of sizes `r` and `k` costs `roundCost`, as `search_cost_le_roundCost` says, then `T` rounds
 cost in expectation at most `C · T (δ √n + √(n log n))`, with `C = roundConst κ c`. The hypotheses are
 means over the whole run because a bound from every reachable state is false: see `Theorem1.lean`. -/

@@ -35,7 +35,7 @@ theorem hardG_noAlt (n : ℕ) : NoAlt (hardG n) := by
     rcases le_total a.val c.val with e3 | e3 <;> rcases le_total b.val d.val with e4 | e4 <;>
     simp only [max_eq_left, max_eq_right, e1, e2, e3, e4] at h2 h4 h5' h6' <;> omega
 
-/-- The undeleted graph is a threshold graph, by Chvátal and Hammer. -/
+/-- The undeleted graph is a threshold graph, by the characterization. -/
 theorem hardG_threshold (n : ℕ) [DecidableRel (hardG n).Adj] : IsThreshold (hardG n) :=
   (threshold_iff_noAlt _).2 (hardG_noAlt n)
 

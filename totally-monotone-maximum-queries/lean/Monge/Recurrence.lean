@@ -26,7 +26,7 @@ theorem ell_halve {r r' : ℕ} (hr : 1 ≤ r) (h : r' ≤ r / 2) : ell r' + 1 �
   have h2 : ell r' ≤ e := Nat.clog_le_of_le_pow this
   omega
 
-/-- The inductive step of the notes. -/
+/-- The inductive step of the README. -/
 theorem recurrence_step {κ X₁ X₂ : ℝ} {r c r₁ r₂ c₁ c₂ : ℕ} (hκ : 0 ≤ κ) (hr : 1 ≤ r)
     (hX₁ : 0 ≤ X₁) (hX₂ : 0 ≤ X₂)
     (h₁ : X₁ ≤ (2 * κ + 1) * ell r₁ * √((c₁ : ℝ) + r₁))

@@ -5,19 +5,18 @@ import Mathlib.Tactic.IntervalCases
 import Mathlib.Tactic.Ring
 
 /-!
-# Periods: Lemma 2, Fine and Wilf, and the case analysis of Section 2
+# Periods: Lemma 2, the periodicity lemma, and the case analysis of Section 2
 
-`List.HasPeriod` and its Fine and Wilf theorem `List.HasPeriod.gcd` are in Mathlib. `HasPeriod w 0` holds there, so
+`List.HasPeriod` and its periodicity theorem `List.HasPeriod.gcd` are in Mathlib. `HasPeriod w 0` holds there, so
 positivity of periods is explicit below.
 
-## Remarks on the notes
+## Remarks
 
-* **Lemma 2.** The proof is the invariant of the revised notes: closure under `±p`, `min U < w - p`, `max U ≥ p`
-  (`IsPhase.invariant`). The first version argued that `a + p` or `a - p` is an alignment, which fails for
-  `p = 5, w = 7, a = 3`. The invariant uses that a column carries the character of an extreme survivor.
+* **Lemma 2.** The proof is an invariant: closure under `±p`, `min U < w - p`, `max U ≥ p`
+  (`IsPhase.invariant`). The invariant uses that a column carries the character of an extreme survivor.
 * **Blocks.** `|B| ≤ ⌈ℓ/2⌉` and six blocks of `w = ⌊ℓ/8⌋` (`blocks_le_six`). Four blocks do not suffice when `8 ∤ ℓ`
   (`not_four_blocks`).
-* **`Q`.** "`Q` has smallest period `p`" needs no Fine and Wilf: a period `q < p` of the prefix `Q` extends to `P` on its
+* **`Q`.** "`Q` has smallest period `p`" needs no periodicity lemma: a period `q < p` of the prefix `Q` extends to `P` on its
   own (`hasPeriod_of_prefix`).
 * **Capped runs.** The run is extended forward up to `z + ℓ` and backward down to the smallest element of `B`. If `y` lies
   below `B`, which can happen when `|B| < p`, the run does not contain `y`; then there is no occurrence in `B` and the
@@ -40,7 +39,7 @@ structure IsSmallestPeriod (P : List α) (p : ℕ) : Prop where
   per : P.HasPeriod p
   min : ∀ q, 0 < q → P.HasPeriod q → p ≤ q
 
-/-- **Fine and Wilf**, from Mathlib, in the form the notes use: `p + q ≤ |P|`. -/
+/-- **The periodicity lemma**, from Mathlib, in the form the README use: `p + q ≤ |P|`. -/
 theorem fine_wilf {P : List α} {p q : ℕ} (hp : P.HasPeriod p) (hq : P.HasPeriod q)
     (h : p + q ≤ P.length) : P.HasPeriod (p.gcd q) :=
   hp.gcd hq (by omega)
@@ -104,7 +103,7 @@ theorem IsHigh.unique {P : List α} {w a a' : ℕ} {cols : List (ℕ × α)} (h 
 * alignments at distance `p` survive together, and
 * the extremes satisfy `lo + p < w` and `p ≤ hi`, so each extreme has a partner at distance `p`.
 
-The second part is what the notes' proof misses. It holds since a column carries the character of an extreme. -/
+The second part is needed by the proof. It holds since a column carries the character of an extreme. -/
 theorem IsPhase.invariant {P : List α} {w p : ℕ} {cols : List (ℕ × α)} (h : IsPhase P w cols) (hp0 : 0 < p)
     (hpw : p < w) (hper : P.HasPeriod p) :
     (∀ a, a + p < w → (Survives P cols a ↔ Survives P cols (a + p))) ∧
@@ -266,7 +265,7 @@ theorem not_four_blocks : ¬ ∀ ℓ m : ℕ, 16 ≤ ℓ → 2 * m ≤ ℓ → m
 theorem blocks_le_six {ℓ m : ℕ} (hℓ : 16 ≤ ℓ) (hm : m ≤ (ℓ + 1) / 2) : m ≤ 6 * (ℓ / 8) := by
   omega
 
-/-- If `8 ∣ ℓ` and `|B| ≤ ℓ/2`, the four blocks of the notes do suffice. -/
+/-- If `8 ∣ ℓ` and `|B| ≤ ℓ/2`, the four blocks of the README do suffice. -/
 theorem blocks_le_four {ℓ m : ℕ} (h8 : 8 ∣ ℓ) (hm : 2 * m ≤ ℓ) : m ≤ 4 * (ℓ / 8) := by
   omega
 

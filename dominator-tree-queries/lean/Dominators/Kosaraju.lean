@@ -1,7 +1,7 @@
 import Dominators.DFS
 
 /-!
-# Kosaraju's algorithm, with the search as a parameter
+# The two-pass components algorithm, with the search as a parameter
 
 The first round is a search over all roots. The second round searches the reverse graph, with roots in
 decreasing finish time, and each of its trees is a component. Main result: `kosaraju_correct`.
@@ -198,7 +198,7 @@ def round2 (search : V → Finset V → Option V) (fuel : ℕ) :
       let s' := visit search fuel s t
       round2 search fuel ts s' ((s'.visited \ s.visited) :: acc)
 
-/-- Kosaraju's algorithm. The second search is for the reverse graph. It returns the components and the total
+/-- The two-pass algorithm. The second search is for the reverse graph. It returns the components and the total
 number of searches. -/
 def kosaraju (searchG searchR : V → Finset V → Option V) (fuel : ℕ) (roots : List V) :
     List (Finset V) × ℕ :=
@@ -289,7 +289,7 @@ theorem round2_spec {searchR : V → Finset V → Option V} (hR : IsSearch (rev 
             exact ⟨C, List.mem_cons_of_mem _ hC, hxC⟩
           · exact ⟨_, List.mem_cons_self, Finset.mem_sdiff.mpr ⟨hx, hxs⟩⟩
 
-/-- **Kosaraju's correctness.** With searches meeting their specification on the graph and on its reverse, all
+/-- **Correctness of the two-pass algorithm.** With searches meeting their specification on the graph and on its reverse, all
 vertices as roots and `2n` fuel: every output set is a component, the sets are pairwise disjoint, they cover all
 vertices, and the algorithm makes at most `4n` searches. -/
 theorem kosaraju_correct {searchG searchR : V → Finset V → Option V} (hG : IsSearch E searchG)

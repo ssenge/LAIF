@@ -7,7 +7,7 @@ import Arborescence.Model
 the sets are nonempty and avoid the root, `y ≥ 0` on non-singletons, and inequality (1) holds for all
 edges `(u, v)` with `u ≠ v`, `v ≠ root`.
 
-The nonemptiness is a hypothesis that the notes leave implicit, since there every set is a node. Without it
+The nonemptiness is a hypothesis that the README leave implicit, since there every set is a node. Without it
 the statement is false: the empty set with `y = 1` satisfies all the other conditions.
 -/
 
@@ -20,7 +20,7 @@ namespace Arborescence
 variable {V : Type*} [Fintype V] [DecidableEq V] {ι : Type*} [Fintype ι]
 
 /-- A dual solution: a finite family of nonempty vertex sets without the root, with `y ≥ 0` on sets of at
-least two vertices, and inequality (1) of the notes for all edges with `u ≠ v`, `v ≠ root`. -/
+least two vertices, and inequality (1) of the README for all edges with `u ≠ v`, `v ≠ root`. -/
 structure Dual (g : Graph V) (X : ι → Finset V) (y : ι → ℤ) : Prop where
   nonempty : ∀ i, (X i).Nonempty
   root_notMem : ∀ i, g.root ∉ X i

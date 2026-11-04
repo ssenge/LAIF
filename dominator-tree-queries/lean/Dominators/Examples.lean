@@ -93,7 +93,7 @@ def exIdom : Fin 7 → Option (Fin 7) :=
 #guard exIdom 5 == some 3
 #guard exIdom 6 == none
 
-/-- Kosaraju on the example: `{2, 3, 5}` is a cycle, and the rest are singletons. -/
+/-- The two-pass algorithm on the example: `{2, 3, 5}` is a cycle, and the rest are singletons. -/
 def exComps : List (Finset (Fin 7)) :=
   (kosaraju (linSearch exAdj (List.finRange 7)) (linSearch (revAdj exAdj) (List.finRange 7)) 14
     (List.finRange 7)).1

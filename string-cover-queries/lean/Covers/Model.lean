@@ -14,13 +14,13 @@ There are two layers.
 
 **Concrete layer.** A `QAlg` is a sequence of unitaries with phase queries to a bit string, as in the sibling projects.
 
-* `BBHTSearch`: Boyer, Brassard, Høyer, Tapp. Cost and correctness in one statement about real circuits.
-* `DurrHoyerMin`: Dürr and Høyer minimum finding, with queries to a comparison bit string.
-* `ORLowerBound`: Bennett, Bernstein, Brassard, Vazirani.
+* `BBHTSearch`: quantum search. Cost and correctness in one statement about real circuits.
+* `DurrHoyerMin`: quantum minimum finding, with queries to a comparison bit string.
+* `ORLowerBound`: the OR lower bound.
 
 These are published theorems, used as hypotheses only. Only `ORBound` enters a proof here, in `LowerBoundQuery.lean`.
 
-**Accounting layer.** The notes nest searches, and a nested search with a bounded-error inner routine is a statement
+**Accounting layer.** The README nest searches, and a nested search with a bounded-error inner routine is a statement
 about programs, not about one `QAlg`. The accounting does not model that. It uses abstract routines:
 
 * `search N x δ` and `minFind N f δ` are distributions on outcomes.
@@ -67,7 +67,7 @@ open Classical in
 noncomputable def QAlg.prob (A : QAlg Q T St O) (x : Q → Bool) (o : O) : ℝ :=
   ∑ b, if A.out b = o then Complex.normSq (A.state x T le_rfl b) else 0
 
-/-- **BBHT** (Boyer, Brassard, Høyer, Tapp 1998), with a final check of the outcome and repetition. On `N ≥ 1` candidates
+/-- **Quantum search**, with a final check of the outcome and repetition. On `N ≥ 1` candidates
 and for `δ ∈ (0, 1/2]` there is an algorithm with `O(√N log(1/δ))` queries that on every input never outputs an unmarked
 item, outputs "none" with certainty if no item is marked, and if some item is marked outputs "none" with probability at
 most `δ`. -/
@@ -83,7 +83,7 @@ def BBHTSearch : Prop :=
 /-- The comparison bit string of a key function, the oracle of minimum finding. -/
 def cmpBits {N : ℕ} (f : Fin N → ℕ) (q : Fin N × Fin N) : Bool := decide (f q.1 < f q.2)
 
-/-- **Dürr-Høyer** minimum finding (1996). On `N ≥ 1` items and for `δ ∈ (0, 1/2]`, `O(√N log(1/δ))` comparison queries
+/-- **Minimum finding.** On `N ≥ 1` items and for `δ ∈ (0, 1/2]`, `O(√N log(1/δ))` comparison queries
 output an item of least key with probability at least `1 - δ`. -/
 def DurrHoyerMin : Prop :=
   ∃ c : ℝ, 0 < c ∧ ∀ (N : ℕ) (δ : ℝ), 1 ≤ N → 0 < δ → δ ≤ 1 / 2 →
@@ -101,7 +101,7 @@ def ORBound (c : ℝ) : Prop :=
     (∀ i : Fin N, 2 / 3 ≤ A.prob (singleBit i) true) →
     c * Real.sqrt N ≤ T
 
-/-- **The OR lower bound** (Bennett, Bernstein, Brassard, Vazirani 1997). An algorithm that tells the zero string from
+/-- **The OR lower bound.** An algorithm that tells the zero string from
 every string with a single `1`, with error at most `1/3`, needs `Ω(√N)` queries. -/
 def ORLowerBound : Prop := ∃ c : ℝ, 0 < c ∧ ORBound c
 
@@ -123,12 +123,12 @@ def SearchGood {N : ℕ} (x : Fin N → Bool) : Option (Fin N) → Prop
   | some i => x i = true
   | none => ∀ i, x i = false
 
-/-- **Grover, correctness.** A search has a bad outcome with probability at most `δ`. -/
+/-- **Search, correctness.** A search has a bad outcome with probability at most `δ`. -/
 def GroverCorrect (M : Primitives) : Prop :=
   ∀ (N : ℕ) (x : Fin N → Bool) (δ : ℝ), 0 < δ → δ ≤ 1 / 2 →
     (M.search N x δ).toOuterMeasure {o | ¬ SearchGood x o} ≤ ENNReal.ofReal δ
 
-/-- **Grover, cost.** A search makes at most `c √N log(1/δ)` predicate calls. -/
+/-- **Search, cost.** A search makes at most `c √N log(1/δ)` predicate calls. -/
 def GroverCost (M : Primitives) (c : ℝ) : Prop :=
   ∀ (N : ℕ) (δ : ℝ), 1 ≤ N → 0 < δ → δ ≤ 1 / 2 → 0 ≤ M.qS N δ ∧ M.qS N δ ≤ c * Real.sqrt N * Real.log (1 / δ)
 

@@ -4,11 +4,11 @@ import Mathlib
 # The model
 
 Rooted weighted digraphs, spanning arborescences as parent functions, their cost, minimum
-arborescences, and the TopK specification (DHHM Problem 3, section 1 of `README.md`).
+arborescences, and the TopK specification (quant-ph/0401091, Problem 3, section 1 of `README.md`).
 
 The quantum subroutine is not modelled as quantum mechanics. TopK is a predicate `IsTopK` on outputs, and a call with
-budget `K` on `N` items is charged `topKCost K N = √(K N)`. Correctness and accounting assume no DHHM theorem: they say
-what happens if every list is `IsTopK`-correct, and what the sum of the charges is. The one DHHM statement used is
+budget `K` on `N` items is charged `topKCost K N = √(K N)`. Correctness and accounting assume no theorem on TopK: they say
+what happens if every list is `IsTopK`-correct, and what the sum of the charges is. The one such statement used is
 `DHHMTheorem6`, a named hypothesis of `solve_queries`, which turns charges into queries.
 -/
 
@@ -45,7 +45,7 @@ def Enters [DecidableEq V] (X : Finset V) (u v : V) : Prop := v ∈ X ∧ u ∉ 
 
 /-! ## TopK -/
 
-/-- DHHM Problem 3, the specification of TopK. Given `f : items → ℤ ∪ {∞}`, a type function `ty`, and `d'`:
+/-- Problem 3 of quant-ph/0401091, the specification of TopK. Given `f : items → ℤ ∪ {∞}`, a type function `ty`, and `d'`:
 with `e` the number of types and `d = min d' e`, the output `I ⊆ items` has `|I| = d`, has distinct types,
 and for all `j ∉ I`, `i ∈ I`: if `f j < f i`, then `f i' ≤ f j` for some `i' ∈ I` of the type of `j`. -/
 structure IsTopK {ι T : Type*} [DecidableEq T] (items : Finset ι) (f : ι → WithTop ℤ) (ty : ι → T)
@@ -58,7 +58,7 @@ structure IsTopK {ι T : Type*} [DecidableEq T] (items : Finset ι) (f : ι → 
 /-- The charge for a TopK call with budget `K` on `N` items. -/
 noncomputable def topKCost (K N : ℕ) : ℝ := Real.sqrt (K * N)
 
-/-! ## The list data of `Build`, section 3 of the notes -/
+/-! ## The list data of `Build`, section 3 of the README -/
 
 /-- The `N(G)` edges entering the vertices of `G`, the items of a call `Build(G, K)`. -/
 def inEdges [Fintype V] [DecidableEq V] (g : Graph V) (G : Finset V) : Finset (V × V) :=
@@ -75,8 +75,8 @@ def indeg [Fintype V] (g : Graph V) (v : V) : ℕ := (univ.filter fun u => g.adj
 /-- The number of edges of `g`. -/
 def numEdges [Fintype V] (g : Graph V) : ℕ := ∑ v, indeg g v
 
-/-- DHHM Theorem 6 as a statement about an abstract count `q K N` of the queries of a call: at most a constant times
-`√(K N)`. The theorem has `√(d N)` with `d = min K e ≤ K`, and the read-all branch of the notes costs `N ≤ √(2 K N)`.
+/-- Theorem 6 of quant-ph/0401091 as a statement about an abstract count `q K N` of the queries of a call: at most a constant times
+`√(K N)`. The theorem has `√(d N)` with `d = min K e ≤ K`, and the read-all branch of the README costs `N ≤ √(2 K N)`.
 This is the hypothesis of `solve_queries`. The error probability of a call is not modelled. -/
 def DHHMTheorem6 (q : ℕ → ℕ → ℝ) : Prop := ∃ C : ℝ, 0 < C ∧ ∀ K N, q K N ≤ C * topKCost K N
 

@@ -19,8 +19,8 @@ Each bound is a potential argument, for arbitrary vertex weights `d`. Taking `d`
 gives the per-vertex statements Lemma 4(a), (b), (d); taking `d = 1` gives (c), (e); and taking `d` the in-degree
 gives `Σ N(G)`.
 
-The constants are slightly better than in the notes: with `ℓ = log₂ n`, so `L = ℓ + 1`, a vertex is in `M` at most
-`ℓ` times and is absorbed at most `ℓ` times. We state the bounds of the notes.
+The constants are slightly better than in the README: with `ℓ = log₂ n`, so `L = ℓ + 1`, a vertex is in `M` at most
+`ℓ` times and is absorbed at most `ℓ` times. We state the bounds of the README.
 -/
 
 set_option linter.unusedSectionVars false
@@ -439,7 +439,7 @@ def P2 (d : V → ℕ) (σ : Multiset (Cont V)) : ℕ := (σ.map (P2c d)).sum
 /-- The credits of one container. -/
 def Thc (C : Cont V) : ℕ := (C.groups.map fun G => C.verts.card - G.base).sum
 
-/-- `Σ_G (|C_G| - base_G)`, the growth since the last build, summed over all groups: the credits of the notes. -/
+/-- `Σ_G (|C_G| - base_G)`, the growth since the last build, summed over all groups: the credits of the README. -/
 def Th (σ : Multiset (Cont V)) : ℕ := (σ.map Thc).sum
 
 /-- The factor in the potential that counts builds per vertex. -/
@@ -729,7 +729,7 @@ theorem AWF.P2_le {σ : Multiset (Cont V)} (hσ : AWF σ) (d : V → ℕ) :
     _ ≤ _ := Nat.mul_le_mul_right _ (hσ.total d)
 
 /-- The bound on `Bp`: each factor is at most `1 + (L + 1) 2 (L - 1) + L = (L + 1) (2 L - 1)`, and we use the
-bound `(2 L + 1) (L + 1)` of the notes. -/
+bound `(2 L + 1) (L + 1)` of the README. -/
 theorem AWF.Bp_le {σ : Multiset (Cont V)} (hσ : AWF σ) (d : V → ℕ) :
     Bp (lg (Fintype.card V) + 1) d σ ≤
       wt d univ * ((2 * (lg (Fintype.card V) + 1) + 1) * (lg (Fintype.card V) + 1 + 1)) := by
@@ -919,7 +919,7 @@ theorem lemma4e (hus : us.Nodup) (h : Run us evs σ) :
   rw [hsplit]
   omega
 
-/-- Cauchy-Schwarz, on a list. -/
+/-- The inner product inequality, on a list. -/
 theorem sum_topKCost_le (l : List (ℕ × ℕ)) :
     (l.map fun x => topKCost x.1 x.2).sum ≤
       Real.sqrt (((l.map Prod.fst).sum : ℕ) * ((l.map Prod.snd).sum : ℕ)) := by

@@ -43,7 +43,7 @@ import LPType
 #print axioms LPType.Problem.expected_W_le_exp
 #print axioms LPType.Problem.two_rpow_le_of_notStopped
 #print axioms LPType.Problem.prob_notStopped_mul_le
--- Item 4: the Markov arithmetic and the failure probability
+-- Item 4: the first moment arithmetic and the failure probability
 #print axioms LPType.markov_arith
 #print axioms LPType.markov_arith_half
 #print axioms LPType.Problem.failure_prob_le
@@ -55,7 +55,7 @@ import LPType
 #print axioms LPType.maxProblem_violates_iff
 #print axioms LPType.maxProblem_combDim
 #print axioms LPType.maxProblem_failure_prob
--- Item 6: the query count, with Grover's cost as a hypothesis
+-- Item 6: the query count, with the cost of quantum search as a hypothesis
 #print axioms LPType.sum_mul_sqrt_le
 #print axioms LPType.prodExp_sqrt_card_le
 #print axioms LPType.sum_inclProb_le

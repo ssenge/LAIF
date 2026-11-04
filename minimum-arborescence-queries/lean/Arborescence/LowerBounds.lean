@@ -3,7 +3,7 @@ import Arborescence.WeakDuality
 /-!
 # The reductions of Theorem 2
 
-Exact statements about the instances of section 5 of the notes, with no query model:
+Exact statements about the instances of section 5 of the README, with no query model:
 
 * `exists_arb_iff_connected`: the bidirected graph has an arborescence iff the undirected one is connected.
 * `tree_to_arb`, `arb_to_tree`, `isMinArb_to_isMST`, `isMST_to_isMinArb`: minimum arborescences of bidirected
@@ -13,7 +13,7 @@ Exact statements about the instances of section 5 of the notes, with no query mo
   alone, decide the OR of the hidden bits.
 * `hidden_isMinArb_iff`, `hidden_reveals`: the family "hidden parents".
 
-The query lower bounds that these feed are cited (DHHM Theorems 23, 24, and the bounds for OR and for reading bits)
+The query lower bounds that these feed are cited (quant-ph/0401091, Theorems 23, 24, and the bounds for OR and for reading bits)
 and do not appear here.
 -/
 

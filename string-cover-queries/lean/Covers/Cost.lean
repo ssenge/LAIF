@@ -8,8 +8,8 @@ import Mathlib.Analysis.Complex.ExponentialBounds
 /-!
 # The query counts of Sections 2 to 5
 
-The charges follow the notes, with `Λ = log n` and the failure parameter `δ = n⁻⁶` of Lemma 6. `r` is the constant in "a
-sample has at most `r Λ` columns" (with a redraw above that, in the notes).
+The charges follow the README, with `Λ = log n` and the failure parameter `δ = n⁻⁶` of Lemma 6. `r` is the constant in "a
+sample has at most `r Λ` columns" (with a redraw above that, in the README).
 
 * `searchQ`, `minQ`: a search or minimum finding whose predicate costs `I`, charged `2 I` per call.
 * `occQ` is Lemma 4, `sampleQ` is a sample, `testQ` is Lemma 6, `rangeQ` is Lemma 7. Domains are charged at their upper
@@ -20,7 +20,7 @@ What is hypothesized is `GroverCost` and `MinCost`, and the charge itself. What 
 
 ## The count of a sample
 
-The notes say "`log w` phases of `O(log n)` columns, each column `O(√ℓ log n)` queries". One column has a search over the
+The README say "`log w` phases of `O(log n)` columns, each column `O(√ℓ log n)` queries". One column has a search over the
 overlap at `O(√ℓ log n)`, but also two minimum findings at `O(√w log² n)`, since a survivor check reads `O(log n)` columns.
 The total `O(√ℓ log³ n)` still holds, because `w` halves between phases, so the minimum findings sum geometrically.
 `sampleQ_le` proves that.
@@ -450,7 +450,7 @@ theorem total_le (hG : GroverCost M cS) (hM : MinCost M cM) (hcS : 0 ≤ cS) (hc
         gcongr
     _ = Ctot cS cM r * τ * Real.sqrt n * Lam n ^ 4 := by unfold Ctot; ring
 
-/-- **Theorem 1, the query count.** Given the Grover and minimum-finding costs, the shortest cover costs
+/-- **Theorem 1, the query count.** Given the search and minimum-finding costs, the shortest cover costs
 `O(√n log⁴ n)`: one test per range. The constant depends only on `cS`, `cM`, `r`. -/
 theorem theorem1_cost (hG : GroverCost M cS) (hM : MinCost M cM) (hcS : 0 ≤ cS) (hcM : 0 ≤ cM) {n : ℕ} {r : ℝ}
     (hn : 3 ≤ n) (hr : 0 ≤ r) (T : ℕ → Finset ℕ)

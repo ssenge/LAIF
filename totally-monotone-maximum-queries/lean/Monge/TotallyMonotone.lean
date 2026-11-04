@@ -3,7 +3,7 @@ import Mathlib.Analysis.SpecialFunctions.Pow.Real
 /-!
 # Total monotonicity
 
-Notes, opening section. Inverse Monge implies totally monotone, leftmost row maxima are
+README, opening section. The reverse quadrangle inequality implies total monotonicity, leftmost row maxima are
 nondecreasing, and the window lemma. Rows and columns are arbitrary linear orders, so this applies
 to `Fin r`, `Fin c` and to sub-rectangles.
 -/
@@ -14,7 +14,7 @@ namespace Monge
 
 variable {ι κ α : Type*}
 
-/-- Inverse Monge: `M[i, j] + M[i', j'] ≥ M[i, j'] + M[i', j]` for `i < i'` and `j < j'`. -/
+/-- Reverse quadrangle inequality: `M[i, j] + M[i', j'] ≥ M[i, j'] + M[i', j]` for `i < i'` and `j < j'`. -/
 def InverseMonge [LT ι] [LT κ] (M : ι → κ → ℝ) : Prop :=
   ∀ ⦃i i' : ι⦄ ⦃j j' : κ⦄, i < i' → j < j' → M i j' + M i' j ≤ M i j + M i' j'
 
@@ -23,7 +23,7 @@ def InverseMonge [LT ι] [LT κ] (M : ι → κ → ℝ) : Prop :=
 def TotallyMonotone [LT ι] [LT κ] [LT α] (M : ι → κ → α) : Prop :=
   ∀ ⦃i i' : ι⦄ ⦃j j' : κ⦄, i < i' → j < j' → M i j < M i j' → M i' j < M i' j'
 
-/-- Every inverse Monge matrix is totally monotone. -/
+/-- Every matrix with the reverse quadrangle inequality is totally monotone. -/
 theorem InverseMonge.totallyMonotone [LT ι] [LT κ] {M : ι → κ → ℝ} (h : InverseMonge M) :
     TotallyMonotone M := by
   intro i i' j j' hi hj hlt

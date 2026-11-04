@@ -4,7 +4,7 @@ import Mathlib.Data.List.FinRange
 import Mathlib.Data.Nat.Log
 
 /-!
-# The bisection recursion (Section 2 of the notes)
+# The bisection recursion (Section 2 of the README)
 
 `rowMaxima` is the recursion. It finds `p` for the middle row on the current window, then recurses
 on the rows above with window `[l, p]` and on the rows below with window `[p, u]`. It reads the
@@ -13,7 +13,7 @@ says this is the true maximum on every totally monotone matrix, `scanOracle_spec
 spec can be met.
 
 Then the window arithmetic: `width_split` is `c₁ + c₂ = c + 1`, `levelWidths_sum_le` is the level
-bound `c + 2^j`, `levelCost_le` is Cauchy-Schwarz on a level, `totalCost_le` sums over the levels
+bound `c + 2^j`, `levelCost_le` is the inner product inequality on a level, `totalCost_le` sums over the levels
 to `O(√(k (c + k)))`, and `blockWidths_sum` is `Σ c_i = c + k` over the `k + 1` remaining blocks.
 -/
 
@@ -210,7 +210,7 @@ theorem scanOracle_spec (M : Fin r → Fin c → α) : OracleSpec M (scanOracle 
 
 /-! ## A sanity run on a small integer matrix -/
 
-/-- `-(i - j - 1)² + i` is inverse Monge. Its maximum is `5`, at row `5`, column `4`. -/
+/-- `-(i - j - 1)² + i` has the reverse quadrangle inequality. Its maximum is `5`, at row `5`, column `4`. -/
 def sampleMatrix (i : Fin 6) (j : Fin 5) : ℤ := -((i : ℤ) - (j : ℤ) - 1) ^ 2 + (i : ℤ)
 
 #guard (globalMax sampleMatrix (scanOracle sampleMatrix)).map (fun q => sampleMatrix q.1 q.2)
@@ -297,14 +297,14 @@ theorem levelWidths_sum_add_one_le (hO : OracleSpec M orc) (j s n : ℕ) (h : s 
       rw [List.sum_append, List.length_append]
       omega
 
-/-- The bound in the notes: at level `j` the windows have total width at most `c + 2^j`. -/
+/-- The bound in the README: at level `j` the windows have total width at most `c + 2^j`. -/
 theorem levelWidths_sum_le (hO : OracleSpec M orc) (j s n : ℕ) (h : s + n ≤ r) (l u : Fin c)
     (hlu : l ≤ u) : (levelWidths orc j s n h l u).sum ≤ width l u + 2 ^ j := by
   have h1 := levelWidths_sum_add_one_le hO j s n h l u hlu
   have h2 := levelWidths_length_le (orc := orc) j s n h l u
   omega
 
-/-- Cauchy-Schwarz for square roots along a list. -/
+/-- The inner product inequality for square roots along a list. -/
 theorem sum_sqrt_sq_le (L : List ℕ) :
     (L.map fun w : ℕ => √(w : ℝ)).sum ^ 2 ≤ (L.length : ℝ) * (L.sum : ℝ) := by
   induction L with
@@ -347,7 +347,7 @@ theorem levelCost_nonneg (j s n : ℕ) (h : s + n ≤ r) (l u : Fin c) :
   obtain ⟨w, -, rfl⟩ := List.mem_map.mp hx
   exact Real.sqrt_nonneg _
 
-/-- The cost of level `j` is at most `√(2^j (c + 2^j))`, as in the notes. -/
+/-- The cost of level `j` is at most `√(2^j (c + 2^j))`, as in the README. -/
 theorem levelCost_le (hO : OracleSpec M orc) (j s n : ℕ) (h : s + n ≤ r) (l u : Fin c)
     (hlu : l ≤ u) :
     levelCost orc j s n h l u ≤ √((2 : ℝ) ^ j * ((width l u : ℝ) + 2 ^ j)) := by
@@ -445,7 +445,7 @@ theorem blockWidths_length (n s : ℕ) (h : s + n ≤ r) (l u : Fin c) :
     · rw [List.length_append, ih _ (by omega), ih _ (by omega)]
       omega
 
-/-- The block widths add up to `c + k`, which is `Σ c_i ≤ c + k` in Section 2 of the notes. -/
+/-- The block widths add up to `c + k`, which is `Σ c_i ≤ c + k` in Section 2 of the README. -/
 theorem blockWidths_sum (hO : OracleSpec M orc) (n s : ℕ) (h : s + n ≤ r) (l u : Fin c)
     (hlu : l ≤ u) : (blockWidths orc s n h l u).sum = width l u + n := by
   induction n using Nat.strong_induction_on generalizing s l u with

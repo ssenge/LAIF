@@ -35,7 +35,7 @@ open Classical in
 def DecidesNoUnitCover {n T : ℕ} {St : Type} [Fintype St] [DecidableEq St] (A : QAlg (Fin n) T St Bool) : Prop :=
   ∀ x : Fin n → Bool, 2 / 3 ≤ A.prob x (decide (NoUnitCover x))
 
-/-- **The lower bound of the notes, on binary strings.** An algorithm that tells whether the shortest cover has length 1
+/-- **The lower bound of the README, on binary strings.** An algorithm that tells whether the shortest cover has length 1
 needs `c √n` queries, given the OR lower bound with constant `c`. An algorithm that outputs the shortest cover length
 gives such an algorithm with the same queries. -/
 theorem cover_lower_bound {c : ℝ} (hOR : ORBound c) {n T : ℕ} (hn : 2 ≤ n) {St : Type} [Fintype St]

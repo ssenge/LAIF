@@ -14,7 +14,7 @@ where `r^{1/(d+2)} ≤ k ≤ 2 r^{1/(d+2)}`, there are at most `k + 1` blocks, `
 `T_d(r, c) ≤ A^d √(c + r) r^{a_d}`, with `A = 2 + 4 C`.
 
 The recursion itself is a hypothesis on `T`. Nothing here models variable-time search, which is the
-source of `C` in the notes.
+source of `C` in the README.
 -/
 
 namespace Monge

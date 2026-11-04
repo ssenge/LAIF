@@ -8,7 +8,7 @@ import Mathlib.Tactic.NormNum
 /-!
 # The expectation part of Theorem 1
 
-The classical skeleton of the algorithm in Section 3 of the notes, as a finite adaptive process.
+The classical skeleton of the algorithm in Section 3 of the README, as a finite adaptive process.
 A round draws a sample `R` for the estimate and then the sample `S`, both from product measures,
 with new independent randomness. The quantum searches are taken to be exact here: `R` and `S` have
 exactly these laws and "no violator" is decided correctly. The errors of the searches are not modelled.
@@ -54,7 +54,7 @@ omit [DecidableEq H] in
 end RoundState
 
 /-- The inclusion probability `min(1, s w_h / Z)`. If `Z = 0`, which happens when the estimate's
-sample is empty, the expression of the notes is undefined; the probability is `1` here, reading
+sample is empty, the expression of the README is undefined; the probability is `1` here, reading
 everything, which is what `s w_h / Z = ∞` means. -/
 noncomputable def inclProb (s : ℝ) (w : H → ℝ) (Z : ℝ) (h : H) : ℝ :=
   if 0 < Z then min 1 (s * w h / Z) else 1
@@ -95,7 +95,7 @@ theorem inclProb_le_div {s Z : ℝ} {w : H → ℝ} (hZ : 0 < Z) (h : H) :
   simp only [inclProb, hZ, ite_eq_left]
   exact min_le_right _ _
 
-/-- The estimate `W̃`: half the Horvitz-Thompson sum over the sample `R`. -/
+/-- The estimate `W̃`: half the inverse-probability sum over the sample `R`. -/
 noncomputable def estimate (s' : ℝ) (σ : RoundState H) (R : Finset H) : ℝ :=
   (∑ h ∈ R, σ.w h / inclProb s' σ.w σ.est h) / 2
 
@@ -253,7 +253,7 @@ omit [DecidableEq H] in
 theorem W_nonneg (σ : RoundState H) : 0 ≤ σ.W :=
   sum_nonneg fun h _ => (σ.w_pos h).le
 
-/-- **Markov**: `2^{T/δ} P[not stopped after T rounds] ≤ n exp(T δ / (2 s))`. -/
+/-- **First moment bound**: `2^{T/δ} P[not stopped after T rounds] ≤ n exp(T δ / (2 s))`. -/
 theorem prob_notStopped_mul_le [Nonempty H] (hδ : 1 ≤ P.combDim) (T : ℕ) (Z : ℝ) :
     (2 : ℝ) ^ ((T : ℝ) / P.combDim) * (P.clarkson hs hs').prob T (RoundState.init Z) P.NotStopped
       ≤ Fintype.card H * Real.exp (T * P.combDim / (2 * s)) := by
@@ -266,7 +266,7 @@ end Problem
 
 /-! ## The arithmetic -/
 
-/-- The Markov arithmetic: for `T = ⌈12 δ ln n⌉` and `c < ln 2`, the bound `n e^{c T/δ} / 2^{T/δ}` is
+/-- The first moment arithmetic: for `T = ⌈12 δ ln n⌉` and `c < ln 2`, the bound `n e^{c T/δ} / 2^{T/δ}` is
 at most `n^{-e}` when `e + 1 ≤ 12 (0.693147 - c)`. -/
 theorem markov_arith {n δ T : ℕ} (hn : 1 ≤ n) (hδ : 1 ≤ δ)
     (hT : T = ⌈12 * δ * Real.log n⌉₊) {c e : ℝ} (hc : c ≤ 0.693147)
@@ -298,7 +298,7 @@ theorem markov_arith {n δ T : ℕ} (hn : 1 ≤ n) (hδ : 1 ≤ δ)
   have h3 : (e + 1) * L ≤ 12 * (0.693147 - c) * L := mul_le_mul_of_nonneg_right he hL
   nlinarith
 
-/-- The arithmetic of the notes: `n e^{T/(2δ)} / 2^{T/δ} ≤ n^{-1.3}`. -/
+/-- The arithmetic of the README: `n e^{T/(2δ)} / 2^{T/δ} ≤ n^{-1.3}`. -/
 theorem markov_arith_half {n δ T : ℕ} (hn : 1 ≤ n) (hδ : 1 ≤ δ)
     (hT : T = ⌈12 * δ * Real.log n⌉₊) :
     n * Real.exp ((T : ℝ) / (2 * δ)) / (2 : ℝ) ^ ((T : ℝ) / δ) ≤ (n : ℝ) ^ (-1.3 : ℝ) := by
@@ -316,7 +316,7 @@ theorem two_mul_sq_pos (hδ : 1 ≤ P.combDim) : (0 : ℝ) < 2 * (P.combDim : �
   have : (0 : ℝ) < P.combDim := by exact_mod_cast hδ
   positivity
 
-/-- From the Markov inequality to the bound: if `2^{T/δ} p ≤ n exp(c T/δ)` then `p ≤ n^{-e}`. -/
+/-- From the first moment bound to the bound: if `2^{T/δ} p ≤ n exp(c T/δ)` then `p ≤ n^{-e}`. -/
 theorem prob_le_of_markov {δ n T : ℕ} {p c e : ℝ} (hn : 1 ≤ n) (hδ : 1 ≤ δ)
     (hT : T = ⌈12 * δ * Real.log n⌉₊) (hc : c ≤ 0.693147) (he : e + 1 ≤ 12 * (0.693147 - c))
     (h : (2 : ℝ) ^ ((T : ℝ) / δ) * p ≤ n * Real.exp (c * ((T : ℝ) / δ))) :
@@ -325,7 +325,7 @@ theorem prob_le_of_markov {δ n T : ℕ} {p c e : ℝ} (hn : 1 ≤ n) (hδ : 1 �
   rw [le_div_iff₀ (Real.rpow_pos_of_pos (by norm_num) _), mul_comm]
   exact h
 
-/-- **Theorem 1, failure probability, as in the notes.** For `δ ≥ 1`, `s = 2 δ²`, `T = ⌈12 δ ln n⌉`,
+/-- **Theorem 1, failure probability, as in the README.** For `δ ≥ 1`, `s = 2 δ²`, `T = ⌈12 δ ln n⌉`,
 any `s' > 0` and any initial estimate, `P[not stopped after T rounds] ≤ n^{-1.3}`. -/
 theorem failure_prob_le [Nonempty H] (hδ : 1 ≤ P.combDim) (Z : ℝ) :
     (P.clarkson (P.two_mul_sq_pos hδ) hs').prob ⌈12 * (P.combDim : ℝ) * Real.log (Fintype.card H)⌉₊
@@ -350,7 +350,7 @@ theorem failure_prob_le [Nonempty H] (hδ : 1 ≤ P.combDim) (Z : ℝ) :
   have : 0 ≤ T / P.combDim := by positivity
   linarith
 
-/-- **Theorem 1, failure probability, what the proof gives.** The notes' step
+/-- **Theorem 1, failure probability, what the proof gives.** The README' step
 `n exp(T δ / (2 s)) ≤ n e^{T/(2δ)}` loses a factor `2` in the exponent. Without it the bound is
 `n^{-4.3}`. -/
 theorem failure_prob_le_sharp [Nonempty H] (hδ : 1 ≤ P.combDim) (Z : ℝ) :
@@ -374,7 +374,7 @@ step with an extra factor `1 / P[accept | past]`. With `P[accept | past] ≥ 1/2
 factor `2` that `failure_prob_le` wastes, so `n^{-1.3}` survives. Acceptance is a hypothesis below,
 on an invariant set of states, since it is not true for every state: a very large previous estimate
 makes `R` likely to be empty, so that `W̃ = 0` and `S = H`. Such an estimate is reachable with small
-positive probability, since the Horvitz-Thompson sum can reach about `n W⁻ / (2 s')`. So neither
+positive probability, since the inverse-probability sum can reach about `n W⁻ / (2 s')`. So neither
 acceptance nor a mean sample size can be bounded from every reachable state. -/
 
 variable {s : ℝ} (hs : 0 < s)

@@ -15,7 +15,7 @@ variable {α : Type*}
 /-- The length `l` lies in the dyadic range of `k`. -/
 def InRange (k l : ℕ) : Prop := 2 ^ k ≤ l ∧ l < 2 ^ (k + 1)
 
-/-- `b` is the shortest border of `S` in the range of `k`: this is `b_k` in the notes. -/
+/-- `b` is the shortest border of `S` in the range of `k`: this is `b_k` in the README. -/
 def IsRangeMin (k : ℕ) (b S : List α) : Prop :=
   IsBorder b S ∧ InRange k b.length ∧ ∀ b', IsBorder b' S → InRange k b'.length → b.length ≤ b'.length
 

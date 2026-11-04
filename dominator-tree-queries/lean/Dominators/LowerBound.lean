@@ -315,7 +315,7 @@ theorem sapDec_spec (v₀ : Fin n) (x : UEdge n → Bool) (o : Finset (Fin n ⊕
 
 end Maps
 
-/-! ## Quantum lower bounds, from DHHM Theorem 23 -/
+/-! ## Quantum lower bounds, from quant-ph/0401091, Theorem 23 -/
 
 /-- **Dominators need `Ω(n^{3/2})` quantum queries**, given `DHHM_Thm23`. The digraph has `n` vertices. -/
 theorem dominators_lower_bound (h : DHHM_Thm23) :

@@ -215,7 +215,7 @@ def ConnAnswer {n : ℕ} (x : UEdge n → Bool) (b : Bool) : Prop :=
 
 /-! ## The named hypotheses -/
 
-/-- **DHHM Theorem 23** (Dürr, Heiligman, Høyer, Mhalla, quant-ph/0401091): deciding Connectivity of an
+/-- **The connectivity lower bound** (quant-ph/0401091, Theorem 23): deciding Connectivity of an
 `n`-vertex graph in the matrix model needs `Ω(n^{3/2})` quantum queries. Taken as a hypothesis. -/
 def DHHM_Thm23 : Prop :=
   ∃ c : ℝ, 0 < c ∧ ∃ n₀ : ℕ, ∀ n, n₀ ≤ n → ∀ (S : Type) [Fintype S] [DecidableEq S] (T : ℕ)
@@ -231,7 +231,7 @@ open Classical in
 noncomputable def markedCount {N : ℕ} {α : Type*} (marked : Fin N → α → Bool) (x : Fin N → α) : ℕ :=
   (univ.filter fun i => marked i (x i) = true).card
 
-/-- **BBHT** (Boyer, Brassard, Høyer, Tapp) in the form "expected `O(√(N/t))` queries", for an unknown number
+/-- **Quantum search** in the form "expected `O(√(N/t))` queries", for an unknown number
 `t ≥ 1` of marked entries. A run stopped at budget `k` is the algorithm `A k`. So `1 - P_k`, with `P_k` the
 probability of having found a marked entry within `k` queries, is the probability of stopping after `k`, and
 its sum over `k` is the expected number of queries. An answer is verified by a query, so it is never wrong,
@@ -249,7 +249,7 @@ def BBHT : Prop :=
         ∑' k, (1 - (A k).prob x (fun o => ∃ i, o = some i ∧ marked i (x i) = true)) ≤
           C * Real.sqrt ((N : ℝ) / markedCount marked x))
 
-/-- **Dürr-Høyer** minimum finding: `O(√N log(1/δ))` queries find an entry of least key with error `δ`.
+/-- **Minimum finding**: `O(√N log(1/δ))` queries find an entry of least key with error `δ`.
 The key is classical data, as the `f_w` of `README.md` are, and may depend on the index and the entry.
 Taken as a hypothesis. -/
 def DurrHoyer : Prop :=

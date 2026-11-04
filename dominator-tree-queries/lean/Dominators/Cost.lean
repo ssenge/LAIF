@@ -6,10 +6,10 @@ import Dominators.DFS
 The charge of a search with `N` entries and `t ≥ 1` solutions is `√(N/t)`, and with no solution `√N`. This is
 the bound of `BBHT` up to its constant. The sums here are of charges, and a charge is a real number.
 
-Lemma 1 is DHHM Theorem 12, with the same stack and the same sum.
+Lemma 1 is Theorem 12 of quant-ph/0401091, with the same stack and the same sum.
 
 * `expected_search_sum`: the sum `Σ_k √(N/(c - k + 1)) ≤ 2 √(c N)` in Lemma 1.
-* `lemma1_cauchy`, `lemma1_array`, `lemma1_matrix`: the Cauchy-Schwarz step of Lemma 1.
+* `lemma1_cauchy`, `lemma1_array`, `lemma1_matrix`: the inner product step of Lemma 1.
 * `dfs_charge_array`, `dfs_charge_matrix`: the actual charge of the executable search from one root.
 * `sum_sqrt_inDeg_le`: `Σ_w √(deg⁻ w) ≤ √(n m)`.
 * `partition_sum_le`, `partition_matrix_sum`: the sums over components in Theorem 3.
@@ -75,9 +75,9 @@ theorem vertex_cost_le (N : ℝ) (hN : 0 ≤ N) (c : ℕ) :
     Real.sqrt_le_sqrt (by nlinarith [Nat.cast_nonneg (α := ℝ) c])
   linarith
 
-/-! ## Cauchy-Schwarz -/
+/-! ## The inner product inequality -/
 
-/-- Cauchy-Schwarz in the form used throughout. -/
+/-- The inner product inequality in the form used throughout. -/
 theorem sum_sqrt_mul_le {ι : Type*} (s : Finset ι) (f g : ι → ℝ) (hf : ∀ i, 0 ≤ f i) (hg : ∀ i, 0 ≤ g i) :
     ∑ i ∈ s, Real.sqrt (f i * g i) ≤ Real.sqrt ((∑ i ∈ s, f i) * ∑ i ∈ s, g i) := by
   apply Real.le_sqrt_of_sq_le
@@ -90,7 +90,7 @@ theorem sum_sqrt_mul_le {ι : Type*} (s : Finset ι) (f g : ι → ℝ) (hf : �
 
 variable {V : Type u} [Fintype V]
 
-/-- **Lemma 1's Cauchy-Schwarz step.** With `Σ c_v ≤ n`: `Σ_v √((c_v + 1) N_v) ≤ √(2 n Σ N_v)`. -/
+/-- **The inner product step of Lemma 1.** With `Σ c_v ≤ n`: `Σ_v √((c_v + 1) N_v) ≤ √(2 n Σ N_v)`. -/
 theorem lemma1_cauchy (c : V → ℕ) (N : V → ℝ) (hN : ∀ v, 0 ≤ N v) (hc : ∑ v, c v ≤ Fintype.card V) :
     ∑ v, Real.sqrt (((c v : ℝ) + 1) * N v) ≤ Real.sqrt (2 * Fintype.card V * ∑ v, N v) := by
   refine (sum_sqrt_mul_le univ (fun v => (c v : ℝ) + 1) N (fun _ => by positivity) hN).trans ?_

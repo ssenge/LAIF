@@ -3,16 +3,16 @@ import Mathlib.Analysis.InnerProductSpace.PiL2
 import Mathlib.Analysis.Normed.Affine.Convex
 
 /-!
-# Distances between arcs of a convex polygon (Section 4 of the notes, the monotonicity part)
+# Distances between arcs of a convex polygon (Section 4 of the README, the monotonicity part)
 
 The quadrilateral inequality follows from the triangle inequality at the crossing point. Crossing is
-then derived from convexity, stated through orientations. The distance matrix between two arcs is
-inverse Monge, and squared distances are totally monotone.
+then derived from convexity, stated through orientations. The distance matrix between two arcs
+has the reverse quadrangle inequality, and squared distances are totally monotone.
 -/
 
 namespace Monge
 
-/-- The Euclidean plane. -/
+/-- The plane with its usual distance. -/
 abbrev Pt := EuclideanSpace ℝ (Fin 2)
 
 /-- **Quadrilateral inequality.** If the segments `a b` and `a' b'` share a point, the sum of their
@@ -26,7 +26,7 @@ theorem quadrilateral {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] {a 
   have h4 := dist_triangle a' P b
   linarith
 
-/-- Inverse Monge for two families of points whose segments cross. Crossing is a hypothesis here. -/
+/-- The reverse quadrangle inequality for two families of points whose segments cross. Crossing is a hypothesis here. -/
 theorem inverseMonge_of_crossing {E ι κ : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [LT ι]
     [LT κ] {a : ι → E} {b : κ → E}
     (hcross : ∀ ⦃i i' : ι⦄ ⦃j j' : κ⦄, i < i' → j < j' →
@@ -70,7 +70,7 @@ def StrictlyConvexCCW {n : ℕ} (v : Fin n → Pt) : Prop :=
   ∀ ⦃i j k : Fin n⦄, i < j → j < k → 0 < orient (v i) (v j) (v k)
 
 /-- **Arcs.** Take two increasing index sequences of a strictly convex polygon, the first one
-entirely before the second. This covers two consecutive arcs. The distance matrix is inverse Monge,
+entirely before the second. This covers two consecutive arcs. The distance matrix has the reverse quadrangle inequality,
 with crossing derived from convexity. -/
 theorem arc_inverseMonge {n s t : ℕ} {v : Fin n → Pt} (hv : StrictlyConvexCCW v) {a : Fin s → Fin n}
     {b : Fin t → Fin n} (ha : StrictMono a) (hb : StrictMono b) (hab : ∀ i j, a i < b j) :

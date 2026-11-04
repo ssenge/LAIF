@@ -290,7 +290,7 @@ theorem gam_someEntry_le [NeZero c] {κ : ℝ} (hκ : 0 ≤ κ)
 
 /-! ## From the hypotheses to query bounds -/
 
-/-- The window maximum as an instance of the Dürr-Høyer hypothesis. -/
+/-- The window maximum as an instance of the maximum finding hypothesis. -/
 theorem gam_winMax_le {C κ₀ : ℝ} (hC : 0 ≤ C) (hLQ : LeeQueryAdv C) (hLG : LeeAdvGamma)
     (hDH : DurrHoyer κ₀) (D : Set (Mat r c k)) (m : Fin r) (l w : ℕ) (hw : l + w < c) :
     gam D (winMax m l w hw) ≤ (2 * C * κ₀) * √((w + 1 : ℕ) : ℝ) :=

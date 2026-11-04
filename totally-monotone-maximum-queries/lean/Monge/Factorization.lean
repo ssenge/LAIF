@@ -2,7 +2,7 @@ import Mathlib.Analysis.SpecialFunctions.Pow.Real
 import Mathlib.Topology.Order.Basic
 
 /-!
-# Filtered `γ₂` and its composition lemmas (Section 3 of the notes)
+# Filtered `γ₂` and its composition lemmas (Section 3 of the README)
 
 Inputs are strings `x : J → V` in a set `D`. A factorization assigns to each string and query index
 a pair of real vectors over a finite index type `I`. It is feasible for a target `A` on `D` when
@@ -300,12 +300,12 @@ theorem gam_const {E : Type} [DecidableEq E] {D : Set (J → V)} {f : (J → V) 
 
 /-! ## A single query -/
 
-/-- The factorization of a Boolean function of one position. -/
+/-- The factorization of a binary function of one position. -/
 def bitFact [DecidableEq J] (j₀ : J) (φ : V → Bool) : Factorization J V Bool where
   u x j b := if j = j₀ ∧ φ (x j₀) = b then 1 else 0
   v y j b := if j = j₀ ∧ φ (y j₀) = !b then 1 else 0
 
-/-- A Boolean function of one position has `γ ≤ 1`. -/
+/-- A binary function of one position has `γ ≤ 1`. -/
 theorem gam_bit_le_one [DecidableEq J] (D : Set (J → V)) (j₀ : J) (φ : V → Bool) :
     gam D (fun x => φ (x j₀)) ≤ 1 := by
   apply gam_le_of_gammaLE zero_le_one
@@ -446,15 +446,15 @@ theorem orOf_eq_false {g : ι → (J → V) → Bool} {x : J → V} :
 /-- `S = √(Σ a_i²)`. -/
 noncomputable def orBound (a : ι → ℝ) : ℝ := √(∑ i, a i ^ 2)
 
-/-- `⊕_i √(a_i) w^i`: the `U` and `W` vectors of the notes. -/
+/-- `⊕_i √(a_i) w^i`: the `U` and `W` vectors of the README. -/
 noncomputable def allBlocks (a : ι → ℝ) (w : ∀ i, K i → ℝ) (q : Σ i, K i) : ℝ :=
   √(a q.1) * w q.1 q.2
 
-/-- `a_{i₀}^{-1/2} w^{i₀}` on block `i₀`: the `T` and `V` vectors of the notes. -/
+/-- `a_{i₀}^{-1/2} w^{i₀}` on block `i₀`: the `T` and `V` vectors of the README. -/
 noncomputable def oneBlock (a : ι → ℝ) (i₀ : ι) (w : ∀ i, K i → ℝ) (q : Σ i, K i) : ℝ :=
   if q.1 = i₀ then (√(a q.1))⁻¹ * w q.1 q.2 else 0
 
-/-- `L` and `R` of the notes, in two orthogonal slots (`false` and `true`). The scale `ρ` is `S^{1/2}`
+/-- `L` and `R` of the README, in two orthogonal slots (`false` and `true`). The scale `ρ` is `S^{1/2}`
 and `sel y` is the chosen index `i(y)` with `g_{i(y)}(y) = 1`.
 
 * `OR(x) = 0`: `L_x = ρ⁻¹ (U_x, 0)`, `R_x = ρ⁻¹ (0, W_x)`.
@@ -741,7 +741,7 @@ theorem gam_or_le [DecidableEq J] [Fintype V] (D : Set (J → V)) (g : ι → (J
   have := ge_of_tendsto hlim hev
   simpa using this
 
-/-- The OR of `c` single bits has `γ ≤ √c`, which is the base case of the notes. -/
+/-- The OR of `c` single bits has `γ ≤ √c`, which is the base case of the README. -/
 theorem gam_or_bits_le [DecidableEq J] [Fintype V] (D : Set (J → V)) (w : ι → J) (φ : ι → V → Bool) :
     gam D (orOf fun i x => φ i (x (w i))) ≤ √(Fintype.card ι : ℝ) := by
   refine (gam_or_le D _).trans (Real.sqrt_le_sqrt ?_)

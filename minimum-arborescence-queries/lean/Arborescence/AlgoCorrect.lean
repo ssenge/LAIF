@@ -5,8 +5,8 @@ import Arborescence.AlgoStruct
 
 For a correct oracle, `solve` returns a minimum-cost arborescence, and `none` only if there is no arborescence.
 
-The proof is an invariant `CInv` on the states. It follows Lemma 2 of the notes, with one simplification: instead of
-tightness and "exactly one entering edge", which give `cost = Σ y` in the notes, the invariant `NodeC.costEq`
+The proof is an invariant `CInv` on the states. It follows Lemma 2 of the README, with one simplification: instead of
+tightness and "exactly one entering edge", which give `cost = Σ y` in the README, the invariant `NodeC.costEq`
 tracks the cost of the expansion of each node directly: `cost of the expansion of T entered at v + y v = total of T`,
 where the total of `T` is the sum of the dual values below `T`. At the end `cost = Σ y`, and `weak_duality_list` of
 `WeakDuality.lean` finishes the proof. Lemma 3 of `Lists.lean` gives the correctness of `Cheapest`.

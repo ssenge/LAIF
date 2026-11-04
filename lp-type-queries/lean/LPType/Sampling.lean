@@ -15,7 +15,7 @@ The law of `S` is the product measure over `Finset H`, written out as a finite s
 is the probability that the sample is `S`, and `prodExp p φ` is the expectation of `φ`.
 
 The main inequality is stated in the multiplicative form `s w_h (1 - p_h) ≤ Z p_h`, which divides
-by nothing, so `p_h = 1` and `w_h = 0` need no special case. Lemma 1 follows, with `Z` free: the notes
+by nothing, so `p_h = 1` and `w_h = 0` need no special case. Lemma 1 follows, with `Z` free: the README
 use it with an estimate `W̃` in place of the total weight, and `Z` need not be the total weight.
 -/
 
@@ -134,7 +134,7 @@ theorem prodExp_sum_mem (p : H → ℝ) (a : H → ℝ) :
   refine sum_congr rfl fun h _ => ?_
   rw [← sum_mul, ← prodWeight_marginal p h, sum_filter]
 
-/-- **Horvitz-Thompson is unbiased.** -/
+/-- **The inverse-probability sum is unbiased.** -/
 theorem prodExp_htSum {p : H → ℝ} (hp : ∀ h, 0 < p h) (w : H → ℝ) :
     prodExp p (fun R => ∑ h ∈ R, w h / p h) = ∑ h, w h := by
   rw [prodExp_sum_mem]

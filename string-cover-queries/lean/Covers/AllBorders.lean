@@ -11,7 +11,7 @@ import Covers.Periodic
   occurrence search is below `n` on the lower half of the range, so Section 4 needs the cap to be at least `n`
   (`cap_reaches_end`).
 
-`f` is capped at `min(2L, n)` in the notes. That is the parameter `cap` below, and both theorems ask for `n - t ≤ cap`.
+`f` is capped at `min(2L, n)` in the README. That is the parameter `cap` below, and both theorems ask for `n - t ≤ cap`.
 
 In both cases the start `t` comes from the progression: `S` has period `p` from `t` up to `hi`, and the prefix of length
 `ℓ ≥ p` occurs at `t`. The border that starts at `t` is `S.drop t`.
@@ -140,7 +140,7 @@ theorem cap_reaches_end {n L y z : ℕ} (hy : n + 1 ≤ y + 2 * L) (hyz : y ≤ 
 
 /-- **A stop at the cap `z + ℓ` is not a break.** Take `S = a⁶⁴` and `L = ℓ = 16`, with `B = (32, 40]` the lower half of
 the range of starts, `z = 40` and `p = 1`. The forward cap `z + ℓ = 56` is below `n`, and `hi = 56` has no break there.
-The notes' rule for `hi < n` would give `t = hi - f = 56 - 32 = 24 ∉ B`, while `33` does start a border, of length
+The README' rule for `hi < n` would give `t = hi - f = 56 - 32 = 24 ∉ B`, while `33` does start a border, of length
 `31 ∈ [16, 32)`. So `border_start_of_run_break` cannot do without `hbreak`. -/
 theorem capped_stop_is_not_break (a : α) :
     let S := List.replicate 64 a

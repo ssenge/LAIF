@@ -121,7 +121,7 @@ open scoped Classical in
 noncomputable def prob (T : ℕ) (σ : State) (A : List Step → Prop) : ℝ :=
   K.expect T σ fun l => if A l then 1 else 0
 
-/-- **Markov**, in the form used for Theorem 1. -/
+/-- **First moment bound**, in the form used for Theorem 1. -/
 theorem markov {T : ℕ} {σ : State} {A : List Step → Prop} {φ : List Step → ℝ} {a : ℝ}
     (hφ : ∀ l, l.length = T → 0 ≤ φ l) (hA : ∀ l, l.length = T → A l → a ≤ φ l) :
     a * K.prob T σ A ≤ K.expect T σ φ := by

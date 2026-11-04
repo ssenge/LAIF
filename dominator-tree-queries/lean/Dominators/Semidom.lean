@@ -4,11 +4,11 @@ import Dominators.Lemma2
 # Semidominators and immediate dominators
 
 Everything here is proved from the abstract properties of a depth-first tree, `IsDfsTree`, and
-`DfsTree.lean` shows that the executable search of `DFS.lean` has them. No result of Lengauer and Tarjan is
+`DfsTree.lean` shows that the executable search of `DFS.lean` has them. No classical result on dominators is
 assumed.
 
-* `sdom_formula`: Lengauer and Tarjan's Theorem 4, the formula for the semidominator.
-* `idom_iff_nca`: the form of Georgiadis, Tarjan and Werneck: `idom(w)` is the nearest common ancestor of
+* `sdom_formula`: the formula for the semidominator.
+* `idom_iff_nca`: `idom(w)` is the nearest common ancestor of
   `parent(w)` and `sdom(w)` in the dominator tree.
 -/
 
@@ -379,7 +379,7 @@ theorem IsDfsTree.sdom_key {w p s : V} (hw : Reach E r w) (hwr : w ≠ r) (hp : 
           have := (hT.anc_le hw hA).1
           omega
 
-/-- **Theorem 4 of Lengauer and Tarjan.** `sdom(w)` is the least of the numbers of predecessors of `w` below `w`,
+/-- **The semidominator formula.** `sdom(w)` is the least of the numbers of predecessors of `w` below `w`,
 and of `sdom(u)` over `u` above `w` with some predecessor of `w` descending from `u`. -/
 def FormulaSet (E : V → V → Prop) (r : V) (T : DfsTree V) (w : V) : Set ℕ :=
   {k | ∃ v, Reach E r v ∧ E v w ∧ T.pre v < T.pre w ∧ k = T.pre v} ∪
@@ -438,7 +438,7 @@ theorem IsNCA.symm {a b c : V} (h : IsNCA E r a b c) : IsNCA E r b a c :=
 theorem IsNCA.self (a : V) : IsNCA E r a a a :=
   ⟨Dominates.refl r a, Dominates.refl r a, fun _ h _ => h⟩
 
-/-- **Georgiadis, Tarjan and Werneck's form.** `idom(w)` is the nearest common ancestor of `parent(w)` and
+/-- **Nearest common ancestor form.** `idom(w)` is the nearest common ancestor of `parent(w)` and
 `sdom(w)` in the dominator tree. -/
 theorem IsDfsTree.idom_iff_nca (hT : IsDfsTree E r T) {w p s : V} (hw : Reach E r w) (hwr : w ≠ r)
     (hp : T.parent w = some p) (hs : IsSdom E r T.pre s w) (u : V) :

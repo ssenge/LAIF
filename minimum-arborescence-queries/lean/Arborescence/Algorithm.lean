@@ -3,10 +3,10 @@ import Arborescence.Counting
 /-!
 # The algorithm of sections 2 and 3, as a Lean function
 
-`solve o g vs` runs the path-growing form of Edmonds' algorithm with the lists of section 3, for an arbitrary
+`solve o g vs` runs the path-growing form of the classical contraction algorithm with the lists of section 3, for an arbitrary
 oracle `o` for TopK, and returns a parent function or `none`, together with the list of all builds `(G, K)`.
 
-Deviations from the wording of the notes, none of which changes what is computed:
+Deviations from the wording of the README, none of which changes what is computed:
 
 * "Discard the leading entries with source in `C`" is `headOut C L`, the first entry with source outside `C`.
   The entries before it have their source in `C` forever, so keeping them changes nothing. A list is not empty in
@@ -14,7 +14,7 @@ Deviations from the wording of the notes, none of which changes what is computed
 * The loop `for v0 in V` is a list `free` of the containers not yet touched, all singletons, in the order of `vs`,
   and a state `cur`, the current `a`.
 * The forest of contractions and its expansion are stored as closures: `Node.exp T v x` is the parent of `x ∈ T`
-  in the expansion of `T` when `T` is entered at `v`. This is the recursion of "Expansion, no queries" of the notes,
+  in the expansion of `T` when `T` is entered at `v`. This is the recursion of "Expansion, no queries" of the README,
   evaluated lazily.
 * `Group.builtIn` and `Group.y0` (the container and the offsets at the last build) are stored so that the invariants
   can name them. `Group.y0` is the same information as the values of `f` returned by TopK. The weights of list entries

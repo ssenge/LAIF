@@ -4,14 +4,14 @@ import Mathlib.Basic.Complex.BigOperators
 import Mathlib.LinearAlgebra.UnitaryGroup
 
 /-!
-# The quantum model and Grover's cost, taken as hypotheses
+# The quantum model and the cost of quantum search, taken as hypotheses
 
 A fixed-length quantum query algorithm as in `../monge/lean/Monge/Model.lean`, and adaptive
 compositions of them, where a classical tree chooses the next circuit from measured outcomes.
 This is what "expected number of queries" means for repeated search, whose length depends on what it
 finds.
 
-Two facts about Grover search are named here and not proved: `GroverFindAll` and `GroverFindOne`.
+Two facts about quantum search are named here and not proved: `GroverFindAll` and `GroverFindOne`.
 They are `Prop`s passed as arguments, and `Axioms.lean` confirms that no axiom is added. Only the
 bounds they give are used, so the proofs never unfold the quantum definitions. The definitions are
 here so that the hypotheses are statements about the real objects.
@@ -77,13 +77,13 @@ noncomputable def AdaptiveAlg.failProb (x : J → Fin k) (good : E → Prop) : A
 /-! ## The hypotheses -/
 
 /-- The positions marked on the input `x`. Whether `j` is marked depends on `j` and on the value `x j`,
-so one query decides it, as for the marks of Section 3 of the notes, which are decided by the fixed
+so one query decides it, as for the marks of Section 3 of the README, which are decided by the fixed
 random function `u` and the weights. -/
 def markedSet {n k : ℕ} (m : Fin n → Fin k → Bool) (x : Fin n → Fin k) : Finset (Fin n) :=
   univ.filter fun j => m j (x j)
 
-/-- **Finding all marked elements**, by repeated Grover search that excludes what it has found (de
-Wolf's exercise; Objois and Vladu, arXiv:2510.08348, Claim 6). If `k` are marked the expected cost is
+/-- **Finding all marked elements**, by repeated quantum search that excludes what it has found (see
+arXiv:2510.08348, Claim 6). If `k` are marked the expected cost is
 at most `κ (√(n k) + √(n log n))`, with error at most `1/n³`, and with `κ` universal over `n`, the
 alphabet, the marks and the input. Marks are computed and uncomputed with one query each, as the
 inverse of the query is a query between two relabellings of the answer register. The condition
@@ -95,7 +95,7 @@ def GroverFindAll (κ : ℝ) : Prop :=
       A.expCost x ≤ κ * (√((n : ℝ) * #(markedSet m x)) + √((n : ℝ) * Real.log n))
 
 /-- **Searching for one marked element or reporting none**, with error at most `1/n³`, in at most
-`κ √(n log n)` queries (Buhrman, Cleve, de Wolf, Zalka, for the small error). -/
+`κ √(n log n)` queries (arXiv:cs/9904019, for the small error). -/
 def GroverFindOne (κ : ℝ) : Prop :=
   ∀ (n k : ℕ) (m : Fin n → Fin k → Bool), 2 ≤ n →
     ∃ A : AdaptiveAlg (Fin n) k (Option (Fin n)), ∀ x : Fin n → Fin k,

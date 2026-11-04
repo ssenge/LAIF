@@ -7,7 +7,7 @@ import GraphClasses.Model
 
 This is accounting, not a compilation of `learn` into a quantum circuit. The expected cost is defined by the recursion
 of Learn with uniform pivots, charging each node `c · m`. The theorems bound that recursion, and show which `c` a node
-needs given BBHT's cost and the expected rounds of Holding.
+needs given the cost of quantum search and the expected rounds of Holding.
 -/
 
 open Finset
@@ -316,7 +316,7 @@ theorem expCost_le {c : ℝ} (hc : 0 ≤ c) (M : R → C → Bool) :
       linarith
     linarith
 
-/-! ## From BBHT's cost to the charge per node -/
+/-! ## From the cost of quantum search to the charge per node -/
 
 /-- The charge per row or column of a node: two reads, and twelve Holding calls of expected rounds at most
 `roundsBound m₀`, each round a search of cost `cs (m/2) lam` and a read of `m`. -/
@@ -350,7 +350,7 @@ theorem base_cost_le {cs lam : ℝ} (hcs : 0 ≤ cs) (hlam : 0 ≤ lam) {A : Fin
   nlinarith
 
 /-- A node with `a` rows and `b` columns, inside a block with `m₀` rows and columns: reading a row and a column, and
-twelve Holding calls with `ρ ≤ roundsBound m₀` expected rounds of a BBHT search and a read, cost at most
+twelve Holding calls with `ρ ≤ roundsBound m₀` expected rounds of a quantum search and a read, cost at most
 `nodeCoeff · (a + b)`. A child block and the candidates of a search are no larger than the node, so this is an upper
 bound for each of the twelve calls. -/
 theorem node_cost_le {cs lam : ℝ} (hcs : 0 ≤ cs) (hlam : 0 ≤ lam) {a b m₀ : ℕ} {ρ : ℝ} (hρ0 : 0 ≤ ρ)
@@ -443,7 +443,7 @@ private theorem log_le_logb_two (m : ℕ) : Real.log (m : ℝ) ≤ Real.logb 2 (
   rw [le_div_iff₀ hl2]
   nlinarith
 
-/-- The constant of Theorem 1, given BBHT's constant `cs`. -/
+/-- The constant of Theorem 1, given the constant of quantum search `cs`. -/
 noncomputable def theorem1Const (cs : ℝ) : ℝ := (62 + 30 * cs) * (1 + 4 * Real.logb (4 / 3) 2)
 
 /-- The expected charge of Learn on a nested block, with `λ = log m`, for an explicit constant. -/
@@ -471,7 +471,7 @@ theorem theorem1Const_pos {cs : ℝ} (hcs : 0 < cs) : 0 < theorem1Const cs := by
   simp only [theorem1Const]
   positivity
 
-/-- **Theorem 1, the expected-cost arithmetic, from BBHT.** Take BBHT's constant `cs`, and `δ = 1/m`, so `λ = log m`.
+/-- **Theorem 1, the expected-cost arithmetic, from quantum search.** Take its constant `cs`, and `δ = 1/m`, so `λ = log m`.
 This gives the search with cost `cs √N log m` that the node charge assumes. There is a constant `K` such that on every
 nested block with `m ≥ 2` rows and columns the expected total charge of Learn with uniform pivots is at most
 `K m log₂³ m`. The node charge covers those searches and Holding's expected

@@ -3,8 +3,8 @@ import Monge.TotallyMonotone
 /-!
 # The hard family (Theorem 2, upper part)
 
-`M_h[i, j] = -(i - j)²` off the diagonal and `M_h[i, i] = h_i`. It is inverse Monge for every `h`,
-its maximum is `OR(h)`, and one entry reveals at most one bit of `h`. The notes check adjacent
+`M_h[i, j] = -(i - j)²` off the diagonal and `M_h[i, i] = h_i`. It has the reverse quadrangle inequality for every `h`,
+its maximum is `OR(h)`, and one entry reveals at most one bit of `h`. The README check adjacent
 blocks; here all blocks are checked directly.
 -/
 
@@ -31,7 +31,7 @@ private theorem cast_succ_le {i i' : Fin n} (h : i < i') : (i : ℝ) + 1 ≤ i' 
   have : (i : ℕ) + 1 ≤ i' := h
   exact_mod_cast this
 
-/-- `M_h` is inverse Monge, for every `h` and all blocks. -/
+/-- `M_h` has the reverse quadrangle inequality, for every `h` and all blocks. -/
 theorem hard_inverseMonge (h : Fin n → Bool) : InverseMonge (hard h) := by
   intro i i' j j' hi hj
   have hi1 := cast_succ_le hi

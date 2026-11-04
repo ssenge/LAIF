@@ -11,7 +11,7 @@ A **column** is a pair `(x, c)`. Alignment `a` **survives** a list of columns if
 * `IsSample` is the abstract situation of Lemma 3: a survivor `s`, and a column killing every other alignment in
   `[0, w)` **at a position that is in range for it**.
 * `vishkin_exclusion`, `two_extremes`, `two_extremes_block` are Lemma 3 and its consequence.
-* `IsPhase` is the process of the notes: each new column lies in the overlap of the current extreme survivors, and its
+* `IsPhase` is the process of the README: each new column lies in the overlap of the current extreme survivors, and its
   character is that of one of the two. `IsPhase.isSample` shows the process produces an `IsSample`. This is the part of
   the proof of Lemma 3 that says "`x - a` is in range or `a` was removed earlier for that reason".
 
@@ -40,8 +40,8 @@ structure IsSample (P : List α) (w s : ℕ) (cols : List (ℕ × α)) : Prop wh
   survives : Survives P cols s
   kills : ∀ a, a < w → a ≠ s → ∃ col ∈ cols, a ≤ col.1 ∧ col.1 - a < P.length ∧ P[col.1 - a]? ≠ some col.2
 
-/-- **Lemma 3 (Vishkin exclusion).** If position `t` passes the sample, then no `t' ≠ t` with `t' + s ∈ [t, t + w)`
-is an occurrence of `P`. In the notation of the notes, `t' ∈ [t - s, t - s + w)`. -/
+/-- **Lemma 3 (exclusion).** If position `t` passes the sample, then no `t' ≠ t` with `t' + s ∈ [t, t + w)`
+is an occurrence of `P`. In the notation of the README, `t' ∈ [t - s, t - s + w)`. -/
 theorem vishkin_exclusion {P S : List α} {w s t t' : ℕ} {cols : List (ℕ × α)} (hs : IsSample P w s cols)
     (hp : Passes S t s cols) (h₁ : t ≤ t' + s) (h₂ : t' + s < t + w) (hne : t' ≠ t) :
     ¬ OccursAt P S t' := by

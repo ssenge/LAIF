@@ -40,7 +40,7 @@ open Classical in
 noncomputable def QAlg.prob (A : QAlg Q T S O) (x : Q → Bool) (o : O) : ℝ :=
   ∑ b, if A.out b = o then Complex.normSq (A.state x T le_rfl b) else 0
 
-/-- **BBHT** (Boyer, Brassard, Høyer, Tapp 1998), with a final check of the outcome and repetition. On `N ≥ 1`
+/-- **Quantum search**, with a final check of the outcome and repetition. On `N ≥ 1`
 candidates and for `δ ∈ (0, 1/2]` there is an algorithm with `O(√N log(1/δ))` queries that on every input:
 never outputs an unmarked item; outputs "none" with certainty if no item is marked; if some item is marked, outputs
 "none" with probability at most `δ`; and gives every marked item the same probability, so the outcome is uniform. -/
@@ -64,7 +64,7 @@ def ORBound (c : ℝ) : Prop :=
     (∀ i : Fin N, 2 / 3 ≤ A.prob (singleBit i) true) →
     c * Real.sqrt N ≤ T
 
-/-- **The OR lower bound** (Bennett, Bernstein, Brassard, Vazirani 1997). An algorithm that tells the zero string from
+/-- **The OR lower bound.** An algorithm that tells the zero string from
 every string with a single `1`, with error at most `1/3`, needs `Ω(√N)` queries. -/
 def ORLowerBound : Prop := ∃ c : ℝ, 0 < c ∧ ORBound c
 
