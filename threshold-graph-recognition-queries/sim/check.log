@@ -1,0 +1,24 @@
+all graphs up to n = 6: 67734 decisions, 0 wrong
+families and single flips: 1140 agreed
+
+threshold graphs: queries / (n log2 n), learning plus one final search, budget 16, mean of 3; last column: fitted exponent
+family             64      128      256      512     1024     2048   exponent
+alternating      15.1     23.0     30.4     36.4     45.2     53.5   1.423
+random           15.6     22.1     28.9     36.6     44.5     52.9   1.410
+one edge         10.2     11.2     12.2     12.7     13.5     13.9   1.207
+star              9.9     11.2     11.9     12.8     13.2     13.6   1.193
+blocks           14.5     19.6     26.3     31.2     36.7     42.1   1.362
+complete          9.5     10.8     11.8     12.6     13.1     13.6   1.198
+empty             9.4     10.8     11.7     12.6     13.2     13.7   1.205
+
+nested matrices: the same
+family             64      128      256      512     1024     2048   exponent
+alternating      10.1     10.7     11.8     13.1     14.4     15.4   1.256
+rare              5.2      5.6      7.3      7.7      8.4      8.9   1.247
+blocks            6.6      5.7      6.7      6.3      6.9      6.6   1.170
+corner            6.8      5.6      5.4      4.0      3.7      3.3   0.992
+zero              4.5      3.9      3.4      3.0      2.7      2.4   0.991
+one edge          5.1      4.4      3.8      3.5      3.1      2.9   1.014
+
+reading all pairs is n(n-1)/2, exponent 2, against the classical lower bound of Theorem 3
+ok

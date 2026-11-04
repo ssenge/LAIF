@@ -1,0 +1,33 @@
+instance                  want   got  queries  all entries
+nested rcrcrcrcrcrc       True  True      898           81
+nested rcrcrcrcrcrc       True  True      877           81
+nested rcrcrcrcrcrc       True  True      873           81
+nested rrrrrrrrrccc       True  True      697           81
+nested rrrrrrrrrccc       True  True      713           81
+nested rrrrrrrrrccc       True  True      701           81
+nested rrrrrrrrrccc       True  True      725           81
+nested rrrrrrrrrccc       True  True      708           81
+nested rrrrrrrrrccc       True  True      706           81
+nested cccccccccrrr       True  True      696           81
+nested cccccccccrrr       True  True      708           81
+nested cccccccccrrr       True  True      728           81
+nested ccccrrrrcrcr       True  True      845           81
+nested ccccrrrrcrcr       True  True      853           81
+nested ccccrrrrcrcr       True  True      870           81
+nested with a flip       False False      628           81
+nested with a flip       False False      589           81
+nested with a flip       False False      632           81
+two hidden ones          False False      681           81
+two hidden ones          False False      703           81
+two hidden ones          False False      626           81
+alternating sequence      True  True      270          144
+alternating sequence      True  True      273          144
+alternating sequence      True  True      264          144
+random sequence           True  True      267          144
+random sequence           True  True      264          144
+random sequence           True  True      265          144
+threshold with a flip    False False       66          144
+threshold with a flip    False False       66          144
+threshold with a flip    False False       66          144
+
+30 runs, 0 wrong; at most 8 qubits; 3499 circuits; 17258 queries
