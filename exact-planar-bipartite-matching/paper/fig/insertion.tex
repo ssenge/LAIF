@@ -1,0 +1,24 @@
+\begin{tikzpicture}[x=1cm,y=1cm]
+\foreach \dx/\after in {0/0,7/1}{
+\begin{scope}[xshift=\dx cm]
+\node[d,label={[lab]left:$h$}] (h) at (0,1.2) {};
+\node[d,label={[lab]left:$a_1$}] (a1) at (0,0.4) {};
+\node[d,label={[lab]left:$a_2$}] (a2) at (0,-0.4) {};
+\node[v,label={[lab]right:$b_1$}] (b1) at (3,1.2) {};
+\node[v,label={[lab]right:$b_2$}] (b2) at (3,0.4) {};
+\node[v,label={[lab]right:$t$}] (t) at (3,-0.4) {};
+\ifnum\after=0
+  \draw[arc] (h) -- (b1);
+  \draw[arc,line width=1.5pt] (b1) -- (a1);
+  \draw[arc] (a1) -- (b2);
+  \draw[arc,line width=1.5pt] (b2) -- (a2);
+  \draw[arc] (a2) -- (t);
+\else
+  \draw[e,line width=1.5pt] (h) -- (b1);
+  \draw[e] (b1) -- (a1);
+  \draw[e,line width=1.5pt] (a1) -- (b2);
+  \draw[e] (b2) -- (a2);
+  \draw[e,line width=1.5pt] (a2) -- (t);
+\fi
+\end{scope}}
+\end{tikzpicture}

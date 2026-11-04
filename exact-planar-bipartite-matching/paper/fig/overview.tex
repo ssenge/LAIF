@@ -1,0 +1,23 @@
+\begin{tikzpicture}[x=1cm,y=1cm]
+\tikzset{every node/.append style={text width=3.1cm}}
+\node[tool,text width=4.2cm] (bdd) at (-3.7,3.5) {Decomposition~\cite{LP19}};
+\node[tool] (tw) at (5.85,3.5) {Treewidth\\[-1pt]decomposition~\cite{IKNS22}};
+\node[tool] (lab) at (-5.55,1.9) {Reachability\\[-1pt]labels~\cite{P20}};
+\node[box] (el) at (-1.85,1.9) {Exact Labels Lemma\\[-1pt]$\tilde O(D^2)$};
+\node[box] (te) at (3.7,1.9) {Elimination along\\[-1pt]the tree of bags};
+\node[box] (path) at (-5.55,0.3) {Path Lemma\\[-1pt]$\tilde O(D)$};
+\node[main] (bip) at (-5.55,-1.4) {Bipartite Matching\\[-1pt]$\tilde O(D^2)$};
+\node[main] (wei) at (-1.85,-1.4) {Weighted Matching\\[-1pt]$\tilde O(D^3)$};
+\node[main] (gen) at (1.85,-1.4) {General Matching\\[-1pt]$\tilde O(D^2)$, randomized};
+\node[main] (trw) at (5.55,-1.4) {Treewidth Theorem\\[-1pt]$\tilde O(\tau^3D+\tau^5)$};
+\draw[arc] (bdd.south -| lab) -- (lab);
+\draw[arc] (bdd.south -| el) -- (el);
+\draw[arc] (bdd.east) -| (te.north);
+\draw[arc] (lab) -- (path);
+\draw[arc] (path) -- (bip);
+\draw[arc] (path.south east) -- (wei.north west);
+\draw[arc] (el) -- (wei);
+\draw[arc] (te.south -| 2.6,0) -- (gen.north -| 2.6,0);
+\draw[arc] (te.south -| 4.8,0) -- (trw.north -| 4.8,0);
+\draw[arc] (tw.south -| 6.4,0) -- (trw.north -| 6.4,0);
+\end{tikzpicture}

@@ -1,0 +1,15 @@
+\begin{tikzpicture}[x=1cm,y=1cm]
+\draw[line width=0.7pt,rounded corners=10pt] (-4.3,-1.75) rectangle (4.3,1.75);
+\node[lab,anchor=north west] at (-4.2,1.68) {bag $Y$};
+\draw[faint,dashed,line width=0.7pt] (0,-1.75) -- (0,1.75);
+\node[lab,anchor=south] at (0,1.78) {$\mathrm{sep}(Y)$};
+\node[lab,anchor=south west] at (-4.2,-1.72) {child $Y_1$};
+\node[lab,anchor=south east] at (4.2,-1.72) {child $Y_2$};
+\node[v,label={[lab]left:$u$}] (u) at (-3.3,0.7) {};
+\node[v,label={[lab]above right:$y_1$}] (y1) at (0,1.05) {};
+\node[v,label={[lab]below right:$y_2$}] (y2) at (0,-0.65) {};
+\node[v,label={[lab]left:$v$}] (v) at (-3.1,-0.85) {};
+\draw[arc,line width=0.9pt] (u) to[out=25,in=170] node[lab,above]{segment $1$} (y1);
+\draw[arc,line width=0.9pt] (y1) to[out=-20,in=20,looseness=2.1] node[lab,right]{segment $2$} (y2);
+\draw[arc,line width=0.9pt] (y2) to[out=200,in=15] node[lab,below]{segment $3$} (v);
+\end{tikzpicture}

@@ -1,0 +1,14 @@
+name = "SsspFlow"
+defaultTargets = ["SsspFlow"]
+
+[[require]]
+name = "mathlib"
+scope = "leanprover-community"
+rev = "d875a8de5222f62cf1c2fafc7984588adadc990a"
+
+[[lean_lib]]
+name = "SsspFlow"
+
+[[lean_lib]]
+name = "FourColor"
+leanOptions = { autoImplicit = false }

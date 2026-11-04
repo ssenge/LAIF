@@ -1,0 +1,14 @@
+.lake/
+__pycache__/
+*.pyc
+.DS_Store
+op4/paper/*.aux
+op4/paper/*.log
+op4/paper/*.out
+op4/paper/*.bbl
+op4/paper/*.blg
+op4/paper/*.fls
+op4/paper/*.fdb_latexmk
+op4/paper/*.synctex.gz
+op7/certs/
+*.pkl
