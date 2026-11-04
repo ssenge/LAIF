@@ -33,21 +33,21 @@ $\tilde O(D)$ rounds with high probability, from the Label Hypothesis alone, wit
 A second newer claim, also not part of the paper: in undirected unweighted planar networks every vertex learns its exact eccentricity, so the diameter and radius are found, in
 $\tilde O(D^2)$ rounds, where the best stated bound for the diameter is $\tilde O(D^3)$. It does not need the Label Hypothesis. A corollary gives every vertex its sum of distances, so closeness, a medoid and the Wiener index, in the same bound. The (1+ε)-approximate version takes $\tilde O(D + \varepsilon^{-4})$ rounds, see [`notes/APPROX_DIAMETER.md`](notes/APPROX_DIAMETER.md). See [`notes/DIAMETER.md`](notes/DIAMETER.md). **Written on 3 Nov 2026. Treat both as claims.**
 
-Theorem A depends on the distance labels of the recent preprint [1]. One lemma of [1]
-(Lemma 14) is false as stated. This repository shows why and gives a repair. A property of
-the decomposition that [1] uses for its round count (Property 6) is also false. We repair
-that too, with bags that carry the region they were cut from; see [Status](#status).
+Theorem A depends on the distance labels of the recent preprint [1]. Our reading hints at a possible gap in one lemma of [1]
+(Lemma 14). This repository explains it and gives a repair. A property of
+the decomposition that [1] uses for its round count (Property 6) also seems not to hold for
+induced bags. We repair that too, with bags that carry the region they were cut from; see [Status](#status).
 
 ## Status
 
 Please read this before relying on anything here.
 - The proofs are written up in `notes/`. See [Use of AI](#use-of-ai).
 - **Correctness.** Theorems A, B, C and C′ give correct outputs given Lemma 14′, our
-  replacement for the false [1, Lemma 14], and the black boxes listed below. Lemma 14′ is
+  replacement for [1, Lemma 14], and the black boxes listed below. Lemma 14′ is
   proved in `notes/LEMMA15.md` §3.
 - **Round counts: repaired.** [1, Lemma 9 (6)] states that at
-  every depth of the decomposition each edge lies in at most two induced subgraphs G[X]. This
-  is false on $K_{2,m}$ plus one edge, for every
+  every depth of the decomposition each edge lies in at most two induced subgraphs G[X]. As we
+  read it, this does not hold on $K_{2,m}$ plus one edge, for every
   decomposition with the other properties (`notes/LEMMA15.md`, (S9)). [1] runs all bags of
   one depth in parallel because of this property. Correctness does not depend on it.
   - `notes/LEMMA15.md` §9 replaces $G[X]$ by a *region graph* $R_X$: the edges drawn in the
@@ -61,7 +61,7 @@ Please read this before relying on anything here.
 - **Theorem D** (2026-10-29) is new. The auxiliary graph $\hat G_\ell$ of [18], as we read its
   Remark 3.3, fails at $s$ and $t$ on small instances (smallest: 4 vertices, minimum cut 2,
   computed 0). Lemma R proves a local repair, and Lemma N proves the description of the dual
-  nodes that it needs. The recursion of [18] itself can miss the minimum cut (11 vertices:
+  nodes that it needs. As we read it, the recursion of [18] can miss the minimum cut (11 vertices:
   minimum 15, computed 37). Lemma S repairs this with two more shortest-path calls per level,
   and the side lemma it needs (Lemma O) is proved. The naming of sides and the cut extraction
   are in `notes/RECURSION.md`.
@@ -115,7 +115,7 @@ non-negative weights)".
 
 | Category | Problem | Before | After | Scope | Status |
 |---|---|---|---|---|---|
-| Distributed algorithms, CONGEST | Exact single-source shortest paths on directed planar networks, nonnegative weights | Õ(D²) [8] | Õ(D), given the Label Hypothesis stated in this folder, which is modelled on the labels of [1]; this folder completes the proof of [1], one lemma of which is false as stated | Directed planar networks, polynomial integer weights; deterministic relative to the labels | Claim; the virtual-source lemma and the discretized boosting in Lean; paper arXiv:2611.02256 |
+| Distributed algorithms, CONGEST | Exact single-source shortest paths on directed planar networks, nonnegative weights | Õ(D²) [8] | Õ(D), given the Label Hypothesis stated in this folder, which is modelled on the labels of [1]; this folder completes the proof of [1], with a repair of one lemma | Directed planar networks, polynomial integer weights; deterministic relative to the labels | Claim; the virtual-source lemma and the discretized boosting in Lean; paper arXiv:2611.02256 |
 | Distributed algorithms, CONGEST | Exact maximum st-flow on directed planar networks, with the flow on every edge | Õ(D²) [9] | min{Õ(D²), D·n^{o(1)}}; Õ(D) when s and t lie on a common face; Õ(D) with high probability in a later note | Given the Label Hypothesis | Claim; the dual weighting lemma in Lean |
 | Distributed algorithms, CONGEST | Exact minimum st-cut and minimum cut value on undirected planar networks | (1 − o(1))-approximation in Õ(D) [18]; exact in Õ(D²) [9] | Õ(D), given the Label Hypothesis, with two repairs of [18]: its auxiliary graph at the terminals, and its recursion, which as we read it can miss the minimum cut | Undirected planar networks | Claim; the recursion argument in Lean |
 | Distributed algorithms, CONGEST | Negative weights, minimum arborescences and replacement paths on planar digraphs | D·n^{o(1)} for negative weights through a general reduction; no bound in D alone known to us for the others | Õ(D) with high probability for negative weights and for arborescences, given the Label Hypothesis; replacement paths exactly in Õ(D·min(h, D)) and within 1 + ε in Õ(D/ε) | Planar digraphs | Claims in notes; cores in Lean |
@@ -133,8 +133,8 @@ non-negative weights)".
 | Theorem D: exact minimum st-cut (max-flow value), undirected; new | $\tilde O(D)$ | exact $\tilde O(D^2)$ [9]; $(1-o(1))$-approximate $\tilde O(D)$ [18] | modest to solid |
 | Lemma V: distances from a virtual source, and a fix of the query of [1] | $\tilde O(D/\varepsilon)$ | | minor |
 | Lemma D: the face-disjoint graph of [9], weighted, realizes dual distances | | | minor |
-| [1, Lemma 14] is false | | | modest |
-| Property 6 of [1, Lemma 9] is false for induced bags | | | modest |
+| A possible gap in [1, Lemma 14] | | | modest |
+| A possible gap in Property 6 of [1, Lemma 9], for induced bags | | | modest |
 | Region bags: Property 6 for region graphs, $O(\log^2 n)$ tree components, a deterministic separator | | | modest |
 | Lemmas 14′, 15′, 16′: the repair of [1, Lemmas 14 to 16] | | | minor |
 
@@ -201,7 +201,7 @@ convergecast. Leaf bags solve their part exactly. Then each $v$ takes the minimu
 $A_X(h)+\tilde d_X(h,v)$ over all bags $X\ni v$ and all their hubs, and of its leaf values.
 
 The minimum has to run over **all** bags that contain $v$. The query in the proof of
-[1, Thm 4] uses only the lowest bag that separates the two endpoints, and that is wrong when
+[1, Thm 4] uses only the lowest bag that separates the two endpoints. As we read it, that can give a wrong value when
 the labels store distances in $G[X]$, because a shortest path can leave that bag. A small
 counterexample:
 - the root separator is $\lbrace a,b\rbrace$, with children $X=\lbrace s,a,b,c,u\rbrace$ and $\lbrace w,a,b\rbrace$;
@@ -213,11 +213,11 @@ instances `sim/check.py` finds the single-bag query wrong on about 6% of pairs.
 
 ### The gap in [1] and the repair
 
-**What fails.** The labels of [1] come from distance oracles for the bags, built bottom up. At
+**Where the gap is.** The labels of [1] come from distance oracles for the bags, built bottom up. At
 each bag the hub distances are written as a quasimetric, fitted by a linear program to a cyclic
 order of the hubs, and realized by a small planar graph. [1, Lemma 14] provides the cyclic order.
 It claims that cutting the bag open along a network of hub paths merges all of its holes into
-one face. This fails in three configurations that are consistent with all properties of the
+one face. As we read it, this does not hold in three configurations that are consistent with all properties of the
 decomposition:
 1. **Separator chords.** An edge between two separator vertices, drawn inside the separator,
    splits a hole of a child bag in two. In 58 of 100 random weightings no cyclic order makes
@@ -258,8 +258,8 @@ are not artefacts of the linear program. The scripts are in `sim/counterexamples
   - The spanning tree $T_X$ is the BFS tree restricted to $R_X$ plus connectors. Lemma B1(e)
     bounds its components by $3+(d-1)(d+2)/2$ at depth $d$, so its diameter is
     $O(D\log^2 n)$. The proof counts how often a child meets the separator, against the
-    holes of the parent's region. [8, Claim 4.6] claims one new component per level, which is
-    false (`notes/LEMMA15.md` §1).
+    holes of the parent's region. [8, Claim 4.6] gives one new component per level, and we see a
+    possible gap there (`notes/LEMMA15.md` §1).
   - The separator is Lemma B5. A thin neighbourhood of $T_X$ has a circle as boundary, and
     non-tree edges are non-crossing chords of the outside. The number of vertices on one side
     of a fundamental cycle is read off the number of tree-edge sides along one arc of that

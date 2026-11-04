@@ -81,9 +81,9 @@ A polynomial bound needs a realization that respects a prescribed cyclic order o
 
 **Status: the algorithm is correct given Lemma 14′; the Õ(D) bound holds with region bags**
 (`LEMMA15.md`, §9).
-The labels (L) come from [1, Lemmas 15 and 16], whose topological core, [1, Lemma 14], is
-false as stated (LEMMA15.md, (S7)). LEMMA15.md §3 proves Lemma 14′ with a new construction
-(tiles). Property 6 of [1, Lemma 9] is false for induced bags
+The labels (L) come from [1, Lemmas 15 and 16], whose topological core, [1, Lemma 14], has
+a possible gap as stated (LEMMA15.md, (S7)). LEMMA15.md §3 proves Lemma 14′ with a new construction
+(tiles). Property 6 of [1, Lemma 9] seems not to hold for induced bags
 (LEMMA15.md, (S9)). Correctness does not use it, but
 [1]'s Õ(D/ε) bound for the labels does, since it runs all bags of one depth in parallel.
 LEMMA15.md §9 restores the schedule: bags carry the sides of the edges they were cut from,
@@ -140,7 +140,7 @@ Given (L), (1+ε)-approximate distances from a virtual source with offsets φ ta
 1. For every bag X and h ∈ ∂S⁺_X, compute A_X(h) = min_{u∈X} φ(u) + d̃_X(u,h). This is a
    min-convergecast of |∂S⁺_X| = Õ(D) values over T_X, pipelined in Õ(D) rounds and
    broadcast back down. All bags of one depth run in parallel because edge congestion is
-   at most 2. [1] takes this from Property 6, which is false for induced bags (LEMMA15.md,
+   at most 2. [1] takes this from Property 6, which as we read it does not hold for induced bags (LEMMA15.md,
    (S9)); for region bags it is Lemma B1(a) (LEMMA15.md §9.6). Over all O(log n) depths
    this takes Õ(D) rounds.
 2. Each leaf bag L gathers G[L] and φ|_L, as in the base case of [1, Lemma 16], and computes
@@ -252,8 +252,8 @@ model that can run the oracle.
 - **Risks.**
   1. It depends on [1], which is four months old and unrefereed.
   2. The authors of [1] can be expected to notice this soon.
-  3. [1, Lemma 14] is false as stated, so (L) is conditional on Lemma 14′ (LEMMA15.md).
-  4. Property 6 of [1, Lemma 9] is false for induced bags, so the Õ(D/ε) round bound of (L)
+  3. [1, Lemma 14] has a possible gap as stated, so (L) is conditional on Lemma 14′ (LEMMA15.md).
+  4. Property 6 of [1, Lemma 9] seems not to hold for induced bags, so the Õ(D/ε) round bound of (L)
      needed a new parallel schedule (LEMMA15.md, (S9)). The region bags of LEMMA15.md §9
      give it, with the deterministic separator of Lemma B5.
 
@@ -279,7 +279,7 @@ Every bound in §3-5 holds as a composition of the sources. Still open:
     set Γ_d of corners of G (radial graph), with edges labelled by bag. Nothing is cut, so
     every tile is a disk. Children refine parents, ports per bag are O(D log n), and outside
     edges (at most 3|∂S*_X|) go straight into H_X. The prototypes ran 2.7 million Monge checks with
-    every gluing planar and no failures (§3.7). One of the assumptions, Property 6, is false for
+    every gluing planar and no failures (§3.7). One of the assumptions, Property 6, seems not to hold for
     induced bags: see (S9).
   - **Round count: repaired with region bags** (LEMMA15.md §9). Bags carry edge sides, every edge
     lies in at most two region graphs per depth, and T_X has O(log² n) components. The drawing of
@@ -516,7 +516,7 @@ as the flow value. For Lemma 2.7 we use an exact exchange in place of [18, Claim
   dominated by every index between t and i1, or by every index between t and i2), and from it
   that the least computed length is the minimum. The recursion argument, with the conclusion of
   Lemma S1 and (INV) as hypotheses, is in Lean (`lean/SsspFlow/Recursion.lean`), together with
-  the defect on the index pattern of the instance.
+  the gap on the index pattern of the instance.
 
 So it suffices to prove [18, Thm 4.1] with exact trees in Õ(D) rounds. We do this on the graph
 Ĝ_ℓ of [18, Thm 3.1], with the endpoint repair below, as Lemma D does on Ĝ:
@@ -635,7 +635,7 @@ SSSP step. The other steps still use [18]'s minor-aggregation simulation.
 *Status.* The reduction holds on the repaired Ĝ_ℓ, but [18]'s Ĝ_ℓ read literally does not (D1 to
 D3 above). Lemma R proves the needed properties of the repaired graph. Fact N, the description of
 node-parts as pieces, is not stated in [18]; Lemma N proves it. Lemma S repairs the recursion
-defect above: the repaired driver gives the right value on all 25 failing instances and on
+gap above: the repaired driver gives the right value on all 25 failing instances and on
 1,440,000 sweep instances (6 wrong values in 1,200,000 of them without the repair). The side fact
 behind the exact exchange and the exact form of [18, Claim 2.3] are stated as Lemma O
 (notes/LEMMA_O.md), proved by an induction over the levels in a curve model; the bound in the

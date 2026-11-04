@@ -6,8 +6,8 @@ d̃_X(h,v) for all h ∈ ∂S⁺_X, with dist_{G[X]} ≤ d̃_X ≤ (1+ε)·dist_
 proofs have gaps.
 
 This file splits the repair into two layers:
-- **The topological layer (§3).** [1] supplies it through Def. 6 and Lemma 14, but Lemma 14
-  is false as stated (§2, (S7)). §3 replaces both with a different construction. Its pieces
+- **The topological layer (§3).** [1] supplies it through Def. 6 and Lemma 14, but as we read it, Lemma 14
+  does not hold as stated (§2, (S7)). §3 replaces both with a different construction. Its pieces
   are *tiles*: the faces of a growing set of corners of G. §3 proves the interface,
   Lemma 14′, that the analytic layer needs.
 - **The analytic layer (§4 to §7).** Error recursion, LP, rounding, gluing and labels, proved
@@ -19,8 +19,8 @@ Status:
 - The child shape in §1 is that of [8]'s construction: outside components grouped, and
   contiguity at each separator vertex. The label-change bound is 8|S_A| (Claim 7). One child
   per outside component contradicts 7(a) (§1).
-- The assumptions contain one serious problem, (S9): Property 6 is false for induced bags. That
-  breaks the round count, not correctness. In addition, one step of [8] can add more than one
+- One assumption needs a repair, (S9): as we read it, Property 6 does not hold for induced bags. That
+  affects the round count, not correctness. In addition, one step of [8] can add more than one
   component to T[X] (§1).
 - The repair of (S9) is in §9. Bags carry the sides of the edges they were cut from, and every
   edge lies in at most two of these region graphs per depth. That section also proves the
@@ -41,7 +41,7 @@ Notation is that of [1, Sec. 5]:
     itself is a spanning tree of height O(D), but [8, Def. 4.1 (6)] only gives O(log n)
     components for T[X]. We use T_X, which costs one log factor in sizes and rounds.
     The O(log n) components come from [8, Claim 4.6, Lemma 4.7], which add one component
-    per level. That step is false: a child met S_X in two arcs and went from 1 to 3
+    per level. As we read it, that step has a gap: a child met S_X in two arcs and went from 1 to 3
     components in one step (`sim/lemma14prime/lp46_demo.py`). In all runs that follow (G1′)
     faithfully (T_X ⊇ T[X] from a BFS tree, inherited z_s) the total stayed at most depth + 1,
     and with z_s chosen against the bound at most depth + 3. In the region form of §9 the bound
@@ -182,8 +182,8 @@ Two assumptions on the graph the oracle runs on. Both hold for every call in The
   S_X on a path from a non-hub v lies in v's child. This is true for [8]'s children,
   since the edge into S_X is drawn in the child's region. It is just not among Properties 1
   to 7. Def. 6 step 4 (lty 1530-1531) uses the same fact. We record it as (7c′).
-- **(S7) [1, Lemma 14] is false as stated.** The claim is that cutting P_X open merges all
-  holes of G[X] into one face carrying P_X ∪ ∂S*_X. It fails in three configurations (scripts
+- **(S7) A possible gap in [1, Lemma 14] as stated.** The claim is that cutting P_X open merges all
+  holes of G[X] into one face carrying P_X ∪ ∂S*_X. As we read it, it does not hold in three configurations (scripts
   in `sim/counterexamples/`), all consistent with Properties 1
   to 7 and [8]'s rule for children:
   1. **Separator chords** (`g2_chord_bfs.py`, `g2_chord.py`).
@@ -212,7 +212,7 @@ Two assumptions on the graph the oracle runs on. Both hold for every call in The
   infers that faces merge from the fact that the cut paths form a connected tree. §3
   replaces Def. 6 and Lemma 14; §3.6 explains why none of the three configurations can occur
   there.
-- **(S9) Property 6 is false for induced bags.** [1, Lemma 9 (6)] says that at every depth
+- **(S9) A possible gap in Property 6 for induced bags.** [1, Lemma 9 (6)] says that at every depth
   each edge lies in at most two subgraphs G[X], and [8, Lemma 4.3 (8′)] says the same. Both
   fail on G_m, which is K_{2,m} plus the edge uw: planar, with D = 2 (`sim/lemma14prime/p6.py`).
   - Let B be the set of bags that contain u and w. Take a non-leaf X ∈ B and a petal
@@ -577,7 +577,7 @@ most 3|∂S*_X| of them. ∎
 ### 3.5 Locality, (T5)
 
 **Building Γ_{d+1}.** All of this runs for all bags of depth d in parallel. [1] bounds the
-congestion of such steps by 2 through Property 6, which is false for induced bags (S9). In
+congestion of such steps by 2 through Property 6, which as we read it does not hold for induced bags (S9). In
 the region form, Lemma B1(a) gives congestion 2 (§9.6).
 - **Labels.** Each end of e knows its bags (Property 2) and whether it lies in S_X. Once
   every centre has broadcast its parent's ID within its bag, it also knows which of its bags
@@ -931,7 +931,7 @@ leaf term. The rounds are Õ(D/ε′) per level, so Õ(D/ε′) in total.
 *Construction.*
 - **Leaves.** All of G[L] is broadcast inside L, as in [1].
 - **Broadcast for non-leaf X.** The oracle labels of H_X on ∂S⁺_X go to every vertex of X, as
-  in [1]: Õ(D/ε′) words per bag, all bags of one level in parallel. Property 6 is false for
+  in [1]: Õ(D/ε′) words per bag, all bags of one level in parallel. As we read it, Property 6 does not hold for
   induced bags (S9); the region form of §9.6 gives the parallel schedule. Let δ^H be
   the answers. By Lemma 15′ and (G5), dist_{G[X]} ≤ δ^H ≤ (1+ε′)^{3h(X)+1}·dist_{G[X]} on
   ∂S⁺_X.
@@ -986,7 +986,7 @@ Take ε′ = ε / (2(3H+1)). Then (1+ε′)^{3H+1} ≤ e^{ε/2} ≤ 1+ε for ε 
   level of Lemma 16′ and the parameters are also checked in Lean (`Tools.lean`,
   `Labels.lean`).
 - **Proved here.** Lemma 14′ (§3), with Lemmas R3 (restated) and R7. This fixes (S4) and (S7).
-- **The round count** (S9). Property 6 is false for induced bags, so the parallel schedule
+- **The round count** (S9). As we read it, Property 6 does not hold for induced bags, so the parallel schedule
   of [1] needed a new argument. §9 gives one with region bags: Lemma B1, proved, with the
   separator of Lemma B5, which is deterministic.
 - **Black boxes.** In the region form of §9, which is the form used, (G1) and (G1′) are not

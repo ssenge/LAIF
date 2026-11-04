@@ -16,7 +16,7 @@ can miss it. This note gives:
 
 Lemma R and Lemma N (GHAT_REPAIR.md) are not affected.
 
-## The defect
+## The gap
 
 After computing P_i in an annulus A with index range [j, k], the recursion drops every index t
 with i1 < t < i2. Here i1 and i2 are the least and greatest index of a copy of P on P_i
@@ -63,13 +63,13 @@ and p_5, so it serves as both P_4 and P_5.
 **How often it happens.**
 - The repository driver (sim/thmD/thmD.py) reports 37 on 2 of 80 runs of this instance; the
   runs differ in f, g and the corners.
-- The defect also occurs on multigraphs with n ≤ 12 and on simple graphs with generic
+- The gap also occurs on multigraphs with n ≤ 12 and on simple graphs with generic
   capacities. On 25 saved instances, 20 multigraphs and 5 simple graphs, the driver gives wrong
   values in 161 of 300 runs.
 
 As we read [18], its own recursion is the same, and exact trees are a special case of its
-approximate ones, so [18, Thm 1.1] would inherit the defect. The step of [18, Sec. 5.2] that
-says the leaf annuli cover all of P is where the defect bites.
+approximate ones, so [18, Thm 1.1] would inherit the gap. The step of [18, Sec. 5.2] that
+says the leaf annuli cover all of P is where the gap bites.
 
 ## The repair
 
@@ -305,7 +305,7 @@ finite, so Λ is computed somewhere. Fix t ∈ [j_A, k_A] with λ_t = Λ.
   lane_ends.sh runs the driver's families with and without the repair on the same seeds;
   lane_c24.sh and lane_sep.sh run the checks. The ends1_* logs predate the three checks; they
   test the final value and every earlier check.
-- **Without the repair.** The driver's own families hit the defect: 6 wrong values in
+- **Without the repair.** The driver's own families hit the gap: 6 wrong values in
   1,200,000 instances. That is 1 in 300,000 small instances, 1 in 300,000 tiny ones, and 2 in
   300,000 with up to 70 vertices under each of two tie-breaks (logs/ends0_*.json).
 - **With the repair.** No check failed in 1,440,000 instances (logs/ends1_*.json): the same
@@ -388,7 +388,7 @@ Not in Lean: the proof of Lemma S1, (S_1), Lemma O, the graphs and their walks, 
   stores whole paths, and the two give different graphs on some levels. The overlap rule serves
   [j_A, i], where [18] writes j ≤ m ≤ i with j the index of the bound. Paths are read from g_i^0.
 - **[18, Lemma 5.6].** Its proof assumes that an annulus holds only copies of the faces of its range,
-  which is false (see the defect). We take i_1 and i_2 over all P-pieces of A, by one aggregation.
+  which as we read it does not always hold (see the gap). We take i_1 and i_2 over all P-pieces of A, by one aggregation.
 - **Details of the proofs.** Lemma O: A^Q has the pairs whose tokens lie in its pieces, not all pairs of
   the edges that have a pair in A; the induction is over all live annuli of a level at once, since
   the proof uses the sibling annuli; the least length excludes P itself. Lemma N(c)(≤): the exchange
