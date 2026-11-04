@@ -41,6 +41,7 @@ Results on open problems in algorithms and complexity. Each folder holds one top
 | Problem | Result | Details |
 |---|---|---|
 | Maximum matching on general graphs with adjacency-matrix quantum queries, where the general bound is O(n^{7/4}) [12] | Õ(n^{3/2}√(1 + n/g)) queries at odd girth g, below n^{7/4} for g ≥ n^{1/2+Ω(1)}; O(n log² n + (n²/g) log n) bits of deterministic edge-partition communication at odd girth g; a decision tree with at most I wrong "no edge" guesses gives an edge-partition protocol with O(I log T) bits | [quantum-matching-queries](quantum-matching-queries/) |
+| Shortest cover and all covers of a string with quantum queries, where classically Θ(n) is needed | O(√n log⁴ n) and O(√n log⁵ n), Ω(√n). Close to a corollary of published classical structure [Radoszewski, Zuba; Crochemore et al.] plus Grover search; combinatorics in Lean, the composition is a claim | [string-cover-queries](string-cover-queries/) |
 
 ## Former repositories
 

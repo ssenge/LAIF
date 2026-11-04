@@ -1,0 +1,16 @@
+all strings up to n = 14: 42096 agreed with brute force, shortest and all covers
+families up to n = 2048: 384 agreed; inner predicate agreed with the truth on every block, contexts {'periodic': 564, 'aperiodic': 797}
+two-way inner cost above pred_cap in 0 evaluations; largest ratio 0.95, and 0.65 for l >= 16
+
+queries / sqrt(n), budget 16, mean of 3; last column: fitted exponent
+family                256       1024       4096      16384      65536     262144   exponent
+a^n                   202        202        205        196        198        200      0.497
+one b               70705     134822     142448     199954     296376     300395      0.705
+random                355       1139       2005       3142       4271       5469      0.873
+fibonacci             467        351     623568        361        631        365      0.357
+small cover           782        781        771        756        757        753      0.494
+root cover         160306     639167     669970     673376     690469     700358      0.657
+long cover          47478      49373      55181      57691      63269      65524      0.549
+flip                93797     145544     226698     332911     287554     406367      0.701
+wrong answers in those runs: 0
+ok

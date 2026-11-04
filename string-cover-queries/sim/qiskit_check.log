@@ -1,0 +1,24 @@
+string                                   want        got  queries
+aabaabaaabaabaa                    [5, 8, 15] [5, 8, 15]     6752
+aabaabaaabaabaa                    [5, 8, 15] [5, 8, 15]     6936
+aabaabaaabaabaa                    [5, 8, 15] [5, 8, 15]     6792
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa [1, 2, 3,  [1, 2, 3,  14073625
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa [1, 2, 3,  [1, 2, 3,  13827210
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa [1, 2, 3,  [1, 2, 3,  13652143
+aaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaa       [40]       [40]   455456
+aaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaa       [40]       [40]    62669
+aaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaa       [40]       [40]   149589
+abaababaababaababaabaababa         [3, 8, 26] [3, 8, 26]    12805
+abaababaababaababaabaababa         [3, 8, 26] [3, 8, 26]    13053
+abaababaababaababaabaababa         [3, 8, 26] [3, 8, 26]    12527
+abaababababaababababaababababaabab [3, 17, 26 [3, 17, 26 20261920
+abaababababaababababaababababaabab [3, 17, 26 [3, 17, 26 20451942
+abaababababaababababaababababaabab [3, 17, 26 [3, 17, 26 20920581
+abcabcabcabcabcabcabcabcabcabcab   [5, 8, 11, [5, 8, 11, 21040186
+abcabcabcabcabcabcabcabcabcabcab   [5, 8, 11, [5, 8, 11, 20144985
+abcabcabcabcabcabcabcabcabcabcab   [5, 8, 11, [5, 8, 11, 20504772
+abaabaabaabaabaabaabaabaabaabaab   [5, 8, 11, [5, 8, 11, 20516678
+abaabaabaabaabaabaabaabaabaabaab   [5, 8, 11, [5, 8, 11, 19967807
+abaabaabaabaabaabaabaabaabaabaab   [5, 8, 11, [5, 8, 11, 20114403
+
+21 runs and 35 predicates, 0 wrong; at most 7 qubits; 43115 circuits
