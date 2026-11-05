@@ -25,6 +25,7 @@ Results on open problems in algorithms and complexity. Each folder holds one top
 | Distributed algorithms, CONGEST | Exact maximum st-flow on directed planar networks | Õ(D²) [4] | min{Õ(D²), D·n^{o(1)}}, with the rotation lists as input | Claim; in Lean the round bound, assuming a reduction for negative weights and the same five cited results | [exact-shortest-paths-and-flows-on-planar-graphs](exact-shortest-paths-and-flows-on-planar-graphs/) |
 | Distributed algorithms, LOCAL | Round exponent κ of the (7 + ε)-approximation of minimum dominating set on planar graphs, (c/ε)^κ rounds | κ ≈ 25.81 [5] | κ < 5.89 for the algorithm of [5], same ratio. Other algorithms reach O(ε⁻⁴ log²(1/ε)) rounds [8], and ratio 7 in constant rounds [9] | Proved on paper; core inequalities in Lean; paper in the folder | [minimum-dominating-set-on-planar-graphs](minimum-dominating-set-on-planar-graphs/) |
 | Distributed algorithms, LOCAL | Rounds of the (1 + ε)-approximations of [5] as a function of ε | (c/ε)^25.81; dependence on ε open | At least 1/ε − 4 rounds on every minor-closed class that contains all paths; Θ(1/ε) on forests and on outerplanar graphs | Lower bound in Lean | [minimum-dominating-set-on-planar-graphs](minimum-dominating-set-on-planar-graphs/) |
+| Quantum machine learning | Worst-case generalization error of quantum neural networks with T trainable two-qubit gates, each used at most M times, N samples | O(√(T log T / N)), and O(√(T log(MT) / N)) with reuse [12] | Ω(√(T log((M + 1)T) / N)) for empirical risk minimization at N ≥ m, so the logarithmic factor is needed; sets shattered at constant margin have size Θ(T log(MT)) | Claim, with simulation | [qnn-generalization-lower-bounds](qnn-generalization-lower-bounds/) |
 | Fine-grained complexity | Algorithmic consequences of the October 2026 claims [6, 7] that the Exponential Time Hypothesis is false | Time 2^{o(n)} for these problems would contradict ETH | One Turing machine in time 2^{εn} for several counting and parity problems, conditional on the unrefereed claims [6, 7]; some results have since turned out to be known or superseded, see the folder | Lean, as theorems about Turing machines on top of the formalized algorithm of [7] | [eth-corollaries](eth-corollaries/) |
 
 ## Minor results
@@ -36,6 +37,7 @@ Results on open problems in algorithms and complexity. Each folder holds one top
 | Dominator tree, bridges of a flow graph, strong bridges and strong articulation points with quantum queries | Θ(n^{3/2}) in the matrix model, O(√(nm) log n) in the array model | [dominator-tree-queries](dominator-tree-queries/) |
 | LP-type problems with n constraints and combinatorial dimension δ with quantum queries | O(δ²√n log n + δ√n log^{3/2} n) | [lp-type-queries](lp-type-queries/) |
 | Minimum-cost arborescence with quantum queries | O(√(nm) log³ n), Ω(√(nm)) | [minimum-arborescence-queries](minimum-arborescence-queries/) |
+| Depth D of fixed upload circuits approximating a tunable upload gate e^{iwxσ_z} on [0, 1] to error ε | D ≤ (2/π)\|w\| + (32/π) ln(1/ε) + 17, and D ≥ (2/π)\|w\|(1 − O(ε)) − O(1); so D = Θ(log(1/ε)) for fixed w, where O((log 1/ε)^σ) for every σ > 1 was known [13] | [fixed-upload-depth](fixed-upload-depth/) |
 | Matrix product verification AB = C with quantum queries | Ω(n^{5/3}), so Θ(n^{5/3}). Previous proof by Kintali. Our contribution: a Lean proof over F₂ and a short written proof | [matrix-product-verification-queries](matrix-product-verification-queries/) |
 
 ## Former repositories
@@ -55,6 +57,8 @@ The folders `exact-planar-bipartite-matching`, `exact-shortest-paths-and-flows-o
 9. S. Amiri, S. Siebertz, W. Wawrzyniak. Paying for Fractional Error: Tight Constant-Round Approximation of Covering Problems with Short Broadcasts. arXiv:2611.02057.
 10. S. Apers, T. Lee. Quantum Complexity of Minimum Cut. CCC 2021, arXiv:2011.09823.
 11. S. Apers, A. Auza, T. Lee. A sublinear query quantum algorithm for s-t minimum cut on dense simple graphs. arXiv:2110.15587.
+12. M. C. Caro, H.-Y. Huang, M. Cerezo, K. Sharma, A. Sornborger, L. Cincio, P. J. Coles. Generalization in quantum machine learning from few training data. Nature Communications 13, 4919 (2022). arXiv:2111.05292.
+13. A. Y. Liu, L. Pira. The Cost of Removing Tunability in Quantum Data Re-Uploading. arXiv:2606.25598.
 
 ## License
 
