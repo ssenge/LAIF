@@ -12,7 +12,7 @@ where each fᵢ is convex and ℓ-smooth, ψ is μ-strongly convex and known, an
 
 O_F |x⟩|i⟩|b⟩ = |x⟩|i⟩|b ⊕ ∇fᵢ(x)⟩,
 
-also in superposition over x and i, and must output an expected ε-optimal point, E[F(x)] ≤ F* + ε, on every instance. As in the reduction of [1, Lemma 11], the queries are supported on a ball ‖x‖ ≤ R. Here R is any radius of at least 3√(Δ/μ), and the dimension needed below grows like R².
+also in superposition over x and i, and must output an expected ε-optimal point, E[F(x)] ≤ F* + ε, on every instance. As in [1], x and ∇fᵢ(x) are taken with exact real arithmetic; any fixed finite encoding works the same way. As in the reduction of [1, Lemma 11], the queries are supported on a ball ‖x‖ ≤ R. Here R is any radius of at least 3√(Δ/μ), and the dimension needed below grows like R². The model of [1, Corollary 3], an ε-optimal output with probability at least 2/3, is covered as well, since the proof below only uses that the output is 3ε-optimal with probability at least 2/3.
 
 Known bounds:
 
@@ -45,12 +45,12 @@ N(k+1) ln(3/2) / 16000 ≥ 6·10⁻⁷ √(nκ) ln(μΔ/(3εℓ))
 
 queries to O_F.
 
-**Corollary 2.** For κ ≥ 100n and ε ≤ μΔ/(9ℓ), we have n ≤ √(nκ)/10 and ln(μΔ/(3εℓ)) ≥ (1/2) ln(μΔ/(εℓ)). So the bound reads Ω(n + √(nκ) log(μΔ/(εℓ))).
+**Corollary 2.** Keep the assumptions of Theorem 1, and let ε ≤ μΔ/(9ℓ). This implies ε < q³μΔ/(3ℓ), since q³/3 ≥ 0.142. We have n ≤ √(nκ)/10 and ln(μΔ/(3εℓ)) ≥ (1/2) ln(μΔ/(εℓ)). So the bound reads Ω(n + √(nκ) log(μΔ/(εℓ))).
 
 - This is the classical lower bound of [3].
 - For ε ≤ μ²Δ/ℓ², we have log(μΔ/(εℓ)) ≥ (1/2) log(Δ/ε), so the bound also matches the classical upper bound of Katyusha [2] up to a constant factor.
 
-So in Case 1, quantum queries give no asymptotic speedup once d is a large enough polynomial. With R = 3√(Δ/μ), we have R²/c² < 3κΔ(k+1)/(8nε), so
+So in Case 1, for queries in a ball as in [1, Lemma 11], quantum queries give no asymptotic speedup once d is a large enough polynomial. With R = 3√(Δ/μ), we have R²/c² < 3κΔ(k+1)/(8nε). So, for ε ≤ μΔ/(9ℓ),
 
 d = O((k+1)⁴ κΔ/ε) = O(κ³ Δ log⁴(μΔ/(εℓ)) / (n²ε))
 
@@ -146,6 +146,8 @@ An algorithm with error at most 1/4 on every input would succeed with probabilit
 
 **Theorem (strong direct product [4, Theorem 1.1], with δ = 1).** For every function f with finite input and output alphabets, Q_{1/2}(f^{(N)}) ≥ N ln(3/2) Q_{1/4}(f)/8000. Here f^{(N)} has N independent inputs, and a query may address any position of any input, also in superposition.
 
+The chain oracle XORs a binary encoding of w(S). This differs from the convention of [4] only in form. The hybrid argument and the adversary bounds behind [4] use only that a query acts on S through a unitary that depends on w(S) alone, and the XOR and modular-addition oracles simulate each other with O(1) queries.
+
 With Lemma 3: an algorithm that outputs all N key tuples of N independent chains with probability at least 1/2 on every input makes at least N(k+1) ln(3/2)/8000 queries.
 
 ## 3. The reduction
@@ -175,7 +177,7 @@ So the gradient is the sum of the terms whose vectors are all revealed. ∎
 4. Query again to erase w.
 5. Uncompute Sⁱ(x).
 
-On ‖x‖ ≤ R, this is exactly O_F, also with i in superposition. A query to the zero component f_n costs nothing.
+On ‖x‖ ≤ R, this is exactly O_F, also with i in superposition. In the branch of the zero component f_n, the simulation queries a fixed dummy position (chain 1 at S = (∅, …, ∅)) and erases it in the same way. So every query of O_F costs exactly two chain queries.
 
 **Lemma 5 (decoding).** Fix the key tuples, run the algorithm with the simulated oracle, and let x be its output. With probability at least 2/3 − 1/20, the following holds for every i and j: exactly one candidate u_{i,j,α} has |⟨x, u⟩| ≥ c/2, and that candidate has α = m_{i,j}.
 
@@ -183,7 +185,7 @@ On ‖x‖ ≤ R, this is exactly O_F, also with i in superposition. A query to 
 
 1. **Independence.** The whole family of candidates is Haar distributed. So for every fixed set of keys, the true vectors form a Haar orthonormal family. Given the true vectors, the other candidates form a Haar orthonormal family of the complement W, where dim W = d − N(k+1). By Lemma 4 the algorithm sees exactly O_F of the true instance. So x depends only on the true vectors and the algorithm's randomness, and it is independent of the false candidates given the true ones.
 2. **Near optimality.** By Markov's inequality, F(x) − F* < 3ε with probability at least 2/3. On that event, Lemma 2 gives |⟨x, v_{i,j}⟩| ≥ c/2 for all i and j.
-3. **Norm.** On the same event, strong convexity gives ‖x*‖ ≤ √(2Δ/μ) and ‖x − x*‖ ≤ √(6ε/μ) ≤ √(2Δ). So ‖x‖ < 1.6√(Δ/μ) ≤ R.
+3. **Norm.** On the same event, strong convexity gives ‖x*‖ ≤ √(2Δ/μ) and ‖x − x*‖ ≤ √(6ε/μ) ≤ √(2Δ). Since μ ≤ 1/200, this gives ‖x‖ < 1.6√(Δ/μ) ≤ R.
 4. **Union bound.** A false candidate u is uniform on the unit sphere of W. So for a fixed x with ‖x‖ ≤ R, Pr[|⟨x, u⟩| ≥ c/2] ≤ 2 exp(−dim W · c²/(8R²)). A union bound over the N(k+1)(A − 1) false candidates, with the assumed bound on d, gives at most 1/20. ∎
 
 *Proof of Theorem 1.* Let the algorithm make T queries, and let B be the following algorithm for N independent chains:
@@ -192,7 +194,11 @@ On ‖x‖ ≤ R, this is exactly O_F, also with i in superposition. A query to 
 2. Run the algorithm with the simulated oracle.
 3. Decode the output as in Lemma 5.
 
-B makes 2T chain queries. By Lemma 5 it outputs all N key tuples with probability more than 1/2 on every input. By Lemma 3 and the strong direct product theorem, 2T ≥ N(k+1) ln(3/2)/8000.
+B makes 2T chain queries. By Lemma 5, averaged over the Haar frame, it outputs all N key tuples with probability more than 0.61 on every input.
+
+A query algorithm in the sense of [4] has finitely many basis states, so B should use finite randomness. There are A^{N(k+1)} inputs. Draw M = O(N(k+1) log A) frames independently. By Hoeffding's inequality and a union bound over the inputs, some outcome of the draw has success above 0.55 on every input, averaged over its M frames. Let B pick one of these M frames uniformly, using a register of log M qubits. Lemma 4 is exact for every fixed frame, so nothing else changes.
+
+By Lemma 3 and the strong direct product theorem, 2T ≥ N(k+1) ln(3/2)/8000.
 
 For the explicit bound, write L = ln(μΔ/(3ε)).
 
@@ -203,9 +209,9 @@ So T ≥ 6·10⁻⁷ √(nκ) L. ∎
 
 ## Remarks
 
-1. **The alphabet.** In [1], each chain entry takes one of two known values. A query can then cover the four extensions of a known prefix by two entries, and Grover's search on four items finds the right one with a single query. So a plain hybrid argument does not apply to the two-valued chains. The bound in [1] comes from an adversary argument and reads n√k. With A ≥ 400(k+1)²s values per entry, a query that guesses an unknown key succeeds with amplitude O(√(s/A)). Then the single chain needs k + 1 queries, and the strong direct product theorem [4] extends this to the superposition over the n components.
+1. **The alphabet.** In the query problem of [1, Problem 3], each chain entry takes one of two known values. A query can then cover the four extensions of a known prefix by two entries, and Grover's search on four items finds the right one with a single query. So a plain hybrid argument does not apply to the two-valued chains. The bound in [1] comes from an adversary argument and reads n√k. With A ≥ 400(k+1)²s values per entry, a query that guesses an unknown key succeeds with amplitude O(√(s/A)). Then the single chain needs k + 1 queries, and the strong direct product theorem [4] extends this to the superposition over the n components.
 
-2. **The constants of [1, Lemma 5].** The proof of that lemma finds the minimum −μ̃C²(√Q − 1)²/16 for each chain. With the printed constant C = √(Δ/μ) · 4/(√Q − 1), this hints at F(0) − F* = nΔ rather than Δ, and the check below finds nΔ for n = 2, 4 and 8. Using Δ/n in place of Δ in that lemma seems to restore F(0) − F* ≤ Δ. This changes only the argument of the logarithm in [1, Corollary 3]. The instance above sets C directly, so that Lemma 1 holds.
+2. **The constants of [1, Lemma 5].** The proof of that lemma finds the minimum −μ̃C²(√Q − 1)²/16 for each chain. The next line there gives the gap at 0 as μC²(√Q − 1)²/16, with μ in place of μ̃, which may be the source of the difference. With the printed constant C = √(Δ/μ) · 4/(√Q − 1), the minimum hints at F(0) − F* = nΔ rather than Δ, and the check below finds nΔ for n = 2, 4 and 8. Using Δ/n in place of Δ in that lemma seems to restore F(0) − F* ≤ Δ. This changes only the argument of the logarithm in [1, Corollary 3]. The instance above sets C directly, so that Lemma 1 holds.
 
 3. **Query norm.** Theorem 1 holds for every finite radius R, with d growing like R².
 
@@ -217,6 +223,8 @@ So T ≥ 6·10⁻⁷ √(nκ) L. ∎
 - Remark 2, with the constants of [1].
 - Convexity and smoothness, from Hessians at random points.
 - Lemma 4 on 3000 random queries, comparing the true gradients with those rebuilt from the revealed keys.
+
+Pinning a coordinate to ±c/2 suffices for Lemma 2, by convexity.
 
 All checks pass:
 

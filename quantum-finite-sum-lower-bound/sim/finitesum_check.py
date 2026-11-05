@@ -102,6 +102,7 @@ def check_remark():
         Q = p['Q']
         p['k'] = int(np.floor((np.sqrt(Q) - 1) / 4 * np.log(1 / (n * eps * (np.sqrt(Q) - 1) ** 2)))) - 1
         p['C'] = np.sqrt(1 / p['mu']) * 4 / (np.sqrt(Q) - 1)
+        # [1] has 1/sqrt(N) (the query count) in place of 1 here; it does not change F(0) - F* at these sizes
         p['c'] = min(1.0, np.sqrt(8 * n * eps / ((1 - p['mt']) * (p['k'] + 1))), p['C'] * p['q'] ** (p['k'] + 1))
         gap0 = p['N'] * (0 - chain_min(p)[0])
         assert abs(gap0 / n - 1) < 1e-3, gap0
