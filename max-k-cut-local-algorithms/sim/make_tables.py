@@ -22,6 +22,7 @@ L = math.log(2 / 1e-4)
 
 def bernstein(mean, se, n):
     var = se * se * n
+    var *= n / (n - 1)                                  # sample variance
     return mean - math.sqrt(2 * var * L / n) - 7 * L / (3 * (n - 1))
 
 
@@ -33,8 +34,8 @@ for r in cl:
     lv, qa = PREV[(r["k"], r["d"])].get(r["girth"], (None, None))
     prev = f"{max(lv, qa):.3f} ({'QAOA' if qa >= lv else 'LV'})" if lv else "not tabulated"
     lb = bernstein(r["mean"], r["se"], r["samples"])
-    mark = "**" if lv and lb > max(lv, qa) else ""
-    print(f"| {r['k']} | {r['d']} | {r['girth']} | {prev} | {mark}{lb:.4f}{mark} | {r['mean']:.4f} ± {r['se']:.4f} |")
+    mark = "**" if lv and lb >= max(lv, qa) + 0.0005 else ""     # [1] rounds to 3 digits
+    print(f"| {r['k']} | {r['d']} | {r['girth']} | {prev} | {mark}{math.floor(lb * 1e4) / 1e4:.4f}{mark} | {r['mean']:.4f} ± {r['se']:.4f} |")
 
 print()
 print("| k | d | girth | QAOA [1], depth (girth−2)/2 | QAOA, depth (girth−4)/2, plus one round |")

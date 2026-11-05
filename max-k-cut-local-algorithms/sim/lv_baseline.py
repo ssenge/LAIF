@@ -1,5 +1,5 @@
 """Independent Monte Carlo of the Local Vector algorithm of 2609.39042 (Algorithm 1) on d-regular graphs
-of girth >= 2m: vectors from the minimum eigenvector of A_m (eq. 21), scores X_w(a) = v_w . r_a,
+of girth >= 2m + 2 (radius m for tau > 0; radius m - 1 and girth 2m for tau = 0): vectors from the minimum eigenvector of A_m (eq. 21), scores X_w(a) = v_w . r_a,
 M_w(a) = max_{b != a} X_w(b) - max_b X_w(b), S_v(a) = X_v(a) + tau/sqrt(d) sum_{w in N(v)} M_w(a).
 Only the edge u, v and their other neighbours enter, so we sample their joint Gaussian scores.
 
@@ -93,5 +93,5 @@ if __name__ == "__main__":
     # fresh samples at the chosen tau, to remove optimization bias
     X2 = np.concatenate([sample_scores(k, d, m, n // 10, rng) for _ in range(10)])
     fresh = cut_prob(X2, k, d, r.x)
-    print(f"k={k} d={d} m={m} (row p={m-1}, girth {2*m}): TPM {tpm[0]:.5f}  LV tau={r.x:.3f} "
+    print(f"k={k} d={d} m={m} (row p={m-1} of [1], girth {2*m+2}): TPM {tpm[0]:.5f}  LV tau={r.x:.3f} "
           f"{best[0]:.5f}  fresh {fresh[0]:.5f} +- {fresh[1]:.5f}")

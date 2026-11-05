@@ -16,6 +16,6 @@ while n < total:
 mean = s / n; var = s2 / n - mean ** 2; se = math.sqrt(var / n)
 z = 3.719                                        # one-sided 1e-4
 hoef = mean - math.sqrt(math.log(1e4) / (2 * n))
-print(json.dumps({"k": k, "d": d, "m": m, "girth": 2 * m + 2, "tau": cfg["tau"], "samples": n,
+print(json.dumps({"k": k, "d": d, "m": m, "girth": 2 * m + 4, "tau": cfg["tau"], "samples": n,
                   "mean": round(mean, 6), "se": round(se, 6), "lcb_normal_1e-4": round(mean - z * se, 6),
                   "lcb_hoeffding_1e-4": round(hoef, 6)}))

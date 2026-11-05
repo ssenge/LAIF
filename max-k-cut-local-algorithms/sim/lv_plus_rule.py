@@ -1,6 +1,6 @@
-"""Classical counterpart of the hybrid: Local Vector algorithm with parameter m (girth 2m), then one
-round of a label-count rule (same rule space as hybrid_opt.py). Radius grows by one, so the
-comparison girth is 2m+2. Monte Carlo on the radius-2 neighbourhood of an edge.
+"""Classical counterpart of the hybrid: Local Vector algorithm with parameter m (radius m for tau > 0), then one
+round of a label-count rule (same rule space as hybrid_opt.py). Radius m + 1, so the
+comparison girth is 2m+4. Monte Carlo on the radius-2 neighbourhood of an edge.
 
 usage: lv_plus_rule.py k d m [samples]
 """
@@ -123,5 +123,5 @@ if __name__ == "__main__":
         json.dump({"k": k, "d": d, "m": m, "tau": tau, "rule": [[list(s[:1]) + list(s[1]), a] for s, a in rule.items()]}, fh)
     lab, adj = labels(k, d, m, tau, 4 * n, rng)
     fresh = cut(lab, adj, rule, k, rng.random((2, 4 * n, k)))
-    print(f"k={k} d={d} LV m={m} + 1 round (girth {2*m+2}): tau={tau} search {cur:.5f} "
+    print(f"k={k} d={d} LV m={m} + 1 round (girth {2*m+4}): tau={tau} search {cur:.5f} "
           f"fresh {fresh[0]:.5f} +- {fresh[1]:.5f}  moves={sum(1 for a in rule.values() if a)}")

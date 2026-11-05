@@ -1,6 +1,6 @@
 """Local Vector algorithm (parameter m) plus one round of a threshold rule, for large degree d:
 a vertex whose own label is used by c_own neighbours moves to a least-used label (ties at random)
-if c_own - c_min >= t. Girth 2m+2. Search over (tau, t) on one sample, report on a fresh one.
+if c_own - c_min >= t. Girth 2m+4. Search over (tau, t) on one sample, report on a fresh one.
 
 usage: lv_threshold.py k d m [samples]
 """
@@ -42,5 +42,5 @@ if __name__ == "__main__":
     v, tau, t = best
     lab, adj = labels(k, d, m, tau, 3 * n, rng)
     fresh = value(lab, adj, t, k, rng.random((2, 3 * n, k)))
-    print(f"k={k} d={d} LV m={m} + threshold round (girth {2*m+2}): tau={tau} t={t} "
+    print(f"k={k} d={d} LV m={m} + threshold round (girth {2*m+4}): tau={tau} t={t} "
           f"search {v:.5f} fresh {fresh[0]:.5f} +- {fresh[1]:.5f}", flush=True)

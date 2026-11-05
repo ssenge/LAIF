@@ -12,4 +12,4 @@ while n < total:
     mu, se = value(lab, adj, t, k, rng.random((2, chunk, k)))
     s += mu * chunk; s2 += (se ** 2 * chunk + mu ** 2) * chunk; n += chunk
 mean = s / n; se = math.sqrt((s2 / n - mean ** 2) / n)
-print(json.dumps({"k": k, "d": d, "m": m, "girth": 2 * m + 2, "tau": tau, "t": t, "samples": n, "mean": round(mean, 6), "se": round(se, 6)}))
+print(json.dumps({"k": k, "d": d, "m": m, "girth": 2 * m + 4, "tau": tau, "t": t, "samples": n, "mean": round(mean, 6), "se": round(se, 6)}))
