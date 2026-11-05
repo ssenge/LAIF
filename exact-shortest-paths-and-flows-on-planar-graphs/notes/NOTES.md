@@ -53,7 +53,7 @@ hop parameter n/α, plus a directed hopset on the skeleton with tradeoff ρ. The
 All three terms balance at α = n^{3/5}/D^{2/5} and ρ = D^{2/5}/n^{1/10}. The gap factor to
 √n + D is largest at D = √n, where it is n^{1/10}. For D ≤ n^{1/4} or D ≥ n^{2/3} the bound is tight.
 
-Barrier for this framework (my observation). Fix target T = Õ(√n) at D = √n. Then n/α ≤ T
+Barrier for this framework. Fix target T = Õ(√n) at D = √n. Then n/α ≤ T
 forces α ≥ √n, D·β ≤ T forces hopbound β = Õ(1), and broadcasting the hopset forces size Õ(α).
 The skeleton would need a directed (1+ε)-hopset of near-linear size with polylog hopbound.
 Linear-size directed shortcut sets already need polynomial hopbound (Ω(n^{1/4}),

@@ -1,5 +1,5 @@
 """Against the exact solver on all the points, and how the queries grow. Run with python check.py (numpy; qiskit and qiskit-aer for the circuits)
-Limits: the exact solver is my own Welzl; it is checked against brute force on tiny inputs, in floating point.
+Limits: the exact solver is a Welzl implementation written here; it is checked against brute force on tiny inputs, in floating point.
 """
 import itertools
 import sys

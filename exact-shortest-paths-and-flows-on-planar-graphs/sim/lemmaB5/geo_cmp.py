@@ -1,4 +1,4 @@
-"""my implementation vs b5.py on b5.py's own geometric instances (its instance() generator),
+"""This implementation vs b5.py on b5.py's own geometric instances (its instance() generator),
 the instance's (root, corner) plus extra random (root, corner) pairs.
 usage: geo_cmp.py START END EXTRA"""
 import sys, os, time, random

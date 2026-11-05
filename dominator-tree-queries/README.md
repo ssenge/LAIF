@@ -1,6 +1,6 @@
 # Dominator trees and strong connectivity structure with quantum queries
 
-Sebastian Senge, Independent Researcher. Written 4 Nov 2026.
+Written 4 Nov 2026.
 
 **Setting.** G is a directed graph with n vertices, m edges, and a root r. Vertex d **dominates** w if every path from r to w contains d. The **dominator tree** gives each reachable w ≠ r its immediate dominator idom(w). A **strong bridge** is an edge, and a **strong articulation point** a vertex, whose removal increases the number of strongly connected components.
 
@@ -12,7 +12,7 @@ Query models. Matrix: a query (u, v) returns whether uv is an edge. Array: out-l
 | Thm 2 | Dominator tree | Θ(n^{3/2}) | O(√(nm) log n) | Θ(n²) | Correctness in Lean; lower bound in Lean, assuming DHHM Thm 23; query count is a claim |
 | Thm 3 | Bridges of a flow graph, strong bridges, strong articulation points | Θ(n^{3/2}) | O(√(nm) log n) | Θ(n²) | Reductions and gadgets in Lean; lower bounds assuming DHHM Thm 23 and classical connectivity; query count is a claim |
 
-The lower bounds are unconditional. Upper and lower bounds match in the matrix model. The explicit algorithm below has an extra log n, and the log-free bound comes from Section 2's remark. In the array model a random scan order should give O(√(nm log n)) through Beigi and Taghavi's Theorem 4(ii); I did not simulate that. In the array model I have no matching lower bound: DHHM's Ω(√(nm)) for strong connectivity (Theorem 22) is for out-lists only, and having in-lists as well may make the problem easier. Classical array cost is O(m) by Lengauer-Tarjan and is not separately bounded below here.
+The lower bounds are unconditional. Upper and lower bounds match in the matrix model. The explicit algorithm below has an extra log n, and the log-free bound comes from Section 2's remark. In the array model a random scan order should give O(√(nm log n)) through Beigi and Taghavi's Theorem 4(ii); In the array model a matching lower bound is open: DHHM's Ω(√(nm)) for strong connectivity (Theorem 22) is for out-lists only, and having in-lists as well may make the problem easier. Classical array cost is O(m) by Lengauer-Tarjan and is not separately bounded below here.
 
 This is a minor result.
 

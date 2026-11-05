@@ -1,6 +1,6 @@
 # Equal Subset Sum with a quantum algorithm
 
-Sebastian Senge, Independent Researcher. Written 5 Nov 2026.
+Written 5 Nov 2026.
 
 **Paper:** [`paper/main.pdf`](paper/main.pdf), with its source in [`paper/`](paper/).
 

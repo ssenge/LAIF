@@ -1,6 +1,6 @@
 # LP-type problems with quantum queries
 
-Sebastian Senge, Independent Researcher. Written 4 Nov 2026.
+Written 4 Nov 2026.
 
 **Setting.** An **LP-type problem** is a finite set H of n constraints and a function f from subsets of H to an ordered set, with:
 - monotonicity: f(F) ≤ f(G) for F ⊆ G;

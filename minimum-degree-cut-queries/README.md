@@ -1,6 +1,6 @@
 # Minimum degree with quantum cut queries: a tight bound for integer weights of Θ(n² log n) bits
 
-Sebastian Senge, Independent Researcher. Written 3 Nov 2026.
+Written 3 Nov 2026.
 
 In [1] it is conjectured that computing the minimum degree of a simple graph requires Ω(√n) quantum cut queries. This file proves the bound for integer-weighted graphs with weights of O(n² log n) bits, and for simple graphs when each query returns the cut only mod 4. The question for simple graphs with integer answers stays open.
 
@@ -121,7 +121,7 @@ Let Y be the set in the lemma without the vertex 0, and let r = |Y|. A dependenc
 
 *Counting.* Fix a block as above, let Q = Y \ P and κ = |Q|. Every q ∈ Q has g_q ≠ 0, so g_q ≥ n + 1. Let M' be the block of the columns in Q on the chosen rows. The map z ↦ M'z + M Z^ρ from Π_q [0, g_q) to Z^ρ / M Z^ρ is injective: if M'z − M'z' = Mp, then (−p, z − z') is a dependency, so g_q divides z_q − z'_q for each q, and z = z'. The quotient has Δ elements, so (n + 1)^κ ≤ Δ ≤ ρ! ≤ n^ρ, which gives κ ≤ ρ. So r ≤ 2ρ ≤ 2(R + 1), and adding back vertex 0 gives the bound. ∎
 
-Dyadic t_s can approximate any rational, for example 1/3, and then F is close to an exact solution modulo 3. So near-solutions over Z_N behave like solutions over all of Q/Z, which is why the proof does not stop at the 2-rank of Z_{2^k}. The dependencies can be nonzero: at G = 1, an exact instance has n = 13, N = 12, R = 60, r = 12, ρ = 11, and its group of dependencies is spanned by (3,3,3,−3,−3,−3,2,2,2,−2,−2,−2). In this instance every 2β_v has denominator dividing 6, so at the G that Lemma 2 requires the set Y is empty. I do not know an instance with κ > 0 when G is a multiple of 1, …, n and T < n, so the factor 2 in 2R + 3 and the constant in n/7 may not be sharp.
+Dyadic t_s can approximate any rational, for example 1/3, and then F is close to an exact solution modulo 3. So near-solutions over Z_N behave like solutions over all of Q/Z, which is why the proof does not stop at the 2-rank of Z_{2^k}. The dependencies can be nonzero: at G = 1, an exact instance has n = 13, N = 12, R = 60, r = 12, ρ = 11, and its group of dependencies is spanned by (3,3,3,−3,−3,−3,2,2,2,−2,−2,−2). In this instance every 2β_v has denominator dividing 6, so at the G that Lemma 2 requires the set Y is empty. No instance with κ > 0 is known when G is a multiple of 1, …, n and T < n, so the factor 2 in 2R + 3 and the constant in n/7 may not be sharp.
 
 **Exact 2-group case.** If all ⟨b_j, F⟩ = 0, G = 1 and all t_s have 2-power order, then for u ∈ Y the element 2β_u is nonzero of 2-power order, and λ_u · 2β_u = 0 makes λ_u even for every dependency λ. Half of a dependency is again a dependency, so the only dependency is 0, and r ≤ R + 1.
 
@@ -155,14 +155,14 @@ Let the algorithm accept when it reports (n−1)W₀. With probability at least 
 
 ## 7. Limits
 
-- **Simple graphs are covered only with answers mod 4.** The question in [1] is about simple graphs with integer answers, and Section 11 explains where its argument stops. Weights in Theorem 1 have Θ(n² log n) bits, and I know no reduction from these weights to simple graphs on poly(n) vertices. A blow-up has to answer queries that split blocks, and those are not cut queries on the original graph.
+- **Simple graphs are covered only with answers mod 4.** The question in [1] is about simple graphs with integer answers, and Section 11 explains where its argument stops. Weights in Theorem 1 have Θ(n² log n) bits, and a reduction from these weights to simple graphs on poly(n) vertices is not available. A blow-up has to answer queries that split blocks, and those are not cut queries on the original graph.
 - **What breaks for small weights.** Keeping a in range needs JN/(2mL) ≤ 1/100, and N/L is about 24n⁴, so m = Ω(n⁶). The sum over labels in Section 4 has total mass m^J, and each term carries an error of about nτ, which is proportional to m/N. So N has to exceed m^J, which gives log W ≳ J log m = Θ(n² log n).
-- **Weight scale.** I did not try to minimize the bits. Using fewer than J hidden directions would shorten them, but a sublattice weakens Lemma 2, and getting to poly(n) values would need a different argument for the error term.
+- **Weight scale.** The number of bits is not minimized here. Using fewer than J hidden directions would shorten them, but a sublattice weakens Lemma 2, and getting to poly(n) values would need a different argument for the error term.
 - **Consistency with known upper bounds.** The polylog(n) approximation of the minimum degree discussed in [1, Section 2.4] is for simple graphs. The routine of [4, Lemma 15] counts nonzero row entries at a cost that grows with log M, which is about n² log n queries at this scale. So neither contradicts Theorem 1. Degree parity costs one query, and all degrees here have fixed parity.
 
 ## 8. Importance
 
-Modest. It settles a weighted variant of a conjecture in [1] with a tight bound, using a short argument. The stated simple-graph version remains open, and the weights are far larger than anything an application would use. To my knowledge the integer-weighted lower bound is new. The classical results add little: Proposition 7 is elementary and may well be folklore, although I have not seen it stated, and Theorem 6 only removes its log factor, for huge weights. Theorem 8 is a tight bound on simple graphs with no restriction on query sets, also new to my knowledge, but its oracle is weaker than the one in [1], so it leaves the conjecture open.
+The results give a tight bound for a weighted variant of a conjecture in [1], with weights of Θ(n² log n) bits. Theorem 8 gives a tight bound on simple graphs with no restriction on query sets, for an oracle that returns the cut mod 4. The simple-graph version with integer answers remains open. Theorem 6 and Proposition 7 give the classical side of the comparison.
 
 ## 9. Formal verification
 
@@ -280,7 +280,7 @@ The exact zeros come from evenness: ⟨G(ℓ, m), δ_x⟩ is always even, so at 
 
 **Relation to matrix queries.** In [8] it is shown that trace, determinant and rank need Ω(n) quantum queries with matrix-vector or bilinear access to a general matrix over a finite field. On the family above, fixing x(v) = 0 makes y and q free, and one query with q in superposition reads yᵀU. The determinant bound of [8] does not transfer, because det U = AND(h) here for triangular U, and Grover search over the diagonal takes O(√L) queries. What Theorem 8 adds is a simple graph that puts the degrees on the diagonal of such a matrix, together with the triangular rank bound.
 
-**Where it stops.** The integer oracle of [1] also allows z with z/N outside (1/4)Z. For a pair of paths let M_ℓm = Σ_s (w_s / N) Y^s_ℓ Q^s_m with w_s ∈ Z. A hidden bit then contributes the factor (1 + e(2 M_ℓm))/2, of modulus |cos(2π M_ℓm)|, which is zero only when 2 M_ℓm ≡ 1/2 mod 1. Other pairs are damped but do not vanish, so P need not have degree at most 2T. `sim/check_mod4.py` shows this at phase 1/8, where weight above 2T is nonzero. With about n² hidden bits this damping can be large, but an absolute sum over paths loses a factor exponential in Tn, and I have no bound on the coherent sum.
+**Where it stops.** The integer oracle of [1] also allows z with z/N outside (1/4)Z. For a pair of paths let M_ℓm = Σ_s (w_s / N) Y^s_ℓ Q^s_m with w_s ∈ Z. A hidden bit then contributes the factor (1 + e(2 M_ℓm))/2, of modulus |cos(2π M_ℓm)|, which is zero only when 2 M_ℓm ≡ 1/2 mod 1. Other pairs are damped but do not vanish, so P need not have degree at most 2T. `sim/check_mod4.py` shows this at phase 1/8, where weight above 2T is nonzero. With about n² hidden bits this damping can be large, but an absolute sum over paths loses a factor exponential in Tn, and a bound on the coherent sum is open.
 
 `sim/check_mod4.py` tests the graph, the identity, the polynomial degree on random unitaries and the routine of Proposition 9, on small instances listed in its docstring.
 

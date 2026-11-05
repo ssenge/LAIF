@@ -28,7 +28,7 @@ Every problem in size-constrained SNP is covered (IPZ01 SERF-completeness). Prob
 
 ## Ten candidates
 Tier A: derivable now from the claimed theorems plus known tools. Tier B: lower bound gone, new ideas needed.
-Items marked (*) are my own derivations.
+Items marked (*) are derived here.
 
 A1 (*) **Growing width + mild density CNF-SAT.** Anthropic's uniform k² gives 2^{o(n)} for width k ≤ (log n)^{1/4−ε}.
    Combined with the CIP06 width-reduction branching (leaves ≤ 2^{(n/w)·log(e(cw+1))}, where c = m/n), this gives
@@ -160,7 +160,7 @@ Standard axioms only. Next is step (2): XOR rows as CNF clauses. A row's support
 {j : Σ_{l : J l = j} C l odd}, of size ≤ k, so the row is 2^{|T|−1} clauses of width |T| on the edge
 variables. The fixings become unit clauses. Then Cut & Count gives #SAT ≡ |HC ∩ H ω| (mod 2).
 
-Step (2) is done (2026-10-27): `lean/EthCor/HamIso.lean`. I used Tseitin chains instead of
+Step (2) is done (2026-10-27): `lean/EthCor/HamIso.lean`. The reduction uses Tseitin chains instead of
 2^{k−1} clauses per check: width stays 3 and the variable count is 5m+n+2+(3m+3)k, linear for
 fixed k. Main results: `HamI.iso_parity` (#SAT(hcI) ≡ |hcSet G ∩ H ω| mod 2) and `HamI.iso_decide`
 (the one-sided-error statement, for every δ). Step (3) plan: input `code G ++ seedBits`, where

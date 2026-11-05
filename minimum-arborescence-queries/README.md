@@ -1,6 +1,6 @@
 # Minimum-cost arborescence with quantum queries
 
-Sebastian Senge, Independent Researcher. Written 4 Nov 2026.
+Written 4 Nov 2026.
 
 | | Problem | Quantum queries | Classical | Status |
 |---|---|---|---|---|

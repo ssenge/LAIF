@@ -1,6 +1,6 @@
 # Global maximum of totally monotone matrices, and convex polygon diameter, with quantum queries
 
-Sebastian Senge, Independent Researcher. Written 4 Nov 2026.
+Written 4 Nov 2026.
 
 **Paper:** [`paper/main.pdf`](paper/main.pdf), with its source in [`paper/`](paper/).
 
@@ -96,7 +96,7 @@ Induction with ℓ(r) = ⌈log₂(r + 1)⌉ and a = 2κ + 1: assuming Γ(r_i, c_
 
 **Corollary (the maximum, with no dependence on the value range).** Deleting rows keeps total monotonicity, so the proof of Theorem 3 applies to any subset of rows, and to the strict test "some entry > θ". Fix a random order of the rows. Let S be the rows with a maximum above the current θ. Bisect on prefixes of the order with the decision, with error reduced by a factor O(log log n). This gives the first row of S in the order, which is uniform in S, in O(log n) decisions. Read that row's maximum by maximum finding, at O(√c), and set θ to it. In expectation S halves, so O(log r) rounds suffice. The total is O(√n log³ n log log n) queries, with the position of the maximum included.
 
-**What is explicit.** Lee et al. Theorem 4.1 turns any factorization into a query algorithm, built from reflections. So the algorithm exists and its queries are O(γ), but no time bound follows. The recursion can be walked in principle by Jeffery's subroutine composition (arXiv:2209.14146) or transducers (Belovs, Jeffery, Yolcu), which I have not worked out. `sim/check.log` evaluates the recursion on single inputs at 1.96 to 2.01 √n log₂ n from n = 64 to 4096. This checks the recursion only, and the constant κ is unknown.
+**What is explicit.** Lee et al. Theorem 4.1 turns any factorization into a query algorithm, built from reflections. So the algorithm exists and its queries are O(γ), but no time bound follows. The recursion can be walked in principle by Jeffery's subroutine composition (arXiv:2209.14146) or transducers (Belovs, Jeffery, Yolcu). That is not worked out here. `sim/check.log` evaluates the recursion on single inputs at 1.96 to 2.01 √n log₂ n from n = 64 to 4096. This checks the recursion only, and the constant κ is unknown.
 
 ## 4. Convex polygon diameter
 
@@ -132,7 +132,7 @@ Asymptotics only. `sim/grover_law.log` gives 35 n^{3/4} (monge) to 51 n^{3/4} (h
 
 ## 8. Importance
 
-Totally monotone search is a standard classical tool (SMAWK is used for all-farthest-neighbours in convex polygons, and for many dynamic programs). This shows that the maximum of such a matrix, which has no fast generic quantum search on all its entries, needs only Θ̃(√n) queries. It is a query result, and I do not know of an application that gains in time.
+Totally monotone search is a standard classical tool (SMAWK is used for all-farthest-neighbours in convex polygons, and for many dynamic programs). This shows that the maximum of such a matrix, which has no fast generic quantum search on all its entries, needs only Θ̃(√n) queries. It is a query result.
 
 ## 9. Formal verification
 

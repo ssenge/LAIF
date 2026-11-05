@@ -1,6 +1,6 @@
 # Quantum query complexity of minimum cut in the adjacency array model
 
-Sebastian Senge, Independent Researcher. Written 5 Nov 2026.
+Written 5 Nov 2026.
 
 ## Result
 

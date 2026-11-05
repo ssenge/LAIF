@@ -1,5 +1,5 @@
 """Run the author's Reif driver (sim/thmD/thmD.py, imported read-only, not modified) on the
-instances where my simulation of [18, Alg. 3] misses lambda, over many run seeds (f, g, corners).
+instances where the simulation of [18, Alg. 3] misses lambda, over many run seeds (f, g, corners).
 usage: python3 -I confirm_author.py HITS.json NRUNS [variant]"""
 import sys, os, json, collections
 THMD = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))

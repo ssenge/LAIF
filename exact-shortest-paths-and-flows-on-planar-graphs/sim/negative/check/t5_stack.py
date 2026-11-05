@@ -1,4 +1,4 @@
-"""Theorem 1 on the whole stack: scaling, restricted algorithm with my LDD, Lemma 1. Against Bellman-Ford. Planarity asserted.
+"""Theorem 1 on the whole stack: scaling, restricted algorithm with the LDD here, Lemma 1. Against Bellman-Ford. Planarity asserted.
 Exhaustive on n = 3 for small weights. 'fault' shows what the potential check does and does not certify, with a faulty oracle.
 'size' records how large the numbers fed to the oracle get, in powers of n."""
 import itertools, math, os, random, sys, time
@@ -147,7 +147,7 @@ def fault(seed, runs):
 
 
 def sizes(seed, nlist, W):
-    """Largest weight and offset fed to the oracle, as a power of n, with idx up to n (my topological index). [3] has labels up to n^3, so add 2 to the exponents involving idx."""
+    """Largest weight and offset fed to the oracle, as a power of n, with idx up to n (the topological index). [3] has labels up to n^3, so add 2 to the exponents involving idx."""
     rng = random.Random(seed)
     out = []
     for nmax in nlist:

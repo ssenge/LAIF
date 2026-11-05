@@ -1,4 +1,4 @@
-"""Negative controls for my checker: mutated algorithms must be caught.
+"""Negative controls for the checker: mutated algorithms must be caught.
  noheavy: ignore step 2 (fan in the face of o); anycorner: x may have several corners;
  skip1: skip step 1 (always fan). Also a bug: the chord-step bound W' < n/3 uses that step 1
  found no balanced chord."""

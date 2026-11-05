@@ -1,6 +1,6 @@
 # Covers of a string with quantum queries
 
-Sebastian Senge, Independent Researcher. Written 4 Nov 2026.
+Written 4 Nov 2026.
 
 S is a nonempty string of length n, and a query returns one character. A string C **covers** S if every position of S lies in an occurrence of C. A **border** of S is a string that is both a prefix and a suffix. A cover of S is a border of S, and S covers itself. Identify a border with its length.
 
@@ -107,7 +107,7 @@ The constant is poor. `sim/check.log` at budget 16 has a charged cost of about 3
 
 The charge per outer application is the fixed cap `pred_cap`. The two-way inner cost stayed below it in every run of `sim/check.py`, at most 0.65 of it for ℓ ≥ 16 up to n = 2048. Up to n = 2048 is not a proof. It is a model of a device that truncates at the cap, and the code does not enforce that truncation. The outer marked set comes from the simulator's Z array, so inner errors are not modelled in the cost runs.
 
-The fitted exponents at n ≤ 2¹⁸ are 0.36 to 0.87. The 0.36 is an artefact of a spike at n = 4096 on the Fibonacci family, whose cause I did not investigate. The largest is on "random", where the logarithms of Theorem 1 still dominate, and it falls to about 0.70 on the last three sizes. So these runs do not show √n cleanly, only that the growth is well below linear on this cost model.
+The fitted exponents at n ≤ 2¹⁸ are 0.36 to 0.87. The 0.36 is an artefact of a spike at n = 4096 on the Fibonacci family. The largest is on "random", where the logarithms of Theorem 1 still dominate, and it falls to about 0.70 on the last three sizes. So these runs do not show √n cleanly, only that the growth is well below linear on this cost model.
 
 ## 8. Measurements
 

@@ -1,6 +1,6 @@
 # Quantum query complexity of matrix product verification
 
-Sebastian Senge, Independent Researcher. Written 4 Nov 2026.
+Written 4 Nov 2026.
 
 ## Result
 

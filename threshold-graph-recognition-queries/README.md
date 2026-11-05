@@ -1,6 +1,6 @@
 # Threshold graphs, chain graphs and nested matrices with quantum queries
 
-Sebastian Senge, Independent Researcher. Written 4 Nov 2026.
+Written 4 Nov 2026.
 
 **Paper:** [`paper/main.pdf`](paper/main.pdf), with its source in [`paper/`](paper/).
 
