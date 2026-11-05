@@ -1,0 +1,340 @@
+\pdfoutput=1
+\documentclass[11pt]{article}
+\usepackage[T1]{fontenc}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,booktabs,array}
+\usepackage[shortlabels]{enumitem}
+\usepackage[hidelinks]{hyperref}
+\usepackage{algorithm}
+\usepackage[noend]{algpseudocode}
+
+\setlist{itemsep=1pt,topsep=3pt}
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+
+\newcommand{\F}{\mathbb{F}}
+\newcommand{\Enc}{\mathrm{Enc}}
+\newcommand{\Dec}{\mathrm{Dec}}
+\newcommand{\XCTR}{\mathrm{XCTR}}
+\newcommand{\eps}{\varepsilon}
+\newcommand{\Dl}{\Delta}
+
+\title{Quantum Period Finding against HCTR2 and its Beyond-Birthday Variants}
+\hypersetup{pdftitle={Quantum Period Finding against HCTR2 and its Beyond-Birthday Variants},pdfauthor={Sebastian Senge}}
+\author{Sebastian Senge, Independent Researcher}
+\date{}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+We study the length-preserving wide-block cipher HCTR2 and three recent variants with security beyond the birthday bound, against attackers who may query the encryption in quantum superposition. Our results are these:
+\begin{itemize}[leftmargin=1.5em]
+\item The cascade CHCTR, proven to have $2n/3$-bit security against classical attackers, admits recovery of both hash keys and universal forgery with about $2n+2$ superposition queries.
+\item HCTR++ admits recovery of both hash keys and universal forgery with about $2n+2$ superposition queries to the encryption and $2n+2$ to the decryption.
+\item HCTR2 admits recovery of its hash key and universal forgery with about $n+2$ superposition queries, by the approach known for HCTR.
+\item HCTR2-TwKD admits the same under one tweak, which stays far below its limit on the block cipher calls under a tweak.
+\end{itemize}
+The query bounds hold in the ideal cipher model, for one fixed tweak with failure probability below $2^{-57}$ for $n=128$, and the attacks never output a wrong key. The algebraic part of the analysis and the consequences of the sampling formula of quantum period finding are formalized in Lean.
+\end{abstract}
+
+\section{Introduction}
+
+HCTR2~\cite{CHB21} is a tweakable wide-block cipher built from a block cipher and the polynomial hash POLYVAL. It encrypts a message of any length of at least one block into a ciphertext of the same length, and it is used for disk and filename encryption. Its security is limited by the birthday bound, which is $64$ bits with AES. The accordion mode project of NIST~\cite{NIST25} asks for modes with more security, and several variants of HCTR2 have been proposed for this purpose: the cascade CHCTR and the mode HCTR2-TwKD with keys derived from the tweak~\cite{CHMNSS26}, and HCTR++, which uses fresh block cipher keys derived from hash values~\cite{OKY26}. Their security proofs are for classical attackers.
+
+In the model of~\cite{KLLN16}, often called Q2, the attacker can query the keyed encryption in superposition. Quantum period finding~\cite{Sim97} then breaks many constructions that are secure classically~\cite{KM10,KLLN16}, among them the tweakable enciphering schemes HCTR, HCH and Tweakable HCTR~\cite{RP20}, CMC, EME, XCB, TET and FAST~\cite{GS21}, and HCTR, HCH, PEP and HEH~\cite{MWH24}. The quantum security of HCTR2 is noted as not yet considered in~\cite{CHMMNSSS26}, which studies key commitment, and~\cite[Section 2.2.5]{NIST25} asks for analysis with classical queries. To our knowledge no attack with superposition queries has been given for HCTR2 or its variants.
+
+We give one, in a form that covers all four schemes. For each of them there is a subgroup $S$ of the message space such that
+\begin{equation}\label{eq:shift}
+\Enc(x\oplus s)=\Enc(x)\oplus s\qquad\text{for all messages $x$ and all $s\in S$.}
+\end{equation}
+So $g(x)=\Enc(x)\oplus x$ is constant on the cosets of $S$, and period finding recovers $S$, which determines the hash keys. For HCTR2 the identity is the one used in~\cite{RP20} for HCTR, and HCTR2-TwKD reduces to HCTR2 for a fixed tweak, so these two results are direct transfers. For the cascade, $S$ lies in the kernel of the sum of the two hash maps, and one element of $S$ gives the two hash keys as the roots of a quadratic. For HCTR++, the half of the hash that selects the fresh key can be kept fixed, which gives a subgroup despite the fresh keys. Once $S$ is known, \eqref{eq:shift} gives the ciphertext of any plaintext from one classical query on a different plaintext.
+
+The number of queries depends on how far $g$ is from having further near-periods. We bound this parameter in the ideal cipher model, through differential counts of random permutations, so the query bounds need no heuristic assumption on the schemes. Since the dimension of $S$ is known in advance, the algorithm never outputs a wrong subgroup.
+
+\begin{table}[h]
+\centering
+\footnotesize
+\renewcommand{\arraystretch}{1.25}
+\begin{tabular}{@{}l>{\raggedright\arraybackslash}p{5.2cm}l>{\raggedright\arraybackslash}p{4.2cm}@{}}
+\toprule
+Scheme & Previous best bound, classical security & Previous best bound, Q2 & This paper, Q2 queries ($n=128$)\\
+\midrule
+CHCTR & $2n/3$ bits, multi-user~\cite{CHMNSS26} & none known to us & $\mathbf{2n+2}$ (258), 3 blocks\\
+HCTR++ & beyond birthday, bounded tweak repetition~\cite{OKY26} & none known to us & $\mathbf{4n+4}$ (516), 3 blocks\\
+HCTR2-TwKD & $2n/3$ bits, at most $2^{n/3}$ blocks per tweak~\cite{CHMNSS26} & none known to us & $\mathbf{n+2}$ (130), 2 blocks\\
+HCTR2 & $n/2$ bits~\cite{CHB21} & none known to us & $n+2$ (130), 2 blocks\\
+\bottomrule
+\end{tabular}
+\caption{Upper bounds on the expected numbers of superposition queries for the recovery of the hash keys, for one fixed tweak, with messages of the stated number of $n$-bit blocks. Each attack then gives universal forgery. For HCTR++ half of the queries are to the decryption. The rows for HCTR2 and HCTR2-TwKD transfer the approach of~\cite{RP20}.}
+\label{tab:results}
+\end{table}
+
+\begin{theorem}\label{thm:main}
+In the Q2 model and the ideal cipher model, with $n=128$, the numbers of Table~\ref{tab:results} are upper bounds on the expected number of superposition queries for recovering the hash keys (for CHCTR as an unordered pair), except with probability below $2^{-57}$ over the cipher. The output is never wrong.
+\end{theorem}
+
+\begin{theorem}\label{thm:forge}
+After the attack, let $S_\ell$ be the subgroup of Lemmas~\ref{lem:hctr2} to~\ref{lem:hctrpp} at a message length $\ell$ (for HCTR++ the subgroup $S_P$ of Lemma~\ref{lem:hctrpp}~(a)), computed from the recovered keys. For every target plaintext $P$ of length $\ell$ and every $s\in S_\ell\setminus\{0\}$, one has $\Enc(P)=\Enc(P\oplus s)\oplus s$, and the same for the decryption. $S_\ell$ is nontrivial for every nonempty rest (HCTR2, and HCTR2-TwKD under the attacked $T_0$), for a rest of at least two full blocks (CHCTR), and for a rest of at least two full hash blocks of $2n$ bits (HCTR++).
+\end{theorem}
+
+The subgroups do not depend on the tweak. So the queries may also use a different tweak each, for instance a nonce, at the cost of a union bound over the tweaks used, which multiplies the failure probabilities by their number (Remark~\ref{rem:tweak}). The security claims of~\cite{CHB21,CHMNSS26,OKY26} concern classical attackers, and our attacks do not contradict them. They show that the claims do not extend to superposition queries. In the model with classical queries and quantum computation, which is the one asked for in~\cite{NIST25}, nothing here applies; period finding in that model is studied in~\cite{BHNSS19}.
+
+\section{Preliminaries}\label{sec:prelim}
+
+\paragraph{Notation.} The block length is $n$, and blocks are elements of $\F_{2^n}$, with $n$-bit strings read as field elements in little-endian order as in~\cite{CHB21}. Addition in $K$ is $\oplus$. For a hash key $h$ write $w=h\,x^{-n}$, the factor by which POLYVAL multiplies. For a fixed tweak $T$ and a message $N=(N_1,\dots,N_l)$ of $l$ full blocks, the hash of HCTR2 is
+\[
+H(T,N)=c_{T,l}\oplus\lambda(N),\qquad \lambda(N)=\bigoplus_{i=1}^{l} N_i\,w^{\,l-i+1},
+\]
+where $c_{T,l}$ comes from the length block and the tweak~\cite[Section 3]{CHB21}. So $\lambda$ is linear over $\F_2$ and does not depend on $T$.
+
+\paragraph{HCTR2~\cite{CHB21}.} For a block cipher $E=E_k$ let $h=E(0)$, $L=E(1)$ and $\XCTR(S)=E(S\oplus1)\,\|\,E(S\oplus2)\,\|\cdots$. A plaintext $M\|N$ with $|M|=n$ is encrypted as
+\begin{gather*}
+MM=M\oplus H(T,N),\quad UU=E(MM),\quad S=MM\oplus UU\oplus L,\\
+V=N\oplus\XCTR(S),\quad U=UU\oplus H(T,V),
+\end{gather*}
+with output $U\|V$. Decryption inverts these steps.
+
+\paragraph{CHCTR and HCTR2-TwKD~\cite{CHMNSS26}.} CHCTR, called CHCTR2 in the body of~\cite{CHMNSS26}, encrypts $P$ as \[\mathrm{HCTR2}_{k_2}(T,\mathrm{HCTR2}_{k_1}(T,P)),\] with hash keys $h_i=E_{k_i}(0)$ and the same tweak in both layers~\cite[Section 3.3]{CHMNSS26}. HCTR2-TwKD is HCTR2 under a key derived from one part $T_0$ of the tweak, with the other part as the tweak of HCTR2~\cite[Section 3.4]{CHMNSS26}. For a fixed $T_0$ it is HCTR2 with a secret key $F_L(T_0)$, derived from a block cipher under a key $L$. In the ideal cipher model, $E_{F_L(T_0)}$ is a uniform permutation independent of $E_L$ unless $F_L(T_0)=L$, which has negligible probability. The hash of~\cite{CHMNSS26} is an abstract polynomial hash, and we take POLYVAL as in HCTR2.
+
+\paragraph{HCTR++~\cite{OKY26}.} We follow Figure 4 of~\cite{OKY26} in its revision of 9 March 2026, as distributed with the public reference code~\cite{OKYcode}. The first version of the design did not decrypt correctly~\cite{Kha26}; the revision we use does, and decryption is the same map with $h_1$ and $h_2$ exchanged. Later revisions of~\cite{OKY26} are not considered here. The paper leaves the $2n$-bit hash open; the reference code fixes it as POLYVAL over $\F_{2^{2n}}$ with the field polynomial $x^{256}+x^{254}+x^{251}+x^{246}+1$ (for $n=128$) and the encoding of HCTR2, and we use it. A $2n$-bit value $z$ has halves $(z_0,z_1)$, the leading and the trailing $n$ bits. From the master key $K_0$, the keys are $h_1=E(1)\|E(2)$, $h_2=E(3)\|E(4)$ and $\bar k=E(5)\|E(6)$ with $E=E_{K_0}$. Let $(u,v)(r)=H_{\bar k}(\emptyset,r)$ for $r\in\{0,1\}^n$, and $F(r,p)=E_{u(r)}(p\oplus v(r))\oplus v(r)$. A plaintext $b_1\|R$ is encrypted as
+\begin{gather*}
+x_1=H_{h_1}(T,R),\quad pp_1=b_1\oplus(x_1)_0,\quad re=(x_1)_1,\quad cc=F(re,pp_1),\\
+(r,j)=H_{h_1\oplus h_2}(T,cc),\quad O=R\oplus\mathrm{KS}(cc),\quad x_2=H_{h_2}(T,O),\quad o_1=F((x_2)_1,\cdot)^{-1}(cc)\oplus(x_2)_0,
+\end{gather*}
+with keystream blocks $F(r\oplus i,j\oplus i)$ for $i=1,2,\dots$, and output $o_1\|O$. Write $\Lambda_i$ for the linear part of $H_{h_i}(T,\cdot)$ in the rest and $w_i=h_i\,x^{-2n}\in\F_{2^{2n}}$.
+
+\paragraph{The model.} In the Q2 model~\cite{KLLN16} the attacker has the unitary $|x\rangle|z\rangle\mapsto|x\rangle|z\oplus\Enc(T,x)\rangle$ for a classical tweak $T$ and messages $x$ of a fixed length, and for HCTR++ also the one for decryption. CNOT gates from $x$ into the output give $g(x)=\Enc(T,x)\oplus x$. To keep only the rest of $g$, the output qubits of the first block are prepared in $|{+}\rangle^{\otimes n}$, which an XOR leaves unchanged and unentangled. In the ideal cipher model, $E_u$ is an independent uniform permutation for every key $u$, and the secret keys are uniform and independent of this family. The classical security proofs of~\cite{OKY26} use this model, and those of~\cite{CHMNSS26} assume that the block cipher is a multi-user strong pseudorandom permutation.
+
+\section{Shift identities}\label{sec:shift}
+
+\begin{lemma}[HCTR2]\label{lem:hctr2}
+For all $M$, $N$ and $\delta$ of $l$ blocks, $\Enc(M\oplus\lambda(\delta),N\oplus\delta)=\Enc(M,N)\oplus(\lambda(\delta),\delta)$, and the same for the decryption.
+\end{lemma}
+
+\begin{proof}
+$MM$ does not change, since $\lambda(\delta)$ cancels. So $UU$, $S$ and the keystream do not change, $V$ changes by $\delta$, and $U=UU\oplus H(T,V)$ by $\lambda(\delta)$. The decryption is the same computation in reverse.
+\end{proof}
+
+\begin{lemma}[CHCTR]\label{lem:chctr}
+Let $S_C=\{(\lambda_1(\delta),\delta):\lambda_1(\delta)=\lambda_2(\delta)\}$. Then $\Enc(x\oplus s)=\Enc(x)\oplus s$ for $s\in S_C$, and the same for the decryption. For $l=2$ and $w_1\ne w_2$,
+\[
+S_C=\{(d\,w_1w_2,\ d,\ d\,(w_1\oplus w_2)) : d\in\F_{2^n}\},
+\]
+which has dimension $n$. For $l=1$ it is trivial.
+\end{lemma}
+
+\begin{proof}
+Lemma~\ref{lem:hctr2} for the first layer gives the output shift $(\lambda_1(\delta),\delta)$, which equals $(\lambda_2(\delta),\delta)$, and Lemma~\ref{lem:hctr2} for the second layer turns it into the same shift. For $l=2$, $\lambda_i(\delta)=\delta_1w_i^2\oplus\delta_2w_i$, and in characteristic $2$,
+$\lambda_1(\delta)\oplus\lambda_2(\delta)=(w_1\oplus w_2)\bigl(\delta_1(w_1\oplus w_2)\oplus\delta_2\bigr)$. So $\delta_2=\delta_1(w_1\oplus w_2)$, and then $\lambda_1(\delta)=\delta_1w_1^2\oplus\delta_1(w_1\oplus w_2)w_1=\delta_1w_1w_2$. For $l=1$, $\delta w_1=\delta w_2$ forces $\delta=0$.
+\end{proof}
+
+\begin{lemma}[HCTR++]\label{lem:hctrpp}
+\begin{enumerate}[(a)]
+\item For $S_P=\{((\Lambda_1\delta)_0,\delta):\Lambda_1\delta=\Lambda_2\delta,\ (\Lambda_1\delta)_1=0\}$, $\Enc(x\oplus s)=\Enc(x)\oplus s$. For a rest of two hash blocks, $S_P=\{(a,d,d\,(w_1\oplus w_2)) : d\,w_1w_2=(a,0)\}$, of dimension $n$.
+\item For $S_1=\{((\Lambda_1\delta)_0,\delta):(\Lambda_1\delta)_1=0\}$, the rest of $\Enc(x)\oplus x$ is constant on the cosets of $S_1$. For a rest of one hash block, $S_1=\{(a,d):d\,w_1=(a,0)\}$, of dimension $n$.
+\end{enumerate}
+The same holds for the decryption with $h_1$ and $h_2$ exchanged.
+\end{lemma}
+
+\begin{proof}
+Under a shift by $((\Lambda_1\delta)_0,\delta)$ with $(\Lambda_1\delta)_1=0$, the values $pp_1$ and $re$ do not change, so $cc$ and the keystream do not, and $O$ changes by $\delta$. This proves (b). In (a), $x_2$ changes by $\Lambda_2\delta=\Lambda_1\delta=((\Lambda_1\delta)_0,0)$, so $(x_2)_1$ does not change and $o_1$ changes by $(\Lambda_1\delta)_0$. The descriptions follow as in Lemma~\ref{lem:chctr}, in $\F_{2^{2n}}$.
+\end{proof}
+
+For HCTR2 no condition on $h$ is needed. For CHCTR we need $w_1\ne w_2$, which fails with probability at most $2^{-n}+2^{-k}$ for $k$-bit block cipher keys, from $E_{k_1}(0)=E_{k_2}(0)$ or $k_1=k_2$. For HCTR++, $w_1\ne w_2$ and $w_1,w_2,\bar k\ne0$ hold automatically, since they come from distinct values of one permutation.
+
+\section{Period finding with a known dimension}\label{sec:period}
+
+Let $G=\F_2^D$ and $f:G\to Z$. One run of quantum period finding~\cite{Sim97} (one query, the transform $H^{\otimes D}$ on the input register, and a measurement) gives $y\in G$ with probability
+\[
+P(y)=\sum_{v\in Z}\Bigl|\,2^{-D}\!\!\sum_{x:\,f(x)=v}\!(-1)^{x\cdot y}\Bigr|^2=2^{-D}\sum_{t\in G}p(t)\,(-1)^{t\cdot y},\qquad p(t)=\Pr_x[f(x\oplus t)=f(x)].
+\]
+
+\begin{lemma}\label{lem:sample}
+For every subspace $Y\subseteq G$, $\Pr[y\in Y]=|Y^\perp|^{-1}\sum_{t\in Y^\perp}p(t)$. If $f$ is constant on the cosets of a subspace $S$, then $P(y)=0$ for $y\notin S^\perp$. If also $p(t)\le\eps$ for $t\notin S$ and $\eps\ge0$, then $\Pr[y\in Y]\le|S|/|Y^\perp|+\eps$, which is $2^{j-d}+\eps$ for $Y\subseteq S^\perp$ of dimension $j$ and $d=\dim S^\perp$.
+\end{lemma}
+
+\begin{proof}
+$\sum_{y\in Y}(-1)^{t\cdot y}=|Y|\,[t\in Y^\perp]$ and $|Y|\,|Y^\perp|=2^D$. For $y\notin S^\perp$, pair $x$ with $x\oplus s$ for an $s\in S$ with $s\cdot y=1$; the inner sums vanish. For the bound, $Y^\perp\supseteq S$ when $Y\subseteq S^\perp$, the terms with $t\in S$ give $|S|$, and the others at most $\eps|Y^\perp|$. In general the terms with $t\in S\cap Y^\perp$ give at most $|S|$.
+\end{proof}
+
+\begin{theorem}\label{thm:lasvegas}
+Let $f$ be constant on the cosets of $S$, with $d=\dim S^\perp$ known, and $\eps=\max_{t\notin S}p(t)\le1/8$. Sample until the samples span a space of dimension $d$, and output its orthogonal complement. The output is $S$, and the expected number of samples is at most
+\[
+\sum_{i=1}^{d}\frac{1}{1-2^{-i}-\eps}\ \le\ d+1.61+6d\eps.
+\]
+\end{theorem}
+
+\begin{proof}
+All samples lie in $S^\perp$ (Lemma~\ref{lem:sample}), so at dimension $d$ the span is $S^\perp$. At dimension $j<d$ a sample leaves the span with probability at least $1-2^{j-d}-\eps$, so the waiting time has mean at most its inverse. For $a=2^{-i}\le1/2$ and $\eps\le1/8$, $1/(1-a-\eps)-1/(1-a)=\eps/((1-a-\eps)(1-a))\le 16\eps/3$, and $\sum_{i\ge1}1/(2^i-1)<1.61$.
+\end{proof}
+
+Sharper bounds on the number of samples for random functions are in~\cite{Bon21}; Theorem~\ref{thm:lasvegas} needs only the parameter $\eps$ of the given function. For HCTR2 and HCTR2-TwKD, $D=2n$ and $d=n$. For CHCTR and HCTR++ (b), $D=3n$ and $d=2n$. Remaining is a bound on $\eps$.
+
+\section{Uniqueness in the ideal cipher model}\label{sec:unique}
+
+For a permutation $\pi$ of $\{0,1\}^n$ let
+\[
+\Dl(\pi)=\max_{a\ne0,\,b}\#\{y:\pi(y)\oplus\pi(y\oplus a)=b\},\qquad \Phi(\pi)=\max_v\#\{y:y\oplus\pi(y)=v\},
+\]
+and for two permutations $X(\pi,\pi')=\max_{k,\mu}\#\{q:\pi(q)\oplus\pi'(q\oplus k)=\mu\}$.
+
+\begin{lemma}\label{lem:tail}
+For independent uniform permutations $\pi,\pi'$ and $1\le m\le2^{n-2}$:
+$\Pr[\Dl(\pi)\ge2m]\le2^{2n}/m!$, $\Pr[\Phi(\pi)\ge m]\le2^{n+m}/m!$ and $\Pr[X(\pi,\pi')\ge m]\le2^{2n+m}/m!$.
+\end{lemma}
+
+\begin{proof}
+For fixed $a\ne0$ and $b$ the solutions of $\pi(y)\oplus\pi(y\oplus a)=b$ come in pairs $\{y,y\oplus a\}$. Fix $m$ disjoint pairs. Revealing $\pi$ pair by pair, the second value of each pair is forced, with probability at most $1/(2^n-2m)\le2^{-(n-1)}$. There are at most $(2^{n-1})^m/m!$ such sets of pairs, so the probability is at most $1/m!$, and a union bound over $(a,b)$ gives the first claim. For $\Phi$, fix $v$ and $m$ points $y_i$, and $\pi(y_i)=y_i\oplus v$ has probability at most $(2^n-m)^{-m}$, against at most $2^{nm}/m!$ sets. For $X$, condition on $\pi$ and fix $m$ values $q$; then $\pi'$ is forced at $m$ distinct points.
+\end{proof}
+
+For $n=128$ and $m=n$, $2^{2n}/n!<2^{-460}$, and for $m=2n$, $2^{6n}/(2n)!<2^{-900}$. Both inequalities are checked in Lean.
+
+\begin{proposition}[HCTR2]\label{prop:hctr2}
+For $g=\Enc\oplus\mathrm{id}$ and $S$ of Lemma~\ref{lem:hctr2}, $\eps=\max_{u\ne0}\#\{y:E(y)\oplus E(y\oplus u)=u\}/2^n\le\Dl(E)/2^n$. So $\eps<2n/2^n$ except with probability below $2^{-460}$.
+\end{proposition}
+
+\begin{proof}
+Since $V\oplus N=\XCTR(S)$ and $U\oplus M=UU\oplus MM\oplus\lambda(V\oplus N)$, one has $g=(S\oplus L\oplus\lambda(\XCTR(S)),\ \XCTR(S))$ with $S=y\oplus E(y)\oplus L$ and $y=MM$. This is injective in $S$, through the first keystream block $E(S\oplus1)$. A shift $t=(a,\delta)\notin S$ changes $y$ by $u=a\oplus\lambda(\delta)\ne0$, and $y$ is uniform. So $p(t)=\Pr_y[S(y)=S(y\oplus u)]$, which is the stated count. The bound on $\Dl(E)$ holds for $E$ as a whole, so it does not matter that $h$ and $L$ are values of $E$.
+\end{proof}
+
+\begin{proposition}[CHCTR]\label{prop:chctr}
+Let $l=2$ and $w_1\ne w_2$. For $g=\Enc\oplus\mathrm{id}$ and $S_C$, $\eps\le(\Dl(E_1)+\Phi(E_2)\,\Dl(E_2))/2^n$. So $\eps<(2n+2n^2)/2^n<2^{-112}$ except with probability below $2^{-127}$, which includes the event $w_1=w_2$ for AES-256.
+\end{proposition}
+
+\begin{proof}
+The map $(M,N)\mapsto(y,z)=(M\oplus H_1(T,N),\ \lambda_1(N)\oplus\lambda_2(N))$ is affine, its linear part has kernel $S_C$, and it is onto $\F_{2^n}^2$, since $w_1\ne w_2$. Let $X_1=\XCTR_1(S_1(y))$, let $m=E_1(y)\oplus z\oplus(\lambda_1\oplus\lambda_2)(X_1)\oplus c$ be the middle value of the second layer, with a constant $c$, and $A=X_1\oplus\XCTR_2(S_2(m))$. Then
+\[
+g=\bigl(E_2(m)\oplus y\oplus z\oplus\lambda_2(A)\oplus c',\ A\bigr)
+\]
+with a constant $c'$. Consider a shift $(u,w)\ne0$ of $(y,z)$, and write $m'$ for the shifted middle value. A collision needs $A=A'$ and $E_2(m)\oplus E_2(m')=u\oplus w$.
+
+If $u=0$, then $X_1$ does not change and $m'=m\oplus w$, so $A=A'$ needs $S_2(m)=S_2(m\oplus w)$, that is $E_2(m)\oplus E_2(m\oplus w)=w$. For fixed $y$, $m$ is uniform as $z$ varies, so this has probability at most $\Dl(E_2)/2^n$.
+
+If $u\ne0$ and $S_1(y)=S_1(y\oplus u)$, then $E_1(y)\oplus E_1(y\oplus u)=u$, which holds for at most $\Dl(E_1)$ values of $y$.
+
+Otherwise the first keystream blocks of the first layer differ by some $\Dl_1\ne0$. For fixed $y$, $m'=m\oplus\kappa_y$ with $\kappa_y$ independent of $z$. Since $S_2(m)\oplus S_2(m')=\kappa_y\oplus E_2(m)\oplus E_2(m')$, a collision forces $S_2(m)\oplus S_2(m')=\gamma:=\kappa_y\oplus u\oplus w$, fixed for $y$. If $\gamma=0$ the second keystreams agree and $A\ne A'$. So $\gamma\ne0$, and $\sigma=S_2(m)\oplus1$ solves $E_2(\sigma)\oplus E_2(\sigma\oplus\gamma)=\Dl_1$, which has at most $\Dl(E_2)$ solutions. Each comes from at most $\Phi(E_2)$ values of $m$, since $S_2(m)=m\oplus E_2(m)\oplus L_2$. As $m$ is uniform in $z$, the probability is at most $\Phi(E_2)\Dl(E_2)/2^n$.
+
+For the numbers, apply Lemma~\ref{lem:tail} with $m=n$ to $\Dl(E_1)$, $\Dl(E_2)$ and $\Phi(E_2)$, and add $\Pr[w_1=w_2]\le2^{-n}+2^{-256}$.
+\end{proof}
+
+\begin{proposition}[HCTR++]\label{prop:hctrpp}
+In the ideal cipher model, for a rest of one hash block, $g$ the rest of $\Enc\oplus\mathrm{id}$ and $S_1$ of Lemma~\ref{lem:hctrpp}, with a tweak of at most $t$ hash blocks, $\eps\le2^{1-n/2}$ except with probability below $2^{2-n/2}+2^{2-2n}+2^{-900}$, for $n=128$ and $t\le2^{20}$. The same holds for the decryption.
+\end{proposition}
+
+\begin{proof}
+The map $(b_1,R)\mapsto(pp_1,re)$ is affine, its linear part has kernel $S_1$, and it is onto, since $w_1\ne0$. For fixed $T$, $g=\mathrm{KS}(cc)$ with $cc=F(re,pp_1)$. Fix a shift $(\alpha,\beta)\ne0$ of $(pp_1,re)$ and write $cc'=F(re\oplus\beta,pp_1\oplus\alpha)$. For fixed $re$, we count the values of $pp_1$ with $\mathrm{KS}(cc)=\mathrm{KS}(cc')$.
+
+\emph{Equal values $cc=cc'$.} If $\beta=0$ this is impossible, since $F(re,\cdot)$ is a bijection. Let $\beta\ne0$, $(u,v)=(u,v)(re)$ and $(u',v')=(u,v)(re\oplus\beta)$. The map $r\mapsto(u,v)(r)$ is affine and injective, since $\bar k\ne0$, so $(u,v)\ne(u',v')$. With $q=pp_1\oplus v$ and $k=\alpha\oplus v\oplus v'$, the condition is $E_u(q)\oplus E_{u'}(q\oplus k)=v\oplus v'$. If $u=u'$ then $v\ne v'$, so $k=0$ gives no solution and $k\ne0$ at most $\Dl(E_u)$. If $u\ne u'$ there are at most $X(E_u,E_{u'})$ solutions. Let $D^\ast$ be the maximum of all these counts over the family. By Lemma~\ref{lem:tail} with $m=2n$ and union bounds over $2^n$ and $2^{2n}$ keys, $D^\ast<4n$ except with probability below $2^{-900}$.
+
+\emph{Different values with the same keystream.} Let $\Gamma$ be the number of $c$ for which some $c'\ne c$ has $\mathrm{KS}(c)=\mathrm{KS}(c')$. Since $pp_1\mapsto cc$ is a bijection for fixed $re$, at most $\Gamma$ values of $pp_1$ lead to such a collision. Hence $p(t)\le(D^\ast+\Gamma)/2^n$.
+
+\emph{Expectation of $\Gamma$.} Let $(r,j)$ and $(r',j')$ belong to $c\ne c'$; they differ, since the hash of $cc$ is affine and injective ($w_1\ne w_2$). If $r=r'$, the first keystream blocks differ, as $F(r\oplus1,\cdot)$ is a bijection. Let $r\ne r'$. The first keystream block of $c$ is $E_{u}(\cdot)$ at the point $A=(u(r\oplus1),\ j\oplus1\oplus v(r\oplus1))$ of the ideal cipher, plus $v(r\oplus1)$, and the second block uses the point $B$ with $r\oplus2$, $j\oplus2$. Write $A',B'$ for $c'$. If $A=A'$, the first blocks differ by $v(r\oplus1)\oplus v(r'\oplus1)$, which is nonzero as $(u,v)$ is injective; so a collision needs $A\ne A'$ and likewise $B\ne B'$. Let $L_{\bar k}$ be the linear part of $r\mapsto(u,v)(r)$. Then $B=A'$ holds exactly when $L_{\bar k}(r\oplus r'\oplus3)=(0,\ j\oplus j'\oplus3)$, and this condition is symmetric, so $B=A'$ if and only if $B'=A$. The case $B=A$ means $L_{\bar k}(3)=(0,3)$, a condition on $\bar k$ alone of probability below $2^{2-2n}$, which we exclude. So either the four points are distinct, or $B=A'$ and $B'=A$.
+
+Call $c$ \emph{bad} if one of its points $A(c),B(c)$ is $(K_0,i)$ with $1\le i\le6$, whose value is fixed by the subkeys. Condition on $K_0$ and on $E_{K_0}(1),\dots,E_{K_0}(6)$, which fixes the subkeys and the set of bad $c$. For fixed $(r,j)$, the value $(u,v)(r\oplus1)$ is a polynomial of degree $2$ in $w_{\bar k}=\bar k\,x^{-2n}$ with nonzero leading coefficient, so $A(c)=(K_0,i)$ holds for at most two values of $\bar k$, whatever $h_1\oplus h_2$ is. As $\bar k$ is uniform over at least $(2^n-4)(2^n-5)$ values given $E_{K_0}(1),\dots,E_{K_0}(4)$, the expected number of bad $c$ is at most $24\cdot2^n\cdot2/((2^n-4)(2^n-5))=O(2^{-n})$. We count all bad $c$ in $\Gamma$. Let $\kappa$ be the dimension of the kernel of $r\mapsto(L_{\bar k}r)_0$; since $\Pr[(L_{\bar k}r)_0=0]\le(1+o(1))\,2^{-n}$ for each $r\ne0$, $\mathbb{E}[2^\kappa]\le2+o(1)$.
+
+In the first case let $c$ be not bad. If $c'$ is not bad either, revealing $A,A',B,B'$ in this order shows that both equations hold with probability at most $1/((2^n-7)(2^n-9))$, and there are at most $2^{2n}$ such ordered pairs, which contribute at most $1+o(1)$ to the expected number of colliding ordered pairs. If $c'$ is bad, reveal $A',B'$ first and the free points $A,B$ of $c$ last, which gives at most $1/(2^n-9)^2$; summed over the $O(2^{-n})$ expected bad $c'$ and all $c$, this contributes $O(2^{-2n})$.
+
+In the second case $r'\in r\oplus3\oplus\ker\bigl(r\mapsto(L_{\bar k}r)_0\bigr)$, and then $j'$ is determined, so each $c$ has at most $2^\kappa$ such partners. If $c$ is not bad then neither is $c'$, since the points of $c'$ are those of $c$. The two equations coincide, since $v(r\oplus2)\oplus v(r'\oplus2)=v(r\oplus1)\oplus v(r'\oplus1)$, and hold with probability at most $1/(2^n-7)$. This contributes at most $2^n\,\mathbb{E}[2^\kappa]/(2^n-7)\le2+o(1)$.
+
+Every $c$ counted in $\Gamma$ is bad or belongs to a colliding ordered pair $(c,c')$ with $c$ not bad, and all these cases are counted above, so $\mathbb{E}[\Gamma]<4$ for $n=128$. The tweak enters only through constants, and the bound holds for every tweak length up to $t\le2^{20}$ blocks, where the factors $1+o(1)$ stay below $1.01$. Hence $\Gamma<2^{n/2}$ except with probability $2^{2-n/2}$, and then, with $D^\ast<4n$, $\eps\le(4n+2^{n/2})/2^n\le2^{1-n/2}$. The decryption has the same form with $h_1$ and $h_2$ exchanged.
+\end{proof}
+
+\section{The attacks}\label{sec:attacks}
+
+\begin{algorithm}[h]
+\caption{Recovery of the hash keys}\label{alg:attack}
+\begin{algorithmic}[1]
+\State Fix a tweak and a message length: $2$ blocks (HCTR2, HCTR2-TwKD), $3$ blocks (CHCTR), a first block and one $2n$-bit hash block (HCTR++).
+\State Run Theorem~\ref{thm:lasvegas} on $g$ through the oracle of Section~\ref{sec:prelim}, with $d=n$ or $d=2n$. This gives $S$.
+\State Take $s\in S$ with nonzero second component.
+\State HCTR2, HCTR2-TwKD: $s=(a,\delta)$, $w=a/\delta$, $h=w\,x^n$.
+\State CHCTR: $s=(a,d_1,d_2)$, $\sigma=d_2/d_1=w_1\oplus w_2$, $\rho=a/d_1=w_1w_2$; output the two roots of $X^2\oplus\sigma X\oplus\rho$.
+\State HCTR++: $s=(a,d)$, $w_1=(a,0)/d$; repeat steps 2 to 3 on the decryption for $w_2$.
+\end{algorithmic}
+\end{algorithm}
+
+\begin{proof}[Proof of Theorem~\ref{thm:main}]
+By Lemmas~\ref{lem:hctr2} to~\ref{lem:hctrpp}, $g$ is constant on the cosets of $S$. By Theorem~\ref{thm:lasvegas} and Propositions~\ref{prop:hctr2} to~\ref{prop:hctrpp}, the expected number of queries is at most $d+1.61+6d\eps$, which is below $n+2$ for HCTR2 and HCTR2-TwKD and below $2n+2$ for CHCTR and for each of the two runs on HCTR++, with an additive term below $2^{-50}$. The failure probabilities are at most $2^{-460}$, $2^{-127}$ and $2(2^{2-n/2}+2^{2-2n}+2^{-900})<2^{-57}$, and for HCTR2-TwKD the event $F_L(T_0)=L$ is added. The key recovery follows from the descriptions of $S$: $a=\delta w$ for HCTR2, Lemma~\ref{lem:chctr} for CHCTR, where $X^2\oplus(w_1\oplus w_2)X\oplus w_1w_2=(X\oplus w_1)(X\oplus w_2)$, and $d\,w_1=(a,0)$ for HCTR++. The output is $S$ itself, never a larger or smaller subgroup.
+\end{proof}
+
+\begin{proof}[Proof of Theorem~\ref{thm:forge}]
+This is the shift identity of Lemmas~\ref{lem:hctr2} to~\ref{lem:hctrpp} at length $\ell$, used once for a target $P$ and $P\oplus s\ne P$. For HCTR2 with a partial last block, $\delta$ ranges over the bits of the rest, and the constant padding bit cancels. For CHCTR and HCTR++ with a longer rest, shifts supported on the last two (hash) blocks have the form of Lemmas~\ref{lem:chctr} and~\ref{lem:hctrpp}, since the last two blocks enter the hash with the factors $w^2$ and $w$. $S_\ell$ is computed from $w$, from the unordered pair $\{w_1,w_2\}$ (as $S_C$ is symmetric in the two layers) or from $w_1,w_2$. For HCTR2-TwKD the identity holds under the attacked $T_0$.
+\end{proof}
+
+\begin{remark}\label{rem:tweak}
+The subgroups do not depend on $T$, since $c_{T,l}$ cancels and the linear parts do not involve $T$. Samples obtained under different tweaks therefore all lie in $S^\perp$, and Lemma~\ref{lem:sample} holds for each tweak. So the queries may use a fresh tweak each, as with nonces, and a union bound over the tweaks used multiplies the failure probabilities by their number. For HCTR2-TwKD the inner tweak may vary while $T_0$ is fixed. Counting a superposition query on a message of $b$ blocks as the $b$ block cipher calls it makes under the derived key, the attack under one tweak uses about $2(n+2)\approx260$ calls, far below the bound $2^{n/3}$ per $T_0$ of~\cite{CHMNSS26}. HCTR++ is attacked with about $516$ queries. With a fresh tweak for each query the failure probability for HCTR++ becomes about $516\cdot2^{-61}<2^{-51}$.
+\end{remark}
+
+The keys recovered are the hash keys. The post-processing is linear algebra over $\F_2$ in dimension at most $3n$ and a few field operations.
+
+\section{Measurements}\label{sec:sim}
+
+Three scripts accompany the paper. The first uses $n$-bit blocks with random permutations as the block ciphers, POLYVAL as polynomial evaluation in $\F_{2^n}$ (in $\F_{2^{2n}}$ for HCTR++), and for HCTR++ a family of permutations with the master cipher as one member. It checks the shift identities on the whole domain, computes $\eps$ exactly over the cosets of $S$, forms the exact distribution of one sample, and runs Theorem~\ref{thm:lasvegas} $300$ times (Table~\ref{tab:sim}). For HCTR2, $\eps$ equals $\max_u\#\{y:E(y)\oplus E(y\oplus u)=u\}/2^n$ in every case.
+
+\begin{table}[h]
+\centering
+\scriptsize
+\begin{tabular}{@{}lllllll@{}}
+\toprule
+Scheme & $n$ & $D$ & $\eps$ & mean samples & bound of Theorem~\ref{thm:lasvegas} & $S$ and keys\\
+\midrule
+HCTR2 & 3 to 8 & $2n$ & 0.023 to 0.250 & 4.90 to 9.81 & 6.83 to 9.90 & all recovered\\
+CHCTR & 3 to 6 & $3n$ & 0.094 to 0.500 & 9.36 to 13.67 & 13.77 to 21.00 ($n\ge4$) & all recovered\\
+HCTR++, two blocks & 3 & $5n$ & 0.438 & 14.05 & 37.91 & recovered\\
+HCTR++, one block & 3 to 5 & $3n$ & 0.061 to 0.313 & 8.75 to 12.08 & 11.81 to 14.01 & all recovered\\
+\bottomrule
+\end{tabular}
+\caption{Simulation at small block sizes, with the exact distribution of one sample and means over $300$ runs. Ranges are minimum to maximum. The bound is the sum of Theorem~\ref{thm:lasvegas}, finite for $\eps<1/2$. The last row covers both encryption and decryption. The toy keys exclude $h=0$ for HCTR2 and $h_i=0$ or $h_1=h_2$ for CHCTR, for the recovery step.}
+\label{tab:sim}
+\end{table}
+
+The second script implements HCTR2, CHCTR and HCTR++ with AES and the real POLYVAL. The implementation of HCTR2 reproduces all $350$ AES-256 test vectors of the reference repository of~\cite{CHB21}. For random keys, tweaks and inputs it checks the shift identities for encryption and decryption at $n=128$, Lemma~\ref{lem:hctrpp}~(b) on both directions, the key recovery from one element of $S$ for all three schemes, and Theorem~\ref{thm:forge} for HCTR2 with partial last blocks and for CHCTR and HCTR++ with rests of up to four blocks and three hash blocks. The third script runs the circuit of period finding gate by gate in a noiseless statevector simulator, at $n=3$ with $12$ to $18$ qubits. It uses only the encryption oracle (the decryption oracle for the decryption run of HCTR++), built from its truth table, with the CNOT gates and the $|{+}\rangle$ preparation of Section~\ref{sec:prelim}. Every measured $y$ was orthogonal to $S$, and $S$ and the keys were recovered.
+
+\section{Formal verification}\label{sec:lean}
+
+A Lean~4 library on Mathlib contains $38$ main theorems, with no unproved steps and only the standard axioms. The shift identities of Lemmas~\ref{lem:hctr2} to~\ref{lem:hctrpp}, with decryption, hold over any commutative ring of characteristic $2$, for arbitrary functions in place of the block cipher and the keystream and an additive hash. Over a field of characteristic $2$, the library contains the description of $S_C$, the kernel and surjectivity of the quotient map, the roots of the quadratic and the recovery formulas. It contains the deterministic part of Propositions~\ref{prop:hctr2} to~\ref{prop:hctrpp}: that $g$ of HCTR2 is an injective function of $S$, the three cases of the proof of Proposition~\ref{prop:chctr}, and the first step of the proof of Proposition~\ref{prop:hctrpp}, which splits a collision into equal and different values of $cc$. The analysis of the points of the ideal cipher in that proof is not formalized. It contains Lemma~\ref{lem:sample} in full, as an identity of real sums over $\F_2^D$ for the distribution $P$ given by its formula, the sum in Theorem~\ref{thm:lasvegas}, and the numerical inequalities after Lemma~\ref{lem:tail}.
+
+Not formalized are the circuit and its output distribution as a physical process (the distribution enters as the formula for $P$), the expectation of a stopping time, the probability bounds of Lemma~\ref{lem:tail} and of Propositions~\ref{prop:hctr2} to~\ref{prop:hctrpp} over random permutations, AES and POLYVAL themselves, and the length and tweak encodings.
+
+\section{Limits and open questions}
+
+\begin{itemize}
+\item The attacks need superposition access to the keyed encryption. Disk and filename encryption, the main uses of HCTR2, do not give such access. Nothing here concerns attackers with classical queries.
+\item The query bounds use the ideal cipher model, as the classical proofs of~\cite{OKY26} do, while~\cite{CHMNSS26} assumes a multi-user strong pseudorandom permutation. Since the dimension of $S$ is known, a weaker bound on $\eps$ would only cost queries, never correctness.
+\item The definition of HCTR++ follows~\cite[Figure 4]{OKY26} in its revision of 9 March 2026 and the reference code~\cite{OKYcode}, which fixes the $2n$-bit hash. The attack needs a hash that is linear over $\F_2$ for a fixed tweak and length, and the key recovery a polynomial hash.
+\item Can HCTR++ be attacked with encryption queries alone, with a proven bound on $\eps$? Running the attack on a subspace after $w_1$ is known is a candidate.
+\item Other accordion candidates, such as constructions from tweakable block ciphers or from wide permutations, are not treated here.
+\item We prove no lower bound on the number of queries beyond the trivial one.
+\end{itemize}
+
+\section*{Use of AI}
+
+The proofs, the code and the Lean files were developed with Claude Opus~5.5 (Anthropic), which was also used to draft the text. The author is responsible for the content.
+
+\begin{thebibliography}{99}
+\bibitem{Bon21} X.~Bonnetain. Tight bounds for Simon's algorithm. LATINCRYPT 2021.
+\bibitem{BHNSS19} X.~Bonnetain, A.~Hosoyamada, M.~Naya-Plasencia, Y.~Sasaki, A.~Schrottenloher. Quantum attacks without superposition queries: the offline Simon's algorithm. ASIACRYPT 2019.
+\bibitem{CHMMNSSS26} D.~Chang, Y.~Hiraga, K.~Minematsu, N.~Mouha, Y.~Naito, Y.~Sasaki, T.~Shiba, T.~Sugawara. Extended analysis of key committing security of HCTR2. SAC 2026.
+\bibitem{CHMNSS26} Y.~L.~Chen, Y.~Hiraga, N.~Mouha, Y.~Naito, Y.~Sasaki, T.~Sugawara. Beyond-birthday-bound security with HCTR2: cascaded construction and tweak-based key derivation. ASIACRYPT 2025, Cryptology ePrint Archive 2026/085.
+\bibitem{NIST25} Y.~L.~Chen, M.~Davidson, M.~Dworkin et al. Requirements for cryptographic accordions. NIST IR 8552, 2025.
+\bibitem{CHB21} P.~Crowley, N.~Huckleberry, E.~Biggers. Length-preserving encryption with HCTR2. Cryptology ePrint Archive 2021/1441.
+\bibitem{GS21} S.~Ghosh, P.~Sarkar. Breaking tweakable enciphering schemes using Simon's algorithm. Designs, Codes and Cryptography 89, 2021.
+\bibitem{KLLN16} M.~Kaplan, G.~Leurent, A.~Leverrier, M.~Naya-Plasencia. Breaking symmetric cryptosystems using quantum period finding. CRYPTO 2016, arXiv:1602.05973.
+\bibitem{Kha26} M.~Khairallah. A note on HCTR++. Cryptology ePrint Archive 2026/591.
+\bibitem{KM10} H.~Kuwakado, M.~Morii. Quantum distinguisher between the 3-round Feistel cipher and the random permutation. ISIT 2010.
+\bibitem{MWH24} S.~Mao, P.~Wang, L.~Hu. Research on tweakable enciphering schemes under Simon's quantum algorithm attack. Journal of Cyber Security 9(2), 2024.
+\bibitem{OKYcode} G.~\"Ozt\"urk. HCTR++ reference implementation. \url{https://github.com/gulnihalozturk/hctrpp}, 2026.
+\bibitem{OKY26} G.~\"Ozt\"urk, O.~Ko\c{c}ak, O.~Yayla. HCTR++: a beyond birthday bound secure HCTR2 variant. Cryptology ePrint Archive 2026/383.
+\bibitem{RP20} M.~Rahman, G.~Paul. Quantum attacks on HCTR and its variants. IEEE Transactions on Quantum Engineering 1, 2020, Cryptology ePrint Archive 2020/802.
+\bibitem{Sim97} D.~R.~Simon. On the power of quantum computation. SIAM Journal on Computing 26(5), 1997.
+\end{thebibliography}
+
+\end{document}

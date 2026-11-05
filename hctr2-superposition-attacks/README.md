@@ -2,6 +2,8 @@
 
 Written 5 Nov 2026.
 
+**Paper:** [`paper/main.pdf`](paper/main.pdf), with its source in [`paper/`](paper/).
+
 HCTR2 [1] is a length-preserving tweakable wide-block cipher built from AES and the POLYVAL hash, used for disk and filename encryption, for example in Linux. CHCTR and HCTR2-TwKD [2] and HCTR++ [3] are recent variants with security beyond the birthday bound against classical attackers, proposed in the context of the NIST accordion mode project [4]. This folder gives attacks on all four when the attacker can query the encryption (and for HCTR++ also the decryption) in quantum superposition, the Q2 model of Kaplan, Leurent, Leverrier and Naya-Plasencia [5].
 
 **Theorem 1.** In the Q2 model, with one fixed tweak, Simon's algorithm recovers
