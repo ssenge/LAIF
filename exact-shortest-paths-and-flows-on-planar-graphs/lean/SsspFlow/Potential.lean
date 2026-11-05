@@ -552,6 +552,176 @@ theorem cyc_spec (hg₀ : g₀ ∈ Γ) :
 
 end Pot
 
+section Interval
+
+variable {w₀ : D × Bool} (h₀ : t.vertM w₀ = t.root) (h₁ : w₀.2 = true)
+
+theorem anc_trans {a b c : V} (h : t.Anc a b) (h' : t.Anc b c) : t.Anc a c := by
+  induction h' with
+  | refl => exact h
+  | step hw _ ih => exact Anc.step hw ih
+
+theorem not_anc_root {w : V} (hw : w ≠ t.root) : ¬ t.Anc w t.root := by
+  intro h
+  cases h with
+  | refl => exact hw rfl
+  | step hr _ => exact hr rfl
+
+open Classical in
+variable (t) in
+/-- The darts at vertices that are not descendants of `w`. -/
+noncomputable def offSub (w : V) : Finset (D × Bool) :=
+  Finset.univ.filter fun z => ¬ t.Anc w (t.vertM z)
+
+theorem mem_offSub {w : V} {z : D × Bool} : z ∈ t.offSub w ↔ ¬ t.Anc w (t.vertM z) := by
+  classical
+  simp [offSub]
+
+include h₁ in
+/-- From a dart at a descendant of `w`, the tour stays at descendants up to the step after the digon corner
+of `w`. -/
+theorem trail_sub {w a : V} (hw : w ≠ t.root) (ha : t.Anc w a) :
+    ∀ z, t.vertM z = a → Trail (t.tau w₀) (t.offSub w) z (t.tau w₀ (t.r0 w)) := by
+  obtain ⟨h, hdep⟩ := exists_dep_bound t
+  have he : t.tau w₀ (t.r0 w) ∈ t.offSub w := by
+    rw [mem_offSub, tau_r0 hw, t.vertM_rot, t.vertM_c0]
+    exact not_anc_par hw
+  induction ha with
+  | refl =>
+    exact fun z hz => tau_walk h₁ _ hdep w hw (fun y hy => mem_offSub.1 hy) _ (Trail.here he) z hz
+  | @step b hb hanc ih =>
+    intro z hz
+    refine tau_walk h₁ _ hdep b hb (fun y hy hab => mem_offSub.1 hy (anc_trans (Anc.step hb hanc) hab))
+      _ (ih _ ?_) z hz
+    rw [tau_r0 hb, t.vertM_rot, t.vertM_c0]
+
+/-- The trail to the last element before its end. -/
+theorem trail_to_last {f : Equiv.Perm (D × Bool)} {S : Finset (D × Bool)} {z e l : D × Bool}
+    (h : Trail f S z e) (hl : f l = e) (hz : z ∉ S) : Trail f (insert l S) z l := by
+  induction h with
+  | here h' => exact (hz h').elim
+  | @step y _ hy h' ih =>
+    by_cases hyl : y = l
+    · rw [hyl]
+      exact Trail.here (Finset.mem_insert_self _ _)
+    · refine Trail.step (by simp [hyl, hy]) (ih hl ?_)
+      intro hm
+      exact hyl (f.injective ((h'.unique (Trail.here hm)).symm.trans hl.symm))
+
+/-- Along a trail that avoids the start of the positions, positions grow. -/
+theorem pos_le_of_trail_end {f : Equiv.Perm (D × Bool)} {S : Finset (D × Bool)} {z y : D × Bool}
+    (h : Trail f S z y) (hw : w₀ ∈ S) (hne : y ≠ w₀) (hconn : ∀ a b, fconnect f a b) :
+    pos f w₀ z ≤ pos f w₀ y := by
+  induction h with
+  | here _ => exact le_rfl
+  | @step a _ _ h' ih =>
+    have h1 : f a ≠ w₀ := fun e => by
+      have hm : f a ∈ S := by rw [e]; exact hw
+      exact hne ((h'.unique (Trail.here hm)).trans e)
+    have := ih hne
+    have h2 := pos_apply (hconn w₀ a) h1
+    omega
+
+include h₁ in
+/-- A step of the tour into the descendants of `w` is the step to the first dart of `w`. -/
+theorem anc_of_tau {w : V} {y : D × Bool} (h : t.Anc w (t.vertM (t.tau w₀ y)))
+    (hne : t.tau w₀ y ≠ t.c1 w) : t.Anc w (t.vertM y) := by
+  by_cases hr : ∃ u, u ≠ t.root ∧ y = t.r0 u
+  · obtain ⟨u, hu, rfl⟩ := hr
+    rw [tau_r0 hu, t.vertM_rot, t.vertM_c0] at h
+    rw [t.vertM_r0 hu]
+    exact Anc.step hu h
+  by_cases hc : ∃ u, u ≠ t.root ∧ y = t.c0 u
+  · obtain ⟨u, hu, rfl⟩ := hc
+    rw [tau_c0 hu] at h hne
+    rw [t.vertM_c1 hu] at h
+    rw [t.vertM_c0]
+    cases h with
+    | refl => exact (hne rfl).elim
+    | step _ h' => exact h'
+  · rw [tau_eq_rot h₁ fun v hv => ⟨fun e => hr ⟨v, hv, e⟩, fun e => hc ⟨v, hv, e⟩⟩, t.vertM_rot] at h
+    exact h
+
+include h₀ h₁ in
+/-- **The darts at the descendants of a vertex form an interval of the tour.** -/
+theorem anc_iff_interval {w : V} (hw : w ≠ t.root) (z : D × Bool) :
+    t.Anc w (t.vertM z) ↔
+      pos (t.tau w₀) w₀ (t.c1 w) ≤ pos (t.tau w₀) w₀ z ∧
+        pos (t.tau w₀) w₀ z ≤ pos (t.tau w₀) w₀ (t.r0 w) := by
+  have hconn : ∀ a b, fconnect (t.tau w₀) a b := fconnect_tau h₀ h₁
+  have hw₀ : w₀ ∈ t.offSub w := by
+    rw [mem_offSub, h₀]
+    exact not_anc_root hw
+  have hne : ∀ {a}, t.Anc w (t.vertM a) → a ≠ w₀ := fun ha e => (mem_offSub.1 hw₀) (e ▸ ha)
+  have hr0 : t.Anc w (t.vertM (t.r0 w)) := by
+    rw [t.vertM_r0 hw]
+    exact Anc.refl
+  have hc1 : t.Anc w (t.vertM (t.c1 w)) := by
+    rw [t.vertM_c1 hw]
+    exact Anc.refl
+  have hup : ∀ {a}, t.Anc w (t.vertM a) → Trail (t.tau w₀) (insert (t.r0 w) (t.offSub w)) a (t.r0 w) :=
+    fun {a} ha => trail_to_last (trail_sub h₁ hw ha a rfl) rfl (fun h => mem_offSub.1 h ha)
+  constructor
+  · intro hz
+    refine ⟨?_, pos_le_of_trail_end (hup hz) (Finset.mem_insert_of_mem hw₀) (hne hr0) hconn⟩
+    have key : ∀ n, ∀ a, pos (t.tau w₀) w₀ a = n → t.Anc w (t.vertM a) →
+        pos (t.tau w₀) w₀ (t.c1 w) ≤ n := by
+      intro n
+      induction n with
+      | zero =>
+        intro a ha h
+        have : a = w₀ := by
+          have h1 := pos_spec (hconn w₀ a)
+          rw [ha] at h1
+          exact h1.symm
+        exact (hne h this).elim
+      | succ n ih =>
+        intro a ha h
+        by_cases hac : a = t.c1 w
+        · rw [← hac, ha]
+        · have hy : t.tau w₀ ((t.tau w₀)⁻¹ a) = a := perm_apply_inv_self _ _
+          have h1 := pos_apply (hconn w₀ ((t.tau w₀)⁻¹ a)) (by rw [hy]; exact hne h)
+          rw [hy, ha] at h1
+          have h2 : t.Anc w (t.vertM ((t.tau w₀)⁻¹ a)) :=
+            anc_of_tau h₁ (by rw [hy]; exact h) (by rw [hy]; exact hac)
+          have := ih _ (by omega) h2
+          omega
+    exact key _ z rfl hz
+  · rintro ⟨h1, h2⟩
+    obtain ⟨k, hk, hkS⟩ := trail_exists_iterate (hup hc1)
+    have hin : ∀ i, i ≤ k → t.Anc w (t.vertM ((⇑(t.tau w₀))^[i] (t.c1 w))) := by
+      intro i hi
+      rcases Nat.lt_or_ge i k with h | h
+      · have := hkS i h
+        by_contra hna
+        exact this (Finset.mem_insert_of_mem (mem_offSub.2 hna))
+      · obtain rfl : i = k := by omega
+        rw [hk]
+        exact hr0
+    have hposi : ∀ i, i ≤ k → pos (t.tau w₀) w₀ ((⇑(t.tau w₀))^[i] (t.c1 w)) =
+        pos (t.tau w₀) w₀ (t.c1 w) + i := by
+      intro i
+      induction i with
+      | zero => exact fun _ => rfl
+      | succ i ih =>
+        intro hi
+        have h3 := hin (i + 1) hi
+        rw [Function.iterate_succ_apply'] at h3 ⊢
+        rw [pos_apply (hconn _ _) (hne h3), ih (by omega)]
+        omega
+    have hk2 := hposi k le_rfl
+    rw [hk] at hk2
+    have hi : pos (t.tau w₀) w₀ z - pos (t.tau w₀) w₀ (t.c1 w) ≤ k := by omega
+    have h3 := hposi _ hi
+    have h4 : (⇑(t.tau w₀))^[pos (t.tau w₀) w₀ z - pos (t.tau w₀) w₀ (t.c1 w)] (t.c1 w) = z := by
+      refine pos_inj (hconn w₀ _) (hconn w₀ _) ?_
+      rw [h3]
+      omega
+    have := hin _ hi
+    rwa [h4] at this
+
+end Interval
+
 end RootedTree
 
 end RotSystem

@@ -650,6 +650,19 @@ standard axioms (`propext`, `Classical.choice`, `Quot.sound`). There is no `sorr
   numbers of the global tour, plus an offset per corner.
 - `lean/SsspFlow/Select.lean`: a rule for the cut of each bag in terms of these masses, and
   `decomp_levelSeq`: the levels of this rule form a decomposition.
+- `lean/SsspFlow/Sector.lean`: `Decomp.dart_span`: any two darts of a bag are joined by a short walk of darts
+  inside the bag.
+- `lean/SsspFlow/TourNums.lean`: `phi_eq`, `pos_tau_eq`: the numbers on the first tour and on the tour through
+  all darts as sums over the blocks of the tree.
+- `lean/SsspFlow/Tables.lean`: `massT_eq`, `cycT_eq`: masses on the tour of a bag from a table of its corners.
+- `lean/SsspFlow/LevelT.lean`: `candA_eq`, `candY_eq`, `mem_next_iff`: the cut rule and the next level from this
+  table and the numbers of a dart.
+- `lean/SsspFlow/Machine.lean`: a machine with phases on top of the message model. `mem_relax`, `mem_agg`,
+  `run_mach`: each phase leaves its result in a memory that later phases keep.
+- `lean/SsspFlow/NetTree.lean`: `treeN`: the tree of shortest walks of a network. `fid_iff`, `sec_iff`: faces and
+  sectors in terms of what a node sees.
+- `lean/SsspFlow/NetPasses.lean`: `dep_spec`, `up_spec`, `down_spec`: relaxations for the depth and the sums over
+  the tree. `constAt_of_run`: after these phases a node knows the numbers of its darts and of their reverses.
 
 Not formalized: the proofs of `LabelHypothesis` and of the propositions above, the minimum cut of
 Theorem C, Theorem C′, the construction of the tiles and the rest of Lemma 14′, and Lemmas R5 and R7. Of Theorem D, only the
