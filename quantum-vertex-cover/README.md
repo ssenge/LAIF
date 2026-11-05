@@ -2,6 +2,8 @@
 
 Written 5 Nov 2026.
 
+**Paper:** [`paper/main.pdf`](paper/main.pdf), with its source in [`paper/`](paper/).
+
 Input: a graph G and a number k. Output: whether G has a vertex cover of at most k vertices, and one if it does. For Maximum Independent Set the input is a graph on n vertices, and the output a largest set of pairwise non-adjacent vertices.
 
 **Theorem 1.** Let a recursive decision procedure and a measure B satisfy the conditions (M1) to (M3) below. Then it has a quantum algorithm with bounded error, polynomial space and no quantum random access memory, running in time √B(x) · poly(n). The exponent of the polynomial is fixed.
