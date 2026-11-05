@@ -2,6 +2,8 @@
 
 Sebastian Senge, Independent Researcher. Written 5 Nov 2026.
 
+**Paper:** [`paper/main.pdf`](paper/main.pdf), with its source in [`paper/`](paper/).
+
 Given integers x₁, …, x_n and a constant d ≥ 1, find a nonzero D ∈ {−d, …, d}ⁿ with ⟨D, x⟩ = 0. Write [−d:d] for the coefficient set. For d = 1 this is Equal Subset Sum.
 
 **Theorem 1.** Subset Balancing on [−2:2] has a quantum algorithm running in worst-case time O*(2^{0.6125n}), and Subset Balancing on [−3:3] one running in time O*(2^{0.7215n}), with quantum random access to quantum memory. Both never output a non-solution, and output a solution with probability at least 2/3 if one exists.

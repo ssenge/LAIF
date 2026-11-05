@@ -1,0 +1,299 @@
+\pdfoutput=1
+\documentclass[11pt]{article}
+\usepackage[T1]{fontenc}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,booktabs,array}
+\usepackage[shortlabels]{enumitem}
+\usepackage[hidelinks]{hyperref}
+\usepackage{algorithm}
+\usepackage[noend]{algpseudocode}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+
+\setlist{itemsep=1pt,topsep=3pt}
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+
+\newcommand{\Ot}{\tilde O}
+\newcommand{\Xs}{\mathcal X}
+\newcommand{\Ys}{\mathcal Y}
+\newcommand{\ip}[2]{\langle #1,#2\rangle}
+\newcommand{\cc}[1]{[-#1:#1]}
+
+\title{A Faster Quantum Algorithm for Subset Balancing with Small Coefficients}
+\hypersetup{pdftitle={A Faster Quantum Algorithm for Subset Balancing with Small Coefficients},pdfauthor={Sebastian Senge}}
+\author{Sebastian Senge\\ Independent Researcher}
+\date{}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+We give a quantum algorithm for Subset Balancing with coefficients in $\{-d,\dots,d\}$ on $n$ integers. Our results are these:
+\begin{itemize}[leftmargin=1.5em]
+\item For $d=2$ the problem can be solved in worst-case quantum time $O^*(2^{0.6125n})$.
+\item For $d=3$ the problem can be solved in worst-case quantum time $O^*(2^{0.7215n})$.
+\item With no use of representations, the same method gives a direct proof of the time $O^*((2d+1)^{2n/7})$ for every constant $d$.
+\end{itemize}
+All bounds have bounded error and no false positives, in the model with quantum random access to quantum memory. The previous best bounds are $O^*(5^{2n/7})\le O^*(2^{0.6634n})$ and $O^*(7^{2n/7})\le O^*(2^{0.8021n})$, implied by~\cite{CKLM26}.
+\end{abstract}
+
+\section{Introduction}
+
+Given integers $x_1,\dots,x_n$ and a constant $d\ge1$, \emph{Subset Balancing} on $\cc d=\{-d,\dots,d\}$ asks for a nonzero vector $D\in\cc d^n$ with $\ip Dx=0$. For $d=1$ this is Equal Subset Sum. The problem was studied on average-case instances in~\cite{CJRS22}. In the worst case,~\cite{RW26} gave the first classical algorithms below meet in the middle, with time $O(|C|^{(0.5-\varepsilon)n})$ for $C=\cc d$ and a constant $\varepsilon>0$ depending on $d$. A reduction to lattice problems in~\cite{GFHP26} gives a bound for every $d$, which matters for large $d$.
+
+\begin{table}[h]
+\centering
+\small
+\renewcommand{\arraystretch}{1.25}
+\begin{tabular}{@{}lll@{}}
+\toprule
+& Time & Source\\
+\midrule
+Classical, $d=2$ & $O^*(2^{1.108n})$ & \cite{RW26}\\
+Classical, every $d$ & $O^*(2^{2.443n})$, randomized & \cite{GFHP26}\\
+Quantum, $d=2$, previous best bound & $O^*(5^{2n/7})\le O^*(2^{0.6634n})$ & implied by~\cite{CKLM26}\\
+Quantum, $d=3$, previous best bound & $O^*(7^{2n/7})\le O^*(2^{0.8021n})$ & implied by~\cite{CKLM26}\\
+\textbf{Quantum, $\mathbf{d=2}$, this paper} & $\mathbf{O^*(2^{0.6125n})}$ & Theorem~\ref{thm:main}\\
+\textbf{Quantum, $\mathbf{d=3}$, this paper} & $\mathbf{O^*(2^{0.7215n})}$ & Theorem~\ref{thm:main}\\
+\bottomrule
+\end{tabular}
+\caption{Worst-case time for Subset Balancing on $\cc d$. The bound implied by~\cite{CKLM26} uses seven blocks of $n/7$ coordinates, lists of $(2d+1)^{n/7}$ entries and worst-case $7$-SUM in time $\Ot(M^2)$ (their Theorem~1.2), with one coordinate forced to be nonzero as in the proof of their Theorem~4.2.}
+\label{tab:results}
+\end{table}
+
+\begin{theorem}\label{thm:main}
+There is a quantum algorithm with quantum random access to quantum memory that solves Subset Balancing on $\cc2$ in time $O^*(2^{0.6125n})$, and one that solves Subset Balancing on $\cc3$ in time $O^*(2^{0.7215n})$. They never output a non-solution, and if a solution exists they output one with probability at least $2/3$.
+\end{theorem}
+
+\begin{theorem}\label{thm:empty}
+For every constant $d$, Subset Balancing on $\cc d$ has a quantum algorithm of this kind in time $O^*((2d+1)^{2n/7})$, using a table, a search over residues and claw finding only.
+\end{theorem}
+
+\paragraph{Technique.} We write a solution as a difference $D=X-Y$ of two vectors, filter the two lists by a random prime, and find an equal pair inside one bin with claw finding. This extends the approach we used for Equal Subset Sum in~\cite{Sen26}. The new ingredients are these.
+\begin{itemize}[leftmargin=1.5em]
+\item \emph{Interval labels.} Each coordinate gets a pair of integer intervals $(S,T)$ with $S-T\subseteq\cc d$, with $X_i\in S$ and $Y_i\in T$. Every pair of list members is then a difference in $\cc d^n$. For $d=1$ labels of this kind appear in~\cite{Ye26}. An exchange between two representations stays in $\cc d$ too, since the two widths sum to at most $2d$.
+\item \emph{A pinned coordinate.} One coordinate is fixed to the value of the solution in $X$ and to $0$ in $Y$, which forces $X\ne Y$ for every profile.
+\item \emph{A certificate over all profiles.} The worst case is over all distributions of the values of the solution, in $d$ free parameters. For a fixed choice of the label law given the value, every cost term is concave in the distribution. So tangents on boxes give a rigorous bound.
+\end{itemize}
+As in~\cite{CKLM26,Sen26}, we fix the prime and search only over the residue, and a table of bin sizes~\cite{AHJKS22} is built per partition. Capped bins give a fixed running time, since every pair with equal sums is a solution.
+
+\paragraph{Scope.} All bounds are in the time model with quantum random access to quantum memory, which~\cite{AHJKS22,CKLM26} also use. We state Theorem~\ref{thm:main} for $d=2$ and $d=3$, and the comparison concerns small constant $d$: for large $d$ the bound of~\cite{GFHP26} takes over. We prove no lower bound. Section~\ref{sec:lean} states which parts are formalized in Lean and which are cited. The other parts are claims with the proofs given here. Code and Lean files are at \url{https://github.com/ssenge/ResearchResults}, in the folder \texttt{quantum-subset-balancing}.
+
+\section{Preliminaries}
+
+We write $H$ for the entropy of a distribution, and $O^*$ for a bound up to factors polynomial in $n$ and the input length. The constant $d$ is fixed, so factors depending only on $d$ are absorbed.
+
+\paragraph{Reduction to short entries.} If the entries have more than $(2d+1)^n$ bits then trying all vectors is polynomial in the input length. Otherwise draw a uniform prime $q$ from $[Q,2Q]$ with $Q=\Theta(n(2d+1)^{2n})$, replace the entries by $x_i\bmod q$, and append auxiliary entries $q(2d+1)^i$ for $i<m$, with $(2d+1)^m\ge2dn+1$. A solution of the new instance restricted to the first $n$ coordinates is nonzero, since balanced digits in base $2d+1$ are unique, and it satisfies $\ip Dx\equiv0\bmod q$. Conversely $\ip D{x\bmod q}=kq$ with $|k|\le dn$ is absorbed by the auxiliary digits, so every old solution extends. A nonzero value of $\ip Dx$ has at most $O((2d+1)^n)$ prime divisors above $Q$, and $[Q,2Q]$ contains at least $Q/O(n)$ primes. So by a union bound over the $(2d+1)^n$ vectors, every solution modulo $q$ is a real one with high probability. The output is checked against the original instance. Entries now have $O(n)$ bits, and $n$ grows by $O(\log n)$, which changes the time by a polynomial factor.
+
+\paragraph{Minimum support.} Fix a nonzero solution $D^\star$ of minimum support. We try all profiles of counts of values, of which there are polynomially many. For a uniform $\varepsilon\in\{\pm1\}^n$ let $y_i=\varepsilon_ix_i$ and $D_i=\varepsilon_iD_i^\star$. Then $\ip Dy=0$, the minimality of the support is preserved, and with probability $1/\mathrm{poly}(n)$ the numbers of entries $c$ and $-c$ of $D$ differ by at most one, for each $c$. So the profile $\pi$, the distribution of the values of $D$, is symmetric up to $O(1/n)$.
+
+\paragraph{Pinned coordinate.} We guess a coordinate $i^\star$ with $c^\star=D_{i^\star}\ne0$, and the value $c^\star$.
+
+\paragraph{Quantum tools.} We use amplitude amplification~\cite{BHMT02}, quantum search with a uniform number of iterations~\cite{BBHT98}, and claw finding: for functions $f,g$ on $[T]$ with values of $\mathrm{poly}(T)$ size, a pair $(i,j)$ with $f(i)=g(j)$ is found with bounded error in time $\Ot(T^{2/3}\tau)$, where $\tau$ is the evaluation time~\cite{Tan09,Amb07}. It runs up to a hard time limit, and its output is verified, so its behaviour without a claw does no harm.
+
+\section{The lists}\label{sec:lists}
+
+A \emph{label} is a pair $L=(S_L,T_L)$ of nonempty integer intervals with $S_L-T_L\subseteq\cc d$. With widths $s_L=|S_L|-1$ and $t_L=|T_L|-1$ this gives $s_L+t_L\le2d$, so $\min(s_L,t_L)\le d$. We use the $2d+1$ \emph{wide} labels $S=[0:s]$, $T=[s-d:d]$ for $s=0,\dots,2d$.
+
+A \emph{layout} is a law $q$ on triples $(L,x,y)$ with $x\in S_L$ and $y\in T_L$, whose marginal on $c=x-y$ is $\pi$. An \emph{integer layout} is a family of nonnegative integers $\nu_L(x,y)$ within $O(1)$ of $n\,q(L,x,y)$, zero where $q(L,x,y)=0$, with $\sum_{L,\,x-y=c}\nu_L(x,y)$ equal to the number of coordinates $i\ne i^\star$ with $D_i=c$. One exists by rounding each row $c$. There are $O(1)$ of them per law, so we try them all.
+
+A \emph{partition} $\Pi$ assigns labels to the coordinates other than $i^\star$, with $|L|=\sum_{x,y}\nu_L(x,y)$. It is \emph{good} if for all $L$ and $c$, $D$ has exactly $\nu_L(c)=\sum_{x-y=c}\nu_L(x,y)$ coordinates of value $c$ on $L$. A uniform partition is good with probability
+\[
+\prod_c\binom{n_c}{(\nu_L(c))_L}\Big/\binom{n-1}{(|L|)_L}=2^{-an}/\mathrm{poly}(n),\qquad a=I(C;L),
+\]
+where $n_c$ is the number of coordinates $i\ne i^\star$ with $D_i=c$, and the mutual information is under $q$. This follows from the method of types.
+
+The list $\Xs$ consists of all integer vectors $X$ with $X_{i^\star}=c^\star$ that have on each label $L$, for each symbol $s$, exactly $\sum_y\nu_L(s,y)$ coordinates of value $s$. The list $\Ys$ consists of all $Y$ with $Y_{i^\star}=0$ that have on each $L$, for each $s$, exactly $\sum_x\nu_L(x,s)$ coordinates of value $s$. Then $|\Xs|=2^{u_xn}/\mathrm{poly}(n)$ and $|\Ys|=2^{u_yn}/\mathrm{poly}(n)$, with $u_x=H(x\mid L)$ and $u_y=H(y\mid L)$. Let $U=\max(|\Xs|,|\Ys|)$ and $u=\max(u_x,u_y)$.
+
+\begin{lemma}[Validity]\label{lem:valid}
+For all $X\in\Xs$, $Y\in\Ys$: $X-Y\in\cc d^n$ and $X\ne Y$. So any $X,Y$ with $\ip Xy=\ip Yy$ give a solution.
+\end{lemma}
+\begin{proof}
+On a label $L$, $X_i-Y_i\in S_L-T_L\subseteq\cc d$. At $i^\star$ the difference is $c^\star$, which is nonzero and in $\cc d$.
+\end{proof}
+
+Let $R$ be the set of pairs $(X,Y)$ with $X-Y=D$ such that for each $L$ and each $(x,y)$, exactly $\nu_L(x,y)$ coordinates of $L$ have $(X_i,Y_i)=(x,y)$, and with $(X_{i^\star},Y_{i^\star})=(c^\star,0)$. Then $R\subseteq\Xs\times\Ys$. If $\Pi$ is good, its size is
+\[
+K=\prod_{L,c}\binom{\nu_L(c)}{(\nu_L(x,y))_{x-y=c}}=2^{a_0n}/\mathrm{poly}(n),\qquad a_0=H(x,y\mid C,L).
+\]
+Let $F$ be the set of coordinates in classes $(L,c)$ with at least two positive $\nu_L(x,y)$ over $x-y=c$. Only on $F$ can two members of $R$ differ.
+
+\begin{lemma}[Representations]\label{lem:reps}
+If $\Pi$ is good and $|F|<|\mathrm{supp}\,D|$, then $\ip Xy=\ip Yy$ on $R$, and the $K$ values $\ip Xy$ over $R$ are pairwise distinct.
+\end{lemma}
+\begin{proof}
+First $\ip Xy-\ip Yy=\ip Dy=0$. Suppose that $(X,Y)\ne(X',Y')$ in $R$ have equal values. Since $X-Y=X'-Y'=D$, the vector $E=X-X'=Y-Y'$ is nonzero. On a coordinate of $L$, $E_i$ is a difference within $S_L$ and also within $T_L$, so $|E_i|\le\min(s_L,t_L)\le d$. Outside $F$ the pair is forced, so $E_i=0$, and $i^\star$ lies outside $F$. So $E$ is a nonzero solution in $\cc d^n$ with support in $F$, against minimality.
+\end{proof}
+
+\begin{lemma}[Table]\label{lem:table}
+For a prime $P$, a table with $P\,\mathrm{poly}(n)$ entries, built in time $P\,\mathrm{poly}(n)$, gives $|\Xs_\rho|$ and the $I$-th element of $\Xs_\rho=\{X\in\Xs:\ip Xy\equiv\rho\bmod P\}$ in time $\mathrm{poly}(n)$, for every residue $\rho$ and every index $I$. The same holds for $\Ys$.
+\end{lemma}
+\begin{proof}
+A dynamic program over the coordinates, as in~\cite[Theorem 3.5]{AHJKS22}, with the state consisting of the position, the number of each symbol used so far on each label, and the residue. Since $d$ is constant, the number of counters is constant. To unrank, walk back from the final state, and at each coordinate subtract the counts of the symbols in a fixed order.
+\end{proof}
+
+\section{The filter and the cap}\label{sec:filter}
+
+Let $s=2^{\sigma n}$ with $\sigma\ge0$, assume $P_0=Ks=2^{\Omega(n)}$, draw $P$ uniformly among the primes of $[P_0,2P_0]$, and let $T=\lceil cn\,U/P_0\rceil$ with a suitable constant $c$.
+
+\begin{lemma}[Filter]\label{lem:filter}
+Fix a good partition with $|F|<|\mathrm{supp}\,D|$. With probability at least $3/4$ over $P$, there is a set $R'$ of at least $K/O(n)$ residues such that each $\rho\in R'$ has a representation of value $v\equiv\rho$ for which at most $T/2$ elements of $\Xs_\rho$ and at most $T/2$ elements of $\Ys_\rho$ have an exact sum other than $v$.
+\end{lemma}
+\begin{proof}
+All values have absolute value below $2^{O(n)}$, so a nonzero difference has $O(1)$ prime divisors above $P_0$, and $[P_0,2P_0]$ contains at least $P_0/O(n)$ primes. So a fixed nonzero difference vanishes modulo $P$ with probability at most $O(n)/P_0$.
+
+For a representation $j$ of value $v_j$, let $e_j$ be the number of elements of $\Xs$ and of $\Ys$ with a sum different from $v_j$ and congruent to $v_j$. Then $\mathbb E_P[e_j]\le2U\cdot O(n)/P_0$. Let $Z$ be the number of pairs of representations that collide modulo $P$. By Lemma~\ref{lem:reps} their values differ, so $\mathbb E_P[Z]\le K^2O(n)/P_0\le K\cdot O(n)$, since $s\ge1$. By the first moment bound, applied to both quantities, with probability at least $3/4$ the average of $e_j$ is at most $16U\,O(n)/P_0$ and $Z\le8K\,O(n)$.
+
+Then at least half of the representations have $e_j\le T/2$, for suitable $c$. These are $K'\ge K/2$ distinct integers. If they occupy $M$ residues, then $K'^2/M\le K'+2Z$ by convexity, so $M\ge K/O(n)$.
+\end{proof}
+
+\begin{lemma}[Cap]\label{lem:cap}
+Fix $\rho\in R'$, with $T\ge1$. Let $W_X$ be the first $T$ elements of $\Xs_\rho$, or all of them if there are fewer, and define $W_Y$ likewise. Then $W_X$ and $W_Y$ both contain an element of sum $v$.
+\end{lemma}
+\begin{proof}
+Let $C$ be the set of elements of $\Xs_\rho$ of sum $v$. It is nonempty, and at most $T/2$ elements of $\Xs_\rho$ lie outside it. If $|\Xs_\rho|\le T$ then $W_X\supseteq C$. Otherwise $W_X$ has $T$ elements, and at most $T/2$ of them lie outside $C$. The same holds for $\Ys_\rho$.
+\end{proof}
+
+\section{The algorithm}\label{sec:alg}
+
+\begin{algorithm}[h]
+\caption{Base procedure on a coin $(\Pi,P,j)$}\label{alg:base}
+\begin{algorithmic}[1]
+\State Build the table of Lemma~\ref{lem:table} for $\Pi$ and $P$.
+\State Run $j$ iterations of quantum search over $\rho\in\mathbb Z_P$, with $j$ uniform below $J=\sqrt{O(n)s}$. A residue is marked if claw finding finds a pair in $W_X\times W_Y$ with equal exact sums. Both windows are padded to length $T$ with tagged values that cannot collide. Claw finding is repeated $O(n)$ times, with a constant large enough that the error of one check is below $2^{-2en}$, for $e$ the total exponent.
+\State Verify the pair found, undo $\varepsilon$, restrict to the original coordinates, and raise the flag if it is a solution.
+\end{algorithmic}
+\end{algorithm}
+
+Algorithm~\ref{alg:base} is a unitary of fixed running time, since $P\le2P_0$ and $T$ bound every branch. If $\Pi$ is good then, with probability at least $3/4$ over $P$, the fraction of marked residues is at least $|R'|/(2P_0)=1/(O(n)s)$, and a uniform $j$ gives constant success probability. So a uniform coin raises the flag with probability at least $2^{-an}/\mathrm{poly}(n)$. The coin is prepared coherently by rejection sampling for the prime and with a standard state preparation for the partition. The running time is
+\[
+\Ot\bigl(P_0+\sqrt s\,T^{2/3}\bigr)=\Ot\bigl(2^{(a_0+\sigma)n}+2^{(\sigma/2+\frac23\max(0,\,u-a_0-\sigma))n}\bigr).
+\]
+Amplitude amplification over the coin runs the procedure forward and backward, which also uncomputes the table. Repeating over the draws of $\varepsilon$ and over the polynomially many profiles, integer layouts, $i^\star$ and $c^\star$ gives success probability at least $2/3$. The total exponent is
+\begin{equation}\label{eq:L}
+L=\frac a2+\max\Bigl(a_0+\sigma,\ \frac\sigma2+\frac23\max(0,\,u-a_0-\sigma)\Bigr).
+\end{equation}
+Balancing the two terms gives $\sigma=(4u-10a_0)/7$, when this is nonnegative, and $L=a/2+(4u-3a_0)/7$.
+
+\paragraph{The empty scheme.} Let $q$ be on the labels $([0:2d],\{d\})$ and $(\{d\},[0:2d])$, with weight $1/2$ each, independent of $c$. Then $a=0$, a partition is good with probability $1/\mathrm{poly}(n)$, $K=1$, $F$ is empty, and $u=H(\pi)/2$. So~\eqref{eq:L} at $\sigma=4u/7$ gives
+\[
+L=\tfrac27H(\pi)\le\tfrac27\log_2(2d+1).
+\]
+This proves Theorem~\ref{thm:empty} for profiles with $H(\pi)$ above any fixed constant, where $P_0=2^{\Omega(n)}$. For smaller entropy, quantum search over the typed vectors $D$ has exponent $H(\pi)/2$.
+
+\section{The exponent}\label{sec:exponent}
+
+The worst case is over all symmetric profiles $\pi$. Let $w_0=\pi_0$ and $w_c=\pi_c+\pi_{-c}$, so that the profile lies in a simplex with $d$ free parameters $(w_1,\dots,w_d)$. A \emph{kernel} is a conditional law $W(L,x,y\mid c)$, which turns a profile into the layout $q=W\pi$.
+
+\begin{proposition}[Concavity]\label{prop:concave}
+Fix a kernel. As functions of $\pi$, the quantity $a=H(L)-\sum_c\pi_cH(L\mid c)$ is concave, $a_0=\sum_c\pi_cH(x,y\mid L,c)$ is linear, and $u_x$ and $u_y$ are concave. So for a fixed $\sigma$ each of
+\[
+\frac a2+a_0+\sigma,\qquad\frac a2+\frac\sigma2+\frac23(u_x-a_0-\sigma),\qquad\frac a2+\frac\sigma2+\frac23(u_y-a_0-\sigma),\qquad\frac a2+\frac\sigma2
+\]
+is concave in $\pi$, and $L$ in~\eqref{eq:L} equals their maximum. The quantities $a_0+\sigma$ and $|F|/n$ are linear in $\pi$.
+\end{proposition}
+\begin{proof}
+$H(L)$ is concave in the law of $L$, which is linear in $\pi$, and the sum over $c$ is linear in $\pi$ for a fixed kernel. A conditional entropy is concave in the joint law, and the joint law of $(L,x)$ is linear in $\pi$. The sum $\sum_{c}\pi_cW(\cdot\mid c)$ over the varying classes gives $|F|/n$, and the set of varying classes depends only on the kernel. For $L$, expand the two maxima in~\eqref{eq:L}.
+\end{proof}
+
+So on a box of profiles, the tangent of each term at the centre bounds it from above on the box, and a linear function is largest at a corner of the box. This gives a finite check.
+
+\begin{proposition}\label{prop:cert}
+The simplex of profiles has a cover by finitely many boxes, each with one of: quantum search over the typed vectors, the empty scheme, or a kernel on the wide labels with a fixed $\sigma\ge0$, such that on the box the exponent is at most $0.6125$ for $d=2$ and at most $0.7215$ for $d=3$, with $a_0+\sigma>0$ and $|F|<|\mathrm{supp}\,D|$ at all profiles of the box, with a margin.
+\end{proposition}
+
+This is a computation in interval arithmetic with adaptive boxes. The script \texttt{sim/certify.py} finds the boxes and kernels in floating point, and the script \texttt{sim/verify.py} re-evaluates them with directed rounding. It checks that the boxes cover the simplex, that every kernel has nonnegative entries and a row for every value, that $\sigma\ge0$, that all tangent bounds hold at all corners, and the side conditions. The profile is symmetric only up to $O(1/n)$, and the types round within $O(1)$. This changes every exponent by $o(1)$, which the margin absorbs. Together with the previous sections, this proves Theorem~\ref{thm:main}.
+
+\begin{table}[h]
+\centering
+\footnotesize
+\setlength{\tabcolsep}{3.5pt}
+\begin{tabular}{@{}cccccccccc@{}}
+\toprule
+$d$ & previous best & certified & boxes & $w$ at the worst profile found & $a$ & $a_0$ & $u$ & $\sigma$ & $L$\\
+\midrule
+2 & 0.6634 & 0.6125 & 2596 & $(0.1377,0.2962,0.5661)$ & 0.0528 & 0.3850 & 1.3133 & 0.2005 & 0.6119\\
+3 & 0.8021 & 0.7215 & 25049 & $(0.0942,0.1897,0.2343,0.4818)$ & 0.0487 & 0.5655 & 1.6389 & 0.1287 & 0.7185\\
+\bottomrule
+\end{tabular}
+\caption{The certified bound and the worst profile found by local search, listed as $(w_0,w_1,\dots,w_d)$. The table has about $2^{(a_0+\sigma)n}$ entries there, which is $2^{0.586n}$ for $d=2$ and $2^{0.694n}$ for $d=3$.}
+\label{tab:params}
+\end{table}
+
+\begin{figure}[h]
+\centering
+\begin{tikzpicture}
+\begin{axis}[width=0.5\textwidth,height=5.2cm,title={$d=2$},xlabel={weight $w_0$ of the value $0$},ylabel={exponent},xmin=0,xmax=0.9,ymin=0.2,ymax=0.7,
+  legend pos=south west,legend cell align=left,grid=major,grid style={black!12},tick label style={font=\small},label style={font=\small},legend style={font=\scriptsize},title style={font=\small}]
+\addplot[black,dashed,line width=0.8pt] table[x index=0,y index=2] {fig/curves_2.dat};
+\addlegendentry{empty scheme}
+\addplot[black,line width=1.1pt] table[x index=0,y index=1] {fig/curves_2.dat};
+\addlegendentry{best kernel}
+\addplot[black!45,dotted,line width=0.8pt] coordinates {(0,0.66341) (0.9,0.66341)};
+\addlegendentry{$\frac27\log_25$}
+\end{axis}
+\end{tikzpicture}\hfill
+\begin{tikzpicture}
+\begin{axis}[width=0.5\textwidth,height=5.2cm,title={$d=3$},xlabel={weight $w_0$ of the value $0$},xmin=0,xmax=0.9,ymin=0.2,ymax=0.85,
+  legend pos=south west,legend cell align=left,grid=major,grid style={black!12},tick label style={font=\small},label style={font=\small},legend style={font=\scriptsize},title style={font=\small}]
+\addplot[black,dashed,line width=0.8pt] table[x index=0,y index=2] {fig/curves_3.dat};
+\addlegendentry{empty scheme}
+\addplot[black,line width=1.1pt] table[x index=0,y index=1] {fig/curves_3.dat};
+\addlegendentry{best kernel}
+\addplot[black!45,dotted,line width=0.8pt] coordinates {(0,0.80210) (0.9,0.80210)};
+\addlegendentry{$\frac27\log_27$}
+\end{axis}
+\end{tikzpicture}
+\caption{The worst exponent over the profiles with a given $w_0$, computed on a grid of profiles with step $0.02$ for $d=2$ and $0.05$ for $d=3$, against the empty scheme.}
+\label{fig:curves}
+\end{figure}
+
+\begin{remark}
+For $d=1$ the same computation gives $0.4386$, in $70$ boxes, close to the bound $0.4384$ of~\cite{Sen26}, which uses a three-label family.
+\end{remark}
+
+\section{Formal verification}\label{sec:lean}
+
+The folder \texttt{lean/} of the repository builds with \texttt{lake build} (Lean 4, Mathlib), with no \texttt{sorry} and no new axiom. The file \texttt{SubsetBalancing/Axioms.lean} prints the axioms of 100 theorems, which are only the standard ones.
+
+\paragraph{Formalized.} Lemma~\ref{lem:valid}, the pinned coordinate and the sign flip. The widths of labels and the bound on an exchange. Lemma~\ref{lem:reps}: distinctness under minimality and the count of $R$ as a product of multinomials. Lemma~\ref{lem:filter}: the averaging, convexity and first moment steps, and the bound on prime divisors. Lemma~\ref{lem:cap}. The marked fraction, the success of a uniform number of iterations of quantum search, and the chain of probabilities over the coin. Equation~\eqref{eq:L} as the maximum of the four terms, its balance and optimality, and the composition of the costs up to $\Ot$. The empty scheme. Proposition~\ref{prop:concave}: the concavity of each term, the tangent bound and the reduction to corners.
+
+\paragraph{Stated as hypotheses.} The cost of the table and of unranking, the cost of claw finding on padded windows, the time and success of quantum search with bounded-error checks, amplitude amplification, and the number of primes in $[P_0,2P_0]$. These are named in \texttt{SubsetBalancing/Model.lean}, over cost functions and with no circuit model. So the probability and the cost are linked numerically, and not as statements about one procedure. The probability of a good partition and the entropy forms of $K$ and of the list sizes enter as arguments, and the derivatives of the entropy terms at the centre of a box as hypotheses.
+
+\paragraph{Not formalized.} The assembly into Theorem~\ref{thm:main}, the quantum primitives themselves (including the success of claw finding, the correctness of unranking and the coherent preparation of the coin), the link from the search to the flag, the dynamic program of the table, the probability of balanced signs, the outer loop, the existence of the integer layout, the reduction to short entries, and Proposition~\ref{prop:cert}.
+
+\section{Limits and open questions}
+
+\begin{itemize}[leftmargin=1.5em]
+\item The bound counts time with quantum random access to quantum memory, and the table is exponential in $n$. We make no claim about a model without such memory.
+\item Proposition~\ref{prop:cert} is a computation in interval arithmetic, not a formal proof. Claw finding, amplitude amplification, the table of~\cite{AHJKS22} and the reduction to short entries are cited or argued here.
+\item The method applies to each fixed $d$, and each $d$ needs its own computation of the certificate. An analytic bound for all $d$ is open.
+\item The coefficient sets $\{\pm1,\dots,\pm d\}$ with no zero are not covered, since a difference of two representations can have zero entries. Is there a dichotomy on how the representations mix, in the sense of~\cite{RW26}, that works with quantum search?
+\item Can the table be shared between partitions? The term $a/2$ arises because each partition needs its own table.
+\item No lower bound beyond the trivial is known.
+\end{itemize}
+
+\section*{Use of AI}
+
+The proofs, the code and the Lean files were developed with Claude Opus~5.5 (Anthropic), which was also used to search the literature, to review the proofs and to draft the text.
+
+\begin{thebibliography}{99}
+\bibitem{AHJKS22} J.~Allcock, Y.~Hamoudi, A.~Joux, F.~Klingelh\"ofer, M.~Santha. Classical and quantum algorithms for variants of Subset-Sum via dynamic programming. ESA 2022, arXiv:2111.07059.
+\bibitem{Amb07} A.~Ambainis. Quantum walk algorithm for element distinctness. SIAM Journal on Computing 37, 2007.
+\bibitem{BBHT98} M.~Boyer, G.~Brassard, P.~H\o yer, A.~Tapp. Tight bounds on quantum searching. Fortschritte der Physik 46, 1998, arXiv:quant-ph/9605034.
+\bibitem{BHMT02} G.~Brassard, P.~H\o yer, M.~Mosca, A.~Tapp. Quantum amplitude amplification and estimation. Contemporary Mathematics 305, 2002, arXiv:quant-ph/0005055.
+\bibitem{CJRS22} X.~Chen, Y.~Jin, T.~Randolph, R.~A.~Servedio. Average-case subset balancing problems. SODA 2022.
+\bibitem{CKLM26} N.~Chukhin, A.~S.~Kulikov, M.~Levitskii, I.~Mihajlin. Improved quantum algorithms for Subset Sum and $k$-SUM. arXiv:2608.07309.
+\bibitem{GFHP26} Y.~Gao, Y.~Feng, H.~Hu, Y.~Pan. Subset Balancing and Generalized Subset Sum via Lattices. arXiv:2604.04656.
+\bibitem{RW26} T.~Randolph, K.~W\k{e}grzycki. Beating meet-in-the-middle for subset balancing problems. STOC 2026, arXiv:2511.10823.
+\bibitem{Sen26} S.~Senge. A faster quantum algorithm for Equal Subset Sum. \url{https://github.com/ssenge/ResearchResults}, folder \texttt{quantum-equal-subset-sum}.
+\bibitem{Tan09} S.~Tani. Claw finding algorithms using quantum walk. Theoretical Computer Science 410, 2009.
+\bibitem{Ye26} L.~Ye. An $O((5/3)^n\mathrm{poly}(n))$ one-sided Monte Carlo algorithm for Equal Subset Sum. arXiv:2608.08260.
+\end{thebibliography}
+
+\end{document}
