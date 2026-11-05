@@ -203,3 +203,11 @@ Expected output for each: `propext`, `Classical.choice`, `Quot.sound` (or a subs
 #print axioms SsspFlow.Congest.maxFlowBound_subpoly
 #print axioms SsspFlow.Congest.negFlow_polylog
 #print axioms SsspFlow.Congest.negFlow_subpoly
+#print axioms SsspFlow.inArc_iff_of_swap
+#print axioms SsspFlow.RotSystem.SpanForest.fconnect_tour_iff
+#print axioms SsspFlow.RotSystem.SpanForest.fconnect_swap_of_erase
+#print axioms SsspFlow.RotSystem.SpanForest.fconnect_swap_of_face
+#print axioms SsspFlow.RotSystem.SpanForest.fconnect_swap_rev
+#print axioms SsspFlow.RotSystem.SpanForest.walk_strict
+#print axioms SsspFlow.RotSystem.SpanForest.exists_crossing
+#print axioms SsspFlow.RotSystem.SpanForest.exists_balanced

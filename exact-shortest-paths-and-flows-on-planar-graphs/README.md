@@ -616,6 +616,11 @@ standard axioms (`propext`, `Classical.choice`, `Quot.sound`). There is no `sorr
   - `negFlow_subpoly`, `negFlow_polylog`: `LabelHypothesis`, `AggBox`, `SmoothingBox` and
     `NegReduction τ` give `NegSsspBound τ` and the matching `MaxFlowBound`. With `tauSubpoly C` these
     are $D\cdot n^{o(1)}$ rounds, and with `tauPolylog c` they are $\tilde O(D)$ rounds.
+- `lean/SsspFlow/Tour.lean`: tours of a spanning forest in a planar map, by Euler's formula alone.
+  `fconnect_tour_iff`: the cycles of the tour are the components. `walk_strict`: the corners of a face
+  appear on the tour in the order of the face. `exists_balanced`: a cycle with at least four forest darts
+  has two corners of one face, such that each arc between them holds about three quarters of these darts
+  or less.
 
 Not formalized: the proofs of `LabelHypothesis` and of the propositions above, the minimum cut of
 Theorem C, Theorem C′, the decomposition, the construction of the tiles and the rest of Lemma 14′, and Lemmas R5 and R7. Of Theorem D, only the
