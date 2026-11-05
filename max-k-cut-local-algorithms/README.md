@@ -14,7 +14,7 @@ Run Algorithm 1 of [1] with parameter m. Then apply one round of a rule that map
 
 With τ > 0, the colour that Algorithm 1 gives a vertex depends on the scores of its neighbours, whose vectors reach distance m − 1. So we count it as radius m, valid at girth 2m + 2, and the algorithm with the round as radius m + 1, valid at girth 2m + 4. [1, Theorem 2] states girth max(2m, 6) for Algorithm 1. As far as we can see, the covariance of the scores of a neighbour of u and a neighbour of v, for an edge uv, can differ from its tree value at girth 2m and 2m + 1, so we use the more cautious count. This may only be a difference in conventions. It does not affect the comparisons below, which use the values of [1] at the girths stated there.
 
-"Lower bound" is the empirical Bernstein bound [4] at confidence 1 − 10⁻⁴ per row, rounded down. It is computed from 10⁶ fresh samples of the edge neighbourhood, independent of the samples used to choose τ and the rule. All 16 rows hold together with probability at least 1 − 1.6 · 10⁻³. The values of [1] are rounded to three digits, so a row counts only if its lower bound exceeds them by at least 0.0005.
+"Lower bound" is the empirical Bernstein bound [4] at confidence 1 − 10⁻⁴ per row, rounded down. It is computed from 10⁶ fresh samples of the edge neighbourhood, independent of the samples used to choose τ and the rule. All 17 rows of this section hold together with probability at least 1 − 1.7 · 10⁻³. The values of [1] are rounded to three digits, so a row counts only if its lower bound exceeds them by at least 0.0005.
 
 | k | d | girth | m | Previous best bound [1] | Lower bound | Mean ± s.e. |
 |---|---|---|---|---|---|---|
@@ -35,7 +35,13 @@ With τ > 0, the colour that Algorithm 1 gives a vertex depends on the scores of
 | 4 | 8 | 16 | 6 | 0.961 (QAOA) | **0.9675** | 0.9683 ± 0.0002 |
 | 4 | 8 | 18 | 7 | 0.966 (QAOA) | **0.9684** | 0.9692 ± 0.0002 |
 
-So for Max-3-Cut on 6- and 8-regular graphs and Max-4-Cut on 8-regular graphs, this classical algorithm is above every value of [1, Tables 4, 5] at each girth in the table, which includes QAOA up to depth 10 for k = 3 and up to depth 8 for k = 4. On 4-regular graphs the same holds at girth 14 and 16 for k = 3 and at girth 12 and 14 for k = 4.
+For larger degree the full rule space is too big to search, so we restrict to a threshold rule: move to a least-used colour (ties at random) if it is used by at least t fewer neighbours than the own colour. For Max-3-Cut on 20-regular graphs, with τ = 3 and t = 2, from 6 · 10⁵ fresh samples:
+
+| k | d | girth | m | Previous best bound [1] | Lower bound | Mean ± s.e. |
+|---|---|---|---|---|---|---|
+| 3 | 20 | 22 | 9 | 0.825 (QAOA, depth 10) | **0.8271** | 0.8294 ± 0.0005 |
+
+So for Max-3-Cut on 6- and 8-regular graphs and Max-4-Cut on 8-regular graphs, this classical algorithm is above every value of [1, Tables 4, 5] at each girth in the table, which includes QAOA up to depth 10 for k = 3 and up to depth 8 for k = 4. On 4-regular graphs the same holds at girth 14 and 16 for k = 3 and at girth 12 and 14 for k = 4, and on 20-regular graphs at girth 22 for k = 3.
 ### 2. Quantum: QAOA plus one round
 
 Run QAOA with the Grover mixer at depth q (radius q, girth ≥ 2q + 2), measure every vertex, then apply one round of a rule as above. The radius is q + 1, so the comparison is with QAOA at depth q + 1, at girth 2q + 4. The angles are optimized for the value after the round. The values are exact tree contractions at the stated parameters.
@@ -96,7 +102,7 @@ Numerical results. No part is formalized in Lean.
   - The value after the round agrees with a full 14-qutrit state vector to 10⁻¹² (k = 3, d = 3, q = 1, random angles and rules).
   - With the rule "keep", the classical program returns the Local Vector value.
 - **Not covered:**
-  - degrees above 8;
+  - degrees above 8, except the one row for d = 20;
   - the infinite-degree limit, where [1] reports its largest QAOA advantage;
   - more than one classical round;
   - randomized rules.
@@ -109,7 +115,7 @@ Numerical results. No part is formalized in Lean.
 - `sim/check_hybrid.py`: re-evaluates every row of Table 2 from `data/hybrid_params.json`.
 - `sim/check_hybrid_bruteforce.py`: the state-vector cross-check.
 - `sim/lv_baseline.py`, `sim/lv_plus_rule.py`, `sim/lv_certify.py`: Algorithm 1 of [1], the rule search and the fresh-sample evaluation.
-- `sim/lv_threshold.py`, `sim/lv_threshold_certify.py`: a threshold rule for large d, and its fresh-sample evaluation.
+- `sim/lv_threshold.py`, `sim/lv_threshold_certify.py`: a threshold rule for large d, and its fresh-sample evaluation (`data/lvthr_cert_3_20.json`).
 - `sim/make_tables.py`: builds Tables 1 and 2 from `data/`.
 
 Requirements: Python 3.12 with numpy, scipy and jax. Run the scripts from `sim/`, with the files from `data/` copied in.
