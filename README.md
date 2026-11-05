@@ -1,6 +1,6 @@
 # Research results
 
-> Most of these results were generated automatically by AI (Claude Opus 5.5), with some additional instructions from me, Sebastian Senge. For questions or corrections, please [open an issue](https://github.com/ssenge/ResearchResults/issues).
+> Most of these results were generated automatically by AI, with some additional instructions from me. For questions or corrections, please [open an issue](https://github.com/ssenge/ResearchResults/issues).
 
 Results on open problems in algorithms and complexity. Each folder holds one topic with its proofs, Lean files and scripts.
 
