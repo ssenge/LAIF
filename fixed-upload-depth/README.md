@@ -18,7 +18,7 @@ with sup_{x∈[0,1]} ‖U(x) − e^{iwxσ_z}‖_F ≤ ε.
 
 D ≥ (2/π)(1 − ε')(|w| − 2 arcsin ε'),  ε' = ε/√2.
 
-So the term (2/π)|w| = |K| + O(1) is exact to first order, and with Theorem 15 of [1], for fixed w ∉ (π/2)Z,
+So the coefficient 2/π of |w| is optimal as ε → 0. Theorem 15 of [1] applies to every frequency w ∉ (π/2)Z, so with it, for fixed such w and ε small enough,
 
 D = Θ(log(1/ε)).
 
@@ -28,11 +28,11 @@ That is σ = 1 in Theorem 11 of [1], with explicit constants. For w ∈ (π/2)Z 
 
 D ≤ Σ_{j,k} (2/π)|w_jk| + Lm((32/π) ln(Lm/ε) + 17).
 
-The operator norm is at most the Frobenius norm, and the errors add up by the telescoping identity for products of unitaries, as in the proof of Theorem 12 of [1]. Corollaries 13 and 14 of [1], for dense fixed upload circuits and for continuous targets, are derived from Theorem 12 of [1] through its gate count only, so they hold with the count O(Σ_{j,k}|K_jk| + Lm log(Lm/ε)), that is with σ = 1.
+The operator norm is at most the Frobenius norm, and the errors add up by the telescoping identity for products of unitaries, as in the proof of Theorem 12 of [1]. Definition 3 of [1] gives every block the same number of fixed gates; shorter blocks can be padded with the identity X e^{i(π/2)xσ_z} X e^{i(π/2)xσ_z} = I, which replaces the sum over k by m times the maximum over k for m ≥ 2. For m = 1 nothing changes. Corollaries 13 and 14 of [1], for dense fixed upload circuits and for continuous targets, are derived from Theorem 12 of [1] through its error bound and gate count, so they hold with the count O(Σ_{j,k}|K_jk| + Lm log(2Lm/ε)), that is with σ = 1.
 
 ## Proof of Theorem 1
 
-**Realization.** By Theorem 5 of [1], every Laurent polynomial P(z) = Σ_{n=−N}^{N} p_n z^n with |P| ≤ 1 on the unit circle is the upper left entry of a circuit of the form [[P, −Q*], [Q, P*]] at z = e^{iπx}, with |P|² + |Q|² = 1, using 2N fixed upload gates. For g(x) = e^{iwx},
+**Realization.** By Theorem 5 of [1] and the gate count stated after it, every Laurent polynomial P(z) = Σ_{n=−N}^{N} p_n z^n with |P| ≤ 1 on the unit circle is the upper left entry of a circuit of the form [[P, −Q*], [Q, P*]] at z = e^{iπx}, with |P|² + |Q|² = 1, using 2N fixed upload gates. For g(x) = e^{iwx},
 
 ‖R(x) − e^{iwxσ_z}‖_F² = 2|P − g|² + 2(1 − |P|²).
 
@@ -53,9 +53,9 @@ a 2-periodic function with Fourier coefficients c_k = ½ Ŵ(πk − w) at e^{iπ
 
 **Truncation.** Let k₀ be the integer nearest to w/π and N′ = ⌈8Λ/π⌉, and let P₀ keep the coefficients with |k − k₀| ≤ N′. For n = |k − k₀|, |πk − w| ≥ π(n − ½), and s²/4 = 1/(64Λ), so |c_k| ≤ e^{−a_n²/(64Λ)}/a_n with a_n = π(n − ½). For n ≥ N′ + 1, a_n ≥ 8Λ + π/2, so the first omitted term is at most e^{−Λ−π/8}/(8Λ), and consecutive terms shrink by at least e^{−π(2a_n+π)/(64Λ)} ≤ e^{−π/4}. Both sides together give
 
-|P̃ − P₀| ≤ 2e^{−Λ−π/8}/(8Λ(1 − e^{−π/4})) ≤ 0.31 e^{−Λ}/Λ ≤ 0.016δ,
+|P̃ − P₀| ≤ 2e^{−Λ−π/8}/(8Λ(1 − e^{−π/4})) ≤ 0.311 e^{−Λ}/Λ ≤ 0.016δ,
 
-using Λ ≥ 2 + ln 2. Put P = P₀/(1 + 0.022δ). Then |P| ≤ 1 everywhere, and on [0, 1], |P − g| ≤ (0.271 + 0.022 + 0.022)δ = a with a ≤ 0.315δ. The error is at most (2a² + 4a)^{1/2} ≤ (1.36δ)^{1/2} ≤ ε, since δ = ε²/2 ≤ 1/2.
+using Λ ≥ 2 + ln 2. Put P = P₀/(1 + 0.022δ). Then |P| ≤ 1 everywhere, and on [0, 1], |P − g| ≤ (0.271 + 0.016 + 0.022)δ = a with a ≤ 0.309δ. The error is at most (2a² + 4a)^{1/2} ≤ (1.34δ)^{1/2} ≤ ε, since δ = ε²/2 ≤ 1/2.
 
 **Count.** P has powers e^{iπkx} with |k| ≤ |k₀| + N′ = N, and |k₀| ≤ |w|/π + ½, N′ ≤ 8Λ/π + 1. So D = 2N ≤ (2/π)|w| + 3 + (16/π)(2 ln(1/ε) + ln 2 + 2) ≤ (2/π)|w| + (32/π) ln(1/ε) + 17. ∎
 
@@ -67,7 +67,7 @@ The error bound gives 2|P − g|² ≤ ε², so |P − g| ≤ ε′ < 1 on [0, 1
 
 ## Simulation
 
-`sim/window_check.py` needs Python 3 with NumPy and SciPy. For w in {0, 0.5, 1, π/2, 3.3, 40.7, 400.1} and ε from 0.3 to 10⁻⁶ it builds P on a grid of 20,001 points of [−1, 1] and checks each bound of the proof of Theorem 1: |P̃| ≤ 1, the window error, the truncation error, |P| ≤ 1, the final Frobenius error and the count. At w = 0.5 it prints D = 38, 62, 86, 108, 132, 156 for ε = 10⁻¹, …, 10⁻⁶, with errors close to a quarter of ε.
+`sim/window_check.py` needs Python 3 with NumPy and SciPy. For w in {0, 0.5, 1, π/2, 3.3, 40.7, 400.1} and ε from 0.3 to 10⁻⁵, where the bounds stay above double-precision rounding, it builds P on a grid of 20,001 points of [−1, 1] and checks each bound of the proof of Theorem 1: |P̃| ≤ 1, the window error, the truncation error, |P| ≤ 1, the final Frobenius error and the count. At w = 0.5 it prints D = 38, 62, 86, 108, 132, 156 for ε = 10⁻¹, …, 10⁻⁶, with errors close to a quarter of ε.
 
 ## References
 

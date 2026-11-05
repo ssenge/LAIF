@@ -36,15 +36,16 @@ def build(w, eps):
 
 def main():
     for w in [0.0, 0.5, 1.0, pi / 2, 3.3, 40.7, 400.1]:
-        for eps in [0.3, 1e-1, 1e-2, 1e-3, 1e-4, 1e-5, 1e-6]:
+        for eps in [0.3, 1e-1, 1e-2, 1e-3, 1e-4, 1e-5]:  # below 1e-5 the bounds approach double precision
             t, p, delta, lam, np_, k0 = build(w, eps)
+            tol = 1e-15 * (1 + abs(k0) + np_)  # rounding of a grid sum with phases up to pi (|k0| + N')
             g = np.exp(1j * w * X)
-            assert np.abs(p).max() <= 1 + 1e-12  # the periodization of the window is at most 1
-            assert np.abs(p - g)[ARC].max() <= 2 * np.exp(-lam) + 1e-13  # window error on [0, 1]
-            assert np.abs(t - p).max() <= 0.022 * delta + 1e-12  # truncation error, plus float noise of the grid sum
+            assert np.abs(p).max() <= 1 + tol  # the periodization of the window is at most 1
+            assert np.abs(p - g)[ARC].max() <= 2 * np.exp(-lam) + tol  # window error on [0, 1]
+            assert np.abs(t - p).max() <= 0.016 * delta + tol  # truncation error
             scale = 1 + 0.022 * delta
             f = t / scale
-            assert np.abs(f).max() <= 1 + 1e-13
+            assert np.abs(f).max() <= 1 + tol
             q2 = np.maximum(1 - np.abs(f[ARC]) ** 2, 0)
             frob = np.sqrt(2 * (np.abs(f[ARC] - g[ARC]) ** 2 + q2)).max()
             assert frob <= eps, (w, eps, frob)
