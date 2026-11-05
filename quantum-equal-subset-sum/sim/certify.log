@@ -1,0 +1,4 @@
+labels on [0.2,0.47]: every box <= 0.438400; 17003 boxes
+smallest array entry 0.00969, sigma 0.00000, exponent of P0 0.38213, exponent of T 0.36220
+S(p) at p=0.2: 0.43484, at p=0.47: 0.43640
+certified: exponent <= 0.4384

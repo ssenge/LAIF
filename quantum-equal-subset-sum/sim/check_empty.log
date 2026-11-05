@@ -1,0 +1,7 @@
+inner(u, 0) == (2/7)(h(p)+1-p) at all tested p
+15 random {'odd support': 40, 'runs': 40, 'max class': 1, 'pairs verified': 40, 'reps': 40, 'good residues': 40, 'good fraction * s * n >= 1': 40}
+15 heavy {'odd support': 40, 'discarded, smaller solution': 40}
+20 random {'odd support': 30, 'runs': 30, 'max class': 1, 'pairs verified': 30, 'reps': 30, 'good residues': 30, 'good fraction * s * n >= 1': 30}
+20 heavy {'odd support': 30, 'discarded, smaller solution': 30}
+23 random {'odd support': 8, 'runs': 8, 'max class': 1, 'reps': 8, 'good residues': 8, 'good fraction * s * n >= 1': 8}
+23 heavy {'odd support': 8, 'runs': 8, 'max class': 6, 'reps': 8, 'good residues': 8, 'good fraction * s * n >= 1': 8}

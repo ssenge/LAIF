@@ -1,0 +1,10 @@
+15 random {'odd support': 40, 'runs': 40, 'max class': 1, 'pairs verified': 80, 'reps': 80, 'good residues': 80, 'good fraction * s * n >= 1': 40}
+15 heavy {'odd support': 40, 'discarded, smaller solution': 40}
+19 random {'odd support': 0, 'runs': 30, 'max class': 1, 'pairs verified': 180, 'reps': 90, 'good residues': 178, 'good fraction * s * n >= 1': 30}
+19 heavy {'odd support': 0, 'runs': 30, 'max class': 3, 'pairs verified': 180, 'reps': 90, 'good residues': 178, 'good fraction * s * n >= 1': 30}
+20 random {'odd support': 30, 'runs': 30, 'max class': 1, 'pairs verified': 90, 'reps': 90, 'good residues': 90, 'good fraction * s * n >= 1': 30}
+20 heavy {'odd support': 30, 'discarded, smaller solution': 30}
+23 random {'odd support': 8, 'runs': 8, 'max class': 1, 'reps': 48, 'good residues': 48, 'good fraction * s * n >= 1': 8}
+23 heavy {'odd support': 8, 'runs': 8, 'max class': 2, 'reps': 48, 'good residues': 48, 'good fraction * s * n >= 1': 8}
+24 random {'odd support': 0, 'runs': 6, 'max class': 1, 'reps': 36, 'good residues': 72, 'good fraction * s * n >= 1': 6}
+24 heavy {'odd support': 0, 'runs': 6, 'max class': 3, 'reps': 36, 'good residues': 72, 'good fraction * s * n >= 1': 6}

@@ -1,0 +1,15 @@
+worst p=0.249767 exponent=0.438306  7-SUM there 0.446041
+Theta: a1=0.12765 a0=0.15397 b1=0.12373 b0=0.04790; A share a0/ca=0.3762, B zero share 0.1622
+a=0.04216 u=0.84562 l=0.15397 sigma=0.26326 table=0.41722 walk=0.41722
+crossover with 7-SUM: [np.float64(0.1376)]
+max of 7-SUM alone 0.45284642877747316  max(7-SUM, table outside only) 0.4503571428571429
+p=0.15 labels=0.41710 7sum=0.41710
+p=0.18 labels=0.42824 7sum=0.42859
+p=0.20 labels=0.43330 7sum=0.43484
+p=0.22 labels=0.43655 7sum=0.44005
+p=0.25 labels=0.43831 7sum=0.44608
+p=0.28 labels=0.43659 7sum=0.45013
+p=0.30 labels=0.43364 7sum=0.45180
+p=0.35 labels=0.42036 7sum=0.45259
+p=0.40 labels=0.40000 7sum=0.44884
+p=0.45 labels=0.38702 7sum=0.44079
