@@ -40,7 +40,7 @@ Results on open problems in algorithms and complexity. Each folder holds one top
 | LP-type problems with n constraints and combinatorial dimension δ with quantum queries | O(δ²√n log n + δ√n log^{3/2} n) | [lp-type-queries](lp-type-queries/) |
 | Minimum-cost arborescence with quantum queries | O(√(nm) log³ n), Ω(√(nm)) | [minimum-arborescence-queries](minimum-arborescence-queries/) |
 | Depth D of fixed upload circuits approximating a tunable upload gate e^{iwxσ_z} on [0, 1] to error ε | D ≤ (2/π)\|w\| + (32/π) ln(1/ε) + 17, and D ≥ (2/π)\|w\|(1 − O(ε)) − O(1); so D = Θ(log(1/ε)) for fixed w, where O((log 1/ε)^σ) for every σ > 1 was known [13] | [fixed-upload-depth](fixed-upload-depth/) |
-| Generalization gap of hybrid models: a k-layer classical head on one quantum expectation, T trainable gates used at most M times | O(√(T log((M + 1)T)/N)) times the Lipschitz constant Λ ≤ (L_σα)^k of the head, for bias-free heads, against Õ((α^k/√N)(k^{3/2}√(mn) + √(T log T))) [17]; tight for worst-case data | [hybrid-qnn-generalization](hybrid-qnn-generalization/) |
+| Generalization gap of hybrid models whose Lipschitz classical head reads one quantum expectation, T trainable gates used at most M times | Rademacher complexity O((B + √(ΛβB) + B√(T log(e + MT)))/√N) for heads with Lipschitz constant Λ and bound B, with no width or depth factor; tight for worst-case data. [17] treats heads reading several expectations, with bound Õ((α^k/√N)(k^{3/2}√(mn) + √(T log T))) | [hybrid-qnn-generalization](hybrid-qnn-generalization/) |
 | Matrix product verification AB = C with quantum queries | Ω(n^{5/3}), so Θ(n^{5/3}). Previous proof by Kintali. Our contribution: a Lean proof over F₂ and a short written proof | [matrix-product-verification-queries](matrix-product-verification-queries/) |
 
 ## Former repositories
@@ -65,7 +65,7 @@ The folders `exact-planar-bipartite-matching`, `exact-shortest-paths-and-flows-o
 14. Z. Yu, Q. Chen, Y. Jiao, Y. Li, X. Lu, X. Wang, J. Z. Yang. Non-asymptotic Approximation Error Bounds of Parameterized Quantum Circuits. NeurIPS 2024, arXiv:2310.07528.
 15. A. Neufeld, P. Schmocker, V. K. Tran. Approximation rates of quantum neural networks for periodic functions via Jackson's inequality. arXiv:2511.16149.
 16. H. Zhao, L. Lewis, I. Kannan, Y. Quek, H.-Y. Huang, M. C. Caro. Learning quantum states and unitaries of bounded gate complexity. arXiv:2310.19882.
-17. T. Wu, A. Sakhnenko. Generalization Bounds in Hybrid Quantum-Classical Machine Learning Models. arXiv:2504.08456.
+17. T. Wu, A. Bentellis, A. Sakhnenko, J. M. Lorenz. Generalization Bounds in Hybrid Quantum-Classical Machine Learning Models. arXiv:2504.08456.
 14. A. Björklund. Determinant sums for undirected Hamiltonicity. SIAM J. Comput. 43(1), 2014, arXiv:1008.0541.
 15. A. Björklund, T. Husfeldt, P. Kaski, M. Koivisto. Narrow sieves for parameterized paths and packings. J. Comput. Syst. Sci. 87, 2017, arXiv:1007.1161.
 16. A. Ambainis, K. Balodis, J. Iraids, M. Kokainis, K. Prūsis, J. Vihrovs. Quantum speedups for exponential-time dynamic programming algorithms. SODA 2019, arXiv:1807.05209.
