@@ -1,6 +1,6 @@
 # Negative weights and exact maximum flow in Õ(D) rounds
 
-**Status.** Claim, written 3 Nov 2026. Proofs below, simulation in `sim/negative/`, elementary core in `lean/SsspFlow/NegScaling.lean`. The first bullet of Lemma 2 comes from a corollary in [3] whose proof may have a small gap, and Section 8 gives a repair. It rests on the Exact SSSP Theorem and the Label Hypothesis of [1], on a known embedding, and on published black boxes of [2], [3], [4] and [5]. Importance: modest. The bound would be significant, but only given the Hypothesis, whose local computation is not polynomial, and the new mathematics is minor. Nearly all of the proof is the reduction of [2] with the algorithm of [1] as its oracle.
+**Status.** Claim, written 3 Nov 2026. Proofs below, simulation in `sim/negative/`, elementary core in `lean/SsspFlow/NegScaling.lean`, the reduction on graphs in `lean/SsspFlow/NegFinal.lean` with Lemma 2 as a hypothesis (Section 10). The first bullet of Lemma 2 comes from a corollary in [3] whose proof may have a small gap, and Section 8 gives a repair. It rests on the Exact SSSP Theorem and the Label Hypothesis of [1], on a known embedding, and on published black boxes of [2], [3], [4] and [5]. Importance: modest. The bound would be significant, but only given the Hypothesis, whose local computation is not polynomial, and the new mathematics is minor. Nearly all of the proof is the reduction of [2] with the algorithm of [1] as its oracle.
 
 **A correction to [1].** The paper [1] lists the removal of the factor n^{o(1)} as open and says that it would need a reduction for negative weights with polylogarithmic overhead. That reduction was already published in [2], and the paper missed it. The Negative Weights Theorem, part (b) of the Dual SSSP Corollary and the Maximum Flow Theorem of [1] are still correct as stated, but they are weaker than what follows from [1] and [2].
 
@@ -184,7 +184,8 @@ The first four fire well above the clean rate. The single clean failure at t = 2
 - The whole stack on Corollaries 4 to 6 is small: see the counts in the table.
 - `neg.py` has no instances with parallel edges. The range of β in Theorem 2 is by hand.
 - The source behind [2, Lemma 2.9], used in Section 5, is not checked.
-- The Lean file covers the arithmetic only: Lemma 5 for B ≥ 5 and its cycle bound, an upper bound of Lemma 1 for a given alternation, the arithmetic of Lemma 3 given the closed-walk inequality, and the arc inequality of Proposition 4. It has no graphs, and no probabilities, Lemma 2, flow, Proposition 7 or simplicity of least walks.
+- `lean/SsspFlow/NegScaling.lean` covers the arithmetic only: Lemma 5 for B ≥ 5 and its cycle bound, an upper bound of Lemma 1 for a given alternation, the arithmetic of Lemma 3 given the closed-walk inequality, and the arc inequality of Proposition 4.
+- `negReduction_of_ldd` in `lean/SsspFlow/NegFinal.lean` proves the output of Theorem 1, the distances or the report of a negative cycle, in the message model, from an exact oracle (O) of T rounds and with Lemma 2 as the hypothesis `LDDBox`. Lemma 1, Lemma 3, Proposition 4 with its failure probability, Lemma 5 and the output step are proved on graphs, for C·log^c n·(T + Õ(D)) rounds. `negFlow_of_ldd` adds the cited results behind the Label Hypothesis and the smoothing, and gives this output and the value and the flow on every edge of Theorem 2 in Õ(D) rounds with high probability. The potentials, Proposition 7, the minimum cut of Theorem 2 and the corollaries are not in Lean.
 
 ## References
 

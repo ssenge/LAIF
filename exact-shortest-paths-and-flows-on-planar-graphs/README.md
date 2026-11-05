@@ -25,7 +25,7 @@ $\tilde O(D)$ rounds, by scaling over the faces next to one BFS path. It needs o
 [`notes/MAXFLOW.md`](notes/MAXFLOW.md). **Written on 2 Nov 2026. On parallel arcs of one direction the flow value can exceed $nU$, with $U$ the largest capacity, and a number of scaling steps chosen from $nU$ gives an infeasible flow, so the note chooses it from $mU$, with $m$ the number of arcs. It rests on the construction in `notes/LEMMA15.md`, not only on the Label Hypothesis; treat it as a claim.**
 
 A newer and simpler claim, after the paper and not part of it: exact SSSP with negative weights, and exact maximum st-flow in directed planar networks with the flow on every edge, in
-$\tilde O(D)$ rounds with high probability, from the Label Hypothesis alone, with no extension of the labels. Perfect matching of planar bipartite networks follows in the same bound. It replaces the reduction of [6] in Theorems B and C by a published reduction with polylogarithmic overhead (SOSA 2025, arXiv:2410.20959). **The open question in the paper on the factor $n^{o(1)}$ was already answered by that reduction, which the paper missed. The statements of Theorems B and C below are correct, but they are weaker than what follows.** See [`notes/NEGATIVE.md`](notes/NEGATIVE.md). **Written on 3 Nov 2026. One property it takes from arXiv:2303.00811 rests on a corollary there that is false as stated; the note repairs it in one line. Treat it as a claim.**
+$\tilde O(D)$ rounds with high probability, from the Label Hypothesis alone, with no extension of the labels. Perfect matching of planar bipartite networks follows in the same bound. It replaces the reduction of [6] in Theorems B and C by a published reduction with polylogarithmic overhead (SOSA 2025, arXiv:2410.20959). **The open question in the paper on the factor $n^{o(1)}$ was already answered by that reduction, which the paper missed. The statements of Theorems B and C below are correct, but they are weaker than what follows.** See [`notes/NEGATIVE.md`](notes/NEGATIVE.md). **Written on 3 Nov 2026. One property it takes from arXiv:2303.00811 rests on a corollary there whose proof may have a small gap; the note repairs it in one line. The round bounds for negative weights and for maximum flow are proved in Lean from six cited results, see [Status](#status); the rest is a claim.**
 
 **New claim, 3 Nov 2026:** [`notes/REPLACEMENT.md`](notes/REPLACEMENT.md). Replacement paths on planar digraphs: for every arc of a shortest st-path, the distance without it, exactly in $\tilde O(D\cdot\min(h,D))$ rounds, and $(1+\varepsilon)$-approximately on the excess in $\tilde O(D/\varepsilon)$ rounds, from the Label Hypothesis. On general networks the exact problem takes $\tilde\Theta(n)$ rounds. Undirected weighted networks take $\tilde O(D)$. Simulation in `sim/replacement/`.
 
@@ -51,9 +51,12 @@ Please read this before relying on anything here.
   - With the smoothing of [3], `exactSssp_of_boxes` gives the $\tilde O(D)$ round bound of Theorem A, with exact
     distances and the parents of a shortest-path forest.
   - With a reduction for negative weights, `negFlow_polylog_of_boxes` and `negFlow_subpoly_of_boxes` give the round
-    bounds for negative weights and for maximum flow, with the flow on every edge. With the factor of
-    arXiv:2410.20959 these are $\tilde O(D)$ rounds with high probability.
-  - The cited results and the reduction stay hypotheses of these theorems.
+    bounds for negative weights and for maximum flow, with the flow on every edge.
+  - `negReduction_of_ldd` in `lean/SsspFlow/NegFinal.lean` proves this reduction, the one of arXiv:2410.20959, with a
+    polylogarithmic factor, from the low-diameter decomposition of [6] with the order of its clusters. So
+    `negFlow_of_ldd` gives $\tilde O(D)$ rounds with high probability for negative weights and for maximum flow, from
+    six cited results: realization, distance labels, face identifiers, aggregation, smoothing and the decomposition.
+  - The cited results stay hypotheses of these theorems.
 - **Correctness.** Theorems A, B, C and C′ give correct outputs given Lemma 14′, our
   replacement for [1, Lemma 14], and the black boxes listed below. Lemma 14′ is
   proved in `notes/LEMMA15.md` §3.
@@ -129,9 +132,9 @@ non-negative weights)".
 | Category | Problem | Before | After | Scope | Status |
 |---|---|---|---|---|---|
 | Distributed algorithms, CONGEST | Exact single-source shortest paths on directed planar networks, nonnegative weights | Õ(D²) [8] | Õ(D); the Label Hypothesis stated in this folder, modelled on the labels of [1], is proved in Lean from cited results; this folder also completes the proof of [1], with a repair of one lemma | Directed planar networks, polynomial integer weights, rotation lists as input; deterministic relative to the cited results | Lean, assuming five cited results: realization, distance labels, face identifiers, aggregation, smoothing; paper arXiv:2611.02256 |
-| Distributed algorithms, CONGEST | Exact maximum st-flow on directed planar networks, with the flow on every edge | Õ(D²) [9] | min{Õ(D²), D·n^{o(1)}}; Õ(D) when s and t lie on a common face; Õ(D) with high probability in a later note | Directed planar networks, rotation lists as input | Claim; in Lean the round bound, assuming a reduction for negative weights and the five cited results |
+| Distributed algorithms, CONGEST | Exact maximum st-flow on directed planar networks, with the flow on every edge | Õ(D²) [9] | min{Õ(D²), D·n^{o(1)}}; Õ(D) when s and t lie on a common face; Õ(D) with high probability in a later note | Directed planar networks, rotation lists as input | Claim; in Lean the bound of Õ(D) rounds with high probability, assuming the five cited results and a low-diameter decomposition |
 | Distributed algorithms, CONGEST | Exact minimum st-cut and minimum cut value on undirected planar networks | (1 − o(1))-approximation in Õ(D) [18]; exact in Õ(D²) [9] | Õ(D), through the Exact SSSP Theorem, with two repairs of [18]: its auxiliary graph at the terminals, and its recursion, which as we read it can miss the minimum cut | Undirected planar networks | Claim; the recursion argument in Lean |
-| Distributed algorithms, CONGEST | Negative weights, minimum arborescences and replacement paths on planar digraphs | D·n^{o(1)} for negative weights through a general reduction; no bound in D alone known to us for the others | Õ(D) with high probability for negative weights and for arborescences; replacement paths exactly in Õ(D·min(h, D)) and within 1 + ε in Õ(D/ε) | Planar digraphs; the claims use the Label Hypothesis, proved in Lean from cited results | Claims in notes; cores in Lean |
+| Distributed algorithms, CONGEST | Negative weights, minimum arborescences and replacement paths on planar digraphs | D·n^{o(1)} for negative weights through a general reduction; no bound in D alone known to us for the others | Õ(D) with high probability for negative weights and for arborescences; replacement paths exactly in Õ(D·min(h, D)) and within 1 + ε in Õ(D/ε) | Planar digraphs; the claims use the Label Hypothesis, proved in Lean from cited results | Negative weights in Lean, assuming six cited results; the others claims in notes, cores in Lean |
 | Distributed algorithms, CONGEST | Diameter and all eccentricities of unweighted undirected planar networks | Õ(D³) [arXiv:2608.07187](https://arxiv.org/abs/2608.07187) | Õ(D²), with no hypothesis; within 1 + ε in Õ(D + 1/ε⁴) | Unweighted undirected planar networks | Claim |
 | Corrections | Lemma 14 and a decomposition property of [1]; the auxiliary graph and the recursion of [18] | As stated | Counterexamples, and repairs: tiles in place of the hub network and region bags for the round count of [1]; a repaired auxiliary graph at the terminals and two more shortest-path computations per level of the recursion of [18] | As we read the texts | Counterexamples checked by scripts; repairs on paper, the recursion repair in Lean |
 
@@ -582,8 +585,10 @@ standard axioms (`propext`, `Classical.choice`, `Quot.sound`). There is no `sorr
   - `lemmaV_chain₂` and `LabelWitness.query_bound` prove Lemma V for the values that the labels
     hold. `labelsOK_oneBag` and `labelsOK_triNet` show that correct labels exist on small networks.
   - The results of the literature that are used are stated as propositions and not proved
-    (`RealizationBox`, `DistanceLabelBox`, `FaceIdBox`, `EmbeddingBox`, `AggBox`, `SmoothingBox`,
-    `NegReduction`). `ExactSsspBound`, `NegSsspBound` and `MaxFlowBound` are the round bounds of
+    (`RealizationBox`, `DistanceLabelBox`, `FaceIdBox`, `EmbeddingBox`, `AggBox`, `SmoothingBox`).
+    `NegReduction` is a reduction for negative weights, and `negReduction_of_ldd` in
+    `lean/SsspFlow/NegFinal.lean` proves it from the decomposition `LDDBox` of
+    `lean/SsspFlow/NegBox.lean`. `ExactSsspBound`, `NegSsspBound` and `MaxFlowBound` are the round bounds of
     Theorems A, B and C as definitions, and this file asserts none of them.
     `not_negSsspBound_zero` and `not_maxFlowBound_zero` show that the two randomized definitions
     fail with no rounds.
@@ -709,8 +714,30 @@ standard axioms (`propext`, `Classical.choice`, `Quot.sound`). There is no `sorr
     independently of $D$. `labelRounds_le`: the number of rounds. `labelsOK_tiny`: networks with at most one node.
   - `exactSssp_of_boxes`: with `SmoothingBox`, this gives `ExactSsspBound`. `negFlow_polylog_of_boxes`,
     `negFlow_subpoly_of_boxes`: with `NegReduction τ`, this gives `NegSsspBound τ` and the matching `MaxFlowBound`.
+- `lean/SsspFlow/NegWalk.lean`: walks with integer weights. `Walk.exists_nodup_le`: if closed walks have nonnegative
+  weight, a walk can be replaced by one without repeated vertices that is not heavier and not longer.
+- `lean/SsspFlow/NegBox.lean`: `LDDBox`, the low-diameter decomposition of [6, Lemma 4, Cor. 27] with the order of its
+  clusters of [6, Lemma 5, Prop. 32, Cor. 33], in the form of Lemma 2 of `notes/NEGATIVE.md` with the repairs of its
+  Section 8.
+- `lean/SsspFlow/NegAlt.lean`: Lemma 1 of `notes/NEGATIVE.md`. `altD_walk`, `altD_le`: after $t$ steps of oracle calls
+  and relaxations over the negative arcs, each value is the weight of a walk and at most the weight of every walk with
+  at most $t$ negative arcs.
+- `lean/SsspFlow/NegLevels.lean`: the restricted problem of Proposition 4. `short_walk` is Lemma 3. `Good.levPhi_last`:
+  if the decompositions behave, the potential of the last level makes all kept arcs nonnegative.
+- `lean/SsspFlow/NegScale.lean`: Lemma 5 and Section 5. `scale_all`, `Bseq_nPhase`: the reduced weights stay at least
+  $-B$, and the bound reaches $0$ after $O(\log nW)$ phases. `exists_bad_arc`, `negSpec_of`: a negative closed walk
+  leaves an arc of negative reduced weight for every potential, and without one the least reduced walks give the
+  distances.
+- `lean/SsspFlow/NegProb.lean`: the failure probability of Proposition 4. `phaseBad_count`, `anyBad_count`: bad phases
+  are rare, also when each phase depends on the strings of the phases before it.
+- `lean/SsspFlow/NegCode.lean`, `lean/SsspFlow/NegNet.lean`, `lean/SsspFlow/NegRun.lean`: the program of a node and its
+  run on the machine of `Machine.lean`. `negSpec_run`: if no phase is bad, the outputs of the nodes are correct.
+- `lean/SsspFlow/NegFinal.lean`: `negReduction_of_ldd`: `LDDBox` gives `NegReduction (tauPolylog c)` for some $c$.
+  `negP_nums`, `negP_kp`: all numbers are polynomial in $n$, and the number of steps is $O(\log^{11} n)$.
+  `negFlow_of_ldd`: with the propositions of `LabelFinal.lean`, this gives `NegSsspBound` and `MaxFlowBound` with a
+  polylogarithmic factor.
 
-Not formalized: the proofs of the propositions above, the minimum cut of
+Not formalized: the proofs of the cited propositions, among them `LDDBox`, the minimum cut of
 Theorem C, Theorem C′, the construction of the tiles and the rest of Lemma 14′, and Lemmas R5 and R7. Of Theorem D, only the
 recursion argument of Lemma S2 is formalized; Lemmas N, R, O and S1 are on paper.
 
