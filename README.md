@@ -42,6 +42,7 @@ Results on open problems in algorithms and complexity. Each folder holds one top
 | Minimum-cost arborescence with quantum queries | O(√(nm) log³ n), Ω(√(nm)) | [minimum-arborescence-queries](minimum-arborescence-queries/) |
 | Depth D of fixed upload circuits approximating a tunable upload gate e^{iwxσ_z} on [0, 1] to error ε | D ≤ (2/π)\|w\| + (32/π) ln(1/ε) + 17, and D ≥ (2/π)\|w\|(1 − O(ε)) − O(1); so D = Θ(log(1/ε)) for fixed w, where O((log 1/ε)^σ) for every σ > 1 was known [13] | [fixed-upload-depth](fixed-upload-depth/) |
 | Generalization gap of hybrid models whose Lipschitz classical head reads one quantum expectation, T trainable gates used at most M times | Rademacher complexity O((B + √(ΛβB) + B√(T log(e + MT)))/√N) for heads with Lipschitz constant Λ and bound B, with no width or depth factor; tight for worst-case data. [17] treats heads reading several expectations, with bound Õ((α^k/√N)(k^{3/2}√(mn) + √(T log T))) | [hybrid-qnn-generalization](hybrid-qnn-generalization/) |
+| Qubits q against classical latent dimension c on the (ℓ, n, k)-hypergraph translation task of [23], N = (n choose k) | A hybrid model with q qubits and c = N − (q − k choose k) + 2n samples the task exactly; under the assumptions of [23], c ≥ N − 4^q. The endpoints were n qubits and c ≥ N − 1 [23] | [hybrid-memory-tradeoff](hybrid-memory-tradeoff/) |
 | Matrix product verification AB = C with quantum queries | Ω(n^{5/3}), so Θ(n^{5/3}). Previous proof by Kintali. Our contribution: a Lean proof over F₂ and a short written proof | [matrix-product-verification-queries](matrix-product-verification-queries/) |
 
 ## Former repositories
@@ -72,6 +73,7 @@ The folders `exact-planar-bipartite-matching`, `exact-shortest-paths-and-flows-o
 20. A. Ambainis, K. Balodis, J. Iraids, M. Kokainis, K. Prūsis, J. Vihrovs. Quantum speedups for exponential-time dynamic programming algorithms. SODA 2019, arXiv:1807.05209.
 21. A. Belovs. Tight quantum lower bound for k-distinctness. arXiv:2604.05133, 2026.
 22. A. M. Childs, S. Jeffery, R. Kothari, F. Magniez. A time-efficient quantum walk for 3-distinctness using nested updates. arXiv:1302.7316, 2013.
+23. E. R. Anschuetz, X. Gao. Arbitrary Polynomial Separations in Trainable Quantum Machine Learning. arXiv:2402.08606.
 
 ## License
 
