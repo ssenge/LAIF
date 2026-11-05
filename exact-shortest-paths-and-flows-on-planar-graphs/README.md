@@ -46,8 +46,8 @@ Please read this before relying on anything here.
 - **The Label Hypothesis in Lean.** `labelHypothesis_of_boxes` in `lean/SsspFlow/LabelFinal.lean` proves the Label
   Hypothesis in the message model from four cited results: realization (G3), distance labels (G5), face identifiers
   (G6) and an aggregation primitive. The nodes get the rotation lists as input. The bags, their cuts along walks up a
-  tree of shortest walks, the labels and the message passing are built and proved in Lean. This construction differs
-  from the tiles of Lemma 14′.
+  tree of shortest walks, the labels and the message passing are built and proved in Lean. This construction, described
+  in [`notes/DISKS.md`](notes/DISKS.md), differs from the tiles of Lemma 14′.
   - With the smoothing of [3], `exactSssp_of_boxes` gives the $\tilde O(D)$ round bound of Theorem A, with exact
     distances and the parents of a shortest-path forest.
   - With a reduction for negative weights, `negFlow_polylog_of_boxes` and `negFlow_subpoly_of_boxes` give the round
@@ -802,6 +802,8 @@ test round counts.
 - `notes/LEMMA15.md`: the gaps in [1, Lemmas 14 to 16] and their repair, with Lemma 14′ (§3),
   the analytic layer (§4 to §7), what is settled (§8), and the region bags that repair the
   round count (§9).
+- `notes/DISKS.md`: the construction of the labels that is proved in Lean, with disks cut along walks up a
+  tree of shortest walks: the cut of a bag, the shape of the bags, the values and the algorithm.
 
 These are working notes. References such as "lty 1762", "adpw 2166" or "adw26 1673" point to
 line numbers in plain-text extractions of [1] (arXiv v2), [9] and [18].
@@ -813,8 +815,6 @@ line numbers in plain-text extractions of [1] (arXiv v2), [9] and [18].
   $\hat G$ does not give it.
 - Weighted girth of planar digraphs, also at $\tilde O(D^2)$ [19]. If its algorithm uses
   polylogarithmically many exact SSSP calls, Theorem A may improve it; we have not checked.
-- Can the $n^{o(1)}$ in Theorem C be removed? That needs a reduction for negative weights with
-  polylogarithmic overhead.
 - Is the component bound of Lemma B1(e) really $\Theta(\log^2 n)$? All runs stayed at
   depth + 1.
 - Theorems A, C′ and D are deterministic given an embedding. Are Theorems B and C? That
