@@ -87,6 +87,30 @@ E[R(θ̂) − R̂(θ̂)] ≥ (γ/(2N)) · m · √(1/2) · √(λ/2) = (γ/4)√
 
 **On a gate-independent bound.** [4] states a generalization bound of order 1/√N for quantum models of any size, with constants that depend on the observable norm and the loss but not on the number of gates. For the loss of Theorem 2 that bound reads 1/√N + 3√(log(2/δ)/(2N)) with probability 1 − δ, which gives an expected gap below 3.8/√N. For γ = 1/2 and T = 2000, Theorem 1 gives m = 2121, and Corollary 3 gives an expected gap of at least 5.7/√N for N ≥ 2121. The gap of Corollary 3 grows like √(T log T). The models of Theorem 1 meet the hypotheses of [4]: bounded loss, Lipschitz in the output, and an observable of norm 1. This hints at a possible gap in the proof of Theorem B.1 of [4], where the cross terms E[σ_m σ_n (w*)ᵀx^{(m)} (w*)ᵀx^{(n)}] are bounded as if w* did not depend on σ. A small example in the linear class of that theorem: for n inputs √n e_1, …, √n e_n, the constraint set is the set of vectors whose coordinates are all ±1/√n, with free signs, so the empirical Rademacher complexity is 1, against the stated √(1/n).
 
+## Lean
+
+The folder [lean/](lean/) checks the combinatorial core of Theorem 1 in Lean 4 with Mathlib, with no `sorry` and only the standard axioms. Build it with `lake build`. Running `lake env lean QNNShatter/Axioms.lean` prints the axioms of the main theorems.
+
+**Checked:**
+
+- **Anti-concentration** (`AntiConcentration.lean`): for nonzero integer weights k, at most C(v, ⌊v/2⌋) vectors in {0, 1}^v solve Σ_j k_j b_j = c. If some weight is nonzero, at most (M + 1)^{v−1} vectors in {0, …, M}^v do. The proof goes through antichains.
+- **Averaging** (`Average.lean`): the bounds on the mean of S(A) over all matrices, for weights ρ with ρ(0) = 1 and Σ_{z ≠ 0} ρ(z) = τ:
+  - ((1 + τ)^m − 1)/(M + 1)^T for entries in {0, …, M};
+  - Σ_{v=1}^m C(m, v) τ^v q(v)^T for entries in {0, 1}.
+
+  In each case some A has S(A) < 1 when the bound is below 1.
+- **Lemma 5** (`Bump.lean`, `Bump.shatters`): if S(A) < 1, every sign pattern p has some θ with γ ≤ p_j cos⟨s_j, θ⟩ for all j. It averages over a finite grid in place of the torus.
+- **End-to-end statements:** `exists_shattered_reuse_of_pow_le` gives a shattered m × T matrix with entries in {0, …, M} whenever (1 + τ)^m ≤ (M + 1)^T. This is the first bound of Theorem 1, with 1 + τ = 1/w. `exists_shattered_binary` gives a 0/1 matrix whenever the binary sum is below 1.
+
+**Hypotheses and gaps:**
+
+- **Lemma 4 as a hypothesis:** the Fourier expansion of the bump is a hypothesis (the structure `Bump`). It asks for nonnegative ρ with ρ(0) = 1, an expansion h(x) = Σ_z w ρ(z) e(zx), and h(x) ≠ 0 only where cos(2πx) ≥ γ.
+- **Not covered:**
+  - the circuit itself, since the class is taken as cos⟨s, θ⟩;
+  - the numeric analysis of the binary sum: q(v) ≤ √(2/(π(v − 1))), u(mτ)^u ≤ 2^{T−1}, and the choice m = ⌊T log₂T/(4ℓ)⌋;
+  - Theorem 2;
+  - Corollary 3.
+
 ## Simulations
 
 The scripts in `sim/` need Python 3 with NumPy.
