@@ -161,11 +161,56 @@ def check_ps(rng):
     print(f"E[p_s] for k={k}, l={l}: sampled {np.mean(vals):.4f}, (2/(k+1))^l = {target:.4f} (z = {z:+.2f})")
 
 
+def haar_gaussian(cs, rng):
+    """Haar element of U(1) x Spin(2n) in the spinor representation: Haar R in SO(2n), lifted by exp(1/4 sum A_pq c_p c_q)
+    with R = e^A, times a uniform phase (which also randomizes the sign of the lift)."""
+    from scipy.linalg import logm
+    m = len(cs)
+    Q, R = np.linalg.qr(rng.normal(size=(m, m)))
+    Q = Q @ np.diag(np.sign(np.diag(R)))
+    if np.linalg.det(Q) < 0:
+        Q[:, 0] = -Q[:, 0]
+    A = np.real(logm(Q))
+    H = sum(A[p, q] * cs[p] @ cs[q] for p in range(m) for q in range(m)) / 4
+    return np.exp(1j * rng.uniform(0, 2 * np.pi)) * expm(H)
+
+
+def check_purity(rng):
+    """Proposition 5: E[Y^2] <= ||h||_1^2 tr(sigma^2) per instance, and E tr(sigma^2) = E[p_s] + (1 - E[p_s]) 2^(1-n)."""
+    import itertools
+    n, k, l = 4, 4, 2
+    cs = majoranas(n)
+    O = -1j * cs[0] @ cs[1]
+    psi0 = np.zeros(2 ** n, dtype=complex)
+    psi0[0] = 1
+    tr2, ps_all = [], []
+    for _ in range(400):
+        Us = [[(haar_gaussian(cs, rng),) for _ in range(k)] for _ in range(l)]
+        a = [rng.dirichlet(np.ones(k)) for _ in range(l)]
+        paths = list(itertools.product(range(k), repeat=l))
+        c = np.array([np.prod([a[j][u[j]] for j in range(l)]) for u in paths])
+        phis = np.array([apply_path(Us, u, psi0) for u in paths])
+        G = phis.conj() @ phis.T  # Gram matrix <phi_u|phi_v>
+        Om = phis.conj() @ O @ phis.T  # <phi_u|O|phi_v>
+        t2 = float(c @ np.abs(G) ** 2 @ c)
+        eY2 = float(c @ np.real(Om) ** 2 @ c)  # E[(Re <phi_v|O|phi_u>)^2] for the estimator of Theorem 1
+        assert eY2 <= t2 + 1e-12, (eY2, t2)
+        tr2.append(t2)
+        ps_all.append(float(np.real(c @ G @ c)))
+    Eps = (2 / (k + 1)) ** l
+    target = Eps + (1 - Eps) * 2 ** (1 - n)
+    z = (np.mean(tr2) - target) / (np.std(tr2) / np.sqrt(len(tr2)))
+    assert abs(z) < 4.5, z
+    print(f"Haar, n={n} k={k} l={l}: E tr(sigma^2) sampled {np.mean(tr2):.4f}, formula {target:.4f} (z = {z:+.2f}); "
+          f"E[p_s] sampled {np.mean(ps_all):.4f}, formula {Eps:.4f}; E[Y^2] <= tr(sigma^2) on all 400 instances")
+
+
 def main():
     rng = np.random.default_rng(3)
     inst = check_estimator(rng)
     check_gradients(*inst, rng)
     check_ps(rng)
+    check_purity(rng)
 
 
 if __name__ == "__main__":
