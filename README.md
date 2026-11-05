@@ -18,8 +18,6 @@
 
 > Most of these results were generated automatically by AI, with some additional instructions from me. They may contain errors, so please read them with care. For questions or corrections, please [open an issue](https://github.com/ssenge/ResearchResults/issues).
 
-Results on open problems in algorithms and complexity. Each folder holds one topic with its proofs, Lean files and scripts.
-
 ## Results
 
 "Lean" means that the theorem is machine-checked in Lean 4 with Mathlib, using only the standard axioms. "Assuming" names a classical theorem that the Lean statement takes as an explicit hypothesis. "Claim" means a result with a written proof that is not fully formalized. This table shows the main results of each folder. Each folder states all its results, and exactly what is checked and what is not. In the rows on distributed algorithms, n is the number of nodes, D the hop diameter, and Õ hides factors polylogarithmic in n.
