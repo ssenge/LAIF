@@ -53,7 +53,9 @@ $\Theta(1/\varepsilon)$. Machine-checked in Lean~4 with Mathlib are the level bo
 $p\in[21/64,1]$, assuming only the classical edge bounds of planar graphs; the lower bound on paths,
 and the upper bound for algorithms that know the length, in an explicit model of $r$-round
 algorithms; the deterministic upper bound on forests and the size bound of the randomized one;
-and the limits of the approach.
+and the limits of the approach. Other methods reach ratio $7+\varepsilon$ in fewer rounds against the
+integral optimum (arXiv:2610.31203) and ratio~$7$ in a constant number of rounds (arXiv:2611.02057);
+we compare them in the introduction.
 \end{abstract}
 
 \section{Introduction}
@@ -225,15 +227,27 @@ vertices at a constant-factor cost, and then runs the LP algorithm
 of~\cite{KMW16} in $O(r^2)$ rounds with $r=\log\Gamma/\log(1+\varepsilon)$, roughly
 $(\log(1/\varepsilon)/\varepsilon)^2$. That degree reduction loses a constant factor. To reach ratio~$7$,
 the algorithm of~\cite{AS26} instead computes a $(1+\varepsilon)$-approximation of $\gamma_f$ on the
-whole graph by cluster-and-solve. Among algorithms whose number of rounds does not depend on~$n$, it
-is the only one known for target ratios in $(7,8]$, and Theorem~\ref{thm:main} is its fastest
-version. The same holds for the other guarantees of~\cite[Thm.~6.2]{AS26} that our substitution
+whole graph by cluster-and-solve, and Theorem~\ref{thm:main} is the fastest version of this algorithm
+known to us. The same holds for the other guarantees of~\cite[Thm.~6.2]{AS26} that our substitution
 improves for every proper minor-closed class: the deterministic $(1+\varepsilon)$-approximation of
 $\gamma_f$, the randomized algorithm with expected size $(1+\varepsilon)\gamma$, and the ratio
 $2a+1+\varepsilon$. On forests and on outerplanar graphs, Theorems~\ref{thm:forests}
-and~\ref{thm:outerplanar} give much faster algorithms for the first two. Reaching ratio $7+\varepsilon$ in
-$\mathrm{poly}(1/\varepsilon)$ rounds with an exponent close to~$2$ remains open
-(Section~\ref{sec:open}).
+and~\ref{thm:outerplanar} give much faster algorithms for the first two.
+
+\paragraph{Other methods.} Two recent works reach ratio~$7$ on planar graphs by other methods, with
+fewer rounds than Theorem~\ref{thm:main} for small~$\varepsilon$. The algorithm of~\cite{P26} is a deterministic
+$(7+\varepsilon)$-approximation against the integral optimum~$\gamma$ in
+$O(\varepsilon^{-4}\log^2(1/\varepsilon))$ rounds, and it extends beyond minor-closed classes. The
+algorithm of~\cite{ASW26} outputs a dominating set of size at most $7\gamma_f$ in a constant number
+of rounds, in the broadcast CONGEST model, and in general of size at most $(2a+1)\gamma_f$ for
+rational~$a$. That work also gives a deterministic constant-round $(1+\varepsilon)$-approximation of
+$\gamma_f$ and a randomized constant-round algorithm with expected size $(1+\varepsilon)\gamma$. As
+we read it, their round bounds depend only on the fixed parameters and are not stated as explicit
+functions of~$\varepsilon$. So Theorem~\ref{thm:main} and Table~\ref{tab:general} concern the
+algorithm of~\cite{AS26}, and they give explicit bounds on the rounds of its
+$(1+\varepsilon)$-approximations. The lower bound of Theorem~\ref{thm:lower} holds for every
+algorithm of these two kinds, including those of~\cite{ASW26}. The optimal dependence on~$\varepsilon$
+on planar graphs remains open (Section~\ref{sec:open}).
 
 \paragraph{The dependence on $\varepsilon$.} Open Problem~3 of~\cite{AS26} asks for the optimal
 dependence on $\varepsilon$ of the deterministic $(1+\varepsilon)$-approximation of $\gamma_f$ and of
@@ -1540,10 +1554,9 @@ exponential clocks and the locality and round count are proved on paper only.
 
 \section{Open questions}\label{sec:open}
 \begin{itemize}
-\item Can ratio $7+\varepsilon$ be achieved in $\mathrm{poly}(1/\varepsilon)$ rounds with exponent
-  close to $2$, matching the $(8+\varepsilon)$ algorithm~\cite{W26}? By~\cite{AS26}, a
-  deterministic $(1+\varepsilon)$-approximation of $\gamma_f$ on planar graphs, with no degree bound,
-  in such a number of rounds would suffice (\cite[Open Problem~3]{AS26}). By Corollary~\ref{cor:dichotomy}, the
+\item How many rounds does a deterministic $(1+\varepsilon)$-approximation of $\gamma_f$ on planar
+  graphs, with no degree bound, need as a function of~$\varepsilon$ (\cite[Open Problem~3]{AS26})?
+  By Corollary~\ref{cor:dichotomy}, the
   optimal number of rounds lies between $1/\varepsilon-4$ and $O((c_0/\varepsilon)^{5.83})$, and for
   forests and for outerplanar graphs it is $\Theta(1/\varepsilon)$
   (Theorems~\ref{thm:forests} and~\ref{thm:outerplanar}). Do planar graphs admit local
@@ -1552,7 +1565,8 @@ exponential clocks and the locality and round count are proved on paper only.
   $1/\varepsilon$?
 \item In a constant number of rounds, deterministic algorithms that output dominating sets cannot
   beat ratio~$3$ on paths~\cite[Thm.~8.7]{AS26}, while for fixed $\varepsilon$ a
-  $(1+\varepsilon)$-approximation on planar graphs takes $O(\log^*n)$ rounds~\cite{CHW08}. How do
+  $(1+\varepsilon)$-approximation on planar graphs takes $O(\log^*n)$ rounds~\cite{CHW08}, and
+  $\Omega(\log^*n)$ rounds are needed on cycles for $\varepsilon<1/4$~\cite[Prop.~C.1]{ASW26}. How do
   the dependencies on $\varepsilon$ and on $n$ combine, already on paths?
 \item What is the worst case of the expected gain of the uniform rule on planar graphs? For the
   best~$p$, it lies between $0.1718$ (Theorem~\ref{thm:planar}) and $0.1741$ (Apollonian networks).
@@ -1571,6 +1585,8 @@ text.
 \begin{thebibliography}{99}
 \bibitem{AS26} S.~Amiri and S.~Siebertz. Almost optimal constant-round approximation of dominating
   set in graph classes with excluded minors. arXiv:2610.09618, 2026.
+\bibitem{ASW26} S.~Amiri, S.~Siebertz, and W.~Wawrzyniak. Paying for fractional error: tight
+  constant-round approximation of covering problems with short broadcasts. arXiv:2611.02057, 2026.
 \bibitem{B94} B.~S.~Baker. Approximation algorithms for NP-complete problems on planar graphs.
   \emph{J.\ ACM}, 41(1):153--180, 1994.
 \bibitem{BCGW21} M.~Bonamy, L.~Cook, C.~Groenland, and A.~Wesolek. A tight local algorithm for the minimum
@@ -1612,6 +1628,8 @@ text.
   \emph{SPAA}, 2013.
 \bibitem{PR07} M.~Parnas and D.~Ron. Approximating the minimum vertex cover in sublinear time and a
   connection to distributed algorithms. \emph{Theoret.\ Comput.\ Sci.}, 381(1--3):183--196, 2007.
+\bibitem{P26} T.~Picavet. Almost tight distributed approximation for domination in sparse graph
+  classes. arXiv:2610.31203, 2026.
 \bibitem{W26} W.~Wawrzyniak. Near-optimal distributed domination in planar graphs.
   arXiv:2609.32736, 2026.
 \end{thebibliography}
