@@ -622,12 +622,25 @@ standard axioms (`propext`, `Classical.choice`, `Quot.sound`). There is no `sorr
   has two corners of one face, such that each arc between them holds about three quarters of these darts
   or less.
 - `lean/SsspFlow/Disks.lean`: disks cut along walks up a spanning tree of the map with doubled edges.
-- `lean/SsspFlow/Bags.lean`: the bags of a sequence of levels: corners, diameter, the logarithmic depth and the hierarchy they form, with short chains, few hubs and low congestion.
   `IsLevel.spanForest`: the marked tree edges at the vertices without a corner in a level are a spanning
   forest of the cone over the level. `side_gcomp`: a larger level with two corners of one face of the
   cone keeps each of its disks on one side of the tour. `npOf_balance`: so a balanced cut leaves about
   three quarters of the forest darts or less in each disk. `IsLevel.next`: corners with their walks up
   the tree form a level again.
+- `lean/SsspFlow/Bags.lean`: the bags of a sequence of levels: corners, diameter, the logarithmic depth and the hierarchy they form, with short chains, few hubs and low congestion.
+- `lean/SsspFlow/Glue.lean`: distances after gluing the corners of a split. `walkDist_glue`: they are the least
+  total weights of walks over the distances before gluing, with free moves on the glued corners.
+  `split_faceDrawn`: a cycle of corners lies on one face of the split, in its order.
+- `lean/SsspFlow/Compose.lean`: disks composed along their corners. `hubDist_monge`: the composed distances
+  satisfy the crossing inequalities on each cycle of a smaller set of corners.
+- `lean/SsspFlow/Emulator.lean`: `exists_bagOK`: a metric with the crossing inequalities gives short labels
+  with precise values, from `RealizationBox` and `DistanceLabelBox`, with no growth of numbers.
+- `lean/SsspFlow/Levels.lean`: values along a sequence of levels. `levelMetric_step`: values at a larger set of
+  corners give values at a smaller one by one call per bag, with the factor `((U + 4) / U) ^ 2`.
+  `levelMetric_seq`: so errors add up over all levels instead of multiplying large factors.
+- `lean/SsspFlow/Hubs.lean`: `est_bounds`: values between the hubs of each bag give estimates from all
+  vertices of a bag to its hubs, with no growth over the levels. `bagDist_lo`, `bagDist_hi`: the values
+  between hubs from values on the corners, against walks in the graph and along the arcs of a bag.
 
 Not formalized: the proofs of `LabelHypothesis` and of the propositions above, the minimum cut of
 Theorem C, Theorem C′, the decomposition, the construction of the tiles and the rest of Lemma 14′, and Lemmas R5 and R7. Of Theorem D, only the

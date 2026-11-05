@@ -28,3 +28,8 @@ import SsspFlow.MaxFlow
 import SsspFlow.Tour
 import SsspFlow.Disks
 import SsspFlow.Bags
+import SsspFlow.Glue
+import SsspFlow.Compose
+import SsspFlow.Emulator
+import SsspFlow.Levels
+import SsspFlow.Hubs

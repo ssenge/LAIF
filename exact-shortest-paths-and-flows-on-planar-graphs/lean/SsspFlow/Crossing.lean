@@ -11,6 +11,8 @@ distinct vertices, in this cyclic order along the face.
   proof adds a chord from corner `a` to corner `c`. A simple path along the first walk together with
   the chord is a ring, and the two parts of the split face lie on its two sides.
 * `DiskDrawn.monge`: the condition (M) for distances in `ℝ≥0∞` over walks with dart weights.
+* `FaceDrawn`: the same data on a planar map with any number of components. The proofs of crossing
+  and of (M) use only this much.
 * `triangle_diskDrawn`: the statements are not vacuous.
 -/
 
@@ -37,16 +39,36 @@ structure DiskDrawn (R : RotSystem D) (l : List D) : Prop where
   /-- Along the face, each corner is followed by the next one, cyclically. -/
   order : firstReturn R.facePerm l.toFinset = l.formPerm
 
-theorem DiskDrawn.nodup (h : R.DiskDrawn l) : l.Nodup :=
+/-- The darts of `l` name corners of one face of a planar map, at pairwise distinct vertices, in
+this cyclic order along the face. The map may have other components. -/
+structure FaceDrawn (R : RotSystem D) (l : List D) : Prop where
+  /-- The map is planar. -/
+  planar : R.Planar
+  /-- The corners lie at pairwise distinct vertices. -/
+  tails_nodup : (l.map R.tail).Nodup
+  /-- Along the face, each corner is followed by the next one, cyclically. -/
+  order : firstReturn R.facePerm l.toFinset = l.formPerm
+
+theorem DiskDrawn.toFaceDrawn (h : R.DiskDrawn l) : R.FaceDrawn l :=
+  ⟨h.planar, h.tails_nodup, h.order⟩
+
+theorem FaceDrawn.nodup (h : R.FaceDrawn l) : l.Nodup :=
   List.Nodup.of_map _ h.tails_nodup
 
-theorem DiskDrawn.one_face (h : R.DiskDrawn l) {x y : D} (hx : x ∈ l) (hy : y ∈ l) :
+theorem DiskDrawn.nodup (h : R.DiskDrawn l) : l.Nodup :=
+  h.toFaceDrawn.nodup
+
+theorem FaceDrawn.one_face (h : R.FaceDrawn l) {x y : D} (hx : x ∈ l) (hy : y ∈ l) :
     fconnect R.facePerm x y := by
   have hc := h.nodup.isCycleOn_formPerm.2 (show x ∈ {a | a ∈ l} from hx)
     (show y ∈ {a | a ∈ l} from hy)
   rw [← fconnect_firstReturn_iff R.facePerm (List.mem_toFinset.2 hx) (List.mem_toFinset.2 hy),
     h.order]
   exact (sameCycle_iff_fconnect _).1 hc
+
+theorem DiskDrawn.one_face (h : R.DiskDrawn l) {x y : D} (hx : x ∈ l) (hy : y ∈ l) :
+    fconnect R.facePerm x y :=
+  h.toFaceDrawn.one_face hx hy
 
 theorem DiskDrawn.rotate (h : R.DiskDrawn l) (n : ℕ) : R.DiskDrawn (l.rotate n) where
   planar := h.planar
@@ -387,7 +409,7 @@ private theorem crossing_lift (hR : R.Planar) {a b c d : D} (hac : a ≠ c)
 /-! ### Crossing -/
 
 /-- The base form of the crossing: the two walks split at a common vertex. -/
-private theorem DiskDrawn.crossing_core (h : R.DiskDrawn l) {a b c d : D}
+private theorem FaceDrawn.crossing_core (h : R.FaceDrawn l) {a b c d : D}
     (hl : [a, b, c, d].Sublist l) {p r : List D} (hp : R.IsWalk (R.tail a) p (R.tail c))
     (hr : R.IsWalk (R.tail b) r (R.tail d)) :
     ∃ t, Splits R (R.tail a) p (R.tail c) t ∧ Splits R (R.tail b) r (R.tail d) t := by
@@ -413,7 +435,7 @@ private theorem DiskDrawn.crossing_core (h : R.DiskDrawn l) {a b c d : D}
 
 /-- **Crossing.** For corners `a, b, c, d` in this cyclic order, a walk between the tails of `a` and
 `c` and a walk between the tails of `b` and `d` share a vertex, and both split there. -/
-theorem DiskDrawn.crossing (h : R.DiskDrawn l) {a b c d u v w z : D} (hl : [a, b, c, d].Sublist l)
+theorem FaceDrawn.crossing (h : R.FaceDrawn l) {a b c d u v w z : D} (hl : [a, b, c, d].Sublist l)
     (huv : (u = a ∧ v = c) ∨ (u = c ∧ v = a)) (hwz : (w = b ∧ z = d) ∨ (w = d ∧ z = b))
     {p r : List D} (hp : R.IsWalk (R.tail u) p (R.tail v)) (hr : R.IsWalk (R.tail w) r (R.tail z)) :
     ∃ t p₁ p₂ r₁ r₂, p = p₁ ++ p₂ ∧ r = r₁ ++ r₂ ∧ R.IsWalk (R.tail u) p₁ t ∧
@@ -431,7 +453,7 @@ theorem DiskDrawn.crossing (h : R.DiskDrawn l) {a b c d u v w z : D} (hl : [a, b
   exact ⟨t, p₁, p₂, r₁, r₂, hp', hr', h1, h2, h3, h4⟩
 
 /-- **Monge**, the condition (M), in each of the four orientations. -/
-theorem DiskDrawn.monge (h : R.DiskDrawn l) (g : D → ℝ≥0∞) {a b c d u v w z : D}
+theorem FaceDrawn.monge (h : R.FaceDrawn l) (g : D → ℝ≥0∞) {a b c d u v w z : D}
     (hl : [a, b, c, d].Sublist l) (huv : (u = a ∧ v = c) ∨ (u = c ∧ v = a))
     (hwz : (w = b ∧ z = d) ∨ (w = d ∧ z = b)) :
     R.walkDist g (R.tail u) (R.tail z) + R.walkDist g (R.tail w) (R.tail v) ≤
@@ -444,6 +466,22 @@ theorem DiskDrawn.monge (h : R.DiskDrawn l) (g : D → ℝ≥0∞) {a b c d u v 
     _ = ((P₁ ++ P₂).map g).sum + ((Q₁ ++ Q₂).map g).sum := by
         simp only [List.map_append, List.sum_append]
         abel
+
+/-- **Crossing** on a connected map. -/
+theorem DiskDrawn.crossing (h : R.DiskDrawn l) {a b c d u v w z : D} (hl : [a, b, c, d].Sublist l)
+    (huv : (u = a ∧ v = c) ∨ (u = c ∧ v = a)) (hwz : (w = b ∧ z = d) ∨ (w = d ∧ z = b))
+    {p r : List D} (hp : R.IsWalk (R.tail u) p (R.tail v)) (hr : R.IsWalk (R.tail w) r (R.tail z)) :
+    ∃ t p₁ p₂ r₁ r₂, p = p₁ ++ p₂ ∧ r = r₁ ++ r₂ ∧ R.IsWalk (R.tail u) p₁ t ∧
+      R.IsWalk t p₂ (R.tail v) ∧ R.IsWalk (R.tail w) r₁ t ∧ R.IsWalk t r₂ (R.tail z) :=
+  h.toFaceDrawn.crossing hl huv hwz hp hr
+
+/-- **Monge** on a connected map. -/
+theorem DiskDrawn.monge (h : R.DiskDrawn l) (g : D → ℝ≥0∞) {a b c d u v w z : D}
+    (hl : [a, b, c, d].Sublist l) (huv : (u = a ∧ v = c) ∨ (u = c ∧ v = a))
+    (hwz : (w = b ∧ z = d) ∨ (w = d ∧ z = b)) :
+    R.walkDist g (R.tail u) (R.tail z) + R.walkDist g (R.tail w) (R.tail v) ≤
+      R.walkDist g (R.tail u) (R.tail v) + R.walkDist g (R.tail w) (R.tail z) :=
+  h.toFaceDrawn.monge g hl huv hwz
 
 /-! ### An example -/
 
