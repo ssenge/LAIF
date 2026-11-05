@@ -8,8 +8,9 @@ on the qubits of B; then phase estimation of a k-qubit unitary G on the remainin
 The hybrid: a quantum block Q of vertices plus k spare qubits, and the weights g_u of all k-sets u not inside Q
 stored classically. Z outcomes outside Q are sampled classically. On C, spare qubits are prepared in their initial
 states and the classically stored hyperedges are applied as exp(-i g_u |1><1|_{u & C}) when u \\ C lies in the ones
-of z. The check compares, for every branch (initial outcomes s, Z outcomes z), the branch probability and the
-k-qubit state on C (up to a global phase), hence the full output distribution.
+of z. The spare qubits can be the reset qubits of Q & B, so max(|Q|, k) qubits suffice; this changes no amplitude.
+The check compares, for every branch (initial outcomes s, Z outcomes z), the branch probability and the k-qubit
+state on C (up to a global phase). Equal states on C give equal laws for all later measurements on C.
 """
 import itertools
 import numpy as np
@@ -104,7 +105,7 @@ def check(n, k, q0, rng, trials=5):
                 worst_state = max(worst_state, 1 - abs(np.vdot(post_full, reg)))
     assert worst_p < 1e-12 and worst_state < 1e-12, (worst_p, worst_state)
     nc = len(ksets) - len([e for e in ksets if e <= Q])
-    print(f"n={n} k={k} |Q|={q0}: {q0 + k} qubits, {nc} of {len(ksets)} weights classical; "
+    print(f"n={n} k={k} |Q|={q0}: {max(q0, k)} qubits, {nc} of {len(ksets)} weights classical; "
           f"max branch prob diff {worst_p:.1e}, max 1-|overlap| {worst_state:.1e}")
 
 
