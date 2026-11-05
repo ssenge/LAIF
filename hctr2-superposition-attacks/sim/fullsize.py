@@ -3,8 +3,8 @@
 HCTR2 follows its specification (ePrint 2021/1441, Section 3) and is checked against the published test vectors when
 their file is given. CHCTR is HCTR2 under K2 applied to HCTR2 under K1 with the same tweak. HCTR++ follows Figure 4 of
 ePrint 2026/383 with POLYVAL over GF(2^256), as fixed in the public reference code. For random keys, tweaks and inputs x,
-and for elements s of the subgroups S of the notes, the script checks C(x xor s) = C(x) xor s and D(y xor s) = D(y) xor s,
-and the recovery of the hash keys from s.
+and for elements s of the subgroups S, the script checks C(x xor s) = C(x) xor s and D(y xor s) = D(y) xor s,
+the recovery of the hash keys from s, and the shift at longer messages and partial last blocks.
 Run with python fullsize.py [HCTR2_AES256.json]."""
 import json
 import os
@@ -285,6 +285,40 @@ def main():
         good += w == hx(c.h) and rr == sorted((hx(e.a.h), hx(e.b.h)))
     print(f"key recovery from one element of S (HCTR2, CHCTR): {good}/{trials}")
     ok &= good == trials
+    # HCTR++: w1 from S_1 on encryption and w2 on decryption, as in the attack
+    good = 0
+    for _ in range(trials):
+        c = HCTRPP(rnd(16))
+        z = rnd(16) + b"\0" * 16
+        for h in (c.h1, c.h2):
+            t = s_hctrpp1(h, z)
+            good += mul(I(t[:32]), inv(I(t[32:]), R256), R256) == hx(h, R256, XI256)
+    print(f"key recovery from one element of S_1 (HCTR++, enc and dec): {good}/{2 * trials}")
+    ok &= good == 2 * trials
+    # Theorem 2 at other lengths: HCTR2 with a partial last block; CHCTR and HCTR++ with shifts on the last two blocks
+    good = 0
+    for _ in range(trials):
+        c = HCTR2(rnd(32))
+        T, rest = rnd(16), 16 + int.from_bytes(rnd(1), "little") % 40 + 1
+        d = rnd(rest)
+        dp = pad(d, 16)                              # the 0x01 padding bit is constant and cancels
+        s = s_hctr2(c.h, dp)[:16] + d
+        x = rnd(16 + rest)
+        good += c.enc(T, xor(x, s)) == xor(c.enc(T, x), s)
+        e = CHCTR(rnd(64))
+        l = 2 + int.from_bytes(rnd(1), "little") % 3
+        t = s_chctr(e.a.h, e.b.h, rnd(16))
+        s = t[:16] + b"\0" * (16 * (l - 2)) + t[16:]
+        x = rnd(16 + 16 * l)
+        good += e.enc(T, xor(x, s)) == xor(e.enc(T, x), s)
+        p = HCTRPP(rnd(16))
+        l = 2 + int.from_bytes(rnd(1), "little") % 2
+        t = s_hctrpp(p.h1, p.h2, rnd(16) + b"\0" * 16)
+        s = t[:16] + b"\0" * (32 * (l - 2)) + t[32:]
+        x = rnd(16 + 32 * l)
+        good += p.enc(T, xor(x, s)) == xor(p.enc(T, x), s)
+    print(f"Theorem 2 at other lengths (HCTR2 partial blocks, CHCTR and HCTR++ longer rests): {good}/{3 * trials}")
+    ok &= good == 3 * trials
     print("all checks passed" if ok else "SOME CHECK FAILED")
     sys.exit(0 if ok else 1)
 
