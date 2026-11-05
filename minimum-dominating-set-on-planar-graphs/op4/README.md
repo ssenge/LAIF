@@ -134,9 +134,9 @@ can give (see [Limits of the approach](#limits-of-the-approach)).
 
 $\kappa$ is the exponent of $1/\varepsilon$ in the number of rounds, so lowering it is a
 polynomial speed-up. At $\varepsilon=0.01$, the term $(1/\varepsilon)^\kappa$ shrinks from about
-$10^{52}$ to about $10^{12}$. Among algorithms whose number of rounds does not depend on $n$, the
-algorithm of [1] is the only one known for target ratios in $(7,8]$, so this is the fastest known
-such algorithm in that range.
+$10^{52}$ to about $10^{12}$. Other algorithms for the same ratio are in [21], with
+$O(\varepsilon^{-4}\log^2(1/\varepsilon))$ rounds against the integral optimum, and in [22], with
+ratio exactly 7 against the fractional optimum in a constant number of rounds.
 
 In the other direction, the $(1+\varepsilon)$-approximations of [1] (fractional, and randomized with
 expected size and always dominating) need at least $1/\varepsilon-4$ rounds on every minor-closed
@@ -932,6 +932,10 @@ and check proofs, to write the simulation scripts and the Lean formalization, an
 19. Y.-J. Chang and Z. Li. The complexity of distributed approximation of packing and covering
     integer linear programs. PODC 2023. arXiv:2305.01324.
 20. F. Kuhn, T. Moscibroda, and R. Wattenhofer. The price of being near-sighted. SODA 2006.
+21. T. Picavet. Almost tight distributed approximation for domination in sparse graph classes.
+    arXiv:2610.31203, 2026.
+22. S. Amiri, S. Siebertz, and W. Wawrzyniak. Paying for fractional error: tight constant-round
+    approximation of covering problems with short broadcasts. arXiv:2611.02057, 2026.
 
 ## Citation
 

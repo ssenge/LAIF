@@ -16,7 +16,7 @@ Results on open problems in algorithms and complexity. Each folder holds one top
 | Distributed algorithms, CONGEST | Maximum matching on general planar networks | Õ(s*) for a maximum matching of size s* [2] | Õ(D²), randomized | Claim, with simulation; the matrix steps in Lean | [exact-planar-bipartite-matching](exact-planar-bipartite-matching/) |
 | Distributed algorithms, CONGEST | Exact single-source shortest paths on directed planar networks, nonnegative weights | Õ(D²) [3] | Õ(D), given the Label Hypothesis stated in the folder | Claim; in Lean the round bound from the Label Hypothesis and two cited results; paper arXiv:2611.02256 | [exact-shortest-paths-and-flows-on-planar-graphs](exact-shortest-paths-and-flows-on-planar-graphs/) |
 | Distributed algorithms, CONGEST | Exact maximum st-flow on directed planar networks | Õ(D²) [4] | min{Õ(D²), D·n^{o(1)}}, given the Label Hypothesis | Claim; in Lean the round bound from the Label Hypothesis, a reduction for negative weights and two cited results | [exact-shortest-paths-and-flows-on-planar-graphs](exact-shortest-paths-and-flows-on-planar-graphs/) |
-| Distributed algorithms, LOCAL | Round exponent κ of the (7 + ε)-approximation of minimum dominating set on planar graphs, (c/ε)^κ rounds | κ ≈ 25.81 [5] | κ < 5.89, same ratio | Proved on paper; core inequalities in Lean; paper in the folder | [minimum-dominating-set-on-planar-graphs](minimum-dominating-set-on-planar-graphs/) |
+| Distributed algorithms, LOCAL | Round exponent κ of the (7 + ε)-approximation of minimum dominating set on planar graphs, (c/ε)^κ rounds | κ ≈ 25.81 [5] | κ < 5.89 for the algorithm of [5], same ratio. Other algorithms reach O(ε⁻⁴ log²(1/ε)) rounds [8], and ratio 7 in constant rounds [9] | Proved on paper; core inequalities in Lean; paper in the folder | [minimum-dominating-set-on-planar-graphs](minimum-dominating-set-on-planar-graphs/) |
 | Distributed algorithms, LOCAL | Rounds of the (1 + ε)-approximations of [5] as a function of ε | (c/ε)^25.81; dependence on ε open | At least 1/ε − 4 rounds on every minor-closed class that contains all paths; Θ(1/ε) on forests and on outerplanar graphs | Lower bound in Lean | [minimum-dominating-set-on-planar-graphs](minimum-dominating-set-on-planar-graphs/) |
 | Fine-grained complexity | Algorithmic consequences of the October 2026 claims [6, 7] that the Exponential Time Hypothesis is false | Time 2^{o(n)} for these problems would contradict ETH | One Turing machine in time 2^{εn} for several counting and parity problems, conditional on the unrefereed claims [6, 7]; some results have since turned out to be known or superseded, see the folder | Lean, as theorems about Turing machines on top of the formalized algorithm of [7] | [eth-corollaries](eth-corollaries/) |
 
@@ -44,6 +44,8 @@ The folders `exact-planar-bipartite-matching`, `exact-shortest-paths-and-flows-o
 5. S. Amiri, S. Siebertz. Almost optimal constant-round approximation of dominating set in graph classes with excluded minors. arXiv:2610.09618.
 6. OpenAI. The Exponential Time Hypothesis is False. Preprint, 17 October 2026, revised 25 October 2026. https://github.com/openai/math, family 378.
 7. Anthropic. A 2^{o(n)} Time Algorithm for 3-SAT. hexagon:2610.00577v1, 26 October 2026.
+8. T. Picavet. Almost tight distributed approximation for domination in sparse graph classes. arXiv:2610.31203.
+9. S. Amiri, S. Siebertz, W. Wawrzyniak. Paying for Fractional Error: Tight Constant-Round Approximation of Covering Problems with Short Broadcasts. arXiv:2611.02057.
 
 ## License
 

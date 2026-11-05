@@ -2,8 +2,9 @@
 
 This folder is about Open Problem 7 of [1]: for each g >= 5, find the best approximation
 ratio of deterministic constant-round LOCAL algorithms for minimum dominating set on planar graphs
-of girth at least g. The known range is [3, (3g-2)/(g-2)]. The lower bound 3 comes from paths, and
+of girth at least g. The range from [1] is [3, (3g-2)/(g-2)]. The lower bound 3 comes from paths, and
 the upper bound (13/3 for g = 5, 4 for g = 6) from threshold rounding of a fractional solution [1].
+Better upper bounds are in [2]; see the results below.
 
 The approach here keeps the fractional solution of [1] for the dense part and replaces threshold
 rounding on the rest by a rule based on identifiers (rule R13 below). Its ratio is analysed with a
@@ -55,7 +56,7 @@ The current certificate LP is `discharge_r13v9.py`. It uses only girth >= 5, exc
 constant C = g/(g-2), which is set by the environment variable `GIRTH`. A certificate for g is
 also one for every larger girth, since such graphs have girth >= g.
 
-| girth g | v9 feasible at rho (exact check) | v9 infeasible at rho (float) | v8 (exact check) | known upper bound (3g-2)/(g-2) |
+| girth g | v9 feasible at rho (exact check) | v9 infeasible at rho (float) | v8 (exact check) | upper bound (3g-2)/(g-2) of [1] |
 |---|---|---|---|---|
 | 5 | 3.51 | 3.50 | 3.52 | 13/3 |
 | 6 | 3.23 | 3.22 | 3.24 | 4 |
@@ -71,6 +72,11 @@ also one for every larger girth, since such graphs have girth >= g.
 If the certificate is sound, R13 improves the upper bound of [1] for every g from 5 to 101 (the
 value 3.04 for g >= 30 is below 3 + 4/(g-2) up to g = 101), and its ratio is below 13/4 for
 every g >= 6. For g >= 1000 it is within 0.03 of the lower bound 3, but there [1] is better.
+
+Theorems of [2] give every ratio above 4 at g = 5, 4 at g = 6, and every ratio above 3.562 at
+g = 7, 3.320 at g = 8, 3.158 at g = 9, 3.041 at g = 10 and 3 for g >= 11. They give exactly 3 for
+g >= 17, which settles those girths. The values of R13 are the smaller ones for 5 <= g <= 9, using
+the certificate for g = 8 at g = 9.
 
 Version 9 changes four things in v8 ([`SOUNDNESS.md`](SOUNDNESS.md), section 13). For g >= 10
 the binding rows of v8 were the idrule pattern on G[Q_l] with every vertex a light hub inside U,
@@ -161,6 +167,8 @@ and check the arguments, to write the scripts and the certificate LPs, and to dr
 
 1. S. Amiri and S. Siebertz. Almost optimal constant-round approximation of dominating set in graph
    classes with excluded minors. arXiv:2610.09618, 2026.
+2. S. Amiri, S. Siebertz, and W. Wawrzyniak. Paying for fractional error: tight constant-round
+   approximation of covering problems with short broadcasts. arXiv:2611.02057, 2026.
 
 The notebook `OP7.md` lists further references.
 

@@ -13,7 +13,10 @@ graphs of girth at least g.
 - Earlier results, as cited in [1]: ratio 18 for girth 5 and ratio 6 for triangle-free graphs.
 - In [4] (SSS 2024), asymptotic Theta bounds for high girth and bounded expansion were given in
   terms of k and f(k). There are no planar constants there, so OP7 is not covered.
-- No 2026 paper on OP7 found.
+- [6] (arXiv:2611.02057, 1 Nov 2026): deterministic constant-round broadcast CONGEST algorithms with
+  ratio 3 + 4/(g-2) against the fractional optimum; every ratio above 4 at g = 5, above 3.562 at
+  g = 7, above 3.320 at g = 8, above 3.158 at g = 9, above 3.041 at g = 10 and above 3 for g >= 11;
+  exactly 3 for g >= 17. With the lower bound 3, the infimum of OP7 is 3 for every g >= 11.
 - [3] (arXiv:2610.31203, 22 Oct 2026): deterministic constant-round (d+1+eps) for mad <= d and
   bounded depth-one shallow-minor density; tight for even integers d. For planar girth 5 (mad < 10/3)
   this is again 13/3. Its Question 5.3 asks, for every real d >= 2, whether some class with mad <= d
@@ -423,5 +426,7 @@ this niche.
    low expansion. arXiv:2408.12998, SSS 2024.
 5. M. Hilke, C. Lenzen, and J. Suomela. Brief announcement: Local approximability of minimum
    dominating set on planar graphs. PODC 2014.
+6. S. Amiri, S. Siebertz, and W. Wawrzyniak. Paying for fractional error: tight constant-round
+   approximation of covering problems with short broadcasts. arXiv:2611.02057, 2026.
 
 [12] is the square-grid paper cited as [12] in [1].
