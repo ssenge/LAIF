@@ -17,7 +17,8 @@ model. The main claims are:
 The paper is *Exact Shortest Paths and Maximum Flow in Planar Networks in the CONGEST Model*,
 [arXiv:2611.02256](https://arxiv.org/abs/2611.02256) (v1, 1 November 2026); the same PDF is in
 `paper/2611.02256v1.pdf`. It covers the claims above, under a Label Hypothesis that it states.
-The claims below came after it and are not in it.
+That hypothesis is now proved in Lean from cited results; see [Status](#status).
+The claims below came after the paper and are not in it.
 
 A newer claim, after the paper and not part of it: exact maximum st-flow in directed planar networks, with the integer flow on every edge, in
 $\tilde O(D)$ rounds, by scaling over the faces next to one BFS path. It needs one extension of the labels, a prescribed root cycle. See
@@ -33,7 +34,7 @@ $\tilde O(D)$ rounds with high probability, from the Label Hypothesis alone, wit
 A second newer claim, also not part of the paper: in undirected unweighted planar networks every vertex learns its exact eccentricity, so the diameter and radius are found, in
 $\tilde O(D^2)$ rounds, where the best stated bound for the diameter is $\tilde O(D^3)$. It does not need the Label Hypothesis. A corollary gives every vertex its sum of distances, so closeness, a medoid and the Wiener index, in the same bound. The (1+ε)-approximate version takes $\tilde O(D + \varepsilon^{-4})$ rounds, see [`notes/APPROX_DIAMETER.md`](notes/APPROX_DIAMETER.md). See [`notes/DIAMETER.md`](notes/DIAMETER.md). **Written on 3 Nov 2026. Treat both as claims.**
 
-Theorem A depends on the distance labels of the recent preprint [1]. Our reading hints at a possible gap in one lemma of [1]
+The written proof of Theorem A depends on the distance labels of the recent preprint [1]. Our reading hints at a possible gap in one lemma of [1]
 (Lemma 14). This repository explains it and gives a repair. A property of
 the decomposition that [1] uses for its round count (Property 6) also seems not to hold for
 induced bags. We repair that too, with bags that carry the region they were cut from; see [Status](#status).
@@ -42,6 +43,17 @@ induced bags. We repair that too, with bags that carry the region they were cut 
 
 Please read this before relying on anything here.
 - The proofs are written up in `notes/`. See [Use of AI](#use-of-ai).
+- **The Label Hypothesis in Lean.** `labelHypothesis_of_boxes` in `lean/SsspFlow/LabelFinal.lean` proves the Label
+  Hypothesis in the message model from four cited results: realization (G3), distance labels (G5), face identifiers
+  (G6) and an aggregation primitive. The nodes get the rotation lists as input. The bags, their cuts along walks up a
+  tree of shortest walks, the labels and the message passing are built and proved in Lean. This construction differs
+  from the tiles of Lemma 14′.
+  - With the smoothing of [3], `exactSssp_of_boxes` gives the $\tilde O(D)$ round bound of Theorem A, with exact
+    distances and the parents of a shortest-path forest.
+  - With a reduction for negative weights, `negFlow_polylog_of_boxes` and `negFlow_subpoly_of_boxes` give the round
+    bounds for negative weights and for maximum flow, with the flow on every edge. With the factor of
+    arXiv:2410.20959 these are $\tilde O(D)$ rounds with high probability.
+  - The cited results and the reduction stay hypotheses of these theorems.
 - **Correctness.** Theorems A, B, C and C′ give correct outputs given Lemma 14′, our
   replacement for [1, Lemma 14], and the black boxes listed below. Lemma 14′ is
   proved in `notes/LEMMA15.md` §3.
@@ -115,10 +127,10 @@ non-negative weights)".
 
 | Category | Problem | Before | After | Scope | Status |
 |---|---|---|---|---|---|
-| Distributed algorithms, CONGEST | Exact single-source shortest paths on directed planar networks, nonnegative weights | Õ(D²) [8] | Õ(D), given the Label Hypothesis stated in this folder, which is modelled on the labels of [1]; this folder completes the proof of [1], with a repair of one lemma | Directed planar networks, polynomial integer weights; deterministic relative to the labels | Claim; in Lean the virtual-source lemma, the discretized boosting, and the round bound from the Label Hypothesis and two cited results; paper arXiv:2611.02256 |
-| Distributed algorithms, CONGEST | Exact maximum st-flow on directed planar networks, with the flow on every edge | Õ(D²) [9] | min{Õ(D²), D·n^{o(1)}}; Õ(D) when s and t lie on a common face; Õ(D) with high probability in a later note | Given the Label Hypothesis | Claim; in Lean the round bound from the Label Hypothesis, a reduction for negative weights and two cited results |
-| Distributed algorithms, CONGEST | Exact minimum st-cut and minimum cut value on undirected planar networks | (1 − o(1))-approximation in Õ(D) [18]; exact in Õ(D²) [9] | Õ(D), given the Label Hypothesis, with two repairs of [18]: its auxiliary graph at the terminals, and its recursion, which as we read it can miss the minimum cut | Undirected planar networks | Claim; the recursion argument in Lean |
-| Distributed algorithms, CONGEST | Negative weights, minimum arborescences and replacement paths on planar digraphs | D·n^{o(1)} for negative weights through a general reduction; no bound in D alone known to us for the others | Õ(D) with high probability for negative weights and for arborescences, given the Label Hypothesis; replacement paths exactly in Õ(D·min(h, D)) and within 1 + ε in Õ(D/ε) | Planar digraphs | Claims in notes; cores in Lean |
+| Distributed algorithms, CONGEST | Exact single-source shortest paths on directed planar networks, nonnegative weights | Õ(D²) [8] | Õ(D); the Label Hypothesis stated in this folder, modelled on the labels of [1], is proved in Lean from cited results; this folder also completes the proof of [1], with a repair of one lemma | Directed planar networks, polynomial integer weights, rotation lists as input; deterministic relative to the cited results | Lean, assuming five cited results: realization, distance labels, face identifiers, aggregation, smoothing; paper arXiv:2611.02256 |
+| Distributed algorithms, CONGEST | Exact maximum st-flow on directed planar networks, with the flow on every edge | Õ(D²) [9] | min{Õ(D²), D·n^{o(1)}}; Õ(D) when s and t lie on a common face; Õ(D) with high probability in a later note | Directed planar networks, rotation lists as input | Claim; in Lean the round bound, assuming a reduction for negative weights and the five cited results |
+| Distributed algorithms, CONGEST | Exact minimum st-cut and minimum cut value on undirected planar networks | (1 − o(1))-approximation in Õ(D) [18]; exact in Õ(D²) [9] | Õ(D), through the Exact SSSP Theorem, with two repairs of [18]: its auxiliary graph at the terminals, and its recursion, which as we read it can miss the minimum cut | Undirected planar networks | Claim; the recursion argument in Lean |
+| Distributed algorithms, CONGEST | Negative weights, minimum arborescences and replacement paths on planar digraphs | D·n^{o(1)} for negative weights through a general reduction; no bound in D alone known to us for the others | Õ(D) with high probability for negative weights and for arborescences; replacement paths exactly in Õ(D·min(h, D)) and within 1 + ε in Õ(D/ε) | Planar digraphs; the claims use the Label Hypothesis, proved in Lean from cited results | Claims in notes; cores in Lean |
 | Distributed algorithms, CONGEST | Diameter and all eccentricities of unweighted undirected planar networks | Õ(D³) [arXiv:2608.07187](https://arxiv.org/abs/2608.07187) | Õ(D²), with no hypothesis; within 1 + ε in Õ(D + 1/ε⁴) | Unweighted undirected planar networks | Claim |
 | Corrections | Lemma 14 and a decomposition property of [1]; the auxiliary graph and the recursion of [18] | As stated | Counterexamples, and repairs: tiles in place of the hub network and region bags for the round count of [1]; a repaired auxiliary graph at the terminals and two more shortest-path computations per level of the recursion of [18] | As we read the texts | Counterexamples checked by scripts; repairs on paper, the recursion repair in Lean |
 
@@ -139,7 +151,8 @@ non-negative weights)".
 | Lemmas 14′, 15′, 16′: the repair of [1, Lemmas 14 to 16] | | | minor |
 
 All five theorems are conditional (see [Status](#status)): their correctness on Lemma 14′,
-and their round bounds also on the region bags of `notes/LEMMA15.md` §9. The ratings in short:
+and their round bounds also on the region bags of `notes/LEMMA15.md` §9. The proofs in Lean of the round bounds of
+Theorems A, B and C need neither of these, only the cited results that they name. The ratings in short:
 - **Theorem A** closes the planar exact-SSSP gap up to polylogarithmic factors and answers
   the open question of [9]. [18] (2026) still uses approximate SSSP "for the lack of
   almost-D-rounds exact distributed SSSP". The proof is short, though: the reduction of [3], the labels of
@@ -437,6 +450,9 @@ Beyond the results cited in the proofs, these enter as black boxes:
 - **(G5) Distance oracles** for planar digraphs [13], as used in [1, Lemma 11].
 - **(G6) Face identifiers** in $\tilde O(D)$ rounds [9, Lemma 5.11].
 
+The proof in Lean of the Label Hypothesis takes (G3), (G5), (G6) and an aggregation primitive as hypotheses. It builds
+its decomposition itself, so it does not use (G1), and it proves what it needs of (G4).
+
 ## Machine-checked proofs (`lean/`)
 
 Lean 4 (`leanprover/lean4:v4.36.0-rc1`) with Mathlib; the exact Mathlib revision is pinned in
@@ -558,7 +574,7 @@ standard axioms (`propext`, `Classical.choice`, `Quot.sound`). There is no `sorr
 - `lean/SsspFlow/LabelHypothesis.lean`: statements in this model.
   - `LabelHypothesis`, for one algorithm per $n,e,D$ on all planar networks with these parameters and
     with arc lengths at most $(n+2)^K$, with the word sizes and the rounds as part of the statement.
-    It is stated here, not proved.
+    `labelHypothesis_of_boxes` in `lean/SsspFlow/LabelFinal.lean` proves it from the propositions below.
   - `lemmaV_chain₂` and `LabelWitness.query_bound` prove Lemma V for the values that the labels
     hold. `labelsOK_oneBag` and `labelsOK_triNet` show that correct labels exist on small networks.
   - The results of the literature that are used are stated as propositions and not proved
@@ -679,8 +695,18 @@ standard axioms (`propext`, `Classical.choice`, `Quot.sound`). There is no `sorr
   functions of this table alone, and `vals_metric`, `label_bounds`, `vItems_lt` give their accuracy and their size.
 - `lean/SsspFlow/NetValues.lean`: `vItsL_eq`, `values_of_run`, `leaf_card`: what a node submits in the value calls,
   and that a run of these calls gives each node the tables of its bags.
+- `lean/SsspFlow/Output.lean`: `labelsOK_of_mem`: correct tables in the memory of the nodes give correct labels, with the
+  hierarchy of the bags as the witness.
+- `lean/SsspFlow/LabelProof.lean`: `labels_memL`: the memory of a node after all phases is correct, so it gives correct
+  labels. `finalAlg`, `run_finalAlg`: the algorithm of the nodes and what it holds after its rounds.
+- `lean/SsspFlow/LabelFinal.lean`: the end of the proof.
+  - `labelHypothesis_of_boxes`: `RealizationBox`, `DistanceLabelBox`, `FaceIdBox` and `AggBox` give `LabelHypothesis`.
+  - `exp_bounds`, `bits_le`: all numbers of a run are polynomial in $n$, so they fit into polylogarithmically many bits,
+    independently of $D$. `labelRounds_le`: the number of rounds. `labelsOK_tiny`: networks with at most one node.
+  - `exactSssp_of_boxes`: with `SmoothingBox`, this gives `ExactSsspBound`. `negFlow_polylog_of_boxes`,
+    `negFlow_subpoly_of_boxes`: with `NegReduction τ`, this gives `NegSsspBound τ` and the matching `MaxFlowBound`.
 
-Not formalized: the proofs of `LabelHypothesis` and of the propositions above, the minimum cut of
+Not formalized: the proofs of the propositions above, the minimum cut of
 Theorem C, Theorem C′, the construction of the tiles and the rest of Lemma 14′, and Lemmas R5 and R7. Of Theorem D, only the
 recursion argument of Lemma S2 is formalized; Lemmas N, R, O and S1 are on paper.
 

@@ -290,3 +290,12 @@ Expected output for each: `propext`, `Classical.choice`, `Quot.sound` (or a subs
 #print axioms SsspFlow.Congest.LevelData.OK.vItems_lt
 #print axioms SsspFlow.Congest.values_of_run
 #print axioms SsspFlow.Congest.leaf_card
+#print axioms SsspFlow.Congest.labelsOK_of_mem
+#print axioms SsspFlow.Congest.labels_memL
+#print axioms SsspFlow.Congest.run_finalAlg
+#print axioms SsspFlow.Congest.labelRounds_le
+#print axioms SsspFlow.Congest.labelsOK_tiny
+#print axioms SsspFlow.Congest.labelHypothesis_of_boxes
+#print axioms SsspFlow.Congest.exactSssp_of_boxes
+#print axioms SsspFlow.Congest.negFlow_polylog_of_boxes
+#print axioms SsspFlow.Congest.negFlow_subpoly_of_boxes
