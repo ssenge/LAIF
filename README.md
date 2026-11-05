@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="logo.png" alt="Barbarossa, a bearded 1980s computer nerd at his home computer" width="240">
+<img src="logo.png" alt="Barbarossa, a red-bearded 1980s computer nerd at his home computer" width="240">
 
 # BarbarossAI Research Project
 
