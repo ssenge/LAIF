@@ -1,0 +1,4 @@
+(M1): 36 trees; largest antichain sum over B(root) is 1.000 at x = 1.4656 and 9.566 at x = 1.1
+cut trees: largest size over depth * e^delta is 0.368
+scan: 120 feasible and 60 infeasible budgets on unions, 0 wrong; largest level minus half the log measure 0.000
+0 failed checks

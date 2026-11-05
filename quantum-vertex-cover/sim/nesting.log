@@ -1,0 +1,5 @@
+costs: q = C = 1, W = 25, A = 108; largest exponent up to m = 400: 55.25, up to m = 800: 55.25; final 51.25
+bits: p = 0.5, largest gap between the joint law and the product 8.1e-19, Pr[count >= 3r/8] = 0.8062
+bits: p = 0.25, largest gap between the joint law and the product 4.5e-17, Pr[count >= 3r/8] = 0.1576
+bits: p = 0.1, largest gap between the joint law and the product 4.9e-17, Pr[count >= 3r/8] = 0.0043
+0 failed checks
