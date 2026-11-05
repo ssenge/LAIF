@@ -1,0 +1,14 @@
+the walk alone: probability that the measured subsets hold a claw
+ T  r  t1  t2  claws  qubits  no walk    walk
+ 4  2   4   3      1      13    0.250   0.906
+ 4  2   4   3      2      13    0.472   0.283
+ 8  2   3   3      1      23    0.062   0.688
+
+all three layers: probability of a real solution in one run
+instance              n qubits    marked  blind  +walk +residues  +coin  j k capped  amp err  runs to a solution
+labels               10     19    4/64    0.016  0.057     0.244  1.000  1 1      9  1.3e-14  mean 2.6, gave up 0/50, wrong 0
+labels, equal sums   10     19    3/64    0.015  0.033     0.214  0.984  2 1      3  1.9e-14  mean 2.3, gave up 0/50, wrong 0
+empty label          12     21    1/256   0.001  0.004     0.078  0.563  2 1     16  9.2e-15  mean 6.5, gave up 0/50, wrong 0
+no solution          10     19    0/64    0.000  0.000     0.000  0.000  0 0      2  0.0e+00  none flagged in 50x200 runs
+
+at most 23 qubits; 28 circuits; 148 walks in them; 0 failed checks

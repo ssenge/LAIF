@@ -117,6 +117,18 @@ Without labels, that is X, Y ∈ {0,1}ⁿ and K = 2^{pn}, with element distinctn
 
 `sim/check.py` and `sim/check_empty.py` replace the quantum searches by exhaustive classical ones and run on planted instances at n ≤ 24, including odd support and instances built with large classes of equal sums. Every equal-sum pair verified at n ≤ 20 is a real solution, the K representations have distinct sums, and the fraction of working residues is above 1/(ns). These sizes test the structure of the lists only, and K is small there. They say nothing about the asymptotic exponent. `sim/opt.py`, `sim/opt2.py` and `sim/exact.py` compute and optimize the exponents.
 
+`sim/qiskit_check.py` runs the three nested searches as Qiskit circuits in Aer, noiseless, at up to 21 qubits: amplitude amplification over a list of 4 partitions, quantum search over residues, and a quantum walk for the claw in windows of T = 4. The walk alone also runs at T = 8, with 23 qubits.
+
+| Instance | n | Marked (coin, residue) | Blind draw | + walk | + residues | + coin | Mean runs to a solution |
+|---|---|---|---|---|---|---|---|
+| Labels | 10 | 4/64 | 0.016 | 0.057 | 0.244 | 1.000 | 2.6 |
+| Labels, large classes of equal sums | 10 | 3/64 | 0.015 | 0.033 | 0.214 | 0.984 | 2.3 |
+| Empty label | 12 | 1/256 | 0.001 | 0.004 | 0.078 | 0.563 | 6.5 |
+
+The columns give the exact probability of a real solution in one run, with the best j ≤ 2 and k ≤ 1 for the last two. The mean runs draw j and k at random for each run, over 50 repetitions, and every output is a real solution. The amplification agrees with sin²(3θ) to within 10⁻¹³, and the cap bites on every instance. Instances with no solution never pass the final check.
+
+This tests the construction on tiny instances, not the exponent. The table and the windows are read through a diagonal gate computed classically, so there is no quantum memory and no data register. Subset states are prepared by a dense gate, and j and k are drawn classically and not held in the coin. P and T are set to fit the qubits, not to the balance of the proof. Claw finding is not repeated, and its step counts are fixed for one claw: on one claw it lifts 0.250 to 0.906 at T = 4, and on two claws those counts give 0.283 against 0.472 with no walk.
+
 ## 7. Limits
 
 - Time with quantum random access to quantum memory, which [1] and [2] also use. The table has about 2^{0.4172n} entries. No claim is made for a model without such memory, and there is no gate count.
