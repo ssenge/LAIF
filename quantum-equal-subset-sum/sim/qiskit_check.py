@@ -273,6 +273,15 @@ def main():
         bad += p <= base and len(claws) == 1
         print(f"{T:2} {r:2} {t1:3} {t2:3} {len(claws):6} {2*T + walk_layout(T):7} {base:8.3f} {p:7.3f}", flush=True)
 
+    print("\nthe walk at T = 4, r = 2, t2 = 3, with t1 uniform below 8")
+    print(f"{'claws':14} {'no walk':>8} {'mean':>7}")
+    for name, claws in (("one pair", [(0, 0)]), ("two disjoint", [(0, 0), (1, 1)]),
+                        ("star 1x4", [(0, b) for b in range(4)]),
+                        ("block 2x2", [(a, b) for a in range(2) for b in range(2)])):
+        ps = [claw_only(4, 2, t, 3, claws) for t in range(8)]
+        bad += sum(ps)/8 < 1/4
+        print(f"{name:14} {ps[0]:8.3f} {sum(ps)/8:7.3f}", flush=True)
+
     T, r, t1, t2 = 4, 2, 4, 3
     print("\nall three layers: probability of a real solution in one run")
     print(f"{'instance':20} {'n':>2} {'qubits':>6} {'marked':>9} {'blind':>6} {'+walk':>6} {'+residues':>9} {'+coin':>6}  j k {'capped':>6} {'amp err':>8}  runs to a solution")
