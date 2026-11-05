@@ -7,7 +7,7 @@ cos(2 pi x) >= gamma, and g_p the product of h or its half-period shift accordin
 and every |hat g_p(k)| <= mu^m prod_i rho(k_i), with rho(k) = sinc^2(k w) and sum_{k != 0} rho(k) = 1/w - 1 =: tau.
 If the k != 0 terms sum to less than 1, every sign pattern has positive measure, so the m inputs are shattered at
 margin gamma. Over random A, a k with support size v survives with probability at most q(v)^T, where
-q(v) = binom(v, v//2) / 2^v (Erdos' Littlewood-Offord bound), hence
+q(v) = binom(v, v//2) / 2^v (anti-concentration of sums of signed bits), hence
   E_A[sum] <= sum_{v=1}^m binom(m, v) tau^v q(v)^T.
 This script finds the largest m with right side < 1, so it gives a shattered set by the probabilistic method.
 """
@@ -63,7 +63,7 @@ def main():
     for gamma in [0.5, 0.0]:
         w = acos(gamma) / (2 * pi)
         tau = 1 / w - 1
-        print(f"margin gamma = {gamma}, half-width w = {w:.4f}, tau = {tau:.3f}, predicted m/(T log2 T) -> {1 / (2 * log2(1 + tau)):.3f}")
+        print(f"margin gamma = {gamma}, half-width w = {w:.4f}, tau = {tau:.3f}, heuristic limit of m/(T log2 T): {1 / (2 * log2(1 + tau)):.3f}")
         for T in [10, 30, 100, 300, 1000, 3000, 10000, 30000, 100000, 300000]:
             m = largest_m(T, tau)
             print(f"  T={T:7d}  m={m:8d}  m/T={m / T:6.2f}  m/(T log2 T)={m / (T * log2(T)):.3f}")

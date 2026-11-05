@@ -4,6 +4,7 @@
 Circuit: input |s>|+>, s in {0,1}^T, then for each i a rotation Rz(theta_i) on the last qubit controlled by bit i of s.
 Measuring X gives f_s(theta) = cos(<s, theta>). That is T trainable two-qubit gates, each used once.
 Question: how many inputs s can be shattered at margin gamma, as a function of T?
+Usage: cos_family.py TMAX SAMPLES TRIES, for example cos_family.py 5 1500000 150.
 
 Note: random sampling plus hill climbing, so each m printed is a lower bound on the shattering number.
 """

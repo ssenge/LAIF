@@ -10,26 +10,26 @@ Inputs x₁, …, x_m are *shattered at margin γ* if for every sign pattern p �
 
 ## Results
 
-Let γ ∈ [0, 1), w = arccos(γ)/(2π) and ℓ = log₂(1/w). For γ = 1/2, w = 1/6 and ℓ = log₂ 6 ≈ 2.585.
+Let γ ∈ (0, 1), w = arccos(γ)/(2π) < 1/4 and ℓ = log₂(1/w). For γ = 1/2, w = 1/6 and ℓ = log₂ 6 ≈ 2.585.
 
-**Theorem 1 (shattering).** There is a family of models as above, on T + 1 qubits for M = 1, with observable X on one qubit and two-qubit controlled rotations as trainable gates, that shatters m inputs at margin γ, where
+**Theorem 1 (shattering).** There is a family of models as above, on TM + 1 qubits, with observable X on one qubit and two-qubit controlled rotations as trainable gates, that shatters m inputs at margin γ, where
 
 - m = ⌊T log₂(M + 1) / ℓ⌋ for all T and M, and
 - m = ⌊T log₂T / (4ℓ)⌋ for all T ≥ T₀(γ), with T₀(1/2) = 200.
 
 So m ≥ T log₂((M + 1)T) / (8ℓ) − 1 for T ≥ T₀(γ).
 
-**Theorem 2 (generalization gap).** Let x₁, …, x_m be shattered at margin γ by any model class with outputs in [−1, 1]. Let the data distribution be uniform on {x₁, …, x_m}, with label y a fair ±1 coin independent of x, and let the loss be (1 − y f)/2 ∈ [0, 1]. Then every θ has risk exactly 1/2, and for N ≥ m samples every empirical risk minimizer θ̂ satisfies
+**Theorem 2 (generalization gap).** Let x₁, …, x_m be shattered at margin γ by a model class with outputs in [−1, 1], on which the empirical risk attains its infimum (for the models of Theorem 1 it does, by compactness). Let the data distribution be uniform on {x₁, …, x_m}, with label y a fair ±1 coin independent of x, and let the loss be (1 − y f)/2 ∈ [0, 1]. Then every θ has risk exactly 1/2, and for N ≥ m samples every empirical risk minimizer θ̂ satisfies
 
 E[R(θ̂) − R̂(θ̂)] ≥ (γ/4) √(m/N).
 
-**Corollary 3.** For the models of Theorem 1, T ≥ T₀(γ) and N ≥ m, the expected generalization gap of empirical risk minimization is at least (γ/4)√(m/N) = Ω_γ(√(T log((M + 1)T) / N)). So the bounds of [1] are tight up to a factor that depends only on γ, and the logarithmic factor in them is needed for worst-case data.
+**Corollary 3.** For the models of Theorem 1, T ≥ T₀(γ) and N ≥ m, the expected generalization gap of empirical risk minimization is at least (γ/4)√(m/N) = Ω_γ(√(T log((M + 1)T) / N)). With γ = 1/2, the bounds of [1] are tight up to a constant factor, and the logarithmic factor in them is needed for worst-case data and architecture. Here the loss is bounded by 1, as in [1], whose bounds hold with high probability and give the same order in expectation after integrating their tail.
 
-In the other direction, the covering argument of [1] nets each gate at scale γ/(MT), so a class with T gates used at most M times has at most O(T log(MT/γ)) inputs shattered at margin γ (two different sign patterns give functions at sup-distance at least 2γ). With Theorem 1, the largest size of a set shattered at a fixed margin is Θ(T log(MT)).
+In the other direction, the covering bound of Theorem C.3 of [1], at scale γ/(2MT) per gate, implies that a class with T gates used at most M times has at most O(T log(MT/γ)) inputs shattered at margin γ, since two different sign patterns give functions at sup-distance at least 2γ. With Theorem 1, the largest size of a set shattered at a fixed margin is Θ(T log((M + 1)T)) for T ≥ 2.
 
 ## The model
 
-Inputs are vectors s ∈ {0, …, M}^T, held in a register in the computational basis, together with a target qubit in |+⟩. For each gate i and each r = 1, …, M, a rotation diag(1, e^{iθ_i}) is applied to the target, controlled by the predicate s_i ≥ r. For M = 1 the control is qubit i of the register, so each trainable gate is a two-qubit controlled rotation used once. For M > 1 the predicate is computed into an ancilla by fixed gates and uncomputed afterwards. The target ends in (|0⟩ + e^{i⟨s, θ⟩}|1⟩)/√2, so measuring X gives
+Inputs are vectors s ∈ {0, …, M}^T, held in unary in a register of TM qubits: qubit (i, r) is 1 exactly when s_i ≥ r. A target qubit starts in |+⟩. For each gate i and each r = 1, …, M, a rotation diag(1, e^{iθ_i}) is applied to the target, controlled by qubit (i, r). So each trainable gate is a two-qubit controlled rotation used M times, and for M = 1 there are T + 1 qubits. The target ends in (|0⟩ + e^{i⟨s, θ⟩}|1⟩)/√2, so measuring X gives
 
 f_s(θ) = cos⟨s, θ⟩.
 
@@ -39,7 +39,7 @@ Write e(x) = e^{2πix} and ‖x‖ for the distance of x to the nearest integer.
 
 **Lemma 4 (bump).** Let h(x) = max(0, 1 − ‖x‖/w) on R/Z. Then h(x) = Σ_{k∈Z} w ρ(k) e(kx) with ρ(0) = 1 and ρ(k) = (sin(πkw)/(πkw))². All ρ(k) are nonnegative and Σ_k ρ(k) = h(0)/w = 1/w. Write τ = 1/w − 1 for the sum over k ≠ 0.
 
-*Proof.* The Fourier coefficient of the triangle of height 1 and half-width w is w ρ(k), and since the series converges absolutely, it sums to h(0) = 1 at x = 0. ∎
+*Proof.* As w < 1/2, the triangle of height 1 and half-width w does not wrap around R/Z, and its Fourier coefficient is w ρ(k). The series converges absolutely and uniformly, so it sums to h(0) = 1 at x = 0. ∎
 
 **Lemma 5 (all patterns).** Let S(A) = Σ_{k ∈ Z^m \ {0}, Aᵀk = 0} Π_j ρ(k_j). If S(A) < 1, the rows of A are shattered at margin γ.
 
@@ -67,7 +67,7 @@ Let m = ⌊T log₂T/(4ℓ)⌋ and u = ⌈(4/π)√T⌉. Terms with v ≥ u + 1 
 
 u (mτ)^u ≤ 2^{T−1}.
 
-For each γ this holds for all large T, since the left side is 2^{O(√T log T)}. For γ = 1/2 (τ = 5) the script `sim/lower_bound_sum.py` checks it for every T from 200 to 10⁴. For T ≥ 10⁴ it follows from u ≤ 1.28√T + 1 and 5m ≤ T², which give 2 log₂T (1.28√T + 1) + log₂(1.28√T + 1) ≤ T − 1, an inequality that holds at T = 10⁴ and whose slack increases with T. ∎
+For each γ this holds for all large T, since the left side is 2^{O(√T log T)}. For γ = 1/2 (τ = 5) the script `sim/lower_bound_sum.py` checks it for every T from 200 to 10⁴. For T ≥ 10⁴ it follows from u ≤ 1.28√T + 1 and 5m ≤ T², which give 2 log₂T (1.28√T + 1) + log₂(1.28√T + 1) ≤ T − 1, an inequality that holds at T = 10⁴, while the derivative of its left side is below 1/4 for T ≥ 10⁴. ∎
 
 The two bounds hold for all M ≥ 1, since binary inputs use each gate at most once. Then max(a/4, b) ≥ (a + b)/8 with a = T log₂T and b = T log₂(M + 1) gives the combined form.
 
@@ -77,23 +77,23 @@ The loss of θ on (x, y) is (1 − y f(x; θ))/2, and E[y | x] = 0, so R(θ) = 1
 
 R̂(θ) = 1/2 − (1/(2N)) Σ_j Y_j f(x_j; θ).
 
-Choose θ with sign f(x_j; θ) = sign Y_j and |f(x_j; θ)| ≥ γ for all j, which shattering allows. This gives min_θ R̂ ≤ 1/2 − (γ/(2N)) Σ_j |Y_j|, and every minimizer θ̂ has the same empirical risk. Given n_j, Y_j is a sum of n_j independent fair signs, and E|Y_j| ≥ √(n_j/2) by the first-moment inequality for such sums with its optimal constant [3]. Each n_j is binomial with mean λ = N/m ≥ 1 and E n_j² ≤ λ² + λ ≤ 2λ². By Hölder's inequality, E√n ≥ (E n)^{3/2}/(E n²)^{1/2} ≥ √(λ/2). So
+Choose θ with sign f(x_j; θ) = sign Y_j and |f(x_j; θ)| ≥ γ for all j, which shattering allows. This gives min_θ R̂ ≤ 1/2 − (γ/(2N)) Σ_j |Y_j|, and every minimizer θ̂ attains this minimum. Given n_j, Y_j is a sum of n_j independent fair signs, and E|Y_j| ≥ √(n_j/2) by the first-moment inequality for such sums with its optimal constant [3]. Each n_j is binomial with mean λ = N/m ≥ 1 and E n_j² ≤ λ² + λ ≤ 2λ². From (E n)² = (E[n^{1/4} n^{3/4}])² ≤ E√n · E n^{3/2} and (E n^{3/2})² ≤ E n · E n², we get E√n ≥ (E n)^{3/2}/(E n²)^{1/2} ≥ √(λ/2). So
 
 E[R(θ̂) − R̂(θ̂)] ≥ (γ/(2N)) · m · √(1/2) · √(λ/2) = (γ/4)√(m/N). ∎
 
 ## Remarks
 
-**Scope.** The lower bounds are for worst-case data and for empirical risk minimization. They do not concern the error on a fixed target function, and for structured data the generalization error can be much smaller. The constant depends on γ through 1/ℓ = 1/log₂(2π/arccos γ).
+**Scope.** The lower bounds are for worst-case data and for empirical risk minimization. They do not concern the error on a fixed target function, and for structured data the generalization error can be much smaller. With the combined form of Theorem 1, the constant in Corollary 3 is about γ/(8√(2ℓ)), so it depends on γ through γ/√ℓ, with ℓ = log₂(2π/arccos γ).
 
-**On a gate-independent bound.** [4] states a generalization bound of order 1/√N for quantum models of any size, with constants that depend on the observable norm and the loss but not on the number of gates. For the loss of Theorem 2 that bound reads 1/√N + 3√(log(2/δ)/(2N)) with probability 1 − δ, which gives an expected gap below 3.8/√N. For γ = 1/2 and T = 2000, Theorem 1 gives m = 2121, and Corollary 3 gives an expected gap of at least 5.7/√N for N ≥ 2121. The gap of Corollary 3 grows like √(T log T). This hints at a possible gap in the proof of Theorem B.1 of [4], where the cross terms E[σ_m σ_n (w*)ᵀx^{(m)} (w*)ᵀx^{(n)}] are bounded as if w* did not depend on σ. In the linear class of that theorem, the inputs x^{(m)} = √M e_m force w = ±(1, …, 1)/√M with free signs, so the empirical Rademacher complexity is 1 there.
+**On a gate-independent bound.** [4] states a generalization bound of order 1/√N for quantum models of any size, with constants that depend on the observable norm and the loss but not on the number of gates. For the loss of Theorem 2 that bound reads 1/√N + 3√(log(2/δ)/(2N)) with probability 1 − δ, which gives an expected gap below 3.8/√N. For γ = 1/2 and T = 2000, Theorem 1 gives m = 2121, and Corollary 3 gives an expected gap of at least 5.7/√N for N ≥ 2121. The gap of Corollary 3 grows like √(T log T). The models of Theorem 1 meet the hypotheses of [4]: bounded loss, Lipschitz in the output, and an observable of norm 1. This hints at a possible gap in the proof of Theorem B.1 of [4], where the cross terms E[σ_m σ_n (w*)ᵀx^{(m)} (w*)ᵀx^{(n)}] are bounded as if w* did not depend on σ. A small example in the linear class of that theorem: for n inputs √n e_1, …, √n e_n, the constraint set is the set of vectors whose coordinates are all ±1/√n, with free signs, so the empirical Rademacher complexity is 1, against the stated √(1/n).
 
 ## Simulations
 
 The scripts in `sim/` need Python 3 with NumPy.
 
 - `lower_bound_sum.py` checks the Fourier identity of Lemma 5 against Monte Carlo on a three-row example, prints the largest m for which the binary sum is below 1 (for γ = 1/2 it gives m = 2,218 at T = 1,000), and checks the explicit choice of Theorem 1.
-- `cos_family.py` looks for shattered sets of the family f_s(θ) = cos⟨s, θ⟩ for small T by sampling θ, so each m it prints is a lower bound.
-- `gen_gap.py` takes a shattered set for T = 5 and checks Theorem 2 against sampled empirical risk minimization for N from m to 1000m.
+- `cos_family.py TMAX SAMPLES TRIES` looks for shattered sets of the family f_s(θ) = cos⟨s, θ⟩ at margin 1/4 for T up to TMAX by sampling θ, so each m it prints is a lower bound (for example `cos_family.py 5 1500000 150`).
+- `gen_gap.py` takes a set shattered at margin 1/4 for T = 5 and checks Theorem 2 against sampled empirical risk minimization for N from m to 1000m.
 
 ## References
 

@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
-"""Checks Theorem 2 of ../README.md: the fixed-encoding circuit that outputs P(y)/lambda for a real trigonometric
+"""Checks Theorem 3 of ../README.md: the fixed-encoding circuit that outputs P(y)/lambda for a real trigonometric
 polynomial P, and the rate of the de la Vallee-Poussin step.
 
 1. Circuit identity. For a random real P with frequencies in {-2N..2N}^d, build the circuit on an index register of q
    qubits plus one ancilla as matrices: the state preparation V from a tree of uniformly controlled RY rotations
    (2^q - 1 angles), then, controlled by the ancilla of a Hadamard test, a diagonal of trainable phases (n angles) and
-   the fixed data diagonal D(y) = sum_k e^{i k.y} |k><k|. Check <X_ancilla> = P(y)/lambda on a grid.
+   the fixed data diagonal D(y) = sum_k e^{i k.y} |k><k|. Check <X_ancilla> = P(y)/lambda at random points.
 2. Rate. For 2 pi-periodic test functions of Holder order beta, check that the sup error of the tensor
    de la Vallee-Poussin mean V_N times N^beta stays bounded as N grows.
 """
