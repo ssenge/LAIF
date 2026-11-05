@@ -1,4 +1,20 @@
-# Research results
+<div align="center">
+
+<img src="logo.png" alt="Barbarossa, a bearded 1980s computer nerd at his home computer" width="240">
+
+# BarbarossAI Research Project
+
+**New bounds and faster algorithms for open problems in algorithms, complexity and quantum computing**
+
+[![License: Apache 2.0](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](LICENSE)
+[![Lean 4](https://img.shields.io/badge/proofs-Lean%204%20%2B%20Mathlib-8a2be2.svg)](https://leanprover-community.github.io/)
+[![Issues](https://img.shields.io/badge/questions-open%20an%20issue-orange.svg)](https://github.com/ssenge/ResearchResults/issues)
+
+[Results](#results) · [Minor results](#minor-results) · [Former repositories](#former-repositories) · [References](#references) · [Use of AI](#use-of-ai)
+
+</div>
+
+---
 
 > Most of these results were generated automatically by AI, with some additional instructions from me. For questions or corrections, please [open an issue](https://github.com/ssenge/ResearchResults/issues).
 
