@@ -13,8 +13,10 @@ In [1] it is conjectured that computing the minimum degree of a simple graph req
 | 5 | n/7 − 2 classical randomized cut queries on the same kind of family, so a Θ(√n) against Θ(n) separation | lower bounds proved in Section 10, O(√n) upper bound cited |
 | 6 | Ω(n/log n) classical randomized cut queries on simple graphs, by a reduction from set disjointness | proved in Section 10 |
 | 7 | Θ(√n) quantum queries on simple graphs when each query returns the cut mod 4, with no restriction on the query sets | lower bound proved in Section 11, upper bound on paper there |
+| 8 | Ω(min{n^{1/4}/(K√log K), √n/(K² log K log n)}) quantum queries on simple graphs when each query returns the cut mod K, K ≥ 3 | on paper, Section 12 |
+| 9 | Ω(√n/B) on simple graphs with integer answers, for algorithms whose queries all have weight at most B on the hidden degree bits | on paper, Section 12 |
 
-All lower bounds and lemmas below are machine-checked in Lean, assuming two classical theorems as explicit hypotheses: the approximate degree of AND_n and the randomized communication complexity of disjointness. The O(√n) upper bound from quantum minimum finding is cited and not machine-checked, and the words "tight" and "separation" rest on it. The same holds for Proposition 9, which also uses minimum finding. Section 9 gives the theorem names and the scope. The scripts in `sim/` test the identities on small instances, and their limits are listed in their docstrings. All sums in the proofs are finite.
+All lower bounds and lemmas below, except those of Section 12, are machine-checked in Lean, assuming two classical theorems as explicit hypotheses: the approximate degree of AND_n and the randomized communication complexity of disjointness. The O(√n) upper bound from quantum minimum finding is cited and not machine-checked, and the words "tight" and "separation" rest on it. The same holds for Proposition 9, which also uses minimum finding. Section 9 gives the theorem names and the scope. The scripts in `sim/` test the identities on small instances, and their limits are listed in their docstrings. All sums in the proofs are finite.
 
 ## Before and after
 
@@ -24,6 +26,8 @@ All lower bounds and lemmas below are machine-checked in Lean, assuming two clas
 | Quantum query complexity | Global minimum cut value with quantum cut queries | No Ω(√n) lower bound known to us | Ω(√n) | Same weights | Lean, assuming the approximate degree of AND |
 | Quantum query complexity | Promise decision problem on degrees mod M, modular model | No lower bound known to us | Ω(√n) | Weights in Z_M, oracle returns the cut mod M, M = 2^k ≥ 4. Nothing follows for integer oracles | Lean, assuming the approximate degree of AND |
 | Quantum query complexity | Exact minimum degree on simple graphs, each query returning the cut mod 4 | No lower bound known to us; Ω(√n) conjectured for integer answers [1] | Θ(√n) | Simple graphs, any query sets. Integer answers stay open | Lower bound: Lean, assuming the approximate degree of AND. O(√n): on paper, using quantum minimum finding |
+| Quantum query complexity | Exact minimum degree on simple graphs, each query returning the cut mod K, K ≥ 3 | No lower bound known to us for K other than 4 | Ω(n^{1/4}/(K√log K)) when K² log K log n is at most about √n; O(√n log n) | Simple graphs, any query sets. Weaker than the row above at K = 4, and empty at K ≈ n² | On paper, with a script |
+| Quantum query complexity | Exact minimum degree on simple graphs, integer answers, restricted query sets | No lower bound known to us | Ω(√(n/s)) for query sets of at most s vertices, Ω(1/ε) for query phases 2z/N within ε of an integer | Restricted algorithms only. No bound for all algorithms | On paper |
 | Lattice lemma | Sparsity of near-solutions of the cut relations | Not available | At most 2R + 3 vertices with a visible degree shift, for R query terms | General tool for the bounds above | Lean |
 | Classical query complexity | Exact minimum degree with randomized cut queries, large weights | O(n) by singleton queries; Ω(n/log n) from the simple-graph row below | At least n/7 − 2, so Θ(n) | Integer weights of O(n log n) bits and above | Lean |
 | Classical query complexity | Exact minimum degree with randomized cut queries, simple graphs | O(n) by singleton queries; no lower bound stated in the sources known to us | Ω(n/log n) | Simple graphs | Lean, assuming the communication complexity of disjointness |
@@ -279,6 +283,52 @@ The exact zeros come from evenness: ⟨G(ℓ, m), δ_x⟩ is always even, so at 
 **Where it stops.** The integer oracle of [1] also allows z with z/N outside (1/4)Z. For a pair of paths let M_ℓm = Σ_s (w_s / N) Y^s_ℓ Q^s_m with w_s ∈ Z. A hidden bit then contributes the factor (1 + e(2 M_ℓm))/2, of modulus |cos(2π M_ℓm)|, which is zero only when 2 M_ℓm ≡ 1/2 mod 1. Other pairs are damped but do not vanish, so P need not have degree at most 2T. `sim/check_mod4.py` shows this at phase 1/8, where weight above 2T is nonzero. With about n² hidden bits this damping can be large, but an absolute sum over paths loses a factor exponential in Tn, and I have no bound on the coherent sum.
 
 `sim/check_mod4.py` tests the graph, the identity, the polynomial degree on random unitaries and the routine of Proposition 9, on small instances listed in its docstring.
+
+## 12. Simple graphs: answers mod K, and restricted query sets
+
+The two results here use the family of Section 11 and are proved on paper only. For both, `e(t)` means exp(2πit) and `θ = 2z/N`, where N = K in the mod K model. By the identity of Section 11, the part of a query's phase that depends on U is e(θ Yᵀ U Q).
+
+**Answers mod K.** A query is |x, z⟩ → e(z cut_A(x)/K) |x, z⟩ with z ∈ Z_K. For K ≤ 2 we have θ ∈ Z, so on this family the answers do not depend on U, and no algorithm exists.
+
+**Theorem 10.** Let K ≥ 3. A quantum algorithm that computes the minimum degree of every n-vertex simple graph with error at most 1/3, where each query returns the cut mod K, makes T queries with T(T + ln n) K² log K = Ω(√n). Hence T = Ω(min{n^{1/4}/(K√log K), √n/(K² log K log n)}).
+
+The bound is nontrivial when K² log K log n is at most about √n. At K = 4 it is weaker than Theorem 8. At K ≈ n² it gives nothing, so it does not reach integer answers.
+
+*Proof.* Let L = ⌊n/3⌋, let h be the diagonal of U, and let the bits a above it be uniform. Let P(h) = E_a acc, with Walsh coefficients P̂(S), and write D = |S|.
+
+*Fix everything outside S.* P̂(S) = E_ω [c_ω], where ω is all bits except h_S and the a_ℓm with ℓ, m ∈ S, and c_ω is the coefficient for fixed ω. For fixed ω, a query phase is a known function of (x, z) times e(θ Y_Sᵀ U_SS Q_S). Known diagonal phases go into the unitaries, so the unknown part depends only on the label (Y_S, Q_S, z). Each ℓ ∈ S contributes the three bits x(v_ℓ), x(a_ℓ), x(c_ℓ), so there are at most 8^D K labels.
+
+*Histories.* For a sequence q = (ℓ₁, …, ℓ_T) of labels, let b_q = U_T Π_{ℓ_T} ⋯ U₁ Π_{ℓ₁} U₀ |init⟩, with Π the orthogonal projectors onto labels. Then Σ_q ‖b_q‖² = 1, by peeling off steps from the last. The final state is Σ_q φ_q(U) b_q, so c_ω = Σ_{q,q'} ⟨b_q'|Acc|b_q⟩ κ(q, q') with κ = E[χ_S φ_q φ̄_q'], and Cauchy-Schwarz gives |c_ω| ≤ (8^D K)^T max |κ|.
+
+*Size of κ.* Let W = Σ_s θ_s y_s q_sᵀ on S, with R ≤ 2T terms, y_s and q_s in {0, ±1}^D, and θ_s = ±2z_s/K. Independence of the bits gives
+
+    κ = Π_{ℓ<m} (1 + e(W_ℓm))/2 · Π_{ℓ∈S} (1 − e(W_ℓℓ))/2.
+
+So κ = 0 unless every diagonal entry is nonzero in R/Z. A nonzero upper entry has ‖W_ℓm‖ ≥ 1/K, so its factor has modulus at most cos(π/K) ≤ exp(−π²/(2K²)).
+
+*Independent sets.* Join ℓ < m in S if W_ℓm ≠ 0 in R/Z, and let A be an independent set. The rows of W on A lie in a subgroup of (R/Z)^A generated by R elements of order dividing K, so it has at most K^R elements. The map c ∈ {0,1}^A ↦ Σ_ℓ c_ℓ W_ℓ,A is injective: for a nonzero difference c, at the largest ℓ with c_ℓ ≠ 0, column ℓ holds only ±W_ℓℓ ≠ 0. So |A| ≤ α := 2T log₂K, and Turán's theorem gives at least (D²/α − D)/2 nonzero upper entries.
+
+*Sum.* Therefore |P̂(S)| ≤ (8^D K)^T exp(−(π²/(4K²))(D²/α − D)). Let D₀ = K² α (T + ln L). For D ≥ D₀, the negative term is at least (π²/4)(T + ln L) D − D, and π²/4 > ln 8, so the sum of |P̂(S)| over |S| ≥ D₀ is at most 1/100. Truncating P gives a polynomial of degree below D₀ within 1/100 of P. As in Theorem 8, it approximates AND_L, so D₀ = Ω(√L). ∎
+
+**Proposition 11.** With answers mod K, O(√n log n) queries suffice on every simple graph for K ≥ 3, and O(√n) for 4 | K.
+
+*Proof.* As in Proposition 9, two queries at z and −z on a uniform superposition of S ∌ u give, up to a phase that depends only on u, the state ⊗_v (|0⟩ + e(−θ A_uv) |1⟩)/√2. For K ≥ 3, some z has |cos πθ| ≤ 1/2, so the two possible states of each coordinate have overlap at most 1/2. O(log n) copies then read all neighbours of u with error 1/poly(n). Uncomputing and quantum minimum finding over u finish. For 4 | K, take z = K/4, which is Proposition 9. ∎
+
+So a gap of about n^{1/4} remains at small K, other than K = 4.
+
+**Restricted query sets.** Now let the oracle be that of Section 1, with any N. For a set x let s(x) be the number of ℓ with Y_ℓ Q_ℓ ≠ 0, and let B(x, z) = ‖θ‖ √s(x). Since a set x and its complement have the same s, and each counted ℓ needs a vertex in x, we have s(x) ≤ min(|x|, n − |x|).
+
+**Theorem 12.** Suppose that an algorithm computes the minimum degree with error at most 1/3 on the graphs A(U) with zero bits above the diagonal, and that on these inputs every label (x, z) in its query register has B(x, z) ≤ B. Then its number of queries T satisfies T B = Ω(√n).
+
+*Proof.* Let ψ be the final state on h = 1^L and ψ_j the one on h = 1^L − e_j. The algorithm separates them, so ‖ψ − ψ_j‖ ≥ 1/3 for every j. On a label, the two oracles differ by the factor e(w_j), with w_j = θ Y_j Q_j. So with ψ_t the state before query t on h = 1^L, the hybrid argument gives
+
+    L/3 ≤ Σ_j ‖ψ − ψ_j‖ ≤ Σ_t Σ_j ‖(1 − e(w_j)) ψ_t‖ ≤ Σ_t √L (Σ_j ‖(1 − e(w_j)) ψ_t‖²)^{1/2} ≤ T √L · 2πB,
+
+by Cauchy-Schwarz over j, |1 − e(w)| ≤ 2π‖w‖, and Σ_j ‖w_j‖² = ‖θ‖² s(x) ≤ B² on each label. ∎
+
+Two cases follow, since ‖θ‖ ≤ 1/2 and s(x) ≤ L. Query sets with at most s vertices, or their complements, give T = Ω(√(n/s)). Query phases with ‖θ‖ ≤ ε give T = Ω(1/ε). So an algorithm with T ≪ √n must use labels with ‖θ‖² s(x) ≳ L/T². Theorem 12 says nothing about the algorithms that do, so the question for integer answers stays open.
+
+`sim/check_modK.py` tests the formula for κ, the bound on independent sets, the hybrid inequality on one algorithm, and the choice of z in Proposition 11, on small instances listed in its docstring.
 
 ## References
 
