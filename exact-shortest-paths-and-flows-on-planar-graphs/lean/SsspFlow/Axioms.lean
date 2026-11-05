@@ -244,3 +244,15 @@ Expected output for each: `propext`, `Classical.choice`, `Quot.sound` (or a subs
 #print axioms SsspFlow.RHierarchy.est_bounds_in
 #print axioms SsspFlow.RotSystem.RootedTree.bagDist_lo
 #print axioms SsspFlow.RotSystem.RootedTree.bagDist_hi
+#print axioms SsspFlow.RotSystem.RootedTree.Decomp.bagVal_lo
+#print axioms SsspFlow.RotSystem.RootedTree.Decomp.bagVal_hi
+#print axioms SsspFlow.RotSystem.RootedTree.fconnect_tau
+#print axioms SsspFlow.RotSystem.RootedTree.tau_walk
+#print axioms SsspFlow.RotSystem.RootedTree.pos_psi_le
+#print axioms SsspFlow.RotSystem.RootedTree.fconnect_cone_face
+#print axioms SsspFlow.mass_eq_massBy
+#print axioms SsspFlow.RotSystem.RootedTree.pot_spec
+#print axioms SsspFlow.RotSystem.RootedTree.cyc_spec
+#print axioms SsspFlow.RotSystem.RootedTree.end_spec
+#print axioms SsspFlow.RotSystem.RootedTree.isCut_sel
+#print axioms SsspFlow.RotSystem.RootedTree.decomp_levelSeq

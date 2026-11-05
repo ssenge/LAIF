@@ -641,9 +641,18 @@ standard axioms (`propext`, `Classical.choice`, `Quot.sound`). There is no `sorr
 - `lean/SsspFlow/Hubs.lean`: `est_bounds`: values between the hubs of each bag give estimates from all
   vertices of a bag to its hubs, with no growth over the levels. `bagDist_lo`, `bagDist_hi`: the values
   between hubs from values on the corners, against walks in the graph and along the arcs of a bag.
+- `lean/SsspFlow/Witness.lean`: `bagVal_lo`, `bagVal_hi`: these bounds for every bag of a decomposition, with
+  values along its levels from the top.
+- `lean/SsspFlow/Tau.lean`: `fconnect_tau`: one tour through all darts of the doubled map. `pos_psi_le`: the
+  next corner of a bag on its boundary is the next one on this tour. `fconnect_cone_face`: two darts of a bag
+  on one face of the map lie on one face of the bag.
+- `lean/SsspFlow/Potential.lean`: `pot_spec`, `cyc_spec`: masses on the tour of a bag are differences of
+  numbers of the global tour, plus an offset per corner.
+- `lean/SsspFlow/Select.lean`: a rule for the cut of each bag in terms of these masses, and
+  `decomp_levelSeq`: the levels of this rule form a decomposition.
 
 Not formalized: the proofs of `LabelHypothesis` and of the propositions above, the minimum cut of
-Theorem C, Theorem C′, the decomposition, the construction of the tiles and the rest of Lemma 14′, and Lemmas R5 and R7. Of Theorem D, only the
+Theorem C, Theorem C′, the construction of the tiles and the rest of Lemma 14′, and Lemmas R5 and R7. Of Theorem D, only the
 recursion argument of Lemma S2 is formalized; Lemmas N, R, O and S1 are on paper.
 
 ## Numerical checks (`sim/`)
