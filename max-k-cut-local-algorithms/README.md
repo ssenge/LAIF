@@ -39,6 +39,14 @@ Run Algorithm 1 of [1] with parameter m (radius m, girth ≥ 2m). Then apply one
 | 4 | 8 | 16 | 0.961 (QAOA) | **0.9684** | 0.9692 ± 0.0002 |
 | 4 | 8 | 18 | 0.966 (QAOA) | **0.9710** | 0.9718 ± 0.0002 |
 
+For larger degree the full rule space is too big to search, so we restrict to a threshold rule: move to a least-used colour (ties at random) if it is used by at least t fewer neighbours than the own colour. For Max-3-Cut on 20-regular graphs, with m = 10, τ = 3 and t = 2:
+
+| k | d | girth | Previous best bound [1] | Lower bound | Mean ± s.e. |
+|---|---|---|---|---|---|
+| 3 | 20 | 22 | 0.825 (QAOA, depth 10) | **0.8282** | 0.8304 ± 0.0005 |
+
+This lower bound uses 6 · 10⁵ fresh samples, again independent of the samples used to choose τ and t.
+
 So for Max-3-Cut on 6- and 8-regular graphs and Max-4-Cut on 8-regular graphs, this classical algorithm is above every value of [1, Tables 4, 5] at each girth in the table, which includes QAOA up to depth 10. On 4-regular graphs the same holds up to girth 18 for k = 3 and up to girth 14 for k = 4.
 
 ### 2. Quantum: QAOA plus one round
@@ -101,7 +109,7 @@ Numerical results. No part is formalized in Lean.
   - The value after the round agrees with a full 14-qutrit state vector to 10⁻¹² (k = 3, d = 3, q = 1, random angles and rules).
   - With the rule "keep", the classical program returns the Local Vector value.
 - **Not covered:**
-  - degrees above 8;
+  - degrees above 8, except the one row for d = 20;
   - the infinite-degree limit, where [1] reports its largest QAOA advantage;
   - more than one classical round;
   - randomized rules.
@@ -114,6 +122,7 @@ Numerical results. No part is formalized in Lean.
 - `sim/check_hybrid.py`: re-evaluates every row of Table 2 from `data/hybrid_params.json`.
 - `sim/check_hybrid_bruteforce.py`: the state-vector cross-check.
 - `sim/lv_baseline.py`, `sim/lv_plus_rule.py`, `sim/lv_certify.py`: Algorithm 1 of [1], the rule search and the fresh-sample evaluation.
+- `sim/lv_threshold.py`, `sim/lv_threshold_certify.py`: the threshold rule for large d, and its fresh-sample evaluation (`data/lvthr_cert_3_20.json`).
 - `sim/make_tables.py`: builds Tables 1 and 2 from `data/`.
 
 Requirements: Python 3.12 with numpy, scipy and jax. Run the scripts from `sim/`, with the files from `data/` copied in.
