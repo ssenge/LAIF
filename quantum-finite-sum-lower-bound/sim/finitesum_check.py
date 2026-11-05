@@ -198,6 +198,39 @@ def check_smoothness(rng):
             worst = max(worst, ev.max())
     assert worst <= 1
     print(f"components convex, largest Hessian eigenvalue seen {worst:.3f} <= 1 (k={k})")
+    # Case 2 components: the same formulas with factor 1/16 (mt = 0) and zeta = 1, for k odd and even
+    for k2 in (7, 8):
+        p2 = dict(p, mt=0.0, zeta=1.0, k=k2, C=0.3, c=0.01)
+        V2 = np.linalg.qr(rng.normal(size=(k2 + 6, k2 + 1)))[0]
+        w2 = 0.0
+        for _ in range(2000):
+            x = V2 @ (p2['c'] * rng.normal(size=k2 + 1) * rng.choice([0.3, 1, 3]))
+            for _, H in components(p2, V2, x):
+                ev = np.linalg.eigvalsh(H)
+                assert ev.min() > -1e-12
+                w2 = max(w2, ev.max())
+        assert w2 <= (6 + 2 * np.sqrt(5)) / 16 + 1e-12
+        print(f"Case 2 components (k={k2}): largest Hessian eigenvalue seen {w2:.3f} <= (6 + 2 sqrt 5)/16 < 1")
+    # Cases 3, 4: norms of the minimum-norm subgradients of f_{2i-1}, f_{2i}
+    k4 = 9
+    V4 = np.linalg.qr(rng.normal(size=(k4 + 6, k4 + 1)))[0]
+    b4, gamma = 0.2, 1 / np.sqrt(2 * (k4 + 1))
+    c4 = b4 / (2 * (k4 + 1))
+    w4 = 0.0
+    for _ in range(5000):
+        y = rng.choice([0.0, c4, 10 * c4]) * rng.normal(size=k4 + 1)
+        g1 = -np.sign(b4 - y[0]) / np.sqrt(2) * V4[:, 0]
+        g2 = np.zeros(V4.shape[0])
+        for r in range(1, k4 + 1):
+            z = y[r - 1] - y[r]
+            term = gamma * np.sign(z) * (abs(z) > c4) * (V4[:, r - 1] - V4[:, r])
+            if r % 2 == 0:
+                g1 = g1 + term
+            else:
+                g2 = g2 + term
+        w4 = max(w4, np.linalg.norm(g1), np.linalg.norm(g2))
+    assert w4 <= 1 + 1e-12
+    print(f"Cases 3, 4 components (k={k4}): largest subgradient norm seen {w4:.3f} <= 1")
 
 
 def check_simulation(rng):

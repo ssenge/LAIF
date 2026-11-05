@@ -217,7 +217,7 @@ Cases 2 to 4 of [1] change the assumptions:
 
 For nonsmooth fᵢ, the oracle returns a fixed subgradient, given below for each instance. The classical lower bounds of [3] are Ω(n + R√(nℓ/ε)), Ω(n + L√(n/(με))) and Ω(n + LR√n/ε). The quantum lower bounds of [1] are Ω(n + n^{3/4}(ℓ/ε)^{1/4}R^{1/2}/log n), Ω(n + n^{3/4}(εμ)^{−1/4}L^{1/2}/log n) and Ω(n + n^{3/4}(LR/ε)^{1/2}/log n).
 
-**Theorem 3.** Let n ≥ 600. Let R_q ≥ 2R in Case 2 and R_q ≥ 3R/2 in Cases 3 and 4, and take k, c from the constants below, with s = ⌊4R_q²/c²⌋ and A = 400(k+1)²s. Suppose
+**Theorem 3.** Let n ≥ 600. In Case 3, R stands for √(6ε/μ)/L, as fixed below. Let R_q ≥ 2R in Case 2 and R_q ≥ 3R/2 in Cases 3 and 4, and take k, c from the constants below, in the scaled units in which ℓ = R = 1 (Case 2) or L = 1 (Cases 3 and 4), with R_q scaled the same way, s = ⌊4R_q²/c²⌋ and A = 400(k+1)²s. Suppose
 
 d ≥ N(k+1)A + (8R_q²/c²) ln(40 N(k+1)A).
 
@@ -229,7 +229,7 @@ Then every quantum algorithm whose queries are supported on ‖x‖ ≤ R_q, and
 | 3 | 2·10⁻¹⁰ L√(n/(με)) | ε ≤ 1.5·10⁻⁴ L²/(nμ) and ε ≤ μΔ²/(6L²) |
 | 4 | 8·10⁻¹¹ LR√n/ε | ε ≤ LR/(200√n) |
 
-In each range the bound is at least a constant times n. So the bounds are Ω(n + R√(nℓ/ε)), Ω(n + L√(n/(με))) and Ω(n + LR√n/ε), which are the classical lower bounds of [3]. In high dimension, quantum queries give no speedup in any of the four cases.
+In each range the bound is at least a constant times n. So the bounds are Ω(n + R√(nℓ/ε)), Ω(n + L√(n/(με))) and Ω(n + LR√n/ε), which are the classical lower bounds of [3]. In Case 2, as in Case 1, quantum gradient queries give no speedup in high dimension. In Cases 3 and 4, the classical bounds of [3] are for algorithms with prox oracles, which can be stronger than subgradient queries; so in high dimension quantum subgradient queries do no better than classical prox queries. The same holds in the model of [1, Corollaries 4 to 6], with an ε-optimal output with probability at least 2/3, since the proof only uses that the output is 3ε-optimal with probability at least 2/3.
 
 In these cases, an ε-optimal point only has to correlate with the vectors of half of the chains, so the strong direct product theorem is replaced by its threshold form [4, Theorem 5.5], applied to one bit per chain. A small regularizer (μ₀/2)‖x‖² keeps the output in a ball, which the decoding needs. When ψ only has to be convex, ψ = (μ₀/2)‖x‖² is allowed.
 
@@ -248,7 +248,7 @@ The instance is the following:
 - f_n = 0 if n is odd;
 - ψ(x) = (μ₀/2)‖x‖².
 
-This is [1, Definition 4] with the regularizer added. Each fᵢ is convex and 1-smooth: the Hessian bounds are (1/16) · 8 and (1/16)(6 + 2√5) < 1.
+This is [1, Definition 4] with other constants and the regularizer added. Each fᵢ is convex and 1-smooth: the Hessian bounds are (1/16) · 8 and (1/16)(6 + 2√5) < 1.
 
 Per chain, F carries G₂(y) = G(y) + (μ₀/2)‖y‖², where
 
@@ -269,7 +269,7 @@ Let H be G with φ_c(z) replaced by z². Then H(y) = a(yᵀMy − 2Cy₀), where
 2. Minimizing the quadratic form with one coordinate fixed gives (y − ŷ)ᵀM(y − ŷ) ≥ δ²/(M⁻¹)_{tt} ≥ 4δ²/(k+2).
 3. Hence G₂(yᵢ) − min G₂ ≥ 4aδ²/(k+2) − 2ac²(k+1) − (μ₀/2)‖ŷ‖².
 
-Sum over at least ⌈N/2⌉ such chains. The other chains and the part orthogonal to all chains contribute at least their minimum, and ⌈N/2⌉ ≤ N. This gives
+Sum over the bad chains, of which there are at least ⌈N/2⌉; the other chains and the part orthogonal to all chains contribute at least their minimum. For the first term use at least ⌈N/2⌉ ≥ N/2 chains. For the last two terms use at most N chains, with N(μ₀/2)‖ŷ‖² = (μ₀/2)‖x̂‖² and N · 2ac²(k+1) ≤ 3ε/16. This gives
 
 F(x) − F* ≥ 9(1 − c/C)²/(128n(k+1)(k+2)) − 3/16 ε − (μ₀/2)‖x̂‖².
 
@@ -283,7 +283,7 @@ Scale so that L = 1. Fix R > 0 and define the following constants:
 - k + 1 = ⌊R/(100√n ε)⌋, so that k ≥ 1 when ε ≤ R/(200√n);
 - b = R/(2√(N(k+1))), c = b/(2(k+1)) and γ = 1/√(2(k+1)).
 
-Let χ_c(z) = max{0, |z| − c}, with subgradient sign(z)·[|z| > c]. The instance is the following:
+Let χ_c(z) = max{0, |z| − c}, with subgradient sign(z)·[|z| > c]. The oracle returns the minimum-norm subgradient, which these formulas give. The instance is the following:
 
 - f_{2i−1}(x) = (1/√2)|b − y_{i,0}| + γ Σ_{r even} χ_c(y_{i,r−1} − y_{i,r}), with subgradient sign 0 at b = y_{i,0};
 - f_{2i}(x) = γ Σ_{r odd} χ_c(y_{i,r−1} − y_{i,r});
@@ -316,39 +316,39 @@ For Case 3, (c) gives F(0) − F* ≤ Δ when R ≤ Δ, that is, when ε ≤ μ�
 
 ### Bits of chains
 
-Let A be even and t ≤ k, and let g_t(m) = m_t mod 2 on the chain problem of Section 2.
+Let A be even and h ≤ k, and let g_h(m) = m_h mod 2 on the chain problem of Section 2.
 
-**Lemma 8.** Let A ≥ 400(k+1)²s and N ≥ 300.
+**Lemma 8.** Let A ≥ 400(k+1)²s.
 
-- (a) Q_{1/4}(g_t) ≥ t + 1.
-- (b) Consider an algorithm for N independent chains that outputs one bit per chain, such that the joint law of its correct bits is the same on every input. If it makes fewer than 10⁻⁷ N(t+1) queries, then the probability that at least 0.7N bits are correct is at most e^{−0.037N}.
+- (a) Q_{1/4}(g_h) ≥ h + 1.
+- (b) Consider an algorithm for N independent chains that outputs one bit per chain, such that the joint law of its correct bits is the same on every input. If it makes fewer than 10⁻⁷ N(h+1) queries, then the probability that at least 0.7N bits are correct is at most e^{−0.037N}.
 
-*Proof.* (a) The hybrid argument of Lemma 3 applies: with at most t queries, the hybrid run does not depend on m_t, so it guesses the parity with probability 1/2. The final success is at most 1/2 + 1/5 < 3/4.
+*Proof.* (a) The hybrid argument of Lemma 3 applies: with at most h queries, the hybrid run does not depend on m_h, so it guesses the parity with probability 1/2. The final success is at most 1/2 + 1/5 < 3/4.
 
-(b) By [4, Theorem 3.3], Adv*(g_t) ≥ Q_{1/4}(g_t)/1000 ≥ (t+1)/1000. Apply [4, Theorem 5.5] with δ = 0.01, K = 100 and threshold 0.7 ≥ (1 + √δ)/2. Its proof uses the biases E Πᵢ∈S Yᵢ of products of correctness signs as worst-case biases. Under our assumption these biases are the same on every input, so the step is valid. The bound is e^{N/100 − N·D(0.7‖0.55)} with D(0.7‖0.55) > 0.0471. ∎
+(b) By [4, Theorem 3.3], Adv*(g_h) ≥ Q_{1/4}(g_h)/1000 ≥ (h+1)/1000. Apply [4, Theorem 5.5] with δ = 0.01, K = 100 and threshold 0.7 ≥ (1 + √δ)/2. Its proof bounds the biases β_S = E Πᵢ∈S Yᵢ of products of correctness signs through the step Q_{(1−β_S)/2}(⊕∘f^{(|S|)}) ≤ T, which needs β_S to be a bias reached on every input. Under our assumption β_S is the same on every input, so the step is valid. A finite mixture of query algorithms is again a query algorithm, so internal randomness is allowed. The bound is e^{N/100 − N·D(0.7‖0.55)} with D(0.7‖0.55) > 0.0471. ∎
 
-*Proof of Theorem 3.* Take t = ⌊k/2⌋ in Case 2 and t = k in Cases 3 and 4. Let Γ be the finite group of relabelings of the candidate indices that permute [A] arbitrarily at every position j ≠ t of every chain, and at position t permute [A] so that the parity of every label is kept or flipped at once. Γ acts transitively on the inputs, and g_t(π(m)) is g_t(m) or 1 − g_t(m), as fixed by π alone. B works as follows.
+*Proof of Theorem 3.* Take h = ⌊k/2⌋ in Case 2 and h = k in Cases 3 and 4. Let Γ be the finite group of relabelings of the candidate indices that permute [A] arbitrarily at every position j ≠ h of every chain, and at position h permute [A] so that the parity of every label is kept or flipped at once. Γ acts transitively on the inputs, and g_h(π(m)) is g_h(m) or 1 − g_h(m), as fixed by π alone. B works as follows.
 
 1. Pick a frame of candidates from a fixed finite set (chosen below) and a relabeling π ∈ Γ, both uniformly at random. Use u_{i,j,π(α)} as the candidate with label α.
 2. Simulate O_F with two chain queries per query (Lemma 4), and run the algorithm.
-3. For each chain i, if exactly one candidate u_{i,t,π(α)} has |⟨x, u⟩| ≥ c/2, output the parity of α. Otherwise output a fresh random bit.
+3. For each chain i, if exactly one candidate u_{i,h,π(α)} has |⟨x, u⟩| ≥ c/2, output the parity of α. Otherwise output a fresh random bit.
 
-**Symmetry.** On input m with relabeling π, B behaves as B without relabeling on input π(m). Its output bit flips together with g_t, so a bit is correct in one run exactly when it is correct in the other. Since π(m) is uniform over all inputs for every m, the joint law of B's correct bits is the same on every input. It equals the average over a uniform input.
+**Symmetry.** On input m with relabeling π, B behaves as B without relabeling on input π(m). Its output bit flips together with g_h, so a bit is correct in one run exactly when it is correct in the other. Since π(m) is uniform over all inputs for every m, the joint law of B's correct bits is the same on every input. It equals the average over a uniform input.
 
-**Frames.** For a Haar random frame, the success estimate below holds for every input. Draw a large finite number of frames independently. By Hoeffding's inequality, the average over these frames and a uniform input stays within 0.01 of its Haar value for some outcome of the draw, and B uses that set.
+**Frames.** With the relabeling in place a single good frame would do; for simplicity we argue with a set of frames. For a Haar random frame, the success estimate below holds for every input. Draw a large finite number of frames independently. By Hoeffding's inequality, the average over these frames and a uniform input stays within 0.01 of its Haar value for some outcome of the draw, and B uses that set.
 
 **Success.** By Markov's inequality, F(x) − F* < 3ε with probability at least 2/3. On that event:
 
-- By Lemmas 6 and 7, fewer than N/2 chains are bad, and every other chain has |⟨x, v_{i,t}⟩| ≥ c/2.
+- By Lemmas 6 and 7, fewer than N/2 chains are bad, and every other chain has |⟨x, v_{i,h}⟩| ≥ c/2.
 - By strong convexity with μ₀, ‖x‖ ≤ ‖x*‖ + √(6ε/μ₀), which is less than 2R in Case 2 and at most 3R/2 in Cases 3 and 4, so at most R_q.
 
 With probability at least 1 − 1/20, no false candidate passes the threshold (as in Lemma 5, with R_q in place of R). Then every good chain is decoded correctly, and a bad chain is either decoded correctly or gets a coin.
 
 **Counting.** Let m < N/2 be the number of coins. At least 0.7N bits are correct unless fewer than m − 0.3N coins are correct. For m > 0.3N this is at least 0.05N below the mean m/2, so by Hoeffding's inequality it has probability at most e^{−2(0.05N)²/m} ≤ e^{−0.01N}. So the probability of at least 0.7N correct bits is at least 2/3 − 1/20 − e^{−0.01N} − 0.01 > e^{−0.037N} for N ≥ 300.
 
-**Conclusion.** By Lemma 8, 2T ≥ 10⁻⁷ N(t+1). With the definitions of k:
+**Conclusion.** By Lemma 8, 2T ≥ 10⁻⁷ N(h+1). With the definitions of k:
 
-- in Case 2, N(t+1) ≥ √n R/(117.6√ε);
+- in Case 2, N(h+1) ≥ √n R/(117.6√ε);
 - in Case 4, N(k+1) ≥ √n R/(600ε);
 - in Case 3, with R = √(6ε/μ), N(k+1) ≥ √6 √n/(600√(με)).
 
@@ -370,7 +370,7 @@ Undoing the scaling gives the table. ∎
 - Remark 2, with the constants of [1].
 - Lemma 6 for four parameter sets, in the same way, and the bound on ‖x*‖.
 - Lemma 7 for four parameter sets, by a linear program for each pinned coordinate.
-- Convexity and smoothness, from Hessians at random points.
+- Convexity and smoothness in Cases 1 and 2, from Hessians at random points, and the Lipschitz constant in Cases 3 and 4, from subgradients at random points.
 - Lemma 4 on 3000 random queries, comparing the true gradients with those rebuilt from the revealed keys.
 
 Pinning a coordinate to ±c/2 suffices for Lemmas 2 and 6, by convexity.
@@ -395,7 +395,10 @@ Cases 3, 4, n=4 eps=0.0001: k=49, per-chain gap 6.312e-04 >= gamma b/(2n), bad c
 Cases 3, 4, n=8 eps=1e-05: k=352, per-chain gap 3.134e-05 >= gamma b/(2n), bad chains minus mu0 R^2/8: 5.52 eps > 3 eps
 Cases 3, 4, n=600 eps=1e-06: k=407, per-chain gap 4.174e-08 >= gamma b/(2n), bad chains minus mu0 R^2/8: 5.51 eps > 3 eps
 components convex, largest Hessian eigenvalue seen 0.499 <= 1 (k=20)
-gradient simulation exact on 3000 queries (k=4, A=6), largest candidate set total 6
+Case 2 components (k=7): largest Hessian eigenvalue seen 0.655 <= (6 + 2 sqrt 5)/16 < 1
+Case 2 components (k=8): largest Hessian eigenvalue seen 0.500 <= (6 + 2 sqrt 5)/16 < 1
+Cases 3, 4 components (k=9): largest subgradient norm seen 0.949 <= 1
+gradient simulation exact on 3000 queries (k=4, A=6), largest candidate set total 7
 ```
 
 ## References
