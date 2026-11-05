@@ -5,6 +5,7 @@
    vector v_t has F(x) - F* > 3 eps (checked by minimizing one chain with that coordinate pinned to +-c/2).
 2. Each component is convex and 1-smooth (largest Hessian eigenvalue <= 1 on random points).
    Remark 2: with the constants printed in Lemma 5 of [1], F(0) - F* is n Delta.
+   Lemmas 6 and 7 (Cases 2 to 4): if ceil(N/2) chains have a small coordinate, F(x) - F* > 3 eps.
 3. Lemma 4: the gradient of a component at a query x of norm <= R is computed exactly from x and the keys that the
    discrete oracle reveals for the candidate sets S_j(x), and sum_j |S_j(x)| < 4 R^2 / c^2.
 """
@@ -109,6 +110,56 @@ def check_remark():
         print(f"constants of [1], n={n}, Delta=1: F(0)-F* = {gap0:.4f}")
 
 
+def check_lemma6():
+    """Case 2 (l = R = 1): |x*|^2 <= 13/16, and ceil(N/2) chains with a small coordinate t <= k/2 cost more than 3 eps."""
+    for n, eps in [(2, 1e-6), (4, 1e-5), (8, 1e-6), (600, 1e-8)]:
+        N = n // 2
+        k = int(np.floor((-3 + np.sqrt(1 + 4 / (128 * n * eps))) / 2))
+        assert k >= 1 and (k + 1) * (k + 2) <= 1 / (128 * n * eps) < (k + 2) * (k + 3)
+        # chain_value with a = 1/(16 n), zeta = 1 and mu = mu0 = 6 eps is G_2 of Section 4 (q only sets the start point)
+        p = dict(n=n, N=N, mu=6 * eps, a=1 / (16 * n), q=1.0, zeta=1.0, k=k,
+                 C=np.sqrt(9 / (4 * N * (k + 1))), c=np.sqrt(3 * eps / (k + 1)))
+        Gs, ys = chain_min(p)
+        norm2 = N * ys @ ys
+        assert norm2 <= 13 / 16
+        worst = min(min(chain_min(p, (t, s * p['c'] / 2))[0] for s in (1, -1)) - Gs for t in range(k // 2 + 1))
+        total = int(np.ceil(N / 2)) * worst
+        assert total > 3 * eps, total / eps
+        print(f"Case 2, n={n} eps={eps:g}: k={k}, |x*|^2={norm2:.3f} <= 13/16, gap of ceil(N/2) bad chains {total / eps:.2f} eps > 3 eps")
+
+
+def check_lemma7():
+    """Cases 3, 4 (L = R = 1): by a linear program, ceil(N/2) chains with a small coordinate cost more than 3 eps."""
+    from scipy.optimize import linprog
+    for n, eps in [(2, 1e-5), (4, 1e-4), (8, 1e-5), (600, 1e-6)]:
+        N = n // 2
+        k = int(np.floor(1 / (100 * np.sqrt(n) * eps))) - 1
+        assert k >= 1
+        b = 1 / (2 * np.sqrt(N * (k + 1)))
+        c, gamma = b / (2 * (k + 1)), 1 / np.sqrt(2 * (k + 1))
+        # variables y_0..y_k, s_0, s_1..s_k; minimize (1/n)(s_0 / sqrt 2 + gamma sum s_r)
+        nv = 2 * (k + 1)
+        cost = np.r_[np.zeros(k + 1), 1 / np.sqrt(2) / n, gamma / n * np.ones(k)]
+        rows, rhs = [], []
+        for sg in (1, -1):
+            r = np.zeros(nv); r[k + 1] = -1; r[0] = -sg; rows.append(r); rhs.append(-sg * b)
+        for j in range(1, k + 1):
+            for sg in (1, -1):
+                r = np.zeros(nv); r[k + 1 + j] = -1; r[j - 1] = sg; r[j] = -sg; rows.append(r); rhs.append(c)
+        worst = np.inf
+        for t in range(k + 1):
+            bounds = [(None, None)] * (k + 1) + [(0, None)] * (k + 1)
+            bounds[t] = (-c / 2, c / 2)
+            res = linprog(cost, A_ub=np.array(rows), b_ub=np.array(rhs), bounds=bounds, method='highs')
+            assert res.status == 0
+            worst = min(worst, res.fun)
+        assert worst >= gamma * b / (2 * n) * (1 - 1e-9)
+        total = int(np.ceil(N / 2)) * worst - 6 * eps / 8  # minus F* <= mu0 R^2 / 8
+        assert total > 3 * eps, total / eps
+        print(f"Cases 3, 4, n={n} eps={eps:g}: k={k}, per-chain gap {worst:.3e} >= gamma b/(2n), "
+              f"bad chains minus mu0 R^2/8: {total / eps:.2f} eps > 3 eps")
+
+
 def components(p, V, x):
     """Values, gradients and Hessians of f_{1}, f_{2} of one chain with orthonormal columns V = [v_0 ... v_k]."""
     a16 = (1 - p['mt']) / 16
@@ -198,6 +249,8 @@ def main():
     rng = np.random.default_rng(8)
     check_lemma1()
     check_remark()
+    check_lemma6()
+    check_lemma7()
     check_smoothness(rng)
     check_simulation(rng)
 
