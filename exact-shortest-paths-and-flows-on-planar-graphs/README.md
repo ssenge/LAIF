@@ -622,6 +622,7 @@ standard axioms (`propext`, `Classical.choice`, `Quot.sound`). There is no `sorr
   has two corners of one face, such that each arc between them holds about three quarters of these darts
   or less.
 - `lean/SsspFlow/Disks.lean`: disks cut along walks up a spanning tree of the map with doubled edges.
+- `lean/SsspFlow/Bags.lean`: the bags of a sequence of levels: corners, diameter, the logarithmic depth and the hierarchy they form, with short chains, few hubs and low congestion.
   `IsLevel.spanForest`: the marked tree edges at the vertices without a corner in a level are a spanning
   forest of the cone over the level. `side_gcomp`: a larger level with two corners of one face of the
   cone keeps each of its disks on one side of the tour. `npOf_balance`: so a balanced cut leaves about

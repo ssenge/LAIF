@@ -27,3 +27,4 @@ import SsspFlow.HostSim
 import SsspFlow.MaxFlow
 import SsspFlow.Tour
 import SsspFlow.Disks
+import SsspFlow.Bags

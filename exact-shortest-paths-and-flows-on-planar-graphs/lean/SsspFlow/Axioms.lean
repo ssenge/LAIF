@@ -219,3 +219,12 @@ Expected output for each: `propext`, `Classical.choice`, `Quot.sound` (or a subs
 #print axioms SsspFlow.RotSystem.RootedTree.npOf_balance
 #print axioms SsspFlow.RotSystem.RootedTree.IsLevel.next
 #print axioms SsspFlow.RotSystem.RootedTree.card_railsUp_le
+#print axioms SsspFlow.centers_diam
+#print axioms SsspFlow.RotSystem.RootedTree.not_same_of_face
+#print axioms SsspFlow.RotSystem.RootedTree.bag_diam
+#print axioms SsspFlow.RotSystem.RootedTree.Decomp.final
+#print axioms SsspFlow.RotSystem.RootedTree.Decomp.hierarchy
+#print axioms SsspFlow.RotSystem.RootedTree.Decomp.chain_iff
+#print axioms SsspFlow.RotSystem.RootedTree.Decomp.hub_card
+#print axioms SsspFlow.RotSystem.RootedTree.Decomp.span
+#print axioms SsspFlow.RotSystem.RootedTree.Decomp.congestion
