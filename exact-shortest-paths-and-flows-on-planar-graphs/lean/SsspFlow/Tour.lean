@@ -348,6 +348,30 @@ theorem cycMass_le_of_last (T : Finset D) (hy : f y = x) (hxy : fconnect f x y) 
   · exact Or.inl hwx
   · exact Or.inr ⟨hw.1, hw.2, hwx, pos_le_of_last hy hxy w⟩
 
+/-- A function that is invariant under a permutation and onto `L` shows that there are at least as many
+orbits as elements of `L`. -/
+theorem card_le_orb {L : Type*} (f : Equiv.Perm D) (lab : D → L) (h : ∀ z, lab (f z) = lab z)
+    (hs : Function.Surjective lab) : Nat.card L ≤ orb f := by
+  have hconst : ∀ a b, fconnect f a b → lab a = lab b := by
+    intro a b hab
+    induction hab with
+    | refl => rfl
+    | @tail b c _ hbc ih =>
+      obtain rfl : f b = c := hbc
+      rw [ih, h]
+  have hS : orb f = (Set.univ.image (comp (frel f))).ncard := rfl
+  rw [hS, ← Nat.card_coe_set_eq]
+  let g : ↥(Set.univ.image (comp (frel f))) → L := fun s => lab s.2.choose
+  refine Nat.card_le_card_of_surjective g fun l => ?_
+  obtain ⟨x, rfl⟩ := hs l
+  refine ⟨⟨comp (frel f) x, x, Set.mem_univ x, rfl⟩, ?_⟩
+  have hspec : comp (frel f) _ = comp (frel f) x :=
+    (Exists.choose_spec (⟨x, Set.mem_univ x, rfl⟩ : comp (frel f) x ∈
+      Set.univ.image (comp (frel f)))).2
+  have hmem : x ∈ comp (frel f) x := connect_refl x
+  rw [← hspec] at hmem
+  exact hconst _ _ hmem
+
 /-- An arc that starts inside `(x, y]` lies in `(x, y]`. -/
 theorem InArc.of_shift (hu : fconnect f x u) (hux : u ≠ x) (hy : fconnect f x y)
     (hle : pos f x u ≤ pos f x y) (h : InArc f u y z) : InArc f x y z := by
@@ -632,6 +656,54 @@ theorem forest_tour {F : Finset D} (hF : R.RevClosed F)
   exact connect_of_nComp_eq (fconnect_sym (R.tour F).injective) (R.tourMap F).glinkC
     (fun _ _ h => gcomp_of_fconnect_tour h) h3.symm (Set.mem_univ x) (Set.mem_univ y) h
 
+/-- A component of the hypermap of a tour lies in a component of `R`. -/
+theorem gcomp_of_gcomp_tourMap {F : Finset D} (hF : R.RevClosed F) {x y : D}
+    (h : (R.tourMap F).gcomp x y) : R.toHypermap.gcomp x y := by
+  refine connect_sub (fun a b hab => ?_) h
+  have hr : R.toHypermap.gcomp (R.revOn F a) a := by
+    by_cases ha : a ∈ F
+    · rw [revOn_of_mem hF ha]
+      exact R.toHypermap.glinkC _ _ (connect_of_rel (Or.inl rfl))
+    · rw [revOn_of_not_mem ha]
+  rcases hab with hab | hab | hab
+  · have hab' : (R.rot * (R.rot⁻¹ * R.revOn F))⁻¹ a = b := hab
+    rw [R.tourMap_edge_inv] at hab'
+    rw [← hab']
+    exact R.toHypermap.glinkC _ _ hr
+  · exact connect_of_rel (Or.inr (Or.inl hab))
+  · have hab' : (R.rot⁻¹ * R.revOn F) a = b := hab
+    rw [Equiv.Perm.mul_apply] at hab'
+    have hb : R.toHypermap.gcomp b (R.revOn F a) := by
+      rw [← hab']
+      exact connect_of_rel (Or.inr (Or.inl (Equiv.apply_symm_apply R.rot _)))
+    exact R.toHypermap.glinkC _ _ (connect_trans hb hr)
+
+/-- If `F` joins the ends of every edge, the hypermap of the tour has the components of `R`. -/
+theorem gcomp_tourMap_iff {F : Finset D} (hF : R.RevClosed F)
+    (hspan : ∀ x, (R.tourMap F).gcomp x (R.rev x)) (x y : D) :
+    (R.tourMap F).gcomp x y ↔ R.toHypermap.gcomp x y := by
+  refine ⟨gcomp_of_gcomp_tourMap hF, connect_sub fun a b hab => ?_⟩
+  rcases hab with hab | hab | hab
+  · rw [show b = R.rev a from hab.symm]
+    exact hspan a
+  · exact connect_of_rel (Or.inr (Or.inl hab))
+  · have hab' : R.rot.symm (R.rev a) = b := hab
+    have h2 : (R.tourMap F).gcomp b (R.rev a) := by
+      rw [← hab']
+      exact connect_of_rel (Or.inr (Or.inl (Equiv.apply_symm_apply R.rot _)))
+    exact connect_trans (hspan a) ((R.tourMap F).glinkC _ _ h2)
+
+/-- If `F` joins the ends of every edge, there are at most as many vertices as components and edges
+of `F`. -/
+theorem numVertices_le_of_span {F : Finset D} (hF : R.RevClosed F)
+    (hspan : ∀ x, (R.tourMap F).gcomp x (R.rev x)) :
+    R.numVertices ≤ R.numComponents + F.card / 2 := by
+  have h1 := tour_count hF
+  have h2 := nComp_le_orb (R := R) F
+  have h3 : nComp (R.tourMap F).glink Set.univ = R.numComponents :=
+    nComp_congr (gcomp_tourMap_iff hF hspan) Set.univ
+  omega
+
 /-! ### Spanning forests -/
 
 variable (R) in
@@ -649,41 +721,8 @@ variable {F : Finset D} (hS : R.SpanForest F)
 include hS
 
 /-- The hypermap of the tour has the components of `R`. -/
-theorem gcomp_iff (x y : D) : (R.tourMap F).gcomp x y ↔ R.toHypermap.gcomp x y := by
-  have hsym := (R.tourMap F).glinkC
-  constructor
-  · refine connect_sub fun a b hab => ?_
-    rcases hab with hab | hab | hab
-    · have hab' : (R.rot * (R.rot⁻¹ * R.revOn F))⁻¹ a = b := hab
-      rw [R.tourMap_edge_inv] at hab'
-      rw [← hab']
-      by_cases ha : a ∈ F
-      · rw [revOn_of_mem hS.rev_closed ha]
-        exact connect_of_rel (Or.inl rfl)
-      · rw [revOn_of_not_mem ha]
-    · exact connect_of_rel (Or.inr (Or.inl hab))
-    · have hab' : (R.rot⁻¹ * R.revOn F) a = b := hab
-      rw [Equiv.Perm.mul_apply] at hab'
-      have hr : R.toHypermap.gcomp (R.revOn F a) a := by
-        by_cases ha : a ∈ F
-        · rw [revOn_of_mem hS.rev_closed ha]
-          exact R.toHypermap.glinkC _ _ (connect_of_rel (Or.inl rfl))
-        · rw [revOn_of_not_mem ha]
-      have hb : R.toHypermap.gcomp b (R.revOn F a) := by
-        rw [← hab']
-        exact connect_of_rel (Or.inr (Or.inl (Equiv.apply_symm_apply R.rot _)))
-      exact R.toHypermap.glinkC _ _ (connect_trans hb hr)
-  · refine connect_sub fun a b hab => ?_
-    rcases hab with hab | hab | hab
-    · rw [show b = R.rev a from hab.symm]
-      exact hS.span a
-    · exact connect_of_rel (Or.inr (Or.inl hab))
-    · have hab' : R.rot.symm (R.rev a) = b := hab
-      have h1 := hS.span a
-      have h2 : (R.tourMap F).gcomp b (R.rev a) := by
-        rw [← hab']
-        exact connect_of_rel (Or.inr (Or.inl (Equiv.apply_symm_apply R.rot _)))
-      exact connect_trans h1 (hsym _ _ h2)
+theorem gcomp_iff (x y : D) : (R.tourMap F).gcomp x y ↔ R.toHypermap.gcomp x y :=
+  gcomp_tourMap_iff hS.rev_closed hS.span x y
 
 theorem nComp_eq : nComp (R.tourMap F).glink Set.univ = R.numComponents :=
   nComp_congr hS.gcomp_iff Set.univ

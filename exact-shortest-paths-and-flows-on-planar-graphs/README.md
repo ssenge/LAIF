@@ -621,6 +621,12 @@ standard axioms (`propext`, `Classical.choice`, `Quot.sound`). There is no `sorr
   appear on the tour in the order of the face. `exists_balanced`: a cycle with at least four forest darts
   has two corners of one face, such that each arc between them holds about three quarters of these darts
   or less.
+- `lean/SsspFlow/Disks.lean`: disks cut along walks up a spanning tree of the map with doubled edges.
+  `IsLevel.spanForest`: the marked tree edges at the vertices without a corner in a level are a spanning
+  forest of the cone over the level. `side_gcomp`: a larger level with two corners of one face of the
+  cone keeps each of its disks on one side of the tour. `npOf_balance`: so a balanced cut leaves about
+  three quarters of the forest darts or less in each disk. `IsLevel.next`: corners with their walks up
+  the tree form a level again.
 
 Not formalized: the proofs of `LabelHypothesis` and of the propositions above, the minimum cut of
 Theorem C, Theorem C′, the decomposition, the construction of the tiles and the rest of Lemma 14′, and Lemmas R5 and R7. Of Theorem D, only the

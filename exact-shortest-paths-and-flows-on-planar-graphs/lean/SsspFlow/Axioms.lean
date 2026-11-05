@@ -211,3 +211,11 @@ Expected output for each: `propext`, `Classical.choice`, `Quot.sound` (or a subs
 #print axioms SsspFlow.RotSystem.SpanForest.walk_strict
 #print axioms SsspFlow.RotSystem.SpanForest.exists_crossing
 #print axioms SsspFlow.RotSystem.SpanForest.exists_balanced
+#print axioms SsspFlow.RotSystem.cone_planar
+#print axioms SsspFlow.RotSystem.double_planar
+#print axioms SsspFlow.RotSystem.RootedTree.IsLevel.spanForest
+#print axioms SsspFlow.RotSystem.RootedTree.side_gcomp
+#print axioms SsspFlow.RotSystem.RootedTree.not_gcomp_of_cut
+#print axioms SsspFlow.RotSystem.RootedTree.npOf_balance
+#print axioms SsspFlow.RotSystem.RootedTree.IsLevel.next
+#print axioms SsspFlow.RotSystem.RootedTree.card_railsUp_le
