@@ -89,7 +89,7 @@ noncomputable def startOf (x : D) : D :=
     ⟨x, Finset.mem_filter.2 ⟨Finset.mem_univ x, connect_refl x⟩⟩)
 
 open Classical in
-private theorem startOf_spec (x : D) :
+theorem startOf_spec (x : D) :
     fconnect f x (startOf f code x) ∧ ∀ y, fconnect f x y → code (startOf f code x) ≤ code y := by
   have h := Classical.choose_spec (Finset.exists_min_image (Finset.univ.filter (fconnect f x)) code
     ⟨x, Finset.mem_filter.2 ⟨Finset.mem_univ x, connect_refl x⟩⟩)
@@ -327,6 +327,7 @@ theorem atIdx_of_not_mem (c : List D) (m : Fin c.length → Fin c.length → ℝ
   unfold atIdx
   rw [dite_eq_right (fun h' => h h'.2)]
 
+omit [Fintype D] in
 /-- The label of `x` on the bag listed by `c`, from the matrix `w` on the darts. -/
 noncomputable def labOn (bag : ∀ k, (Fin k → Fin k → ℝ≥0∞) → Fin k → List ℕ) (w : D → D → ℝ≥0∞)
     (c : List D) (x : D) : List ℕ :=
@@ -334,6 +335,7 @@ noncomputable def labOn (bag : ∀ k, (Fin k → Fin k → ℝ≥0∞) → Fin k
     bag c.length (fun a b => w c[a] c[b]) ⟨c.idxOf x, List.idxOf_lt_length_iff.2 h⟩
   else []
 
+omit [Fintype D] in
 theorem labOn_getElem (bag : ∀ k, (Fin k → Fin k → ℝ≥0∞) → Fin k → List ℕ) (w : D → D → ℝ≥0∞)
     {c : List D} (hc : c.Nodup) (a : Fin c.length) :
     labOn bag w c c[a] = bag c.length (fun a b => w c[a] c[b]) a := by

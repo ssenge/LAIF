@@ -278,7 +278,7 @@ end Query
 
 section OneBag
 
-private theorem wt_nat {V : Type} {adj : V → V → Prop} (ℓ : V → V → ℕ) {a b : V} (p : Walk adj a b) :
+theorem wt_nat {V : Type} {adj : V → V → Prop} (ℓ : V → V → ℕ) {a b : V} (p : Walk adj a b) :
     ∃ k : ℕ, p.wt (lenOf ℓ) = k := by
   induction p with
   | nil a => exact ⟨0, by simp⟩
@@ -286,7 +286,7 @@ private theorem wt_nat {V : Type} {adj : V → V → Prop} (ℓ : V → V → �
     obtain ⟨k, hk⟩ := ih
     exact ⟨_, by rw [Walk.wt_cons, hk, lenOf, ← Nat.cast_add]⟩
 
-private theorem dist_nat {V : Type} {adj : V → V → Prop} (ℓ : V → V → ℕ) {a b : V} (p₀ : Walk adj a b) :
+theorem dist_nat {V : Type} {adj : V → V → Prop} (ℓ : V → V → ℕ) {a b : V} (p₀ : Walk adj a b) :
     ∃ k : ℕ, dist adj (lenOf ℓ) Set.univ a b = k := by
   classical
   have hex : ∃ k : ℕ, ∃ p : Walk adj a b, p.wt (lenOf ℓ) = k := by
@@ -300,13 +300,13 @@ private theorem dist_nat {V : Type} {adj : V → V → Prop} (ℓ : V → V → 
     rw [hk]
     exact_mod_cast Nat.find_min' hex ⟨p, hk⟩
 
-private theorem dist_le_distR {V : Type} (adj : V → V → Prop) (g : V → V → ℝ≥0∞) (A : V → V → Prop) (a b : V) :
+theorem dist_le_distR {V : Type} (adj : V → V → Prop) (g : V → V → ℝ≥0∞) (A : V → V → Prop) (a b : V) :
     dist adj g Set.univ a b ≤ distR adj g A a b :=
   le_iInf₂ fun p _ => iInf₂_le p (by simp)
 
 variable {V : Type} [Fintype V] [DecidableEq V]
 
-private theorem toWalk {N : Net V} {ℓ : V → V → ℕ} {W : ℕ} (hℓ : N.LensIn ℓ W) {a b : V}
+theorem toWalk {N : Net V} {ℓ : V → V → ℕ} {W : ℕ} (hℓ : N.LensIn ℓ W) {a b : V}
     (p : N.G.Walk a b) :
     ∃ q : Walk N.G.Adj a b, q.support.length = p.length + 1 ∧
       q.wt (lenOf ℓ) ≤ ((p.length * W : ℕ) : ℝ≥0∞) := by
@@ -320,7 +320,7 @@ private theorem toWalk {N : Net V} {ℓ : V → V → ℕ} {W : ℕ} (hℓ : N.L
     exact add_le_add (Nat.cast_le.2 (hℓ _ _ h).2) hw
 
 /-- The hierarchy with the one bag `0`, whose vertices are all hubs. -/
-private def oneBag (N : Net V) : RHierarchy V ℕ N.G.Adj where
+def oneBag (N : Net V) : RHierarchy V ℕ N.G.Adj where
   bag x := {_z | x = 0}
   arc x a b := x = 0 ∧ N.G.Adj a b
   hub x := {_z | x = 0}
@@ -334,7 +334,7 @@ private def oneBag (N : Net V) : RHierarchy V ℕ N.G.Adj where
   uniq _ _ _ _ hc := hc.elim
   edge _ _ _ h ha _ := absurd h.1 ha
 
-private theorem oneBag_chain (N : Net V) (v : V) (x : ℕ) : (oneBag N).Chain v x ↔ x = 0 := by
+theorem oneBag_chain (N : Net V) (v : V) (x : ℕ) : (oneBag N).Chain v x ↔ x = 0 := by
   constructor
   · intro h
     cases h with

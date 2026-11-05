@@ -672,6 +672,13 @@ standard axioms (`propext`, `Classical.choice`, `Quot.sound`). There is no `sorr
   reads from them whether it lies on the cut of its bag and whether it belongs to the next level.
 - `lean/SsspFlow/NetLevels.lean`: `corL_eq`, `levels_of_run`: what a node reads from its memory, and that a run of
   the phases of the levels gives each node its corners at all levels.
+- `lean/SsspFlow/EdgeBound.lean`: `card_le_of_planar`: a set of darts closed under reversal in a simple planar map
+  has at most eight darts per vertex it touches.
+- `lean/SsspFlow/ValueTab.lean`: `vT_ok`, `label_read`, `bagVal_read`: one aggregation call per bag gathers the
+  records of its corners in a table. The labels of the ports and the values between the hubs of the bag are
+  functions of this table alone, and `vals_metric`, `label_bounds`, `vItems_lt` give their accuracy and their size.
+- `lean/SsspFlow/NetValues.lean`: `vItsL_eq`, `values_of_run`, `leaf_card`: what a node submits in the value calls,
+  and that a run of these calls gives each node the tables of its bags.
 
 Not formalized: the proofs of `LabelHypothesis` and of the propositions above, the minimum cut of
 Theorem C, Theorem C′, the construction of the tiles and the rest of Lemma 14′, and Lemmas R5 and R7. Of Theorem D, only the
