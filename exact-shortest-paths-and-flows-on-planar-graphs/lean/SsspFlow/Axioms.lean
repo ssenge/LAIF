@@ -275,3 +275,11 @@ Expected output for each: `propext`, `Classical.choice`, `Quot.sound` (or a subs
 #print axioms SsspFlow.Congest.up_spec
 #print axioms SsspFlow.Congest.down_spec
 #print axioms SsspFlow.Congest.constAt_of_run
+#print axioms SsspFlow.Congest.valid_of
+#print axioms SsspFlow.Congest.flood_spec
+#print axioms SsspFlow.Congest.LevelData.OK.portTab
+#print axioms SsspFlow.Congest.LevelData.OK.isA_iff
+#print axioms SsspFlow.Congest.LevelData.OK.isY_iff
+#print axioms SsspFlow.Congest.LevelData.OK.mem_next
+#print axioms SsspFlow.Congest.corL_eq
+#print axioms SsspFlow.Congest.levels_of_run

@@ -663,6 +663,15 @@ standard axioms (`propext`, `Classical.choice`, `Quot.sound`). There is no `sorr
   sectors in terms of what a node sees.
 - `lean/SsspFlow/NetPasses.lean`: `dep_spec`, `up_spec`, `down_spec`: relaxations for the depth and the sums over
   the tree. `constAt_of_run`: after these phases a node knows the numbers of its darts and of their reverses.
+- `lean/SsspFlow/NetAgg.lean`: `valid_of`, `AggDone.tab`: calls of the aggregation primitive in which each dart
+  of a node holds a name and pairs. The hypotheses of the primitive follow from the shape of the bags, and the
+  answers form a table.
+- `lean/SsspFlow/NetFlood.lean`: `flood_spec`: after a number of rounds given by the diameter of the bags, each
+  dart holds the least code of a corner of its bag.
+- `lean/SsspFlow/LevelTab.lean`: the answers of the calls of one level. `isA_iff`, `isY_iff`, `mem_next`: a dart
+  reads from them whether it lies on the cut of its bag and whether it belongs to the next level.
+- `lean/SsspFlow/NetLevels.lean`: `corL_eq`, `levels_of_run`: what a node reads from its memory, and that a run of
+  the phases of the levels gives each node its corners at all levels.
 
 Not formalized: the proofs of `LabelHypothesis` and of the propositions above, the minimum cut of
 Theorem C, Theorem C′, the construction of the tiles and the rest of Lemma 14′, and Lemmas R5 and R7. Of Theorem D, only the
