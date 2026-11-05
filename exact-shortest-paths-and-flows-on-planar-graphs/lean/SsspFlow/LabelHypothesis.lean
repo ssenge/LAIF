@@ -32,13 +32,15 @@ decision problems and is not used; results are read from the final states.
 
 These are classical or published results, stated as propositions and not proved here.
 
-* `RealizationBox`: planar realization of distance matrices with terminals in a given order, [10].
-* `DistanceLabelBox`: `(1 + ε)`-approximate distance labels on planar digraphs, [13], as used in
-  [1, Lemma 11].
-* `FaceIdBox`: identifiers of faces, [9, Lemma 5.11], deterministically [18, Lemma 3.17].
+* `RealizationBox`: planar realization of distance matrices with terminals in a given order,
+  [10, Thm 1].
+* `DistanceLabelBox`: `(1 + ε)`-approximate distance labels on planar digraphs, [13, Thm 3.16], as
+  used in [1, Lemma 11].
+* `FaceIdBox`: identifiers of faces, [9, Lemma 5.11], deterministically [18, Lemma 3.17] with
+  [20, Thm 1.5].
 * `EmbeddingBox`: a planar embedding, computed in `Õ(D)` rounds.
 * `AggBox`: minima per key over low congestion subgraphs, by a convergecast and a broadcast.
-* `SmoothingBox`: smooth estimates from an approximate oracle, [3, Thm 1.7, Alg. 3].
+* `SmoothingBox`: smooth estimates from an approximate oracle, [3, Thm 1.7, Alg. 3 and 4].
 * `NegReduction`: negative weights from exact nonnegative SSSP with a factor `τ` in the rounds. The
   reduction of [6, Thm 2], with the term `√n + D` replaced by `Õ(D)` through [9, Cor. 4.6, Lemma 4.8]
   and with the base case of [6, Cor. 33] as in Section 8 of `notes/NEGATIVE.md`, gives
@@ -470,7 +472,8 @@ end OneBag
 /-- (G3) [10, Thm 1]. A matrix of positive finite distances with `k` terminals that satisfies the
 triangle inequality and the crossing inequalities for the terminals in the order `0, …, k - 1` is
 realized by a planar map with at most `C * k ^ 6` vertices and these terminals in this order along one
-face. The inequalities are those of `RotSystem.DiskDrawn.monge`. -/
+face. The inequalities are those of `RotSystem.DiskDrawn.monge`. This is the direction of [10, Thm 1]
+from the inequalities to a realization, with the size bound of [10, Section 5]. -/
 def RealizationBox (C : ℕ) : Prop :=
   ∀ k : ℕ, 2 ≤ k → ∀ d : Fin k → Fin k → ℝ≥0∞,
     (∀ i, d i i = 0) → (∀ i j, i ≠ j → d i j ≠ 0 ∧ d i j ≠ ⊤) →
@@ -482,8 +485,10 @@ def RealizationBox (C : ℕ) : Prop :=
       K.numVertices ≤ C * k ^ 6 ∧ K.DiskDrawn (List.ofFn l) ∧
         ∀ i j, K.walkDist g (K.tail (l i)) (K.tail (l j)) = d i j
 
-/-- (G5) [13], as used in [1, Lemma 11]. `(1 + 1/e)`-approximate distance labels on planar digraphs
-with lengths in `{0, …, N, ∞}`, of `Õ(e)` words of `O(log S)` bits. The query is fixed before the map. -/
+/-- (G5) [13, Thm 3.16], as used in [1, Lemma 11]. `(1 + 1/e)`-approximate distance labels on planar
+digraphs with lengths in `{0, …, N, ∞}`, of `Õ(e)` words, each below `(V + N + 2) ^ c` for a map with
+`V` vertices. Lengths `0` are covered by the reachability labels of [13, Thm 2.7], and the query takes
+the least estimate over the distance scales. The query is fixed before the map. -/
 def DistanceLabelBox (C c : ℕ) : Prop :=
   ∀ e : ℕ, 1 ≤ e → ∃ query : List ℕ → List ℕ → ℕ∞,
     ∀ (D : Type) [Fintype D] [DecidableEq D] (R : RotSystem D) (N : ℕ) (g : D → ℕ∞),
@@ -495,7 +500,8 @@ def DistanceLabelBox (C c : ℕ) : Prop :=
         (query (label u) (label v) : ℝ≥0∞) ≤
           (1 + (e : ℝ≥0∞)⁻¹) * R.walkDist (fun x => (g x : ℝ≥0∞)) u v
 
-/-- (G6) [9, Lemma 5.11], [18, Lemma 3.17]. From the rotation lists, in `Õ(D)` rounds, every node
+/-- (G6) [9, Lemma 5.11], which names the face of each dart. Deterministically, [18, Lemma 3.17] with
+the part-wise aggregation of [20, Thm 1.5]. From the rotation lists, in `Õ(D)` rounds, every node
 learns for each dart at it the identifier of its face, of polylogarithmically many bits. Here a face
 is an orbit of the face permutation `rot⁻¹ ∘ rev`. -/
 def FaceIdBox : Prop :=
@@ -614,9 +620,11 @@ def ExactOracleOK {σ : Type} {B : ℕ} (n W D T : ℕ) (A : Algorithm (Fin n) (
     N.toRot.Planar → N.DiamLE D → OracleValid N 0 W ℓ φ → ∀ v,
       (out v (A.run N.G (N.oracleIn ℓ φ) T v) : ℝ≥0∞) = N.dsrcTop ℓ φ v
 
-/-- [3, Thm 1.7, Alg. 3]. From a `(1 + 1/e₀)`-approximate oracle, `O(L)` calls with `e₀ = O(L)` give
-estimates `d` for finite offsets, in units of one half, with `2 d(σ, v) ≤ d v`,
-`d b ≤ d a + 4 ℓ(a, b)` and `d v ≤ 4 φ v`. So `d / 2` does not underestimate and is `2`-smooth on the
+/-- [3, Thm 1.7, Alg. 3 and 4, Prop. 5.11 and 5.12]. From a `(1 + 1/e₀)`-approximate oracle, `O(L)`
+calls with `e₀ = C L`, where `C` depends on `K`, give estimates `d` for finite offsets, in units of
+one half, with `2 d(σ, v) ≤ d v`, `d b ≤ d a + 4 ℓ(a, b)` and `d v ≤ 4 φ v`. For offsets, Algorithm 4
+runs on the network given by the answer of the first call, and the bound `d v ≤ 4 φ v` comes from
+that first call. So `d / 2` does not underestimate and is `2`-smooth on the
 arcs and on the arcs from the virtual source, which is the contract of `Boost.Run` with a constant
 `α`. In [3] weights and offsets are real numbers. This form follows by scaling and floors, and the
 smoothness above leaves room for the floor because lengths are at least `1`. -/

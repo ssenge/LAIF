@@ -82,7 +82,8 @@ Please read this before relying on anything here.
   claimed elsewhere, not proved here: [17] and [18] use the embedding algorithm of [15] as
   deterministic (the full text of [15] was not accessible to us), and the face identification
   of [9] is randomized as written, with a one-sentence claim that it derandomizes [9, fn. 20],
-  while [18, Lemma 3.17] states a deterministic version. Theorems C′ and D are
+  while [18, Lemma 3.17] states a deterministic version, given deterministic part-wise
+  aggregation such as [20, Thm 1.5]. Theorems C′ and D are
   deterministic in the same sense: their other steps are local, use face identifiers computed
   deterministically in [18, Lemma 3.17], or are the deterministic algorithm of [18]. Theorems
   B and C use [6] and hold with high probability.
@@ -442,13 +443,16 @@ Beyond the results cited in the proofs, these enter as black boxes:
   This is needed only for the induced form of the labels (`notes/LEMMA15.md` §3 to §6). The
   final theorems use the region decomposition of §9, which is constructed and analysed there;
   its height bound and bag identifiers are only sketched.
-- **(G3) Realization**, [10, Thm 1]. It gives existence only, so a bag centre searches
-  exhaustively, which takes exponential local time (CONGEST does not count it).
+- **(G3) Realization**, [10, Thm 1], with the size bound of [10, Section 5]. It gives existence
+  only, so a bag centre searches exhaustively, which takes exponential local time (CONGEST does
+  not count it).
 - **(G4)** Distances in a graph drawn in a disk satisfy the Monge condition in boundary order.
   This is standard. The notes give the proof, and `lean/SsspFlow/Crossing.lean` proves it for
   rotation systems.
-- **(G5) Distance oracles** for planar digraphs [13], as used in [1, Lemma 11].
-- **(G6) Face identifiers** in $\tilde O(D)$ rounds [9, Lemma 5.11].
+- **(G5) Distance oracles** for planar digraphs [13, Thm 3.16], as used in [1, Lemma 11], with the
+  reachability labels of [13, Thm 2.7] for lengths 0.
+- **(G6) Face identifiers** in $\tilde O(D)$ rounds [9, Lemma 5.11], deterministically
+  [18, Lemma 3.17] with [20, Thm 1.5].
 
 The proof in Lean of the Label Hypothesis takes (G3), (G5), (G6) and an aggregation primitive as hypotheses. It builds
 its decomposition itself, so it does not use (G1), and it proves what it needs of (G4).
@@ -868,6 +872,8 @@ The numbers match those in `notes/`.
 18. Y. Abd-Elhaleem, M. Dory, O. Weimann. Õptimal Distributed Maximum Flow Approximation in
     Undirected Planar Graphs. arXiv:2608.09500, to appear in DISC 2026.
 19. M. Parter. Distributed Planar Reachability in Nearly Optimal Time. DISC 2020.
+20. M. Ghaffari, B. Haeupler. Low-Congestion Shortcuts for Graphs Excluding Dense Minors.
+    arXiv:2008.03091.
 
 ## License
 
