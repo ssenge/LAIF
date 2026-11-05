@@ -1,0 +1,48 @@
+d=2 w=[0.2, 0.4, 0.4] L=0.5874 margin=0.210
+  n=8 random {'runs': 12, 'max list': 36, 'pairs verified': 12, 'reps': 12, 'cap cases': 24, 'capped bins': 0, 'primes': 24, 'primes with a working residue': 24, 'working residues': 24}
+  n=10 random {'runs': 12, 'max list': 180, 'pairs verified': 12, 'reps': 12, 'cap cases': 24, 'capped bins': 0, 'primes': 24, 'primes with a working residue': 24, 'working residues': 24}
+  n=12 random {'runs': 12, 'max list': 1800, 'pairs verified': 48, 'reps': 48, 'cap cases': 96, 'capped bins': 0, 'primes': 24, 'primes with a working residue': 24, 'working residues': 76}
+  n=8 heavy {'runs': 8, 'max list': 36, 'pairs verified': 8, 'reps': 8, 'capped bins': 66, 'primes': 16, 'primes with a working residue': 14, 'working residues': 14, 'discarded, smaller solution': 4}
+  n=10 heavy {'discarded, smaller solution': 7, 'runs': 5, 'max list': 180, 'pairs verified': 9, 'reps': 5, 'capped bins': 40, 'primes': 10, 'primes with a working residue': 9, 'working residues': 9}
+  n=12 heavy {'runs': 7, 'max list': 1800, 'pairs verified': 42, 'reps': 28, 'capped bins': 39, 'primes': 14, 'primes with a working residue': 14, 'working residues': 36, 'discarded, smaller solution': 5}
+  n=12 exchange {'equal sums planted': 40}
+d=2 w=[0.138, 0.296, 0.566] L=0.6119 margin=0.485
+  n=8 random {'runs': 12, 'max list': 12, 'pairs verified': 24, 'reps': 24, 'cap cases': 48, 'capped bins': 0, 'primes': 24, 'primes with a working residue': 24, 'working residues': 43}
+  n=10 random {'runs': 12, 'max list': 36, 'pairs verified': 24, 'reps': 24, 'cap cases': 48, 'capped bins': 0, 'primes': 24, 'primes with a working residue': 24, 'working residues': 46}
+  n=12 random {'runs': 12, 'max list': 540, 'pairs verified': 80, 'reps': 80, 'cap cases': 160, 'capped bins': 0, 'primes': 24, 'primes with a working residue': 24, 'working residues': 118}
+  n=8 heavy {'runs': 8, 'max list': 12, 'pairs verified': 16, 'reps': 16, 'capped bins': 82, 'primes': 16, 'primes with a working residue': 12, 'working residues': 16, 'cap cases': 6, 'discarded, smaller solution': 4}
+  n=10 heavy {'runs': 10, 'max list': 36, 'pairs verified': 20, 'reps': 20, 'capped bins': 53, 'primes': 20, 'primes with a working residue': 17, 'working residues': 31, 'discarded, smaller solution': 2}
+  n=12 heavy {'runs': 5, 'max list': 540, 'pairs verified': 32, 'reps': 32, 'capped bins': 47, 'primes': 10, 'primes with a working residue': 10, 'working residues': 52, 'discarded, smaller solution': 7}
+  n=12 exchange {'equal sums planted': 40}
+d=2 w=[0.3, 0.4, 0.3] L=0.5685 margin=0.237
+  n=8 random {'runs': 12, 'max list': 210, 'pairs verified': 85, 'reps': 68, 'cap cases': 136, 'capped bins': 0, 'primes': 24, 'primes with a working residue': 24, 'working residues': 99}
+  n=10 random {'runs': 12, 'max list': 560, 'pairs verified': 90, 'reps': 72, 'cap cases': 144, 'capped bins': 0, 'primes': 24, 'primes with a working residue': 24, 'working residues': 107}
+  n=12 random {'runs': 12, 'max list': 1120, 'pairs verified': 75, 'reps': 60, 'cap cases': 120, 'capped bins': 0, 'primes': 24, 'primes with a working residue': 24, 'working residues': 93}
+  n=8 heavy {'runs': 9, 'max list': 210, 'pairs verified': 69, 'reps': 40, 'capped bins': 68, 'primes': 18, 'primes with a working residue': 18, 'working residues': 59, 'discarded, smaller solution': 3}
+  n=10 heavy {'discarded, smaller solution': 6, 'runs': 6, 'max list': 560, 'pairs verified': 52, 'reps': 40, 'capped bins': 95, 'primes': 12, 'primes with a working residue': 12, 'working residues': 56}
+  n=12 heavy {'runs': 6, 'max list': 1120, 'pairs verified': 50, 'reps': 40, 'capped bins': 54, 'primes': 12, 'primes with a working residue': 12, 'working residues': 52, 'discarded, smaller solution': 6}
+  n=12 exchange {'equal sums planted': 40}
+d=3 w=[0.143, 0.286, 0.286, 0.286] L=0.7057 margin=0.218
+  n=8 random {'runs': 12, 'max list': 60, 'pairs verified': 12, 'reps': 12, 'cap cases': 24, 'capped bins': 0, 'primes': 24, 'primes with a working residue': 24, 'working residues': 24}
+  n=10 random {'runs': 12, 'max list': 840, 'pairs verified': 48, 'reps': 48, 'cap cases': 96, 'capped bins': 0, 'primes': 24, 'primes with a working residue': 24, 'working residues': 69}
+  n=12 random {'runs': 12, 'max list': 5400, 'pairs verified': 12, 'reps': 12, 'cap cases': 24, 'capped bins': 0, 'primes': 24, 'primes with a working residue': 24, 'working residues': 24}
+  n=8 heavy {'runs': 10, 'max list': 60, 'pairs verified': 10, 'reps': 10, 'capped bins': 73, 'primes': 20, 'primes with a working residue': 16, 'working residues': 16, 'cap cases': 2, 'discarded, smaller solution': 2}
+  n=10 heavy {'runs': 11, 'max list': 840, 'pairs verified': 46, 'reps': 44, 'capped bins': 79, 'primes': 22, 'primes with a working residue': 21, 'working residues': 63, 'discarded, smaller solution': 1}
+  n=12 heavy {'runs': 4, 'max list': 5400, 'pairs verified': 4, 'reps': 4, 'capped bins': 27, 'primes': 8, 'primes with a working residue': 7, 'working residues': 7, 'discarded, smaller solution': 8}
+  n=12 exchange {'fewer than two representations': 40}
+d=3 w=[0.094, 0.19, 0.234, 0.482] L=0.7185 margin=0.414
+  n=8 random {'runs': 12, 'max list': 12, 'pairs verified': 12, 'reps': 12, 'cap cases': 24, 'capped bins': 0, 'primes': 24, 'primes with a working residue': 24, 'working residues': 24}
+  n=10 random {'runs': 12, 'max list': 36, 'pairs verified': 24, 'reps': 24, 'cap cases': 48, 'capped bins': 0, 'primes': 24, 'primes with a working residue': 24, 'working residues': 46}
+  n=12 random {'runs': 12, 'max list': 108, 'pairs verified': 24, 'reps': 24, 'cap cases': 48, 'capped bins': 0, 'primes': 24, 'primes with a working residue': 24, 'working residues': 42}
+  n=8 heavy {'runs': 9, 'max list': 12, 'pairs verified': 9, 'reps': 9, 'capped bins': 100, 'primes': 18, 'primes with a working residue': 5, 'working residues': 5, 'discarded, smaller solution': 3}
+  n=10 heavy {'runs': 10, 'max list': 36, 'pairs verified': 20, 'reps': 20, 'capped bins': 106, 'primes': 20, 'primes with a working residue': 16, 'working residues': 27, 'discarded, smaller solution': 2}
+  n=12 heavy {'runs': 8, 'max list': 108, 'pairs verified': 16, 'reps': 16, 'capped bins': 94, 'primes': 16, 'primes with a working residue': 13, 'working residues': 22, 'discarded, smaller solution': 4}
+  n=12 exchange {'equal sums planted': 40}
+d=3 w=[0.3, 0.3, 0.2, 0.2] L=0.6680 margin=0.206
+  n=8 random {'runs': 12, 'max list': 180, 'pairs verified': 12, 'reps': 12, 'cap cases': 24, 'capped bins': 0, 'primes': 24, 'primes with a working residue': 24, 'working residues': 24}
+  n=10 random {'runs': 12, 'max list': 180, 'pairs verified': 12, 'reps': 12, 'cap cases': 24, 'capped bins': 0, 'primes': 24, 'primes with a working residue': 24, 'working residues': 24}
+  n=12 random {'runs': 12, 'max list': 1680, 'pairs verified': 36, 'reps': 24, 'cap cases': 48, 'capped bins': 0, 'primes': 24, 'primes with a working residue': 24, 'working residues': 45}
+  n=8 heavy {'runs': 8, 'max list': 180, 'pairs verified': 8, 'reps': 8, 'capped bins': 58, 'primes': 16, 'primes with a working residue': 13, 'working residues': 13, 'discarded, smaller solution': 4}
+  n=10 heavy {'discarded, smaller solution': 6, 'runs': 6, 'max list': 180, 'pairs verified': 6, 'reps': 6, 'capped bins': 32, 'primes': 12, 'primes with a working residue': 10, 'working residues': 10}
+  n=12 heavy {'runs': 5, 'max list': 1680, 'pairs verified': 16, 'reps': 10, 'capped bins': 35, 'primes': 10, 'primes with a working residue': 10, 'working residues': 19, 'discarded, smaller solution': 7}
+  n=12 exchange {'equal sums planted': 40}

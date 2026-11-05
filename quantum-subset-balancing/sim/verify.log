@@ -1,0 +1,3 @@
+d=1 target=0.4386: 70/70 boxes verified in interval arithmetic; covers the simplex
+d=2 target=0.6125: 2596/2596 boxes verified in interval arithmetic; covers the simplex
+d=3 target=0.7215: 25049/25049 boxes verified in interval arithmetic; covers the simplex
