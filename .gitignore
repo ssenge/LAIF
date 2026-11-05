@@ -4,3 +4,4 @@ __pycache__/
 .DS_Store
 *.pkl
 RULES.md
+NEW_AGENT_README.md
