@@ -4,7 +4,7 @@
 
 # BarbarossAI Research Project
 
-**New bounds and faster algorithms for open problems in algorithms, complexity and quantum computing**
+**Why waste AI slop on social media: new bounds and faster algorithms for open problems in algorithms and complexity!**
 
 [![License: Apache 2.0](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](LICENSE)
 [![Lean 4](https://img.shields.io/badge/proofs-Lean%204%20%2B%20Mathlib-8a2be2.svg)](https://leanprover-community.github.io/)
