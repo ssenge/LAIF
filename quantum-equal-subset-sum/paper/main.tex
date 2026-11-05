@@ -1,0 +1,302 @@
+\pdfoutput=1
+\documentclass[11pt]{article}
+\usepackage[T1]{fontenc}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,booktabs,array}
+\usepackage[shortlabels]{enumitem}
+\usepackage[hidelinks]{hyperref}
+\usepackage{algorithm}
+\usepackage[noend]{algpseudocode}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\input{fig/style}
+
+\setlist{itemsep=1pt,topsep=3pt}
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+
+\newcommand{\Ot}{\tilde O}
+\newcommand{\Xs}{\mathcal X}
+\newcommand{\Ys}{\mathcal Y}
+\newcommand{\ip}[2]{\langle #1,#2\rangle}
+
+\title{A Faster Quantum Algorithm for Equal Subset Sum}
+\hypersetup{pdftitle={A Faster Quantum Algorithm for Equal Subset Sum},pdfauthor={Sebastian Senge}}
+\author{Sebastian Senge\\ Independent Researcher}
+\date{}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+We give a quantum algorithm for the Equal Subset Sum problem on $n$ integers. Our results are these:
+\begin{itemize}[leftmargin=1.5em]
+\item Equal Subset Sum can be solved in worst-case quantum time $O^*(2^{0.4384n})$, with bounded error and with no false positives, in the model with quantum random access to quantum memory.
+\item With no use of representations, the same method gives a direct proof of the time $O^*(3^{2n/7})$ for Equal Subset Sum and of $O^*(2^{2n/7})$ for Subset Sum.
+\end{itemize}
+The previous best bound for Equal Subset Sum is $O^*(3^{2n/7})\le O^*(2^{0.4529n})$, implied by~\cite{CKLM26}.
+\end{abstract}
+
+\section{Introduction}
+
+Given integers $x_1,\dots,x_n$, the \emph{Equal Subset Sum} problem asks for a nonzero vector $D\in\{-1,0,1\}^n$ with $\ip Dx=0$. For positive entries this is a pair of disjoint nonempty subsets with equal sums. The problem is NP-complete~\cite{WY92}. Meet in the middle solves it classically in time $O^*(3^{n/2})$, and a long line of work has gone below this with the representation technique~\cite{MNPW19,RW26,YS26,Ye26}.
+
+\begin{table}[h]
+\centering
+\small
+\renewcommand{\arraystretch}{1.25}
+\begin{tabular}{@{}lll@{}}
+\toprule
+& Time & Source\\
+\midrule
+Classical, Monte Carlo & $O^*(1.6994^n)\le O^*(2^{0.7651n})$ & \cite{YS26}\\
+Classical, Monte Carlo & $O^*((5/3)^n)\le O^*(2^{0.7370n})$ & \cite{Ye26}\\
+Quantum & $O^*(2^{0.5044n})$ & \cite{AHJKS22}\\
+Quantum, previous best bound & $O^*(3^{2n/7})\le O^*(2^{0.4529n})$ & implied by~\cite{CKLM26}\\
+\textbf{Quantum, this paper} & $\mathbf{O^*(2^{0.4384n})}$ & Theorem~\ref{thm:main}\\
+\bottomrule
+\end{tabular}
+\caption{Worst-case time for Equal Subset Sum. The stated theorem of~\cite{CKLM26} is for the modular pigeonhole version, and its proof applies to the plain problem through the case of a zero target.}
+\label{tab:results}
+\end{table}
+
+\begin{theorem}\label{thm:main}
+There is a quantum algorithm with quantum random access to quantum memory that solves Equal Subset Sum on $n$ integers in time $O^*(2^{0.4384n})$. It never outputs a non-solution, and if a solution exists it outputs one with probability at least $2/3$.
+\end{theorem}
+
+\paragraph{Technique.} We write a solution as a difference $D=X-Y$ of two vectors, filter the two lists by a random prime, and find an equal pair inside one bin with claw finding. Three ingredients give the bound.
+\begin{itemize}[leftmargin=1.5em]
+\item \emph{One table per partition.} Access to a bin needs a table of bin sizes~\cite{AHJKS22}. We fix the prime and search only over the residue, in the manner of the $k$-SUM algorithm of~\cite{CKLM26}, so that the table does not take part in the search over residues.
+\item \emph{Capped bins.} Every pair of list members with equal sums is a solution. So a large class of equal sums in a bin can only help, and the first $T$ elements of a bin still contain a solution. This gives a fixed running time, with no use of variable-time amplification. A cap of this kind appears under the pigeonhole promise in~\cite[Theorem 6.3]{AHJKS22}.
+\item \emph{Square root of the partition cost.} The lists of~\cite{Ye26} assign one of three labels to each coordinate, and a random assignment fits the solution only with exponentially small probability. Quantumly this cost enters as a square root, which changes the best choice of labels.
+\end{itemize}
+
+\paragraph{Scope.} All bounds are in the time model with quantum random access to quantum memory, which~\cite{AHJKS22,CKLM26} also use. Here it is needed because the table is written coherently. We prove no lower bound. Section~\ref{sec:lean} states which parts are formalized in Lean and which are cited. The other parts are claims with the proofs given here. Code and Lean files are at \url{https://github.com/ssenge/ResearchResults}, in the folder \texttt{quantum-equal-subset-sum}.
+
+\section{Preliminaries}
+
+We write $h$ for the binary entropy, $H$ for the entropy of a distribution, and $O^*$ for a bound up to factors polynomial in $n$ and the input length.
+
+\paragraph{Reduction to short entries.} If the entries have more than $2^n$ bits then trying all $3^n$ vectors is polynomial in the input length. Otherwise, by the reduction of~\cite{MNPW19}, in the form of~\cite[Lemma 1.1]{Ye26}, we may assume $n+O(\log n)$ entries of $O(n)$ bits: entries are reduced modulo a random prime, auxiliary multiples of the prime are appended, and the output is checked against the original instance. So an arithmetic operation costs $\mathrm{poly}(n)$.
+
+\paragraph{Minimum support.} Fix a nonzero solution $D^\star$ of minimum support, with $z=pn$ zeros. We try all values of $z$. For a uniform $\varepsilon\in\{\pm1\}^n$ let $y_i=\varepsilon_ix_i$ and $D_i=\varepsilon_iD_i^\star$. Then $\ip Dy=0$, the minimality of the support is preserved, and with probability $\Omega(1/\sqrt n)$ the numbers of $+1$ and $-1$ entries of $D$ differ by at most one.
+
+\paragraph{Quantum tools.} We use amplitude amplification~\cite{BHMT02}, quantum search with a uniform number of iterations~\cite{BBHT98}, and claw finding: for functions $f,g$ on $[T]$ with values of $\mathrm{poly}(T)$ size, a pair $(i,j)$ with $f(i)=g(j)$ is found with bounded error in time $\Ot(T^{2/3}\tau)$, where $\tau$ is the evaluation time~\cite{Tan09,Amb07}. It runs up to a hard time limit, and its output is verified, so its behaviour without a claw does no harm.
+
+\section{The lists}\label{sec:lists}
+
+Fix $p<0.99$. A \emph{layout} is an array $\Theta$ on $\{-1,0,+1\}\times\{A,B,C\}$:
+\[
+\begin{array}{c|ccc}
+d & A & B & C\\\hline
+\pm1 & a_1 & b_1 & b_1\\
+0 & a_0 & b_0 & b_0
+\end{array}
+\]
+with $2a_1+4b_1=1-p$, $a_0+2b_0=p$ and $b_1>0$, and with either $a_1,a_0>0$ and $p<1/2$, or $a_1=a_0=0$. In the second case we call $A$ \emph{empty}. Let $c_A=2a_1+a_0$ and $c_B=2b_1+b_0$.
+
+An \emph{integer layout} is a family of nonnegative integers $\nu_L(d)$ with $\sum_L\nu_L(d)$ equal to the number of coordinates with $D_i=d$, and with $|\nu_L(d)-n\Theta(d,L)|\le2$, and with $\nu_A\equiv0$ if $A$ is empty. One exists by rounding each row separately, since the column sums are free, and there are $O(1)$ of them, so we try them all. A \emph{partition} $\Pi$ assigns labels to the coordinates with $|L|=\sum_d\nu_L(d)$. It is \emph{good} if $D$ has exactly $\nu_L(d)$ coordinates of value $d$ on $L$. A uniform partition is good with probability $2^{-an}/\mathrm{poly}(n)$, where
+\[
+a=H(c_A,c_B,c_B)-\sum_d\Theta_d\,H\bigl(\Theta(d,\cdot)/\Theta_d\bigr)
+\]
+is the mutual information between the value and the label. Indeed, with $n_d$ the number of coordinates with $D_i=d$, the probability is
+\[
+\prod_d\binom{n_d}{\nu_A(d),\nu_B(d),\nu_C(d)}\Big/\binom{n}{|A|,|B|,|C|},
+\]
+and the estimate follows from the method of types.
+
+Let $f=\lfloor\nu_A(0)/2\rfloor$ and $f'=\nu_A(0)-f$. We take the labels of~\cite{Ye26}. The list $\Xs$ consists of all $X\in\{0,1,2\}^n$ with:
+\begin{itemize}[leftmargin=1.5em]
+\item on $A$: values in $\{0,1\}$, with $\nu_A(-1)+f$ zeros and $\nu_A(+1)+f'$ ones;
+\item on $B$: type $(\nu_B(-1),\nu_B(0),\nu_B(+1))$ over the symbols $(0,1,2)$;
+\item on $C$: constant $1$.
+\end{itemize}
+The list $\Ys$ consists of all $Y\in\{0,1,2\}^n$ with:
+\begin{itemize}[leftmargin=1.5em]
+\item on $A$: values in $\{0,1\}$, with $\nu_A(+1)+f$ zeros and $\nu_A(-1)+f'$ ones;
+\item on $B$: constant $1$;
+\item on $C$: type $(\nu_C(+1),\nu_C(0),\nu_C(-1))$ over the symbols $(0,1,2)$.
+\end{itemize}
+Let $U=\max(|\Xs|,|\Ys|)$. Then $|\Xs|,|\Ys|=2^{un}/\mathrm{poly}(n)$ with $u=c_A+c_BH(b_1/c_B,b_0/c_B,b_1/c_B)$.
+
+\begin{lemma}[Validity]\label{lem:valid}
+For all $X\in\Xs$, $Y\in\Ys$: $X-Y\in\{-1,0,1\}^n$ and $X\ne Y$. So any $X,Y$ with $\ip Xy=\ip Yy$ give a solution.
+\end{lemma}
+\begin{proof}
+On $A$ both vectors take values in $\{0,1\}$. On $B$ we have $Y=1$ and $X\in\{0,1,2\}$, and on $C$ the reverse. Also $\nu_B(-1)\ge b_1n-2>0$ for large $n$, so $X$ has a zero on $B$, where $Y=1$.
+\end{proof}
+
+\begin{lemma}[Representations]\label{lem:reps}
+Let $\Pi$ be good. The pairs $(X,Y)\in\Xs\times\Ys$ with $X-Y=D$ are in bijection with the subsets of size $f$ of the zeros of $D$ on $A$. So there are $K=\binom{\nu_A(0)}{f}=2^{a_0n}/\mathrm{poly}(n)$ of them. They satisfy $\ip Xy=\ip Yy$, and the $K$ values are pairwise distinct.
+\end{lemma}
+\begin{proof}
+On $B$, $Y=1$ forces $X=D+1$, of the required type. On $C$, $X=1$ forces $Y=1-D$, also of the required type. On $A$, $D_i=-1$ forces $(X_i,Y_i)=(0,1)$, $D_i=+1$ forces $(1,0)$, and $D_i=0$ leaves $(0,0)$ or $(1,1)$. The type condition says that exactly $f$ of those take $(0,0)$.
+
+If $A$ is empty then $K=1$. Otherwise suppose two representations have equal values. They differ only on the set $F$ of zeros of $D$ on $A$, so the difference of their $X$ parts is a nonzero solution with support in $F$. But $|F|=\nu_A(0)\le z<n-z=|\mathrm{supp}\,D|$, since $p<1/2$, against minimality.
+\end{proof}
+
+\begin{lemma}[Table]\label{lem:table}
+For a prime $P$, a table with $P\,\mathrm{poly}(n)$ entries, built in time $P\,\mathrm{poly}(n)$, gives $|\Xs_\rho|$ and the $I$-th element of $\Xs_\rho=\{X\in\Xs:\ip Xy\equiv\rho\bmod P\}$ in time $\mathrm{poly}(n)$, for every residue $\rho$ and every index $I$. The same holds for $\Ys$.
+\end{lemma}
+\begin{proof}
+A dynamic program over the coordinates, as in~\cite[Theorem 3.5]{AHJKS22}, with the state consisting of the position, the number of each symbol used so far on each label, and the residue. Each entry holds the number of partial vectors. To unrank, walk back from the final state, and at each coordinate subtract the counts of the symbols in a fixed order.
+\end{proof}
+
+\section{The filter and the cap}\label{sec:filter}
+
+Let $s=2^{\sigma n}$ with $\sigma\ge0$, assume $P_0=Ks=2^{\Omega(n)}$, draw $P$ uniformly among the primes of $[P_0,2P_0]$, and let $T=\lceil cn\,U/P_0\rceil$ with a suitable constant $c$. Rounding $P_0$ to an integer changes nothing below.
+
+\begin{lemma}[Filter]\label{lem:filter}
+Fix a good partition. With probability at least $3/4$ over $P$, there is a set $R$ of at least $K/O(n)$ residues such that each $\rho\in R$ has a representation $(X^\star,Y^\star)$ of value $v\equiv\rho$ for which at most $T/2$ elements of $\Xs_\rho$ and at most $T/2$ elements of $\Ys_\rho$ have an exact sum other than $v$.
+\end{lemma}
+\begin{proof}
+All values have absolute value below $2^{O(n)}$, so a nonzero difference has $O(1)$ prime divisors above $P_0$, and $[P_0,2P_0]$ contains at least $P_0/O(n)$ primes. So a fixed nonzero difference vanishes modulo $P$ with probability at most $O(n)/P_0$.
+
+For a representation $j$ of value $v_j$, let $e_j$ be the number of elements of $\Xs$ and of $\Ys$ with a sum different from $v_j$ and congruent to $v_j$. Then $\mathbb E_P[e_j]\le2U\cdot O(n)/P_0$. Let $Z$ be the number of pairs of representations that collide modulo $P$. Then $\mathbb E_P[Z]\le K^2O(n)/P_0\le K\cdot O(n)$, since $s\ge1$. By the first moment bound, applied to both quantities, with probability at least $3/4$ the average of $e_j$ is at most $16U\,O(n)/P_0$ and $Z\le8K\,O(n)$.
+
+Then at least half of the representations have $e_j\le T/2$, for suitable $c$. These are $K'\ge K/2$ distinct integers. If they occupy $M$ residues, then $K'^2/M\le K'+2Z$ by convexity, so $M\ge K/O(n)$.
+\end{proof}
+
+\begin{lemma}[Cap]\label{lem:cap}
+Fix $\rho\in R$, with $T\ge1$. Let $W_X$ be the first $T$ elements of $\Xs_\rho$, or all of them if there are fewer, and define $W_Y$ likewise. Then $W_X$ and $W_Y$ both contain an element of sum $v$.
+\end{lemma}
+\begin{proof}
+Let $C$ be the set of elements of $\Xs_\rho$ of sum $v$. It is nonempty, and at most $T/2$ elements of $\Xs_\rho$ lie outside it. If $|\Xs_\rho|\le T$ then $W_X\supseteq C$. Otherwise $W_X$ has $T$ elements, and at most $T/2$ of them lie outside $C$. The same holds for $\Ys_\rho$.
+\end{proof}
+
+\section{The algorithm}\label{sec:alg}
+
+\begin{algorithm}[h]
+\caption{Base procedure on a coin $(\Pi,P,j)$}\label{alg:base}
+\begin{algorithmic}[1]
+\State Build the table of Lemma~\ref{lem:table} for $\Pi$ and $P$.
+\State Run $j$ iterations of quantum search over $\rho\in\mathbb Z_P$, with $j$ uniform below $J=\sqrt{O(n)s}$. A residue is marked if claw finding finds a pair in $W_X\times W_Y$ with equal exact sums. Both windows are padded to length $T$ with tagged values that cannot collide. Claw finding is repeated $O(n)$ times, with a constant large enough that its error probability is $2^{-\Omega(n)}$ and much smaller than $1/J^2$.
+\State Verify the pair found, undo $\varepsilon$, restrict to the original coordinates, and raise the flag if it is a solution.
+\end{algorithmic}
+\end{algorithm}
+
+Algorithm~\ref{alg:base} is a unitary of fixed running time, since $P\le2P_0$ and $T$ bound every branch. If $\Pi$ is good then, with probability at least $3/4$ over $P$, the fraction of marked residues is at least $|R|/(2P_0)=1/(O(n)s)$, and a uniform $j$ gives constant success probability. So a uniform coin raises the flag with probability at least $2^{-an}/\mathrm{poly}(n)$. The coin is prepared coherently by rejection sampling for the prime and with a standard state preparation for the partition. Its running time is
+\[
+\Ot\bigl(P_0+\sqrt s\,T^{2/3}\bigr)=\Ot\bigl(2^{(a_0+\sigma)n}+2^{(\sigma/2+\frac23(u-a_0-\sigma))n}\bigr).
+\]
+Amplitude amplification over the coin runs the procedure forward and backward, which also uncomputes the table. Repeating over the $O(\sqrt n)$ draws of $\varepsilon$ and over the polynomially many $z$ and $\nu$ gives success probability at least $2/3$. The total exponent is
+\begin{equation}\label{eq:L}
+L=\frac a2+\max\Bigl(a_0+\sigma,\ \frac\sigma2+\frac23(u-a_0-\sigma)\Bigr).
+\end{equation}
+Balancing the two terms gives $\sigma=(4u-10a_0)/7$, when this is nonnegative, and $L=a/2+(4u-3a_0)/7$.
+
+\paragraph{The empty label.} For $a_1=a_0=0$ we split the coordinates evenly between $B$ and $C$. Then $a=0$, a partition is good with probability $1/\mathrm{poly}(n)$, $K=1$, and $u=\frac12(h(p)+1-p)$. So~\eqref{eq:L} gives
+\[
+S(p)=\tfrac27\bigl(h(p)+1-p\bigr),
+\]
+with maximum $\frac27\log_23$ at $p=1/3$. This proves $O^*(3^{2n/7})$ with a table, a search over residues and claw finding only.
+
+\begin{remark}
+The same steps apply to Subset Sum with target $t$, after reducing the entries to $O(n)$ bits. Let $X$ and $Y$ range over the subsets of two halves of the coordinates, and let $\Ys_\rho=\{Y:t-\ip Yx\equiv\rho\bmod P\}$. Any $X,Y$ with $\ip Xx=t-\ip Yx$ form a solution, which takes the place of Lemma~\ref{lem:valid}. Then $K=1$ and $u=1/2$, and this gives an alternative proof of the time $O^*(2^{2n/7})$ of~\cite{CKLM26}, which needs neither $7$-SUM nor a dictionary on four blocks.
+\end{remark}
+
+\section{The exponent}\label{sec:exponent}
+
+The cases are as follows. The function $S$ increases on $[0,1/3]$ and decreases on $[1/3,1]$, with $S(0.2)<0.4349$ and $S(0.47)<0.4365$.
+\begin{itemize}[leftmargin=1.5em]
+\item For $p\ge0.99$ we use quantum search over the typed vectors $D$, with exponent $\frac12(h(p)+1-p)<0.05$.
+\item For $p\le0.2$ and for $0.47\le p<0.99$ we use the empty label, with exponent $S(p)<0.4365$.
+\item For $0.2<p<0.47$ we use the array of Table~\ref{tab:params}, interpolated in $p$.
+\end{itemize}
+
+\begin{table}[h]
+\centering
+\small
+\begin{tabular}{@{}ccccccccc@{}}
+\toprule
+$p$ & $a_1$ & $a_0$ & $b_1$ & $b_0$ & $a$ & $u$ & $\sigma$ & $L$\\
+\midrule
+0.20 & 0.0551 & 0.0665 & 0.1724 & 0.0668 & 0.0266 & 0.7848 & 0.3535 & 0.4333\\
+0.23 & 0.0988 & 0.1192 & 0.1431 & 0.0554 & 0.0384 & 0.8215 & 0.2991 & 0.4375\\
+0.25 & 0.1280 & 0.1544 & 0.1235 & 0.0478 & 0.0422 & 0.8459 & 0.2628 & 0.4383\\
+0.27 & 0.1571 & 0.1895 & 0.1039 & 0.0402 & 0.0429 & 0.8703 & 0.2266 & 0.4375\\
+0.30 & 0.2009 & 0.2423 & 0.0746 & 0.0289 & 0.0384 & 0.9070 & 0.1722 & 0.4336\\
+0.33 & 0.2446 & 0.2950 & 0.0452 & 0.0175 & 0.0278 & 0.9436 & 0.1178 & 0.4267\\
+0.36 & 0.2883 & 0.3400 & 0.0159 & 0.0100 & 0.0044 & 0.9814 & 0.0751 & 0.4173\\
+0.39 & 0.2850 & 0.3700 & 0.0100 & 0.0100 & 0.0006 & 0.9875 & 0.0357 & 0.4061\\
+0.42 & 0.2642 & 0.3935 & 0.0129 & 0.0132 & 0.0017 & 0.9838 & 0.0000 & 0.3944\\
+0.45 & 0.2294 & 0.3866 & 0.0228 & 0.0317 & 0.0008 & 0.9665 & 0.0000 & 0.3870\\
+0.47 & 0.2111 & 0.3821 & 0.0270 & 0.0439 & 0.0003 & 0.9553 & 0.0000 & 0.3823\\
+\bottomrule
+\end{tabular}
+\caption{Sample parameters of the certified schedule, rounded. For $\sigma=0$ the two terms of~\eqref{eq:L} need not balance.}
+\label{tab:params}
+\end{table}
+
+\begin{figure}[h]
+\centering
+\begin{tikzpicture}
+\begin{axis}[width=0.8\textwidth,height=6cm,xlabel={zero density $p$ of the solution},ylabel={exponent},xmin=0.03,xmax=0.5,ymin=0.32,ymax=0.47,
+  legend pos=south east,legend cell align=left,grid=major,grid style={black!12},tick label style={font=\small},label style={font=\small},legend style={font=\small}]
+\addplot[black,dashed,line width=0.8pt] table[x index=0,y index=1] {fig/curves.dat};
+\addlegendentry{$S(p)$, empty label}
+\addplot[black,line width=1.1pt] table[x index=0,y index=2] {fig/curves.dat};
+\addlegendentry{$L(p)$, best array}
+\addplot[black!45,dotted,line width=0.8pt] coordinates {(0.03,0.45285) (0.5,0.45285)};
+\addlegendentry{$\frac27\log_23$}
+\end{axis}
+\end{tikzpicture}
+\caption{The exponent as a function of the density of zeros. The maximum of $L$ is about $0.43831$, near $p=0.25$.}
+\label{fig:curves}
+\end{figure}
+
+The worst point is near $p=0.2498$, with $a_1=0.1277$, $a_0=0.1540$, $b_1=0.1237$, $b_0=0.0479$, $a=0.0422$, $u=0.8456$ and $\sigma=0.2633$. There $L\approx0.43831$, and the table has about $2^{0.4172n}$ entries.
+
+\begin{proposition}\label{prop:exponent}
+For a schedule of parameters that is piecewise linear in $p$, $L(p)\le0.4384$ on $[0.2,0.47]$, with all array entries positive, $\sigma\ge0$, $P_0\ge2^{0.38n}$ and $T\ge2^{0.36n}$.
+\end{proposition}
+
+This is a computation in interval arithmetic with adaptive bisection, in \texttt{sim/certify.py}. It proves Theorem~\ref{thm:main} together with the cases above. For a classical check, the classical cost $a+u-a_0$, minimized over the same family of arrays, has value $\log_2(5/3)$ at $p=1/5$, in agreement with~\cite{Ye26}.
+
+\begin{remark}
+Without the labels, that is with $\Xs=\Ys=\{0,1\}^n$ and $K=2^{pn}$, and with element distinctness on one window, the same steps give exponent $(4-3p)/7$ for $p\le2/5$. A window of $T\ge4$ elements then holds at least two elements of sum $v$. For a maximum solution ratio $\ell=1-p\ge3/5$ this reads $(1+3\ell)/7$, against $\ell/2+1/10$ in~\cite[Theorem 5.5]{AHJKS22}, whose table is built once per iteration of amplitude amplification. Together with the empty label this already gives exponent $0.4504$.
+\end{remark}
+
+\section{Formal verification}\label{sec:lean}
+
+The folder \texttt{lean/} of the repository builds with \texttt{lake build} (Lean 4, Mathlib), with no \texttt{sorry} and no new axiom. The file \texttt{EqualSubsetSum/Axioms.lean} prints the axioms of 61 theorems, which are only the standard ones.
+
+\paragraph{Formalized.} Lemma~\ref{lem:valid} and the sign flip. Lemma~\ref{lem:reps}: the bijection, the count, the types of the forced vectors, and the distinctness under minimality. Lemma~\ref{lem:filter}: the averaging, convexity and first moment steps, and the bound on prime divisors. Lemma~\ref{lem:cap}. The marked fraction, the success of a uniform number of iterations of quantum search, and the chain of probabilities over the coin, for both kinds of layout. The balance of~\eqref{eq:L}, its optimality, the composition of the costs up to $\Ot$, and the value $S(p)$ for the empty label.
+
+\paragraph{Stated as hypotheses.} The cost of the table and of unranking, the cost of claw finding on padded windows, the time and success of quantum search with bounded-error checks, amplitude amplification, and the number of primes in $[P_0,2P_0]$. These are named in \texttt{EqualSubsetSum/Model.lean}, over cost functions and with no circuit model. So the probability and the cost are linked numerically, and not as statements about one procedure. The probability of a good partition and the exponent of the lists enter as arguments.
+
+\paragraph{Not formalized.} The assembly into Theorem~\ref{thm:main}, the quantum primitives themselves (including the success of claw finding, the correctness of unranking and the coherent preparation of the coin), the link from the search to the flag, the probability of balanced signs, the outer loop over $\varepsilon$, $z$ and $\nu$, the existence of the integer layout, the reduction to short entries, the case $p\ge0.99$, the monotonicity of $S$, and Proposition~\ref{prop:exponent}.
+
+\section{Limits and open questions}
+
+\begin{itemize}[leftmargin=1.5em]
+\item The bound counts time with quantum random access to quantum memory, and the table has about $2^{0.4172n}$ entries. We make no claim about a model without such memory.
+\item Proposition~\ref{prop:exponent} is a computation in floating-point interval arithmetic, not a formal proof. Claw finding, amplitude amplification, the table of~\cite{AHJKS22} and the reduction to short entries are cited.
+\item Whether another family of labels gives a smaller exponent is open.
+\item Can the table be shared between partitions? The term $a/2$ arises because each partition needs its own table.
+\item No lower bound beyond the trivial is known.
+\end{itemize}
+
+\section*{Use of AI}
+
+The proofs, the code and the Lean files were developed with Claude Opus~5.5 (Anthropic), which was also used to search the literature, to review the proofs and to draft the text.
+
+\begin{thebibliography}{99}
+\bibitem{AHJKS22} J.~Allcock, Y.~Hamoudi, A.~Joux, F.~Klingelh\"ofer, M.~Santha. Classical and quantum algorithms for variants of Subset-Sum via dynamic programming. ESA 2022, arXiv:2111.07059.
+\bibitem{Amb07} A.~Ambainis. Quantum walk algorithm for element distinctness. SIAM Journal on Computing 37, 2007.
+\bibitem{BBHT98} M.~Boyer, G.~Brassard, P.~H\o yer, A.~Tapp. Tight bounds on quantum searching. Fortschritte der Physik 46, 1998, arXiv:quant-ph/9605034.
+\bibitem{BHMT02} G.~Brassard, P.~H\o yer, M.~Mosca, A.~Tapp. Quantum amplitude amplification and estimation. Contemporary Mathematics 305, 2002, arXiv:quant-ph/0005055.
+\bibitem{CKLM26} N.~Chukhin, A.~S.~Kulikov, M.~Levitskii, I.~Mihajlin. Improved quantum algorithms for Subset Sum and $k$-SUM. arXiv:2608.07309.
+\bibitem{MNPW19} M.~Mucha, J.~Nederlof, J.~Pawlewicz, K.~W\k{e}grzycki. Equal-Subset-Sum faster than the meet-in-the-middle. ESA 2019, arXiv:1905.02424.
+\bibitem{RW26} T.~Randolph, K.~W\k{e}grzycki. Beating meet-in-the-middle for subset balancing problems. STOC 2026, arXiv:2511.10823.
+\bibitem{Tan09} S.~Tani. Claw finding algorithms using quantum walk. Theoretical Computer Science 410, 2009.
+\bibitem{WY92} G.~J.~Woeginger, Z.~Yu. On the equal-subset-sum problem. Information Processing Letters 42, 1992.
+\bibitem{YS26} R.~Yamano, T.~Shibuya. Faster exact algorithms for Equal-Subset-Sum. arXiv:2607.09289.
+\bibitem{Ye26} L.~Ye. An $O((5/3)^n\mathrm{poly}(n))$ one-sided Monte Carlo algorithm for Equal Subset Sum. arXiv:2608.08260.
+\end{thebibliography}
+
+\end{document}

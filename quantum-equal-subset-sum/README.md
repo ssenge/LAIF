@@ -2,6 +2,8 @@
 
 Sebastian Senge, Independent Researcher. Written 5 Nov 2026.
 
+**Paper:** [`paper/main.pdf`](paper/main.pdf), with its source in [`paper/`](paper/).
+
 Given integers x₁, …, x_n, find a nonzero D ∈ {−1,0,1}ⁿ with ⟨D, x⟩ = 0. For positive entries this is two disjoint nonempty subsets with equal sums.
 
 **Theorem 1.** Equal Subset Sum has a quantum algorithm running in worst-case time O*(2^{0.4384n}), with quantum random access to quantum memory. It never outputs a non-solution, and it outputs a solution with probability at least 2/3 if one exists.
