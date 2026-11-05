@@ -116,7 +116,7 @@ non-negative weights)".
 | Category | Problem | Before | After | Scope | Status |
 |---|---|---|---|---|---|
 | Distributed algorithms, CONGEST | Exact single-source shortest paths on directed planar networks, nonnegative weights | Õ(D²) [8] | Õ(D), given the Label Hypothesis stated in this folder, which is modelled on the labels of [1]; this folder completes the proof of [1], with a repair of one lemma | Directed planar networks, polynomial integer weights; deterministic relative to the labels | Claim; in Lean the virtual-source lemma, the discretized boosting, and the round bound from the Label Hypothesis and two cited results; paper arXiv:2611.02256 |
-| Distributed algorithms, CONGEST | Exact maximum st-flow on directed planar networks, with the flow on every edge | Õ(D²) [9] | min{Õ(D²), D·n^{o(1)}}; Õ(D) when s and t lie on a common face; Õ(D) with high probability in a later note | Given the Label Hypothesis | Claim; the dual weighting lemma in Lean |
+| Distributed algorithms, CONGEST | Exact maximum st-flow on directed planar networks, with the flow on every edge | Õ(D²) [9] | min{Õ(D²), D·n^{o(1)}}; Õ(D) when s and t lie on a common face; Õ(D) with high probability in a later note | Given the Label Hypothesis | Claim; in Lean the round bound from the Label Hypothesis, a reduction for negative weights and two cited results |
 | Distributed algorithms, CONGEST | Exact minimum st-cut and minimum cut value on undirected planar networks | (1 − o(1))-approximation in Õ(D) [18]; exact in Õ(D²) [9] | Õ(D), given the Label Hypothesis, with two repairs of [18]: its auxiliary graph at the terminals, and its recursion, which as we read it can miss the minimum cut | Undirected planar networks | Claim; the recursion argument in Lean |
 | Distributed algorithms, CONGEST | Negative weights, minimum arborescences and replacement paths on planar digraphs | D·n^{o(1)} for negative weights through a general reduction; no bound in D alone known to us for the others | Õ(D) with high probability for negative weights and for arborescences, given the Label Hypothesis; replacement paths exactly in Õ(D·min(h, D)) and within 1 + ε in Õ(D/ε) | Planar digraphs | Claims in notes; cores in Lean |
 | Distributed algorithms, CONGEST | Diameter and all eccentricities of unweighted undirected planar networks | Õ(D³) [arXiv:2608.07187](https://arxiv.org/abs/2608.07187) | Õ(D²), with no hypothesis; within 1 + ε in Õ(D + 1/ε⁴) | Unweighted undirected planar networks | Claim |
@@ -564,7 +564,7 @@ standard axioms (`propext`, `Classical.choice`, `Quot.sound`). There is no `sorr
   - The results of the literature that are used are stated as propositions and not proved
     (`RealizationBox`, `DistanceLabelBox`, `FaceIdBox`, `EmbeddingBox`, `AggBox`, `SmoothingBox`,
     `NegReduction`). `ExactSsspBound`, `NegSsspBound` and `MaxFlowBound` are the round bounds of
-    Theorems A, B and C as definitions. No theorem here asserts `NegSsspBound` or `MaxFlowBound`.
+    Theorems A, B and C as definitions, and this file asserts none of them.
     `not_negSsspBound_zero` and `not_maxFlowBound_zero` show that the two randomized definitions
     fail with no rounds.
 - `lean/SsspFlow/LabelOracle.lean`, theorem `approxOracle`: `LabelHypothesis` and `AggBox` give a
@@ -583,10 +583,42 @@ standard axioms (`propext`, `Classical.choice`, `Quot.sound`). There is no `sorr
     and `it_bounds` shows that their lengths stay polynomial.
   - `exactAlg` is the algorithm. `itRel_iter` shows that the nodes hold these iterations, and
     `exactAlg_ok` is its correctness.
+- `lean/SsspFlow/PlanarDual.lean`, theorem `RotSystem.exists_face_potential`: an integer circulation
+  on a connected planar rotation system is the difference of an integer potential on the faces. The
+  proof is a count of dimensions from Euler's formula.
+- `lean/SsspFlow/NetPad.lean`: `planar_of_count` says that a connected rotation system with enough
+  vertices and faces is planar, because the genus is not negative. `padNet` hangs identifiers as
+  pendant nodes at chosen nodes. It stays planar (`padNet_planar`), and its diameter grows by at most
+  two (`padNet_diam`).
+- `lean/SsspFlow/DualNet.lean`, `Net.xNet`: a version of $\hat G$ in which all edges of crowns and
+  rings are subdivided, so that it is a simple graph for every network. It is planar (`xNet_planar`)
+  and has diameter at most $5D+4$ (`xNet_diam`).
+- `lean/SsspFlow/DualFlow.lean`: `dualNet` is this network with all remaining identifiers as pendant
+  nodes, so that a network with $n$ nodes always has a dual network on $5n^2$ identifiers. Its diameter
+  is at most $5D+6$.
+  - `no_negCycle_of_flow`: for a unit flow $\sigma$, a flow of value $\beta$ rules out negative cycles
+    for the costs $c-\beta\sigma$. `isFlow_of_spec`: distances for these costs give a flow of value
+    $\beta$. `hasNegCycle_mono`: a negative cycle stays negative for all larger values.
+  - `negIn_eq`, `dual_adj_cross`: a node computes the inputs of the identifiers that it hosts, and the
+    edges between different hosts follow the edges of the network, at most two per edge and direction.
+- `lean/SsspFlow/Flood.lean`, theorem `unitFlow_of_floods`: two floods of $D$ rounds with messages of
+  one bit give a unit of flow from $s$ to $t$.
+- `lean/SsspFlow/HostSim.lean`, theorem `Algorithm.run_simulate`: under these conditions the hosts run
+  an algorithm on identifiers in the same number of rounds, with messages of twice the width.
+- `lean/SsspFlow/MaxFlow.lean`: the algorithm and the round count of Theorem C.
+  - `negSsspBound_of_reduction`: `ExactSsspBound` and `NegReduction τ` give `NegSsspBound τ`. So,
+    given `ExactSsspBound`, `NegReduction` fails with the factor $0$ (`not_negReduction_zero`).
+  - `maxFlowBound_of_neg`: `NegSsspBound τ` gives `MaxFlowBound τ'` if $\tau(5n^2+2)$ is at most a
+    constant times $\tau'(n+2)$. The nodes find a unit of flow, then run a binary search on the value,
+    and each test simulates the algorithm for negative weights on the dual network. `search_inv` is
+    the invariant of the search and `whole_correct` its correctness. `maxFlow_count` bounds the
+    fraction of bad strings, with the same strings in all tests and a union bound over the values.
+  - `negFlow_subpoly`, `negFlow_polylog`: `LabelHypothesis`, `AggBox`, `SmoothingBox` and
+    `NegReduction τ` give `NegSsspBound τ` and the matching `MaxFlowBound`. With `tauSubpoly C` these
+    are $D\cdot n^{o(1)}$ rounds, and with `tauPolylog c` they are $\tilde O(D)$ rounds.
 
-Not formalized: the proofs of `LabelHypothesis` and of the propositions above, the CONGEST algorithms
-and round counts of Theorems B and C, planarity and the diameter bound of $\hat G$, the decomposition,
-the construction of the tiles and the rest of Lemma 14′, and Lemmas R5 and R7. Of Theorem D, only the
+Not formalized: the proofs of `LabelHypothesis` and of the propositions above, the minimum cut of
+Theorem C, Theorem C′, the decomposition, the construction of the tiles and the rest of Lemma 14′, and Lemmas R5 and R7. Of Theorem D, only the
 recursion argument of Lemma S2 is formalized; Lemmas N, R, O and S1 are on paper.
 
 ## Numerical checks (`sim/`)
