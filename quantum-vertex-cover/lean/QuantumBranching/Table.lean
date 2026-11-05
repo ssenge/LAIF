@@ -25,20 +25,23 @@ theorem table_mis3_deterministic : (1.083506 : ℝ) < (1.0410 : ℝ) ^ 2 := by n
 theorem table_mis4_randomized : (1.13735 : ℝ) < (1.0665 : ℝ) ^ 2 := by norm_num
 theorem table_mis4_deterministic : (1.13760 : ℝ) < (1.0666 : ℝ) ^ 2 := by norm_num
 theorem table_above_lp : (2.3146 : ℝ) < (1.5214 : ℝ) ^ 2 := by norm_num
+theorem table_mis5 : (1.17354 : ℝ) < (1.0834 : ℝ) ^ 2 := by norm_num
+theorem table_mis6 : (1.18922 : ℝ) < (1.0906 : ℝ) ^ 2 := by norm_num
+theorem table_mis7 : (1.19698 : ℝ) < (1.0941 : ℝ) ^ 2 := by norm_num
 
 /-- The bases of the table, in order, as pairs of the quantum base and the classical base. -/
 def tableEntries : List (ℚ × ℚ) :=
   [(1.1193, 1.25281), (1.1194, 1.25284), (1.0637, 1.13132), (1.0697, 1.14416), (1.1005, 1.21103),
    (1.1006, 1.21131), (1.1153, 1.24382), (1.1154, 1.24394), (1.1190, 1.25210), (1.1190, 1.25214),
    (1.0953, 1.19951), (1.0375, 1.07625), (1.0410, 1.083506), (1.0665, 1.13735), (1.0666, 1.13760),
-   (1.5214, 2.3146)]
+   (1.5214, 2.3146), (1.0834, 1.17354), (1.0906, 1.18922), (1.0941, 1.19698)]
 
 /-- Every entry of the table has square above the classical base. -/
 theorem quantum_le_classical : ∀ e ∈ tableEntries, e.2 < e.1 ^ 2 := by
   intro e he
   simp only [tableEntries, List.mem_cons, List.not_mem_nil, or_false] at he
   rcases he with rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl | rfl |
-    rfl | rfl <;> norm_num
+    rfl | rfl | rfl | rfl | rfl <;> norm_num
 
 /-- The base `1.1006` is the least with four decimals for `1.21131`: one unit less fails. -/
 theorem table_tight_deg4 : (1.1005 : ℝ) ^ 2 < 1.21131 := by norm_num

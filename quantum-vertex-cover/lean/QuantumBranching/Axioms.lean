@@ -60,6 +60,9 @@ import QuantumBranching
 #print axioms QuantumBranching.table_mis4_deterministic
 #print axioms QuantumBranching.table_tight_deg4
 #print axioms QuantumBranching.table_tight_mis4
+#print axioms QuantumBranching.table_mis5
+#print axioms QuantumBranching.table_mis6
+#print axioms QuantumBranching.table_mis7
 -- The model
 #print axioms QuantumBranching.hypotheses_satisfiable
 #print axioms QuantumBranching.setting_satisfiable

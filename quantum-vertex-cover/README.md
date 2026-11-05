@@ -14,19 +14,22 @@ Status: Claim. The counting lemmas, the semantics of the recursion, the recursio
 
 | Category | Problem | Before | After | Scope | Status |
 |---|---|---|---|---|---|
-| Parameterized algorithms, quantum | Vertex Cover, parameter k | 1.25281^k randomized [7], 1.25284^k deterministic [1]; 1.175^k quantum [10]; about 1.1287^k by backtracking [8] on 1.2738^k [11] | 1.1193^k (1.1194^k from [1] alone) | Time, bounded error, polynomial space | Claim; lemmas and cost recursion in Lean |
-| same | max degree 3 | 1.13132^k [7]; 1.14416^k [1] | 1.0637^k (1.0697^k) | As above | As above |
-| same | max degree 4 | 1.21103^k [7]; 1.21131^k [1] | 1.1005^k (1.1006^k) | As above | As above |
+| Parameterized algorithms, quantum | Vertex Cover, parameter k | 1.25281^k randomized [7], 1.25284^k deterministic [1]; 1.175^k quantum [10]; about 1.1287^k implied by [8], [11] | 1.1193^k (1.1194^k from [1] alone) | Time, bounded error, polynomial space | Claim; lemmas and cost recursion in Lean |
+| same | max degree 4 | 1.21103^k [7]; 1.21131^k [1]; about 1.1024^k implied by [8], [1] | 1.1005^k (1.1006^k) | As above | As above |
 | same | max degree 5 | 1.24382^k [7]; 1.24394^k [1] | 1.1153^k (1.1154^k) | As above | As above |
 | same | max degree 6 | 1.25210^k [7]; 1.25214^k [1] | 1.1190^k | As above | As above |
-| Exact exponential algorithms, quantum | Maximum Independent Set | 1.19951^n [6]; 1.1488^n quantum [12] | 1.0953^n | As above | As above |
-| same | max degree 3 | 1.07625^n [7]; 1.083506^n [3] | 1.0375^n (1.0410^n) | As above | As above |
-| same | max degree 4 | 1.13735^n [7]; 1.13760^n [4] | 1.0665^n (1.0666^n) | As above | As above |
-| Parameterized algorithms, quantum | Vertex Cover above LP, parameter μ = k − LP | 2.3146^μ [2] | 1.5214^μ | As above | As above |
+| Exact exponential algorithms, quantum | Maximum Independent Set | 1.19951^n [6]; 1.1488^n quantum [12]; about 1.1337^n implied by [8], [4] | 1.0953^n | As above | As above |
+| same | max degree 5 | 1.17354^n [5] | 1.0834^n | As above | As above |
+| same | max degree 6 | 1.18922^n [6] | 1.0906^n | As above | As above |
+| same | max degree 7 | 1.19698^n [6] | 1.0941^n | As above | As above |
 
-Each quantum base is the square root of the classical one, rounded up to the digits shown. Theorem 1 gives the exact square root with a polynomial factor. A value in brackets uses only the deterministic classical analysis, without the generated rules of [7].
+Each base is the square root of the smallest classical one in its row, rounded up to the digits shown. Theorem 1 gives the exact square root with a polynomial factor. A value in brackets uses only the deterministic classical analysis, without the generated rules of [7].
 
 These are best known upper bounds, to our knowledge, and not tight ones.
+
+**Direct applications.** The tools alone, with no value calls, give Vertex Cover above LP in O*(1.5214^μ) from [8], [2]; Vertex Cover of maximum degree 3 in O*(1.0637^k) from [16], [7], and O*(1.0697^k) from [8], [2], [3]; Independent Set of maximum degree 3 in O*(1.0375^n) from [16], [7], and O*(1.0410^n) from [8], [3]; and of maximum degree 4 in O*(1.0665^n) from [16], [7], [4], and O*(1.0666^n) from [8], [4]. To our knowledge they have not been stated before.
+
+**Implied bounds.** The implied entries are the plain search trees confirmed here. For Independent Set, branching on a vertex of degree at least 5 gives T(n) = T(n−1) + T(n−6), of base 1.28520, above the plain tree of [4]. Older algorithms have smaller bases, such as 1.2210 in [17], which would give about 1.1050^n if its separation step can be carried with a global budget. For degree 4 in k, Proposition 28 of [1] with [4] has base 1.2152. Line 2 of Branch4 in [1] can also be replaced by setting V₃ aside and solving it last with a global budget, with a small change of the measure, and in degree 4 this keeps the deterministic base above. So Theorem 1 is what is used where the value calls of [5] at vertex cuts enter: degrees 5 and 6 in k, general Vertex Cover, and Independent Set of degree at least 5.
 
 **Prior work.** The quantum walk on backtracking trees is from Montanaro [8], and the walk on computation trees, with a separate cost for each vertex, from Vihrovs [9], whose Theorem 4 is the tool used here. Nested search for recursive decomposition goes back to Fürer [13], and the disjunctive divide and conquer recurrence is treated in [9]. Quantum bounds for Vertex Cover and Independent Set are in [10] and [12]. The classical bounds are from the works in the table. To our knowledge, what is new here is the set of conditions under which value calls with a shrinking log measure cost only a polynomial factor in total, the level scan that puts independent parts into this form, the use of these for the measure and conquer analyses above, and the resulting bounds.
 
@@ -83,9 +86,9 @@ The nodes of high measure gain the factor B(v)^{−1/4} from (M2), which pays fo
 
 ## 3. Independent parts
 
-**Lemma 2 (level scan).** Let a node be a disjoint union of parts with minimum budgets c_i, with answer yes if Σ c_i ≤ k, let the log measure of a part with budget b be at most βb + O(1), and let log B(v) ≥ βk. Scan b = 0, 1, 2, …, testing each unsolved part with budget b while at least two are unsolved. Each unsolved part needs budget at least b. If 2b exceeds the remaining budget, answer no. Otherwise b ≤ k/2, so each value call has log measure at most (1/2) log B(v) + O(1), and the last part is the tail. This gives (M2), with 1/2 in place of 3/4.
+**Lemma 2 (level scan).** Let a node v with budget k be a disjoint union of parts with minimum budgets c_i, with answer yes if Σ c_i ≤ k. Let g_i(b) ≥ 0 bound the log measure of part i with budget b, nondecreasing in b. Suppose that Σ_i g_i(c_i) ≤ log B(v) + c₀ when Σ_i c_i ≤ k, and g_i(k − Σ_{j≠i} c_j) ≤ log B(v) + c₀ when Σ_{j≠i} c_j ≤ k. Sort the values g_i(b) into levels. While at least two parts are unsolved, take the next level m. If none is left, or 2m > log B(v) + c₀, answer no. Otherwise test each unsolved part at the budgets with g_i(b) ≤ m, in increasing order, as long as two are unsolved. The last part is the tail, with the remaining budget. Each value call has log measure at most (1/2)(log B(v) + c₀), which gives (M2) with 1/2 in place of 3/4.
 
-For measures aμ + bk, additive over the parts with a bounded bonus, the same holds with a level in place of the budget.
+A no at level m on a feasible instance would leave two parts with g_i(c_i) ≥ m, so 2m ≤ log B(v) + c₀, against the test. Lean has the budget form of this scan, with a measure linear in the budget.
 
 ## 4. Randomized subroutines
 
@@ -95,10 +98,10 @@ The coins are a register, and the path is computed reversibly. Lemma 2 of [7] gi
 
 ## 5. Application
 
-- **Vertex Cover, [1].** Branch4 line 2 solves the subcubic part, then the rest. These are independent, and inequality (4-4) of [1] gives the additive form of Lemma 2. The branch sequences fit Lemma 0, and the bonuses are bounded. Dovetailing between two algorithms is replaced by a choice from their computable bounds, since the analysis uses only the minimum. The same holds for Lemma 15 and Lemma 10 of [1], and the formula d = 2c(a + b)/(a + 2c) of the latter is homogeneous of degree 1, so halving a, b, c halves d.
-- **Vertex Cover above LP, [2].** Connected components are solved separately, and μ is additive over them, so Lemma 2 applies.
-- **Maximum Independent Set, [3] to [6].** The algorithms for degree 3 and 4 use component calls of constant size or on line graphs, which are polynomial. The degree-5 algorithm of [5] has steps with calls on G[V₁] of measure x ≤ 0.6μ, up to shifts of 0.175, and a tail. This satisfies (M2), and the shift does not accumulate since x > 0.175. Degrees 6, 7, 8 and the general case have tail calls.
-- **Randomized rows, [7].** Its subcubic rules give Theorem 3 directly. Its bounds for degree 4 and for the parameter k use the frameworks of [4] and [1], with the subcubic algorithms below them as Box leaves and value calls.
+- **Vertex Cover, [1].** Branch4 line 2 solves the subcubic part, then the rest. With g₁ the logarithm of the cheaper bound on the subcubic part and g₂ = φ on the rest, inequality (4) of [1] on the parameters of the part and the additivity of μ give the condition of Lemma 2. A solved part has budget at least 2, so a tail on the rest has log measure at most φ, as 2b ≥ α. A tail on the subcubic part exceeds B(v) by at most e^α, and it leaves Branch4 for good. The branch sequences fit Lemma 0. Dovetailing between two algorithms is replaced by a choice from their computable bounds, since the analysis uses only the minimum. The same holds for Lemma 15 of [1], whose formula d = 2c(a + b)/(a + 2c) is homogeneous of degree 1, so halving a, b, c halves d.
+- **Vertex Cover above LP, [2].** Since μ is additive over components, the budget can stay global, and branching inside one component gives the same drops of μ. This is a plain search tree, and it is how the algorithm is used below Branch4.
+- **Maximum Independent Set, [3] to [6].** The algorithms for degree 3 and 4 make calls of constant size, on components or reducible vertex sets, or on line graphs, all polynomial. The degree-5 algorithm of [5] has steps with value calls at a vertex cut, on G[V₁] and its variants, and a tail, with recurrences C(μ) ≤ 2C(x) + C(μ − x) and C(μ) ≤ 4C(x) + C(μ − x), up to a shift of 0.175. Take V₁ as the side of smaller measure, as its divide-and-conquer theorems allow, so x ≤ μ/2. The form 4c^{x+0.175} + c^{μ−x+0.175} ≤ c^μ is convex in x, so the ends of [w₃, μ/2] are enough, and at c = 1.17 it holds for μ ≥ 28.5. So (M2) holds. Degrees 6, 7, 8 and the general case have tail calls.
+- **Randomized rows, [7].** Its subcubic rules give Theorem 3 directly. Its bounds in k use the frameworks of [1], with the randomized algorithms below them as Box leaves and value calls.
 
 ## 6. Measurements
 
@@ -121,7 +124,7 @@ Run each with `python name.py`, in `sim/`, with numpy and scipy, and qiskit and 
 
 ## 8. Formal verification
 
-`lean/` builds with `lake build` (Lean 4 v4.36.0-rc1, Mathlib `d875a8de`), with no `sorry`, `axiom` or `native_decide` in the sources. `lake env lean QuantumBranching/Axioms.lean` prints the axioms of 75 theorems: only `propext`, `Classical.choice` and `Quot.sound`, and subsets of those.
+`lean/` builds with `lake build` (Lean 4 v4.36.0-rc1, Mathlib `d875a8de`), with no `sorry`, `axiom` or `native_decide` in the sources. `lake env lean QuantumBranching/Axioms.lean` prints the axioms of 78 theorems: only `propext`, `Classical.choice` and `Quot.sound`, and subsets of those.
 
 | Part | Theorems | Hypotheses |
 |---|---|---|
@@ -137,7 +140,7 @@ Run each with `python name.py`, in `sim/`, with numpy and scipy, and qiskit and 
 
 **Assuming.** The hypotheses are named in `lean/QuantumBranching/Model.lean`. They are inequalities on real functions in a record `Primitives`, with no circuit model: the time and acceptance of the walk for any T′ ≥ T, the error reduction, the amplitude error, and pebbling. `hypotheses_satisfiable` shows that they are consistent. (M1), (M2) and (M3) are fields of `Setting.Conditions`. In `theorem1` the time is a closed formula, shown to bound the base run and the sum of squared steps at every level, and `search_valid` adds the acceptance and the drop of the level. `quadratic_bound` proves the same bound by induction, for any cost function that meets the walk bound. `theorem1` holds for n at least some N₀, and q does not depend on n, W or A.
 
-**Not formalized.** Circuits, gate counts and the absence of quantum random access memory; the walk itself, the known-times oracle and the shared register; Jordan's lemma and Hoeffding's inequality, where only the two-dimensional fact and the product form are proved; pebbling and its space; the link from `walkAccept` to a circuit; the link between Lemma 0 on `FinTree` and (M1) on `ORTree`; and that the classical algorithms of §5 satisfy (M1) to (M3).
+**Not formalized.** Circuits, gate counts and the absence of quantum random access memory; the walk itself, the known-times oracle and the shared register; Jordan's lemma and Hoeffding's inequality, where only the two-dimensional fact and the product form are proved; pebbling and its space; the link from `walkAccept` to a circuit; the link between Lemma 0 on `FinTree` and (M1) on `ORTree`; the level form of the scan; and that the classical algorithms of §5 satisfy (M1) to (M3).
 
 ## References
 
@@ -157,6 +160,7 @@ Run each with `python name.py`, in `sim/`, with numpy and scipy, and qiskit and 
 14. C. Marriott, J. Watrous. Quantum Arthur-Merlin games. Computational Complexity 14, 2005.
 15. C. H. Bennett. Time/space trade-offs for reversible computation. SIAM Journal on Computing 18, 1989.
 16. G. Brassard, P. Høyer, M. Mosca, A. Tapp. Quantum amplitude amplification and estimation. Contemporary Mathematics 305, 2002.
+17. F. V. Fomin, F. Grandoni, D. Kratsch. A measure & conquer approach for the analysis of exact algorithms. Journal of the ACM 56(5), 2009.
 
 ## Use of AI
 
