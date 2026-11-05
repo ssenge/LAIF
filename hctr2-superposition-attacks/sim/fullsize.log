@@ -1,0 +1,8 @@
+HCTR2 test vectors: 350/350
+HCTR2           C(x+s) = C(x)+s and D(y+s) = D(y)+s: 20/20
+HCTR2 3 blocks  C(x+s) = C(x)+s and D(y+s) = D(y)+s: 20/20
+CHCTR           C(x+s) = C(x)+s and D(y+s) = D(y)+s: 20/20
+HCTR++          C(x+s) = C(x)+s and D(y+s) = D(y)+s: 20/20
+HCTR++ 1 block  rest of g invariant (enc with h1, dec with h2): 20/20
+key recovery from one element of S (HCTR2, CHCTR): 20/20
+all checks passed

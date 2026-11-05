@@ -1,0 +1,18 @@
+HCTR2   n=3 D= 6 dimS=3 invariant=True eps=0.2500 off-mass=0.0e+00 samples mean=4.90 max=15 need=3 bound=7.60 wrongS=0 keys=True ddt/2^n=0.2500 eq=True
+HCTR2   n=4 D= 8 dimS=4 invariant=True eps=0.1250 off-mass=0.0e+00 samples mean=6.22 max=14 need=4 bound=6.83 wrongS=0 keys=True ddt/2^n=0.1250 eq=True
+HCTR2   n=5 D=10 dimS=5 invariant=True eps=0.1875 off-mass=0.0e+00 samples mean=6.89 max=15 need=5 bound=9.05 wrongS=0 keys=True ddt/2^n=0.1875 eq=True
+HCTR2   n=6 D=12 dimS=6 invariant=True eps=0.0625 off-mass=0.0e+00 samples mean=7.68 max=18 need=6 bound=8.30 wrongS=0 keys=True ddt/2^n=0.0625 eq=True
+HCTR2   n=7 D=14 dimS=7 invariant=True eps=0.0312 off-mass=0.0e+00 samples mean=8.53 max=19 need=7 bound=8.97 wrongS=0 keys=True ddt/2^n=0.0312 eq=True
+HCTR2   n=8 D=16 dimS=8 invariant=True eps=0.0234 off-mass=0.0e+00 samples mean=9.81 max=15 need=8 bound=9.90 wrongS=0 keys=True ddt/2^n=0.0234 eq=True
+CHCTR   n=3 D= 9 dimS=3 invariant=True eps=0.5000 off-mass=0.0e+00 samples mean=9.36 max=26 need=6 bound=inf wrongS=0 keys=True
+CHCTR   n=4 D=12 dimS=4 invariant=True eps=0.3750 off-mass=0.0e+00 samples mean=9.90 max=19 need=8 bound=21.00 wrongS=0 keys=True
+CHCTR   n=5 D=15 dimS=5 invariant=True eps=0.1250 off-mass=0.0e+00 samples mean=11.47 max=17 need=10 bound=13.77 wrongS=0 keys=True
+CHCTR   n=6 D=18 dimS=6 invariant=True eps=0.0938 off-mass=0.0e+00 samples mean=13.67 max=20 need=12 bound=15.36 wrongS=0 keys=True
+HCTR++  n=3 D=15 dimS=3 invariant=True eps=0.4375 off-mass=0.0e+00 samples mean=14.05 max=20 need=12 bound=37.91 wrongS=0 keys=True
+HCTR++1 n=3 D= 9 dimS=3 invariant=True eps=0.3125 off-mass=0.0e+00 samples mean=8.76 max=20 need=6 bound=14.01 wrongS=0 keys=True
+HCTR++d n=3 D= 9 dimS=3 invariant=True eps=0.2500 off-mass=0.0e+00 samples mean=8.75 max=20 need=6 bound=11.81 wrongS=0 keys=True
+HCTR++1 n=4 D=12 dimS=4 invariant=True eps=0.1562 off-mass=0.0e+00 samples mean=10.15 max=20 need=8 bound=12.09 wrongS=0 keys=True
+HCTR++d n=4 D=12 dimS=4 invariant=True eps=0.1797 off-mass=0.0e+00 samples mean=10.21 max=17 need=8 bound=12.60 wrongS=0 keys=True
+HCTR++1 n=5 D=15 dimS=5 invariant=True eps=0.0605 off-mass=0.0e+00 samples mean=12.08 max=19 need=10 bound=12.55 wrongS=0 keys=True
+HCTR++d n=5 D=15 dimS=5 invariant=True eps=0.0625 off-mass=0.0e+00 samples mean=12.01 max=19 need=10 bound=12.59 wrongS=0 keys=True
+all checks passed

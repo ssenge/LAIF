@@ -1,0 +1,5 @@
+HCTR2    n=3 qubits=12 shots=200 all y orthogonal to S=True samples used=3 (need 3) S recovered=True keys=True
+CHCTR    n=3 qubits=18 shots=200 all y orthogonal to S=True samples used=6 (need 6) S recovered=True keys=True
+HCTR++1  n=3 qubits=18 shots=200 all y orthogonal to S=True samples used=10 (need 6) S recovered=True keys=True
+HCTR++d  n=3 qubits=18 shots=200 all y orthogonal to S=True samples used=11 (need 6) S recovered=True keys=True
+all checks passed
