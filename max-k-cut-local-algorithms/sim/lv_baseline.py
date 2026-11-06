@@ -17,7 +17,7 @@ def alphas(d, m):
         A[i, i + 1] = A[i + 1, i] = a if i == 0 else b
     w, V = np.linalg.eigh(A)
     beta = V[:, 0]
-    al = np.array([beta[0]] + [beta[l] / np.sqrt(d * (d - 1) ** (l - 1)) for l in range(1, m)])
+    al = np.array([beta[0]] + [beta[l] / np.sqrt(d * (d - 1.0) ** (l - 1)) for l in range(1, m)])
     return w[0], al
 
 
