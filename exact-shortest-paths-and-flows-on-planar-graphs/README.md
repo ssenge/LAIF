@@ -431,7 +431,10 @@ round bound is unchanged. Lemma S (`notes/RECURSION.md`) proves an interval form
 index between it and $i_2$. So one of $i^-$, $i^+$ carries the minimum. This recursion argument is
 in Lean (`lean/SsspFlow/Recursion.lean`), with the interval form and Lemma O as hypotheses. The interval form is in Lean
 as well (`lean/SsspFlow/WitnessInterval.lean`), and its separation step (S_1) follows from a drawing of the annulus as a
-planar map with the two copies of the first cut path on one face (`lean/SsspFlow/Separation.lean`). With the repair the driver
+planar map with the two copies of the first cut path on one face (`lean/SsspFlow/Separation.lean`). The cut of a planar
+map along a shortest path between corners of two different faces is such a drawing, so Lemma S1 holds in Lean on the cut
+itself, with no hypothesis beyond the map, the path and the weights (`lean/SsspFlow/CutMap.lean`,
+`lean/SsspFlow/CutAnnulus.lean`). With the repair the driver
 is right on all 25 failing instances of the search (161 of 300 runs were wrong without it)
 and on 1,440,000 sweep instances, where it made 6 errors in 1,200,000 without the repair.
 Lemma S needs a side lemma (Lemma O) about one incision, which the proof of Theorem D also uses,
@@ -498,6 +501,16 @@ standard axioms (`propext`, `Classical.choice`, `Quot.sound`). There is no `sorr
   $p_y^1$ and a walk between the two copies of $p_t$, with $t$ strictly between $x$ and $y$, join interleaved corners
   of that face, so the crossing lemma of `Crossing.lean` gives a common vertex (`Annulus.sep_of_faceDrawn`).
   `Annulus.witness_interval_of_faceDrawn` is Lemma S1 for such an annulus.
+- `lean/SsspFlow/CutMap.lean`: the cut of a rotation system $R$ along a path $p_0,\dots,p_m$ through distinct vertices,
+  with corners at $p_0$ and $p_m$ on two different faces. Every edge is doubled into a digon, and the doubled map is
+  split at the two corners of the slit at each $p_t$. `CutPath.psi_eq`: the first returns of the rotation and of the
+  faces to these corners compose to the cycle $p_0^0,\dots,p_m^0,p_m^1,\dots,p_0^1$. `CutPath.faceDrawn`: if $R$ is
+  planar and connected, the cut is planar and these copies are corners of one face in this cyclic order, at distinct
+  vertices. `CutPath.isWalk_fst`: a walk of the cut is a walk of $R$.
+- `lean/SsspFlow/CutAnnulus.lean`: the level-one annulus on the cut, for dart weights that agree on the two darts of each
+  edge and a shortest path $P$ from $p_0$ to $p_m$ with positive weights. An edge joins two distinct vertices of the cut that a
+  dart joins, with the least weight of such a dart. `CutPath.short` is (P), `CutPath.copy` gives the copies of the
+  parts of $P$, and `CutPath.witness_interval` is Lemma S1 on the cut.
 - `lean/SsspFlow/Arborescence.lean`: the arithmetic of the contraction and the halving count of `notes/DMST.md`.
 - `lean/SsspFlow/NegScaling.lean`: the arithmetic of the scaling, the alternation, the short paths in a cluster and the arc inequality of `notes/NEGATIVE.md`.
   - `Setup.negCycle_iff`, `Setup.walks` and `Setup.lemmaD` prove it for any graph with the
@@ -785,9 +798,9 @@ standard axioms (`propext`, `Classical.choice`, `Quot.sound`). There is no `sorr
 
 Not formalized: the proofs of the cited propositions other than `AggBox` and `SmoothingBox`, among them `LDDBox`, the minimum cut of
 Theorem C, Theorem C′, the construction of the tiles and the rest of Lemma 14′, and Lemmas R5 and R7. Of Theorem D, the
-recursion argument of Lemma S2 and Lemma S1 are formalized, the latter for the level-one annulus drawn as a planar map
-with the two copies of the dual path on one face; the cut that gives this map, with the facts (P) and the copies of the
-parts of the dual path, and Lemmas N, R and O are on paper.
+recursion argument of Lemma S2 and Lemma S1 are formalized, the latter on the cut of a planar map along a shortest path
+between corners of two different faces. Lemmas N, R and O, the reduction of the minimum cut to the lengths $\lambda_t$
+and the round count are not.
 
 ## Numerical checks (`sim/`)
 

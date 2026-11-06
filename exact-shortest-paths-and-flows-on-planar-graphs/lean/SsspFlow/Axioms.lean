@@ -78,6 +78,13 @@ Expected output for each: `propext`, `Classical.choice`, `Quot.sound` (or a subs
 #print axioms SsspFlow.RotSystem.exists_isWalk
 #print axioms SsspFlow.Recursion.Annulus.sep_of_faceDrawn
 #print axioms SsspFlow.Recursion.Annulus.witness_interval_of_faceDrawn
+#print axioms SsspFlow.RotSystem.CutPath.psi_eq
+#print axioms SsspFlow.RotSystem.CutPath.faceDrawn
+#print axioms SsspFlow.RotSystem.CutPath.isWalk_fst
+#print axioms SsspFlow.RotSystem.exists_isWalk_le
+#print axioms SsspFlow.RotSystem.CutPath.short
+#print axioms SsspFlow.RotSystem.CutPath.copy
+#print axioms SsspFlow.RotSystem.CutPath.witness_interval
 #print axioms SsspFlow.RotSystem.plain
 #print axioms SsspFlow.RotSystem.dual_toHypermap
 #print axioms SsspFlow.RotSystem.dual_dual

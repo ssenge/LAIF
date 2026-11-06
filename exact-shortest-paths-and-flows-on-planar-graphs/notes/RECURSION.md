@@ -3,8 +3,8 @@
 *Status.* Proved, given Lemma O, whose proof is in LEMMA_O.md and which supplies what Lemma S2
 uses, in the form S2 uses it. The recursion argument of Lemma S2, with the conclusion of Lemma S1
 and (INV) as hypotheses, is in Lean (`lean/SsspFlow/Recursion.lean`, see "In Lean" below), and so is
-Lemma S1, with (S_1) from a drawing of A_1 as a planar map (`lean/SsspFlow/WitnessInterval.lean`,
-`lean/SsspFlow/Separation.lean`).
+Lemma S1, on the cut of G* along P (`lean/SsspFlow/WitnessInterval.lean`,
+`lean/SsspFlow/Separation.lean`, `lean/SsspFlow/CutMap.lean`, `lean/SsspFlow/CutAnnulus.lean`).
 Lemma S1 runs in A_1 and needs neither the side fact (O), which says
 on which side of an incision each copy of P lands, nor the exact form of [18, Claim 2.3]. Its
 separation step (S_1) is proved here by a parity argument.
@@ -362,8 +362,26 @@ lemma of `lean/SsspFlow/Crossing.lean` gives a common vertex (`Annulus.sep_of_fa
 condition that Q̄ has no copy inside is not needed. `Annulus.witness_interval_of_faceDrawn` is
 Lemma S1 for such an A_1.
 
-Not in Lean: the cut of G* along γ, which gives A_1 as such a map together with (P) and the copies
-B^σ, Lemma O, and the rounds.
+`lean/SsspFlow/CutMap.lean` builds A_1 as such a map. A path p_0, …, p_m of a rotation system R
+through distinct vertices, with a corner at p_0 and a corner at p_m on two different faces, is a
+`CutPath`; for A_1, R is G* and the two corners are those through which γ enters p_0 and leaves
+p_m, on the faces of G* that contain s and t.
+Every edge of R is doubled into a digon, and the doubled map is split at the 2(m + 1) corners of
+the slit, two at each p_t; this is `CutPath.cut`. `CutPath.psi_eq`: the first returns of the
+rotation and of the faces to these corners compose to the cycle p_0^0, …, p_m^0, p_m^1, …, p_0^1.
+`CutPath.faceDrawn`: if R is planar and connected, the cut is planar and the copies of P are
+corners of one face in this order, at distinct vertices. `CutPath.isWalk_fst`: a walk of the cut
+is a walk of R.
+
+`lean/SsspFlow/CutAnnulus.lean` makes the cut an `Annulus`, for dart weights that agree on the two
+darts of each edge and a shortest path P from p_0 to p_m with positive weights. An edge joins two
+distinct vertices of the cut that a dart joins and has the least weight of such a dart, and the
+copies of p_t sit at the length of P[0..t]. (P) holds since a walk of the cut is a walk of R
+(`CutPath.short`), and B^σ is the σ-copy of the darts of P (`CutPath.copy`).
+`CutPath.witness_interval` is Lemma S1 on the cut, with no hypothesis beyond the map, the path and
+the weights.
+
+Not in Lean: Lemma N, Lemma O, the reduction of the minimum cut to Λ, and the rounds.
 
 ## Points of doubt
 
@@ -372,8 +390,8 @@ B^σ, Lemma O, and the rounds.
   readings; the invariant (I) has many parts.
 - Lemma S2 does not use the separation part of (O1) (Claim 10 of LEMMA_O.md), since Lemma S1
   uses (S_1) in A_1.
-- (S_1) is proved in Lean from the drawing of A_1 as a planar map with the copies of P on one
-  face; that the cut along γ gives such a map is argued in words.
+- Lemma S1 is proved in Lean on the cut that doubles every edge of G* and splits each p_t at the
+  two corners of the slit; that this cut is the A_1 of Lemma N is read off the definitions.
 
 ## Remarks on naming, sides and the cut
 
