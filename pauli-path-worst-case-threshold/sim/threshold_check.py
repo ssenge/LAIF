@@ -3,7 +3,8 @@
 Block polynomial G(z) = z * sum_S Maj^(S) z^|S| for observable Z_1 behind a k-qubit majority permutation,
 input |0...0>, depolarizing noise of rate p = 1 - z on every qubit before and after the layer. For K blocks
 the truncation error at cutoff l is |sum_{w>l} c_w z^w| with sum_w c_w x^w = G(x)^K. The signs give
-G(ix)^K = (-Ghat(x))^K with Ghat(x) = sum_w |c_w| x^w per block, so the largest tail term is Ghat(z)^K/(K+1).
+G(ix)^K = (-Ghat(x))^K with Ghat(x) = sum_w |c_w| x^w per block, so the largest tail term is at least
+Ghat(z)^K/N with N = (k-1)K/2 + 1 nonzero terms.
 """
 import itertools
 from fractions import Fraction
@@ -75,6 +76,9 @@ def check_block_by_simulation():
             chi = [(-1) ** sum(s * xi for s, xi in zip(S, x)) for x in xs]
             g[1 + sum(S)] += np.dot(chi, np.diag(A)) / 2 ** k
         assert np.allclose(g, [float(t) for t in maj_poly(k)])
+        if k == 3:  # the gate of [1, Eq. (19)]: swaps |011> and |100>, fixes the rest
+            V19 = np.eye(8)[:, [0, 1, 2, 4, 3, 5, 6, 7]]
+            assert np.allclose(V19.T @ Z1 @ V19, np.diag([maj[x] for x in xs]))
         # noisy value: depolarize, apply V, depolarize, measure Z_1; equals G(z) with z = 1 - p
         p = 0.3
         rho = np.zeros((2 ** k, 2 ** k))
@@ -112,9 +116,13 @@ def check_majority3():
         z = 1 - p
         row = []
         for K in (10, 40, 160):
+            c = ppow(g, K)
+            assert ppow([abs(t) for t in g], K) == [abs(t) for t in c]  # sum_w |F_w| x^w = Ghat(x)^K exactly
             errs, true = errors(g, K, z)
             worst = max(errs.values())
             low = ghat(g, z) ** K / (2 * (K + 1))
+            lbad = max(errs, key=errs.get)
+            assert 2 * K - 2 <= lbad <= 4 * K
             assert worst >= low and true <= 1
             if ghat(g, z) < 1:  # tail bound r^l Ghat(z/r)^K <= r^l with Ghat(z/r) = 1
                 r = find_r(g, z)
@@ -147,8 +155,45 @@ def check_all_rates():
               f"Ghat = {float(ghat(g, z)):.4f}, K = {K} blocks: worst error {float(worst):.3g}, true value {float(true):.2e}")
 
 
+def check_prescribed_cutoff():
+    """Lemma 2: for every even cutoff l, some K <= l/2 and J in {0, 1} idle qubits give
+    E_l >= z^2 beta^((k-1)/2) x0^(-l) / l, where Ghat(z x0) = 1 and beta = [x^2]Ghat(zx) x0^2."""
+    for k, p, lmax in ((3, Fraction(24, 100), 120), (5, Fraction(30, 100), 80)):
+        g, z = maj_poly(k), 1 - Fraction(p)
+        lo, hi = 0.0, 1.0  # x0 with Ghat(z x0) = 1, from below so the bound is safe
+        for _ in range(80):
+            mid = (lo + hi) / 2
+            lo, hi = (mid, hi) if float(ghat(g, z * Fraction(mid))) < 1 else (lo, mid)
+        x0 = Fraction(lo)
+        beta = abs(g[2]) * z ** 2 * x0 ** 2
+        tails = {K: errors(g, K, z)[0] for K in range(1, lmax // 2 + 1)}
+        worst_ratio = float("inf")
+        for l in range(2, lmax + 1, 2):
+            best = 0
+            for K in range(1, l // 2 + 1):
+                t = tails[K]
+                e0 = t.get(l, Fraction(0))
+                e1 = z ** 2 * t.get(l - 2, Fraction(0))  # one idle qubit multiplies the polynomial by x^2
+                best = max(best, e0, e1)
+            bound = z ** 2 * beta ** ((k - 1) // 2) / (x0 ** l * l)
+            assert best >= bound, (k, l)
+            worst_ratio = min(worst_ratio, float(best / bound))
+        print(f"k = {k}, p = {float(p)}: every even cutoff l <= {lmax} has a circuit with error >= "
+              f"z^2 beta^((k-1)/2) x0^-l / l, x0 = {float(x0):.4f} (growth rate 1/x0 = {1 / float(x0):.4f}); "
+              f"smallest ratio worst error / bound {worst_ratio:.2f}")
+
+
+def check_level_one():
+    for k in range(3, 202, 2):
+        g = maj_poly(k)
+        assert float(g[2]) >= sqrt(k / 2)  # level-one mass, the x^2 coefficient of Ghat_k
+    print("level one mass of k-bit majority >= sqrt(k/2) for odd k = 3..201")
+
+
 if __name__ == "__main__":
     check_block_by_simulation()
     check_majority3()
     check_all_rates()
+    check_prescribed_cutoff()
+    check_level_one()
     print("Pauli path threshold checks pass")
