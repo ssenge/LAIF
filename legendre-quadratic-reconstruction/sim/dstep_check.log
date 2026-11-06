@@ -1,0 +1,22 @@
+p=  1009 deg 2 h=x^2    : P(D) = 0.498020, claim 0.498020, lower bound (1 - d/p)^2/d = 0.498020
+p=  1009 deg 3 h=x^3    : P(D) = 0.333334, claim 0.333334, lower bound (1 - d/p)^2/d = 0.331354
+p=  1009 deg 6 h=x^6    : P(D) = 0.166667, claim 0.166667, lower bound (1 - d/p)^2/d = 0.164690
+p=  1009 deg 2 h=random : P(D) = 0.498020, claim 0.498020, lower bound (1 - d/p)^2/d = 0.498020
+p=  1009 deg 3 h=random : P(D) = 0.500332, claim 0.500332, lower bound (1 - d/p)^2/d = 0.331354
+p=  1009 deg 4 h=random : P(D) = 0.482116, claim 0.482116, lower bound (1 - d/p)^2/d = 0.248022
+p=  1009 deg 5 h=random : P(D) = 0.475352, claim 0.475352, lower bound (1 - d/p)^2/d = 0.198023
+p=  7919 deg 2 h=x^2    : P(D) = 0.500000, claim 0.500000, lower bound (1 - d/p)^2/d = 0.499747
+p=  7919 deg 3 h=x^3    : P(D) = 0.999747, claim 0.999747, lower bound (1 - d/p)^2/d = 0.333081
+p=  7919 deg 6 h=x^6    : P(D) = 0.500000, claim 0.500000, lower bound (1 - d/p)^2/d = 0.166414
+p=  7919 deg 2 h=random : P(D) = 0.500000, claim 0.500000, lower bound (1 - d/p)^2/d = 0.499747
+p=  7919 deg 3 h=random : P(D) = 0.499790, claim 0.499790, lower bound (1 - d/p)^2/d = 0.333081
+p=  7919 deg 4 h=random : P(D) = 0.478021, claim 0.478021, lower bound (1 - d/p)^2/d = 0.249748
+p=  7919 deg 5 h=random : P(D) = 0.476166, claim 0.476166, lower bound (1 - d/p)^2/d = 0.199748
+p= 20011 deg 2 h=x^2    : P(D) = 0.499900, claim 0.499900, lower bound (1 - d/p)^2/d = 0.499900
+p= 20011 deg 3 h=x^3    : P(D) = 0.333333, claim 0.333333, lower bound (1 - d/p)^2/d = 0.333233
+p= 20011 deg 6 h=x^6    : P(D) = 0.166667, claim 0.166667, lower bound (1 - d/p)^2/d = 0.166567
+p= 20011 deg 2 h=random : P(D) = 0.499900, claim 0.499900, lower bound (1 - d/p)^2/d = 0.499900
+p= 20011 deg 3 h=random : P(D) = 0.499950, claim 0.499950, lower bound (1 - d/p)^2/d = 0.333233
+p= 20011 deg 4 h=random : P(D) = 0.479026, claim 0.479026, lower bound (1 - d/p)^2/d = 0.249900
+p= 20011 deg 5 h=random : P(D) = 0.477769, claim 0.477769, lower bound (1 - d/p)^2/d = 0.199900
+largest deviation from the exact formula: 6.7e-16

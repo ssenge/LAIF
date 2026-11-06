@@ -1,0 +1,25 @@
+p = 1009, m with p^2 (1/2 + 2/sqrt p)^m < 1/2: 26
+   m =   8: f0 injective in 0/20 random instances
+   m =  16: f0 injective in 0/20 random instances
+   m =  24: f0 injective in 20/20 random instances
+   m =  32: f0 injective in 20/20 random instances
+   m =  20: f0 injective in 15/20 random instances
+   m =  30: f0 injective in 20/20 random instances
+   instance s = 267, D = 788: f1(x) = f0(x - 2s) for all x, f0 injective, labels uniform, qubit phase 2 pi k (2s)/p: ok
+p = 7919, m with p^2 (1/2 + 2/sqrt p)^m < 1/2: 29
+   m =   8: f0 injective in 0/20 random instances
+   m =  16: f0 injective in 0/20 random instances
+   m =  24: f0 injective in 2/20 random instances
+   m =  32: f0 injective in 20/20 random instances
+   m =  26: f0 injective in 10/20 random instances
+   m =  39: f0 injective in 20/20 random instances
+   instance s = 4957, D = 7914: f1(x) = f0(x - 2s) for all x, f0 injective, labels uniform, qubit phase 2 pi k (2s)/p: ok
+p = 65537, m with p^2 (1/2 + 2/sqrt p)^m < 1/2: 34
+   m =   8: f0 injective in 0/20 random instances
+   m =  16: f0 injective in 0/20 random instances
+   m =  24: f0 injective in 0/20 random instances
+   m =  32: f0 injective in 11/20 random instances
+   m =  33: f0 injective in 17/20 random instances
+   m =  49: f0 injective in 20/20 random instances
+   instance s = 30920, D = 16432: f1(x) = f0(x - 2s) for all x, f0 injective, labels uniform, qubit phase 2 pi k (2s)/p: ok
+all checks passed
