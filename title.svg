@@ -2,7 +2,8 @@
   <style>
     text { font-family: -apple-system, "Segoe UI", Helvetica, Arial, sans-serif; font-size: 40px; font-weight: 600; fill: #1f2328; }
     .c { fill: #d9622b; font-weight: 800; }
-    @media (prefers-color-scheme: dark) { text { fill: #e6edf3; } .c { fill: #f0883e; } }
+    .ai { fill: #2f5be0; font-weight: 800; }
+    @media (prefers-color-scheme: dark) { text { fill: #e6edf3; } .c { fill: #f0883e; } .ai { fill: #79a6ff; } }
   </style>
-  <text x="360" y="46" text-anchor="middle"><tspan class="c">L</tspan>ow h<tspan class="c">A</tspan>ng<tspan class="c">I</tspan>ng <tspan class="c">F</tspan>ruits (<tspan class="c">LAIF</tspan>) Project</text>
+  <text x="360" y="46" text-anchor="middle"><tspan class="c">L</tspan>ow h<tspan class="ai">A</tspan>ng<tspan class="ai">I</tspan>ng <tspan class="c">F</tspan>ruits (<tspan class="c">L</tspan><tspan class="ai">AI</tspan><tspan class="c">F</tspan>) Project</text>
 </svg>
