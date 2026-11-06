@@ -2,6 +2,8 @@
 
 Written 6 Nov 2026.
 
+**Paper:** [`paper/main.pdf`](paper/main.pdf), with its source in [`paper/`](paper/).
+
 ## Result
 
 Network: an undirected planar graph G with n nodes, hop-diameter D and integer edge weights in {0, ..., W}, with a polynomial bound on W known to all nodes, in the Quantum CONGEST model (messages of O(log n) qubits per edge and round). Task: the exact weighted diameter or radius.
