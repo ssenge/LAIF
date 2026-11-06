@@ -64,4 +64,47 @@ theorem gap (n α β : ℕ) (hα : α ≤ 1) (hβ : β ≤ 1) :
       4 * (n + 1) + 2 < 4 * (n + 2) + 1 := by
   omega
 
+/-! ### Radius
+
+The radius network uses `M = 5`, the bits `α = 1 - A i`, `β = 1 - B j`, and a leaf of weight `3`
+at each hub. -/
+
+/-- Both paths between `a i` and `b i` weigh `5 (n + 2) + α + β`. -/
+theorem rad_cross_same (n i α β : ℕ) (hi : i ≤ n) :
+    5 * i + α + 5 + (5 * (n + 1 - i) + β) = 5 * (n + 2) + α + β ∧
+      5 * (n + 1 - i) + α + 5 + (5 * i + β) = 5 * (n + 2) + α + β := by
+  omega
+
+/-- Pairs `a i, b j` with `i ≠ j`, and pairs on one side, are at distance at most
+`5 (n + 1) + 2`. -/
+theorem rad_other_pairs (n i j α β : ℕ) (hi : i ≤ n) (hj : j ≤ n) (hα : α ≤ 1) (hβ : β ≤ 1) :
+    (i ≠ j → min (5 * i + α + 5 + (5 * (n + 1 - j) + β))
+        (5 * (n + 1 - i) + α + 5 + (5 * j + β)) ≤ 5 * (n + 1) + 2) ∧
+      min (5 * i + α + (5 * j + β)) (5 * (n + 1 - i) + α + (5 * (n + 1 - j) + β)) ≤
+        5 * (n + 1) + 2 := by
+  omega
+
+/-- A coordinate node is at distance at most `5 (n + 1) + 1` from every hub (directly, or through
+the crossing edge), so at distance less than `5 (n + 2)` from every leaf. -/
+theorem rad_to_leaf (n i α : ℕ) (hi : 1 ≤ i) (hi' : i ≤ n) (hα : α ≤ 1) :
+    5 * i + α + 5 ≤ 5 * (n + 1) + 1 ∧ 5 * (n + 1 - i) + α + 5 ≤ 5 * (n + 1) + 1 ∧
+      5 * (n + 1) + 1 + 3 < 5 * (n + 2) := by
+  omega
+
+/-- Every path from `l` to `r'` weighs at least `5 (n + 2)`: through `l', b j` or through
+`a i, r`. With the leaf at `r'`, the eccentricity of `l` is at least `5 (n + 2) + 3`. -/
+theorem rad_hub (n i j α β : ℕ) (hi : i ≤ n) (hj : j ≤ n) :
+    5 * (n + 2) ≤ 5 + (5 * (n + 1 - j) + β) + (5 * j + β) ∧
+      5 * (n + 2) ≤ 5 * i + α + (5 * (n + 1 - i) + α) + 5 := by
+  omega
+
+/-- A path through a further coordinate node weighs more than `5 (n + 2) + 2`. -/
+theorem rad_through_node (n k e₁ e₂ : ℕ) (hk : k ≤ n) (h₁ : 5 ≤ e₁) (h₂ : 5 ≤ e₂) :
+    5 * (n + 2) + 2 < e₁ + (5 * k + 5 * (n + 1 - k)) + 5 + e₂ := by
+  omega
+
+/-- The radius is `5 (n + 2)` exactly when some `α = β = 0`, that is `A i = B i = 1`. -/
+theorem rad_gap (n α β : ℕ) : 5 * (n + 2) + α + β = 5 * (n + 2) ↔ α = 0 ∧ β = 0 := by
+  omega
+
 end PlanarDiameterQ
