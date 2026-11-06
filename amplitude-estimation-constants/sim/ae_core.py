@@ -8,7 +8,7 @@ HALF = np.pi / 2
 def cp(h, N, a):
     """Exact Clopper-Pearson interval for p from h successes in N shots at level a, widened by 1e-12."""
     lo = 0.0 if h == 0 else beta.ppf(a / 2, h, N - h + 1)
-    hi = 1.0 if h == N else beta.ppf(1 - a / 2, h + 1, N - h)
+    hi = 1.0 if h == N else beta.isf(a / 2, h + 1, N - h)   # isf keeps its accuracy for small a
     return max(0.0, lo - 1e-12), min(1.0, hi + 1e-12)
 
 
@@ -17,7 +17,7 @@ def cpv(N, a):
     h = np.arange(N + 1)
     with np.errstate(all="ignore"):
         lo = np.where(h == 0, 0.0, beta.ppf(a / 2, h, N - h + 1))
-        hi = np.where(h == N, 1.0, beta.ppf(1 - a / 2, h + 1, N - h))
+        hi = np.where(h == N, 1.0, beta.isf(a / 2, h + 1, N - h))
     return np.maximum(0.0, lo - 1e-12), np.minimum(1.0, hi + 1e-12)
 
 

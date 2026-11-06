@@ -38,7 +38,7 @@ def estimate(theta, eps, alpha_last, r, kappa, gamma, rng, rho=1.02):
             a, b = j * HALF + f0, j * HALF + f1
         nl, nu = max(l, a / K), min(u, b / K)
         if nl > nu:                                 # empty after a miss: keep the new interval
-            nl, nu = a / K, b / K
+            nl, nu = max(0.0, a / K), min(HALF, b / K)
         l, u = nl, nu
     return (np.sin(l) ** 2 + np.sin(u) ** 2) / 2, q        # error <= sin(u - l) / 2 <= eps
 

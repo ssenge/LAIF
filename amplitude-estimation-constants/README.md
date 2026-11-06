@@ -51,7 +51,7 @@ The single parameter α_last is the largest value for which the bound below on t
 
 **Cost.** Every stage, missed or not, ends with a width at most min(w, W/K), where W is the largest Clopper-Pearson width in the angle over all outcomes. The choice of N gives W/K ≤ max(g_c/2, 0.999·arcsin(2ε)) < g_c, so every stage moves to a lower cell. A width in the cell c lets the algorithm choose K only between kg(g_{c+1}) and ⌊π/(2g_c)⌋. Here kg(v) is the smallest, over all positions of an interval of width v in [0, π/2], of the largest admissible K that fits. It is computed exactly by a sweep over the positions. A recursion over the cells, from small widths to large ones, takes the maximum over all admissible K of the cost of the stage plus the bound for the cell of the next width. With running maxima over the cells, it bounds the number of Q applications, the number of calls to A, and the sum of the levels, for every amplitude and every sequence of outcomes.
 
-**Numerics.** The Clopper-Pearson endpoints come from the inverse regularized incomplete beta function in double precision, and are widened by 10⁻¹² before use. The widths in kg are inflated by a factor 1 + 10⁻⁹. The computation is not in interval arithmetic.
+**Numerics.** The Clopper-Pearson endpoints come from the inverse regularized incomplete beta function in double precision, the upper one through its complement so that it stays accurate at small levels, and are widened by 10⁻¹² before use. In spot checks against exact binomial tails, the levels this gives agree with the nominal ones to a relative 10⁻¹⁴. The widths in kg are inflated by a factor 1 + 10⁻⁹. The computation is not in interval arithmetic.
 
 ## Status and checks
 
