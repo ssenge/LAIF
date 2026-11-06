@@ -1,0 +1,8 @@
+n, p, trials, all recovered (chi(f_hat) = chi(f) at every point), runs of the quantum routine per trial
+n = 2, p = 101, 20 trials, all recovered, runs [5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 10, 10, 11]
+n = 2, p = 211, 10 trials, all recovered, runs [5, 5, 5, 5, 5, 5, 5, 5, 5, 5]
+n = 4, p =  17,  5 trials, all recovered, runs [14, 28, 56, 100, 112]
+n = 4, p =  31,  3 trials, all recovered, runs [28, 28, 70]
+n = 3, p =  31,  5 trials, all recovered, runs [43, 43, 44, 64, 846]
+n = 3, p =  61,  3 trials, all recovered, runs [35, 40, 43]
+n = 5, p =  13,  2 trials, all recovered, runs [2719, 12682]
