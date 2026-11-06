@@ -30,6 +30,11 @@ def zyz(G):
     return a, b, c
 
 
+def zyz_small(G):
+    """Euler angles reduced modulo pi to |angle| <= pi/2 (rot(P, a + pi) = -rot(P, a))."""
+    return tuple((t + np.pi / 2) % np.pi - np.pi / 2 for t in zyz(G))
+
+
 C_ANC = rot(X, np.pi / 4)  # C Y C^dag = s Z
 S_ANC = np.real(np.trace(C_ANC @ Y @ C_ANC.conj().T @ Z)) / 2
 assert abs(abs(S_ANC) - 1) < 1e-12
@@ -41,7 +46,7 @@ def primitives(gates, n):
     out = []
 
     def one(q, G):
-        a, b, c = zyz(G)
+        a, b, c = zyz_small(G)
         out.extend([(0, "z", q, c), (0, "y", q, b), (0, "z", q, a)])
 
     for g in gates:
@@ -57,7 +62,7 @@ def primitives(gates, n):
     return out
 
 
-def compile_angles(prims, N, sigma):
+def compile_angles(prims, N, sigma, L_fixed=None):
     """Spread each primitive over K = ceil(|angle|/sigma) layers of its parity, one slot per layer."""
     slots, layer = [], 0
     for par, kind, q, ang in prims:
@@ -68,6 +73,9 @@ def compile_angles(prims, N, sigma):
             slots.append((layer, kind, q, ang / K))
             layer += 1
     L = layer + (layer % 2)
+    if L_fixed is not None:
+        assert L <= L_fixed and L_fixed % 2 == 0
+        L = L_fixed
     th = np.zeros((L, N, 2))  # [..., 0] = z angle, [..., 1] = y angle
     for l, kind, q, a in slots:
         th[l, q, 0 if kind == "z" else 1] += a
@@ -154,6 +162,30 @@ def check_theorem1(rng):
               f"C = {c_a:+.6f} vs {c_t:+.6f}")
 
 
+def check_theorem1_formula(rng, r=0.3, s=3):
+    """H, T, CZ circuit with the L of Theorem 1 and sigma = D^-r."""
+    n, N = 2, 4
+    Hd = np.array([[1, 1], [1, -1]], dtype=complex) / np.sqrt(2)
+    T = np.diag([1, np.exp(1j * np.pi / 4)])
+    pool = [("u", 0, Hd), ("u", 1, T), ("cz", 0), ("u", 0, T), ("u", 1, Hd), ("cz", 1)]
+    gates = [pool[i] for i in rng.choice(len(pool), size=s)]
+    gates = [("u", 0, Hd), ("u", 1, Hd)] + gates[:s - 2]
+    prims = primitives(gates, n)
+    assert len(prims) <= 9 * s and max(abs(p[3]) for p in prims) <= np.pi / 2 + 1e-12
+    for p in prims:  # rational multiples of pi (denominator 16)
+        assert abs(p[3] * 16 / np.pi - round(p[3] * 16 / np.pi)) < 1e-9
+    L = int(np.ceil((72 * np.pi * s) ** (1 / (1 - r)) * (4 * n) ** (r / (1 - r))))
+    L += L % 2
+    D = 4 * n * L
+    sigma = D ** (-r)
+    th = compile_angles(prims, N, sigma, L_fixed=L)
+    psi_t, psi_a = target_state(gates, n), ansatz_state(th, N)
+    fid = abs(np.vdot(psi_t, psi_a))
+    assert np.max(np.abs(th)) <= sigma + 1e-12 and abs(fid - 1) < 1e-9
+    print(f"H, T, CZ at r = {r}: s = {s}, L = {L} (formula), D = {D}, max|theta| = "
+          f"{np.max(np.abs(th)):.5f} <= D^-r = {sigma:.5f}, |<target|ansatz>| = {fid:.12f}")
+
+
 def check_theorem2(rng):
     n, N, sigma = 2, 4, 0.1
     for sign in (+1, -1):
@@ -195,5 +227,6 @@ def check_theorem2(rng):
 if __name__ == "__main__":
     rng = np.random.default_rng(7)
     check_theorem1(rng)
+    check_theorem1_formula(rng)
     check_theorem2(rng)
     print("small-angle compilation checks pass")
