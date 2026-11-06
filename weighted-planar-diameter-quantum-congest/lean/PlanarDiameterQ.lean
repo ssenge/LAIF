@@ -52,6 +52,15 @@ theorem hubs (n α β : ℕ) (hα : α ≤ 1) (hβ : β ≤ 1) :
         (α = 1 ∧ β = 1)) := by
   omega
 
+/-- The hub pairs `l, r'` and `r, l'` are at distance at most `4 (n + 2) + 2` in every case, and
+every path between them weighs at least `4 (n + 2)`. -/
+theorem hubs_bounds (n i j α β : ℕ) (hi : i ≤ n) (hj : j ≤ n) (hα : α ≤ 1) (hβ : β ≤ 1) :
+    4 + (4 * n + β) + (4 * 1 + β) ≤ 4 * (n + 2) + 2 ∧
+      4 * 1 + α + (4 * n + α) + 4 ≤ 4 * (n + 2) + 2 ∧
+      4 * (n + 2) ≤ 4 + (4 * (n + 1 - j) + β) + (4 * j + β) ∧
+      4 * (n + 2) ≤ 4 * i + α + (4 * (n + 1 - i) + α) + 4 := by
+  omega
+
 /-- A path through a coordinate node `a k` uses both of its edges; with its first and last edge
 (each at least `4`) and a crossing edge it weighs more than every distance above. -/
 theorem through_node (n k e₁ e₂ : ℕ) (hk : k ≤ n) (h₁ : 4 ≤ e₁) (h₂ : 4 ≤ e₂) :
@@ -96,6 +105,11 @@ theorem rad_to_leaf (n i α : ℕ) (hi : 1 ≤ i) (hi' : i ≤ n) (hα : α ≤ 
 theorem rad_hub (n i j α β : ℕ) (hi : i ≤ n) (hj : j ≤ n) :
     5 * (n + 2) ≤ 5 + (5 * (n + 1 - j) + β) + (5 * j + β) ∧
       5 * (n + 2) ≤ 5 * i + α + (5 * (n + 1 - i) + α) + 5 := by
+  omega
+
+/-- With the leaf of weight `3`, a hub has eccentricity above every coordinate eccentricity. -/
+theorem rad_hub_leaf (n x α β : ℕ) (hx : 5 * (n + 2) ≤ x) (hα : α ≤ 1) (hβ : β ≤ 1) :
+    5 * (n + 2) + α + β < x + 3 := by
   omega
 
 /-- A path through a further coordinate node weighs more than `5 (n + 2) + 2`. -/
