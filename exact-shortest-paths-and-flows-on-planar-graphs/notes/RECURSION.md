@@ -2,7 +2,8 @@
 
 *Status.* Proved, given Lemma O, whose proof is in LEMMA_O.md and which supplies what Lemma S2
 uses, in the form S2 uses it. The recursion argument of Lemma S2, with the conclusion of Lemma S1
-and (INV) as hypotheses, is in Lean (`lean/SsspFlow/Recursion.lean`, see "In Lean" below).
+and (INV) as hypotheses, is in Lean (`lean/SsspFlow/Recursion.lean`, see "In Lean" below), and so is
+Lemma S1 with (S_1) as a hypothesis (`lean/SsspFlow/WitnessInterval.lean`).
 Lemma S1 runs in A_1 and needs neither the side fact (O), which says
 on which side of an incision each copy of P lands, nor the exact form of [18, Claim 2.3]. Its
 separation step (S_1) is proved here by a parity argument.
@@ -339,7 +340,20 @@ the form that every computed length is λ_t for its index t. Proved:
   child [5, 7]), no computed length is 15, whatever the side [0, 3] computes; `repair_hits`:
   with the repair, the same tree computes it.
 
-Not in Lean: the proof of Lemma S1, (S_1), Lemma O, the graphs and their walks, and the rounds.
+`lean/SsspFlow/WitnessInterval.lean` proves Lemma S1 on an abstract A_1: a weighted graph with
+two copies `c 0 t`, `c 1 t` of each face p_t of P at strictly increasing positions along P. The
+copies B^σ of the parts of P and the fact (P) are fields of `Annulus`, `lam t` is λ_t as an infimum
+over walks, and (S_1) is the hypothesis `Annulus.Sep`, for every walk from p_x^0 to p_y^1 on which
+every copy of P is one of its two ends. Proved:
+- `Annulus.lam_le_via`: (B);
+- `Annulus.orient`: every walk from p_i^0 to p_i^1 is U·Q̄·V with Q̄ from the last 0-copy to the
+  first 1-copy after it; `Annulus.orient_len`: part (a);
+- `Annulus.copies_eq`: part (b), i1 = min(i, x, y) and i2 = max(i, x, y);
+- `Annulus.interval` and `Annulus.witness_interval`: part (c) and Lemma S1, with (B) in place of
+  (W) in Case 2;
+- `Annulus.nodeOfWalk`: the field `dom` of a node of `Recursion.lean` from a shortest walk.
+
+Not in Lean: (S_1), Lemma O, the graph A_1 built from the planar map, and the rounds.
 
 ## Points of doubt
 

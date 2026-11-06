@@ -68,6 +68,13 @@ Expected output for each: `propext`, `Classical.choice`, `Quot.sound` (or a subs
 #print axioms SsspFlow.Recursion.Rec.isLeast
 #print axioms SsspFlow.Recursion.miss
 #print axioms SsspFlow.Recursion.repair_hits
+#print axioms SsspFlow.Recursion.Annulus.orient
+#print axioms SsspFlow.Recursion.Annulus.orient_len
+#print axioms SsspFlow.Recursion.Annulus.copies_eq
+#print axioms SsspFlow.Recursion.Annulus.interval
+#print axioms SsspFlow.Recursion.Annulus.witness_interval
+#print axioms SsspFlow.Recursion.Annulus.dom_of_walk
+#print axioms SsspFlow.Recursion.Annulus.nodeOfWalk
 #print axioms SsspFlow.RotSystem.plain
 #print axioms SsspFlow.RotSystem.dual_toHypermap
 #print axioms SsspFlow.RotSystem.dual_dual

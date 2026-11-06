@@ -10,6 +10,7 @@ import SsspFlow.NegScaling
 import SsspFlow.Arborescence
 import SsspFlow.Replacement
 import SsspFlow.Recursion
+import SsspFlow.WitnessInterval
 import SsspFlow.PlanarMap
 import SsspFlow.Splice
 import SsspFlow.Chord

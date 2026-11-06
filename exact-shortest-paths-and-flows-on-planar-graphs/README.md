@@ -137,7 +137,7 @@ non-negative weights)".
 |---|---|---|---|---|---|
 | Distributed algorithms, CONGEST | Exact single-source shortest paths on directed planar networks, nonnegative weights | Õ(D²) [8] | Õ(D); the Label Hypothesis stated in this folder, modelled on the labels of [1], is proved in Lean from cited results; this folder also completes the proof of [1], with a repair of one lemma | Directed planar networks, polynomial integer weights, rotation lists as input; deterministic relative to the cited results | Lean, assuming three cited results: realization, distance labels, face identifiers; paper arXiv:2611.02256 |
 | Distributed algorithms, CONGEST | Exact maximum st-flow on directed planar networks, with the flow on every edge | Õ(D²) [9] | min{Õ(D²), D·n^{o(1)}}; Õ(D) when s and t lie on a common face; Õ(D) with high probability in a later note | Directed planar networks, rotation lists as input | Claim; in Lean the bound of Õ(D) rounds with high probability, assuming the three cited results and a low-diameter decomposition |
-| Distributed algorithms, CONGEST | Exact minimum st-cut and minimum cut value on undirected planar networks | (1 − o(1))-approximation in Õ(D) [18]; exact in Õ(D²) [9] | Õ(D), through the Exact SSSP Theorem, with two repairs of [18]: its auxiliary graph at the terminals, and its recursion, which as we read it can miss the minimum cut | Undirected planar networks | Claim; the recursion argument in Lean |
+| Distributed algorithms, CONGEST | Exact minimum st-cut and minimum cut value on undirected planar networks | (1 − o(1))-approximation in Õ(D) [18]; exact in Õ(D²) [9] | Õ(D), through the Exact SSSP Theorem, with two repairs of [18]: its auxiliary graph at the terminals, and its recursion, which as we read it can miss the minimum cut | Undirected planar networks | Claim; in Lean the recursion argument, and the interval form from its separation step |
 | Distributed algorithms, CONGEST | Negative weights, minimum arborescences and replacement paths on planar digraphs | D·n^{o(1)} for negative weights through a general reduction; no bound in D alone known to us for the others | Õ(D) with high probability for negative weights and for arborescences; replacement paths exactly in Õ(D·min(h, D)) and within 1 + ε in Õ(D/ε) | Planar digraphs; the claims use the Label Hypothesis, proved in Lean from cited results | Negative weights in Lean, assuming four cited results; the others claims in notes, cores in Lean |
 | Distributed algorithms, CONGEST | Diameter and all eccentricities of unweighted undirected planar networks | Õ(D³) [arXiv:2608.07187](https://arxiv.org/abs/2608.07187) | Õ(D²), with no hypothesis; within 1 + ε in Õ(D + 1/ε⁴) | Unweighted undirected planar networks | Claim |
 | Corrections | Lemma 14 and a decomposition property of [1]; the auxiliary graph and the recursion of [18] | As stated | Counterexamples, and repairs: tiles in place of the hub network and region bags for the round count of [1]; a repaired auxiliary graph at the terminals and two more shortest-path computations per level of the recursion of [18] | As we read the texts | Counterexamples checked by scripts; repairs on paper, the recursion repair in Lean |
@@ -429,7 +429,8 @@ a leaf, at $i^-=\max(i_1,j)$ and $i^+=\min(i_2,k)$. That is two more SSSP calls 
 round bound is unchanged. Lemma S (`notes/RECURSION.md`) proves an interval form of
 [18, Claim 2.4]: a dropped index is dominated by every index between it and $i_1$, or by every
 index between it and $i_2$. So one of $i^-$, $i^+$ carries the minimum. This recursion argument is
-in Lean (`lean/SsspFlow/Recursion.lean`), with the interval form and Lemma O as hypotheses. With the repair the driver
+in Lean (`lean/SsspFlow/Recursion.lean`), with the interval form and Lemma O as hypotheses. The interval form is in Lean
+as well (`lean/SsspFlow/WitnessInterval.lean`), with its separation step (S_1) as a hypothesis. With the repair the driver
 is right on all 25 failing instances of the search (161 of 300 runs were wrong without it)
 and on 1,440,000 sweep instances, where it made 6 errors in 1,200,000 without the repair.
 Lemma S needs a side lemma (Lemma O) about one incision, which the proof of Theorem D also uses,
@@ -485,6 +486,12 @@ standard axioms (`propext`, `Classical.choice`, `Quot.sound`). There is no `sorr
   the two extra calls, the least computed length is the minimum (`Recursion.Rec.isLeast`);
   without them the recursion can miss it (`Recursion.miss`, on the index pattern of the
   eleven-vertex instance).
+- `lean/SsspFlow/WitnessInterval.lean`: Lemma S1 of `notes/RECURSION.md`, the interval form, on the level-one annulus
+  as a weighted graph with two copies of each face of $P$. The facts on $P$, (P) and the copies of its parts, are
+  fields of `Annulus`, and the separation step (S_1) is the hypothesis `Annulus.Sep`. `Annulus.witness_interval`: on
+  a shortest walk between the two copies of $p_i$, the least and the greatest index of a copy are
+  $\min(i,x,y)$ and $\max(i,x,y)$, and every index strictly between them is dominated by every index between it
+  and one of the two. `Annulus.nodeOfWalk` gives the field `dom` of a node of `Recursion.lean`.
 - `lean/SsspFlow/Arborescence.lean`: the arithmetic of the contraction and the halving count of `notes/DMST.md`.
 - `lean/SsspFlow/NegScaling.lean`: the arithmetic of the scaling, the alternation, the short paths in a cluster and the arc inequality of `notes/NEGATIVE.md`.
   - `Setup.negCycle_iff`, `Setup.walks` and `Setup.lemmaD` prove it for any graph with the
@@ -771,8 +778,9 @@ standard axioms (`propext`, `Classical.choice`, `Quot.sound`). There is no `sorr
   results of `LabelFinal.lean` and `NegFinal.lean` without `AggBox` and `SmoothingBox`.
 
 Not formalized: the proofs of the cited propositions other than `AggBox` and `SmoothingBox`, among them `LDDBox`, the minimum cut of
-Theorem C, Theorem C′, the construction of the tiles and the rest of Lemma 14′, and Lemmas R5 and R7. Of Theorem D, only the
-recursion argument of Lemma S2 is formalized; Lemmas N, R, O and S1 are on paper.
+Theorem C, Theorem C′, the construction of the tiles and the rest of Lemma 14′, and Lemmas R5 and R7. Of Theorem D, the
+recursion argument of Lemma S2 and Lemma S1 given (S_1) are formalized; Lemmas N, R and O and the proof of (S_1) are on
+paper.
 
 ## Numerical checks (`sim/`)
 
