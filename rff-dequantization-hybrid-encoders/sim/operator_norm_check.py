@@ -22,6 +22,21 @@ def weights(k, rng, peaked):
     return q[0], q[1:]
 
 
+def distinct_integer(k, d, rng):
+    """k nonzero integer frequencies, no two equal up to sign."""
+    seen, out = set(), []
+    while len(out) < k:
+        v = tuple(int(t) for t in rng.integers(-4, 5, size=d))
+        nz = [t for t in v if t != 0]
+        if not nz:
+            continue
+        c = v if nz[0] > 0 else tuple(-t for t in v)
+        if c not in seen:
+            seen.add(c)
+            out.append(c)
+    return np.array(out)
+
+
 def encoder(X, rng, width=16, out=3):
     """A random two-layer tanh network, scaled to angles."""
     A = rng.normal(size=(X.shape[1], width))
@@ -43,14 +58,27 @@ def check(rng):
         for peaked in (False, True):
             for name, law in laws.items():
                 for _ in range(5):
-                    W = rng.integers(-4, 5, size=(k, d)) if integer else 3 * rng.normal(size=(k, d))
+                    W = distinct_integer(k, d, rng) if integer else 3 * rng.normal(size=(k, d))
                     p0, p = weights(k, rng, peaked)
                     lo = max(p0, p.max() / 2)
                     t = opnorm(law(), W, p0, p)
                     assert lo - 1e-9 <= t <= 1 + 1e-9, (name, lo, t)
                     worst = min(worst, t / lo)
-    print(f"lower bound max(p0, pmax/2) <= ||T_K|| <= 1 on {2 * 2 * len(laws) * 5} cases; "
-          f"smallest ratio ||T_K|| / bound = {worst:.4f}")
+    print(f"q = max(p0, max p_i/2) <= ||T_K|| <= 1 on {2 * 2 * len(laws) * 5} cases; "
+          f"smallest ratio ||T_K|| / q = {worst:.4f}")
+
+
+def check_mixing(rng):
+    """p' = (p + delta_0)/2 gives ||T_K|| >= 1/2 on every law."""
+    d, k, m = 3, 40, 400
+    worst = np.inf
+    for _ in range(20):
+        W = 3 * rng.normal(size=(k, d))
+        p0, p = weights(k, rng, peaked=False)
+        X = encoder(0.01 * rng.normal(size=(m, 5)), rng) if rng.random() < 0.5 else rng.normal(size=(m, d))
+        worst = min(worst, opnorm(X, W, (p0 + 1) / 2, p / 2))
+    assert worst >= 0.5 - 1e-12
+    print(f"mixing with the zero frequency: min ||T_K|| over 20 laws = {worst:.4f} >= 1/2")
 
 
 def check_equality(rng):
@@ -62,11 +90,12 @@ def check_equality(rng):
         p0, p = weights(len(W), rng, peaked=True)
         t = opnorm(grid, W, p0, p)
         assert abs(t - max(p0, p.max() / 2)) < 1e-12
-    print("uniform law on the torus, integer frequencies: ||T_K|| = max(p0, pmax/2) exactly")
+    print("uniform law on the torus, integer frequencies: ||T_K|| = q exactly")
 
 
 if __name__ == "__main__":
     rng = np.random.default_rng(11)
     check(rng)
+    check_mixing(rng)
     check_equality(rng)
     print("Lemma 1 checks pass")
