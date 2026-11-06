@@ -2,26 +2,26 @@
 
 _6 November 2026_
 
-In the binary paint shop problem, a sequence of 2n cars contains each of n car models twice. The two cars of a model get different colours, and the goal is to minimize the number of colour changes along the sequence. It comes from automotive paint shops. The usual figure of merit is the expected number of colour changes per car on a uniformly random sequence as n → ∞.
+In the binary paint shop problem, a sequence of 2n cars contains each of n car models twice. The two cars of a model get different colours, and the goal is to minimize the number of colour changes along the sequence. It comes from automotive paint shops. The usual figure of merit is the expected number of colour changes per car model, the paint swap ratio of [1], on a uniformly random sequence as n → ∞.
 
 ## Results
 
 | Quantity | Previous best bound | This folder |
 |---|---|---|
-| Binary paint shop, random sequences, expected colour changes per car as n → ∞ | 0.334, QAOA at depth 17, exact [1]; 0.4 proved for recursive greedy [6] | **≤ 0.3120**, classical local algorithm, O(n) time |
-| Max-Cut on 4-regular graphs of large girth, expected cut fraction of a local algorithm | 5/6 ≈ 0.8333 [4, 5] | **≥ 0.8440**, radius 163, girth ≥ 328 |
+| Binary paint shop, random sequences, expected colour changes per car model as n → ∞ | 0.334, QAOA at depth 17, exact [1]; 0.4 proved for recursive greedy [6], and below 0.4 proved as quoted in [1] | **≤ 0.3120** (Monte Carlo, confidence 1 − 10⁻⁴), classical local algorithm, O(n) time |
+| Max-Cut on 4-regular graphs of large girth, expected cut fraction of a local algorithm | above 5/6 ≈ 0.8333 by an unquantified margin, proved [4] | **≥ 0.8440** (Monte Carlo, confidence 1 − 10⁻⁴), radius 163, girth ≥ 328 |
 
-Both bounds are Monte Carlo lower bounds on the tree value at confidence 1 − 10⁻⁴ (details below). As the algorithm is local and the radius-163 neighbourhood of an edge of a random 4-regular graph is a tree with high probability, the second row also gives a cut of at least 0.8440 of the edges of a random 4-regular graph, with high probability.
+Both values are Monte Carlo bounds on the tree value. The confidence 1 − 10⁻⁴ refers to our random samples (details below). The rounding alone gives 5/6 in the limit of large m; the gain comes from the three flip rounds. For random 4-regular graphs, a maximum bisection of at least 5/6 of the edges is known with high probability [5]. Since local algorithms concentrate on random regular graphs [4], our value also gives, with high probability as the number of vertices N → ∞, a cut of at least 0.8440 − o(1) of the edges of a random 4-regular graph. This is an asymptotic statement: at radius 163, the neighbourhoods are trees only for astronomically large N.
 
-For comparison: numerical simulations of a mean-field algorithm in [1] give about 0.280 colour changes per car on sequences of up to 10⁴ cars. That algorithm is not local, and its value is a finite-size estimate. The optimum is predicted at about 0.263 [7, 8].
+For comparison: numerical simulations of a mean-field algorithm in [1] give about 0.280 colour changes per model on sequences of up to 10⁴ models. That algorithm is not local, and its value is a finite-size estimate. The optimum is predicted at about 0.263 [7, 8].
 
 ## From paint shop sequences to Max-Cut on the 4-regular tree
 
 Let x_c ∈ {0, 1} be the colour of the first car of model c, and o_i ∈ {0, 1} say whether position i holds the first or the second car of its model. Neighbouring positions i, i + 1 with models a ≠ b give a colour change exactly when x_a ⊕ o_i ≠ x_b ⊕ o_{i+1}. So the colour changes are the unsatisfied edges of a signed graph G on the models, with one edge per neighbouring pair and sign o_i ⊕ o_{i+1}. Neighbouring cars of the same model always cost one change; on a random sequence there are O(1) of them.
 
-Each model has two positions, and each position has two neighbours, so G has degree 4. On a uniformly random sequence, the radius-R neighbourhood of a model in G is the 4-regular tree of radius R with probability 1 − O(9^R/n), by the usual exploration argument. On a tree, flipping x_c for a suitable set of models turns every edge into one that wants different colours, which is Max-Cut. Consider a local algorithm that commutes with flipping a variable together with the signs of its edges. Its expected number of colour changes per edge of G then tends to 1 − c, where c is its expected cut fraction for Max-Cut on the 4-regular tree. G has 2n − 1 edges, so
+Each model has two positions, and each position has two neighbours, so G has degree at most 4, with degree 3 only at the two ends. On a uniformly random sequence, the radius-R neighbourhood of a model in G is the 4-regular tree of radius R with probability 1 − O(9^R/n), by the usual exploration argument. On a tree, flipping x_c for a suitable set of models turns every edge into one that wants different colours, which is Max-Cut. Consider a local algorithm that commutes with flipping a variable together with the signs of its edges. Its expected number of colour changes per edge of G then tends to 1 − c, where c is its expected cut fraction for Max-Cut on the 4-regular tree. G has 2n − 1 edges, so
 
-  expected colour changes per car → 2 (1 − c).
+  expected colour changes per model → 2 (1 − c).
 
 As a check: QAOA at depth 7 gives 0.393 for the paint shop [2] and 0.803 for Max-Cut on the 4-regular tree [3, Table 3], and 2(1 − 0.803) = 0.394. [1] uses the same conversion for QAOA.
 
@@ -33,13 +33,13 @@ On G, with signs s = +1 for edges that want different colours and s = −1 for e
 2. **Rounding.** y_c = sign(D_c − (τ/2) Σ_w s_cw D_w). For k = 2 this is Algorithm 1 of [3] with parameter m.
 3. **Three flip rounds.** In each round, every model whose two cars cause at least 3 of its 4 neighbouring colour changes swaps its two colours, all at once.
 
-We use m = 160 and τ = 1. The radius is m + 3 = 163, and the running time is O(mn). All steps commute with flipping a variable together with the signs of its edges.
+We use m = 160 and τ = 1. The radius is m + 3 = 163, and the running time is O(mn). The rounding and the flip rounds commute with flipping a variable together with the signs of its edges. The Gaussian field does so in distribution, as g_c is symmetric.
 
 ## Status and checks
 
 Numerical results. No part is formalized in Lean.
 
-- **Value on the tree:** Monte Carlo over the joint Gaussian scores of the vertices within distance 4 of an edge, with the exact tree covariances of [3]. 10⁶ fresh samples, seed 2026, independent of the runs used to choose m, τ and the rounds, give a cut fraction of 0.84566 ± 0.00036. The empirical Bernstein bound [9] at confidence 1 − 10⁻⁴, for 0/1 samples, gives c ≥ 0.8440, so at most 0.3120 colour changes per car.
+- **Value on the tree:** Monte Carlo over the joint Gaussian scores of the vertices within distance 4 of an edge, with the exact tree covariances of [3]. 10⁶ fresh samples, seed 2026, independent of the runs used to choose m, τ and the rounds, give a cut fraction of 0.84566 ± 0.00036. The empirical Bernstein bound [9] at confidence 1 − 10⁻⁴, for 0/1 samples, gives c ≥ 0.8440, so at most 0.3120 colour changes per model.
 - **Real sequences:** `sim/bpsp_check.py` runs the algorithm on random sequences of 10⁶ models and counts the colour changes directly:
 
   | m, rounds | Tree value, 2(1 − c) | One sequence of 10⁶ models |
@@ -54,7 +54,8 @@ Numerical results. No part is formalized in Lean.
 - **Not covered:**
   - the rate of convergence in n: at m = 160 the neighbourhoods of a sequence of 10⁶ models are far from trees, although the measured value agrees;
   - sequences that are not uniformly random, such as real production orders;
-  - worst-case sequences, for which the problem is APX-hard.
+  - worst-case sequences, for which the problem is APX-hard;
+  - in `sim/bpsp_check.py`, a pair of models that are neighbours twice gets one merged edge, which affects O(1) models.
 
 ## Files
 
