@@ -2,7 +2,7 @@
 
 <img src="logo.gif" alt="Barbarossa, a red-bearded 1980s computer nerd at his home computer, with low hanging fruits on the screen" width="240">
 
-# Low hAngIng Fruits (LAIF) Project
+<h1><img src="title.svg" alt="Low hAngIng Fruits (LAIF) Project" width="720"></h1>
 
 **Why waste AI slop on social media? Spend it on new bounds and faster algorithms for open problems in algorithms and complexity, which no human will ever read 😉**
 
