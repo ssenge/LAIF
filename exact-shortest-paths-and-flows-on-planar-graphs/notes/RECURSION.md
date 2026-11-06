@@ -3,7 +3,8 @@
 *Status.* Proved, given Lemma O, whose proof is in LEMMA_O.md and which supplies what Lemma S2
 uses, in the form S2 uses it. The recursion argument of Lemma S2, with the conclusion of Lemma S1
 and (INV) as hypotheses, is in Lean (`lean/SsspFlow/Recursion.lean`, see "In Lean" below), and so is
-Lemma S1 with (S_1) as a hypothesis (`lean/SsspFlow/WitnessInterval.lean`).
+Lemma S1, with (S_1) from a drawing of A_1 as a planar map (`lean/SsspFlow/WitnessInterval.lean`,
+`lean/SsspFlow/Separation.lean`).
 Lemma S1 runs in A_1 and needs neither the side fact (O), which says
 on which side of an incision each copy of P lands, nor the exact form of [18, Claim 2.3]. Its
 separation step (S_1) is proved here by a parity argument.
@@ -353,7 +354,16 @@ every copy of P is one of its two ends. Proved:
   (W) in Case 2;
 - `Annulus.nodeOfWalk`: the field `dom` of a node of `Recursion.lean` from a shortest walk.
 
-Not in Lean: (S_1), Lemma O, the graph A_1 built from the planar map, and the rounds.
+`lean/SsspFlow/Separation.lean` proves (S_1) when A_1 is drawn as a planar map, a rotation
+system, in which the copies p_0^0, …, p_m^0, p_m^1, …, p_0^1 are the tails of corners of one face
+in this cyclic order, at distinct vertices. A walk from p_x^0 to p_y^1 and a walk from p_t^0 to
+p_t^1 with t strictly between x and y then join interleaved corners of that face, and the crossing
+lemma of `lean/SsspFlow/Crossing.lean` gives a common vertex (`Annulus.sep_of_faceDrawn`). There the
+condition that Q̄ has no copy inside is not needed. `Annulus.witness_interval_of_faceDrawn` is
+Lemma S1 for such an A_1.
+
+Not in Lean: the cut of G* along γ, which gives A_1 as such a map together with (P) and the copies
+B^σ, Lemma O, and the rounds.
 
 ## Points of doubt
 
@@ -362,7 +372,8 @@ Not in Lean: (S_1), Lemma O, the graph A_1 built from the planar map, and the ro
   readings; the invariant (I) has many parts.
 - Lemma S2 does not use the separation part of (O1) (Claim 10 of LEMMA_O.md), since Lemma S1
   uses (S_1) in A_1.
-- (S_1) is proved with the curve drawing of the Reif reduction, in words, as there.
+- (S_1) is proved in Lean from the drawing of A_1 as a planar map with the copies of P on one
+  face; that the cut along γ gives such a map is argued in words.
 
 ## Remarks on naming, sides and the cut
 
