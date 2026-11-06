@@ -1,10 +1,10 @@
 <div align="center">
 
-<img src="logo.gif" alt="Barbarossa, a red-bearded 1980s computer nerd at his home computer" width="240">
+<img src="logo.gif" alt="Barbarossa, a red-bearded 1980s computer nerd at his home computer, with low hanging fruits on the screen" width="240">
 
-# BarbarossAI Research Project
+# Low hAngIng Fruits (LAIF) Project
 
-**Why waste AI slop on social media: new bounds and faster algorithms for open problems in algorithms and complexity!**
+**Why waste AI slop on social media? Spend it on new bounds and faster algorithms for open problems in algorithms and complexity, which no human will ever read 😉**
 
 [![License: Apache 2.0](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](LICENSE)
 [![Lean 4](https://img.shields.io/badge/proofs-Lean%204%20%2B%20Mathlib-8a2be2.svg)](https://leanprover-community.github.io/)
