@@ -1,5 +1,5 @@
 """The amplitude estimation algorithm of ae_bound.py, run with exactly sampled measurement outcomes.
-Checks that the Q count never exceeds the certified bound and that the error exceeds eps at most at rate alpha.
+Prints the failure rate and the largest and mean Q counts, to compare with alpha and the certified bound.
 
 usage: ae_alg.py eps alpha r kappa gamma alpha_last runs [seed]
 """
