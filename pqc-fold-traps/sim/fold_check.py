@@ -1,17 +1,25 @@
-"""A fold point of a 15-parameter two-qubit PQC, and the local minimum it creates.
+"""Spurious local minima at a fold point of a 15-parameter two-qubit PQC.
 
-F(x) = prod_k exp(-i x_k P_k / 2) maps T^15 into SU(4). J(x) is the 15 x 15 matrix of Pauli coefficients of
-the generators of dF (unit columns). A fold point x0: rank J(x0) = 14 and kappa = u^T (d_v J) v != 0, with
-v, u the right and left null vectors. Then grad det J(x0) . w = c u^T (d_w J) v with c != 0, so the critical set
-is a smooth hypersurface near x0, ker J(x0) is transverse to it, and F(C) contains a 14-dimensional piece.
+The circuit and fold point are those of the refutation of [1, Conjecture 3] in [5]: words
+(YY, IY, XX, ZY, ZX, IZ, XY, YZ, IX, XZ, ZI, YI, YX, XI, ZZ) in F = R_{P_1}(a_1) ... R_{P_15}(a_15), with
+a_5 = a_6 = a_7 = a_10 = pi/4 (counting from 0) and the other inputs 0. J is the 15 x 15 matrix of Pauli
+coefficients of the generators of dF. At these angles J has entries in Q(sqrt 2): the fold conditions
+rank J = 14 and kappa = u^T (d_v J) v != 0 are checked exactly with sympy. Then the compilation loss is
+examined for targets moved off F(x0) along the missed direction.
 """
 import itertools
 import numpy as np
 import mpmath as mp
-from scipy.optimize import brentq, least_squares
+import sympy as sp
+from scipy.optimize import least_squares
 
 mp.mp.dps = 60
-WORDS = "YX XY IX IY XX IZ YZ XI YY ZX YI IY IX XX XZ".split()
+THEIRS = "YY IY XX ZY ZX IZ XY YZ IX XZ ZI YI YX XI ZZ".split()  # leftmost factor first
+WORDS = THEIRS[::-1]  # here F(x) = R_{W_15}(x_15) ... R_{W_1}(x_1), the first word acts first
+ALPHA = [0.0] * 15
+for j in (5, 6, 7, 10):
+    ALPHA[j] = np.pi / 4
+X0 = np.array(ALPHA[::-1])
 P1 = {"I": np.eye(2), "X": np.array([[0, 1], [1, 0]]), "Y": np.array([[0, -1j], [1j, 0]]), "Z": np.diag([1, -1])}
 pauli = lambda w: np.kron(P1[w[0]], P1[w[1]]).astype(complex)
 BASIS = [pauli("".join(t)) for t in itertools.product("IXYZ", repeat=2)][1:]
@@ -60,57 +68,53 @@ def mJ(x):
     return mp.matrix([[cols[k][r] for k in range(d)] for r in range(d)])
 
 
-def mdet(x):
-    return mp.det(mJ(x))
-
-
-def find_fold(seed=7):
-    rng = np.random.default_rng(seed)
-    th = rng.uniform(0, 4 * np.pi, d)
-    while True:
-        w = rng.normal(size=d)
-        w /= np.linalg.norm(w)
-        ts = np.linspace(0, 6, 600)
-        vals = [np.linalg.det(J(th + s * w)) for s in ts]
-        for i in range(len(ts) - 1):
-            if vals[i] * vals[i + 1] < 0:
-                s0 = brentq(lambda s: np.linalg.det(J(th + s * w)), ts[i], ts[i + 1], xtol=1e-15)
-                x = th + s0 * w
-                if np.linalg.svd(J(x), compute_uv=False)[-2] > 0.05:
-                    return x
-
-
-def certify(x_double):
-    x = [mp.mpf(float(t)) for t in x_double]
-    h = mp.mpf(10) ** -25
-    for _ in range(6):  # second-order steps on det along its gradient
-        g = [(mdet([x[j] + (h if j == k else 0) for j in range(d)]) - mdet([x[j] - (h if j == k else 0) for j in range(d)])) / (2 * h) for k in range(d)]
-        g2 = sum(t ** 2 for t in g)
-        f0 = mdet(x)
-        x = [x[k] - f0 * g[k] / g2 for k in range(d)]
-    gn = mp.sqrt(g2)
-    U, S, V = mp.svd_r(mJ(x))
-    s14, s15 = S[d - 2], S[d - 1]
-    u = [U[r, d - 1] for r in range(d)]
-    v = [V[d - 1, r] for r in range(d)]
-    Jp = mJ([x[k] + h * v[k] for k in range(d)])
-    Jm = mJ([x[k] - h * v[k] for k in range(d)])
-    kappa = sum(u[r] * (Jp[r, c] - Jm[r, c]) / (2 * h) * v[c] for r in range(d) for c in range(d))
-    # sign change of det J across the critical set at distance delta: a zero x0 within delta of x
-    delta = mp.mpf(10) ** -30
-    dp = mdet([x[k] + delta * g[k] / gn for k in range(d)])
-    dm = mdet([x[k] - delta * g[k] / gn for k in range(d)])
-    assert dp * dm < 0
-    # perturbation from x to x0: |dJ| <= 15 delta, |d^2 J| <= 60 delta; singular subspace perturbation for the null vectors
-    dJ = 15 * delta
-    sin_t = dJ / (s14 - dJ)
-    kappa_err = 60 * delta + 15 * 4 * sin_t + 15 * 2 * (s15 + dJ)
-    assert s14 - dJ > 0.05 and abs(kappa) > 1e6 * kappa_err
-    print(f"fold point x0 within {mp.nstr(delta, 2)} of x: det J changes sign ({mp.nstr(dm, 3)}, {mp.nstr(dp, 3)})")
-    print(f"sigma_14 = {mp.nstr(s14, 6)}, sigma_15 = {mp.nstr(s15, 3)} at x; |grad det J| = {mp.nstr(gn, 4)}")
-    print(f"kappa = u^T (d_v J) v = {mp.nstr(kappa, 6)}, perturbation bound {mp.nstr(kappa_err, 3)}: "
-          "rank 14 and kernel transverse at x0, a fold")
-    return np.array([float(t) for t in x]), np.array([float(t) for t in u]), kappa
+def exact_fold():
+    """Exact J and d_j J at X0 over Q(sqrt 2), via the adjoint action in the Pauli basis."""
+    names = ["".join(t) for t in itertools.product("IXYZ", repeat=2)][1:]
+    mats = [pauli(w) for w in names]
+    def ad(P, c, s_):  # Ad_{R_P(t)} on Pauli coefficients, with c = cos t, s_ = sin t (or their derivatives)
+        A = sp.zeros(d, d)
+        for q, Q in enumerate(mats):
+            if np.allclose(P @ Q, Q @ P):
+                A[q, q] = 1 if c is not None else 0
+                continue
+            PQ = P @ Q  # = phase * P_r with phase = +-i
+            r = next(r for r, M in enumerate(mats) if abs(np.trace(M @ PQ)) > 1)
+            phase = np.trace(mats[r] @ PQ) / D
+            A[q, q] = c if c is not None else 0
+            A[r, q] = int(round(np.real(-1j * phase))) * s_  # R Q R^dag = cos t Q - i sin t P Q
+        return A
+    h = sp.sqrt(2) / 2
+    trig = {0.0: (1, 0, 0, 1), np.pi / 4: (h, h, -h, h)}  # cos, sin, d cos, d sin
+    gates = [(pauli(w), trig[float(t)]) for w, t in zip(WORDS, X0)]
+    Ad = [ad(P, cs[0], cs[1]) for P, cs in gates]
+    dAd = []
+    for P, cs in gates:
+        A = ad(P, cs[2], cs[3])
+        for q, Q in enumerate(mats):
+            if np.allclose(P @ Q, Q @ P):
+                A[q, q] = 0  # commuting words do not move
+        dAd.append(A)
+    e = lambda w: sp.Matrix([1 if names[q] == w else 0 for q in range(d)])
+    def column(k, j=None):  # H_k = Ad(R_15) ... Ad(R_{k+1}) P_k, optionally differentiated in x_j
+        vec = e(WORDS[k])
+        for m in range(k + 1, d):
+            vec = (dAd[m] if m == j else Ad[m]) * vec
+        return vec
+    J = sp.Matrix.hstack(*[column(k) for k in range(d)]).applyfunc(sp.nsimplify)
+    dJ = [sp.Matrix.hstack(*[column(k, j) if j > k else sp.zeros(d, 1) for k in range(d)]) for j in range(d)]
+    assert np.allclose(np.array(J.evalf(30).tolist(), dtype=float), globals()["J"](X0), atol=1e-12)
+    assert J.rank(simplify=True) == 14
+    v = J.nullspace(simplify=True)[0]
+    u = J.T.nullspace(simplify=True)[0]
+    dvJ = sum((v[j] * dJ[j] for j in range(d)), sp.zeros(d, d))
+    kappa = sp.nsimplify(sp.simplify((u.T * dvJ * v)[0] / (u.norm() * v.norm() ** 2)))
+    assert kappa != 0
+    s14 = np.linalg.svd(globals()["J"](X0), compute_uv=False)[-2]
+    un = np.array((u / u.norm()).evalf(30).tolist(), dtype=float).ravel()
+    print(f"exact over Q(sqrt 2): rank J(x0) = 14, kappa = u^T (d_v J) v = {kappa} = {float(kappa):.6f} != 0 "
+          f"(unit null vectors); sigma_14 = {s14:.4f}: a fold point")
+    return X0, un, float(kappa)
 
 
 def loss(x, Ut):
@@ -160,12 +164,12 @@ def check_trap(x0, u, kappa, rng):
     print(f"F(x0) has the regular preimage x1 (residual {np.linalg.norm(residual(x1, F(x0))):.1e}, sigma_min = {s1:.3f}), "
           "so targets near F(x0) have loss-zero parameters near x1")
     side = -np.sign(kappa)  # targets exp(-i eps W/2) F(x0) with eps kappa < 0 lie outside the local image
-    for eps in (1e-3, 1e-4):
+    for eps in (1e-2, 1e-3, 1e-4):
         for sgn in (side, -side):
             lam = np.linalg.eigvalsh(mloss_derivs(x0, mp_expm(W, sgn * eps) @ F(x0))[2])[0]
             assert (lam > 0) == (sgn == side)
             print(f"eps = {sgn * eps:+.0e} ({'outside' if sgn == side else 'inside'} the local image): smallest "
-                  f"Hessian eigenvalue of the loss at x0 {lam:+.3e}; eps v^T H1 v = {-sgn * eps * float(kappa) / 4:+.3e}")
+                  f"Hessian eigenvalue of the loss at x0 {lam:+.3e}; -eps kappa/4 = {-sgn * eps * float(kappa) / 4:+.3e}")
         Ut = mp_expm(W, side * eps) @ F(x0)
         xm = [mp.mpf(float(t)) for t in solve(x0, Ut)]
         for _ in range(3):  # second-order steps at 40 digits
@@ -180,12 +184,11 @@ def check_trap(x0, u, kappa, rng):
         xm = np.array([float(t) for t in xm])
         sols = [solve(rng.uniform(0, 4 * np.pi, d), Ut) for _ in range(10)]
         best = min(sols, key=lambda x: np.linalg.norm(residual(x, Ut)))
-        res, smin = np.linalg.norm(residual(best, Ut)), np.linalg.svd(J(best), compute_uv=False)[-1]
-        assert res < 1e-13 and smin > 1e-3  # inverse function theorem: an exact preimage within ~res/smin
+        lbest = float(mloss_derivs(best, Ut)[0])  # the loss itself, at 40 digits
+        assert lbest < 1e-6 * val
         print(f"  local minimum at distance {np.linalg.norm(xm - x0):.1e} from x0: loss {val:.6e} = "
               f"{val / (eps ** 2 / 8):.6f} eps^2/8, gradient {gn:.1e}, smallest Hessian eigenvalue "
-              f"{lam:.3e}; other parameters reach residual {res:.1e} at a regular point "
-              f"(sigma_min = {smin:.3f}), so the minimum is spurious")
+              f"{lam:.3e}; another parameter has loss {lbest:.1e}, so the minimum is spurious")
 
 
 def mp_expm(W, eps):
@@ -195,7 +198,6 @@ def mp_expm(W, eps):
 
 if __name__ == "__main__":
     rng = np.random.default_rng(15)
-    x_double = find_fold()
-    x0, u, kappa = certify(x_double)
+    x0, u, kappa = exact_fold()
     check_trap(x0, u, kappa, rng)
     print("fold and trap checks pass")
