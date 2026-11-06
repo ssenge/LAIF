@@ -49,15 +49,21 @@ def closed_form(p, d, sigma, eps):
 
 
 def check_costs():
+    """At fixed d, cost / (closed form * J^3) must not grow with sigma/eps (polylog overhead only)."""
     for p in (1.1, 1.25, 4 / 3, 1.5, 1.75, 2.0):
-        ratios = []
+        worst, hi = -np.inf, 0.0
         for d in (1, 10, 10 ** 3, 10 ** 6, 10 ** 9, 10 ** 12):
-            for eps in (1e-1, 1e-2, 1e-3, 1e-4, 1e-5, 1e-6):
+            xs, ys = [], []
+            for e in range(2, 9):
+                eps = 10.0 ** (-e)
                 c, J = cost_terms(p, d, 1.0, eps)
-                ratios.append(c / closed_form(p, d, 1.0, eps) / J ** 3)
-        lo, hi = min(ratios), max(ratios)
-        assert hi / lo < 1e4, (p, lo, hi)
-        print(f"p = {p:.3f}: cost / (closed form * J^3) in [{lo:.3g}, {hi:.3g}] over 36 (d, eps) pairs")
+                xs.append(e)
+                ys.append(np.log10(c / closed_form(p, d, 1.0, eps) / J ** 3))
+            worst = max(worst, np.polyfit(xs, ys, 1)[0])
+            hi = max(hi, 10 ** max(ys))
+        assert worst < 0.05, (p, worst)
+        print(f"p = {p:.3f}: slope of log(cost / (closed form * J^3)) in log(sigma/eps) <= {worst:+.4f}, "
+              f"ratio <= {hi:.3g}, over d = 1 .. 1e12")
 
 
 def geometric_median(P, iters=200):
@@ -106,14 +112,16 @@ def run_estimator(rng, atoms, probs, mu, sigma, p, eps):
     # inner part: bounded-variance estimator, emulated at its worst-case error eps/3
     EW = probs[nr <= r0] @ Y[nr <= r0]
     g = rng.normal(size=d)
-    est = zeta + EW + (eps / 3) * g / np.linalg.norm(g)
+    inj = (eps / 3) * g / np.linalg.norm(g)
+    est = zeta + EW + inj
     cost, active, shell_sum = 0.0, 0, np.zeros(d)
     for j in range(J):
         r = r0 * 2 ** j
         sel = (nr > r) & (nr <= 2 * r)
         pi = probs[sel].sum()
         Dj = e1 / (8 * r)
-        pih = min(1.0, max(0.0, pi + rng.uniform(-Dj, Dj)))  # amplitude estimate within Delta_j
+        sgn = rng.choice([-1, 1]) if abs(pi - e1 / (4 * r)) > Dj else (1 if rng.random() < 0.5 else -1)
+        pih = min(1.0, max(0.0, pi + sgn * Dj))  # amplitude estimate at an end of its error bar
         cost += sqrt(pi) / Dj + 1 / sqrt(Dj)
         if pih < e1 / (4 * r):
             continue
@@ -122,7 +130,7 @@ def run_estimator(rng, atoms, probs, mu, sigma, p, eps):
         shell_sum += probs[sel] @ Y[sel]
         active += 1
         cost += n / sqrt(pih / 2)
-    return np.linalg.norm(est - mu), active, np.linalg.norm(shell_sum)
+    return np.linalg.norm(est - mu), active, np.linalg.norm(shell_sum), np.linalg.norm(est - mu - inj)
 
 
 def check_emulation(rng):
@@ -133,11 +141,13 @@ def check_emulation(rng):
                 eps = eps_rel * sigma
                 runs = [run_estimator(rng, atoms, probs, mu, sigma, p, eps) for _ in range(20)]
                 worst = max(r[0] for r in runs)
+                rest = max(r[3] for r in runs)
+                assert rest <= 2 * eps / 3
                 act = min(r[1] for r in runs)
                 mass = min(r[2] for r in runs)
                 assert worst <= eps and act >= 1, (d, p, eps_rel, worst / eps, act)
                 print(f"d = {d}, p = {p}, eps = {eps_rel} sigma: max error over 20 runs = "
-                      f"{worst / eps:.3f} eps, sampled shells >= {act}, "
+                      f"{worst / eps:.3f} eps (shells and tail {rest / eps:.3f} eps), sampled shells >= {act}, "
                       f"their mean contribution >= {mass / eps:.2f} eps")
 
 
