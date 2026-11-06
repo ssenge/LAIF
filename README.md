@@ -5,7 +5,7 @@
 <h1><img src="title.svg" alt="Low hAngIng Fruits (LAIF) Project" width="720"></h1>
 
 **Why waste AI slop on social media?**<br>
-**Rapid prototyping of new bounds and faster algorithms for open problems in algorithms and complexity, which no human will ever read 😉**
+*Rapid prototyping of new bounds and faster algorithms for open problems in algorithms and complexity, which no human will ever read 😉*
 
 [![License: Apache 2.0](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](LICENSE)
 [![Lean 4](https://img.shields.io/badge/proofs-Lean%204%20%2B%20Mathlib-8a2be2.svg)](https://leanprover-community.github.io/)
