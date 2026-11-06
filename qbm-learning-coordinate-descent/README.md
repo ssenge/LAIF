@@ -56,9 +56,9 @@ S(η‖ρ_{θ′}) ≤ S(η‖ρ_θ) − ε′²/2.
 
 *Proof.* The change is S(η‖ρ_{θ′}) − S(η‖ρ_θ) = log(Z(θ′)/Z(θ)) + ε′ s h_i.
 
-- **Golden-Thompson.** By tr e^{A+B} ≤ tr(e^A e^B) for Hermitian A and B [4],
+- **A trace inequality.** By tr e^{A+B} ≤ tr(e^A e^B) for Hermitian A and B [4],
   Z(θ′)/Z(θ) ≤ tr(e^{H_θ} e^{−ε′ s H_i})/Z(θ) = ⟨e^{−ε′ s H_i}⟩_{ρ_θ}.
-- **Hoeffding.** Measuring H_i on ρ_θ gives a random variable X with values in [−1, 1] and mean g_i, and ⟨e^{−ε′ s H_i}⟩_{ρ_θ} = E e^{−ε′ s X}. By Hoeffding's lemma, log E e^{−ε′ s X} ≤ −ε′ s g_i + ε′²/2.
+- **Bounded variables.** Measuring H_i on ρ_θ gives a random variable X with values in [−1, 1] and mean g_i, and ⟨e^{−ε′ s H_i}⟩_{ρ_θ} = E e^{−ε′ s X}. By the moment generating function bound for variables in an interval of length 2 [11], log E e^{−ε′ s X} ≤ −ε′ s g_i + ε′²/2.
 - **Together.** The change is at most −ε′ s(g_i − h_i) + ε′²/2 ≤ −ε′² + ε′²/2. □
 
 *Proof of Theorem A.*
@@ -70,7 +70,7 @@ S(η‖ρ_{θ′}) ≤ S(η‖ρ_θ) − ε′²/2.
 
 ## Remarks
 
-1. **Related methods.** Classically, the algorithm is a fixed-step variant of the sequential update of maximum entropy estimation [5]. The same relative-entropy potential with Golden-Thompson appears in matrix exponentiated gradient updates [8] and in online learning of quantum states [9]. A sequential one-coordinate quantum iterative scaling with a convergence proof is in [10]. The argument needs no assumption on commutation of the terms.
+1. **Related methods.** Classically, the algorithm is a fixed-step variant of the sequential update of maximum entropy estimation [5]. The same relative-entropy potential with the trace inequality of [4] appears in matrix exponentiated gradient updates [8] and in online learning of quantum states [9]. A sequential one-coordinate quantum iterative scaling with a convergence proof is in [10]. The argument needs no assumption on commutation of the terms.
 2. **Scope.**
    - As in [1], the count is in Gibbs state preparations. The cost of preparing each Gibbs state is not treated.
    - The ε^{−6} for general Pauli terms comes from estimating all m terms to ε/6 in every round with the ε^{−4} of [2]. [1] can use a larger κ because stochastic gradient descent averages its noise.
@@ -108,3 +108,4 @@ greedy coordinate descent checks pass
 8. K. Tsuda, G. Rätsch, M. K. Warmuth. Matrix exponentiated gradient updates for on-line learning and Bregman projection. Journal of Machine Learning Research 6, 995 (2005).
 9. S. Aaronson, X. Chen, E. Hazan, S. Kale, A. Nayak. Online learning of quantum states. NeurIPS 2018, arXiv:1802.09025.
 10. Z. Ji. Classical and quantum iterative optimization algorithms based on matrix Legendre-Bregman projections. arXiv:2209.14185 (2022).
+11. W. Hoeffding. Probability inequalities for sums of bounded random variables. Journal of the American Statistical Association 58, 13 (1963).

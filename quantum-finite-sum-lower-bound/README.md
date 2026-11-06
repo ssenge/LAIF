@@ -184,7 +184,7 @@ On ‖x‖ ≤ R, this is exactly O_F, also with i in superposition. In the bran
 *Proof.* The argument has four steps.
 
 1. **Independence.** The whole family of candidates is Haar distributed. So for every fixed set of keys, the true vectors form a Haar orthonormal family. Given the true vectors, the other candidates form a Haar orthonormal family of the complement W, where dim W = d − N(k+1). By Lemma 4 the algorithm sees exactly O_F of the true instance. So x depends only on the true vectors and the algorithm's randomness, and it is independent of the false candidates given the true ones.
-2. **Near optimality.** By Markov's inequality, F(x) − F* < 3ε with probability at least 2/3. On that event, Lemma 2 gives |⟨x, v_{i,j}⟩| ≥ c/2 for all i and j.
+2. **Near optimality.** By the first moment inequality, F(x) − F* < 3ε with probability at least 2/3. On that event, Lemma 2 gives |⟨x, v_{i,j}⟩| ≥ c/2 for all i and j.
 3. **Norm.** On the same event, strong convexity gives ‖x*‖ ≤ √(2Δ/μ) and ‖x − x*‖ ≤ √(6ε/μ) ≤ √(2Δ). Since μ ≤ 1/200, this gives ‖x‖ < 1.6√(Δ/μ) ≤ R.
 4. **Union bound.** A false candidate u is uniform on the unit sphere of W. So for a fixed x with ‖x‖ ≤ R, Pr[|⟨x, u⟩| ≥ c/2] ≤ 2 exp(−dim W · c²/(8R²)). A union bound over the N(k+1)(A − 1) false candidates, with the assumed bound on d, gives at most 1/20. ∎
 
@@ -196,7 +196,7 @@ On ‖x‖ ≤ R, this is exactly O_F, also with i in superposition. In the bran
 
 B makes 2T chain queries. By Lemma 5, averaged over the Haar frame, it outputs all N key tuples with probability more than 0.61 on every input.
 
-A query algorithm in the sense of [4] has finitely many basis states, so B should use finite randomness. There are A^{N(k+1)} inputs. Draw M = O(N(k+1) log A) frames independently. By Hoeffding's inequality and a union bound over the inputs, some outcome of the draw has success above 0.55 on every input, averaged over its M frames. Let B pick one of these M frames uniformly, using a register of log M qubits. Lemma 4 is exact for every fixed frame, so nothing else changes.
+A query algorithm in the sense of [4] has finitely many basis states, so B should use finite randomness. There are A^{N(k+1)} inputs. Draw M = O(N(k+1) log A) frames independently. By the tail bound for bounded independent variables and a union bound over the inputs, some outcome of the draw has success above 0.55 on every input, averaged over its M frames. Let B pick one of these M frames uniformly, using a register of log M qubits. Lemma 4 is exact for every fixed frame, so nothing else changes.
 
 By Lemma 3 and the strong direct product theorem, 2T ≥ N(k+1) ln(3/2)/8000.
 
@@ -335,16 +335,16 @@ Let A be even and h ≤ k, and let g_h(m) = m_h mod 2 on the chain problem of Se
 
 **Symmetry.** On input m with relabeling π, B behaves as B without relabeling on input π(m). Its output bit flips together with g_h, so a bit is correct in one run exactly when it is correct in the other. Since π(m) is uniform over all inputs for every m, the joint law of B's correct bits is the same on every input. It equals the average over a uniform input.
 
-**Frames.** With the relabeling in place a single good frame would do; for simplicity we argue with a set of frames. For a Haar random frame, the success estimate below holds for every input. Draw a large finite number of frames independently. By Hoeffding's inequality, the average over these frames and a uniform input stays within 0.01 of its Haar value for some outcome of the draw, and B uses that set.
+**Frames.** With the relabeling in place a single good frame would do; for simplicity we argue with a set of frames. For a Haar random frame, the success estimate below holds for every input. Draw a large finite number of frames independently. By the tail bound for bounded independent variables, the average over these frames and a uniform input stays within 0.01 of its Haar value for some outcome of the draw, and B uses that set.
 
-**Success.** By Markov's inequality, F(x) − F* < 3ε with probability at least 2/3. On that event:
+**Success.** By the first moment inequality, F(x) − F* < 3ε with probability at least 2/3. On that event:
 
 - By Lemmas 6 and 7, fewer than N/2 chains are bad, and every other chain has |⟨x, v_{i,h}⟩| ≥ c/2.
 - By strong convexity with μ₀, ‖x‖ ≤ ‖x*‖ + √(6ε/μ₀), which is less than 2R in Case 2 and at most 3R/2 in Cases 3 and 4, so at most R_q.
 
 With probability at least 1 − 1/20, no false candidate passes the threshold (as in Lemma 5, with R_q in place of R). Then every good chain is decoded correctly, and a bad chain is either decoded correctly or gets a coin.
 
-**Counting.** Let m < N/2 be the number of coins. At least 0.7N bits are correct unless fewer than m − 0.3N coins are correct. For m > 0.3N this is at least 0.05N below the mean m/2, so by Hoeffding's inequality it has probability at most e^{−2(0.05N)²/m} ≤ e^{−0.01N}. So the probability of at least 0.7N correct bits is at least 2/3 − 1/20 − e^{−0.01N} − 0.01 > e^{−0.037N} for N ≥ 300.
+**Counting.** Let m < N/2 be the number of coins. At least 0.7N bits are correct unless fewer than m − 0.3N coins are correct. For m > 0.3N this is at least 0.05N below the mean m/2, so by the tail bound for bounded independent variables it has probability at most e^{−2(0.05N)²/m} ≤ e^{−0.01N}. So the probability of at least 0.7N correct bits is at least 2/3 − 1/20 − e^{−0.01N} − 0.01 > e^{−0.037N} for N ≥ 300.
 
 **Conclusion.** By Lemma 8, 2T ≥ 10⁻⁷ N(h+1). With the definitions of k:
 
@@ -356,7 +356,7 @@ Undoing the scaling gives the table. ∎
 
 ## Remarks
 
-1. **The alphabet.** In the query problem of [1, Problem 3], each chain entry takes one of two known values. A query can then cover the four extensions of a known prefix by two entries, and Grover's search on four items finds the right one with a single query. So a plain hybrid argument does not apply to the two-valued chains. The bound in [1] comes from an adversary argument and reads n√k. With A ≥ 400(k+1)²s values per entry, a query that guesses an unknown key succeeds with amplitude O(√(s/A)). Then the single chain needs k + 1 queries, and the strong direct product theorem [4] extends this to the superposition over the n components.
+1. **The alphabet.** In the query problem of [1, Problem 3], each chain entry takes one of two known values. A query can then cover the four extensions of a known prefix by two entries, and quantum search on four items finds the right one with a single query. So a plain hybrid argument does not apply to the two-valued chains. The bound in [1] comes from an adversary argument and reads n√k. With A ≥ 400(k+1)²s values per entry, a query that guesses an unknown key succeeds with amplitude O(√(s/A)). Then the single chain needs k + 1 queries, and the strong direct product theorem [4] extends this to the superposition over the n components.
 
 2. **The constants of [1, Lemma 5].** The proof of that lemma finds the minimum −μ̃C²(√Q − 1)²/16 for each chain. The next line there gives the gap at 0 as μC²(√Q − 1)²/16, with μ in place of μ̃, which may be the source of the difference. With the printed constant C = √(Δ/μ) · 4/(√Q − 1), the minimum hints at F(0) − F* = nΔ rather than Δ, and the check below finds nΔ for n = 2, 4 and 8. Using Δ/n in place of Δ in that lemma seems to restore F(0) − F* ≤ Δ. This changes only the argument of the logarithm in [1, Corollary 3]. The instance above sets C directly, so that Lemma 1 holds.
 

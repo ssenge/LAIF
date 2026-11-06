@@ -116,7 +116,7 @@ Together this is the bound of Theorem 1. For a worst-case bound, cap the attempt
 `sim/heavytail_check.py` checks the following:
 
 1. **Exponent identities.** It checks them exactly in rational arithmetic, over a grid of p.
-2. **Cost against the closed form.** For p ∈ {1.1, 1.25, 4/3, 1.5, 1.75, 2} and d from 1 to 10^12, it sums the per-part cost bounds of the Cost paragraph, with π_j at its Markov bound and all constants set to 1. Divided by the closed form of Theorem 1 and by J³, the result does not grow with σ/ε: its slope in log(σ/ε) over ε from 10^{−2} to 10^{−8} is below 0.05 at every fixed d.
+2. **Cost against the closed form.** For p ∈ {1.1, 1.25, 4/3, 1.5, 1.75, 2} and d from 1 to 10^12, it sums the per-part cost bounds of the Cost paragraph, with π_j at its first moment bound and all constants set to 1. Divided by the closed form of Theorem 1 and by J³, the result does not grow with σ/ε: its slope in log(σ/ε) over ε from 10^{−2} to 10^{−8} is below 0.05 at every fixed d.
 3. **Correctness by emulation.** It runs the estimator on finite-valued heavy-tailed laws in d = 50, 1000 and 5000, with p ∈ {1.2, 1.5, 1.8}. Conditional samples are drawn exactly, and the inner estimate gets an error of ℓ₂ norm exactly ε/3. The amplitude estimates are drawn at the ends ±Δ_j of their error bars, on either side of the zero threshold. The error of the shells and the tail, without the injected ε/3, stays below 2ε/3 on every run. The sampled shells carry up to 1.45ε of the mean.
 
 ```

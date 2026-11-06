@@ -96,7 +96,7 @@ Take the 8192 shots per circuit used in [1]. Then, on ibm_fez, no black-box meth
 - **The state.** With a_i = b_i = 0, U_1 = H H = I, so the first target qubit stays in |0⟩. The second is R_y(γ)|0⟩ = cos(γ/2)|0⟩ + sin(γ/2)|1⟩. The control register is uniform over the m = D/4 control states. This gives ψ^±, and f^± = R cos γ^± = ±R sin 2η = ±ε.
 - **The readout.** Per basis state, the probabilities are cos²(γ/2)/m and sin²(γ/2)/m. At γ^±, cos²(γ^±/2) = (1 ± ε/R)/2. □
 
-*Theorem 1, part 1.* The shots are independent, with Y ∈ {−R, R} and E Y = tr(Oρ̃) = αf_θ + (1 − α)c₀. So E f̂ = f_θ, and Var f̂ = Var(Y)/(α²N) ≤ R²/(α²N). Hoeffding's inequality for Ȳ at deviation αε gives the tail bound. □
+*Theorem 1, part 1.* The shots are independent, with Y ∈ {−R, R} and E Y = tr(Oρ̃) = αf_θ + (1 − α)c₀. So E f̂ = f_θ, and Var f̂ = Var(Y)/(α²N) ≤ R²/(α²N). The tail bound for bounded independent variables, applied to Ȳ at deviation αε, gives the tail bound. □
 
 *Theorem 1, part 2.* The noisy law of the basis state is P̃_k = αP_k + (1 − α)/D. On the 2m states where the two settings differ:
 
@@ -122,7 +122,7 @@ This is the fidelity bound of [6, Theorem 1] applied to the pair of Lemma 1. □
   - Since (1 + e^{−s})/2 ≥ e^{−s/2}, each decoherence factor is at least e^{−t/(2T)}, with t = N_2Q t_2Q = mq t_2Q/15. So −ln α ≤ (q − 2)(−ln(1 − ε_1Q)) + c·mq.
   - Finally, mq = O((B²/ε²) log(B/ε)), since m < 8B²/ε².
 - **Part 3.**
-  - Suppose the mean square error is at most ε² for both settings. Then Chebyshev's inequality gives accuracy below √3ε with probability at least 2/3.
+  - Suppose the mean square error is at most ε² for both settings. Then the second moment inequality gives accuracy below √3ε with probability at least 2/3.
   - So Theorem 1 applies to the pair of Lemma 1 built for √3ε. The pair does not depend on x.
   - Use α ≤ (1 − ε_2Q)^{mq/15}. For the second bound, note also (α + 2β)/α² ≥ 1/α. Here −ln(1 − ε_2Q) ≥ ε_2Q, and q ≥ log₂(16B²/ε²).
 - **Part 4.**

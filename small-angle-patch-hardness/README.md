@@ -14,9 +14,9 @@ This is the hardware-efficient ansatz with Y and Z rotation layers and a ring of
 
 | Patch | Status |
 |---|---|
-| r ≥ 1 | the cost is computed classically to precision ε at every point, in time D^{O(log(1/ε))}, so polynomial for constant ε: Pauli path or Taylor surrogates around the Clifford point [2, Theorem 2 and Supplemental Theorem 7], [1, Theorem 3] |
+| r ≥ 1 | the cost is computed classically to precision ε at every point, in time D^{O(log(1/ε))}, so polynomial for constant ε: Pauli path or power series surrogates around the Clifford point [2, Theorem 2 and Supplemental Theorem 7], [1, Theorem 3] |
 | r > 1/2 | random points are classically simulable with high probability [2, Theorem 2], [1, Theorem 4] |
-| r < 1 | the Taylor surrogate of [1] needs super-polynomial time at typical points [1, Theorem 3]; for costs modified by its Linear Clifford Encoder, [1] gives numerical evidence of a transition patch of width D^{−(1−δ)} with polynomially decaying gradients, and asks for formal proofs |
+| r < 1 | the power series surrogate of [1] needs super-polynomial time at typical points [1, Theorem 3]; for costs modified by its Linear Clifford Encoder, [1] gives numerical evidence of a transition patch of width D^{−(1−δ)} with polynomially decaying gradients, and asks for formal proofs |
 
 The question behind this, raised in [3] and [4], is whether polynomially large gradients and classical hardness can occur together in natural models.
 
@@ -61,7 +61,7 @@ where E Z_q E = Z_q and E Y_q E = Z_{q−1} Y_q Z_{q+1}. So odd layers offer the
 
 **Compilation.** Logical qubit j sits at site 2j, and the ancilla at site 2j + 1 stays in |0⟩.
 
-- **One-qubit gate on logical j.** It has an Euler form e^{−iaZ}e^{−ibY}e^{−icZ}. Each angle can be reduced modulo π to |angle| ≤ π/2, at the cost of a global sign, so the gate takes 3 rotations on site 2j. For H, T and the Clifford G below, all Euler angles are rational multiples of π.
+- **One-qubit gate on logical j.** It has a ZYZ form e^{−iaZ}e^{−ibY}e^{−icZ}. Each angle can be reduced modulo π to |angle| ≤ π/2, at the cost of a global sign, so the gate takes 3 rotations on site 2j. For H, T and the Clifford G below, all ZYZ angles are rational multiples of π.
 - **CZ between logical j and j + 1.** Write m = 2j + 1, and let G be a one-qubit Clifford with G Y G† = ±Z, for example e^{−iπX/4}. Then
 
   G_m e^{−iα Z_{m−1} Y_m Z_{m+1}} G_m† = e^{∓iα Z_{m−1} Z_m Z_{m+1}},
@@ -70,7 +70,7 @@ where E Z_q E = Z_q and E Y_q E = Z_{q−1} Y_q Z_{q+1}. So odd layers offer the
 
   CZ_{ab} = e^{iπ/4} e^{−iπZ_a/4} e^{−iπZ_b/4} e^{iπZ_aZ_b/4}.
 
-  G and G† cost 3 rotations each by their Euler forms, so the CZ costs 3 + 1 + 3 + 2 = 9 rotations. The ancilla returns to |0⟩.
+  G and G† cost 3 rotations each by their ZYZ forms, so the CZ costs 3 + 1 + 3 + 2 = 9 rotations. The ancilla returns to |0⟩.
 
 So V becomes P ≤ 9s rotations, each with |angle| ≤ π/2 ≤ π, and every angle is a rational multiple of π.
 

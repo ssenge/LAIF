@@ -82,7 +82,7 @@ For P uniform on the torus and integer frequencies, the functions 1, c_i, s_i ar
 *Proof of Theorem 4.*
 
 - **Fitting.** By Theorem 3 and a union bound over G, with probability at least 1 − δ/2 every fitted model ĥ_g has R(ĥ_g) ≤ min_θ R(f_θ ∘ g) + ε. The frequencies may be shared, since each event concerns one g. This also holds after clipping, since clipping to [−b, b] does not increase the squared loss when |y| ≤ b.
-- **Selection.** The clipped models have losses in [0, 4b²]. By Hoeffding's inequality and a union bound, with probability at least 1 − δ/2 every validation error is within 4b²√(log(4|G|/δ)/(2n_v)) ≤ ε/2 of its risk. The chosen model is therefore within ε of the best ĥ_g. □
+- **Selection.** The clipped models have losses in [0, 4b²]. By the tail bound for bounded independent variables and a union bound, with probability at least 1 − δ/2 every validation error is within 4b²√(log(4|G|/δ)/(2n_v)) ≤ ε/2 of its risk. The chosen model is therefore within ε of the best ĥ_g. □
 
 ## Remarks
 

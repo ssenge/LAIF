@@ -63,16 +63,16 @@ E[tr(σ²)] = E[p_s] + (1 − E[p_s]) 2^{1−n}.
 On the classical side, compare the time of Theorem 1, C_cl, with the quantum gate count C_sh for O(‖O‖²/ε²) shots:
 
 - **Worst case.** For every l, C_cl/C_sh = O((g + r/l) n ‖h‖₁²/(k‖O‖²)), which for O = Z₁ and g = O(n²) is O(n³/k).
-- **Variance-adaptive.** With variance bounds in place of the worst-case ones (Bernstein's inequality), the two sides need O(V/ε² + B/ε) samples. Empirical Bernstein bounds give the same order up to logarithmic factors, with V estimated from the samples [10]:
+- **Variance-adaptive.** With variance bounds in place of the worst-case ones (the tail bound that uses the variance), the two sides need O(V/ε² + B/ε) samples. Empirical variance bounds give the same order up to logarithmic factors, with V estimated from the samples [10]:
   - shots: V = p_s‖O‖² and B = ‖O‖;
   - sampling: V = ‖h‖₁² tr(σ²) and B = ‖h‖₁.
 
   On the ensemble of [1], Proposition 5 gives E[tr(σ²)] ≤ E[p_s] + 2^{1−n}. So, on average, the classical sample count matches the shot count up to the floor 2^{1−n} and the factor ‖h‖₁²/‖O‖².
 - **At the scale of the variance.** At precision ε = σ_m = √Var[m], with the bound of [1], the counts are at most:
-  - Hoeffding: (2n − 1)((k + 1)(k + 2)(k + 3)/24)^l samples;
+  - Bounded range: (2n − 1)((k + 1)(k + 2)(k + 3)/24)^l samples;
   - variance-adaptive: about (2n − 1)((k + 2)(k + 3)/12)^l samples or shots, while E[p_s] ≫ 2^{−n}.
 
-  So neither side is then independent of k. For k ≥ 18 the Hoeffding count grows faster in l than the exact cost O(k^{2l} n³).
+  So neither side is then independent of k. For k ≥ 18 the bounded-range count grows faster in l than the exact cost O(k^{2l} n³).
 
 ## Proof of Theorem 1
 
@@ -86,7 +86,7 @@ m = Σ_{u,v} c_u c_v ⟨0|U_v† O U_u|0⟩ = E_{u,v ∼ c} ⟨0|U_v† O U_u|0�
 2. It draws t with probability |h_t|/‖h‖₁.
 3. It sets Y = ‖h‖₁ Re((h_t/|h_t|) ⟨0|U_v† Q_t U_u|0⟩).
 
-Then E[Y] = Re m = m, since O is Hermitian. Each Q_t is unitary and the states are normalized, so |Y| ≤ ‖h‖₁. By Hoeffding's inequality, the mean of N independent copies is within ε of m with probability at least 1 − 2e^{−Nε²/(2‖h‖₁²)} ≥ 1 − δ.
+Then E[Y] = Re m = m, since O is Hermitian. Each Q_t is unitary and the states are normalized, so |Y| ≤ ‖h‖₁. By the tail bound for bounded independent variables, the mean of N independent copies is within ε of m with probability at least 1 − 2e^{−Nε²/(2‖h‖₁²)} ≥ 1 − δ.
 
 **Cost per sample.** The description of a Gaussian state tracks its global phase [3]. For one sample:
 
@@ -97,7 +97,7 @@ Then E[Y] = Re m = m, since O is Hermitian. Each Q_t is unitary and the states a
 
 This gives O((lg + r) n³) per sample. ∎
 
-**Credit.** The method is the standard sampling estimator for linear combinations with an ℓ₁ bound on the weights [4, 7]. The same pair estimator, with a Hadamard test in place of a classical overlap, is the single-ancilla LCU method [8]. [3, Sec. 4.2] notes that the squared ℓ₁ norm of a Gaussian decomposition controls the cost of simulation for any dictionary. The point here is that the weights of the stacked construction sum to exactly 1 for every k and l, so at fixed ε the term count k^l does not enter.
+**Credit.** The method is the standard sampling estimator for linear combinations with an ℓ₁ bound on the weights [4, 7]. The same pair estimator, with an interference test on one ancilla in place of a classical overlap, is the single-ancilla LCU method [8]. [3, Sec. 4.2] notes that the squared ℓ₁ norm of a Gaussian decomposition controls the cost of simulation for any dictionary. The point here is that the weights of the stacked construction sum to exactly 1 for every k and l, so at fixed ε the term count k^l does not enter.
 
 ## Proof of Theorem 2
 
@@ -115,7 +115,7 @@ For a parameter θ, ∂m/∂θ = Σ_i (∂a^j_i/∂θ) ∂m/∂a^j_i. Drawing i 
 
 where U′_{u′} has U_{ji} replaced by its derivative. The sampled values are bounded by a^j_i ‖h‖₁ ≤ ‖h‖₁.
 
-**Sample count.** The bound on the sampled values is at most 2‖h‖₁ in all cases, so Hoeffding's inequality with 4N samples gives precision ε. Each sample costs at most one more generator than in Theorem 1. The conditioned path differs between derivatives, so each derivative needs its own run. ∎
+**Sample count.** The bound on the sampled values is at most 2‖h‖₁ in all cases, so the tail bound for bounded independent variables with 4N samples gives precision ε. Each sample costs at most one more generator than in Theorem 1. The conditioned path differs between derivatives, so each derivative needs its own run. ∎
 
 ## Proof of Proposition 4
 
@@ -131,7 +131,7 @@ using E[(a^j_i)²] = 2/(k(k + 1)) for the uniform Dirichlet distribution [1]. �
 
 E_{u,v} |⟨φ_v|Q_t|φ_u⟩|² = Σ_{u,v} c_u c_v ⟨φ_u|Q_t†|φ_v⟩⟨φ_v|Q_t|φ_u⟩ = tr(Q_t σ Q_t† σ) ≤ tr(σ²),
 
-by the Cauchy-Schwarz inequality for the Hilbert-Schmidt product, as Q_t σ Q_t† and σ have the same norm. Averaging over t, with weights |h_t|/‖h‖₁, gives E[Y²] ≤ ‖h‖₁² tr(σ²).
+by the inequality |tr(A†B)|² ≤ tr(A†A) tr(B†B), as Q_t σ Q_t† and σ have the same norm. Averaging over t, with weights |h_t|/‖h‖₁, gives E[Y²] ≤ ‖h‖₁² tr(σ²).
 
 **The mean.** Take two different paths u ≠ v, and let j be the highest layer with u_j ≠ v_j. The layers above j are the same unitary W on both sides, so ⟨φ_u|φ_v⟩ = ⟨χ|U† V|χ′⟩. Here:
 
@@ -146,13 +146,13 @@ The coefficients are independent of the unitaries, and E Σ_{u≠v} c_u c_v = 1 
 
 ## Proof of Corollary 3
 
-**Quantum side.** A shot gives o·1[success], where o is the measured eigenvalue of O, with mean m. Its variance is p_s⟨O²⟩_post − m² ≤ p_s‖O‖². So O(p_s‖O‖²/ε² + ‖O‖/ε) shots suffice by Bernstein's inequality, and O(‖O‖²/ε²) always suffice. For O with eigenvalues ±1, m = p₊ − p₋ with p_± ≤ p_s. The error of amplitude estimation after M uses is O(√(p(1 − p))/M + 1/M²) [5, Theorem 12], which gives O(√p_s/ε + 1/√ε) uses. The lower bound for counting in [6] has the same form, so both bounds are optimal for black-box access.
+**Quantum side.** A shot gives o·1[success], where o is the measured eigenvalue of O, with mean m. Its variance is p_s⟨O²⟩_post − m² ≤ p_s‖O‖². So O(p_s‖O‖²/ε² + ‖O‖/ε) shots suffice by the tail bound that uses the variance, and O(‖O‖²/ε²) always suffice. For O with eigenvalues ±1, m = p₊ − p₋ with p_± ≤ p_s. The error of amplitude estimation after M uses is O(√(p(1 − p))/M + 1/M²) [5, Theorem 12], which gives O(√p_s/ε + 1/√ε) uses. The lower bound for counting in [6] has the same form, so both bounds are optimal for black-box access.
 
-**Classical side.** Theorem 1 takes O(N(lg + r)n³) time, against Θ(lkn²‖O‖²/ε²) gates with shots, which gives the worst-case ratio. With Bernstein's inequality and the variance bound of Proposition 5, the classical count is O(‖h‖₁² tr(σ²)/ε² + ‖h‖₁/ε), and the mean of tr(σ²) is given there.
+**Classical side.** Theorem 1 takes O(N(lg + r)n³) time, against Θ(lkn²‖O‖²/ε²) gates with shots, which gives the worst-case ratio. With the tail bound that uses the variance and the variance bound of Proposition 5, the classical count is O(‖h‖₁² tr(σ²)/ε² + ‖h‖₁/ε), and the mean of tr(σ²) is given there.
 
 **At the scale of the variance.** At ε = σ_m, the bound Var[m] ≥ (24/((k + 1)(k + 2)(k + 3)))^l/(2n − 1) of [1] turns 1/ε² into at most (2n − 1)((k + 1)(k + 2)(k + 3)/24)^l. Multiplying by E[p_s] = (2/(k + 1))^l gives (2n − 1)((k + 2)(k + 3)/12)^l for the variance-adaptive counts.
 
-Divided by the exact k^{2l}, the Hoeffding count grows like b(k)^l, up to factors polynomial in n and l, with b(k) = (k + 1)(k + 2)(k + 3)/(24k²). Here b(k) < 1 exactly for k ≤ 17. ∎
+Divided by the exact k^{2l}, the bounded-range count grows like b(k)^l, up to factors polynomial in n and l, with b(k) = (k + 1)(k + 2)(k + 3)/(24k²). Here b(k) < 1 exactly for k ≤ 17. ∎
 
 ## Remarks
 
@@ -169,13 +169,13 @@ Divided by the exact k^{2l}, the Hoeffding count grows like b(k)^l, up to factor
 - **Scope.**
   - The results give additive precision and do not change the exact cost O(k^{2l} n³).
   - The variance bound of [1] is not affected. Theorem 1 concerns the cost of evaluating the loss, not the flatness of the landscape.
-  - [1] lists classical algorithms that exploit the stacked structure as an open point. For the unnormalized loss of its Theorem 1, sampling removes the dependence on k at fixed additive precision ε. At the precision σ_m of its variance bound, the sample count grows like k^{3l} with Hoeffding, and like k^{2l} with variance-adaptive counts.
+  - [1] lists classical algorithms that exploit the stacked structure as an open point. For the unnormalized loss of its Theorem 1, sampling removes the dependence on k at fixed additive precision ε. At the precision σ_m of its variance bound, the sample count grows like k^{3l} with the bounded-range bound, and like k^{2l} with variance-adaptive counts.
 
 ## Simulation
 
 [sim/sampling_check.py](sim/sampling_check.py) uses dense matrices in place of the phased Gaussian routines. It checks:
 
-- on instances with n = 4, k = 3, l = 3 and products of random generators: that the estimator of Theorem 1 is unbiased (2·10⁵ samples), that the Hoeffding sample size gives precision 0.05 in 200 of 200 runs, and that the gradient estimators of Theorem 2 agree with finite differences;
+- on instances with n = 4, k = 3, l = 3 and products of random generators: that the estimator of Theorem 1 is unbiased (2·10⁵ samples), that the bounded-range sample size gives precision 0.05 in 200 of 200 runs, and that the gradient estimators of Theorem 2 agree with finite differences;
 - E[p_s] = (2/(k + 1))^l for k = 3, l = 2;
 - on 400 instances with exact Haar unitaries of U(1) × Spin(2n), n = 4, k = 4, l = 2: the bound E[Y²] ≤ tr(σ²) on every instance, and the mean of tr(σ²) given by Proposition 5.
 
