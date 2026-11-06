@@ -55,6 +55,7 @@ Numerical results. No part is formalized in Lean.
   - the rate of convergence in n: at m = 160 the neighbourhoods of a sequence of 10⁶ models are far from trees, although the measured value agrees;
   - sequences that are not uniformly random, such as real production orders;
   - worst-case sequences, for which the problem is APX-hard;
+  - plain Max-Cut on finite random 4-regular graphs, where all edges want different colours: there the eigenvector of the eigenvalue 4 dominates the field from about m = 18 at 10⁶ vertices, and the algorithm as written fails. Paint shop sequences have mixed signs and are not affected;
   - in `sim/bpsp_check.py`, a pair of models that are neighbours twice gets one merged edge, which affects O(1) models.
 
 ## Files
