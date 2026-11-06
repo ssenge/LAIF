@@ -7,10 +7,10 @@ walks up a tree of shortest walks. Every bag is drawn in a disk with its corners
 crossing inequalities hold on its corners directly. No hub network, connectors or region graphs are
 needed.
 
-The proof takes four cited results as hypotheses: the realization of metrics with the crossing
-inequalities by disks (G3), distance labels of planar digraphs (G5), face identifiers (G6), and an
-aggregation primitive over many subgraphs. The nodes get the rotation lists of a planar embedding as
-input. Local computation is not bounded, as in the CONGEST model.
+The proof takes three cited results as hypotheses: the realization of metrics with the crossing
+inequalities by disks (G3), distance labels of planar digraphs (G5) and face identifiers (G6). The
+aggregation primitive over many subgraphs that it calls is proved as well. The nodes get the rotation
+lists of a planar embedding as input. Local computation is not bounded, as in the CONGEST model.
 
 ## 1. The statement
 
@@ -170,5 +170,6 @@ The algorithm runs in phases on top of the message model (`Machine.lean`, `Label
 | Numbers on the tours | `Tau.lean`, `Potential.lean`, `TourNums.lean`, `Tables.lean`, `LevelT.lean` |
 | Message passing | `Machine.lean`, `NetTree.lean`, `NetPasses.lean`, `NetAgg.lean`, `NetFlood.lean`, `LevelTab.lean`, `NetLevels.lean`, `EdgeBound.lean`, `ValueTab.lean`, `NetValues.lean` |
 | Output and final theorem | `Output.lean`, `LabelProof.lean`, `LabelFinal.lean` |
+| Aggregation primitive | `AggMux.lean`, `AggMerge.lean`, `AggProof.lean`, `AggFinal.lean` |
 
 All files are in `lean/SsspFlow/`, and `lean/axioms.txt` lists the axioms of every named theorem.
