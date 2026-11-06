@@ -355,6 +355,11 @@ Expected output for each: `propext`, `Classical.choice`, `Quot.sound` (or a subs
 #print axioms SsspFlow.Congest.perName_run
 #print axioms SsspFlow.Congest.perName_ans
 #print axioms SsspFlow.Congest.aggBox
+#print axioms SsspFlow.Congest.step_smooth
+#print axioms SsspFlow.Congest.iter_inv
+#print axioms SsspFlow.Congest.dM_eq
+#print axioms SsspFlow.Congest.smooth_run
+#print axioms SsspFlow.Congest.smoothingBox
 #print axioms SsspFlow.Congest.labelHypothesis_of_cited
 #print axioms SsspFlow.Congest.exactSssp_of_cited
 #print axioms SsspFlow.Congest.negFlow_polylog_of_cited
