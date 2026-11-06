@@ -1,0 +1,9 @@
+Theorem A: max of (lG^2+Gd^2)/min(1,4/tau) = 0.9971 (must be <= 1)
+Theorem A: max of (lG^2+Gd^2)/(case bound) = 0.9950 (must be <= 1)
+Theorem B: max over tau >= 1 of tau * max entry of R - R_heat = 0.3878
+Theorem B piece F-h (rho>=1/2)              : max tau*|.| = 0.1907  claimed <= 1.34  ok
+Theorem B piece sqrt(l)(G-h/2) (rho>=1/2)   : max tau*|.| = 0.1471  claimed <= 1.06  ok
+Theorem B piece Gd+lh/4 (rho>=1/2)          : max tau*|.| = 0.1622  claimed <= 2.06  ok
+Theorem B piece exact (l>3/4)               : max tau*|.| = 1.0579  claimed <= 2.74  ok
+Theorem B piece heat (l>3/4)                : max tau*|.| = 0.9809  claimed <= 0.99  ok
+max tau (1+tau) e^(-tau/2) = 2.7376  claimed <= 2.74  ok

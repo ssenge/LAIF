@@ -1,0 +1,4 @@
+trial 0: Poisson series vs exact 1.3e-16; node 2: exact +0.0085 Poisson walk +0.0091; g=0.4, t=15.0: exact +0.0358 heat +0.0360 heat walk +0.0357; energy distance 0.0053 <= bound 0.1329: True
+trial 1: Poisson series vs exact 8.9e-16; node 2: exact +0.0024 Poisson walk +0.0026; g=0.4, t=15.0: exact +0.0279 heat +0.0273 heat walk +0.0271; energy distance 0.0033 <= bound 0.0950: True
+trial 2: Poisson series vs exact 8.3e-16; node 2: exact +0.0137 Poisson walk +0.0135; g=0.4, t=15.0: exact +0.0258 heat +0.0256 heat walk +0.0253; energy distance 0.0032 <= bound 0.0958: True
+all checks passed
