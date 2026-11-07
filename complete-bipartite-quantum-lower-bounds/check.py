@@ -10,7 +10,7 @@ the exponent of the largest expected partial derivative of its extension count.
 2. Known cases: C3, C4, K4, K5 reproduce 13/12, 19/18, 11/10, 10/9.
 3. K_{a,b}: brute force for a + b <= 8 and a type-based computation for b <= 30
    agree with the closed form of Theorem 1.
-4. Octahedron: theta* = 2/5.
+4. Octahedron: theta* = 2/5. Two copies of K_{3,3} sharing a vertex: theta* = 13/19.
 5. Comparison with beta_r of [2, (68)].
 """
 import itertools
@@ -136,6 +136,8 @@ if __name__ == "__main__":
                 assert t > Fr(a + b - 2, a * b - 1) and t * (a - 1) >= 1
     octa = [(a, b) for a, b in itertools.combinations(range(6), 2) if b != a + 3]
     assert theta_star(6, octa) == Fr(2, 5)
+    two_k33 = Kab(3, 3)[1] + [(a, b) for a in (0, 6, 7) for b in (8, 9, 10)]  # shared vertex 0
+    assert theta_star(11, two_k33) == Fr(13, 19)
     print("K_{r,r}: r, exponent, beta_r of [2]")
     for r in range(3, 21):
         x = Fr(7, 6) - closed(r, r) / 6
