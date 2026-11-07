@@ -1,6 +1,6 @@
-"""Checks for greedy coordinate descent in quantum Boltzmann machine learning.
+"""Checks for greedy coordinate descent in learning quantum thermal machines.
 
-Model rho_theta = exp(sum_i theta_i H_i)/Z with Pauli terms H_i; target eta. One step on a coordinate
+Model rho_theta = exp(sum_i theta_i H_i)/Z with string terms H_i; target eta. One step on a coordinate
 with s(g_i - h_i) >= eps' sets theta_i -= eps' s and must lower S(eta||rho_theta) by at least eps'^2/2.
 """
 import itertools
@@ -41,7 +41,7 @@ def rel_entropy(eta, rho):
 
 def run(n, k, m, eps, rng, noise=True):
     Hs = local_terms(n, k, rng, m)
-    # target: Gibbs state of a different Hamiltonian, with terms outside the ansatz
+    # target: thermal state of a different operator, with terms outside the ansatz
     extra = local_terms(n, k + 1, rng, 2 * m)
     Ht = sum(rng.normal() * h for h in Hs) + sum(0.5 * rng.normal() * h for h in extra)
     eta = gibbs(Ht)

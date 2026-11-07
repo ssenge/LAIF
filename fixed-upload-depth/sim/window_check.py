@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 """Checks Theorem 1 of ../README.md: the explicit window construction for a tunable upload gate.
 
-P(x) = sum_j e^{iw(x+2j)} R(x+2j), with R a Gaussian-smoothed rectangle on [-1/4, 5/4]. Its Fourier coefficients at
+P(x) = sum_j e^{iw(x+2j)} R(x+2j), with R a normally smoothed rectangle on [-1/4, 5/4]. Its frequency coefficients at
 e^{i pi k x} are c_k = R^(pi k - w) / 2, and R^(xi) = 1_I^(xi) exp(-xi^2 s^2 / 4). Truncate to |k - k0| <= N', then
 rescale so that |T| <= 1 on the whole circle. Verifies, on a fine grid, all bounds claimed in the proof and the final
-Frobenius error of the gate, for a range of w and eps.
+entrywise error of the gate, for a range of w and eps.
 """
 from math import ceil, log, pi, sqrt
 import numpy as np
@@ -22,7 +22,7 @@ def build(w, eps):
     k0 = round(w / pi)
     k = np.arange(k0 - np_, k0 + np_ + 1)
     xi = pi * k - w
-    # Fourier transform of the rectangle on [-1/4, 5/4]: exp(-i xi / 2) * 2 sin(3 xi / 4) / xi, and 3/2 at xi = 0
+    # frequency transform of the rectangle on [-1/4, 5/4]: exp(-i xi / 2) * 2 sin(3 xi / 4) / xi, and 3/2 at xi = 0
     safe = np.where(np.abs(xi) < 1e-12, 1.0, xi)
     rect = np.where(np.abs(xi) < 1e-12, 1.5, 2 * np.sin(0.75 * xi) / safe) * np.exp(-0.5j * xi)
     c = 0.5 * rect * np.exp(-xi ** 2 * s ** 2 / 4)
@@ -58,7 +58,7 @@ def main():
         f = t / (1 + 0.022 * delta)
         q2 = np.maximum(1 - np.abs(f[ARC]) ** 2, 0)
         frob = np.sqrt(2 * (np.abs(f[ARC] - np.exp(0.5j * X[ARC])) ** 2 + q2)).max()
-        print(f"eps={eps:.0e}  fixed gates D={2 * (abs(k0) + np_):4d}  Frobenius error={frob:.2e}")
+        print(f"eps={eps:.0e}  fixed gates D={2 * (abs(k0) + np_):4d}  entrywise error={frob:.2e}")
 
 
 if __name__ == "__main__":

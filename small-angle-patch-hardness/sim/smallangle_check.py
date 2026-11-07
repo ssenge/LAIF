@@ -31,7 +31,7 @@ def zyz(G):
 
 
 def zyz_small(G):
-    """Euler angles reduced modulo pi to |angle| <= pi/2 (rot(P, a + pi) = -rot(P, a))."""
+    """ZYZ angles reduced modulo pi to |angle| <= pi/2 (rot(P, a + pi) = -rot(P, a))."""
     return tuple((t + np.pi / 2) % np.pi - np.pi / 2 for t in zyz(G))
 
 

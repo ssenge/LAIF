@@ -14,16 +14,16 @@ m = tr(A ρ₀ A† O), with ρ₀ = |0⟩⟨0|.
 
 Its normalization is p_s = tr(A ρ₀ A†), the probability of postselection.
 
-**Gaussian unitaries.** In the free fermion case, each U_{ji} is a fermionic Gaussian unitary. It is given, like a circuit, by a phase e^{iα_{ji}} and a product of g generators exp(ϑ c_p c_q/2), where c_1, …, c_{2n} are the Majorana operators. A general Gaussian unitary needs g = O(n²). This covers the ensemble U(1) × Spin(2n) of [1]: a rotation R ∈ SO(2n) decomposes into at most n(2n − 1) generators in time O(n³) [3, Sec. 2.2], and the sign of the lift to Spin(2n) is absorbed into α.
+**free-fermion unitaries.** In the free fermion case, each U_{ji} is a free-fermion unitary. It is given, like a circuit, by a phase e^{iα_{ji}} and a product of g generators exp(ϑ c_p c_q/2), where c_1, …, c_{2n} are the mode operators, self-adjoint with c_p c_q = −c_q c_p for p ≠ q and c_p² = I. A general free-fermion unitary needs g = O(n²). This covers the ensemble U(1) × Spin(2n) of [1]: a rotation R ∈ SO(2n) decomposes into at most n(2n − 1) generators in time O(n³) [3, Sec. 2.2], and the sign of the lift to Spin(2n) is absorbed into α.
 
-**Observables.** The observable is O = Σ_t h_t Q_t with h_t ∈ ℂ, where each Q_t is a product of at most r distinct Majorana operators. We write ‖h‖₁ = Σ_t |h_t|. For example:
+**Observables.** The observable is O = Σ_t h_t Q_t with h_t ∈ ℂ, where each Q_t is a product of at most r distinct mode operators. We write ‖h‖₁ = Σ_t |h_t|. For example:
 
 - In the convention of [1], Z₁ = −i c₁c₂, with r = 2 and ‖h‖₁ = 1.
 - A traceless quadratic O with tr(O²) = 2^n has r = 2 and ‖h‖₁² ≤ n(2n − 1), since its at most n(2n − 1) coefficients have squares that sum to 1.
 
 **What [1] proves.** For a traceless quadratic O with tr(O²) = 2^n, ρ₀ = |0⟩⟨0| and n ≥ 3, [1] proves Var[m] = Ω(1/(n k^{3l})) at random initialization. It states two costs:
 
-- O(k^{2l} n³) for the best classical method known to its authors. This method expands A into k^l Gaussian terms and evaluates all pairs.
+- O(k^{2l} n³) for the best classical method known to its authors. This method expands A into k^l free-fermion terms and evaluates all pairs.
 - O(lkn²) quantum gates, before postselection or amplitude amplification.
 
 For one layer, [2] gives the analogous cost O(k² n³).
@@ -34,14 +34,14 @@ For one layer, [2] gives the analogous cost O(k² n³).
 
 O(N (lg + r) n³) = O((lg + r) n³ ‖h‖₁² log(1/δ)/ε²),
 
-after O(kl) preprocessing of the coefficients, given random access to the descriptions of the U_{ji}. For fixed ε the time does not depend on k. For O = Z₁ and general Gaussian unitaries it is O(l n⁵ log(1/δ)/ε²).
+after O(kl) preprocessing of the coefficients, given random access to the descriptions of the U_{ji}. For fixed ε the time does not depend on k. For O = Z₁ and general free-fermion unitaries it is O(l n⁵ log(1/δ)/ε²).
 
 **Theorem 2 (sampling the gradient).** For any one of the following partial derivatives, the same algorithm with N multiplied by 4 estimates it to within ε with probability at least 1 − δ. The full gradient over P parameters takes P such runs, with δ replaced by δ/P.
 
 - ∂m/∂a^j_i, with the coefficients taken as free variables. For a parameter θ of the coefficients of layer j, drawing i with probability proportional to |∂a^j_i/∂θ| gives an estimator of ∂m/∂θ with values bounded by 2‖h‖₁ Σ_i |∂a^j_i/∂θ|. For a softmax this sum is at most 1/2.
 - ∂m/∂ϑ, for the angle ϑ of any generator of any U_{ji}.
 
-**Proposition 4 (postselection).** If the unitaries of each layer are independent with E[U] = 0, and the a^j are uniform Dirichlet, then
+**Proposition 4 (postselection).** If the unitaries of each layer are independent with E[U] = 0, and the a^j are uniform on the simplex, then
 
 E[p_s] = (2/(k + 1))^l.
 
@@ -51,7 +51,7 @@ This is the case O = I of Result 1 of [1]. We include a direct proof.
 
 E[Y²] ≤ ‖h‖₁² tr(σ²), with tr(σ²) = Σ_{u,v} c_u c_v |⟨φ_u|φ_v⟩|².
 
-On the ensemble Haar(U(1) × Spin(2n)) with uniform Dirichlet coefficients, as in [1], with ρ₀ = |0⟩⟨0|,
+On the uniform ensemble on U(1) × Spin(2n) with coefficients uniform on the simplex, as in [1], with ρ₀ = |0⟩⟨0|,
 
 E[tr(σ²)] = E[p_s] + (1 − E[p_s]) 2^{1−n}.
 
@@ -86,18 +86,18 @@ m = Σ_{u,v} c_u c_v ⟨0|U_v† O U_u|0⟩ = E_{u,v ∼ c} ⟨0|U_v† O U_u|0�
 2. It draws t with probability |h_t|/‖h‖₁.
 3. It sets Y = ‖h‖₁ Re((h_t/|h_t|) ⟨0|U_v† Q_t U_u|0⟩).
 
-Then E[Y] = Re m = m, since O is Hermitian. Each Q_t is unitary and the states are normalized, so |Y| ≤ ‖h‖₁. By the tail bound for bounded independent variables, the mean of N independent copies is within ε of m with probability at least 1 − 2e^{−Nε²/(2‖h‖₁²)} ≥ 1 − δ.
+Then E[Y] = Re m = m, since O is self-adjoint. Each Q_t is unitary and the states are normalized, so |Y| ≤ ‖h‖₁. By the tail bound for bounded independent variables, the mean of N independent copies is within ε of m with probability at least 1 − 2e^{−Nε²/(2‖h‖₁²)} ≥ 1 − δ.
 
-**Cost per sample.** The description of a Gaussian state tracks its global phase [3]. For one sample:
+**Cost per sample.** The description of a free-fermion state tracks its global phase [3]. For one sample:
 
 - Starting from |0⟩, the algorithm applies the lg generators of U_u, each by the routine evolve of Theorem 3.2 of [3] in time O(n³), and multiplies the phases e^{iα}.
-- It applies Q_t. Since (c_p c_q)² = −1, exp(ϑ c_p c_q/2) = cos(ϑ/2) + sin(ϑ/2) c_p c_q. So for p < q, c_p c_q is the generator with ϑ = π in the parameterization of [3], and c_q c_p = −c_p c_q. The single Majorana operators c_j are generators of [3] as well. Up to a sign, Q_t is therefore a product of at most r generators, applied in time O(r n³).
+- It applies Q_t. Since (c_p c_q)² = −1, exp(ϑ c_p c_q/2) = cos(ϑ/2) + sin(ϑ/2) c_p c_q. So for p < q, c_p c_q is the generator with ϑ = π in the parameterization of [3], and c_q c_p = −c_p c_q. The single mode operators c_j are generators of [3] as well. Up to a sign, Q_t is therefore a product of at most r generators, applied in time O(r n³).
 - It does the same for U_v.
 - It computes the overlap ⟨U_v 0, Q_t U_u 0⟩ by the routine overlap of the same theorem, in time O(n³).
 
 This gives O((lg + r) n³) per sample. ∎
 
-**Credit.** The method is the standard sampling estimator for linear combinations with an ℓ₁ bound on the weights [4, 7]. The same pair estimator, with an interference test on one ancilla in place of a classical overlap, is the single-ancilla LCU method [8]. [3, Sec. 4.2] notes that the squared ℓ₁ norm of a Gaussian decomposition controls the cost of simulation for any dictionary. The point here is that the weights of the stacked construction sum to exactly 1 for every k and l, so at fixed ε the term count k^l does not enter.
+**Credit.** The method is the standard sampling estimator for linear combinations with an ℓ₁ bound on the weights [4, 7]. The same pair estimator, with an interference test on one ancilla in place of a classical overlap, is the single-ancilla LCU method [8]. [3, Sec. 4.2] notes that the squared ℓ₁ norm of a free-fermion decomposition controls the cost of simulation for any dictionary. The point here is that the weights of the stacked construction sum to exactly 1 for every k and l, so at fixed ε the term count k^l does not enter.
 
 ## Proof of Theorem 2
 
@@ -123,7 +123,7 @@ We have p_s = Σ_{u,v} c_u c_v ⟨0|U_v† U_u|0⟩. If u ≠ v, some layer j ha
 
 E[p_s] = E Σ_u c_u² = ∏_j E Σ_i (a^j_i)² = (k · 2/(k(k + 1)))^l = (2/(k + 1))^l,
 
-using E[(a^j_i)²] = 2/(k(k + 1)) for the uniform Dirichlet distribution [1]. ∎
+using E[(a^j_i)²] = 2/(k(k + 1)) for the uniform distribution on the simplex [1]. ∎
 
 ## Proof of Proposition 5
 
@@ -135,10 +135,10 @@ by the inequality |tr(A†B)|² ≤ tr(A†A) tr(B†B), as Q_t σ Q_t† and σ
 
 **The mean.** Take two different paths u ≠ v, and let j be the highest layer with u_j ≠ v_j. The layers above j are the same unitary W on both sides, so ⟨φ_u|φ_v⟩ = ⟨χ|U† V|χ′⟩. Here:
 
-- U = U_{j,u_j} and V = U_{j,v_j} are independent Haar elements;
+- U = U_{j,u_j} and V = U_{j,v_j} are independent uniformly random elements;
 - χ and χ′ are the states from the lower layers, independent of U and V.
 
-The first-order commutant of the Gaussian unitaries is spanned by I and the parity P [1]. So E_U[U|χ⟩⟨χ|U†] = (I + ⟨χ|P|χ⟩ P)/2^n. Since V commutes with P and all states are even,
+The first-order commutant of the free-fermion unitaries is spanned by I and the parity P [1]. So E_U[U|χ⟩⟨χ|U†] = (I + ⟨χ|P|χ⟩ P)/2^n. Since V commutes with P and all states are even,
 
 E|⟨χ|U† V|χ′⟩|² = (1 + ⟨χ|P|χ⟩⟨χ′|P|χ′⟩)/2^n = 2^{1−n}.
 
@@ -162,9 +162,9 @@ Divided by the exact k^{2l}, the bounded-range count grows like b(k)^l, up to fa
   - about 1/(ε √p_s) uses with amplitude amplification and estimation.
 
   By Proposition 4, E[p_s] = (2/(k + 1))^l. So for the normalized loss, these worst-case bounds differ by factors polynomial in 1/p_s, and the postselection probability, not the term count k^{2l}, sets the size of the gap between them. With variance-adaptive counts, the classical cost for p_s is of order tr(σ²)/(ε² p_s²), so by Proposition 5 it is close to the shot count on average when p_s ≫ 2^{−n}.
-- **Other unitaries.** Theorems 1 and 2 hold for any stacked construction whose unitaries allow the amplitudes ⟨0|U_v† Q U_u|0⟩, with their phases, to be computed classically. Examples are Clifford unitaries with Pauli observables, and matchgate circuits.
+- **Other unitaries.** Theorems 1 and 2 hold for any stacked construction whose unitaries allow the amplitudes ⟨0|U_v† Q U_u|0⟩, with their phases, to be computed classically. Examples are stabilizer circuits, which map tensor products of I, X, Y, Z to such products under conjugation, with such products as observables, and matchgate circuits.
 - **Per-sample cost.**
-  - The cost per sample can be lowered. A general Gaussian unitary given by R ∈ SO(2n) can be applied in time O(n⁴) [9, as noted in 3], which gives O(l n⁴) per sample.
+  - The cost per sample can be lowered. A general free-fermion unitary given by R ∈ SO(2n) can be applied in time O(n⁴) [9, as noted in 3], which gives O(l n⁴) per sample.
   - Rotating a quadratic O to normal form reduces ‖h‖₁² to at most n.
 - **Scope.**
   - The results give additive precision and do not change the exact cost O(k^{2l} n³).
@@ -173,11 +173,11 @@ Divided by the exact k^{2l}, the bounded-range count grows like b(k)^l, up to fa
 
 ## Simulation
 
-[sim/sampling_check.py](sim/sampling_check.py) uses dense matrices in place of the phased Gaussian routines. It checks:
+[sim/sampling_check.py](sim/sampling_check.py) uses dense matrices in place of the phased free-fermion routines. It checks:
 
 - on instances with n = 4, k = 3, l = 3 and products of random generators: that the estimator of Theorem 1 is unbiased (2·10⁵ samples), that the bounded-range sample size gives precision 0.05 in 200 of 200 runs, and that the gradient estimators of Theorem 2 agree with finite differences;
 - E[p_s] = (2/(k + 1))^l for k = 3, l = 2;
-- on 400 instances with exact Haar unitaries of U(1) × Spin(2n), n = 4, k = 4, l = 2: the bound E[Y²] ≤ tr(σ²) on every instance, and the mean of tr(σ²) given by Proposition 5.
+- on 400 instances with exactly uniform random elements of U(1) × Spin(2n), n = 4, k = 4, l = 2: the bound E[Y²] ≤ tr(σ²) on every instance, and the mean of tr(σ²) given by Proposition 5.
 
 ## References
 

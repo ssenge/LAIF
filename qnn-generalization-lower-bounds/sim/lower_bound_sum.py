@@ -39,7 +39,7 @@ def largest_m(T, tau):
 
 
 def check_fourier_identity():
-    """Monte Carlo against the Fourier sum, for A with rows 10, 01, 11, whose kernel is (-c, -c, c)."""
+    """random sampling against the frequency sum, for A with rows 10, 01, 11, whose kernel is (-c, -c, c)."""
     w = 1 / 6
     rho = lambda k: 1.0 if k == 0 else (sin(pi * k * w) / (pi * k * w)) ** 2
     mu = w  # the bump with peak 1 and half-width w has mean w
@@ -59,7 +59,7 @@ def check_fourier_identity():
 
 def main():
     check_fourier_identity()
-    print("Fourier identity agrees with Monte Carlo on the 3-row example")
+    print("frequency identity agrees with random sampling on the 3-row example")
     for gamma in [0.5, 0.0]:
         w = acos(gamma) / (2 * pi)
         tau = 1 / w - 1

@@ -2,7 +2,7 @@
 
 The circuit and fold point are those of the refutation of [1, Conjecture 3] in [5]: words
 (YY, IY, XX, ZY, ZX, IZ, XY, YZ, IX, XZ, ZI, YI, YX, XI, ZZ) in F = R_{P_1}(a_1) ... R_{P_15}(a_15), with
-a_5 = a_6 = a_7 = a_10 = pi/4 (counting from 0) and the other inputs 0. J is the 15 x 15 matrix of Pauli
+a_5 = a_6 = a_7 = a_10 = pi/4 (counting from 0) and the other inputs 0. J is the 15 x 15 matrix of string
 coefficients of the generators of dF. At these angles J has entries in Q(sqrt 2): the fold conditions
 rank J = 14 and kappa = u^T (d_v J) v != 0 are checked exactly with sympy. Then the compilation loss is
 examined for targets moved off F(x0) along the missed direction.
@@ -69,10 +69,10 @@ def mJ(x):
 
 
 def exact_fold():
-    """Exact J and d_j J at X0 over Q(sqrt 2), via the adjoint action in the Pauli basis."""
+    """Exact J and d_j J at X0 over Q(sqrt 2), via the adjoint action in the string basis."""
     names = ["".join(t) for t in itertools.product("IXYZ", repeat=2)][1:]
     mats = [pauli(w) for w in names]
-    def ad(P, c, s_):  # Ad_{R_P(t)} on Pauli coefficients, with c = cos t, s_ = sin t (or their derivatives)
+    def ad(P, c, s_):  # Ad_{R_P(t)} on string coefficients, with c = cos t, s_ = sin t (or their derivatives)
         A = sp.zeros(d, d)
         for q, Q in enumerate(mats):
             if np.allclose(P @ Q, Q @ P):
@@ -138,7 +138,7 @@ def mF(x):
 
 
 def mloss_derivs(xb, Ut):
-    """Gradient and Hessian of the loss at xb, central differences at 40 digits."""
+    """Gradient and second derivative of the loss at xb, central differences at 40 digits."""
     xb = [t if isinstance(t, mp.mpf) else mp.mpf(float(t)) for t in xb]
     MUt = mp.matrix(Ut.conj().T.tolist())
     L = lambda y: 1 - mp.re(sum((MUt * mF([a + b for a, b in zip(xb, y)]))[k, k] for k in range(D))) / D
@@ -169,7 +169,7 @@ def check_trap(x0, u, kappa, rng):
             lam = np.linalg.eigvalsh(mloss_derivs(x0, mp_expm(W, sgn * eps) @ F(x0))[2])[0]
             assert (lam > 0) == (sgn == side)
             print(f"eps = {sgn * eps:+.0e} ({'outside' if sgn == side else 'inside'} the local image): smallest "
-                  f"Hessian eigenvalue of the loss at x0 {lam:+.3e}; -eps kappa/4 = {-sgn * eps * float(kappa) / 4:+.3e}")
+                  f"second-derivative eigenvalue of the loss at x0 {lam:+.3e}; -eps kappa/4 = {-sgn * eps * float(kappa) / 4:+.3e}")
         Ut = mp_expm(W, side * eps) @ F(x0)
         xm = [mp.mpf(float(t)) for t in solve(x0, Ut)]
         for _ in range(3):  # second-order steps at 40 digits
@@ -179,7 +179,7 @@ def check_trap(x0, u, kappa, rng):
         val, grad, H = mloss_derivs(xm, Ut)
         gn, lam, val = float(mp.sqrt(sum(g ** 2 for g in grad))), np.linalg.eigvalsh(H)[0], float(val)
         # third derivatives of the loss are at most (sqrt(15)/2)^3 < 7.3, so with |grad| <= lam^2/30 a critical
-        # point lies within 2|grad|/lam, where the Hessian stays >= lam/2: a strict local minimum
+        # point lies within 2|grad|/lam, where the second derivative stays >= lam/2: a strict local minimum
         assert lam > 0 and gn < lam ** 2 / 30 and abs(val / (eps ** 2 / 8) - 1) < 0.01
         xm = np.array([float(t) for t in xm])
         sols = [solve(rng.uniform(0, 4 * np.pi, d), Ut) for _ in range(10)]
@@ -187,7 +187,7 @@ def check_trap(x0, u, kappa, rng):
         lbest = float(mloss_derivs(best, Ut)[0])  # the loss itself, at 40 digits
         assert lbest < 1e-6 * val
         print(f"  local minimum at distance {np.linalg.norm(xm - x0):.1e} from x0: loss {val:.6e} = "
-              f"{val / (eps ** 2 / 8):.6f} eps^2/8, gradient {gn:.1e}, smallest Hessian eigenvalue "
+              f"{val / (eps ** 2 / 8):.6f} eps^2/8, gradient {gn:.1e}, smallest second-derivative eigenvalue "
               f"{lam:.3e}; another parameter has loss {lbest:.1e}, so the minimum is spurious")
 
 

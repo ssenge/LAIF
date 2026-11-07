@@ -1,7 +1,7 @@
 """Checks for the gradient instance of Lemma 1.
 
 QNN(theta; rho) = tr(Z_0 U(theta) (|0><0| (x) rho) U(theta)^dag),
-U(theta) = prod_k exp(i theta_k Y_0 (x) P_k) H_0, over all non-identity Paulis P_k.
+U(theta) = prod_k exp(i theta_k Y_0 (x) P_k) H_0, over all non-identity strings P_k.
 Claim: d QNN / d theta_k at theta = 0 equals 2 tr(P_k rho).
 """
 import itertools

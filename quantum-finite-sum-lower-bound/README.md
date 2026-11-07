@@ -64,7 +64,7 @@ The construction keeps ℓ = 1. Let φ_c be the helper function of [1, Eq. (5)]:
 - φ_c(z) = 2(|z| − c)² for c < |z| ≤ 2c;
 - φ_c(z) = z² − 2c² for |z| > 2c.
 
-It is convex and C¹ with a 4-Lipschitz derivative, and z² − 2c² ≤ φ_c(z) ≤ z².
+It is convex and C¹ with |φ_c′(z) − φ_c′(w)| ≤ 4|z − w|, and z² − 2c² ≤ φ_c(z) ≤ z².
 
 Let v_{i,r} be orthonormal vectors, for 1 ≤ i ≤ N and 0 ≤ r ≤ k, and write y_{i,r} = ⟨x, v_{i,r}⟩. With ζ = 1 − q, define
 
@@ -95,7 +95,7 @@ Since q + 1/q = 2 + 4/(Q−1) and ζ = 1 − q, the point ŷ_r = C q^{r+1} solve
 
 For smoothness, look at the groups of vectors each function uses:
 
-- In f_{2i−1}, the terms use the disjoint groups {v_{i,0}}, {v_{i,1}, v_{i,2}}, {v_{i,3}, v_{i,4}}, …. Their generalized Hessians are at most 2 and 4‖v_{i,r−1} − v_{i,r}‖² = 8. So ∇f_{2i−1} is ((1 − μ̃)/2)-Lipschitz.
+- In f_{2i−1}, the terms use the disjoint groups {v_{i,0}}, {v_{i,1}, v_{i,2}}, {v_{i,3}, v_{i,4}}, …. Their generalized second derivatives are at most 2 and 4‖v_{i,r−1} − v_{i,r}‖² = 8. So ‖∇f_{2i−1}(x) − ∇f_{2i−1}(y)‖ ≤ ((1 − μ̃)/2)‖x − y‖.
 - In f_{2i}, the groups are {v_{i,0}, v_{i,1}}, {v_{i,2}, v_{i,3}}, …, and v_{i,k} also carries ζφ_c. So the constant is at most ((1 − μ̃)/16)(8 + 4ζ) ≤ 3/4.
 
 For the gap, F(0) = 0 and F* = N min G ≥ N(H(ŷ) − 2ac²(k+1)). Also 2ac²(k+1) = aμ̃C²q^{2k+2} ≤ aC²q. Hence F(0) − F* ≤ 2NaC²q = Δ. ∎
@@ -152,7 +152,7 @@ With Lemma 3: an algorithm that outputs all N key tuples of N independent chains
 
 ## 3. The reduction
 
-**Candidates.** The algorithm B below draws a Haar random orthonormal family u_{i,j,α} in R^d, for 1 ≤ i ≤ N, 0 ≤ j ≤ k and α ∈ [A]. The inputs of B are N key tuples mᵢ = (m_{i,0}, …, m_{i,k}), which B does not know, and the hidden instance of Section 1 uses v_{i,j} = u_{i,j,m_{i,j}}. For ‖x‖ ≤ R, let Sⱼ(x) = {α : |⟨x, u_{i,j,α}⟩| > c/2} and Sⁱ(x) = (S₀(x), …, S_k(x)).
+**Candidates.** The algorithm B below draws a uniformly random orthonormal family u_{i,j,α} in R^d, for 1 ≤ i ≤ N, 0 ≤ j ≤ k and α ∈ [A]. The inputs of B are N key tuples mᵢ = (m_{i,0}, …, m_{i,k}), which B does not know, and the hidden instance of Section 1 uses v_{i,j} = u_{i,j,m_{i,j}}. For ‖x‖ ≤ R, let Sⱼ(x) = {α : |⟨x, u_{i,j,α}⟩| > c/2} and Sⁱ(x) = (S₀(x), …, S_k(x)).
 
 **Lemma 4 (one query of O_F costs two chain queries).** For ‖x‖ ≤ R:
 
@@ -183,7 +183,7 @@ On ‖x‖ ≤ R, this is exactly O_F, also with i in superposition. In the bran
 
 *Proof.* The argument has four steps.
 
-1. **Independence.** The whole family of candidates is Haar distributed. So for every fixed set of keys, the true vectors form a Haar orthonormal family. Given the true vectors, the other candidates form a Haar orthonormal family of the complement W, where dim W = d − N(k+1). By Lemma 4 the algorithm sees exactly O_F of the true instance. So x depends only on the true vectors and the algorithm's randomness, and it is independent of the false candidates given the true ones.
+1. **Independence.** The whole family of candidates is uniformly distributed. So for every fixed set of keys, the true vectors form a uniformly random orthonormal family. Given the true vectors, the other candidates form a uniformly random orthonormal family of the complement W, where dim W = d − N(k+1). By Lemma 4 the algorithm sees exactly O_F of the true instance. So x depends only on the true vectors and the algorithm's randomness, and it is independent of the false candidates given the true ones.
 2. **Near optimality.** By the first moment inequality, F(x) − F* < 3ε with probability at least 2/3. On that event, Lemma 2 gives |⟨x, v_{i,j}⟩| ≥ c/2 for all i and j.
 3. **Norm.** On the same event, strong convexity gives ‖x*‖ ≤ √(2Δ/μ) and ‖x − x*‖ ≤ √(6ε/μ) ≤ √(2Δ). Since μ ≤ 1/200, this gives ‖x‖ < 1.6√(Δ/μ) ≤ R.
 4. **Union bound.** A false candidate u is uniform on the unit sphere of W. So for a fixed x with ‖x‖ ≤ R, Pr[|⟨x, u⟩| ≥ c/2] ≤ 2 exp(−dim W · c²/(8R²)). A union bound over the N(k+1)(A − 1) false candidates, with the assumed bound on d, gives at most 1/20. ∎
@@ -194,7 +194,7 @@ On ‖x‖ ≤ R, this is exactly O_F, also with i in superposition. In the bran
 2. Run the algorithm with the simulated oracle.
 3. Decode the output as in Lemma 5.
 
-B makes 2T chain queries. By Lemma 5, averaged over the Haar frame, it outputs all N key tuples with probability more than 0.61 on every input.
+B makes 2T chain queries. By Lemma 5, averaged over the uniform frame, it outputs all N key tuples with probability more than 0.61 on every input.
 
 A query algorithm in the sense of [4] has finitely many basis states, so B should use finite randomness. There are A^{N(k+1)} inputs. Draw M = O(N(k+1) log A) frames independently. By the tail bound for bounded independent variables and a union bound over the inputs, some outcome of the draw has success above 0.55 on every input, averaged over its M frames. Let B pick one of these M frames uniformly, using a register of log M qubits. Lemma 4 is exact for every fixed frame, so nothing else changes.
 
@@ -212,8 +212,8 @@ So T ≥ 6·10⁻⁷ √(nκ) L. ∎
 Cases 2 to 4 of [1] change the assumptions:
 
 - Case 2: each fᵢ is convex and ℓ-smooth, ψ is convex, and F has a minimizer with ‖x*‖ ≤ R.
-- Case 3: each fᵢ is convex and L-Lipschitz, ψ is μ-strongly convex, and F(0) − F* ≤ Δ.
-- Case 4: each fᵢ is convex and L-Lipschitz, ψ is convex, and F has a minimizer with ‖x*‖ ≤ R.
+- Case 3: each fᵢ is convex with |fᵢ(x) − fᵢ(y)| ≤ L‖x − y‖, ψ is μ-strongly convex, and F(0) − F* ≤ Δ.
+- Case 4: each fᵢ is convex with the same slope bound L, ψ is convex, and F has a minimizer with ‖x*‖ ≤ R.
 
 For nonsmooth fᵢ, the oracle returns a fixed subgradient, given below for each instance. The classical lower bounds of [3] are Ω(n + R√(nℓ/ε)), Ω(n + L√(n/(με))) and Ω(n + LR√n/ε). The quantum lower bounds of [1] are Ω(n + n^{3/4}(ℓ/ε)^{1/4}R^{1/2}/log n), Ω(n + n^{3/4}(εμ)^{−1/4}L^{1/2}/log n) and Ω(n + n^{3/4}(LR/ε)^{1/2}/log n).
 
@@ -248,13 +248,13 @@ The instance is the following:
 - f_n = 0 if n is odd;
 - ψ(x) = (μ₀/2)‖x‖².
 
-This is [1, Definition 4] with other constants and the regularizer added. Each fᵢ is convex and 1-smooth: the Hessian bounds are (1/16) · 8 and (1/16)(6 + 2√5) < 1.
+This is [1, Definition 4] with other constants and the regularizer added. Each fᵢ is convex and 1-smooth: the second-derivative bounds are (1/16) · 8 and (1/16)(6 + 2√5) < 1.
 
 Per chain, F carries G₂(y) = G(y) + (μ₀/2)‖y‖², where
 
 G(y) = a(y₀² − 2Cy₀ + Σ_{r=1}^{k} φ_c(y_{r−1} − y_r) + φ_c(y_k)).
 
-Let H be G with φ_c(z) replaced by z². Then H(y) = a(yᵀMy − 2Cy₀), where yᵀMy = y₀² + Σ_r (y_{r−1} − y_r)² + y_k² is the path Laplacian with both ends grounded. Its minimizer is ŷ_r = C(k+1−r)/(k+2), and H(y) − H(ŷ) = a(y − ŷ)ᵀM(y − ŷ). The inverse of M has diagonal entries (M⁻¹)_{tt} = (t+1)(k+1−t)/(k+2) ≤ (k+2)/4.
+Let H be G with φ_c(z) replaced by z². Then H(y) = a(yᵀMy − 2Cy₀), where yᵀMy = y₀² + Σ_r (y_{r−1} − y_r)² + y_k² is the path second-difference matrix with both ends grounded. Its minimizer is ŷ_r = C(k+1−r)/(k+2), and H(y) − H(ŷ) = a(y − ŷ)ᵀM(y − ŷ). The inverse of M has diagonal entries (M⁻¹)_{tt} = (t+1)(k+1−t)/(k+2) ≤ (k+2)/4.
 
 **Lemma 6 (Case 2).** The following hold:
 
@@ -290,7 +290,7 @@ Let χ_c(z) = max{0, |z| − c}, with subgradient sign(z)·[|z| > c]. The oracle
 - f_n = 0 if n is odd;
 - ψ(x) = (μ₀/2)‖x‖², with μ₀ = 6ε/R².
 
-This is [1, Definition 5] with other constants and a regularizer. Each fᵢ is convex and 1-Lipschitz: a subgradient of f_{2i−1} has squared norm at most 1/2 + γ² · 2 · (k/2) ≤ 1, and one of f_{2i} at most γ² · 2 · (k+1)/2 = 1/2.
+This is [1, Definition 5] with other constants and a regularizer. Each fᵢ is convex with slope bound 1: a subgradient of f_{2i−1} has squared norm at most 1/2 + γ² · 2 · (k/2) ≤ 1, and one of f_{2i} at most γ² · 2 · (k+1)/2 = 1/2.
 
 For Case 3, take μ₀ = μ and R = √(6ε/μ).
 
@@ -335,7 +335,7 @@ Let A be even and h ≤ k, and let g_h(m) = m_h mod 2 on the chain problem of Se
 
 **Symmetry.** On input m with relabeling π, B behaves as B without relabeling on input π(m). Its output bit flips together with g_h, so a bit is correct in one run exactly when it is correct in the other. Since π(m) is uniform over all inputs for every m, the joint law of B's correct bits is the same on every input. It equals the average over a uniform input.
 
-**Frames.** With the relabeling in place a single good frame would do; for simplicity we argue with a set of frames. For a Haar random frame, the success estimate below holds for every input. Draw a large finite number of frames independently. By the tail bound for bounded independent variables, the average over these frames and a uniform input stays within 0.01 of its Haar value for some outcome of the draw, and B uses that set.
+**Frames.** With the relabeling in place a single good frame would do; for simplicity we argue with a set of frames. For a uniformly random frame, the success estimate below holds for every input. Draw a large finite number of frames independently. By the tail bound for bounded independent variables, the average over these frames and a uniform input stays within 0.01 of its average value for some outcome of the draw, and B uses that set.
 
 **Success.** By the first moment inequality, F(x) − F* < 3ε with probability at least 2/3. On that event:
 
@@ -370,7 +370,7 @@ Undoing the scaling gives the table. ∎
 - Remark 2, with the constants of [1].
 - Lemma 6 for four parameter sets, in the same way, and the bound on ‖x*‖.
 - Lemma 7 for four parameter sets, by a linear program for each pinned coordinate.
-- Convexity and smoothness in Cases 1 and 2, from Hessians at random points, and the Lipschitz constant in Cases 3 and 4, from subgradients at random points.
+- Convexity and smoothness in Cases 1 and 2, from second derivatives at random points, and the slope bound in Cases 3 and 4, from subgradients at random points.
 - Lemma 4 on 3000 random queries, comparing the true gradients with those rebuilt from the revealed keys.
 
 Pinning a coordinate to ±c/2 suffices for Lemmas 2 and 6, by convexity.
@@ -394,9 +394,9 @@ Cases 3, 4, n=2 eps=1e-05: k=706, per-chain gap 1.251e-04 >= gamma b/(2n), bad c
 Cases 3, 4, n=4 eps=0.0001: k=49, per-chain gap 6.312e-04 >= gamma b/(2n), bad chains minus mu0 R^2/8: 5.56 eps > 3 eps
 Cases 3, 4, n=8 eps=1e-05: k=352, per-chain gap 3.134e-05 >= gamma b/(2n), bad chains minus mu0 R^2/8: 5.52 eps > 3 eps
 Cases 3, 4, n=600 eps=1e-06: k=407, per-chain gap 4.174e-08 >= gamma b/(2n), bad chains minus mu0 R^2/8: 5.51 eps > 3 eps
-components convex, largest Hessian eigenvalue seen 0.499 <= 1 (k=20)
-Case 2 components (k=7): largest Hessian eigenvalue seen 0.655 <= (6 + 2 sqrt 5)/16 < 1
-Case 2 components (k=8): largest Hessian eigenvalue seen 0.500 <= (6 + 2 sqrt 5)/16 < 1
+components convex, largest second-derivative eigenvalue seen 0.499 <= 1 (k=20)
+Case 2 components (k=7): largest second-derivative eigenvalue seen 0.655 <= (6 + 2 sqrt 5)/16 < 1
+Case 2 components (k=8): largest second-derivative eigenvalue seen 0.500 <= (6 + 2 sqrt 5)/16 < 1
 Cases 3, 4 components (k=9): largest subgradient norm seen 0.949 <= 1
 gradient simulation exact on 3000 queries (k=4, A=6), largest candidate set total 7
 ```

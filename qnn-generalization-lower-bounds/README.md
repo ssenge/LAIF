@@ -39,7 +39,7 @@ Write e(x) = e^{2πix} and ‖x‖ for the distance of x to the nearest integer.
 
 **Lemma 4 (bump).** Let h(x) = max(0, 1 − ‖x‖/w) on R/Z. Then h(x) = Σ_{k∈Z} w ρ(k) e(kx) with ρ(0) = 1 and ρ(k) = (sin(πkw)/(πkw))². All ρ(k) are nonnegative and Σ_k ρ(k) = h(0)/w = 1/w. Write τ = 1/w − 1 for the sum over k ≠ 0.
 
-*Proof.* As w < 1/2, the triangle of height 1 and half-width w does not wrap around R/Z, and its Fourier coefficient is w ρ(k). The series converges absolutely and uniformly, so it sums to h(0) = 1 at x = 0. ∎
+*Proof.* As w < 1/2, the triangle of height 1 and half-width w does not wrap around R/Z, and its frequency coefficient is w ρ(k). The series converges absolutely and uniformly, so it sums to h(0) = 1 at x = 0. ∎
 
 **Lemma 5 (all patterns).** Let S(A) = Σ_{k ∈ Z^m \ {0}, Aᵀk = 0} Π_j ρ(k_j). If S(A) < 1, the rows of A are shattered at margin γ.
 
@@ -85,7 +85,7 @@ E[R(θ̂) − R̂(θ̂)] ≥ (γ/(2N)) · m · √(1/2) · √(λ/2) = (γ/4)√
 
 **Scope.** The lower bounds are for worst-case data and for empirical risk minimization. They do not concern the error on a fixed target function, and for structured data the generalization error can be much smaller. With the combined form of Theorem 1, the constant in Corollary 3 is about γ/(8√(2ℓ)), so it depends on γ through γ/√ℓ, with ℓ = log₂(2π/arccos γ).
 
-**On a gate-independent bound.** [4] states a generalization bound of order 1/√N for quantum models of any size, with constants that depend on the observable norm and the loss but not on the number of gates. For the loss of Theorem 2 that bound reads 1/√N + 3√(log(2/δ)/(2N)) with probability 1 − δ, which gives an expected gap below 3.8/√N. For γ = 1/2 and T = 2000, Theorem 1 gives m = 2121, and Corollary 3 gives an expected gap of at least 5.7/√N for N ≥ 2121. The gap of Corollary 3 grows like √(T log T). The models of Theorem 1 meet the hypotheses of [4]: bounded loss, Lipschitz in the output, and an observable of norm 1. This hints at a possible gap in the proof of Theorem B.1 of [4], where the cross terms E[σ_m σ_n (w*)ᵀx^{(m)} (w*)ᵀx^{(n)}] are bounded as if w* did not depend on σ. A small example in the linear class of that theorem: for n inputs √n e_1, …, √n e_n, the constraint set is the set of vectors whose coordinates are all ±1/√n, with free signs, so the empirical Rademacher complexity is 1, against the stated √(1/n).
+**On a gate-independent bound.** [4] states a generalization bound of order 1/√N for quantum models of any size, with constants that depend on the observable norm and the loss but not on the number of gates. For the loss of Theorem 2 that bound reads 1/√N + 3√(log(2/δ)/(2N)) with probability 1 − δ, which gives an expected gap below 3.8/√N. For γ = 1/2 and T = 2000, Theorem 1 gives m = 2121, and Corollary 3 gives an expected gap of at least 5.7/√N for N ≥ 2121. The gap of Corollary 3 grows like √(T log T). The models of Theorem 1 meet the hypotheses of [4]: bounded loss, bounded slope in the output, and an observable of norm 1. This hints at a possible gap in the proof of Theorem B.1 of [4], where the cross terms E[σ_m σ_n (w*)ᵀx^{(m)} (w*)ᵀx^{(n)}] are bounded as if w* did not depend on σ. A small example in the linear class of that theorem: for n inputs √n e_1, …, √n e_n, the constraint set is the set of vectors whose coordinates are all ±1/√n, with free signs, so the empirical random-sign complexity is 1, against the stated √(1/n).
 
 ## Lean
 
@@ -104,7 +104,7 @@ The folder [lean/](lean/) checks the combinatorial core of Theorem 1 in Lean 4 w
 
 **Hypotheses and gaps:**
 
-- **Lemma 4 as a hypothesis:** the Fourier expansion of the bump is a hypothesis (the structure `Bump`). It asks for nonnegative ρ with ρ(0) = 1, an expansion h(x) = Σ_z w ρ(z) e(zx), and h(x) ≠ 0 only where cos(2πx) ≥ γ.
+- **Lemma 4 as a hypothesis:** the expansion in characters of the bump is a hypothesis (the structure `Bump`). It asks for nonnegative ρ with ρ(0) = 1, an expansion h(x) = Σ_z w ρ(z) e(zx), and h(x) ≠ 0 only where cos(2πx) ≥ γ.
 - **Not covered:**
   - the circuit itself, since the class is taken as cos⟨s, θ⟩;
   - the numeric analysis of the binary sum: q(v) ≤ √(2/(π(v − 1))), u(mτ)^u ≤ 2^{T−1}, and the choice m = ⌊T log₂T/(4ℓ)⌋;
@@ -115,7 +115,7 @@ The folder [lean/](lean/) checks the combinatorial core of Theorem 1 in Lean 4 w
 
 The scripts in `sim/` need Python 3 with NumPy.
 
-- `lower_bound_sum.py` checks the Fourier identity of Lemma 5 against Monte Carlo on a three-row example, prints the largest m for which the binary sum is below 1 (for γ = 1/2 it gives m = 2,218 at T = 1,000), and checks the explicit choice of Theorem 1.
+- `lower_bound_sum.py` checks the frequency identity of Lemma 5 against random sampling on a three-row example, prints the largest m for which the binary sum is below 1 (for γ = 1/2 it gives m = 2,218 at T = 1,000), and checks the explicit choice of Theorem 1.
 - `cos_family.py TMAX SAMPLES TRIES` looks for shattered sets of the family f_s(θ) = cos⟨s, θ⟩ at margin 1/4 for T up to TMAX by sampling θ, so each m it prints is a lower bound (for example `cos_family.py 5 1500000 150`).
 - `gen_gap.py` takes a set shattered at margin 1/4 for T = 5 and checks Theorem 2 against sampled empirical risk minimization for N from m to 1000m.
 

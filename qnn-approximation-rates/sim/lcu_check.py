@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 """Checks Theorem 3 of ../README.md: the fixed-encoding circuit that outputs P(y)/lambda for a real trigonometric
-polynomial P, and the rate of the de la Vallee-Poussin step.
+polynomial P, and the rate of the delayed mean step.
 
 1. Circuit identity. For a random real P with frequencies in {-2N..2N}^d, build the circuit on an index register of q
    qubits plus one ancilla as matrices: the state preparation V from a tree of uniformly controlled RY rotations
-   (2^q - 1 angles), then, controlled by the ancilla of a Hadamard test, a diagonal of trainable phases (n angles) and
+   (2^q - 1 angles), then, controlled by the ancilla of an interference test, a diagonal of trainable phases (n angles) and
    the fixed data diagonal D(y) = sum_k e^{i k.y} |k><k|. Check <X_ancilla> = P(y)/lambda at random points.
-2. Rate. For 2 pi-periodic test functions of Holder order beta, check that the sup error of the tensor
-   de la Vallee-Poussin mean V_N times N^beta stays bounded as N grows.
+2. Rate. For 2 pi-periodic test functions of smoothness order beta, check that the sup error of the tensor
+   delayed mean V_N times N^beta stays bounded as N grows.
 """
 import itertools
 import numpy as np
@@ -62,7 +62,7 @@ def circuit_check(d, N, rng):
     for _ in range(200):
         y = rng.uniform(-np.pi, np.pi, d)
         reg = V @ zero
-        # Hadamard test: ancilla |+>, then phases and D(y) controlled by the ancilla, measure X on the ancilla
+        # interference test: ancilla |+>, then phases and D(y) controlled by the ancilla, measure X on the ancilla
         psi = np.concatenate([reg, np.exp(1j * (ks @ y + phases)) * reg]) / np.sqrt(2)
         X = np.kron(np.array([[0, 1], [1, 0]]), np.eye(2 ** q))
         out = np.real(psi.conj() @ X @ psi)
@@ -74,7 +74,7 @@ def circuit_check(d, N, rng):
 
 
 def vp_error(G, N):
-    """Sup error of the tensor de la Vallee-Poussin mean of grid samples G (2 pi-periodic, d axes)."""
+    """Sup error of the tensor delayed mean of grid samples G (2 pi-periodic, d axes)."""
     M = G.shape[0]
     k = np.abs(np.fft.fftfreq(M, 1 / M))
     m1 = np.clip(2 - k / N, 0, 1)
@@ -90,7 +90,7 @@ def rate_check():
     M = 2 ** 14
     y = 2 * np.pi * np.arange(M) / M
     for beta in [0.5, 1.5, 2.5]:
-        G = np.abs(np.sin(y / 2)) ** beta  # Holder of order beta on the circle, and not better at y = 0
+        G = np.abs(np.sin(y / 2)) ** beta  # smoothness order beta on the circle, and not better at y = 0
         r = [vp_error(G, N) * N ** beta for N in [8, 32, 128, 512]]
         print(f"d=1 beta={beta}: N^beta * error = " + ", ".join(f"{x:.3f}" for x in r))
         assert max(r) / min(r) < 3

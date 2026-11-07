@@ -1,14 +1,14 @@
 #!/usr/bin/env python3
 """Checks Theorems 1 and 2 of ../README.md on small dense instances of the free fermion stacked LCU.
 
-A = L_l ... L_1 with L_j = sum_i a^j_i U_ji, a^j in the simplex, and U_ji = e^{i alpha} times a product of Gaussian
+A = L_l ... L_1 with L_j = sum_i a^j_i U_ji, a^j in the simplex, and U_ji = e^{i alpha} times a product of free-fermion
 generators exp(t/2 c_p c_q). The unnormalised loss is m = <0| A^dag O A |0>. Expanding the product,
 m = E_{a,b} <0| U_b^dag O U_a |0>, with the layer indices of a and b drawn independently from the a^j.
 
-1. The sampled estimator is unbiased, and its error after N samples obeys the Hoeffding bound.
+1. The sampled estimator is unbiased, and its error after N samples obeys the tail bound for bounded independent samples.
 2. The sampled estimators of d m / d a^j_i and of d m / d t (one generator angle) are unbiased.
-3. E[p_s] = (2/(k+1))^l for Dirichlet coefficients and independent uniform phases, where p_s = <0|A^dag A|0>.
-The dense matrices only stand in for the O(n^3) phased Gaussian routines; the estimator is the same.
+3. E[p_s] = (2/(k+1))^l for coefficients uniform on the simplex and independent uniform phases, where p_s = <0|A^dag A|0>.
+The dense matrices only stand in for the O(n^3) phased free-fermion routines; the estimator is the same.
 """
 import numpy as np
 from scipy.linalg import expm
@@ -83,7 +83,7 @@ def check_estimator(rng):
     assert np.abs(vals).max() <= 1 + 1e-12
     z = (vals.mean() - m) / (vals.std() / np.sqrt(len(vals)))
     assert abs(z) < 4.5, z
-    # Hoeffding: N = 2 ln(2/delta) / eps^2 samples give |error| <= eps with probability >= 1 - delta
+    # tail bound for bounded independent samples: N = 2 ln(2/delta) / eps^2 samples give |error| <= eps with probability >= 1 - delta
     eps, delta = 0.05, 0.05
     N = int(np.ceil(2 * np.log(2 / delta) / eps ** 2))
     fails = sum(abs(estimate(Us, a, O, psi0, N, rng).mean() - m) > eps for _ in range(200))
@@ -162,7 +162,7 @@ def check_ps(rng):
 
 
 def haar_gaussian(cs, rng):
-    """Haar element of U(1) x Spin(2n) in the spinor representation: Haar R in SO(2n), lifted by exp(1/4 sum A_pq c_p c_q)
+    """Uniformly random element of U(1) x Spin(2n) in the spinor representation: uniform R in SO(2n), lifted by exp(1/4 sum A_pq c_p c_q)
     with R = e^A, times a uniform phase (which also randomizes the sign of the lift)."""
     from scipy.linalg import logm
     m = len(cs)
@@ -190,7 +190,7 @@ def check_purity(rng):
         paths = list(itertools.product(range(k), repeat=l))
         c = np.array([np.prod([a[j][u[j]] for j in range(l)]) for u in paths])
         phis = np.array([apply_path(Us, u, psi0) for u in paths])
-        G = phis.conj() @ phis.T  # Gram matrix <phi_u|phi_v>
+        G = phis.conj() @ phis.T  # matrix of inner products <phi_u|phi_v>
         Om = phis.conj() @ O @ phis.T  # <phi_u|O|phi_v>
         t2 = float(c @ np.abs(G) ** 2 @ c)
         eY2 = float(c @ np.real(Om) ** 2 @ c)  # E[(Re <phi_v|O|phi_u>)^2] for the estimator of Theorem 1
@@ -201,7 +201,7 @@ def check_purity(rng):
     target = Eps + (1 - Eps) * 2 ** (1 - n)
     z = (np.mean(tr2) - target) / (np.std(tr2) / np.sqrt(len(tr2)))
     assert abs(z) < 4.5, z
-    print(f"Haar, n={n} k={k} l={l}: E tr(sigma^2) sampled {np.mean(tr2):.4f}, formula {target:.4f} (z = {z:+.2f}); "
+    print(f"uniform, n={n} k={k} l={l}: E tr(sigma^2) sampled {np.mean(tr2):.4f}, formula {target:.4f} (z = {z:+.2f}); "
           f"E[p_s] sampled {np.mean(ps_all):.4f}, formula {Eps:.4f}; E[Y^2] <= tr(sigma^2) on all 400 instances")
 
 

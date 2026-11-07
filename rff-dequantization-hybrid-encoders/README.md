@@ -1,4 +1,4 @@
-# Random Fourier feature dequantization of hybrid models with classical encoders
+# Random frequency feature dequantization of hybrid models with classical encoders
 
 Written 6 Nov 2026.
 
@@ -14,9 +14,9 @@ Here p_0 = p(0), the ω_i are the nonzero frequencies up to sign, and p_i = 2p(�
 
 q = max_{ω ∈ Ω} p(ω) = max{ p_0, max_{i ≥ 1} p_i/2 }
 
-for the largest frequency probability. In the notation of [1, Eq. (70)], q ≥ p_max/2. All circuit functions lie in the reproducing kernel Hilbert space H_K, with ‖f‖²_K = Σ_ω |c_ω|²/p(ω).
+for the largest frequency probability. In the notation of [1, Eq. (70)], q ≥ p_max/2. All circuit functions lie in the reproducing kernel space H_K, with ‖f‖²_K = Σ_ω |c_ω|²/p(ω).
 
-**Known guarantee.** [1, Theorem 1], built on [3, Theorem 1], gives a classical procedure, random Fourier feature (RFF) ridge regression. Its risk is within ε of the best function, using n data points and M frequencies sampled from p. Both counts are polynomial if three quantities are polynomially bounded:
+**Known guarantee.** [1, Theorem 1], built on [3, Theorem 1], gives a classical procedure, random frequency feature (RFF) ridge regression. Its risk is within ε of the best function, using n data points and M frequencies sampled from p. Both counts are polynomial if three quantities are polynomially bounded:
 
 - the RKHS norm C of the risk minimizer;
 - the label bound b;
@@ -67,7 +67,7 @@ T_K = p_0 |1⟩⟨1| + Σ_{i ≥ 1} p_i (|c_i⟩⟨c_i| + |s_i⟩⟨s_i|)
 as operators on L²(P), a sum of positive semidefinite terms. Hence ‖T_K‖ is at least the norm of each term.
 
 - The term p_0|1⟩⟨1| has norm p_0‖1‖² = p_0.
-- The nonzero eigenvalues of |c_i⟩⟨c_i| + |s_i⟩⟨s_i| are those of the Gram matrix of (c_i, s_i) in L²(P). Its trace is E_P[cos² + sin²] = 1, so its largest eigenvalue is at least 1/2, and the term has norm at least p_i/2.
+- The nonzero eigenvalues of |c_i⟩⟨c_i| + |s_i⟩⟨s_i| are those of the matrix of inner products of (c_i, s_i) in L²(P). Its trace is E_P[cos² + sin²] = 1, so its largest eigenvalue is at least 1/2, and the term has norm at least p_i/2.
 
 For the upper bound, ‖T_K‖ ≤ tr T_K = ∫ K(z, z) dP(z) = 1.
 
@@ -97,7 +97,7 @@ For P uniform on the torus and integer frequencies, the functions 1, c_i, s_i ar
 
 - uniform;
 - two points;
-- a narrow Gaussian;
+- a narrow normal density;
 - the output of a random two-layer tanh encoder;
 - the same encoder on nearly constant inputs.
 

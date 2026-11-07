@@ -4,7 +4,7 @@ Written 6 Nov 2026.
 
 ## Problem
 
-Let X be a random vector in R^d with mean μ and E‖X − μ‖^p ≤ σ^p, for a tail index p ∈ (1, 2]. Here ‖·‖ is the Euclidean norm. Given a quantum sampling oracle O_X and its inverse [1, Definition 2.2], the task is to output μ̃ with ‖μ̃ − μ‖ ≤ ε, with probability at least 2/3 (or 1 − δ), for ε ∈ (0, σ) [1, Problem 3.1].
+Let X be a random vector in R^d with mean μ and E‖X − μ‖^p ≤ σ^p, for a tail index p ∈ (1, 2]. Here ‖·‖ is the ℓ₂ norm. Given a quantum sampling oracle O_X and its inverse [1, Definition 2.2], the task is to output μ̃ with ‖μ̃ − μ‖ ≤ ε, with probability at least 2/3 (or 1 − δ), for ε ∈ (0, σ) [1, Problem 3.1].
 
 Write
 
@@ -101,7 +101,7 @@ These terms are bounded as follows.
    - Q(r*) = Θ(d^a (σ/ε)^b) ≤ Θ((σ/ε)^b) when r_0 = r*, since a ≤ 0;
    - O((σ/ε)²) ≤ O((σ/ε)^b) when r_0 = σ.
 
-Together this is the bound of Theorem 1. For a worst-case bound, cap the attempts of each conditional sampler at 2n_j + O(log(J/δ)). On the success event of amplitude estimation each attempt succeeds with probability at least 1/2, so by a Chernoff bound the cap is reached with probability at most δ/(2J + 2). □
+Together this is the bound of Theorem 1. For a worst-case bound, cap the attempts of each conditional sampler at 2n_j + O(log(J/δ)). On the success event of amplitude estimation each attempt succeeds with probability at least 1/2, so by a multiplicative tail bound for sums of independent indicators the cap is reached with probability at most δ/(2J + 2). □
 
 **Corollary 2.** In [1, Theorem 4.4], the estimator enters only through its guarantee ‖g_t − ∇f(x_t)‖ ≤ ε/32 with probability 1 − δ/T, over T = ⌈36LΔ_f ε^{−2}⌉ iterations. Replace its cost by that of Theorem 1 at accuracy ε/32. Then use max{1, min{d^a, (σ/ε)^{2−b}}} ≤ (σ/ε)^{max{0, 2−b}}. □
 

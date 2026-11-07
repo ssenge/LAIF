@@ -1,10 +1,10 @@
-# Exact failure threshold of Pauli path truncation on majority circuits
+# Exact failure threshold of path truncation in the string basis on majority circuits
 
 Written 6 Nov 2026.
 
 ## Problem
 
-**The method.** The Pauli path method estimates a noisy expectation value by expanding the observable in Pauli paths through the circuit [1]. The noise is N_p(ρ) = (1 − p)ρ + pI/2 on every qubit, after every layer and before the first; write z = 1 − p. A path s = (s₀, s₁, …) has Pauli weight |s| = |s₀| + |s₁| + ⋯, which includes the weight of the observable. Its contribution is damped by z^{|s|}, so the noisy value is ⟨O⟩_err = Σ_w F_w z^w with F_w the sum of the path values of weight w. The method keeps the paths with w ≤ ℓ. Its error at cutoff ℓ is
+**The method.** The string path method estimates a noisy expectation value by expanding the observable in string paths through the circuit [1], where a string is a tensor product of I, X, Y, Z. The noise is N_p(ρ) = (1 − p)ρ + pI/2 on every qubit, after every layer and before the first; write z = 1 − p. A path s = (s₀, s₁, …) has string weight |s| = |s₀| + |s₁| + ⋯, which includes the weight of the observable. Its contribution is damped by z^{|s|}, so the noisy value is ⟨O⟩_err = Σ_w F_w z^w with F_w the sum of the path values of weight w. The method keeps the paths with w ≤ ℓ. Its error at cutoff ℓ is
 
 E_ℓ = |Σ_{w>ℓ} F_w z^w|.
 
@@ -18,7 +18,7 @@ E_ℓ = |Σ_{w>ℓ} F_w z^w|.
 
 ## Result
 
-Let k be odd. Maj_k and x ↦ x₁ are both balanced on {0, 1}^k, so there is a k-qubit permutation V_k of the computational basis with V_k† Z₁ V_k = Maj_k(Z₁, …, Z_k). Every such permutation gives the same path sums, and [1, Eq. (19)] is one of them for k = 3. Let Maj_k = Σ_S \hat{M}(S) χ_S be the Fourier expansion and put
+Let k be odd. Maj_k and x ↦ x₁ are both balanced on {0, 1}^k, so there is a k-qubit permutation V_k of the computational basis with V_k† Z₁ V_k = Maj_k(Z₁, …, Z_k). Every such permutation gives the same path sums, and [1, Eq. (19)] is one of them for k = 3. Let Maj_k = Σ_S \hat{M}(S) χ_S be the expansion in characters and put
 
 G_k(x) = x Σ_S \hat{M}(S) x^{|S|},  Ĝ_k(x) = x Σ_S |\hat{M}(S)| x^{|S|}.
 
@@ -45,11 +45,11 @@ p* = 1 − √((√17 − 3)/2) ≈ 0.2506.
 
 At p = p* the worst error is at least of order 1/ℓ by Lemma 2, and every error is at most Σ_w |F_w| z^w = 1.
 
-On the same circuits, the range of failure shown in [1], p < 0.1835, thus extends to p < 0.2506, and this is the exact threshold for the family. With majority gates of width O((1 − p)^{−4}), failure extends to every p < 1. This last part is a direct generalization of the construction of [1] with a standard Fourier fact.
+On the same circuits, the range of failure shown in [1], p < 0.1835, thus extends to p < 0.2506, and this is the exact threshold for the family. With majority gates of width O((1 − p)^{−4}), failure extends to every p < 1. This last part is a direct generalization of the construction of [1] with a standard fact on expansions in characters.
 
 ## Proof
 
-- **Fourier coefficients.** The coefficients of majority vanish on even levels. On a set S of odd size j they are [2, Section 5.3]
+- **Frequency coefficients.** The coefficients of majority vanish on even levels. On a set S of odd size j they are [2, Section 5.3]
   \hat{M}(S) = (−1)^{(j−1)/2} · C((k−1)/2, (j−1)/2)/C(k−1, j−1) · C(k−1, (k−1)/2)/2^{k−1}.
 - **Paths.** Conjugating O_K by the layer gives ⊗_b Maj_k(Z_{block b}) = ⊗_b Σ_S \hat{M}(S) Z_S. A path through block b ends in Z₁ (weight 1) and starts in Z_S (weight |S|). Its value is \hat{M}(S)⟨0|Z_S|0⟩ = \hat{M}(S). So Σ_w F_w x^w = G_k(x)^K, and the noisy value is G_k(z)^K. Here G_k(z) is z times the noisy majority at the all-zero input, so it lies in [0, z]. An idle qubit with Z contributes weight 1 before and after the layer and value 1, which is the factor x².
 - **Signs.** The coefficient of x^{1+j} in G_k has sign (−1)^{(j−1)/2}, and i^{1+j} = −(−1)^{(j−1)/2}. So every term of G_k(ix) is −|coefficient|·x^w, and G_k(ix) = −Ĝ_k(x). The coefficients of G_k(ix)^K = (−1)^K Ĝ_k(x)^K are F_w i^w. So no cancellation happens inside a degree: |F_w| is the coefficient of x^w in Ĝ_k^K, and Σ_w |F_w| z^w = Ĝ_k(z)^K.
@@ -75,7 +75,7 @@ On the same circuits, the range of failure shown in [1], p < 0.1835, thus extend
 
 `sim/threshold_check.py` works in exact rational arithmetic and asserts the following.
 
-- **The block.** For k = 3 and 5 it builds a permutation V_k with V_k†Z₁V_k = Maj_k, and for k = 3 also checks the gate of [1, Eq. (19)]. It compares the Pauli weights of the conjugated observable with G_k. It compares the noisy value from a density-matrix simulation with N_p before and after the layer against G_k(1 − p) at p = 0.3.
+- **The block.** For k = 3 and 5 it builds a permutation V_k with V_k†Z₁V_k = Maj_k, and for k = 3 also checks the gate of [1, Eq. (19)]. It compares the string weights of the conjugated observable with G_k. It compares the noisy value from a density-matrix simulation with N_p before and after the layer against G_k(1 − p) at p = 0.3.
 - **k = 3.** For p ∈ {0.20, 0.22, 0.24, 0.26, 0.30} and K ∈ {10, 40, 160}:
   - Σ_w |F_w| x^w = Ĝ₃(x)^K coefficient by coefficient;
   - the worst truncation error is at least the bound of part 1, at a cutoff in [2K − 2, 4K];
@@ -84,7 +84,7 @@ On the same circuits, the range of failure shown in [1], p < 0.1835, thus extend
 - **Lemma 2.** For k = 3 at p = 0.24 and every even ℓ ≤ 120, and for k = 5 at p = 0.3 and every even ℓ ≤ 80, it finds a circuit with K ≤ ℓ/2 and J ∈ {0, 1} meeting the bound.
 
 ```
-block check: V^dag Z_1 V = Maj for k = 3, 5; Pauli weights and noisy values match G
+block check: V^dag Z_1 V = Maj for k = 3, 5; string weights and noisy values match G
 k = 3: G(z) = 1.5 z^2 - 0.5 z^4, Ghat(z) = 1.5 z^2 + 0.5 z^4, Ghat(1 - p) = 1 at p* = 0.2506
   p = 0.20, Ghat = 1.1648: K = 10: worst error 0.814 >= 0.209; K = 40: worst error 37.6 >= 5.45; K = 160: worst error 1.65e+09 >= 1.24e+08
   p = 0.22, Ghat = 1.0977: K = 10: worst error 0.453 >= 0.115; K = 40: worst error 3.57 >= 0.507; K = 160: worst error 1.27e+05 >= 9.29e+03
@@ -97,7 +97,7 @@ p = 0.8: smallest odd k with Ghat > 1 is 121 (bound 2/z^4 = 1250); Ghat = 1.0167
 k = 3, p = 0.24: every even cutoff l <= 120 has a circuit with error >= z^2 beta^((k-1)/2) x0^-l / l, x0 = 0.9860 (growth rate 1/x0 = 1.0142); smallest ratio worst error / bound 1.61
 k = 5, p = 0.3: every even cutoff l <= 80 has a circuit with error >= z^2 beta^((k-1)/2) x0^-l / l, x0 = 0.9130 (growth rate 1/x0 = 1.0953); smallest ratio worst error / bound 1.88
 level one mass of k-bit majority >= sqrt(k/2) for odd k = 3..201
-Pauli path threshold checks pass
+string path threshold checks pass
 ```
 
 ## References

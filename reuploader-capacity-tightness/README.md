@@ -8,7 +8,7 @@ A single-qubit data reuploader with R uploads is
 
 U(x) = W_R e^{−ixZ} W_{R−1} ⋯ e^{−ixZ} W_0,  f(x) = ⟨0|U(x)† M U(x)|0⟩,
 
-with trainable blocks W_l ∈ SU(2) and an observable M with ‖M‖ ≤ B. Its frequency set is K_R = {−2R, −2R + 2, …, 2R}, so |K_R| = 2R + 1 [1, Example 1], [2]. Let F_R be the class of all such f. For points x_1, …, x_n and independent uniform signs σ_i ∈ {−1, 1}, the empirical Rademacher complexity is
+with trainable blocks W_l ∈ SU(2) and an observable M with ‖M‖ ≤ B. Its frequency set is K_R = {−2R, −2R + 2, …, 2R}, so |K_R| = 2R + 1 [1, Example 1], [2]. Let F_R be the class of all such f. For points x_1, …, x_n and independent uniform signs σ_i ∈ {−1, 1}, the empirical random-sign complexity is
 
 R̂_n(F_R) = E_σ sup_{f ∈ F_R} (1/n) Σ_i σ_i f(x_i).
 
@@ -65,18 +65,18 @@ Conversely, every model is a real trigonometric polynomial in 2x of degree at mo
 
 - **Lemma 1.** It factors random F with |F| < 1 and strips the layers, for R ∈ {1, 2, 3, 5, 8}. It then evaluates the circuit and compares it with F at random points.
 - **Theorem 1, the interpolants.** For R ∈ {1, 2, 3, 5, 8, 20, 50} it checks that the kernel interpolates exactly on the R + 1 nodes and sums to one.
-- **Theorem 1, the circuits.** For R ≤ 8 it builds circuits for 0.99 times the interpolant of random sign patterns and evaluates them at the nodes; amplitude 1 follows from Lemma 1 by the limit argument. With 4 copies per node it estimates the complexity by Monte Carlo over these circuits and compares it with 0.99 times the exact value.
+- **Theorem 1, the circuits.** For R ≤ 8 it builds circuits for 0.99 times the interpolant of random sign patterns and evaluates them at the nodes; amplitude 1 follows from Lemma 1 by the limit argument. With 4 copies per node it estimates the complexity by random sampling over these circuits and compares it with 0.99 times the exact value.
 - **Theorem 1, the bound.** From the exact formula of the proof, at 1, 4 and 25 copies per node, it asserts the bound of Theorem 1 and the factor of 2. This value depends only on the number of copies per node, so it is the same for every R.
 
 ```
 realizability: random |F| < 1 of degree R = 1..8 reproduced by R uploads, error < 1e-6
-R = 1: kernel interpolation exact on 2 nodes; circuits at 4 copies per node: 0.3583 vs 0.99 x exact 0.3712; at n = 50: Rademacher = 0.1612, lower bound sqrt((R+1)/2n) = 0.1414, spectral upper bound sqrt(|K_R|/n) = 0.2449
-R = 2: kernel interpolation exact on 3 nodes; circuits at 4 copies per node: 0.3580 vs 0.99 x exact 0.3712; at n = 75: Rademacher = 0.1612, lower bound sqrt((R+1)/2n) = 0.1414, spectral upper bound sqrt(|K_R|/n) = 0.2582
-R = 3: kernel interpolation exact on 4 nodes; circuits at 4 copies per node: 0.3672 vs 0.99 x exact 0.3712; at n = 100: Rademacher = 0.1612, lower bound sqrt((R+1)/2n) = 0.1414, spectral upper bound sqrt(|K_R|/n) = 0.2646
-R = 5: kernel interpolation exact on 6 nodes; circuits at 4 copies per node: 0.3715 vs 0.99 x exact 0.3712; at n = 150: Rademacher = 0.1612, lower bound sqrt((R+1)/2n) = 0.1414, spectral upper bound sqrt(|K_R|/n) = 0.2708
-R = 8: kernel interpolation exact on 9 nodes; circuits at 4 copies per node: 0.3675 vs 0.99 x exact 0.3712; at n = 225: Rademacher = 0.1612, lower bound sqrt((R+1)/2n) = 0.1414, spectral upper bound sqrt(|K_R|/n) = 0.2749
-R = 20: kernel interpolation exact on 21 nodes; at n = 525: Rademacher = 0.1612, lower bound sqrt((R+1)/2n) = 0.1414, spectral upper bound sqrt(|K_R|/n) = 0.2795
-R = 50: kernel interpolation exact on 51 nodes; at n = 1275: Rademacher = 0.1612, lower bound sqrt((R+1)/2n) = 0.1414, spectral upper bound sqrt(|K_R|/n) = 0.2815
+R = 1: kernel interpolation exact on 2 nodes; circuits at 4 copies per node: 0.3583 vs 0.99 x exact 0.3712; at n = 50: complexity = 0.1612, lower bound sqrt((R+1)/2n) = 0.1414, spectral upper bound sqrt(|K_R|/n) = 0.2449
+R = 2: kernel interpolation exact on 3 nodes; circuits at 4 copies per node: 0.3580 vs 0.99 x exact 0.3712; at n = 75: complexity = 0.1612, lower bound sqrt((R+1)/2n) = 0.1414, spectral upper bound sqrt(|K_R|/n) = 0.2582
+R = 3: kernel interpolation exact on 4 nodes; circuits at 4 copies per node: 0.3672 vs 0.99 x exact 0.3712; at n = 100: complexity = 0.1612, lower bound sqrt((R+1)/2n) = 0.1414, spectral upper bound sqrt(|K_R|/n) = 0.2646
+R = 5: kernel interpolation exact on 6 nodes; circuits at 4 copies per node: 0.3715 vs 0.99 x exact 0.3712; at n = 150: complexity = 0.1612, lower bound sqrt((R+1)/2n) = 0.1414, spectral upper bound sqrt(|K_R|/n) = 0.2708
+R = 8: kernel interpolation exact on 9 nodes; circuits at 4 copies per node: 0.3675 vs 0.99 x exact 0.3712; at n = 225: complexity = 0.1612, lower bound sqrt((R+1)/2n) = 0.1414, spectral upper bound sqrt(|K_R|/n) = 0.2749
+R = 20: kernel interpolation exact on 21 nodes; at n = 525: complexity = 0.1612, lower bound sqrt((R+1)/2n) = 0.1414, spectral upper bound sqrt(|K_R|/n) = 0.2795
+R = 50: kernel interpolation exact on 51 nodes; at n = 1275: complexity = 0.1612, lower bound sqrt((R+1)/2n) = 0.1414, spectral upper bound sqrt(|K_R|/n) = 0.2815
 capacity tightness checks pass
 ```
 

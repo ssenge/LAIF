@@ -102,21 +102,21 @@ Take the 8192 shots per circuit used in [1]. Then, on ibm_fez, no black-box meth
 
 - **The laws differ little.** |P̃⁺_k − P̃⁻_k| = αε/(Rm). Also P̃⁻_k ≥ min{(1 − ε/R)/(2m), 1/(4m)} ≥ 1/(8m) for ε ≤ 3R/4. Hence χ²(P̃⁺ ‖ P̃⁻) ≤ 2m · (αε/(Rm))² · 8m = 16α²ε²/R².
 - **So the method yields a test.** The outputs differ by 2ε. Reporting the setting whose output is nearer to the estimate is therefore correct with probability at least 2/3 under each setting. So the total variation distance between the N-shot laws is at least 1/3.
-- **The shot count follows.** That distance is at most √(N·KL/2) ≤ √(N·χ²/2), by Pinsker's inequality and KL ≤ χ². So N ≥ 2/(9χ²) ≥ R²/(72α²ε²). □
+- **The shot count follows.** That distance is at most √(N·KL/2) ≤ √(N·χ²/2), by the bound TV ≤ √(KL/2) and KL ≤ χ². So N ≥ 2/(9χ²) ≥ R²/(72α²ε²). □
 
 *Theorem 1, part 3.*
 
-- **Fidelity of the noisy pair.** Write β = (1 − α)/D. The noisy states agree on the complement of span{|A⟩, |B⟩}, where both equal βI. On the span they are (α + 2β)σ^±. The σ^± are qubit states with Bloch vectors of length r = α/(α + 2β), at angle 4η. The qubit fidelity formula F(σ⁺, σ⁻)² = tr(σ⁺σ⁻) + 2√(det σ⁺ det σ⁻) gives F(σ⁺, σ⁻) = √(1 − r² sin² 2η). So the root fidelity of the noisy states is
+- **Fidelity of the noisy pair.** Write β = (1 − α)/D. The noisy states agree on the complement of span{|A⟩, |B⟩}, where both equal βI. On the span they are (α + 2β)σ^±. The σ^± are qubit states (I + r_± · (X, Y, Z))/2 with vectors r_± of length r = α/(α + 2β), at angle 4η. The qubit fidelity formula F(σ⁺, σ⁻)² = tr(σ⁺σ⁻) + 2√(det σ⁺ det σ⁻) gives F(σ⁺, σ⁻) = √(1 − r² sin² 2η). So the root fidelity of the noisy states is
   F̃ = (α + 2β)√(1 − r²ε²/R²) + (D − 2)β,
   and 1 − F̃ ≤ (α + 2β) r² ε²/R² = α²ε²/((α + 2β)R²).
-- **A test is needed.** As in part 2, the method yields a test between ρ̃⁺^{⊗N} and ρ̃⁻^{⊗N} that succeeds with probability at least 2/3. By Helstrom's theorem, the trace distance between them is then at least 1/3.
+- **A test is needed.** As in part 2, the method yields a test between ρ̃⁺^{⊗N} and ρ̃⁻^{⊗N} that succeeds with probability at least 2/3. By the optimal test between two states, the trace distance between them is then at least 1/3.
 - **The copy count follows.** Root fidelity is multiplicative on tensor powers, so the bound of [5] gives 1/3 ≤ √(1 − F̃^{2N}). Hence 2N ln(1/F̃) ≥ ln(9/8). Here ln(1/F̃) ≤ (1 − F̃)/F̃, and F̃ ≥ 1 − αε²/R² ≥ 3/4 for ε ≤ R/2. So N ≥ (3 ln(9/8)/8) (α + 2β) R²/(α²ε²), and 3 ln(9/8)/8 > 1/23.
 
 This is the fidelity bound of [6, Theorem 1] applied to the pair of Lemma 1. □
 
 *Theorem 2.*
 
-- **Part 1.** By Minkowski's inequality in L²(μ ⊗ shots), the error is at most ‖f − f_θ‖_{L²(μ)} + sup_x (E|f̂(x) − f_θ(x)|²)^{1/2}. The two terms are bounded by [2, Theorem II.4] and Theorem 1, part 1.
+- **Part 1.** By the triangle inequality in L²(μ ⊗ shots), the error is at most ‖f − f_θ‖_{L²(μ)} + sup_x (E|f̂(x) − f_θ(x)|²)^{1/2}. The two terms are bounded by [2, Theorem II.4] and Theorem 1, part 1.
 - **Part 2.**
   - Each term is then at most ε/2.
   - Since (1 + e^{−s})/2 ≥ e^{−s/2}, each decoherence factor is at least e^{−t/(2T)}, with t = N_2Q t_2Q = mq t_2Q/15. So −ln α ≤ (q − 2)(−ln(1 − ε_1Q)) + c·mq.

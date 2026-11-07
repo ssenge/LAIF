@@ -1,14 +1,14 @@
-# Quantum Boltzmann machine learning in O(δ₀/ε²) iterations by multiplicative weights
+# Learning quantum thermal machines in O(δ₀/ε²) iterations by multiplicative weights
 
 Written 6 Nov 2026.
 
 ## Problem
 
-A quantum Boltzmann machine (QBM) without hidden units is the Gibbs state
+A quantum thermal machine (QBM) without hidden units is the thermal state
 
 ρ_θ = e^{H_θ}/Z(θ),  H_θ = Σ_{i=1}^m θ_i H_i,
 
-of a Hamiltonian ansatz with terms H_i satisfying ‖H_i‖ ≤ 1, for example n-qubit Pauli operators. Given an n-qubit target η, the QBM learning problem of [1, Definition 1] asks for θ with
+of an ansatz with terms H_i satisfying ‖H_i‖ ≤ 1, for example n-qubit strings (tensor products of I, X, Y, Z). Given an n-qubit target η, the QBM learning problem of [1, Definition 1] asks for θ with
 
 |⟨H_i⟩_{ρ_θ} − ⟨H_i⟩_η| ≤ ε for all i.
 
@@ -16,13 +16,13 @@ of a Hamiltonian ansatz with terms H_i satisfying ‖H_i‖ ≤ 1, for example n
 
 S(η‖ρ_θ) = log Z(θ) − Σ_i θ_i ⟨H_i⟩_η − S(η),
 
-whose gradient is ⟨H_i⟩_{ρ_θ} − ⟨H_i⟩_η. It runs stochastic gradient descent with model expectations estimated from Gibbs states, to precision κ, and data expectations to precision ξ.
+whose gradient is ⟨H_i⟩_{ρ_θ} − ⟨H_i⟩_η. It runs stochastic gradient descent with model expectations estimated from thermal states, to precision κ, and data expectations to precision ξ.
 
-**Its guarantee.** Write δ₀ = S(η‖ρ_{θ₀}) − inf_θ S(η‖ρ_θ). This equals δ₀ of [1] when a minimiser exists; the infimum also covers targets whose moments lie on the boundary, such as pure states. By [1, Theorem 1], T = 48δ₀m²(κ² + ξ²)/ε⁴ iterations give min_t E|⟨H_i⟩_{ρ_{θ_t}} − ⟨H_i⟩_η| ≤ ε for all i. This assumes κ² + ξ² ≥ ε/(2m). Each iteration uses N = O(log(mT/λ)/κ⁴) Gibbs states, or N = O(3^k log(mT/λ)/κ²) for k-local Pauli terms [1, Eqs. (10), (11)]. Here and below λ is a failure probability; in [1], λ denotes the success probability.
+**Its guarantee.** Write δ₀ = S(η‖ρ_{θ₀}) − inf_θ S(η‖ρ_θ). This equals δ₀ of [1] when a minimiser exists; the infimum also covers targets whose moments lie on the boundary, such as pure states. By [1, Theorem 1], T = 48δ₀m²(κ² + ξ²)/ε⁴ iterations give min_t E|⟨H_i⟩_{ρ_{θ_t}} − ⟨H_i⟩_η| ≤ ε for all i. This assumes κ² + ξ² ≥ ε/(2m). Each iteration uses N = O(log(mT/λ)/κ⁴) thermal states, or N = O(3^k log(mT/λ)/κ²) for k-local string terms [1, Eqs. (10), (11)]. Here and below λ is a failure probability; in [1], λ denotes the success probability.
 
-For k-local terms the total is T·N = 48δ₀m²3^k log(mT/λ)(κ² + ξ²)/(κ²ε⁴) ≥ 48δ₀m²3^k log(mT/λ)/ε⁴ Gibbs states, up to constants in N. [1, Theorem 2] improves the iteration count to 18m²(κ² + ξ²)/(α²ε²) when S is α-strongly convex.
+For k-local terms the total is T·N = 48δ₀m²3^k log(mT/λ)(κ² + ξ²)/(κ²ε⁴) ≥ 48δ₀m²3^k log(mT/λ)/ε⁴ thermal states, up to constants in N. [1, Theorem 2] improves the iteration count to 18m²(κ² + ξ²)/(α²ε²) when S is α-strongly convex.
 
-**The method used here.** Learning all m expectations to ε is the feasibility problem that matrix multiplicative weights solves with a violated-constraint oracle [6, 7]. Its iterates are Gibbs states of the measured operators, so for Pauli terms they lie in the QBM ansatz. For θ₀ = 0 this gives O(n/ε²) iterations, free of m, by [7, Appendix E]. Below, that argument is written for the QBM learning problem of [1], with δ₀ in place of n ln 2 and explicit constants, and compared with [1].
+**The method used here.** Learning all m expectations to ε is the feasibility problem that matrix multiplicative weights solves with a violated-constraint oracle [6, 7]. Its iterates are thermal states of the measured operators, so for string terms they lie in the QBM ansatz. For θ₀ = 0 this gives O(n/ε²) iterations, free of m, by [7, Appendix E]. Below, that argument is written for the QBM learning problem of [1], with δ₀ in place of n ln 2 and explicit constants, and compared with [1].
 
 ## Result
 
@@ -37,14 +37,14 @@ For k-local terms the total is T·N = 48δ₀m²3^k log(mT/λ)(κ² + ξ²)/(κ�
 - the algorithm stops after at most 18δ₀/ε² steps, so before the cap;
 - its output solves the QBM learning problem: |⟨H_i⟩_{ρ_θ} − ⟨H_i⟩_η| ≤ ε for all i, for the final θ.
 
-**Gibbs states.** Each round uses O(log(mT_max/λ)/ε⁴) Gibbs states for Pauli terms with the two-copy Bell-measurement protocol of [2], or O(3^k log(mT_max/λ)/ε²) for k-local Pauli terms with the randomized measurements of [3]. With probability 1 − λ, all estimates are then within ε/6. The data estimates use O(3^k log(m/λ)/ε²) copies of η for k-local terms, or O(log(m/λ)/ε⁴) for Pauli terms. With L = log(mD/(ελ)), the totals are:
+**Thermal states.** Each round uses O(log(mT_max/λ)/ε⁴) thermal states for string terms with the two-copy protocol measuring in the maximally entangled basis of [2], or O(3^k log(mT_max/λ)/ε²) for k-local string terms with the randomized measurements of [3]. With probability 1 − λ, all estimates are then within ε/6. The data estimates use O(3^k log(m/λ)/ε²) copies of η for k-local terms, or O(log(m/λ)/ε⁴) for string terms. With L = log(mD/(ελ)), the totals are:
 
-| terms | Gibbs states, Theorem A | Gibbs states, [1, Theorem 1], best choice of κ and ξ |
+| terms | thermal states, Theorem A | thermal states, [1, Theorem 1], best choice of κ and ξ |
 |---|---|---|
-| k-local Pauli | O(3^k (1 + δ₀/ε²) L/ε²) | O(δ₀ m² 3^k log(mT/λ)/ε⁴) |
-| Pauli | O((1 + δ₀/ε²) L/ε⁴) | Õ(δ₀ m²/ε⁴) |
+| k-local strings | O(3^k (1 + δ₀/ε²) L/ε²) | O(δ₀ m² 3^k log(mT/λ)/ε⁴) |
+| strings | O((1 + δ₀/ε²) L/ε⁴) | Õ(δ₀ m²/ε⁴) |
 
-So the iteration count is free of m and needs no strong convexity; the Gibbs-state count depends on m only through log m. For k-local terms the bound is smaller by a factor Θ(m²) than the bound of [1, Theorem 1], for every choice of κ and ξ allowed there, since there T·N = 48δ₀m²3^k log(mT/λ)(κ² + ξ²)/(κ²ε⁴). For general Pauli terms the bound is smaller than that of [1] when m > 1/ε, up to logarithmic factors. Since δ₀ ≤ S(η‖I/2^n) ≤ n ln 2 for θ₀ = 0, the k-local total is O(3^k n log(mn/(ελ))/ε⁴) Gibbs states for every target. The pre-training of [1, Theorem 3] lowers δ₀ and so carries over unchanged.
+So the iteration count is free of m and needs no strong convexity; the thermal-state count depends on m only through log m. For k-local terms the bound is smaller by a factor Θ(m²) than the bound of [1, Theorem 1], for every choice of κ and ξ allowed there, since there T·N = 48δ₀m²3^k log(mT/λ)(κ² + ξ²)/(κ²ε⁴). For general string terms the bound is smaller than that of [1] when m > 1/ε, up to logarithmic factors. Since δ₀ ≤ S(η‖I/2^n) ≤ n ln 2 for θ₀ = 0, the k-local total is O(3^k n log(mn/(ελ))/ε⁴) thermal states for every target. The pre-training of [1, Theorem 3] lowers δ₀ and so carries over unchanged.
 
 The guarantee also differs in form. It holds for the output itself with probability 1 − λ, rather than for min_t E. It needs only estimates with bounded error, not unbiased ones.
 
@@ -56,7 +56,7 @@ S(η‖ρ_{θ′}) ≤ S(η‖ρ_θ) − ε′²/2.
 
 *Proof.* The change is S(η‖ρ_{θ′}) − S(η‖ρ_θ) = log(Z(θ′)/Z(θ)) + ε′ s h_i.
 
-- **A trace inequality.** By tr e^{A+B} ≤ tr(e^A e^B) for Hermitian A and B [4],
+- **A trace inequality.** By tr e^{A+B} ≤ tr(e^A e^B) for self-adjoint A and B [4],
   Z(θ′)/Z(θ) ≤ tr(e^{H_θ} e^{−ε′ s H_i})/Z(θ) = ⟨e^{−ε′ s H_i}⟩_{ρ_θ}.
 - **Bounded variables.** Measuring H_i on ρ_θ gives a random variable X with values in [−1, 1] and mean g_i, and ⟨e^{−ε′ s H_i}⟩_{ρ_θ} = E e^{−ε′ s X}. By the moment generating function bound for variables in an interval of length 2 [11], log E e^{−ε′ s X} ≤ −ε′ s g_i + ε′²/2.
 - **Together.** The change is at most −ε′ s(g_i − h_i) + ε′²/2 ≤ −ε′² + ε′²/2. □
@@ -66,19 +66,19 @@ S(η‖ρ_{θ′}) ≤ S(η‖ρ_θ) − ε′²/2.
 - **Each step lowers S.** When the algorithm steps on i, the true gap satisfies s(g_i − h_i) ≥ |ĝ_i − ĥ_i| − ε/3 > ε/3. So the descent lemma applies with ε′ = ε/3, and S(η‖ρ_θ) drops by at least ε²/18.
 - **So the steps are few.** S(η‖ρ_θ) never goes below inf_θ S(η‖ρ_θ), so at most 18δ₀/ε² ≤ T_max steps occur.
 - **The output is accurate.** At the stop, |g_i − h_i| ≤ |ĝ_i − ĥ_i| + ε/3 ≤ ε for all i.
-- **Gibbs states.** The sample counts follow from the measurement bounds with a union bound over the m terms and the T_max rounds. The bound D for a general θ₀ follows from log Z(θ₀) ≤ n ln 2 + ‖θ₀‖₁ and −θ₀·h ≤ ‖θ₀‖₁. □
+- **Thermal states.** The sample counts follow from the measurement bounds with a union bound over the m terms and the T_max rounds. The bound D for a general θ₀ follows from log Z(θ₀) ≤ n ln 2 + ‖θ₀‖₁ and −θ₀·h ≤ ‖θ₀‖₁. □
 
 ## Remarks
 
 1. **Related methods.** Classically, the algorithm is a fixed-step variant of the sequential update of maximum entropy estimation [5]. The same relative-entropy potential with the trace inequality of [4] appears in matrix exponentiated gradient updates [8] and in online learning of quantum states [9]. A sequential one-coordinate quantum iterative scaling with a convergence proof is in [10]. The argument needs no assumption on commutation of the terms.
 2. **Scope.**
-   - As in [1], the count is in Gibbs state preparations. The cost of preparing each Gibbs state is not treated.
-   - The ε^{−6} for general Pauli terms comes from estimating all m terms to ε/6 in every round with the ε^{−4} of [2]. [1] can use a larger κ because stochastic gradient descent averages its noise.
+   - As in [1], the count is in thermal state preparations. The cost of preparing each thermal state is not treated.
+   - The ε^{−6} for general string terms comes from estimating all m terms to ε/6 in every round with the ε^{−4} of [2]. [1] can use a larger κ because stochastic gradient descent averages its noise.
    - Strongly convex instances [1, Theorem 2] are not treated separately.
 
 ## Check
 
-`sim/qbm_check.py` runs the algorithm on random ansätze of k-local Pauli terms, for n = 3 to 5 qubits, k = 2 and 3, and m = 8 to 30 terms. The targets are Gibbs states of Hamiltonians that contain terms outside the ansatz, and one pure target.
+`sim/qbm_check.py` runs the algorithm on random ansätze of k-local string terms, for n = 3 to 5 qubits, k = 2 and 3, and m = 8 to 30 terms. The targets are thermal states of operators that contain terms outside the ansatz, and one pure target.
 
 - **Random noise.** The estimates carry noise drawn uniformly from [−ε/6, ε/6], and the step is on the largest estimated gap. The check asserts that each step lowers S(η‖ρ_θ) by at least (ε/3)²/2, that the number of steps is at most 18 S(η‖I/2^n)/ε², and that the last iterate is within ε on every term.
 - **Worst case.** The step is on the violated coordinate with the smallest true gap above ε/3, which the estimates allow. δ₀ is computed by convex minimisation. The check asserts the per-step drop and at most 18δ₀/ε² steps.

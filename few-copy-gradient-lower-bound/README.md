@@ -8,7 +8,7 @@ A quantum neural network in the sense of [1, Definition 8] acts on an output qub
 
 U(θ) = e^{iθ_M P_M} U_M ⋯ e^{iθ_1 P_1} U_1,  QNN_θ(ρ) = tr(Z_0 U(θ) (|0⟩⟨0| ⊗ ρ) U(θ)†),
 
-with fixed (n + 1)-qubit Pauli operators P_j, fixed circuits U_j and an unknown input state ρ on the data qubits. The task is to output b_1, …, b_M with |b_j − ∂_{θ_j} QNN_θ(ρ)| ≤ ε for all j, with probability at least 2/3 for every input state ρ, from copies of ρ. The circuit is known.
+with fixed (n + 1)-qubit strings P_j (tensor products of I, X, Y, Z), fixed circuits U_j and an unknown input state ρ on the data qubits. The task is to output b_1, …, b_M with |b_j − ∂_{θ_j} QNN_θ(ρ)| ≤ ε for all j, with probability at least 2/3 for every input state ρ, from copies of ρ. The circuit is known.
 
 We count copies and use the protocol classes of [2]:
 
@@ -52,7 +52,7 @@ So gradients at polylog(M) times the cost of one function value need joint measu
 
 The network is the one behind [1, Proposition 3], with an output qubit added.
 
-**Lemma 1.** Let Q_1, …, Q_M be the non-identity Pauli operators on the data qubits, U_1 = H_0 ⊗ I, U_j = I for j ≥ 2, and P_j = Y_0 ⊗ Q_j. Then for every state ρ,
+**Lemma 1.** Let Q_1, …, Q_M be the non-identity strings on the data qubits, U_1 = H_0 ⊗ I, U_j = I for j ≥ 2, and P_j = Y_0 ⊗ Q_j. Then for every state ρ,
 
 ∂_{θ_j} QNN_θ(ρ) |_{θ=0} = 2 tr(Q_j ρ).
 
@@ -62,11 +62,11 @@ The network is the one behind [1, Proposition 3], with an output qubit added.
 
 This does not depend on the order of the rotations. By cyclicity it equals i · tr([Z_0, Y_0 ⊗ Q_j] σ), and [Z, Y] = −2iX, so it equals 2 tr((X_0 ⊗ Q_j) σ) = 2⟨+|X|+⟩ tr(Q_j ρ) = 2 tr(Q_j ρ). □
 
-*Proof of Theorem 1.* Take the network of Lemma 1. Gradients to ±ε at θ = 0 give tr(Q_j ρ) to ±ε/2 for all non-identity Q_j, and tr(Iρ) = 1 is known. So any gradient protocol is a protocol for Pauli shadow tomography of all n-qubit Pauli strings at precision ε/2, with the same measurements and the same number of copies, so in the same class.
+*Proof of Theorem 1.* Take the network of Lemma 1. Gradients to ±ε at θ = 0 give tr(Q_j ρ) to ±ε/2 for all non-identity Q_j, and tr(Iρ) = 1 is known. So any gradient protocol is a protocol for shadow tomography of all n-qubit strings at precision ε/2, with the same measurements and the same number of copies, so in the same class.
 
 - **Part 1.** By [2, Theorem 17] at precision ε/2, such a protocol uses at least a′ · min{4 · 2^n/(cε²), 16e^{−3cε}/(c³ε⁴)} copies, where a′ ≥ a is the constant there. With 2^n = √(M+1), this is at least the bound of part 1.
 - **Part 2.** The same argument with [2, Theorem 16], which carries the factor 2^{n−k}.
-- **Part 3.** Conversely, estimates of tr(Q_j ρ) to ±ε/2 give the gradients to ±ε. [2, Theorem 14] estimates all tr(Q_j ρ), with signs, from O(n2^{n−k}/ε⁴) copies with 2-copy measurements and k qubits of memory. Single-copy classical shadows with random Clifford measurements need O(n2^n/ε²) copies [2, Section 2.2.1].
+- **Part 3.** Conversely, estimates of tr(Q_j ρ) to ±ε/2 give the gradients to ±ε. [2, Theorem 14] estimates all tr(Q_j ρ), with signs, from O(n2^{n−k}/ε⁴) copies with 2-copy measurements and k qubits of memory. Single-copy classical shadows with random stabilizer measurements need O(n2^n/ε²) copies [2, Section 2.2.1].
 
 In parts 1 and 2 the hard instances of [2] are the states (I + 3(ε/2)P)/2^n, which are states for ε ≤ 2/3, and the reduction only rescales ε. □
 
@@ -92,7 +92,7 @@ n = 3: M = 63 parameters, max |dQNN/dtheta_k - 2 tr(P_k rho)| = 4.2e-11
 gradient identity of Lemma 1 holds
 ```
 
-In the script, P_k denotes the data-qubit Pauli Q_k.
+In the script, P_k denotes the data-qubit string Q_k.
 
 ## References
 

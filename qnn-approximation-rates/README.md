@@ -4,12 +4,12 @@ Written 5 Nov 2026.
 
 ## Setting
 
-**Function classes.** For β = s + r with s ∈ N₀ and r ∈ (0, 1], the Hölder ball B^β_d is the set of f: [0, 1]^d → R with ‖D^α f‖_∞ ≤ 1 for |α| ≤ s and |D^α f(x) − D^α f(y)| ≤ |x − y|^r for |α| = s. For an integer k, the ball C^k_d is the set of f with ‖D^α f‖_∞ ≤ 1 for all |α| ≤ k.
+**Function classes.** For β = s + r with s ∈ N₀ and r ∈ (0, 1], the smoothness ball B^β_d is the set of f: [0, 1]^d → R with ‖D^α f‖_∞ ≤ 1 for |α| ≤ s and |D^α f(x) − D^α f(y)| ≤ |x − y|^r for |α| = s. For an integer k, the ball C^k_d is the set of f with ‖D^α f‖_∞ ≤ 1 for all |α| ≤ k.
 
 **Fixed-encoding models.** A model with T trainable parameters θ ∈ R^T acts on a finite-dimensional system. It applies a sequence of operations of two kinds:
 
 - *Fixed operations:* arbitrary quantum channels that may depend on the input x in any way but not on θ. This covers every data encoding, any number of qubits, measurements in the middle of the circuit, and noise.
-- *Trainable gates:* e^{−iθ_i G} for some i, with G Hermitian and with spectrum in ½Z ∩ [−g/2, g/2]. Pauli rotations and controlled Pauli rotations have g = 1, and phase gates diag(1, e^{iθ}) have g = 2.
+- *Trainable gates:* e^{−iθ_i G} for some i, with G self-adjoint and with spectrum in ½Z ∩ [−g/2, g/2]. Rotations e^{−iθP/2} about strings P, the tensor products of I, X, Y, Z, and their controlled versions have g = 1, and phase gates diag(1, e^{iθ}) have g = 2.
 
 Let U be the total number of trainable gates, so each parameter may be reused. The output f(x; θ) is the expectation of a fixed observable, or the real part of an amplitude ⟨0|W(x; θ)|0⟩. It may be multiplied by a trainable scale λ > 0.
 
@@ -19,13 +19,13 @@ The architecture, that is the sequence of operations, is fixed; only θ and λ d
 
 **Theorem 1 (capacity).** For every x₁, …, x_m with m ≥ 2T, the number of vectors (1[f(x_j; θ) ≥ 0])_j over all θ is at most 2(2em·2gU/(2T))^{2T}. Hence the sign class {x ↦ 1[f(x; θ) ≥ 0]} has VC dimension at most 4T log₂(8egU) + 2. The same holds with thresholds, so this also bounds the pseudo-dimension of {f(·; θ)}.
 
-**Theorem 2 (lower bound).** Let ψ be a fixed smooth bump on R^d with support in (−1/2, 1/2)^d and ψ(0) = 1. Let C_ψ be the largest of the sup norms of D^αψ for |α| ≤ s and of the r-Hölder seminorms of D^αψ for |α| = s, over R^d (for C^k_d, the largest sup norm of D^αψ for |α| ≤ k). If a fixed-encoding model approximates every f ∈ B^β_d within ε in sup norm on [0, 1]^d, and ε ≤ 2^{−β−1}/C_ψ, then
+**Theorem 2 (lower bound).** Let ψ be a fixed smooth bump on R^d with support in (−1/2, 1/2)^d and ψ(0) = 1. Let C_ψ be the largest of the sup norms of D^αψ for |α| ≤ s and of the seminorms sup_{x ≠ y} |D^αψ(x) − D^αψ(y)|/|x − y|^r for |α| = s, over R^d (for C^k_d, the largest sup norm of D^αψ for |α| ≤ k). If a fixed-encoding model approximates every f ∈ B^β_d within ε in sup norm on [0, 1]^d, and ε ≤ 2^{−β−1}/C_ψ, then
 
 4T log₂(8egU) + 2 ≥ 2^{−d} (2C_ψ ε)^{−d/β}.
 
 The same holds for C^k_d with β = k.
 
-**Previous proof for β = 1.** For 1-bounded, 1-Lipschitz functions, [10] shows that circuits of fixed structure need Ω̃(ε^{−d}) gates (Theorem 7 of [10]). Theorem 2 extends this to every β and to C^k, counts trainable parameters with reuse and generators of half-integer spectrum, and Theorem 3 shows it is tight for every β.
+**Previous proof for β = 1.** For functions bounded by 1 with |f(x) − f(y)| ≤ |x − y|, [10] shows that circuits of fixed structure need Ω̃(ε^{−d}) gates (Theorem 7 of [10]). Theorem 2 extends this to every β and to C^k, counts trainable parameters with reuse and generators of half-integer spectrum, and Theorem 3 shows it is tight for every β.
 
 **Theorem 3 (upper bound).** For all d, β there is C = C_{d,β} such that for every N ≥ 1 there is one fixed-encoding circuit with
 
@@ -60,9 +60,9 @@ As f_p(z_j) = p_j h and h > ε, any u with ‖u − f_p‖_∞ ≤ ε has sign p
 
 ## Proof of Theorem 3
 
-**Periodic extension.** There is a bounded linear extension operator E from Hölder functions on [0, 1]^d to Hölder functions on R^d of the same order, for every β > 0 (Theorem 4 in Section 2.3 of Chapter VI of [8]). Let χ be smooth, equal to 1 on [0, 1]^d and supported in [−1/2, 3/2]^d, and let F̃ be the 3-periodic sum of the translates of χ·Ef by 3Z^d, which are at distance at least 1 from each other. Then G(y) = F̃(3y/(2π)) is 2π-periodic in each coordinate, equals f(3y/(2π)) for y ∈ [0, 2π/3]^d, and has Hölder norm of order β at most a constant C₁ = C₁(d, β). For the periodic class above this step is not needed.
+**Periodic extension.** There is a bounded linear extension operator E from functions of smoothness β on [0, 1]^d to functions of smoothness β on R^d of the same order, for every β > 0 (Theorem 4 in Section 2.3 of Chapter VI of [8]). Let χ be smooth, equal to 1 on [0, 1]^d and supported in [−1/2, 3/2]^d, and let F̃ be the 3-periodic sum of the translates of χ·Ef by 3Z^d, which are at distance at least 1 from each other. Then G(y) = F̃(3y/(2π)) is 2π-periodic in each coordinate, equals f(3y/(2π)) for y ∈ [0, 2π/3]^d, and has smoothness norm of order β at most a constant C₁ = C₁(d, β). For the periodic class above this step is not needed.
 
-**Polynomial.** Let V_N be the de la Vallée-Poussin mean in one variable. It reproduces trigonometric polynomials of degree at most N, has norm at most 3, and has degree at most 2N − 1, so ‖g − V_N g‖_∞ ≤ 4E_N(g), where E_N is the error of best approximation. The one-dimensional estimate of [9] gives E_N(g) ≤ C_β N^{−β} for g of Hölder norm at most 1 of order β, and for g with ‖g^{(k)}‖_∞ ≤ 1 when β = k. Apply V_N in each coordinate in turn. Writing the error as a telescoping sum, each term is at most 3^{d−1} times a one-dimensional error, so P = V_N^{(1)} ⋯ V_N^{(d)} G satisfies ‖G − P‖_∞ ≤ 4d 3^{d−1} C_β C₁ N^{−β}. P is real, with coefficients c_k for k ∈ K = {−2N, …, 2N}^d, and c_{−k} is the complex conjugate of c_k.
+**Polynomial.** Let V_N = (1/N) Σ_{k=N}^{2N−1} S_k be the delayed mean of the partial sums S_k in one variable. It reproduces trigonometric polynomials of degree at most N, has norm at most 3, and has degree at most 2N − 1, so ‖g − V_N g‖_∞ ≤ 4E_N(g), where E_N is the error of best approximation. The one-dimensional estimate of [9] gives E_N(g) ≤ C_β N^{−β} for g of smoothness norm at most 1 of order β, and for g with ‖g^{(k)}‖_∞ ≤ 1 when β = k. Apply V_N in each coordinate in turn. Writing the error as a telescoping sum, each term is at most 3^{d−1} times a one-dimensional error, so P = V_N^{(1)} ⋯ V_N^{(d)} G satisfies ‖G − P‖_∞ ≤ 4d 3^{d−1} C_β C₁ N^{−β}. P is real, with coefficients c_k for k ∈ K = {−2N, …, 2N}^d, and c_{−k} is the complex conjugate of c_k.
 
 **Circuit.** Let n = |K|, q₀ = ⌈log₂ n⌉, and index K by an index register of q₀ qubits. Put λ = Σ_k |c_k| and c_k = |c_k|e^{iφ_k}. The circuit is:
 
@@ -83,7 +83,7 @@ The diagonal D(y) is a fixed unitary: it uses the data only through the fixed fr
 
 ## Simulation
 
-`sim/lcu_check.py` needs Python 3 with NumPy. It builds the circuit of Theorem 3 as matrices for random real trigonometric polynomials with d = 1, N ∈ {1, 3}, and d = 2, N = 1, with the tree of rotations and the controlled phases, and checks that ⟨X⟩ equals P(y)/λ at 200 random points to 10⁻¹⁰. It then checks that N^β times the sup error of the tensor de la Vallée-Poussin mean stays bounded for test functions of order β ∈ {0.5, 1.5, 2.5} with d = 1, and β = 1.5 with d = 2.
+`sim/lcu_check.py` needs Python 3 with NumPy. It builds the circuit of Theorem 3 as matrices for random real trigonometric polynomials with d = 1, N ∈ {1, 3}, and d = 2, N = 1, with the tree of rotations and the controlled phases, and checks that ⟨X⟩ equals P(y)/λ at 200 random points to 10⁻¹⁰. It then checks that N^β times the sup error of the tensor delayed mean stays bounded for test functions of order β ∈ {0.5, 1.5, 2.5} with d = 1, and β = 1.5 with d = 2.
 
 ## References
 

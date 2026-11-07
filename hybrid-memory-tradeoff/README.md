@@ -34,7 +34,7 @@ At t = n, this is the k-HRNN with its outputs stored in 2n classical coordinates
 
 - Fix r, and fix a record ω of instrument outcomes during the first N + n tokens.
 - Let F_{r,ω} map an input to the latent point (λ, ρ) reached with that record.
-- Take the latent manifold L = R^c × D_q°, or any C² contractible Finsler manifold L ⊆ R^c × H_q that contains the image. Here H_q is the space of trace-one Hermitian matrices.
+- Take the latent manifold L = R^c × D_q°, or any C² contractible Finsler manifold L ⊆ R^c × H_q that contains the image. Here H_q is the space of trace-one self-adjoint matrices.
 - Suppose that, with this L, F_{r,ω} meets the regularity assumptions of Theorem B.3 of [1] on a contractible open set U ⊆ K: it is C², it is a strong submersion, and it meets the boundary condition.
 
 If the model reaches a finite backward cross entropy on the task of that theorem, then dim U < dim L + 2. Hence
@@ -114,7 +114,7 @@ For the other direction, (m choose k)/N = ∏_{j<k} (m − j)/(n − j) ≥ ((m 
 
 - **Qubits only.** For qumodes the state space has infinite dimension, so Theorem 2 gives nothing there.
 - **Inherited form.** Theorem 2 inherits the regularity assumptions of Theorem B.3 of [1]. It also inherits the step from a fixed random vector r to the model over its randomness, which is taken over unchanged.
-- **Pure states.** Suppose every instrument has one Kraus operator per outcome, as for unitaries and ideal projective measurements. Then the states stay pure, and such models are outside the class of Theorem 2, whose states have full rank. If the pure states stay in one affine chart of the projective space, and the map to R^c × (chart) meets the same assumptions, the same argument gives c ≥ N − 2^{q+1} + 1.
+- **Pure states.** Suppose every instrument has a single operator A per outcome, acting as ρ ↦ AρA†, as for unitaries and ideal projective measurements. Then the states stay pure, and such models are outside the class of Theorem 2, whose states have full rank. If the pure states stay in one affine chart of the projective space, and the map to R^c × (chart) meets the same assumptions, the same argument gives c ≥ N − 2^{q+1} + 1.
 - **What a coordinate counts.** Without regularity, counting real coordinates is no measure of memory: one real number can hold any finite prefix. The count of Theorem 1 is one real number per stored quantity, as for the classical simulation of [1].
 - **The gap.** The true saving per qubit register, somewhere between (q choose k) and 4^q, is not determined here. Theorem 1 keeps a block of vertices quantum. Whether some other use of the register keeps more is not known.
 - **Related tradeoffs.**

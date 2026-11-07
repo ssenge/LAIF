@@ -3,7 +3,7 @@
 
 1. Lemma 1: with the constants of Section 2, F(0) - F* <= Delta, and every x with |<x, v_t>| < c/2 for some chain
    vector v_t has F(x) - F* > 3 eps (checked by minimizing one chain with that coordinate pinned to +-c/2).
-2. Each component is convex and 1-smooth (largest Hessian eigenvalue <= 1 on random points).
+2. Each component is convex and 1-smooth (largest second-derivative eigenvalue <= 1 on random points).
    Remark 2: with the constants printed in Lemma 5 of [1], F(0) - F* is n Delta.
    Lemmas 6 and 7 (Cases 2 to 4): if ceil(N/2) chains have a small coordinate, F(x) - F* > 3 eps.
 3. Lemma 4: the gradient of a component at a query x of norm <= R is computed exactly from x and the keys that the
@@ -161,7 +161,7 @@ def check_lemma7():
 
 
 def components(p, V, x):
-    """Values, gradients and Hessians of f_{1}, f_{2} of one chain with orthonormal columns V = [v_0 ... v_k]."""
+    """Values, gradients and second derivatives of f_{1}, f_{2} of one chain with orthonormal columns V = [v_0 ... v_k]."""
     a16 = (1 - p['mt']) / 16
     y = V.T @ x
     k, c = p['k'], p['c']
@@ -197,7 +197,7 @@ def check_smoothness(rng):
             assert ev.min() > -1e-12
             worst = max(worst, ev.max())
     assert worst <= 1
-    print(f"components convex, largest Hessian eigenvalue seen {worst:.3f} <= 1 (k={k})")
+    print(f"components convex, largest second-derivative eigenvalue seen {worst:.3f} <= 1 (k={k})")
     # Case 2 components: the same formulas with factor 1/16 (mt = 0) and zeta = 1, for k odd and even
     for k2 in (7, 8):
         p2 = dict(p, mt=0.0, zeta=1.0, k=k2, C=0.3, c=0.01)
@@ -210,7 +210,7 @@ def check_smoothness(rng):
                 assert ev.min() > -1e-12
                 w2 = max(w2, ev.max())
         assert w2 <= (6 + 2 * np.sqrt(5)) / 16 + 1e-12
-        print(f"Case 2 components (k={k2}): largest Hessian eigenvalue seen {w2:.3f} <= (6 + 2 sqrt 5)/16 < 1")
+        print(f"Case 2 components (k={k2}): largest second-derivative eigenvalue seen {w2:.3f} <= (6 + 2 sqrt 5)/16 < 1")
     # Cases 3, 4: norms of the minimum-norm subgradients of f_{2i-1}, f_{2i}
     k4 = 9
     V4 = np.linalg.qr(rng.normal(size=(k4 + 6, k4 + 1)))[0]

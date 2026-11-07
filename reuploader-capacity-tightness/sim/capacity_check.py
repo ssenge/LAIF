@@ -4,7 +4,7 @@ Model: U(x) = W_R e^{-ixZ} W_{R-1} ... e^{-ixZ} W_0, f(x) = B <0|U^dag Z U|0>, f
 1. Realizability: every real F(x) = sum_{|j|<=R} c_j e^{2ijx} with |F| <= 1 is f/B for some blocks
    (factorization of nonnegative trigonometric polynomials, then layer stripping).
 2. Lower bound: on R + 1 equispaced nodes with n/(R + 1) samples each, kernel interpolants realize every
-   sign pattern with amplitude B, so the empirical Rademacher complexity is >= B sqrt((R + 1)/(2n)).
+   sign pattern with amplitude B, so the empirical random-sign complexity is >= B sqrt((R + 1)/(2n)).
 """
 import numpy as np
 
@@ -124,7 +124,7 @@ def check_lower_bound(rng):
             F = 0.99 * sum(sb * np.exp(-1j * k * t) for sb, t in zip(sgn, nodes)) * (1 - np.abs(k) / (R + 1)) / (R + 1)
             Ws = strip_layers(laurent_matrix(F))
             assert np.allclose([model(Ws, t / 2) for t in nodes], 0.99 * sgn, atol=1e-6)
-            # Monte Carlo of E sup over circuits, sup taken at the circuit for sign(S_a); 4 copies per node
+            # random sampling of E sup over circuits, sup taken at the circuit for sign(S_a); 4 copies per node
             vals = []
             for _ in range(400):
                 sig = rng.choice([-1, 1], size=(R + 1, 4))
@@ -144,7 +144,7 @@ def check_lower_bound(rng):
             rad = B * (R + 1) * mean_abs / n  # exact: the sup is attained by the interpolant of sign(S_a)
             low, up = B * np.sqrt((R + 1) / (2 * n)), B * np.sqrt((2 * R + 1) / n)
             assert low - 1e-12 <= rad <= up and low >= 0.5 * up
-        print(f"R = {R}: kernel interpolation exact on {R + 1} nodes{mc}; at n = {n}: Rademacher = {rad:.4f}, "
+        print(f"R = {R}: kernel interpolation exact on {R + 1} nodes{mc}; at n = {n}: complexity = {rad:.4f}, "
               f"lower bound sqrt((R+1)/2n) = {low:.4f}, spectral upper bound sqrt(|K_R|/n) = {up:.4f}")
 
 

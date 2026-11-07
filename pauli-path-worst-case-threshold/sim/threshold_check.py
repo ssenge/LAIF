@@ -1,4 +1,4 @@
-"""Worst-case failure of Pauli path truncation on one layer of majority gates.
+"""Worst-case failure of path truncation in the string basis on one layer of majority gates.
 
 Block polynomial G(z) = z * sum_S Maj^(S) z^|S| for observable Z_1 behind a k-qubit majority permutation,
 input |0...0>, depolarizing noise of rate p = 1 - z on every qubit before and after the layer. For K blocks
@@ -53,7 +53,7 @@ def errors(g, K, z):
 
 
 def check_block_by_simulation():
-    """For k = 3, 5: V^dag Z_1 V = Maj(Z) for a permutation V; Pauli coefficients match maj_poly."""
+    """For k = 3, 5: V^dag Z_1 V = Maj(Z) for a permutation V; string coefficients match maj_poly."""
     for k in (3, 5):
         xs = list(itertools.product((0, 1), repeat=k))
         maj = {x: 1 if sum(x) <= k // 2 else -1 for x in xs}  # +1 for majority 0, as Z eigenvalues
@@ -70,7 +70,7 @@ def check_block_by_simulation():
         Z1 = np.diag([1 - 2 * x[0] for x in xs])
         A = V.T @ Z1 @ V
         assert np.allclose(np.diag(A), [maj[x] for x in xs]) and np.allclose(A, np.diag(np.diag(A)))
-        # Fourier coefficients of the diagonal by weight, then G(x) = x sum_S Maj^(S) x^|S|
+        # frequency coefficients of the diagonal by weight, then G(x) = x sum_S Maj^(S) x^|S|
         g = [0.0] * (k + 2)
         for S in itertools.product((0, 1), repeat=k):
             chi = [(-1) ** sum(s * xi for s, xi in zip(S, x)) for x in xs]
@@ -89,7 +89,7 @@ def check_block_by_simulation():
         for q in range(k):
             rho = depolarize(rho, q, k, p)
         assert abs(np.trace(Z1 @ rho) - float(peval(maj_poly(k), Fraction(7, 10)))) < 1e-12
-    print("block check: V^dag Z_1 V = Maj for k = 3, 5; Pauli weights and noisy values match G")
+    print("block check: V^dag Z_1 V = Maj for k = 3, 5; string weights and noisy values match G")
 
 
 def depolarize(rho, q, k, p):
@@ -196,4 +196,4 @@ if __name__ == "__main__":
     check_all_rates()
     check_prescribed_cutoff()
     check_level_one()
-    print("Pauli path threshold checks pass")
+    print("string path threshold checks pass")
