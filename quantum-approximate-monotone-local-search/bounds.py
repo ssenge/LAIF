@@ -11,7 +11,7 @@ import numpy as np
 from scipy.stats import hypergeom
 
 # parameterized randomized alpha-approximations of Kulik and Shachnai (FOCS 2020), bases rounded up there
-VC = {1.1: 1.1652, 1.2: 1.096, 1.3: 1.058, 1.4: 1.0332, 1.5: 1.0166, 1.666: 1.004, 1.75: 1.0016, 1.8: 1.00074,
+VC = {1.1: 1.1652, 1.2: 1.096, 1.3: 1.058, 1.4: 1.0332, 1.5: 1.0166, 5 / 3: 1.004, 1.75: 1.0016, 1.8: 1.00074,
       1.9: 1.000083}
 HS3 = {1.2: 1.59, 1.4: 1.29, 1.6: 1.18, 1.8: 1.11, 2.0: 1.0659, 2.2: 1.039, 2.4: 1.021, 2.6: 1.0085, 2.8: 1.0026}
 MCT = math.sqrt(math.sqrt(2) + 1)
