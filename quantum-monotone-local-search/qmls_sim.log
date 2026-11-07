@@ -1,0 +1,4 @@
+control: greedy deletion of a highest-degree vertex misses the optimum on 13 of 100 graphs
+HS: 120 random instances, smallest accepted budget = optimum; marked samples >= C(k,t); min averaged success 0.420 >= 1/4; 40 state-vector runs agree with the closed form
+FVS: 120 random instances, smallest accepted budget = optimum; marked samples >= C(k,t); min averaged success 0.436 >= 1/4; 40 state-vector runs agree with the closed form
+CVD: 120 random instances, smallest accepted budget = optimum; marked samples >= C(k,t); min averaged success 0.417 >= 1/4; 40 state-vector runs agree with the closed form

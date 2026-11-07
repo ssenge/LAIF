@@ -1,0 +1,31 @@
+Feedback Vertex Set              c = 3.460000 (Iwata-Kobayashi, highest-degree branching); classical 2-1/c = 1.710983; quantum sqrt = 1.308045 <= 1.3081
+    n =    50: log(max min) - n log(2-1/c) = -0.355  (2 log(n+1) = 7.864)
+    n =   200: log(max min) - n log(2-1/c) = -0.353  (2 log(n+1) = 10.607)
+    n =  1000: log(max min) - n log(2-1/c) = -0.352  (2 log(n+1) = 13.818)
+    n =  3000: log(max min) - n log(2-1/c) = -0.352  (2 log(n+1) = 16.013)
+Cluster Vertex Deletion          c = 1.811000 (Tsur, branching); classical 2-1/c = 1.447819; quantum sqrt = 1.203253 <= 1.2033
+    n =    50: log(max min) - n log(2-1/c) = -0.119  (2 log(n+1) = 7.864)
+    n =   200: log(max min) - n log(2-1/c) = -0.112  (2 log(n+1) = 10.607)
+    n =  1000: log(max min) - n log(2-1/c) = -0.112  (2 log(n+1) = 13.818)
+    n =  3000: log(max min) - n log(2-1/c) = -0.112  (2 log(n+1) = 16.013)
+Multicut on Trees                c = 1.553774 (Kanj et al., branch and search); classical 2-1/c = 1.356406; quantum sqrt = 1.164648 <= 1.1647
+    n =    50: log(max min) - n log(2-1/c) = -0.072  (2 log(n+1) = 7.864)
+    n =   200: log(max min) - n log(2-1/c) = -0.069  (2 log(n+1) = 10.607)
+    n =  1000: log(max min) - n log(2-1/c) = -0.068  (2 log(n+1) = 13.818)
+    n =  3000: log(max min) - n log(2-1/c) = -0.068  (2 log(n+1) = 16.013)
+Min-Ones 3-SAT                   c = 3.000000 (branching on an unsatisfied clause); classical 2-1/c = 1.666667; quantum sqrt = 1.290994 <= 1.291
+    n =    50: log(max min) - n log(2-1/c) = -0.289  (2 log(n+1) = 7.864)
+    n =   200: log(max min) - n log(2-1/c) = -0.293  (2 log(n+1) = 10.607)
+    n =  1000: log(max min) - n log(2-1/c) = -0.294  (2 log(n+1) = 13.818)
+    n =  3000: log(max min) - n log(2-1/c) = -0.294  (2 log(n+1) = 16.013)
+Min-Ones 4-SAT, 4-Hitting Set    c = 4.000000 (branching on an unsatisfied clause); classical 2-1/c = 1.750000; quantum sqrt = 1.322876 <= 1.3229
+    n =    50: log(max min) - n log(2-1/c) = -0.421  (2 log(n+1) = 7.864)
+    n =   200: log(max min) - n log(2-1/c) = -0.414  (2 log(n+1) = 10.607)
+    n =  1000: log(max min) - n log(2-1/c) = -0.413  (2 log(n+1) = 13.818)
+    n =  3000: log(max min) - n log(2-1/c) = -0.413  (2 log(n+1) = 16.013)
+Min-Ones 5-SAT, 5-Hitting Set    c = 5.000000 (branching on an unsatisfied clause); classical 2-1/c = 1.800000; quantum sqrt = 1.341641 <= 1.3417
+    n =    50: log(max min) - n log(2-1/c) = -0.524  (2 log(n+1) = 7.864)
+    n =   200: log(max min) - n log(2-1/c) = -0.511  (2 log(n+1) = 10.607)
+    n =  1000: log(max min) - n log(2-1/c) = -0.511  (2 log(n+1) = 13.818)
+    n =  3000: log(max min) - n log(2-1/c) = -0.511  (2 log(n+1) = 16.013)
+all bounds hold

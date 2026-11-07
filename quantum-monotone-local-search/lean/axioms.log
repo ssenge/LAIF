@@ -1,0 +1,8 @@
+'two_sin_mul_sum_cos' depends on axioms: [propext, Classical.choice, Quot.sound]
+'amp_avg' depends on axioms: [propext, Classical.choice, Quot.sound]
+'fvs_base' depends on axioms: [propext, Classical.choice, Quot.sound]
+'cvd_base' depends on axioms: [propext, Classical.choice, Quot.sound]
+'d3_base' depends on axioms: [propext, Classical.choice, Quot.sound]
+'d4_base' depends on axioms: [propext, Classical.choice, Quot.sound]
+'d5_base' depends on axioms: [propext, Classical.choice, Quot.sound]
+'mct_base' depends on axioms: [propext, Classical.choice, Quot.sound]
