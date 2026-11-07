@@ -1,6 +1,6 @@
 # Spurious local minima at fold points of parametrized quantum circuits
 
-Written 6 Nov 2026.
+Written 6 Nov 2026. Theorem 3 added 7 Nov 2026.
 
 ## Problem
 
@@ -10,7 +10,7 @@ A parametrized quantum circuit (PQC) in the sense of [1, Definition 1] consists 
 
 **Local minima.** For a target U_t, the compilation loss is L(x) = 1 − Re tr(U_t† F(x))/D. A local minimum with L > 0 is spurious when another parameter reaches L = 0. Spurious minima are known for underparametrized circuits [3]. Overparametrization, the saturation of the rank, is associated with their disappearance [2].
 
-This note asks what a fold point does to the loss landscape. The answer: at every fold point of a PQC with d = dim SU(D), targets moved slightly off F(x0) to the side the nearby parameters miss give strict local minima, and these are spurious whenever F(x0) also has a regular preimage.
+This note asks what a fold point does to the loss landscape. The answer: at every fold point of a PQC with d = dim SU(D), targets moved slightly off F(x0) to the side the nearby parameters miss give strict local minima, and these are spurious whenever F(x0) also has a regular preimage. The note also gives a certified fold point of the SU(8) brick wall circuit of [1] itself, so [1, Conjecture 3] does not hold for that circuit, and finds such spurious minima next to it.
 
 ## Result
 
@@ -31,6 +31,12 @@ So x0 is a fold point. J has rank 15 at random points, so full rank almost every
 
 **The instance.** For the fold of Theorem 1, F(x0) has a regular preimage x1, with smallest singular value 0.245 of J(x1). For ε = 10⁻², 10⁻³ and 10⁻⁴ on the trap side, the check finds the strict local minimum of Theorem 2 and a parameter with loss below 10⁻¹⁵. So these targets have spurious local minima at loss ε²/8, at the critical parameter count d = dim SU(4) and with rank saturated almost everywhere.
 
+**Theorem 3 (a fold of the SU(8) brick wall of [1]).** Take the SU(8) circuit of [1]: RZ, RY and RZ on each of the three qubits, then 14 bricks on the qubit pairs (0, 1), (1, 2), (0, 1), …, each CZ followed by RY on both qubits and RZ on both qubits, except that the last brick keeps only the two RY. It has d = 63 = dim SU(8) rotations and 14 CZ gates. Fix all angles except x_36 (counting from 1) at the values listed in the check. Then there is t* in an interval of width 1.4 · 10⁻⁴³ around 5.0230182363654284306 such that the point x* with x_36 = t* is a fold point. There, σ_62 = 0.0205 and κ = −0.0232 for unit null vectors (floating point).
+
+So F(C) contains a 62-dimensional embedded piece through F(x*), and [1, Conjecture 3] does not hold for this circuit; J has full rank almost everywhere, since det J changes sign at x*.
+
+**The instance for the brick wall.** F(x*) has a regular preimage x1, found by least squares from the first random start (max |F(x1) − F(x*)| = 7 · 10⁻¹⁵, smallest singular value 0.021 of J(x1)). For ε = 10⁻³ and 10⁻⁴ on the trap side, the check finds the strict local minimum of Theorem 2, at loss ε²/8 to within 10⁻⁵ relative, with smallest second-derivative eigenvalue |εκ|/4 to within 1%, while a parameter near x1 reaches loss below 10⁻¹⁴. So the brick wall circuit of [1] for SU(8) has compilation targets with spurious strict local minima.
+
 ## Proof
 
 **Fold conditions.** At a point x0 of corank one, adj J(x0) = c v u^T with c = ± σ_1 ⋯ σ_14 ≠ 0. So for every direction w,
@@ -41,6 +47,12 @@ So x0 is a fold point. J has rank 15 at random points, so full rank almost every
 - Its tangent space at x0 is the kernel of ∇ det J(x0), which does not contain v. So ker J(x0) is transverse to C, and F restricted to C is an immersion at x0. These are the conditions of a fold [4], and F(C) contains a (d − 1)-dimensional embedded submanifold through F(x0).
 
 **Proof of Theorem 1.** For anticommuting strings P and Q, R_P(t) Q R_P(t)† = cos t Q − i sin t PQ, and commuting words are fixed. So the adjoint action of each gate on string coefficients is a matrix with entries in {0, 1, ±cos t, ±sin t}, and at t ∈ {0, π/4} these lie in ℚ(√2). The columns of J(x0) and of each ∂_j J(x0) are products of such matrices applied to a unit vector. The check computes them in exact arithmetic, finds rank 14, null vectors u and v, and κ = −√6/21. □
+
+**Proof of Theorem 3.** Write g = det J, and for a fixed index j let w(x) = adj J(x) e_j and h(x) = tr(adj J(x) ∂_{w(x)} J(x)), all as functions of t = x_36 with the other angles fixed.
+
+- **A fold where h ≠ 0.** Suppose g(t*) = 0 and h(t*) ≠ 0. Then adj J(t*) ≠ 0, so rank J(t*) = 62 and adj J(t*) = c v u^T with c ≠ 0. So w = c u_j v and h = c u^T (∂_w J) v = c² u_j κ, hence κ ≠ 0: a fold point.
+- **Bounds.** Every column of J has norm 1, since H_k is a unitary conjugate of a string. Every column of a first or second derivative of J has norm at most 1, since differentiating the action of one rotation maps cos t Q + sin t R to a vector of the same norm and kills commuting strings. By the determinant bound through column norms, every entry of adj J has modulus at most 1, and every entry of its derivative along t has modulus at most 62, since that derivative is a sum of 62 determinants with one column differentiated. With |tr(A B)| ≤ max|A_ij| Σ|B_ij| and Σ|B_ij| ≤ d^{3/2} for a matrix with columns of norm at most 1, the product rule gives |h′(t)| ≤ 125 d^{5/2} for every t.
+- **Certificate.** The check finds a and b = a + 1.4 · 10⁻⁴³ such that, in interval arithmetic at 160 digits, g(a) and g(b) have opposite signs and |h(a)| ≥ 2.1 · 10⁻³³ > (b − a) · 125 d³. So h has no zero on [a, b], g has one, and that zero is a fold point. The intervals use the exact binary values of the listed angles, and the entries of J and of its derivatives come from the adjoint action of the gates as in the proof of Theorem 1. □
 
 **Proof of Theorem 2.** Write F(x0 + y)F(x0)† = e^{−iA(y)/2} with A = Σ_w a_w P_w and a(y) = J(x0)y + ½Q[y, y] + O(|y|³). Here tr(P_w P_{w′})/D = δ_{ww′}, Q_u = u·Q is a symmetric form, and |u| = 1 gives tr(W²)/D = 1. Then L_ε(x0 + y) = 1 − Re tr(e^{iεW/2} e^{−iA(y)/2})/D.
 
@@ -55,7 +67,8 @@ So x0 is a fold point. J has rank 15 at random points, so full rank almost every
 ## Remarks
 
 1. **Scope.**
-   - F(x0) has a regular preimage, so it is an interior point of the image F(T^15). The fold does not bound the image there, and the surjectivity of this circuit is not treated. Neither are the brick wall circuits of [1].
+   - F(x0) has a regular preimage, so it is an interior point of the image F(T^15). The fold does not bound the image there, and the surjectivity of this circuit is not treated.
+   - The same holds for the fold of the SU(8) brick wall in Theorem 3: its value is an interior point of the image, and the universality of that circuit is not treated here. For the SO(8) brick wall of [1], see [10].
    - Theorem 2 needs d = dim G, so that F is locally a map between spaces of equal dimension. Circuits with more parameters than dim G are not treated.
 2. **Sign changes of det J.** For d = dim SU(D), the degree of F is 0: F is the product of d maps of circles into SU(D), and the primitive generators of the cohomology of SU(D) have degree at least 3, so they pull back to 0 on T^d. If J has full rank somewhere, a regular value in the open image has a preimage, and degree 0 forces preimages of both orientations. So det J takes both signs and C is never empty. A sign change alone does not make a fold, which is why Theorem 1 checks κ.
 3. **Overparametrization.** The rank of J saturates almost everywhere at d = dim SU(4). Theorem 2 shows that this saturation alone does not exclude spurious local minima for compilation targets near F(C).
@@ -63,7 +76,7 @@ So x0 is a fold point. J has rank 15 at random points, so full rank almost every
 
 ## Check
 
-`sim/fold_check.py` runs in about 2 minutes with numpy, scipy, sympy and mpmath.
+`sim/fold_check.py` runs in about 2 minutes with numpy, scipy, sympy and mpmath. `sim/brickwall_check.py` runs in about 1 minute with numpy, scipy and mpmath.
 
 - **Theorem 1.** It computes J(x0) and ∂_j J(x0) exactly over ℚ(√2) from the adjoint action, compares J(x0) with the floating point derivative matrix, and asserts rank 14 and κ ≠ 0.
 - **Regular preimage.** It compiles F(x0) from random starts by least squares, to residual 5 · 10⁻¹⁶ at a point where the smallest singular value of J is 0.245.
@@ -87,6 +100,17 @@ eps = -1e-04 (inside the local image): smallest second-derivative eigenvalue of 
 fold and trap checks pass
 ```
 
+`sim/brickwall_check.py` compares the derivative matrices of the interval code with floating point and finite differences, certifies Theorem 3, and checks the instance for the brick wall:
+
+```
+SU(8) brick wall of [1], all angles fixed but x_36: det J changes sign on (a, b) with a = 5.023018236365428430626359, b - a = 1.37e-43, and |h| >= 2.144e-33 > (b - a) * 125 d^3 there, in interval arithmetic at 160 digits: a fold point
+  at x_36 = t0 (floating point): sigma_62 = 0.0205, sigma_63 = 8.5e-16, kappa = -0.0232 for unit null vectors
+F(x0) has a regular preimage x1: max |F(x1) - F(x0)| = 7.2e-15, sigma_min(J(x1)) = 0.021
+eps = +1e-03 (trap side): critical point at distance 3.0e-10 from x0, loss 1.250000e-07 = 1.00000 eps^2/8, smallest second-derivative eigenvalue 5.74e-06 (|eps kappa|/4 = 5.79e-06); from x1 the loss reaches 2.4e-15, so the minimum is spurious
+eps = +1e-04 (trap side): critical point at distance 1.6e-11 from x0, loss 1.250000e-09 = 1.00000 eps^2/8, smallest second-derivative eigenvalue 5.79e-07 (|eps kappa|/4 = 5.79e-07); from x1 the loss reaches 2.0e-15, so the minimum is spurious
+brick wall checks pass
+```
+
 The distances scale as ε³ and the value at ε = 10⁻² is 1 − ε² tr(W⁴)/(48 D) = 0.999996 times ε²/8, with tr(W⁴)/D = 17/9, as in Theorem 2.
 
 ## References
@@ -100,3 +124,4 @@ The distances scale as ε³ and the value at ε = 10⁻² is 1 − ε² tr(W⁴)
 7. H. Rabitz, T.-S. Ho, R. Long, R. Wu, C. Brif. Comment on "Are there traps in quantum control landscapes?". Physical Review Letters 108, 198901 (2012), arXiv:1105.2367.
 8. B. Russell, H. Rabitz, R. Wu. Quantum control landscapes are almost always trap free. arXiv:1608.06198 (2016).
 9. M. Wiedmann, D. Burgarth, G. Dirr, T. Schulte-Herbrüggen, E. Malvetti, C. Arenz. On the convergence of the variational quantum eigensolver and quantum optimal control. arXiv:2509.05295 (2025).
+10. A universal SO(8) circuit with the optimal number of CZ gates, through triality. This repository, folder so8-universal-circuit (2026).
