@@ -185,6 +185,15 @@ Expected output for each: `propext`, `Classical.choice`, `Quot.sound` (or a subs
 #print axioms SsspFlow.RotSystem.RData.mem_of_walk
 #print axioms SsspFlow.FaceDisjoint.Walk.wt_scaled
 #print axioms SsspFlow.FaceDisjoint.Walk.decode
+#print axioms SsspFlow.RotSystem.RData.owner_es
+#print axioms SsspFlow.RotSystem.RData.star_walk
+#print axioms SsspFlow.RotSystem.RData.hop_dart
+#print axioms SsspFlow.RotSystem.RData.hop_walk
+#print axioms SsspFlow.RotSystem.RData.hop_copies
+#print axioms SsspFlow.RotSystem.legal_flank
+#print axioms SsspFlow.RotSystem.RData.link_parent
+#print axioms SsspFlow.RotSystem.RData.piece_parent
+#print axioms SsspFlow.RotSystem.RData.pieceOf_att_parent
 #print axioms SsspFlow.RotSystem.plain
 #print axioms SsspFlow.RotSystem.dual_toHypermap
 #print axioms SsspFlow.RotSystem.dual_dual

@@ -410,9 +410,10 @@ graphs built for a planarity check was planar with hop diameter at most $4D+4$. 
 graph failed in about a third of the instances. Lemma R (`notes/GHAT_REPAIR.md`, 2026-10-29)
 defines the repaired graph formally and proves what Theorem D needs from it: the properties
 [18, Thm 3.1 (1), (2)], planarity with an explicit rotation at every copy, the diameter bound,
-and the local phase of [18, Lemma 3.17]. Its definition, its properties (1) and (2) and the
-distances on the repaired graph hold in Lean (`lean/SsspFlow/GHat.lean`,
-`lean/SsspFlow/GHatDist.lean`). An independent implementation of its definition
+and the local phase of [18, Lemma 3.17]. Its definition, its properties (1), (2) and (5), the
+hop bound of (4), the refinement behind the local phase in (6) and the distances on the repaired
+graph hold in Lean (`lean/SsspFlow/GHat.lean`, `lean/SsspFlow/GHatDist.lean`,
+`lean/SsspFlow/GHatProps.lean`). An independent implementation of its definition
 matched the tested graph on 98,000 instances. Lemma R needs a description of the dual nodes
 that is not stated in [18]. Lemma N proves it, by induction over the levels, and the reduction
 is correct for every legal choice at $s$ and $t$. These failures may come from a misreading of
@@ -650,6 +651,17 @@ standard axioms (`propext`, `Classical.choice`, `Quot.sound`). There is no `sorr
   (`RData.mem_of_walk`): the distance bullet of Theorem D. For the weights $K\cdot c+1$ with natural costs $c$ and
   $K$ at least the number of nodes, a walk of least weight has fewer than $K$ edges and least cost, and its weight
   divided by $K$ is that cost (`FaceDisjoint.Walk.wt_scaled`, `FaceDisjoint.Walk.decode`).
+- `lean/SsspFlow/GHatProps.lean`: properties (4) to (6) of Lemma R, as far as they are combinatorics. E_S edges join
+  copies of one vertex (`RData.owner_es`), and a valid copy other than a star centre is joined to the star centre of
+  its vertex by one E_S edge, or by two for the copies L, R and X (`RData.star_walk`). If at most three corners are
+  cut, the star centres of the two ends of an edge are joined by a walk of at most four edges (`RData.hop_dart`). So a
+  walk of length $k$ in the graph gives walks of at most $4k$ edges between star centres and of at most $4k+4$ edges
+  between other copies (`RData.hop_walk`, `RData.hop_copies`): the hop bound of property (4). Property (5): if the
+  graph has no loops, every corner in the first face of a path through distinct faces has a flank that is not an
+  edge of the path (`RotSystem.legal_flank`). Property (6): for a level before with fewer incised edges and the same
+  cut corners, the parents of linked tokens are linked (`RData.link_parent`). So every piece refines a piece of the
+  level before (`RData.parentPiece`, `RData.piece_parent`), and the end at the host of the parent of a token lies on
+  the path of that piece (`RData.pieceOf_att_parent`): the refinement of Lemma N and the first part of Claim 3.
 - `lean/SsspFlow/Arborescence.lean`: the arithmetic of the contraction and the halving count of `notes/DMST.md`.
 - `lean/SsspFlow/NegScaling.lean`: the arithmetic of the scaling, the alternation, the short paths in a cluster and the arc inequality of `notes/NEGATIVE.md`.
   - `Setup.negCycle_iff`, `Setup.walks` and `Setup.lemmaD` prove it for any graph with the
@@ -940,9 +952,10 @@ Theorem C, Theorem Câ€², the construction of the tiles and the rest of Lemma 14â
 Lemmas S1 and S2 and the facts of Lemma O that the recursion uses are formalized, in a split model of the incisions on
 the cut of a planar map along a shortest path between corners of two different faces: a run of the recursion on the
 cut exists, every length it computes is a length $\lambda_t$, and the least of them is the least $\lambda_t$.
-Of Lemma R, Definition R, its properties (1) and (2) and the distances on the repaired graph are formalized, for any
-set of cut corners with modes and any host of the unincised pairs. Lemma N, properties (3) to (6) of Lemma R, the
-reduction of the minimum cut to the lengths $\lambda_t$ and the round count are not.
+Of Lemma R, Definition R, its properties (1), (2) and (5), the hop bound of (4), the refinement in (6) and the
+distances on the repaired graph are formalized, for any set of cut corners with modes and any host of the unincised
+pairs. Lemma N, the planarity (3), the count of copies and the simulation in (4), the rest of (6), the reduction of
+the minimum cut to the lengths $\lambda_t$ and the round count are not.
 
 ## Numerical checks (`sim/`)
 
