@@ -566,6 +566,15 @@ standard axioms (`propext`, `Classical.choice`, `Quot.sound`). There is no `sorr
   same holds with $\kappa_0(x_b)$, $L_b$ and $\kappa_1(y_b)$ for $i\le\mu\le\min(x_b,y_b)$ (`FaceDrawn.overlap_b`). Both
   follow from `FaceDrawn.exchange`, a face read from another corner (`FaceDrawn.rotate`) and the symmetry of the
   distance (`walkDist_comm`).
+- `lean/SsspFlow/Reroute.lean`: (INV) of `notes/LEMMA_O.md` on the side of $k_a$ of the cut along a walk. A walk of
+  the cut is a walk of the split (`isWalk_of_split_subset`), so distances do not shrink
+  (`walkDist_le_of_split_subset`). Let the walk of the cut be a shortest walk between its ends, of finite length, for
+  dart weights that agree on the two darts of each edge. Then a walk of the split between two darts of the side of
+  $k_a$ gives a walk of the cut between them that is no longer (`WalkCut.reroute`). It follows the first walk up to
+  its first vertex on the walk of the cut, runs along the copies $(d,\mathrm{true})$ to its last vertex there and
+  follows the first walk from there (`IsWalk.split_first`, `IsWalk.split_last`, `WalkCut.lift_first`,
+  `WalkCut.lift_last`). So on the side of $k_a$ the distances after the cut are the distances before it
+  (`WalkCut.walkDist_hi`).
 - `lean/SsspFlow/Arborescence.lean`: the arithmetic of the contraction and the halving count of `notes/DMST.md`.
 - `lean/SsspFlow/NegScaling.lean`: the arithmetic of the scaling, the alternation, the short paths in a cluster and the arc inequality of `notes/NEGATIVE.md`.
   - `Setup.negCycle_iff`, `Setup.walks` and `Setup.lemmaD` prove it for any graph with the
@@ -854,9 +863,10 @@ standard axioms (`propext`, `Classical.choice`, `Quot.sound`). There is no `sorr
 Not formalized: the proofs of the cited propositions other than `AggBox` and `SmoothingBox`, among them `LDDBox`, the minimum cut of
 Theorem C, Theorem C′, the construction of the tiles and the rest of Lemma 14′, and Lemmas R5 and R7. Of Theorem D, the
 recursion argument of Lemma S2 and Lemma S1 are formalized, the latter on the cut of a planar map along a shortest path
-between corners of two different faces, and of Lemma O the cut of a disk along one chord, the cut along a walk and
-(C23) for a boundary of the form of a live annulus. The rest of Lemma O, Lemmas N and R, the reduction of the minimum cut
-to the lengths $\lambda_t$ and the round count are not.
+between corners of two different faces, and of Lemma O the cut of a disk along one chord, the cut along a walk,
+(C23) for a boundary of the form of a live annulus and (INV) on the side of $k_a$ of a cut along a shortest walk. The
+rest of Lemma O, Lemmas N and R, the reduction of the minimum cut to the lengths $\lambda_t$ and the round count are
+not.
 
 ## Numerical checks (`sim/`)
 

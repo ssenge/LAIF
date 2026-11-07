@@ -130,6 +130,15 @@ Expected output for each: `propext`, `Classical.choice`, `Quot.sound` (or a subs
 #print axioms SsspFlow.RotSystem.FaceDrawn.dist_through
 #print axioms SsspFlow.RotSystem.FaceDrawn.overlap_a
 #print axioms SsspFlow.RotSystem.FaceDrawn.overlap_b
+#print axioms SsspFlow.RotSystem.IsWalk.split_first
+#print axioms SsspFlow.RotSystem.IsWalk.split_last
+#print axioms SsspFlow.RotSystem.isWalk_of_split_subset
+#print axioms SsspFlow.RotSystem.walkDist_le_of_split_subset
+#print axioms SsspFlow.RotSystem.WalkCut.lift_first
+#print axioms SsspFlow.RotSystem.WalkCut.lift_last
+#print axioms SsspFlow.RotSystem.WalkCut.qSeg_short
+#print axioms SsspFlow.RotSystem.WalkCut.reroute
+#print axioms SsspFlow.RotSystem.WalkCut.walkDist_hi
 #print axioms SsspFlow.RotSystem.plain
 #print axioms SsspFlow.RotSystem.dual_toHypermap
 #print axioms SsspFlow.RotSystem.dual_dual
