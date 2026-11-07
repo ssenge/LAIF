@@ -250,6 +250,11 @@ def check_block_examples():
     C6 = [(t, (t + 1) % 6) for t in range(6)]
     es = sorted({tuple(sorted(e)) for e in C6 + [(0, 6), (6, 7)]})
     check_block_reduction(8, es, {tuple(sorted(e)) for e in C6})
+    # k four-cycles sharing one vertex, condition (c)
+    for k in (3, 4):
+        es = sorted({tuple(sorted(e)) for i in range(k)
+                     for e in [(0, 3 * i + 1), (3 * i + 1, 3 * i + 2), (3 * i + 2, 3 * i + 3), (3 * i + 3, 0)]})
+        check_block_reduction(3 * k + 1, es, {(0, 1), (1, 2), (2, 3), (0, 3)})
 
 
 def check_exponents():

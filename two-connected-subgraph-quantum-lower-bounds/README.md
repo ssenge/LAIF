@@ -10,11 +10,12 @@ Model: an N-vertex graph given by its adjacency matrix, one query per pair of ve
 
 **Corollary 2.** Let H be a fixed connected graph and B a block of H with v ≥ 3 vertices. Suppose that
 - (a) B has the most edges among the blocks of H, and at most one other block is isomorphic to B; or
-- (b) every component of H − E(B) has fewer than e(H)/2 edges.
+- (b) every component of H − E(B) has fewer than e(H)/2 edges; or
+- (c) for every vertex c of B, every component of H − c that avoids B − c has at most e(H)/2 edges, counting its edges to c.
 
 Then detecting or finding H takes Ω(N^{1 + 1/(6(v−1))}) queries.
 
-Condition (a) holds whenever the 2-core of H is 2-connected, for example for a cycle with trees attached. It also holds for two four-cycles that share a vertex or are joined by a path, which gives Ω(N^{19/18}). Condition (b) holds, for example, for a chain of three four-cycles in which the outer ones are attached at different vertices of the middle one.
+Condition (a) holds whenever the 2-core of H is 2-connected, for example for a cycle with trees attached. It also holds for two four-cycles that share a vertex or are joined by a path, which gives Ω(N^{19/18}). Condition (b) holds, for example, for a chain of three four-cycles in which the outer ones are attached at different vertices of the middle one. Condition (c) holds for every 2-connected block B through a vertex u at which every component of H − u has at most e(H)/2 edges, for example for three or more four-cycles sharing one vertex, which gives Ω(N^{19/18}).
 
 | H | Previous lower bound | This folder |
 |---|---|---|
@@ -72,7 +73,13 @@ So p d_s and p d_m are O(p (np)^{v−2}) = O(c₀^{v−1}), which is small, and 
 
 So detecting H is at least as hard as detecting B.
 
-**Limits.** Applied to H directly, the degree bounds fail at a cut vertex joining two blocks with cycles. An edge at the cut vertex interacts with about n(np)^{β−2} edges through another block with β vertices when that block minus the cut vertex is a tree. Corollary 2 avoids this by reducing to one block. Whether the block reduction holds for every block with the most edges is open; if it does, every connected graph with a cycle is superlinear. Paths, subdivided claws and stars with two subdivided legs are linear. The bound n^{7/6} p^{1/6} does not depend on H, so a pattern gains only through a larger admissible density. For cycles the planting condition already caps the density at n^{−(v−2)/(v−1)}. For cliques the admissible density is larger, see [clique-quantum-query-lower-bounds](../clique-quantum-query-lower-bounds/), and for K_{a,b} see [complete-bipartite-quantum-lower-bounds](../complete-bipartite-quantum-lower-bounds/).
+Under (c) the gadgets are attached by parts. The hard inputs of Theorem 1 are subgraphs of the blow-up of B with known parts, and a vertex x in part c receives a private copy of Br_c alone, with c at x. A planted copy with each vertex in the part of its role yields a copy of H. Such copies are a constant fraction of all planted copies, and Proposition 3 bounds every constant average success probability. If the planted copy T is the only copy of B, every copy of H in the padded graph uses all edges of T, by the argument below applied to the input minus one edge of T, so finding H finds T. Conversely, project a copy of H in the padded graph of a B-free input back to H. This gives an endomorphism ψ of H. Let K be the set of vertices mapped into the input.
+- ψ maps K into B, and H[K] contains no copy of B. Each component of H − K has exactly one neighbour k in K, and together with k it embeds into Br_{ψ(k)}, with k at ψ(k). A block of H with two vertices in K lies in K, so K is connected and meets B in at most one vertex.
+- K has a unique vertex k₀ nearest to B. The part H₀ of H that is not below k₀ contains B and embeds into Br_{ψ(k₀)}, with k₀ at ψ(k₀). Edge counts force ψ(k₀) = b, the vertex of B in whose branch K lies.
+- If k₀ ≠ b, H₀ minus k₀ lands in the component D of Br_b − b that contains k₀; any other component lies inside H₀ and is too small. Then the part of H below k₀ needs at least e(H) − e(D) ≥ e(H)/2 edges, counting D with its edges to b, but it has fewer than e(D) ≤ e(H)/2.
+- If k₀ = b, then ψ(b) = b. Each component of H − b contains exactly one block of H at b. The component containing B − b maps into another component and carries B into the block at b there. That block cannot lie in K, so that component contains no vertex of K and maps on in turn. Along this chain the components do not shrink and have disjoint images, so the chain can neither stop nor return, a contradiction. This case needs no condition.
+
+**Limits.** Applied to H directly, the degree bounds fail at a cut vertex joining two blocks with cycles. An edge at the cut vertex interacts with about n(np)^{β−2} edges through another block with β vertices when that block minus the cut vertex is a tree. Corollary 2 avoids this by reducing to one block. Whether the block reduction holds for every block with the most edges is open; if it does, every connected graph with a cycle is superlinear. The remaining case of the argument under (c) is a vertex k₀ outside B, which arises when the part of H beyond some vertex of B outweighs the rest, as for two equal windmills of four-cycles joined by a path. Paths, subdivided claws and stars with two subdivided legs are linear. The bound n^{7/6} p^{1/6} does not depend on H, so a pattern gains only through a larger admissible density. For cycles the planting condition already caps the density at n^{−(v−2)/(v−1)}. For cliques the admissible density is larger, see [clique-quantum-query-lower-bounds](../clique-quantum-query-lower-bounds/), and for K_{a,b} see [complete-bipartite-quantum-lower-bounds](../complete-bipartite-quantum-lower-bounds/).
 
 ## Check
 
@@ -80,7 +87,7 @@ So detecting H is at least as hard as detecting B.
 - (F1) to (F3) and the planting exponents, by brute force over all 2-connected graphs with 3 to 6 vertices;
 - on sampled H-free subgraphs of small hosts (C4 and C6 in K_{n,n}, K4 in K_{2,2,2,2}), that the interaction counts, overall and inside a star, are at most v! D^{v−2}, with D the relevant maximum degree;
 - the exponent arithmetic, with exact fractions;
-- the block reduction on five graphs with cut vertices: for a B-free part and every placement of pendants into gadgets, the check finds no copy of H.
+- the block reduction on seven graphs with cut vertices, including three and four four-cycles sharing a vertex: for a B-free part and every placement of pendants into gadgets, the check finds no copy of H.
 
 Run it with `python3 check.py` (about 3 seconds).
 
