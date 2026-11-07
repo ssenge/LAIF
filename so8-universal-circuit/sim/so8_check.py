@@ -8,15 +8,17 @@ in a half-spin representation of SO(8).
    CZ gates are signed permutations of this basis.
 2. Words. The circuit of [1] gives a word on the 8 edges of a cycle. The paired circuit gives a word on the 7 edges
    of a path through all 8 vertices, and as a word in adjacent transpositions of that path it has 28 letters and
-   product the reversal, so it is reduced. The identity F+(x) = K C(x) is checked at random angles.
+   product the reversal, so it is reduced. The identity F+(x) = K C(x) is checked at random angles. All circuits
+   of the same shape with a reduced word on a path are enumerated.
 3. Fold of the circuit of [1]. Exact derivative matrix over Q(sqrt 2) at angles in (pi/4) Z: rank 27 and kappa != 0.
-4. Compilation. The 10 targets of the SO(8) experiment of [1], sampled as in its code (seed 69214), and 100
-   uniform targets, by least squares from random starts, for both circuits.
+4. Compilation by least squares. The 10 targets of the SO(8) experiment of [1], sampled as in its code (seed 69214), and 100
+   uniform targets, by least squares from random starts, for both circuits; curvature at the best points.
+5. Exact compilation into the paired circuit along the proof of Theorem 2: lift to S+, nested word, moves.
 """
 import itertools
 from fractions import Fraction as Fr
 import numpy as np
-from scipy.linalg import expm, logm as expm_log
+from scipy.linalg import expm, logm, schur
 from scipy.optimize import least_squares
 from scipy.stats import special_ortho_group
 
@@ -135,6 +137,12 @@ assert len(PL) == 12 and len(L) == 8 and np.allclose(L @ L.T, np.eye(8))
 edge = lambda P: tuple(k for k in range(8) if L[k] @ P @ L[k] > 1 - 1e-9)
 EDGES = sorted(edge(P) for P in PL)
 assert all(len(e) == 2 for e in EDGES) and all(sum(v in e for e in EDGES) == 3 for v in range(8))
+side = {0: 0}                                              # 3-regular and bipartite on 4 + 4 vertices: K_{4,4} minus
+for _ in range(8):                                         # a perfect matching, which is the cube graph
+    for a, b in EDGES:
+        if (a in side) != (b in side):
+            side[b if a in side else a] = 1 - side[a if a in side else b]
+assert len(side) == 8 and all(side[a] != side[b] for a, b in EDGES) and sum(side.values()) == 4
 for k in K.values():                                       # signed permutations of the basis
     M = L @ k @ L.T
     assert np.allclose(np.abs(M).sum(0), 1) and np.allclose(np.abs(M).sum(1), 1) and np.allclose(np.abs(M), np.round(np.abs(M)))
@@ -179,8 +187,22 @@ def is_path(es):
         return None
     seq = [min(v for v in range(8) if deg[v] == 1)]
     while len(seq) < 8:
-        seq.append(next(w for e in es for w in e if seq[-1] in e and w != seq[-1] and w not in seq))
+        nxt = [w for e in es for w in e if seq[-1] in e and w != seq[-1] and w not in seq]
+        if not nxt:
+            return None
+        seq.append(nxt[0])
     return seq
+
+
+def reversal_product(word, seq):
+    """Product of the letters of `word` as adjacent transpositions along `seq`, and its number of inversions."""
+    pos = {v: i for i, v in enumerate(seq)}
+    perm = list(range(8))
+    for e in word:
+        i, j = sorted((pos[e[0]], pos[e[1]]))
+        assert j == i + 1
+        perm[i], perm[j] = perm[j], perm[i]
+    return perm, sum(perm[i] > perm[j] for i in range(8) for j in range(i + 1, 8))
 
 
 rng = np.random.default_rng(2)
@@ -208,16 +230,71 @@ for name, g in (("circuit of [1]", THEIRS), ("paired circuit", PAIRED)):
         assert len(comp) == 8
         print(f"{name}: word of 28 rotations on the 8 edges of a cycle through all vertices")
     else:
-        pos = {v: i for i, v in enumerate(seq)}
-        perm = list(range(8))
-        for e, _ in wd:
-            i, j = sorted((pos[e[0]], pos[e[1]]))
-            assert j == i + 1
-            perm[i], perm[j] = perm[j], perm[i]
-        inv = sum(perm[i] > perm[j] for i in range(8) for j in range(i + 1, 8))
+        perm, inv = reversal_product([e for e, _ in wd], seq)
         assert inv == 28 and perm == list(range(8))[::-1]
         print(f"{name}: word of 28 rotations on the 7 edges of the path {seq}; as adjacent transpositions its "
               f"product is the reversal with {inv} inversions, so the word is reduced")
+
+# all circuits of the same shape: three Y rotations, 13 bricks CZ_ab Y_a Y_b, one of the 29 rotations left out
+E0 = [edge(g @ g.T) for g in GEN]                          # edge of Y_q before any CZ
+VP = {ab: np.abs(np.round(L @ k @ L.T)).astype(int) for ab, k in K.items()}
+adj = {v: [w for e in EDGES for w in e if v in e and w != v] for v in range(8)}
+HP = set()                                                 # edge sets of the paths through all 8 vertices
+
+
+def extend(p):
+    if len(p) == 8:
+        HP.add(frozenset(tuple(sorted(e)) for e in zip(p, p[1:])))
+    for w in adj[p[-1]]:
+        if w not in p:
+            extend(p + [w])
+
+
+for v0 in range(8):
+    extend([v0])
+
+
+def enumerate_reduced(pairs):
+    hits = []
+    def dfs(M, word, czs, skip):
+        if not any(set(word) <= P for P in HP):
+            return
+        if len(czs) == 13:
+            seq = is_path(sorted(set(word))) if len(word) == 28 else None
+            if seq and reversal_product(word, seq)[1] == 28:
+                hits.append((tuple(czs), skip))
+            return
+        for ab in pairs:
+            M2 = VP[ab] @ M
+            new = [tuple(sorted(int(np.argmax(M2[v])) for v in E0[q])) for q in ab]
+            dfs(M2, word + new, czs + [ab], skip)
+            if skip is None:
+                for i, q in enumerate(ab):
+                    dfs(M2, word + [new[1 - i]], czs + [ab], (len(czs) + 1, q))
+    init = [E0[q] for q in range(3)]
+    dfs(np.eye(8, dtype=int), init, [], None)
+    for q in range(3):
+        dfs(np.eye(8, dtype=int), init[:q] + init[q + 1:], [], (0, q))
+    return hits
+
+
+for g in (THEIRS, PAIRED):                                 # the fast edge rule agrees with network()
+    M, wfast = np.eye(8, dtype=int), []
+    for t, v in g:
+        if t == "f":
+            M = VP[v] @ M
+        else:
+            wfast.append(tuple(sorted(int(np.argmax(M[a])) for a in E0[v])))
+    assert wfast == [e for e, _ in network(g)[0]]
+NN = enumerate_reduced([(0, 1), (1, 2)])
+ALL = enumerate_reduced([(0, 1), (1, 2), (0, 2)])
+paired_pairs = tuple([(0, 1)] + [(1, 2), (1, 2), (0, 1), (0, 1)] * 3)
+assert len(NN) == 8 and len(ALL) == 24 and (paired_pairs, (13, 0)) in NN
+assert all(all(c[i] == c[i + 1] for i in range(0 if c[0] == c[1] else 1, 12, 2)) for c, _ in NN)
+assert [h for h in NN if h[0][0] == (0, 1) and h[1][0] == 13] == [(paired_pairs, (13, 0))]
+print(f"circuits of this shape with a reduced word on a path: {len(NN)} with CZ on (0, 1), (1, 2), {len(ALL)} with all "
+      f"three pairs; the {len(NN)} take the bricks in pairs, and the paired circuit is the only one of them that starts "
+      f"with CZ_01 and leaves out a rotation of the last brick, as the circuit of [1] does")
 
 
 # ---------------- 3. exact fold of the circuit of [1] ----------------
@@ -367,11 +444,14 @@ assert [i for i, (L, _, _) in enumerate(out) if L > 1e-12] == [1, 4, 5]
 for i in (1, 4, 5):
     x = out[i][2]
     Uu, S, Vt = np.linalg.svd(Jac(THEIRS, x))
-    A = np.real(-2 * expm_log(T[i] @ F(THEIRS, x).T))  # T F^T = exp(-(i/2) sum a_w P_w), so -2 log = i sum a_w P_w
+    A = np.real(-2 * logm(T[i] @ F(THEIRS, x).T))  # T F^T = exp(-(i/2) sum a_w P_w), so -2 log = i sum a_w P_w
     a = np.array([np.real(np.trace(-1j * A @ B)) / 8 for B in BAS])
+    u, v = Uu[:, -1], Vt[-1]
+    h = 1e-5
+    kap = u @ ((Jac(THEIRS, x + h * v) - Jac(THEIRS, x - h * v)) / (2 * h)) @ v
     print(f"  target {i}: at the best point sigma_min(J) = {S[-1]:.1e}, sigma_27 = {S[-2]:.3f}, "
-          f"|cos(residual, u)| = {abs(a @ Uu[:, -1]) / np.linalg.norm(a):.6f}")
-    assert S[-1] < 1e-7 and abs(a @ Uu[:, -1]) / np.linalg.norm(a) > 0.9999
+          f"|kappa| = {abs(kap):.3f} for unit null vectors, |cos(residual, u)| = {abs(a @ u) / np.linalg.norm(a):.6f}")
+    assert S[-1] < 1e-7 and abs(kap) > 1e-2 and abs(a @ u) / np.linalg.norm(a) > 0.9999
 out = [compile_(PAIRED, U, rng, 20) for U in T]
 print("paired circuit, the 10 targets of [1]: " + ", ".join(f"{L:.1e} ({s})" for L, s, _ in out))
 assert max(L for L, _, _ in out) < 1e-20
@@ -379,4 +459,114 @@ out = [compile_(PAIRED, special_ortho_group.rvs(8, random_state=rng), rng, 20) f
 print(f"paired circuit, 100 uniform targets: largest loss {max(L for L, _, _ in out):.1e}, starts used at most "
       f"{max(s for _, s, _ in out)}")
 assert max(L for L, _, _ in out) < 1e-20
+
+
+# ---------------- 5. exact compilation into the paired circuit, along the proof of Theorem 2 ----------------
+wdP, PmP = network(PAIRED)
+path = is_path(sorted(set(e for e, _ in wdP)))
+posP = {v: i for i, v in enumerate(path)}
+LET = [min(posP[a], posP[b]) for (a, b), _ in wdP]                  # letter i = rotation in path positions i, i+1
+ORI = [s * (1 if posP[a] < posP[b] else -1) for (a, b), s in wdP]
+Pp = np.zeros((8, 8))
+for i, v0 in enumerate(path):
+    Pp[i, v0] = 1
+
+
+def gr(i, t, n=8):
+    return plane_rot((i, i + 1), t)[:n, :n]
+
+
+def prod(word, ang):
+    M = np.eye(8)
+    for a, t in zip(word, ang):
+        M = gr(a, t) @ M
+    return M
+
+
+def nested_angles(C):
+    """Angles along the nested word, nested(n) = nested(n - 1) + [n-2, ..., 0], with prod = C."""
+    word, ang = [], []
+    for n in range(8, 1, -1):
+        z, th = C[:, n - 1].copy(), []
+        for i in range(n - 1):                                       # G_0(t_0) ... G_{n-2}(t_{n-2}) e_{n-1} = column
+            t = np.arctan2(-z[i], z[i + 1])
+            z = gr(i, t).T @ z
+            th.append(t)
+        Gs = np.eye(8)
+        for i in range(n - 1):
+            Gs = Gs @ gr(i, th[i])
+        C = Gs.T @ C                                                 # fixes e_{n-1}; recurse on the rest
+        word, ang = list(range(n - 2, -1, -1)) + word, th[::-1] + ang
+    return word, ang
+
+
+def three(M3, first):
+    """M3 = R_f(c) R_g(b) R_f(a) on three coordinates, f the plane (0, 1) if first == 0, else (1, 2)."""
+    if first == 1:
+        Jr = np.eye(3)[::-1]                                        # conjugation swaps the planes, R12(t) -> R01(-t)
+        a, b, c = three(Jr @ M3 @ Jr, 0)
+        return -a, -b, -c
+    b = np.arctan2(np.hypot(M3[0, 2], M3[1, 2]), M3[2, 2])
+    c = np.arctan2(M3[0, 2], -M3[1, 2]) if np.hypot(M3[0, 2], M3[1, 2]) > 1e-9 else 0.0
+    X = gr(1, b, 3).T @ gr(0, c, 3).T @ M3
+    a = np.arctan2(X[1, 0], X[0, 0])
+    assert np.allclose(gr(0, c, 3) @ gr(1, b, 3) @ gr(0, a, 3), M3, atol=1e-9)
+    return a, b, c
+
+
+def bring(W, A, k, s):
+    """Rewrite W[k:] by moves so that W[k] == s, for s a left descent of the rest."""
+    t = W[k]
+    if t == s:
+        return
+    bring(W, A, k + 1, s)
+    if abs(s - t) >= 2:                                             # commutation
+        W[k], W[k + 1], A[k], A[k + 1] = W[k + 1], W[k], A[k + 1], A[k]
+    else:                                                           # braid, solved on three coordinates
+        bring(W, A, k + 2, t)
+        i = min(W[k:k + 3])
+        A[k:k + 3] = three(prod(W[k:k + 3], A[k:k + 3])[i:i + 3, i:i + 3], W[k + 1] - i)
+        W[k:k + 3] = [W[k + 1], W[k], W[k + 1]]
+    assert W[k] == s
+
+
+def lift_plus(U):
+    """An element of SO(S+) over U: exp of s(A) for a real logarithm A of U."""
+    Tm, Z = schur(U, output="real")
+    A, i, neg = np.zeros((8, 8)), 0, []
+    while i < 8:
+        if i < 7 and abs(Tm[i + 1, i]) > 1e-12:
+            th = np.arctan2(Tm[i + 1, i], Tm[i, i]); A[i + 1, i], A[i, i + 1] = th, -th; i += 2
+        else:
+            if Tm[i, i] < 0:
+                neg.append(i)
+            i += 1
+    for p, q in zip(neg[::2], neg[1::2]):
+        A[q, p], A[p, q] = np.pi, -np.pi
+    A = Z @ A @ Z.T
+    assert np.allclose(expm(A), U, atol=1e-9)
+    return expm(splus(A))
+
+
+def compile_exact(U):
+    Cp = Pp @ (L @ PmP @ L.T).T @ (L @ lift_plus(U) @ L.T) @ Pp.T   # F+ = K C, in path coordinates
+    W, A = nested_angles(Cp)
+    assert np.allclose(prod(W, A), Cp, atol=1e-9)
+    for k in range(28):
+        bring(W, A, k, LET[k])
+    assert W == LET
+    x = np.array([t * o for t, o in zip(A, ORI)])
+    if np.abs(F(PAIRED, x) + U).max() < 1e-6:                      # the other lift: shift one angle by 2 pi
+        x[0] += 2 * np.pi
+    return np.abs(F(PAIRED, x) - U).max()
+
+
+rng = np.random.default_rng(4)
+special = [np.eye(8), -np.eye(8), np.diag([-1.0, -1] + [1] * 6), cz(0, 1) @ cz(1, 2)]
+special += [F(PAIRED, rng.integers(0, 8, 28) * np.pi / 2) for _ in range(20)]
+special += [F(THEIRS, np.array(MS) * np.pi / 4)]
+errs = [compile_exact(U) for U in list(T) + special + [special_ortho_group.rvs(8, random_state=rng) for _ in range(200)]]
+print(f"exact compilation into the paired circuit (lift, nested word, moves): {len(errs)} targets (the 10 of [1], "
+      f"{len(special)} special ones, 200 uniform), largest max |F(x) - U| = {max(errs):.1e}")
+assert max(errs) < 1e-9
 print("all checks pass")
