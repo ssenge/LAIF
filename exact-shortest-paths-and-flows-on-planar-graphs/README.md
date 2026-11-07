@@ -556,6 +556,16 @@ standard axioms (`propext`, `Classical.choice`, `Quot.sound`). There is no `sorr
   its tail (`WalkCut.boundary_lo`, `WalkCut.gcomp_lo_iff`), the copies $(d,\mathrm{false})$ of the edges form a
   walk on it (`WalkCut.isWalk_lo`), every vertex of the walk has exactly one part on it (`WalkCut.part_lo`,
   `WalkCut.part_lo_last`), and the two sides are different components (`WalkCut.not_gcomp`).
+- `lean/SsspFlow/Overlap.lean`: (C23) of `notes/LEMMA_O.md` for a planar map with a face whose corners read
+  $\kappa_0(x_a),\dots,\kappa_0(x_b),L_b,\kappa_1(y_b),\dots,\kappa_1(y_a),L_a$ in this cyclic order, the form of the
+  boundary of a live annulus with its pieces of $p_t^0$ and $p_t^1$ and its bounding paths $P_a$ and $P_b$
+  (`cornerSeg`), for dart weights that agree on the two darts of each edge. If a shortest walk from the tail of
+  $\kappa_0(i)$ to the tail of $\kappa_1(i)$ passes through the tail of $\kappa_0(x_a)$, of a corner of $L_a$ or of
+  $\kappa_1(y_a)$, then for $\max(x_a,y_a)\le\mu\le i$ the distance from $\kappa_0(\mu)$ to $\kappa_1(\mu)$ is the
+  distance from $\kappa_0(\mu)$ to that vertex plus the distance from it to $\kappa_1(\mu)$ (`FaceDrawn.overlap_a`). The
+  same holds with $\kappa_0(x_b)$, $L_b$ and $\kappa_1(y_b)$ for $i\le\mu\le\min(x_b,y_b)$ (`FaceDrawn.overlap_b`). Both
+  follow from `FaceDrawn.exchange`, a face read from another corner (`FaceDrawn.rotate`) and the symmetry of the
+  distance (`walkDist_comm`).
 - `lean/SsspFlow/Arborescence.lean`: the arithmetic of the contraction and the halving count of `notes/DMST.md`.
 - `lean/SsspFlow/NegScaling.lean`: the arithmetic of the scaling, the alternation, the short paths in a cluster and the arc inequality of `notes/NEGATIVE.md`.
   - `Setup.negCycle_iff`, `Setup.walks` and `Setup.lemmaD` prove it for any graph with the
@@ -844,9 +854,9 @@ standard axioms (`propext`, `Classical.choice`, `Quot.sound`). There is no `sorr
 Not formalized: the proofs of the cited propositions other than `AggBox` and `SmoothingBox`, among them `LDDBox`, the minimum cut of
 Theorem C, Theorem C′, the construction of the tiles and the rest of Lemma 14′, and Lemmas R5 and R7. Of Theorem D, the
 recursion argument of Lemma S2 and Lemma S1 are formalized, the latter on the cut of a planar map along a shortest path
-between corners of two different faces, and of Lemma O the cut of a disk along one chord, the cut along a walk and the
-exchange behind (C23). The rest of Lemma O, Lemmas N and R, the reduction of the minimum cut to
-the lengths $\lambda_t$ and the round count are not.
+between corners of two different faces, and of Lemma O the cut of a disk along one chord, the cut along a walk and
+(C23) for a boundary of the form of a live annulus. The rest of Lemma O, Lemmas N and R, the reduction of the minimum cut
+to the lengths $\lambda_t$ and the round count are not.
 
 ## Numerical checks (`sim/`)
 

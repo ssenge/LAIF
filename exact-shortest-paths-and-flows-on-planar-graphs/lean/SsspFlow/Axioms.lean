@@ -125,6 +125,11 @@ Expected output for each: `propext`, `Classical.choice`, `Quot.sound` (or a subs
 #print axioms SsspFlow.RotSystem.WalkCut.part_lo
 #print axioms SsspFlow.RotSystem.WalkCut.part_lo_last
 #print axioms SsspFlow.RotSystem.WalkCut.not_gcomp
+#print axioms SsspFlow.RotSystem.FaceDrawn.rotate
+#print axioms SsspFlow.RotSystem.walkDist_comm
+#print axioms SsspFlow.RotSystem.FaceDrawn.dist_through
+#print axioms SsspFlow.RotSystem.FaceDrawn.overlap_a
+#print axioms SsspFlow.RotSystem.FaceDrawn.overlap_b
 #print axioms SsspFlow.RotSystem.plain
 #print axioms SsspFlow.RotSystem.dual_toHypermap
 #print axioms SsspFlow.RotSystem.dual_dual
