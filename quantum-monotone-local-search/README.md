@@ -11,7 +11,7 @@ Monotone local search [1] turns an algorithm that extends a partial solution int
 
 **Theorem 1.** Let c > 1. Suppose Φ-Extension is decided by a backtracking tree with at most p(N) · c^k nodes, for a fixed polynomial p. That is, every node answers, makes one call, or branches into the OR of polynomially many children; it computes them in polynomial time and stores an instance of polynomial size; and the depth is polynomial. Then Φ-Subset has a quantum algorithm with bounded error, polynomial space and no quantum random access memory, running in time (2 − 1/c)^{n/2} N^{O(1)}. The same holds if Φ-Extension has any bounded-error quantum algorithm in polynomial space whose running time on every input is at most c^{k/2} p(N).
 
-Status: Claim, implied by the quantum walk of [2], amplitude amplification [6] and Lemma 2.2 of [1], with the classical extension algorithms of [3], [4], [5], [8] and [11] as stated. The averaging lemma for amplitude amplification and the bases of the corollaries are in Lean. The amplitude amplification over samples is simulated with an exact classical oracle on small instances.
+Status: Claim, implied by the quantum walk of [2], amplitude amplification [6] and Lemma 2.2 of [1], with the classical extension algorithms of [3], [4], [5], [8], [11] and [12] as stated. The averaging lemma for amplitude amplification and the bases of the corollaries are in Lean. The amplitude amplification over samples is simulated with an exact classical oracle on small instances.
 
 ## Corollaries
 
@@ -22,13 +22,14 @@ Status: Claim, implied by the quantum walk of [2], amplitude amplification [6] a
 | Subset Feedback Vertex Set, Group Feedback Vertex Set | LP-branching [8] | 4 | O(1.7500^n) | **O(1.3229^n)** |
 | Node Unique Label Cover, constant label set Σ | LP-branching [8] | \|Σ\|² | (2 − \|Σ\|^{−2})^n | **(2 − \|Σ\|^{−2})^{n/2}** |
 | 3-Hitting Set, also weighted | branching [11] | 2.168 | O(1.5388^n) | **O(1.2405^n)** |
+| Proper Interval Vertex Deletion | branching on small obstructions [12] | 6 | O(1.8334^n) | **O(1.3541^n)** |
 | Multicut on Trees (n edges) | branch and search [5] | √(√2 + 1) ≈ 1.5538 | O(1.3565^n) | **O(1.1647^n)** |
 | Min-Ones d-SAT, d ≥ 3 | branching on an unsatisfied clause [1] | d | (2 − 1/d)^n | **(2 − 1/d)^{n/2}**: 1.2910^n, 1.3229^n, 1.3417^n for d = 3, 4, 5 |
 | d-Hitting Set, d ≥ 4 | the same, as a special case | d | below this, by [1] | **(2 − 1/d)^{n/2}** |
 
 All quantum rows are for bounded error, polynomial space and no quantum random access memory, up to polynomial factors, and use the classical analyses as stated.
 
-**Before.** Grover search over all subsets takes 2^{n/2} ≈ 1.4142^n. For Feedback Vertex Set, a quantum walk on the branching algorithm of Razgon gives O*(1.8899^{n/2}) ⊂ O(1.3748^n), stated for Maximum Induced Forest in [9]. A quantum walk on a classical exact algorithm with base b gives √b, but only if that algorithm is a backtracking tree. Even the square roots of the exact bases listed in [1] are larger than the bounds above: √1.7347 ≈ 1.3171 for Feedback Vertex Set, √1.6181 ≈ 1.2721 for Cluster Vertex Deletion, √1.8638 ≈ 1.3652 for Subset Feedback Vertex Set and √1.8704 ≈ 1.3677 for 4-Hitting Set. For Group Feedback Vertex Set, Node Unique Label Cover, Multicut on Trees and Min-Ones d-SAT, [1] lists no exact algorithm faster than brute force. To our knowledge, no quantum version of monotone local search has been stated before. The classical column uses the same extension algorithm; faster classical bounds exist for some rows, such as 1.6097^n for Min-Ones 3-SAT in [1] and the randomized bounds for Feedback Vertex Set.
+**Before.** Grover search over all subsets takes 2^{n/2} ≈ 1.4142^n. For Feedback Vertex Set, a quantum walk on the branching algorithm of Razgon gives O*(1.8899^{n/2}) ⊂ O(1.3748^n), stated for Maximum Induced Forest in [9]. A quantum walk on a classical exact algorithm with base b gives √b, but only if that algorithm is a backtracking tree. Even the square roots of the exact bases listed in [1] are larger than the bounds above: √1.7347 ≈ 1.3171 for Feedback Vertex Set, √1.6181 ≈ 1.2721 for Cluster Vertex Deletion, √1.8638 ≈ 1.3652 for Subset Feedback Vertex Set and √1.8704 ≈ 1.3677 for 4-Hitting Set. For Group Feedback Vertex Set, Node Unique Label Cover, Multicut on Trees and Min-Ones d-SAT, [1] lists no exact algorithm faster than brute force, and for Proper Interval Vertex Deletion only (2 − ε)^n with ε < 10^{−20}. To our knowledge, no quantum version of monotone local search has been stated before. The classical column uses the same extension algorithm; faster classical bounds exist for some rows, such as 1.6097^n for Min-Ones 3-SAT in [1] and the randomized bounds for Feedback Vertex Set.
 
 For 3-Hitting Set, a walk on the exact algorithm of Wahlström would give about 1.2759^n if it is a backtracking tree, and on the exact weighted algorithm listed in [1] about √1.6755 ≈ 1.2945^n. The 2.168^k algorithm of [11] is a backtracking tree and gives 1.2405^n for both. The faster 2.0409^k algorithm of [7] contains a step that computes the optimum of a component before a tail call, so it is not a plain OR tree and is not used here. Problems that reduce to 3-Hitting Set on the same universe in polynomial time, such as Feedback Vertex Set in Tournaments (hitting all directed triangles), get the same bound.
 
@@ -72,6 +73,7 @@ In each case below, deleting X (or cutting X, for Multicut on Trees) turns the e
   - *Size.* The analysis of [4] bounds the leaves of the full combined recursion by O*(1.811^k); a VCalg leaf with negative budget is a no leaf.
 - **Group Feedback Vertex Set, Subset Feedback Vertex Set and Node Unique Label Cover [8].** The algorithms are LP-branching. Each node solves a half-integral relaxation in polynomial time and fixes, by single calls, assignments that do not raise the relaxed optimum. Otherwise it branches into two children for Group Feedback Vertex Set (Lemma 8 of [8]) or |Σ| children for Unique Label Cover (Lemma 1 and Corollary 4 of [8]). Each branch lowers the gap between the budget and the relaxed optimum by at least 1/2, so the depth of branching is at most 2k and there are at most 4^k or |Σ|^{2k} leaves. Subset Feedback Vertex Set reduces to Group Feedback Vertex Set on the same graph with the same budget, in polynomial time, by Lemma 5 of [10], with the group Z₂^{|S|}. This group is exponentially large, so the relaxation is solved in the oracle model of Section 5.2 of [8]. For Node Unique Label Cover the label set is fixed, so c = |Σ|² is a constant.
 - **3-Hitting Set and Weighted 3-Hitting Set [11].** The algorithm WHS-Alg of Appendix B.1 of [11] decides whether a hitting set of weight at most W exists, with a size parameter k used for the analysis. Its reduction rules answer (a hypergraph of degree at most two is solved in polynomial time) or make one call, one of them with modified weights. Each branching rule makes two calls and returns the first non-empty answer, so it is an OR. The measure is k − α(G) + 1 with α ≤ 0.87, and every branching number is at most 2.168, so the full tree has O*(2.168^k) leaves. The extension sets X into the solution: remove the hyperedges it hits and lower W by its weight. A solution S ⊇ X with |S \ X| ≤ k′ − t is then found. The answer may use more than k elements, which is allowed, since F_I has only the weight bound (the permissive extension of [1]). For unweighted 3-Hitting Set take unit weights and W = k.
+- **Proper Interval Vertex Deletion [12]** (proper interval and unit interval graphs are the same class). If G has an induced subgraph from a finite family F of graphs with at most 6 vertices, found in linear time, the algorithm of Theorem 3.3 of [12] branches into deleting each of its vertices, with budget k − 1. Otherwise G is F-free, and the problem is solved in linear time (Corollary 3.2 of [12]). This is an OR tree of depth at most k with at most 6^k leaves. Interval Vertex Deletion is not included: the 8^k algorithm of [13] solves components and modules to optimality before it continues, so it is not a plain OR tree.
 - **Multicut on Trees [5].** Cutting X removes its edges and the requests they separate, which leaves a forest; the algorithm of [5] cuts edges itself and handles forests. The reduction rules are single calls; those that use minimum vertex covers do so on auxiliary graphs of maximum degree two. The branching rules make two or a constant number of children, and the depth is polynomial. The number of leaves is bounded by L(k) ≤ ρ^k, with ρ = √(√2 + 1).
 - **Min-Ones d-SAT and d-Hitting Set [1].** Pick an unsatisfied clause and branch over its at most d variables set to 1, with budget k − 1. The depth is at most k, and there are at most d^{k+1} nodes.
 
@@ -82,11 +84,11 @@ In each case below, deleting X (or cutting X, for Multicut on Trees) turns the e
 | [`bounds.py`](bounds.py) | the bases √(2 − 1/c), and max_k min_t C(n,t)/C(k,t) c^{k−t} against (2 − 1/c)^n for n up to 3000 | all bases hold; the ratio stays below 1 ([`bounds.log`](bounds.log)) |
 | [`qmls_sim.py`](qmls_sim.py) | the sampling and amplification of Section 1, with an exact classical oracle given by three extension trees: clause branching for 3-Hitting Set, the branching of [3] (reduction 6 replaced by further branching), and induced-P3 branching for Cluster Vertex Deletion | 120 random instances each: the smallest accepted budget equals the optimum by brute force; at k′ = OPT at least C(k′, t) samples are marked; the averaged success is at least 0.417 ≥ 1/4; 40 state-vector runs per problem match the closed form; a greedy tree without the second branch misses the optimum on 13 of 100 graphs ([`qmls_sim.log`](qmls_sim.log)) |
 
-The script for Cluster Vertex Deletion runs the basic branching of base 3, not the algorithm of [4]. The scripts do not run the quantum walk, the bounded-error oracle or the algorithms of [4], [5], [8] and [11], and they do not check tree sizes.
+The script for Cluster Vertex Deletion runs the basic branching of base 3, not the algorithm of [4]. The scripts do not run the quantum walk, the bounded-error oracle or the algorithms of [4], [5], [8], [11] and [12], and they do not check tree sizes.
 
 ## 4. Limits
 
-- The running times of [3], [4], [5], [8] and [11] are used as stated there; their analyses are not reproduced here. The LP-branching algorithms of [8] and the algorithm of [11] are not run by the scripts.
+- The running times of [3], [4], [5], [8], [11] and [12] are used as stated there; their analyses are not reproduced here. The LP-branching algorithms of [8] and the algorithm of [11] are not run by the scripts.
 - The quantum walk of [2] and Lemma 2.2 of [1] are used as stated.
 - The scheme is the quantum form of the basic theorem of [1]. Its multivariate and sample-dependent extensions are not treated here.
 
@@ -101,6 +103,7 @@ The Lean library [`lean/`](lean/) is built on Mathlib and uses only the standard
 | `fvs_base` | √(2 − 1/3.460) ≤ 1.3081 |
 | `cvd_base` | √(2 − 1/1.811) ≤ 1.2033 |
 | `hs3_base` | √(2 − 1/2.168) ≤ 1.2405 |
+| `pivd_base` | √(2 − 1/6) ≤ 1.3541 |
 | `mct_base` | √(2 − 1/√(√2 + 1)) ≤ 1.1647 |
 | `d3_base`, `d4_base`, `d5_base` | √(2 − 1/d) ≤ 1.2910, 1.3229, 1.3417 (d = 4 also for c = 4 in the feedback vertex set rows) |
 
@@ -119,3 +122,5 @@ Not formalized: Lemma 2.2 of [1], the quantum walk, the error analysis of the or
 9. Kvantu algoritms maksimāla inducēta meža problēmai (a quantum algorithm for the maximum induced forest problem). Thesis, University of Latvia. https://dspace.lu.lv/handle/7/66169.
 10. M. Cygan, M. Pilipczuk and M. Pilipczuk. On group feedback vertex set parameterized by the size of the cutset. Algorithmica 74, 2016. arXiv:1112.6255.
 11. H. Shachnai and M. Zehavi. A multivariate framework for weighted FPT algorithms. ESA 2015. arXiv:1407.2033.
+12. Y. Cao. Unit interval editing is fixed-parameter tractable. ICALP 2015. arXiv:1504.04470.
+13. Y. Cao. Linear recognition of almost interval graphs. SODA 2016. arXiv:1403.1515.

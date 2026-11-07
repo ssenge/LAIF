@@ -53,6 +53,10 @@ theorem cvd_base : sqrt (2 - 1 / 1.811) ≤ 1.2033 :=
 theorem hs3_base : sqrt (2 - 1 / 2.168) ≤ 1.2405 :=
   sqrt_le_iff.mpr ⟨by norm_num, by norm_num⟩
 
+/-- Proper Interval Vertex Deletion, extension base 6: √(2 − 1/6) ≤ 1.3541. -/
+theorem pivd_base : sqrt (2 - 1 / 6) ≤ 1.3541 :=
+  sqrt_le_iff.mpr ⟨by norm_num, by norm_num⟩
+
 /-- Min-Ones 3-SAT, base 3: √(5/3) ≤ 1.2910. -/
 theorem d3_base : sqrt (2 - 1 / 3) ≤ 1.2910 :=
   sqrt_le_iff.mpr ⟨by norm_num, by norm_num⟩
