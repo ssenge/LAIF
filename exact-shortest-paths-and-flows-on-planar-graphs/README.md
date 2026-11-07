@@ -434,7 +434,9 @@ as well (`lean/SsspFlow/WitnessInterval.lean`), and its separation step (S_1) fo
 planar map with the two copies of the first cut path on one face (`lean/SsspFlow/Separation.lean`). The cut of a planar
 map along a shortest path between corners of two different faces is such a drawing, so Lemma S1 holds in Lean on the cut
 itself, with no hypothesis beyond the map, the path and the weights (`lean/SsspFlow/CutMap.lean`,
-`lean/SsspFlow/CutAnnulus.lean`). With the repair the driver
+`lean/SsspFlow/CutAnnulus.lean`). The facts of Lemma O that the recursion uses hold in Lean as well, in a split model of
+the incisions, and with them a run of the recursion on the cut computes the least $\lambda_t$
+(`lean/SsspFlow/Pieces.lean`, `lean/SsspFlow/Run.lean`). With the repair the driver
 is right on all 25 failing instances of the search (161 of 300 runs were wrong without it)
 and on 1,440,000 sweep instances, where it made 6 errors in 1,200,000 without the repair.
 Lemma S needs a side lemma (Lemma O) about one incision, which the proof of Theorem D also uses,
@@ -592,6 +594,33 @@ standard axioms (`propext`, `Classical.choice`, `Quot.sound`). There is no `sorr
   $x_a=x$ and $y_a=y$ (`CutPath.Live.hi`). If $Q$ avoids the corners of $L_a$, the side of $\kappa_1(y)$ is a live
   annulus with $x_b=x$ and $y_b=y$ (`CutPath.Live.lo`). The distances on the side come from
   `WalkCut.walkDist_hi` (Claim 13), and the rest of the invariant passes to the side (Claim 14, `WalkCut.old_hi`).
+- `lean/SsspFlow/Pieces.lean`: (I3) of `notes/LEMMA_O.md`. A dart of the doubled map at $p_t$ lies in the cut at
+  exactly one of the copies $p_t^0$, $p_t^1$ (`CutPath.sector`, `CutPath.not_sector_both`), and a dart of an edge of
+  the path joins two copies of one side (`CutPath.side_eq`, `CutPath.not_mem_Γ_of_sides`). A dart of a live annulus
+  at the copy $p_t^0$ lies at the vertex of $\kappa_0(t)$, and then $x_a\le t\le x_b$; at the copy $p_t^1$ it lies at
+  the vertex of $\kappa_1(t)$, and then $y_a\le t\le y_b$ (`CutPath.Live.piece`). A simple shortest walk of finite
+  length from the vertex of $\kappa_0(i)$ to the vertex of $\kappa_1(i)$ contains a step: its part from its last
+  vertex at a copy $p_x^0$ to the first vertex at a copy $p_y^1$ after it (`CutPath.Live.exists_step`).
+- `lean/SsspFlow/Run.lean`: the recursion [18, Alg. 3] with the repair, on the live annuli of the split model. A run
+  on a live annulus with the index range $[j,k]$ (`CutPath.Run`) is a leaf if $k\le j+1$, with the lengths at $j$ and
+  $k$. Otherwise it takes a shortest walk $P_i$ from $\kappa_0(i)$ to $\kappa_1(i)$ for $i=\lfloor(j+k)/2\rfloor$,
+  the least and the greatest index $i_1$, $i_2$ of a copy of the path at a vertex of $P_i$ (`CutPath.idx`) and a step
+  of $P_i$, and it computes the lengths at $i$, $\max(i_1,j)$ and $\min(i_2,k)$. Each side has an overlap, if $P_i$
+  passes through a corner of its bound, and then the length through that corner is computed for every index between
+  the end of the range and $i$; or its child is the live annulus on its side of the step (`CutPath.Live.lo`,
+  `CutPath.Live.hi`); or its range is empty. The bound of the side of $j$ is $\kappa_0(x_a)$, $L_a$, $\kappa_1(y_a)$
+  and that of the side of $k$ is $\kappa_0(x_b)$, $L_b$, $\kappa_1(y_b)$; the two end corners belong to the bound
+  also where no bounding path exists, which (C23) allows. Every computed length is $\lambda_t$ of its index $t$
+  (`CutPath.Run.vals_eq`), in the annulus by (INV) and through the corner of an overlap by (C23). A walk of the cut
+  gives a walk of the annulus of `CutAnnulus.lean` that is no longer (`IsWalk.exists_adjWalk`,
+  `CutPath.exists_walk`, `CutPath.lamD_eq`). So Lemma S1 holds for the image of $P_i$ in the cut
+  (`CutPath.Live.dom`), a run is a tree of the index model of `Recursion.lean` with the same computed indices
+  (`CutPath.Run.toRec`, `CutPath.Run.computed_eq`), and by Lemma S2 the least computed length of a run on the cut is
+  the least $\lambda_t$ (`CutPath.Run.isLeast`). A run on the cut exists (`CutPath.exists_run`,
+  `CutPath.nonempty_run`), since shortest walks exist (`CutPath.Live.exists_shortest`) and a side without overlap
+  avoids its bound, so that its child is a live annulus. `CutPath.recursion_cut` collects these facts for a planar
+  connected map, natural dart weights that agree on the two darts of each edge, and a shortest path with positive
+  weights between corners of two different faces.
 - `lean/SsspFlow/Arborescence.lean`: the arithmetic of the contraction and the halving count of `notes/DMST.md`.
 - `lean/SsspFlow/NegScaling.lean`: the arithmetic of the scaling, the alternation, the short paths in a cluster and the arc inequality of `notes/NEGATIVE.md`.
   - `Setup.negCycle_iff`, `Setup.walks` and `Setup.lemmaD` prove it for any graph with the
@@ -878,13 +907,12 @@ standard axioms (`propext`, `Classical.choice`, `Quot.sound`). There is no `sorr
   results of `LabelFinal.lean` and `NegFinal.lean` without `AggBox` and `SmoothingBox`.
 
 Not formalized: the proofs of the cited propositions other than `AggBox` and `SmoothingBox`, among them `LDDBox`, the minimum cut of
-Theorem C, Theorem C′, the construction of the tiles and the rest of Lemma 14′, and Lemmas R5 and R7. Of Theorem D, the
-recursion argument of Lemma S2 and Lemma S1 are formalized, the latter on the cut of a planar map along a shortest path
-between corners of two different faces, and of Lemma O the cut of a disk along one chord, the cut along a walk,
-(C23) for a boundary of the form of a live annulus, (INV) on the side of $k_a$ of a cut along a shortest walk, and
-the invariant (I) for the cut along the path and for both sides of a step. The rest of Lemma O, among it the choice
-of the step from the computed walk and its link to the recursion argument, Lemmas N and R, the reduction of the
-minimum cut to the lengths $\lambda_t$ and the round count are not.
+Theorem C, Theorem C′, the construction of the tiles and the rest of Lemma 14′, and Lemmas R5 and R7. Of Theorem D,
+Lemmas S1 and S2 and the facts of Lemma O that the recursion uses are formalized, in a split model of the incisions on
+the cut of a planar map along a shortest path between corners of two different faces: a run of the recursion on the
+cut exists, every length it computes is a length $\lambda_t$, and the least of them is the least $\lambda_t$.
+Lemmas N and R, on the token graph and the graph $\hat G_\ell$ of the algorithm, the reduction of the minimum cut to
+the lengths $\lambda_t$ and the round count are not.
 
 ## Numerical checks (`sim/`)
 
