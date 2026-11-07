@@ -113,6 +113,26 @@ Each cell gives the lower bound, at confidence 1 − 10⁻⁴ per cell from 10�
 
 For d = 4, 6, 8, 10 and 40 this covers every girth from 16 (d = 4) or 12 (d = 6, 8, 10, 40) up to 30, the largest girth in [1, Table 3]. For d = 20 it covers girth 12 to 26, and for d = 30 girth 12 to 24. At the smaller girths the Local Vector column of [1] is above QAOA. So is, by at least 0.0025, the best linear factor of the same radius (see Status and checks), which holds under the cautious radius count of Section 1. So at every girth of [1, Table 3], for d = 4, 6, 8, 10 and 40, a classical local algorithm has a value at least as high as QAOA. For d = 3 this was shown in [6] with a different classical algorithm, which also asked about higher degree.
 
+### 5. Classical: colour-vector dynamics, Max-3-Cut on 4-regular graphs
+
+Every vertex carries a unit vector ψ in ℂᵏ. It starts at cos α · u + sin α · w_c, where u is the uniform vector, c is a uniformly random colour, the only randomness, and w_c is the unit vector along e_c − u/√k. Each of the p layers multiplies ψ(c) by exp(−iγ_n h(c)), where h(c) is the sum of |ψ_j(c)|² over the neighbours j, and then applies exp(−iβ_n |u⟩⟨u|). The output colour is the c with the largest |ψ(c)|. For k = 2 this is the rotation dynamics VIRAL of [6]. In general it is the classical counterpart of QAOA with the Grover mixer, with one vector per vertex in place of the quantum state. Its radius is p, so its tree value holds at girth 2p + 2, as for QAOA at depth p.
+
+The 2p + 1 parameters are trained by gradient descent on the radius-p tree itself, on a smooth version of the cut fraction (`sim/cdyn_train.py`), after a first training on a random 4-regular graph (`sim/cdyn.py`). Depth 10 uses the depth-9 schedule with its last layer repeated. The tree value is then estimated from fresh seeds (`sim/cdyn_tree.py`), with the lower bound of Section 1 at confidence 1 − 10⁻⁴ per row. All 9 rows hold together with probability at least 1 − 9 · 10⁻⁴.
+
+| girth | p | QAOA [1], depth p | Previous best bound [1] | Lower bound | Mean ± s.e. | Samples |
+|---|---|---|---|---|---|---|
+| 6 | 2 | 0.891 | 0.930 (Local Vector) | 0.8992 | 0.9006 ± 0.0003 | 10⁶ |
+| 8 | 3 | 0.921 | 0.944 (Local Vector) | 0.9335 | 0.9346 ± 0.0002 | 10⁶ |
+| 10 | 4 | 0.940 | 0.949 (Local Vector) | **0.9521** | 0.9531 ± 0.0002 | 10⁶ |
+| 12 | 5 | 0.952 | 0.954 (Local Vector) | **0.9621** | 0.9630 ± 0.0002 | 10⁶ |
+| 14 | 6 | 0.961 | 0.961 (QAOA) | **0.9709** | 0.9717 ± 0.0002 | 10⁶ |
+| 16 | 7 | 0.968 | 0.968 (QAOA) | **0.9754** | 0.9761 ± 0.0002 | 10⁶ |
+| 18 | 8 | 0.973 | 0.973 (QAOA) | **0.9801** | 0.9808 ± 0.0001 | 10⁶ |
+| 20 | 9 | 0.977 | 0.977 (QAOA) | **0.9836** | 0.9845 ± 0.0002 | 5 · 10⁵ |
+| 22 | 10 | 0.980 | 0.980 (QAOA) | **0.9848** | 0.9858 ± 0.0002 | 3 · 10⁵ |
+
+So for Max-3-Cut on 4-regular graphs this classical local algorithm is above QAOA at every girth of [1, Table 4], from 6 to 22, and above every value of [1] from girth 10 on, by 0.003 to 0.010. From girth 14 on it is also above Sections 1 and 2. To our knowledge these are the highest values for a local algorithm on these graphs at these girths.
+
 ## The rules
 
 The rule space is every deterministic rule that is equivariant under renaming the colours. A rule chooses, for each pair (count of neighbours with my colour, sorted counts of the other colours), whether to keep the colour or to move to the colour with a given count rank, splitting ties at random. The rules were optimized by exact coordinate ascent, on the tree value for the quantum algorithm and on random samples for the classical one.
@@ -129,10 +149,12 @@ Numerical results. No part is formalized in Lean.
   - The contraction (`sim/chain.py`) reproduces the QAOA values of [1]: for k = 3 at d = 4, 6, 8 up to depth 5 or 6, and for k = 4 at d = 4, 8 up to depth 5. It also gives 0.6925 and 0.7559 for Max-Cut on 3-regular graphs.
   - The value after the round agrees with a full 14-qutrit state vector to 10⁻¹² (k = 3, d = 3, q = 1, random angles and rules).
   - With the rule "keep", the classical program returns the Local Vector value.
+  - The tree evaluation of Section 5 (`sim/cdyn_tree.py`, single precision, one level of the tree per array) agrees with the graph dynamics of `sim/cdyn.py` run in double precision on an explicit radius-3 tree (`sim/cdyn_check.py`): 0.93463 ± 0.00025 from 10⁶ samples against 0.93461 from 2 · 10⁵ edges.
   - For k = 2, the reduced sampler of `sim/lv2.py` agrees with the full program of `sim/lv_plus_rule.py` within the statistical error: 0.7800 against 0.7798 at d = 4, m = 3, and 0.7530 against 0.7528 at d = 6, m = 5, with s.e. 0.0007.
   - For k = 2, the best linear factor of i.i.d. normal variables of the same radius with sign rounding, the class of [7], computed exactly as a generalized eigenvalue problem (`sim/linfactor.py`), is at least 0.0025 below every cell of Section 4. At every girth of [1, Table 3] not covered by Section 4, it is above QAOA by at least 0.0025 for d = 4, 6, 8, 10 and 40.
 - **Not covered:**
   - for k = 3 and 4, degrees above 8, except the one row for d = 20;
+  - the dynamics of Section 5 for other k and d. The tree has 2(d − 1)^p leaves, which limits sampling to small d;
   - the infinite-degree limit, where [1] reports its largest QAOA advantage;
   - more than two classical rounds;
   - randomized rules.
@@ -148,6 +170,7 @@ Numerical results. No part is formalized in Lean.
 - `sim/lv_threshold.py`, `sim/lv_threshold_certify.py`: a threshold rule for large d, and its fresh-sample evaluation (`data/lvthr_cert_3_20.json`).
 - `sim/lv2rounds.py`: Algorithm 1 of [1] with two rounds (`data/lv2rounds_cert.jsonl`).
 - `sim/lv2.py`: the Max-Cut case of Section 4 (`data/lv2_k2.jsonl`); `sim/linfactor.py`: the linear-factor check.
+- `sim/cdyn.py`, `sim/cdyn_train.py`, `sim/cdyn_tree.py`, `sim/cdyn_check.py`: the dynamics of Section 5, its training on a graph and on the tree, the tree value and the cross-check (`data/cdyn_params_3_4.jsonl`, `data/cdyn_cert_3_4.jsonl`).
 - `sim/make_tables.py`: builds Tables 1 and 2 from `data/`.
 
 Requirements: Python 3.12 with numpy, scipy and jax. Run the scripts from `sim/`, with the files from `data/` copied in.
