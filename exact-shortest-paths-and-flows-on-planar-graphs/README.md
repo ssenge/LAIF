@@ -523,6 +523,13 @@ standard axioms (`propext`, `Classical.choice`, `Quot.sound`). There is no `sorr
   different components. `DiskChord.cut_inner`, `DiskChord.cut_start`, `DiskChord.cut_stop`: every vertex of the chord
   splits into one vertex on each side, and the other vertices stay (`DiskChord.fconnect_cut_iff`).
   `DiskChord.isWalk_one`, `DiskChord.isWalk_two`: the two copies of the chord are walks of the cut, one on each side.
+- `lean/SsspFlow/Exchange.lean`: the exchange behind (C23) of `notes/LEMMA_O.md`, for dart weights that agree on the
+  two darts of each edge. Let $a,b,c,d,e$ be corners in this cyclic order on one face of a planar map, and let $P$ be
+  a shortest walk of finite length from the tail of $b$ through the tail of $e$ to the tail of $c$. A walk from the
+  tail of $a$ to the tail of $d$ crosses both parts of $P$, and swapping in the part of $P$ between the two crossings
+  gives a walk through the tail of $e$ that is no longer. So the distance from $a$ to $d$ is at least the distance
+  from $a$ to $e$ plus the distance from $e$ to $d$ (`FaceDrawn.exchange`), and equal to it by the triangle inequality
+  (`walkDist_triangle`).
 - `lean/SsspFlow/Arborescence.lean`: the arithmetic of the contraction and the halving count of `notes/DMST.md`.
 - `lean/SsspFlow/NegScaling.lean`: the arithmetic of the scaling, the alternation, the short paths in a cluster and the arc inequality of `notes/NEGATIVE.md`.
   - `Setup.negCycle_iff`, `Setup.walks` and `Setup.lemmaD` prove it for any graph with the
@@ -811,7 +818,8 @@ standard axioms (`propext`, `Classical.choice`, `Quot.sound`). There is no `sorr
 Not formalized: the proofs of the cited propositions other than `AggBox` and `SmoothingBox`, among them `LDDBox`, the minimum cut of
 Theorem C, Theorem C′, the construction of the tiles and the rest of Lemma 14′, and Lemmas R5 and R7. Of Theorem D, the
 recursion argument of Lemma S2 and Lemma S1 are formalized, the latter on the cut of a planar map along a shortest path
-between corners of two different faces, and of Lemma O the cut of a disk along one chord. The rest of Lemma O, Lemmas
+between corners of two different faces, and of Lemma O the cut of a disk along one chord and the exchange behind
+(C23). The rest of Lemma O, Lemmas
 N and R, the reduction of the minimum cut to the lengths $\lambda_t$ and the round count are not.
 
 ## Numerical checks (`sim/`)

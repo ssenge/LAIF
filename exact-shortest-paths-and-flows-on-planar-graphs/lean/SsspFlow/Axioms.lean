@@ -100,6 +100,7 @@ Expected output for each: `propext`, `Classical.choice`, `Quot.sound` (or a subs
 #print axioms SsspFlow.RotSystem.DiskChord.fconnect_cut_iff
 #print axioms SsspFlow.RotSystem.DiskChord.isWalk_one
 #print axioms SsspFlow.RotSystem.DiskChord.isWalk_two
+#print axioms SsspFlow.RotSystem.FaceDrawn.exchange
 #print axioms SsspFlow.RotSystem.plain
 #print axioms SsspFlow.RotSystem.dual_toHypermap
 #print axioms SsspFlow.RotSystem.dual_dual

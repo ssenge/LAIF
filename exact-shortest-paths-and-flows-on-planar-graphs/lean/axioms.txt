@@ -95,6 +95,7 @@
 'SsspFlow.RotSystem.DiskChord.fconnect_cut_iff' depends on axioms: [propext, Classical.choice, Quot.sound]
 'SsspFlow.RotSystem.DiskChord.isWalk_one' depends on axioms: [propext, Classical.choice, Quot.sound]
 'SsspFlow.RotSystem.DiskChord.isWalk_two' depends on axioms: [propext, Classical.choice, Quot.sound]
+'SsspFlow.RotSystem.FaceDrawn.exchange' depends on axioms: [propext, Classical.choice, Quot.sound]
 'SsspFlow.RotSystem.plain' depends on axioms: [propext, Classical.choice, Quot.sound]
 'SsspFlow.RotSystem.dual_toHypermap' depends on axioms: [propext, Classical.choice, Quot.sound]
 'SsspFlow.RotSystem.dual_dual' depends on axioms: [propext, Classical.choice, Quot.sound]
