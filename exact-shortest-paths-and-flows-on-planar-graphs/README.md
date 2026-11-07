@@ -530,6 +530,26 @@ standard axioms (`propext`, `Classical.choice`, `Quot.sound`). There is no `sorr
   gives a walk through the tail of $e$ that is no longer. So the distance from $a$ to $d$ is at least the distance
   from $a$ to $e$ plus the distance from $e$ to $d$ (`FaceDrawn.exchange`), and equal to it by the triangle inequality
   (`walkDist_triangle`).
+- `lean/SsspFlow/EdgeCut.lean`: the cut of one edge whose digon corners $m$, $r$ are not in $\Gamma$, from the vertex
+  of a corner $k_1$ of $\Gamma$. If the head carries no corner, the boundary $k_1,a_1,\dots,a_p$ becomes
+  $k_1,a_1,\dots,a_p,m,r$ (`EdgeCut.boundary_slit`) and the head stays one vertex (`EdgeCut.cut_head_free`). If the
+  head carries the corner $k_2$, the boundary $k_1,a_1,\dots,a_p,k_2,b_1,\dots,b_q$ becomes the two boundaries
+  $k_1,a_1,\dots,a_p,r$ and $m,k_2,b_1,\dots,b_q$ (`EdgeCut.boundary_hi`, `EdgeCut.boundary_lo`), and the head splits
+  in two (`EdgeCut.cut_head`). The tail splits in two (`EdgeCut.cut_tail`), the copy $(d,\mathrm{true})$ of the edge
+  starts at the vertex of $k_1$ (`EdgeCut.cut_rot_k1`), the other boundaries and vertices stay
+  (`EdgeCut.boundary_of_boundary`, `EdgeCut.fconnect_cut_iff`), and the corners stay connected
+  (`EdgeCut.skeletonConnected`).
+- `lean/SsspFlow/WalkCut.lean`: the cut along a walk, seen from one side. A `WalkCut` is a walk of the split from the
+  vertex of $k_a$ to the vertex of $k_b$ for a boundary $k_a,a_1,\dots,a_p,k_b,b_1,\dots,b_q$, with distinct vertices
+  and distinct edges, whose vertices after the first carry no corner of $k_a,a_1,\dots,a_p$. Unlike a `DiskChord` it
+  may pass through corners of $b_1,\dots,b_q$ and run along edges cut at both digon corners, the first of them through
+  its copy $(d,\mathrm{true})$. Cutting it adds the digon corners of all its edges to $\Gamma$, one edge at a time
+  (`WalkCut.state`). If the map is planar and connected and $\Gamma$ is connected, the side of $k_a$ has the boundary
+  $k_a,a_1,\dots,a_p,r_n,\dots,r_1$, with $r_j$ the digon corner of the $j$-th edge at its head
+  (`WalkCut.boundary_hi`), and its corners are the corners in the component of $k_a$ (`WalkCut.gcomp_hi_iff`). The
+  copies $(d,\mathrm{true})$ of the edges form a walk on this side (`WalkCut.isWalk_hi`), every vertex of the walk has
+  exactly one part on this side (`WalkCut.part_hi`, `WalkCut.part_hi_last`), and the other vertices stay
+  (`WalkCut.fconnect_cut_iff`).
 - `lean/SsspFlow/Arborescence.lean`: the arithmetic of the contraction and the halving count of `notes/DMST.md`.
 - `lean/SsspFlow/NegScaling.lean`: the arithmetic of the scaling, the alternation, the short paths in a cluster and the arc inequality of `notes/NEGATIVE.md`.
   - `Setup.negCycle_iff`, `Setup.walks` and `Setup.lemmaD` prove it for any graph with the
@@ -818,9 +838,9 @@ standard axioms (`propext`, `Classical.choice`, `Quot.sound`). There is no `sorr
 Not formalized: the proofs of the cited propositions other than `AggBox` and `SmoothingBox`, among them `LDDBox`, the minimum cut of
 Theorem C, Theorem C′, the construction of the tiles and the rest of Lemma 14′, and Lemmas R5 and R7. Of Theorem D, the
 recursion argument of Lemma S2 and Lemma S1 are formalized, the latter on the cut of a planar map along a shortest path
-between corners of two different faces, and of Lemma O the cut of a disk along one chord and the exchange behind
-(C23). The rest of Lemma O, Lemmas
-N and R, the reduction of the minimum cut to the lengths $\lambda_t$ and the round count are not.
+between corners of two different faces, and of Lemma O the cut of a disk along one chord, the cut along a walk seen
+from one side and the exchange behind (C23). The rest of Lemma O, Lemmas N and R, the reduction of the minimum cut to
+the lengths $\lambda_t$ and the round count are not.
 
 ## Numerical checks (`sim/`)
 

@@ -76,3 +76,5 @@ import SsspFlow.CutMap
 import SsspFlow.CutAnnulus
 import SsspFlow.Incision
 import SsspFlow.Exchange
+import SsspFlow.EdgeCut
+import SsspFlow.WalkCut
