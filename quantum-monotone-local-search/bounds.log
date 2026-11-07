@@ -8,6 +8,11 @@ Cluster Vertex Deletion          c = 1.811000 (Tsur, branching); classical 2-1/c
     n =   200: log(max min) - n log(2-1/c) = -0.112  (2 log(n+1) = 10.607)
     n =  1000: log(max min) - n log(2-1/c) = -0.112  (2 log(n+1) = 13.818)
     n =  3000: log(max min) - n log(2-1/c) = -0.112  (2 log(n+1) = 16.013)
+3-Hitting Set, weighted          c = 2.168000 (Shachnai-Zehavi, branching); classical 2-1/c = 1.538745; quantum sqrt = 1.240462 <= 1.2405
+    n =    50: log(max min) - n log(2-1/c) = -0.177  (2 log(n+1) = 7.864)
+    n =   200: log(max min) - n log(2-1/c) = -0.171  (2 log(n+1) = 10.607)
+    n =  1000: log(max min) - n log(2-1/c) = -0.172  (2 log(n+1) = 13.818)
+    n =  3000: log(max min) - n log(2-1/c) = -0.172  (2 log(n+1) = 16.013)
 Multicut on Trees                c = 1.553774 (Kanj et al., branch and search); classical 2-1/c = 1.356406; quantum sqrt = 1.164648 <= 1.1647
     n =    50: log(max min) - n log(2-1/c) = -0.072  (2 log(n+1) = 7.864)
     n =   200: log(max min) - n log(2-1/c) = -0.069  (2 log(n+1) = 10.607)

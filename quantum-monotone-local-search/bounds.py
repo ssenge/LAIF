@@ -6,6 +6,7 @@ import math
 CASES = [  # problem, extension base c, source of the extension algorithm
     ("Feedback Vertex Set", 3.460, "Iwata-Kobayashi, highest-degree branching"),
     ("Cluster Vertex Deletion", 1.811, "Tsur, branching"),
+    ("3-Hitting Set, weighted", 2.168, "Shachnai-Zehavi, branching"),
     ("Multicut on Trees", math.sqrt(math.sqrt(2) + 1), "Kanj et al., branch and search"),
     ("Min-Ones 3-SAT", 3.0, "branching on an unsatisfied clause"),
     ("Min-Ones 4-SAT, 4-Hitting Set", 4.0, "branching on an unsatisfied clause"),
