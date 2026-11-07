@@ -115,9 +115,9 @@ For d = 4, 6, 8, 10 and 40 this covers every girth from 16 (d = 4) or 12 (d = 6,
 
 ### 5. Classical: colour-vector dynamics, Max-3-Cut on 4-regular graphs
 
-Every vertex carries a unit vector ψ in ℂᵏ. It starts at cos α · u + sin α · w_c, where u is the uniform vector, c is a uniformly random colour, the only randomness, and w_c is the unit vector along e_c − u/√k. Each of the p layers multiplies ψ(c) by exp(−iγ_n h(c)), where h(c) is the sum of |ψ_j(c)|² over the neighbours j, and then applies exp(−iβ_n |u⟩⟨u|). The output colour is the c with the largest |ψ(c)|. For k = 2 this is the rotation dynamics VIRAL of [6]. In general it is the classical counterpart of QAOA with the Grover mixer, with one vector per vertex in place of the quantum state. Its radius is p, so its tree value holds at girth 2p + 2, as for QAOA at depth p.
+Every vertex carries a unit vector ψ in ℂᵏ. It starts at cos α · u + sin α · w_c, where u is the uniform vector, c is a uniformly random colour, the only randomness, and w_c is the unit vector along e_c − u/√k. Each of the p layers multiplies ψ(c) by exp(−iγ_n h(c)), where h(c) is the sum of |ψ_j(c)|² over the neighbours j, and then applies exp(−iβ_n |u⟩⟨u|). The output colour is the c with the largest |ψ(c)|, the smallest such c on a tie. For k = 2 this is the rotation dynamics VIRAL of [6]. In general it is the classical counterpart of QAOA with the Grover mixer, with one vector per vertex in place of the quantum state. Its radius is p, so its tree value holds at girth 2p + 2, as for QAOA at depth p.
 
-The 2p + 1 parameters are trained by gradient descent on the radius-p tree itself, on a smooth version of the cut fraction (`sim/cdyn_train.py`), after a first training on a random 4-regular graph (`sim/cdyn.py`). Depth 10 uses the depth-9 schedule with its last layer repeated. The tree value is then estimated from fresh seeds (`sim/cdyn_tree.py`), with the lower bound of Section 1 at confidence 1 − 10⁻⁴ per row. All 9 rows hold together with probability at least 1 − 9 · 10⁻⁴.
+The 2p + 1 parameters are trained by gradient descent on the radius-p tree itself, on a smooth version of the cut fraction (`sim/cdyn_train.py`), after a first training on a random 4-regular graph (`sim/cdyn.py`). Depth 10 uses the depth-9 schedule with its last layer repeated. The tree value is then estimated from fresh seeds (`sim/cdyn_tree.py`, with the batch sizes recorded in `data/cdyn_cert_3_4.jsonl`), with the lower bound of Section 1 at confidence 1 − 10⁻⁴ per row. All 9 rows hold together with probability at least 1 − 9 · 10⁻⁴.
 
 | girth | p | QAOA [1], depth p | Previous best bound [1] | Lower bound | Mean ± s.e. | Samples |
 |---|---|---|---|---|---|---|
@@ -131,7 +131,7 @@ The 2p + 1 parameters are trained by gradient descent on the radius-p tree itsel
 | 20 | 9 | 0.977 | 0.977 (QAOA) | **0.9836** | 0.9845 ± 0.0002 | 5 · 10⁵ |
 | 22 | 10 | 0.980 | 0.980 (QAOA) | **0.9848** | 0.9858 ± 0.0002 | 3 · 10⁵ |
 
-So for Max-3-Cut on 4-regular graphs this classical local algorithm is above QAOA at every girth of [1, Table 4], from 6 to 22, and above every value of [1] from girth 10 on, by 0.003 to 0.010. From girth 14 on it is also above Sections 1 and 2. To our knowledge these are the highest values for a local algorithm on these graphs at these girths.
+So for Max-3-Cut on 4-regular graphs this classical local algorithm is above QAOA at every girth of [1, Table 4], from 6 to 22, and above every value of [1] from girth 10 on, by 0.003 to 0.010. From girth 8 on it is also above Sections 1 and 2 wherever those are computed. To our knowledge, from girth 12 to 22 these are the highest values for a local algorithm on these graphs. At girth 10 this holds under the cautious radius count of Section 1, since Section 3 gives 0.9532 for the Local Vector algorithm at the girth stated in [1].
 
 ## The rules
 

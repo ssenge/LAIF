@@ -1,7 +1,7 @@
 """Tree value of the colour-vector dynamics of cdyn.py: Random sampling of the i.i.d. seeds of the radius-p neighbourhood of an
 edge of the d-regular tree (valid at girth 2p + 2). Empirical variance lower bound (README reference [4]) at confidence 1 - 1e-4.
 
-usage: cdyn_tree.py k d p params.json-line-index samples [batch]
+usage: cdyn_tree.py k d p params.jsonl samples [batch]
 """
 import sys, json, math, time
 import numpy as np
