@@ -10,13 +10,13 @@ This folder gives a schedule with a random geometric offset and a certified cons
 
 | Quantity | Previous best bound | This folder |
 |---|---|---|
-| Search, unknown t, expected oracle queries divided by √(N/t), as t/N → 0 | 9/4, proved, Grover iterations only [1, Theorem 3]; about 1.32, numerical [3]; about 1.434, conjectured, for fixed-point search [4] | **≤ 1.1341**, checks included |
+| Search, unknown t, expected oracle queries divided by √(N/t), as t/N → 0 | 9/4, proved [1, proof of Theorem 3; 2, Eq. (3)]; about 1.32, numerical [3]; about 1.434, conjectured, for fixed-point search [4] | **≤ 1.1341**, checks included |
 | The same, for every N and every t ≤ N/4 | 9.2/3 ≈ 3.07, proved, checks included [2, Eq. (10)] | **≤ 1.1676** (parameters S) |
 | The same bound uniformly for every t ≤ N | | **≤ 1.6740** (parameters U) |
-| Minimum finding of N distinct values, expected queries until the minimum is found, divided by √N, as N → ∞ | 5.3801, proved, leading term [2, Section 2.3]; about 2.46, numerical [3] | **≤ 2.0942** |
-| The same, for every N | 6.3505√N + 2.8203, proved [2] | **≤ 2.293√N + 69** |
+| Minimum finding of N distinct values, expected queries until the minimum is found, divided by √N, as N → ∞ | about 4.155, implied by [2, Lemma 6 and Eq. (3)] (the stated closed form has leading term 5.3801); about 2.46, numerical [3] | **≤ 2.0942** |
+| The same, for every N | 6.3505√N + 2.8203, proved [2] | **≤ 2.293√N + 69**, smaller for N ≥ 267 |
 
-For t ≥ N/4, [2] proves an absolute bound of 2.0344 expected queries, which the bound of parameters U does not improve.
+All counts are oracle queries, with c_q = 1 in the notation of [2]. For t ≥ N/4, [2] proves an absolute bound of 2.0344 expected queries, which the bound of parameters U does not improve.
 
 Among schedules that use a fixed number of iterations in each round, with ratios repeating with period at most 3 and a random offset, numerical optimization of the limit t/N → 0 gives 1.1315 at ratio 1.594 (`sim/cont2.py`). The certified schedule uses a narrow random window for the number of iterations, which costs 0.2 percent and makes the tail of the series provably geometric.
 
@@ -41,7 +41,7 @@ Write t/N = sin²θ. A round with k iterations succeeds with probability sin²((
 
 and E(θ) = (1/M) Σ_u Σ_i w_i Π_{j<i} q_j with w_i = a_i + (h_i − 1)/2 + 1. The bound covers all θ ∈ (0, π/2] in four parts.
 
-- **Small θ ≤ 10⁻⁸.** With y = mθ, the rounds of all M offsets form one geometric lattice with ratio λ^(1/M), and replacing θ by θλ^(1/M) only permutes the offsets. Up to explicit error terms of order 10⁻⁶, θE(θ) is then bounded by a function of y that is periodic in log y. Its supremum over one period is bounded with interval arithmetic on 4000 cells: 1.13406. Rounds with m < 60 enter only through their cost, and rounds with y ≥ 400 through a geometric series with ratio at most λ·(1/2 + 1/(4(1 − α)y)) < 1.
+- **Small θ ≤ 10⁻⁸.** With y = mθ, the rounds of all M offsets form one geometric lattice with ratio λ^(1/M), and replacing θ by θλ^(1/M) only permutes the offsets of the rounds with y ≥ 60θ_L, the only ones whose failure factors enter the bound. Up to explicit error terms of order 10⁻⁶, θE(θ) is then bounded by a function of y that is periodic in log y. Its supremum over one period is bounded with interval arithmetic on 4000 cells: 1.13406. Rounds with m < 60 enter only through their cost, and rounds with y ≥ 400 through a geometric series with ratio at most λ·(1/2 + 1/(4(1 − α)y)) < 1.
 - **10⁻⁸ ≤ θ ≤ π/4**, and θ ≥ π/4 written in d = π/2 − θ, where q = 1/2 − (sin(4(a + h)d) − sin(4ad)) / (4h·sin 2d): interval bounds on 1.8·10⁵ geometric cells of relative width 10⁻⁴, and 6.7·10⁴ cells in d. Once every later round has q ≤ 0.58, the rest is bounded by a geometric series, since λ·0.58 < 1.
 - **d ≤ 10⁻³** (parameters U): the two classical samples fail with probability sin²d ≤ d² each, and a crude bound on the rest gives E ≤ 1.0000033.
 
@@ -53,7 +53,7 @@ and E(θ) = (1/M) Σ_u Σ_i w_i Π_{j<i} q_j with w_i = a_i + (h_i − 1)/2 + 1.
 
 Numerical certificate, for every N and t. No part is formalized in Lean.
 
-- `sim/cert.py S` and `sim/cert.py U` compute the bounds in `data/cert_S.json` and `data/cert_U.json`, each in a few minutes.
+- `sim/cert.py S` and `sim/cert.py U` compute the bounds in `data/cert_S.json` and `data/cert_U.json`, each in about a minute.
 - On cells of width zero, the cell bound agrees with the exact expectation at random θ to within the factor 1 + 10⁻⁹, and is never below it.
 - `sim/sim.py` runs the algorithm with sampled outcomes, 20000 runs per case, and agrees with the exact expectation within the statistical error, for example 1.1376 ± 0.0049 against 1.1471 for N = 2²⁰, t = 1 with parameters U.
 
