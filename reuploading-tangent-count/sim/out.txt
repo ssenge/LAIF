@@ -1,0 +1,25 @@
+one encoded qubit (ancilla layout), uniform gates: dim T after each block
+   N=1: dim T = 2(2^N-1)(E+1) for E = 1..5, increment 2 per block
+   N=2: dim T = 2(2^N-1)(E+1) for E = 1..6, increment 6 per block
+   N=3: dim T = 2(2^N-1)(E+1) for E = 1..4, increment 14 per block
+   N=2, E=3, three gates per block: 24
+other layouts, uniform gates: dim T <= 2(2^N-1)(E+1)
+   N=2 layers=[[0, 1], [0, 1]]: 26 <= 30
+   N=2 layers=[[0, 1], [0, 1], [0, 1]]: 36 <= 42
+   N=2 layers=[[0], [0, 1], [1]]: 30 <= 30
+   N=3 layers=[[0, 1], [0, 1]]: 68 <= 70
+   N=3 layers=[[0, 1, 2], [1]]: 70 <= 70
+   N=3 layers=[[2], [0, 2], [1]]: 70 <= 70
+   parallel circuit N=2, E=4: 26 = 5E+6
+special gates: dim T <= 2(2^N-1)(E+1)
+   identity      E=2: 18 <= 18
+   identity      E=4: 30 <= 30
+   H x I         E=2: 16 <= 18
+   H x I         E=4: 28 <= 30
+   CNOT (H x H)  E=2: 16 <= 18
+   CNOT (H x H)  E=4: 28 <= 30
+   mixed         E=2: 18 <= 18
+   mixed         E=4: 30 <= 30
+constraint map dp -> Re<p, dp> has rank 2E+1 at uniform gates (N=2, one encoded qubit)
+   rank 2E+1 for E = 1..6
+all checks passed
