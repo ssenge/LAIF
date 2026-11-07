@@ -14,7 +14,7 @@ Run Algorithm 1 of [1] with parameter m. Then apply one round of a rule that map
 
 With τ > 0, the colour that Algorithm 1 gives a vertex depends on the scores of its neighbours, whose vectors reach distance m − 1. So we count it as radius m, valid at girth 2m + 2, and the algorithm with the round as radius m + 1, valid at girth 2m + 4. [1, Theorem 2] states girth max(2m, 6) for Algorithm 1. As far as we can see, the covariance of the scores of a neighbour of u and a neighbour of v, for an edge uv, can differ from its tree value at girth 2m and 2m + 1, so we use the more cautious count. This may only be a difference in conventions. It does not affect the comparisons below, which use the values of [1] at the girths stated there.
 
-"Lower bound" is the empirical variance bound [4] at confidence 1 − 10⁻⁴ per row, rounded down. It is computed from 10⁶ fresh samples of the edge neighbourhood, independent of the samples used to choose τ and the rule. All 17 rows of this section hold together with probability at least 1 − 1.7 · 10⁻³. The values of [1] are rounded to three digits, so a row counts only if its lower bound exceeds them by at least 0.0005.
+"Lower bound" is the empirical variance bound [4] at confidence 1 − 10⁻⁴ per row, rounded down. It is computed from 10⁶ fresh samples of the edge neighbourhood, independent of the samples used to choose τ and the rule. The rows shown are selected from 29 certified rows (`data/`). All 29 hold together with probability at least 1 − 2.9 · 10⁻³. The values of [1] are rounded to three digits, so a row counts only if its lower bound exceeds them by at least 0.0005.
 
 | k | d | girth | m | Previous best bound [1] | Lower bound | Mean ± s.e. |
 |---|---|---|---|---|---|---|
@@ -47,7 +47,7 @@ With two rounds, first at the vertices within distance 1 of the edge and then at
 |---|---|---|---|---|---|---|
 | 3 | 4 | 18 | 6 | 0.973 (QAOA) | **0.9751** | 0.9756 ± 0.0001 |
 
-So for Max-3-Cut on 6- and 8-regular graphs and Max-4-Cut on 8-regular graphs, this classical algorithm is above every value of [1, Tables 4, 5] at each girth in the table, which includes QAOA up to depth 10 for k = 3 and up to depth 8 for k = 4. On 4-regular graphs the same holds at girth 14 to 18 for k = 3 and at girth 12 and 14 for k = 4, and on 20-regular graphs at girth 22 for k = 3.
+So for Max-3-Cut on 6- and 8-regular graphs and Max-4-Cut on 8-regular graphs, this classical algorithm, with one round, is above every value of [1, Tables 4, 5] at each girth in the table, which includes QAOA up to depth 10 for k = 3 and up to depth 8 for k = 4. On 4-regular graphs the same holds at girth 14 to 18 for k = 3 and at girth 12 and 14 for k = 4, and on 20-regular graphs at girth 22 for k = 3. Girth 18 for k = 3, d = 4 uses two rounds.
 
 ### 2. Quantum: QAOA plus one round
 
@@ -94,9 +94,9 @@ Algorithm 1 of [1], with τ optimized and evaluated on fresh samples, gives valu
 
 ### 4. Max-Cut: Local Vector algorithm plus one round
 
-For k = 2 the colour that Algorithm 1 of [1] gives a vertex v is the sign of z_v = Y_v − (τ/√d)·Σ_{w∼v} Y_w, where Y is the difference of the two coordinates of the normal score vectors. So only the 2d scores of the vertices within distance 1 of the edge are sampled, from their exact covariance, and 10⁷ samples per cell are cheap (`sim/lv2.py`). One round of a rule as in Section 1 follows. The optimized rules are thresholds: a vertex changes its side if at least t of its d neighbours are on its own side, with t just above d/2. For d = 30 and 40 the search is restricted to these rules.
+For k = 2 the colour that Algorithm 1 of [1] gives a vertex v is the sign of z_v = Y_v − (τ/√d)·Σ_{w∼v} Y_w, where Y is the difference of the two coordinates of the normal score vectors. So only the 2d scores of the vertices within distance 1 of the edge are sampled, from their exact covariance, and 10⁷ samples per cell are cheap (`sim/lv2.py`). One round of a rule as in Section 1 follows. The optimized rules change the side of a vertex if the number of its neighbours on its own side lies in a band from t to t′, with t just above d/2 and t′ ≤ d. For d = 30 and 40 the search is restricted to thresholds, t′ = d.
 
-Each cell gives the lower bound, at confidence 1 − 10⁻⁴ per cell from 10⁷ fresh samples, and in brackets the previous best bound: the largest value of [1, Table 3] at that girth, over QAOA up to depth (girth − 2)/2 and the Local Vector algorithm. A cell is shown if the lower bound exceeds it by at least 0.0005. All 63 cells hold together with probability at least 1 − 6.3 · 10⁻³.
+Each cell gives the lower bound, at confidence 1 − 10⁻⁴ per cell from 10⁷ fresh samples, and in brackets the previous best bound: the largest value of [1, Table 3] at that girth, over QAOA up to depth (girth − 2)/2 and the Local Vector algorithm. A cell is shown if the lower bound exceeds it by at least 0.0005. The cells shown are selected from 86 certified rows (`data/lv2_k2.jsonl`). All 86 hold together with probability at least 1 − 8.6 · 10⁻³.
 
 | girth | d = 4 | d = 6 | d = 8 | d = 10 | d = 20 | d = 30 | d = 40 |
 |---|---|---|---|---|---|---|---|
@@ -111,7 +111,7 @@ Each cell gives the lower bound, at confidence 1 − 10⁻⁴ per cell from 10�
 | 28 | **0.8327** (0.829) | **0.7729** (0.769) | **0.7362** (0.733) | **0.7104** (0.709) |  |  | **0.6041** (0.603) |
 | 30 | **0.8341** (0.832) | **0.7739** (0.772) | **0.7370** (0.735) | **0.7112** (0.710) |  |  | **0.6045** (0.603) |
 
-For d = 4, 6, 8, 10 and 40 this covers every girth from 16 (d = 4) or 12 (d = 6, 8, 10, 40) up to 30, the largest girth in [1, Table 3]. For d = 20 it covers girth 12 to 26, and for d = 30 girth 12 to 24. At the smaller girths the Local Vector column of [1] is above QAOA. So at every girth of [1, Table 3], for d = 4, 6, 8, 10 and 40, a classical local algorithm has a value at least as high as QAOA. For d = 3 this was shown in [6] with a different classical algorithm, which also asked about higher degree.
+For d = 4, 6, 8, 10 and 40 this covers every girth from 16 (d = 4) or 12 (d = 6, 8, 10, 40) up to 30, the largest girth in [1, Table 3]. For d = 20 it covers girth 12 to 26, and for d = 30 girth 12 to 24. At the smaller girths the Local Vector column of [1] is above QAOA. So is, by at least 0.0025, the best linear factor of the same radius (see Status and checks), which holds under the cautious radius count of Section 1. So at every girth of [1, Table 3], for d = 4, 6, 8, 10 and 40, a classical local algorithm has a value at least as high as QAOA. For d = 3 this was shown in [6] with a different classical algorithm, which also asked about higher degree.
 
 ## The rules
 
@@ -124,17 +124,17 @@ All optimized rules share one shape. A vertex moves only to a least-used colour 
 Numerical results. No part is formalized in Lean.
 
 - **Quantum values** (Table 2): exact contraction of the tree tensor network [1, 3, 5] at the angles in `data/hybrid_params.json`, in double precision. The edge phase splits into one k × k matrix per index of the label string, so one level costs (2q + 1)·k^(2q+2).
-- **Classical values** (Tables 1 and 3): `sim/lv_certify.py` and `sim/lv_baseline.py`, random sampling of the joint normal scores of the vertices within distance 2 of an edge. The covariances are the exact tree overlaps of the vectors of [1, eq. 21, 23]. The lower bounds hold with probability at least 1 − 10⁻⁴ per row over the random samples.
+- **Classical values** (Tables 1 and 3): `sim/lv_certify.py` and `sim/lv_baseline.py`, random sampling of the joint normal scores of the vertices within distance 2 of an edge (distance 3 for two rounds). The covariances are the exact tree overlaps of the vectors of [1, eq. 21, 23]. The lower bounds hold with probability at least 1 − 10⁻⁴ per row over the random samples.
 - **Cross-checks:**
   - The contraction (`sim/chain.py`) reproduces the QAOA values of [1]: for k = 3 at d = 4, 6, 8 up to depth 5 or 6, and for k = 4 at d = 4, 8 up to depth 5. It also gives 0.6925 and 0.7559 for Max-Cut on 3-regular graphs.
   - The value after the round agrees with a full 14-qutrit state vector to 10⁻¹² (k = 3, d = 3, q = 1, random angles and rules).
   - With the rule "keep", the classical program returns the Local Vector value.
   - For k = 2, the reduced sampler of `sim/lv2.py` agrees with the full program of `sim/lv_plus_rule.py` within the statistical error: 0.7800 against 0.7798 at d = 4, m = 3, and 0.7530 against 0.7528 at d = 6, m = 5, with s.e. 0.0007.
-  - For k = 2, the best linear factor of i.i.d. normal variables of the same radius with sign rounding, the class of [7], computed exactly as a generalized eigenvalue problem (`sim/linfactor.py`), is at least 0.0026 below every cell of Section 4.
+  - For k = 2, the best linear factor of i.i.d. normal variables of the same radius with sign rounding, the class of [7], computed exactly as a generalized eigenvalue problem (`sim/linfactor.py`), is at least 0.0025 below every cell of Section 4. At every girth of [1, Table 3] not covered by Section 4, it is above QAOA by at least 0.0025 for d = 4, 6, 8, 10 and 40.
 - **Not covered:**
   - for k = 3 and 4, degrees above 8, except the one row for d = 20;
   - the infinite-degree limit, where [1] reports its largest QAOA advantage;
-  - more than one classical round;
+  - more than two classical rounds;
   - randomized rules.
 
 ## Files

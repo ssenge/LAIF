@@ -1,4 +1,4 @@
-"""Max-Cut (k = 2) version of lv_plus_rule.py with exact Gaussian reduction. For k = 2 the Local Vector label of
+"""Max-Cut (k = 2) version of lv_plus_rule.py with an exact reduction of the normal scores. For k = 2 the Local Vector label of
 vertex v is 1 iff z_v = Y_v - (tau / sqrt d) sum_{w ~ v} Y_w > 0 with Y = X_1 - X_2, so only the 2d vertices at
 distance <= 1 from the edge are sampled, from the covariance of z. Then one round of the label-count rule.
 
@@ -70,7 +70,7 @@ def certify(d, m, tau, rule, total, rng, chunk=200_000):
         s += h.sum(); s2 += (h * h).sum(); n += chunk
     mean = s / n; var = (s2 / n - mean ** 2) * n / (n - 1)
     Lg = math.log(2 / 1e-4)
-    lcb = mean - math.sqrt(2 * var * Lg / n) - 7 * Lg / (3 * (n - 1))      # empirical Bernstein, confidence 1 - 1e-4
+    lcb = mean - math.sqrt(2 * var * Lg / n) - 7 * Lg / (3 * (n - 1))      # empirical variance bound, reference [4] of the README, confidence 1 - 1e-4
     return mean, math.sqrt(var / n), lcb, n
 
 if __name__ == "__main__":

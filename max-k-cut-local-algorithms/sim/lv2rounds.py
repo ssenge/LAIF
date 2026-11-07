@@ -1,6 +1,6 @@
 """Local Vector algorithm of 2609.39042 with parameter m, then TWO rounds of label-count rules (rule1 at the
 vertices within distance 1 of the edge, then rule2 at u, v). Radius m + 2, compared at girth 2m + 6.
-Monte Carlo on the radius-3 neighbourhood of an edge.
+Random sampling on the radius-3 neighbourhood of an edge.
 
 usage: lv2rounds.py k d m tau [search_samples] [cert_samples]
 """
