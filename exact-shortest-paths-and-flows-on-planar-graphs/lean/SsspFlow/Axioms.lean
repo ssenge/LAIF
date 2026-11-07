@@ -118,6 +118,13 @@ Expected output for each: `propext`, `Classical.choice`, `Quot.sound` (or a subs
 #print axioms SsspFlow.RotSystem.WalkCut.part_hi
 #print axioms SsspFlow.RotSystem.WalkCut.part_hi_last
 #print axioms SsspFlow.RotSystem.WalkCut.fconnect_cut_iff
+#print axioms SsspFlow.RotSystem.WalkCut.reverse_Γ'
+#print axioms SsspFlow.RotSystem.WalkCut.boundary_lo
+#print axioms SsspFlow.RotSystem.WalkCut.gcomp_lo_iff
+#print axioms SsspFlow.RotSystem.WalkCut.isWalk_lo
+#print axioms SsspFlow.RotSystem.WalkCut.part_lo
+#print axioms SsspFlow.RotSystem.WalkCut.part_lo_last
+#print axioms SsspFlow.RotSystem.WalkCut.not_gcomp
 #print axioms SsspFlow.RotSystem.plain
 #print axioms SsspFlow.RotSystem.dual_toHypermap
 #print axioms SsspFlow.RotSystem.dual_dual

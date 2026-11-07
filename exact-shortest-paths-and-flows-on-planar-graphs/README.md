@@ -539,7 +539,7 @@ standard axioms (`propext`, `Classical.choice`, `Quot.sound`). There is no `sorr
   starts at the vertex of $k_1$ (`EdgeCut.cut_rot_k1`), the other boundaries and vertices stay
   (`EdgeCut.boundary_of_boundary`, `EdgeCut.fconnect_cut_iff`), and the corners stay connected
   (`EdgeCut.skeletonConnected`).
-- `lean/SsspFlow/WalkCut.lean`: the cut along a walk, seen from one side. A `WalkCut` is a walk of the split from the
+- `lean/SsspFlow/WalkCut.lean`: the cut along a walk. A `WalkCut` is a walk of the split from the
   vertex of $k_a$ to the vertex of $k_b$ for a boundary $k_a,a_1,\dots,a_p,k_b,b_1,\dots,b_q$, with distinct vertices
   and distinct edges, whose vertices after the first carry no corner of $k_a,a_1,\dots,a_p$. Unlike a `DiskChord` it
   may pass through corners of $b_1,\dots,b_q$ and run along edges cut at both digon corners, the first of them through
@@ -549,7 +549,13 @@ standard axioms (`propext`, `Classical.choice`, `Quot.sound`). There is no `sorr
   (`WalkCut.boundary_hi`), and its corners are the corners in the component of $k_a$ (`WalkCut.gcomp_hi_iff`). The
   copies $(d,\mathrm{true})$ of the edges form a walk on this side (`WalkCut.isWalk_hi`), every vertex of the walk has
   exactly one part on this side (`WalkCut.part_hi`, `WalkCut.part_hi_last`), and the other vertices stay
-  (`WalkCut.fconnect_cut_iff`).
+  (`WalkCut.fconnect_cut_iff`). If moreover the vertices after the first carry no corner of $k_b,b_1,\dots,b_q$
+  and the last edge, if it is cut at both digon corners, is used through its copy $(d,\mathrm{false})$, the walk
+  read backwards is a `WalkCut` that cuts the same edges (`WalkCut.reverse`, `WalkCut.reverse_Γ'`). Then the side
+  of $k_b$ has the boundary $k_b,b_1,\dots,b_q,m_1,\dots,m_n$, with $m_j$ the digon corner of the $j$-th edge at
+  its tail (`WalkCut.boundary_lo`, `WalkCut.gcomp_lo_iff`), the copies $(d,\mathrm{false})$ of the edges form a
+  walk on it (`WalkCut.isWalk_lo`), every vertex of the walk has exactly one part on it (`WalkCut.part_lo`,
+  `WalkCut.part_lo_last`), and the two sides are different components (`WalkCut.not_gcomp`).
 - `lean/SsspFlow/Arborescence.lean`: the arithmetic of the contraction and the halving count of `notes/DMST.md`.
 - `lean/SsspFlow/NegScaling.lean`: the arithmetic of the scaling, the alternation, the short paths in a cluster and the arc inequality of `notes/NEGATIVE.md`.
   - `Setup.negCycle_iff`, `Setup.walks` and `Setup.lemmaD` prove it for any graph with the
@@ -838,8 +844,8 @@ standard axioms (`propext`, `Classical.choice`, `Quot.sound`). There is no `sorr
 Not formalized: the proofs of the cited propositions other than `AggBox` and `SmoothingBox`, among them `LDDBox`, the minimum cut of
 Theorem C, Theorem C′, the construction of the tiles and the rest of Lemma 14′, and Lemmas R5 and R7. Of Theorem D, the
 recursion argument of Lemma S2 and Lemma S1 are formalized, the latter on the cut of a planar map along a shortest path
-between corners of two different faces, and of Lemma O the cut of a disk along one chord, the cut along a walk seen
-from one side and the exchange behind (C23). The rest of Lemma O, Lemmas N and R, the reduction of the minimum cut to
+between corners of two different faces, and of Lemma O the cut of a disk along one chord, the cut along a walk and the
+exchange behind (C23). The rest of Lemma O, Lemmas N and R, the reduction of the minimum cut to
 the lengths $\lambda_t$ and the round count are not.
 
 ## Numerical checks (`sim/`)

@@ -19,6 +19,15 @@ edges form a walk on this side (`WalkCut.isWalk_hi`). Every vertex of the walk h
 on this side, the vertex of `ka` or of `r_j` (`WalkCut.part_hi`, `WalkCut.part_hi_last`), and the
 other vertices do not change (`WalkCut.fconnect_cut_iff`).
 
+If moreover the vertices after the first carry no corner of `kb, b_1, …, b_q`, and the last edge is
+used through its copy `(d, false)` if its digon corners are in `Γ`, the walk read backwards is a
+`WalkCut` from `kb` to `ka` (`WalkCut.reverse`) that cuts the same edges (`WalkCut.reverse_Γ'`).
+Let `m_j` be the digon corner of the `j`-th edge at its tail. Then the side of `kb` has the boundary
+`kb, b_1, …, b_q, m_1, …, m_n` (`WalkCut.boundary_lo`, `WalkCut.gcomp_lo_iff`), the copies
+`(d, false)` of the edges form a walk on it (`WalkCut.isWalk_lo`), every vertex of the walk has
+exactly one part on it (`WalkCut.part_lo`, `WalkCut.part_lo_last`), and the two sides are different
+components (`WalkCut.not_gcomp`).
+
 The proof cuts one edge at a time (`EdgeCut`, `WalkCut.state`). An edge into a vertex without
 corners is a slit, an edge into a vertex with a corner is a chord, and an edge whose digon corners
 are in `Γ` moves the boundary along. In the chord case the rest of the walk joins the next vertex to
@@ -373,21 +382,25 @@ theorem stays {j : ℕ} (hj : j < W.n) (hnew : W.mc j ∉ Γ) {i : ℕ} (hi : i 
   · exact W.not_fconnect_rc (by omega) hj (by omega) hrc (key _ h)
   · exact hw0 hw
 
+/-- An edge whose digon corners are corners leaves the part `hc j` through its copy `(d, true)`. -/
+theorem snd_eq_true {j : ℕ} (hj : j < W.n) (hold : W.mc j ∈ Γ)
+    (h2 : fconnect (R.double.split (W.Γs j)).rot (W.q j) (W.hc j)) : (W.q j).2 = true := by
+  cases j with
+  | zero => exact W.first hold
+  | succ i =>
+    by_contra hf
+    have hq : W.q (i + 1) = W.mc (i + 1) :=
+      Prod.ext rfl (show (W.q (i + 1)).2 = false by simpa using hf)
+    rw [hq] at h2
+    exact W.mc_ne_rc hj (by omega)
+      (R.double.eq_of_fconnect_split (W.subset_Γs _ hold) (W.hc_mem _) h2)
+
 /-- An edge whose digon corners are corners already: the boundary moves along it. -/
 theorem step_old {j : ℕ} (hj : j < W.n) (hs : W.State j) (hold : W.mc j ∈ Γ) :
     (j + 1 < W.n → W.State (j + 1)) ∧ (j + 1 = W.n → W.Final) := by
   obtain ⟨⟨Bj, hb⟩, h2, hS, h4, h5⟩ := hs
   have hrc : W.rc j ∈ Γ := (W.pair j hj).1 hold
-  have ht : (W.q j).2 = true := by
-    cases j with
-    | zero => exact W.first hold
-    | succ i =>
-      by_contra hf
-      have hq : W.q (i + 1) = W.mc (i + 1) :=
-        Prod.ext rfl (show (W.q (i + 1)).2 = false by simpa using hf)
-      rw [hq] at h2
-      exact W.mc_ne_rc hj (by omega)
-        (R.double.eq_of_fconnect_split (W.subset_Γs _ hold) (W.hc_mem _) h2)
+  have ht : (W.q j).2 = true := W.snd_eq_true hj hold h2
   have hq : ((W.q j).1, true) = W.q j := Prod.ext rfl ht.symm
   have hrev : R.double.rev (W.q j) = W.rc j := by
     show (R.rev (W.q j).1, !(W.q j).2) = (R.rev (W.q j).1, false)
@@ -675,6 +688,15 @@ theorem gcomp_hi_iff {y : D × Bool} (hy : y ∈ W.Γ') :
 theorem fconnect_hc {k : ℕ} (hk : k < W.n) : fconnect (R.double.split Γ).rot (W.q k) (W.hc k) :=
   (W.final hR hC hS).2.2.1 k hk
 
+/-- The copy `(d, true)` of the `k`-th edge starts at the part `hc k` of its tail. -/
+theorem fconnect_copy {k : ℕ} (hk : k < W.n) :
+    fconnect (R.double.split W.Γ').rot ((W.q k).1, true) (W.hc k) :=
+  (W.final hR hC hS).2.2.2.1 k hk
+
+/-- An edge whose digon corners are corners is used through its copy `(d, true)`. -/
+theorem old_true {j : ℕ} (hj : j < W.n) (hold : W.mc j ∈ Γ) : (W.q j).2 = true :=
+  W.snd_eq_true hj hold (W.state hR hC hS j hj).2.1
+
 /-- **The walk on the side of `ka`.** The copies `(d, true)` of the edges form a walk of the cut
 from the vertex of `ka` to the vertex of `r_n`. -/
 theorem isWalk_hi : (R.double.split W.Γ').IsWalk ((R.double.split W.Γ').tail W.ka) W.copy
@@ -735,6 +757,252 @@ theorem part_hi_last {z : D × Bool} (hz : fconnect (R.double.split Γ).rot z W.
     · rw [show W.n - 1 = m by omega]
 
 end Side
+
+/-! ### The side of `kb` -/
+
+/-- The heads of distinct edges lie at distinct vertices. -/
+theorem rev_inj {a b : ℕ} (ha : a < W.n) (hb : b < W.n)
+    (h : fconnect (R.double.split Γ).rot (R.double.rev (W.q a)) (R.double.rev (W.q b))) :
+    a = b := by
+  rcases Nat.lt_or_ge (a + 1) W.n with ha1 | ha1 <;> rcases Nat.lt_or_ge (b + 1) W.n with hb1 | hb1
+  · have := W.simple (a + 1) (b + 1) ha1 hb1
+      (connect_trans (fconnect_symm (W.walk a ha1)) (connect_trans h (W.walk b hb1)))
+    omega
+  · have e : W.n - 1 = b := by omega
+    have hb' : fconnect (R.double.split Γ).rot (R.double.rev (W.q b)) W.kb := by
+      rw [← e]
+      exact W.stop
+    exact absurd (connect_trans (fconnect_symm (W.walk a ha1)) (connect_trans h hb'))
+      (W.simple_last (a + 1) ha1)
+  · have e : W.n - 1 = a := by omega
+    have ha' : fconnect (R.double.split Γ).rot (R.double.rev (W.q a)) W.kb := by
+      rw [← e]
+      exact W.stop
+    exact absurd (connect_trans (fconnect_symm (W.walk b hb1)) (connect_trans (fconnect_symm h) ha'))
+      (W.simple_last (b + 1) hb1)
+  · omega
+
+/-- The head of an edge is not at the vertex of `ka`. -/
+theorem rev_not_ka {a : ℕ} (ha : a < W.n) :
+    ¬ fconnect (R.double.split Γ).rot (R.double.rev (W.q a)) W.ka := fun h => by
+  have h0 := connect_trans h (fconnect_symm W.start)
+  rcases Nat.lt_or_ge (a + 1) W.n with ha1 | ha1
+  · have := W.simple (a + 1) 0 ha1 W.pos (connect_trans (fconnect_symm (W.walk a ha1)) h0)
+    omega
+  · have e : W.n - 1 = a := by omega
+    have ha' : fconnect (R.double.split Γ).rot (R.double.rev (W.q a)) W.kb := by
+      rw [← e]
+      exact W.stop
+    exact W.simple_last 0 W.pos (fconnect_symm (connect_trans (fconnect_symm ha') h0))
+
+/-- The digon corners at the tails of the edges, in the order of the walk. -/
+def ms : List (D × Bool) := (List.range W.n).map W.mc
+
+/-- The copies `(d, false)` of the edges. -/
+def copy0 : List (D × Bool) := (List.range W.n).map fun j => ((W.q j).1, false)
+
+section Reverse
+
+variable (hlast : (R.rev (W.q (W.n - 1)).1, false) ∈ Γ → (W.q (W.n - 1)).2 = false)
+  (hB : ∀ j, 0 < j → j < W.n → ∀ c ∈ W.kb :: W.B, ¬ fconnect (R.double.split Γ).rot (W.q j) c)
+
+/-- The walk read backwards, from the vertex of `kb` to the vertex of `ka`, if the last edge is used
+through its copy `(d, false)` when its digon corners are corners and the inner vertices carry no
+corner of `kb, b_1, …, b_q`. -/
+def reverse : R.WalkCut Γ where
+  n := W.n
+  q j := R.double.rev (W.q (W.n - 1 - j))
+  ka := W.kb
+  kb := W.ka
+  A := W.B
+  B := W.A
+  pos := W.pos
+  bound := W.bound.append_comm
+  start := by
+    show fconnect _ (R.double.rev (W.q (W.n - 1 - 0))) W.kb
+    rw [Nat.sub_zero]
+    exact W.stop
+  walk j hj := by
+    show fconnect _ (R.double.rev (R.double.rev (W.q (W.n - 1 - j))))
+      (R.double.rev (W.q (W.n - 1 - (j + 1))))
+    rw [R.double.rev_rev]
+    have h := W.walk (W.n - 1 - (j + 1)) (by omega)
+    rw [show W.n - 1 - (j + 1) + 1 = W.n - 1 - j by omega] at h
+    exact fconnect_symm h
+  stop := by
+    show fconnect _ (R.double.rev (R.double.rev (W.q (W.n - 1 - (W.n - 1))))) W.ka
+    rw [R.double.rev_rev, Nat.sub_self]
+    exact W.start
+  simple i j hi hj h := by
+    have := W.rev_inj (a := W.n - 1 - i) (b := W.n - 1 - j) (by omega) (by omega) h
+    omega
+  simple_last i hi := W.rev_not_ka (by omega)
+  edges i j hi hj h := by
+    have key : W.n - 1 - i = W.n - 1 - j := by
+      rcases h with h | h
+      · have h' : R.rev (W.q (W.n - 1 - i)).1 = R.rev (W.q (W.n - 1 - j)).1 := h
+        have h'' := congrArg R.rev h'
+        rw [R.rev_rev, R.rev_rev] at h''
+        exact W.edges _ _ (by omega) (by omega) (Or.inl h'')
+      · have h' : R.rev (W.q (W.n - 1 - i)).1 = R.rev (R.rev (W.q (W.n - 1 - j)).1) := h
+        rw [R.rev_rev] at h'
+        exact (W.edges _ _ (by omega) (by omega) (Or.inr h'.symm)).symm
+    omega
+  pair j hj := by
+    show (R.rev (W.q (W.n - 1 - j)).1, false) ∈ Γ ↔
+      (R.rev (R.rev (W.q (W.n - 1 - j)).1), false) ∈ Γ
+    rw [R.rev_rev]
+    exact (W.pair _ (by omega)).symm
+  first h := by
+    have h' : (R.rev (W.q (W.n - 1)).1, false) ∈ Γ := by
+      have h1 : (R.rev (W.q (W.n - 1 - 0)).1, false) ∈ Γ := h
+      rwa [Nat.sub_zero] at h1
+    show (!(W.q (W.n - 1 - 0)).2) = true
+    simp [hlast h']
+  avoid j h0 hj c hc h := by
+    have h1 := W.walk (W.n - 1 - j) (by omega)
+    rw [show W.n - 1 - j + 1 = W.n - j by omega] at h1
+    exact hB (W.n - j) (by omega) (by omega) c hc (connect_trans (fconnect_symm h1) h)
+
+theorem reverse_mc (i : ℕ) : (W.reverse hlast hB).mc i = W.rc (W.n - 1 - i) := rfl
+
+theorem reverse_rc (i : ℕ) : (W.reverse hlast hB).rc i = W.mc (W.n - 1 - i) := by
+  show (R.rev (R.rev (W.q (W.n - 1 - i)).1), false) = ((W.q (W.n - 1 - i)).1, false)
+  rw [R.rev_rev]
+
+/-- The walk read backwards cuts the same edges. -/
+theorem reverse_Γ' : (W.reverse hlast hB).Γ' = W.Γ' := by
+  ext z
+  show z ∈ (W.reverse hlast hB).Γs W.n ↔ z ∈ W.Γs W.n
+  rw [(W.reverse hlast hB).mem_Γs, W.mem_Γs]
+  simp only [reverse_mc, reverse_rc]
+  refine or_congr_right ⟨?_, ?_⟩
+  · rintro ⟨i, hi, h | h⟩
+    · exact ⟨W.n - 1 - i, by omega, Or.inr h⟩
+    · exact ⟨W.n - 1 - i, by omega, Or.inl h⟩
+  · rintro ⟨i, hi, h | h⟩
+    · refine ⟨W.n - 1 - i, by omega, Or.inr ?_⟩
+      rw [show W.n - 1 - (W.n - 1 - i) = i by omega]
+      exact h
+    · refine ⟨W.n - 1 - i, by omega, Or.inl ?_⟩
+      rw [show W.n - 1 - (W.n - 1 - i) = i by omega]
+      exact h
+
+theorem reverse_rs : (W.reverse hlast hB).rs = W.ms := by
+  refine List.map_congr_left fun i hi => ?_
+  have hi' : i < W.n := List.mem_range.1 hi
+  show (W.reverse hlast hB).hc (W.n - i) = W.mc i
+  rw [(W.reverse hlast hB).hc_eq_rc (k := W.n - i) (by omega), reverse_rc,
+    show W.n - 1 - (W.n - i - 1) = i by omega]
+
+section Lo
+
+variable (hR : R.Planar) (hC : R.Connected) (hS : R.double.SkeletonConnected Γ)
+include hlast hB hR hC hS
+
+/-- **The side of `kb`.** After the cut the boundary through `kb` is `kb, b_1, …, b_q, m_1, …,
+m_n`, with `m_j` the digon corner of the `j`-th edge at its tail. -/
+theorem boundary_lo : R.double.Boundary W.Γ' ((W.kb :: W.B) ++ W.ms) := by
+  rw [← W.reverse_Γ' hlast hB, ← W.reverse_rs hlast hB]
+  exact (W.reverse hlast hB).boundary_hi hR hC hS
+
+/-- The corners in the component of `kb` are the corners of its boundary. -/
+theorem gcomp_lo_iff {y : D × Bool} (hy : y ∈ W.Γ') :
+    (R.double.split W.Γ').toHypermap.gcomp W.kb y ↔ y ∈ (W.kb :: W.B) ++ W.ms := by
+  rw [← W.reverse_Γ' hlast hB] at hy ⊢
+  rw [← W.reverse_rs hlast hB]
+  exact (W.reverse hlast hB).gcomp_hi_iff hR hC hS hy
+
+/-- **The walk on the side of `kb`.** The copies `(d, false)` of the edges form a walk of the cut
+from the vertex of `m_1` to the vertex of `kb`. -/
+theorem isWalk_lo : (R.double.split W.Γ').IsWalk ((R.double.split W.Γ').tail (W.mc 0)) W.copy0
+    ((R.double.split W.Γ').tail W.kb) := by
+  have hc : ∀ k, k < W.n → fconnect (R.double.split W.Γ').rot
+      (R.rev (W.q (W.n - 1 - k)).1, true) ((W.reverse hlast hB).hc k) := fun k hk => by
+    have h := (W.reverse hlast hB).fconnect_copy hR hC hS (k := k) hk
+    rw [W.reverse_Γ' hlast hB] at h
+    exact h
+  have e1 : W.n - 1 + 1 = W.n := by have := W.pos; omega
+  have hv : (R.double.split W.Γ').head ((W.q (W.n - 1)).1, false) =
+      (R.double.split W.Γ').tail W.kb := by
+    have h := hc 0 W.pos
+    rw [Nat.sub_zero] at h
+    exact ((R.double.split W.Γ').tail_eq_iff _ _).2 h
+  have h := isWalk_map_range (R.double.split W.Γ') (fun j => ((W.q j).1, false)) (W.n - 1)
+    (u := (R.double.split W.Γ').tail (W.mc 0)) (v := (R.double.split W.Γ').tail W.kb) rfl hv
+    fun j hj => by
+      have h1 := hc (W.n - 1 - j) (by omega)
+      rw [show W.n - 1 - (W.n - 1 - j) = j by omega,
+        (W.reverse hlast hB).hc_eq_rc (k := W.n - 1 - j) (by omega), reverse_rc,
+        show W.n - 1 - (W.n - 1 - j - 1) = j + 1 by omega] at h1
+      exact ((R.double.split W.Γ').tail_eq_iff _ _).2 h1
+  rw [e1] at h
+  exact h
+
+/-- **One part of each vertex on the side of `kb`.** A dart at the `k`-th vertex of the walk in the
+component of `kb` lies at the vertex of the cut of `m_k`. -/
+theorem part_lo {k : ℕ} (hk : k < W.n) {z : D × Bool}
+    (hz : fconnect (R.double.split Γ).rot z (W.q k))
+    (hg : (R.double.split W.Γ').toHypermap.gcomp W.kb z) :
+    fconnect (R.double.split W.Γ').rot z (W.mc k) := by
+  rw [← W.reverse_Γ' hlast hB] at hg ⊢
+  rcases Nat.eq_zero_or_pos k with rfl | hk0
+  · have h := (W.reverse hlast hB).part_hi_last hR hC hS (z := z) (connect_trans hz W.start) hg
+    have e : (W.reverse hlast hB).rc ((W.reverse hlast hB).n - 1) = W.mc 0 := by
+      rw [reverse_rc]
+      congr 1
+      show W.n - 1 - (W.n - 1) = 0
+      omega
+    rw [e] at h
+    exact h
+  · have hz' : fconnect (R.double.split Γ).rot z ((W.reverse hlast hB).q (W.n - k)) := by
+      have h1 := W.walk (k - 1) (by omega)
+      rw [show k - 1 + 1 = k by omega] at h1
+      show fconnect _ z (R.double.rev (W.q (W.n - 1 - (W.n - k))))
+      rw [show W.n - 1 - (W.n - k) = k - 1 by omega]
+      exact connect_trans hz (fconnect_symm h1)
+    have h := (W.reverse hlast hB).part_hi hR hC hS (k := W.n - k)
+      (show W.n - k < W.n by omega) hz' hg
+    rw [(W.reverse hlast hB).hc_eq_rc (k := W.n - k) (by omega), reverse_rc,
+      show W.n - 1 - (W.n - k - 1) = k by omega] at h
+    exact h
+
+/-- **One part of the last vertex on the side of `kb`.** A dart at the vertex of `kb` in the
+component of `kb` lies at the vertex of the cut of `kb`. -/
+theorem part_lo_last {z : D × Bool} (hz : fconnect (R.double.split Γ).rot z W.kb)
+    (hg : (R.double.split W.Γ').toHypermap.gcomp W.kb z) :
+    fconnect (R.double.split W.Γ').rot z W.kb := by
+  rw [← W.reverse_Γ' hlast hB] at hg ⊢
+  have hz' : fconnect (R.double.split Γ).rot z ((W.reverse hlast hB).q 0) := by
+    show fconnect _ z (R.double.rev (W.q (W.n - 1 - 0)))
+    rw [Nat.sub_zero]
+    exact connect_trans hz (fconnect_symm W.stop)
+  exact (W.reverse hlast hB).part_hi hR hC hS (k := 0) W.pos hz' hg
+
+end Lo
+
+end Reverse
+
+/-- **The two sides.** If the last edge is used through its copy `(d, false)` when its digon corners
+are corners, the vertices of `ka` and `kb` lie in different components of the cut. -/
+theorem not_gcomp (hR : R.Planar) (hC : R.Connected) (hS : R.double.SkeletonConnected Γ)
+    (hlast : (R.rev (W.q (W.n - 1)).1, false) ∈ Γ → (W.q (W.n - 1)).2 = false) :
+    ¬ (R.double.split W.Γ').toHypermap.gcomp W.ka W.kb := by
+  rw [W.gcomp_hi_iff hR hC hS (W.subset_Γ' W.kb_mem)]
+  intro h
+  obtain ⟨-, -, hn3⟩ := List.nodup_append.1 W.bound.nodup
+  rcases List.mem_append.1 h with h | h
+  · exact hn3 _ h _ List.mem_cons_self rfl
+  · obtain ⟨m, hm, e⟩ := W.mem_rs.1 h
+    rcases Nat.lt_or_ge (m + 1) W.n with h1 | h1
+    · have h2 := W.fconnect_hc hR hC hS h1
+      rw [W.hc_succ, ← e] at h2
+      exact W.simple_last (m + 1) h1 h2
+    · obtain rfl : m = W.n - 1 := by omega
+      have hrc : W.rc (W.n - 1) ∈ Γ := e ▸ W.kb_mem
+      have h2 := W.old_true hR hC hS hm ((W.pair _ hm).2 hrc)
+      rw [hlast hrc] at h2
+      exact Bool.false_ne_true h2
 
 end WalkCut
 
