@@ -1,0 +1,25 @@
+1. d=2: volume 1.480961, ball of qubit states, radius 1/sqrt2 1.480961
+   d=3: sampled 0.02129 +- 0.00033, formula 0.02131
+2. linear inversion (d + 1) v v^* - I:
+   d=2: |mean - rho| = 0.0051, second moment 4.184 vs 4.189 <= (d+1)k/d = 4.500
+   d=3: |mean - rho| = 0.0079, second moment 10.337 vs 10.338 <= (d+1)k/d = 10.667
+   d=5: |mean - rho| = 0.0109, second moment 28.597 vs 28.596 <= (d+1)k/d = 28.800
+3. c_d and C_d = exp(2 c_d / k) / d^3:
+   d=   2: c_d =        4.472, C_d = 2.4648
+   d=   3: c_d =       16.351, C_d = 2.2075
+   d=   4: c_d =       36.652, C_d = 2.0709
+   d=   5: c_d =       66.181, C_d = 1.9872
+   d=  10: c_d =      371.510, C_d = 1.8176
+   d=  50: c_d =    15313.953, C_d = 1.6820
+   d= 400: c_d =  1478142.418, C_d = 1.6529
+   d=2000: c_d = 46606403.405, C_d = 1.6495
+   max C_d = 2.4648; limit e^(1/2) = 1.6487
+4. plug-in learner on d = 2, mean regret over random states vs Theorem 1:
+   T=  100: regret   5.729 +- 0.184, lower bound   2.435
+   T= 1000: regret   9.712 +- 0.388, lower bound   5.889
+   T= 5000: regret  13.660 +- 0.800, lower bound   8.303
+5. uniform-prior mixture on d = 2 against log C(T + k, k):
+   T=   50: largest regret  3.194, bound 10.062, lower bound  1.396
+   T=  200: largest regret  6.853, bound 14.133, lower bound  3.475
+   T= 1000: largest regret  8.201, bound 18.937, lower bound  5.889
+all checks passed
