@@ -1,0 +1,5 @@
+m=2 anc=1 d=1 L=2 seed=0: best 0.50000
+m=2 anc=2 d=1 L=2 seed=0: best 0.49999
+m=3 anc=1 d=1 L=2 seed=0: best 0.43274
+m=3 anc=1 d=2 L=2 seed=0: best 0.50000
+m=2 anc=1 d=1 L=3 seed=0: best 0.50000
