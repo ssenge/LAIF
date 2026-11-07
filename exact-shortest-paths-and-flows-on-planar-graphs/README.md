@@ -575,6 +575,23 @@ standard axioms (`propext`, `Classical.choice`, `Quot.sound`). There is no `sorr
   follows the first walk from there (`IsWalk.split_first`, `IsWalk.split_last`, `WalkCut.lift_first`,
   `WalkCut.lift_last`). So on the side of $k_a$ the distances after the cut are the distances before it
   (`WalkCut.walkDist_hi`).
+- `lean/SsspFlow/Live.lean`: the invariant (I) of `notes/LEMMA_O.md` in the split model. A live annulus
+  (`CutPath.Live`) is the component of a corner of $\Gamma$ in the split of the doubled map whose boundary reads
+  $\kappa_0(x_a),\dots,\kappa_0(x_b),L_b,\kappa_1(y_b),\dots,\kappa_1(y_a),L_a$ (`liveBoundary`). Its corner
+  $\kappa_0(t)$ lies at the copy $p_t^0$ of the cut and $\kappa_1(t)$ at $p_t^1$, the corners of $L_a$ and $L_b$
+  lie off the path, no cut edge off the path has both digon corners on the boundary, and the distance between
+  $\kappa_0(t)$ and $\kappa_1(t)$ is $\lambda_t$ for $\max(x_a,y_a)\le t\le\min(x_b,y_b)$. The cut of the doubled
+  map along the path is one (`CutPath.liveOne`, Claim 2). A step (`CutPath.Live.Step`) is a simple walk $Q$ from
+  the vertex of $\kappa_0(x)$ to the vertex of $\kappa_1(y)$, shortest between its ends and of finite length, with
+  its inner vertices off the path and through no edge of the path. It uses each cut edge through one of its two
+  copies only (`CutPath.Live.hold_of_walk`, `edges_of_copies`). If the side of $\kappa_0(x)$ holds another corner,
+  or $Q$ has more than one edge, or its first edge is not cut, then $Q$ starts on a cut edge through its copy
+  $(d,\mathrm{true})$ (`first_of_boundary`, from the head of a cut edge, `head_eq_psi`). Then the cut along $Q$ is a
+  `WalkCut`, read from $\kappa_0(x)$ (`CutPath.Live.hiCut`) or backwards from $\kappa_1(y)$
+  (`CutPath.Live.loCut`). If $Q$ avoids the corners of $L_b$, the side of $\kappa_0(x)$ is a live annulus with
+  $x_a=x$ and $y_a=y$ (`CutPath.Live.hi`). If $Q$ avoids the corners of $L_a$, the side of $\kappa_1(y)$ is a live
+  annulus with $x_b=x$ and $y_b=y$ (`CutPath.Live.lo`). The distances on the side come from
+  `WalkCut.walkDist_hi` (Claim 13), and the rest of the invariant passes to the side (Claim 14, `WalkCut.old_hi`).
 - `lean/SsspFlow/Arborescence.lean`: the arithmetic of the contraction and the halving count of `notes/DMST.md`.
 - `lean/SsspFlow/NegScaling.lean`: the arithmetic of the scaling, the alternation, the short paths in a cluster and the arc inequality of `notes/NEGATIVE.md`.
   - `Setup.negCycle_iff`, `Setup.walks` and `Setup.lemmaD` prove it for any graph with the
@@ -864,9 +881,10 @@ Not formalized: the proofs of the cited propositions other than `AggBox` and `Sm
 Theorem C, Theorem C′, the construction of the tiles and the rest of Lemma 14′, and Lemmas R5 and R7. Of Theorem D, the
 recursion argument of Lemma S2 and Lemma S1 are formalized, the latter on the cut of a planar map along a shortest path
 between corners of two different faces, and of Lemma O the cut of a disk along one chord, the cut along a walk,
-(C23) for a boundary of the form of a live annulus and (INV) on the side of $k_a$ of a cut along a shortest walk. The
-rest of Lemma O, Lemmas N and R, the reduction of the minimum cut to the lengths $\lambda_t$ and the round count are
-not.
+(C23) for a boundary of the form of a live annulus, (INV) on the side of $k_a$ of a cut along a shortest walk, and
+the invariant (I) for the cut along the path and for both sides of a step. The rest of Lemma O, among it the choice
+of the step from the computed walk and its link to the recursion argument, Lemmas N and R, the reduction of the
+minimum cut to the lengths $\lambda_t$ and the round count are not.
 
 ## Numerical checks (`sim/`)
 
