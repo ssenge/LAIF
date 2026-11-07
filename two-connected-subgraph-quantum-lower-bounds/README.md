@@ -8,7 +8,13 @@ Model: an N-vertex graph given by its adjacency matrix, one query per pair of ve
 
 **Theorem 1.** Let H be a fixed 2-connected graph on v ≥ 3 vertices. Every bounded-error quantum algorithm that detects, or finds, a copy of H in N-vertex graphs makes Ω(N^{1 + 1/(6(v−1))}) queries.
 
-**Corollary 2.** The same bound holds for every connected graph whose 2-core is 2-connected with v vertices, for example every cycle with trees attached.
+**Corollary 2.** Let H be a fixed connected graph and B a block of H with v ≥ 3 vertices. Suppose that
+- (a) B has the most edges among the blocks of H, and at most one other block is isomorphic to B; or
+- (b) every component of H − E(B) has fewer than e(H)/2 edges.
+
+Then detecting or finding H takes Ω(N^{1 + 1/(6(v−1))}) queries.
+
+Condition (a) holds whenever the 2-core of H is 2-connected, for example for a cycle with trees attached. It also holds for two four-cycles that share a vertex or are joined by a path, which gives Ω(N^{19/18}). Condition (b) holds, for example, for a chain of three four-cycles in which the outer ones are attached at different vertices of the middle one.
 
 | H | Previous lower bound | This folder |
 |---|---|---|
@@ -17,7 +23,7 @@ Model: an N-vertex graph given by its adjacency matrix, one query per pair of ve
 | K_{a,b}, 2 ≤ a ≤ b | N^{β_r − o(1)} for a = b = r ≥ 10 [2] | Ω(N^{1 + 1/(6(a+b−1))}) |
 | triangle | Ω(N^{13/12}) [1] | Ω(N^{13/12}) (the same) |
 
-To our knowledge these are the first superlinear lower bounds for the four-cycle, for even cycles, and for K_{a,b} with a ≤ 9. Gilani and Zhou list the four-cycle and K_{r,r} with r < 10 as open [2, Section 1.4]. For non-bipartite H the bound Ω(N^{13/12}) of [1] is at least as large, so the new cases are the bipartite ones. For K_{r,r} with r ≥ 10 the bounds of [2] are larger, except that Theorem 1 gives 115/114 for K_{10,10} against β_10 = 181/180.
+To our knowledge these are the first superlinear lower bounds for the four-cycle, for even cycles, for K_{r,r} with r ≤ 9 and for unbalanced K_{a,b}. Gilani and Zhou list the four-cycle and K_{r,r} with r < 10 as open [2, Section 1.4]. For non-bipartite H the bound Ω(N^{13/12}) of [1] is at least as large, so the new cases are the bipartite ones. For K_{10,10}, Theorem 1 gives 115/114, which improves β_10 = 181/180; for larger r the bounds of [2] are larger.
 
 ## The argument
 
@@ -57,16 +63,24 @@ Each hypothesis then follows:
 
 So p d_s and p d_m are O(p (np)^{v−2}) = O(c₀^{v−1}), which is small, and Proposition 3 gives t = Ω(n^{7/6} p^{1/6}) = Ω(n^{1 + 1/(6(v−1))}). Detection follows by the constant-factor reduction from search to detection for connected subgraphs [3, Lemma 23], as used in [2, Section 2.2].
 
-**Corollary 2.** Attach a private complete h-ary tree of depth h, h = |V(H)|, to every vertex of the input. These edges are known and cost no queries. If the input contains the 2-core of H, the padded graph contains H. Conversely, a copy of the 2-core in the padded graph cannot use a private-tree vertex: the one farthest from its root would have degree at most one. So detecting H is at least as hard as detecting its 2-core.
+**Corollary 2.** Write Br_c for the component of H − E(B) that contains the vertex c of B, and let the gadget Γ be the union of the Br_c with all vertices c identified to one root. Attach a private copy of Γ at every vertex of the input. These edges are known and cost no queries. If the input contains B, the padded graph contains H. Conversely, take a copy of H in the padded graph of a B-free input.
+- Every 2-connected subgraph lies in the input or in one gadget, so the image of B lies in some gadget, at the image of a vertex u of H.
+- The part Q of H beyond u that contains B then embeds into one branch Br_c, with u at c.
+- Q contains B and all branches Br_{c'} except the branch Br_e on the side of u.
+- Under (b), comparing edge counts gives a contradiction. If c ≠ e, Br_c is smaller than Q. If c = e, Br_e would need at least e(H)/2 edges.
+- Under (a), a gadget holds one block isomorphic to B fewer than H, so B and the other such block Y sit in different gadgets, and Y lies outside Q. The embedding does not increase distances, so B lies at distance at least D = dist(B, Y) from u. A shortest path from B to Y leaves Q through u, so it reaches u within D − 1 steps, a contradiction. (If u lies on B, then D = 0, and B and Y would share the vertex u.)
 
-**Limits.** If the 2-core of H has a cut vertex, an edge at the cut vertex interacts with about n(np)^{β−2} edges through another block with β vertices, so the star hypothesis fails at every useful density. For bipartite graphs such as two four-cycles sharing a vertex, the method gives no superlinear bound. The bound n^{7/6} p^{1/6} does not depend on H, so a pattern gains only through a larger admissible density. For cycles the planting condition already caps the density at n^{−(v−2)/(v−1)}. For cliques the admissible density is larger, see [clique-quantum-query-lower-bounds](../clique-quantum-query-lower-bounds/).
+So detecting H is at least as hard as detecting B.
+
+**Limits.** Applied to H directly, the degree bounds fail at a cut vertex joining two blocks with cycles. An edge at the cut vertex interacts with about n(np)^{β−2} edges through another block with β vertices when that block minus the cut vertex is a tree. Corollary 2 avoids this by reducing to one block. Whether the block reduction holds for every block with the most edges is open; if it does, every connected graph with a cycle is superlinear. Paths, subdivided claws and stars with two subdivided legs are linear. The bound n^{7/6} p^{1/6} does not depend on H, so a pattern gains only through a larger admissible density. For cycles the planting condition already caps the density at n^{−(v−2)/(v−1)}. For cliques the admissible density is larger, see [clique-quantum-query-lower-bounds](../clique-quantum-query-lower-bounds/).
 
 ## Check
 
 `check.py` verifies:
 - (F1) to (F3) and the planting exponents, by brute force over all 2-connected graphs with 3 to 6 vertices;
 - on sampled H-free subgraphs of small hosts (C4 and C6 in K_{n,n}, K4 in K_{2,2,2,2}), that the interaction counts, overall and inside a star, are at most v! D^{v−2}, with D the relevant maximum degree;
-- the exponent arithmetic, with exact fractions.
+- the exponent arithmetic, with exact fractions;
+- the block reduction on five graphs with cut vertices: for a B-free part and every placement of pendants into gadgets, the check finds no copy of H.
 
 Run it with `python3 check.py` (about 3 seconds).
 

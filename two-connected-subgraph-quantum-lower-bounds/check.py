@@ -13,6 +13,12 @@
    relevant graph. (Sampled inputs only: the sampler deletes one edge from
    each present copy, which does not sample the conditioned distribution.)
 3. Exponent arithmetic with exact fractions.
+4. The block reduction, on small graphs H with a chosen block B: attach to
+   every vertex of a B-free graph G a private copy of H - E(B) with the
+   vertices of B identified. Then H is not a subgraph of the result. A copy
+   would split H into a B-free connected part H_G and pendants P_i at
+   distinct vertices u_i, each embedding into the gadget with u_i at the
+   root; the check enumerates all such splits.
 """
 import itertools
 import random
@@ -128,6 +134,124 @@ def complete_multipartite_host(k, n):
     return {x: {y for y in V if y[0] != x[0]} for x in V}
 
 
+def embeds(pv, pe, adj, root=None):
+    """Injective homomorphism of the graph (pv, pe) into adj; root = (u, x) pins u to x."""
+    padj = {a: set() for a in pv}
+    for a, b in pe:
+        padj[a].add(b)
+        padj[b].add(a)
+    order, seen = [], set()
+    for s0 in ([root[0]] if root else []) + sorted(pv, key=lambda a: -len(padj[a])):
+        if s0 in seen:
+            continue
+        seen.add(s0)
+        queue = [s0]
+        while queue:
+            z = queue.pop(0)
+            order.append(z)
+            for y in padj[z] - seen:
+                seen.add(y)
+                queue.append(y)
+    phi = {}
+
+    def rec(k):
+        if k == len(order):
+            return True
+        z = order[k]
+        done = [phi[y] for y in padj[z] if y in phi]
+        if root and z == root[0]:
+            cands = {root[1]}
+        elif done:
+            cands = set.intersection(*(adj[t] for t in done))
+        else:
+            cands = set(adj)
+        for c in cands - set(phi.values()):
+            phi[z] = c
+            if rec(k + 1):
+                return True
+            del phi[z]
+        return False
+    return rec(0)
+
+
+def components(vs, adj):
+    vs, out = set(vs), []
+    while vs:
+        comp = {vs.pop()}
+        stack = list(comp)
+        while stack:
+            for y in adj[stack.pop()] & vs:
+                vs.discard(y)
+                comp.add(y)
+                stack.append(y)
+        out.append(comp)
+    return out
+
+
+def check_block_reduction(n, es, bes):
+    """No split of H into a B-free part and pendants that fit the gadget."""
+    adj = {a: set() for a in range(n)}
+    for a, b in es:
+        adj[a].add(b)
+        adj[b].add(a)
+    bv = {a for e in bes for a in e}
+    root = min(bv)
+    rel = {a: root if a in bv else a for a in range(n)}
+    gadget = {rel[a]: set() for a in range(n)}
+    for a, b in es:
+        if (a, b) not in bes and (b, a) not in bes:
+            gadget[rel[a]].add(rel[b])
+            gadget[rel[b]].add(rel[a])
+    pendants = []
+    for u in range(n):
+        comps = components(set(range(n)) - {u}, adj)
+        for k in range(1, len(comps) + 1):
+            for pick in itertools.combinations(comps, k):
+                body = set().union(*pick)
+                pv = body | {u}
+                pe = [e for e in es if e[0] in pv and e[1] in pv]
+                if embeds(pv, pe, gadget, (u, root)):
+                    pendants.append((u, frozenset(body)))
+    splits = 0
+    for r in range(1, len(pendants) + 1):
+        for fam in itertools.combinations(pendants, r):
+            roots = {u for u, _ in fam}
+            bodies = [b for _, b in fam]
+            union = set().union(*bodies)
+            if len(roots) < r or sum(map(len, bodies)) > len(union) or roots & union:
+                continue
+            rest = set(range(n)) - union
+            rest_adj = {a: adj[a] & rest for a in rest}
+            assert embeds(bv, list(bes), rest_adj), (es, fam)
+            splits += 1
+    assert splits > 0  # the search is not vacuous
+
+
+def shift(es, k):
+    return [(a + k, b + k) for a, b in es]
+
+
+def check_block_examples():
+    C4 = [(0, 1), (1, 2), (2, 3), (3, 0)]
+    # two C4 sharing a vertex, condition (a)
+    n, es = 7, sorted({tuple(sorted(e)) for e in C4 + [(0, 4), (4, 5), (5, 6), (6, 0)]})
+    check_block_reduction(n, es, {(0, 1), (1, 2), (2, 3), (0, 3)})
+    # C4, a path of length 2, C4, condition (a)
+    es = sorted({tuple(sorted(e)) for e in C4 + [(0, 4), (4, 5)] + shift(C4, 5)})
+    check_block_reduction(9, es, {(0, 1), (1, 2), (2, 3), (0, 3)})
+    # chain of three C4 sharing vertices, middle block, condition (b)
+    es = sorted({tuple(sorted(e)) for e in C4 + shift(C4, 3) + shift(C4, 6)})
+    check_block_reduction(10, es, {(3, 4), (4, 5), (5, 6), (3, 6)})
+    # K_{2,3} and C4 sharing a vertex, condition (a)
+    K23 = [(0, 2), (0, 3), (0, 4), (1, 2), (1, 3), (1, 4)]
+    es = sorted({tuple(sorted(e)) for e in K23 + [(4, 5), (5, 6), (6, 7), (7, 4)]})
+    check_block_reduction(8, es, {tuple(sorted(e)) for e in K23})
+    # C6 with a pendant path, condition (a)
+    C6 = [(t, (t + 1) % 6) for t in range(6)]
+    es = sorted({tuple(sorted(e)) for e in C6 + [(0, 6), (6, 7)]})
+    check_block_reduction(8, es, {tuple(sorted(e)) for e in C6})
+
+
 def check_exponents():
     for v in range(3, 13):
         theta = Fr(v - 2, v - 1)
@@ -151,4 +275,5 @@ if __name__ == "__main__":
     check_interactions(C6, 6, bipartite_host(3), 0.6, 2, rng)
     check_interactions(K4, 4, complete_multipartite_host(4, 2), 0.7, 3, rng)
     check_exponents()
+    check_block_examples()
     print("all checks passed")
