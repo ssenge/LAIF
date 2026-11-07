@@ -113,7 +113,7 @@ Each cell gives the lower bound, at confidence 1 − 10⁻⁴ per cell from 10�
 
 For d = 4, 6, 8, 10 and 40 this covers every girth from 16 (d = 4) or 12 (d = 6, 8, 10, 40) up to 30, the largest girth in [1, Table 3]. For d = 20 it covers girth 12 to 26, and for d = 30 girth 12 to 24. At the smaller girths the Local Vector column of [1] is above QAOA. So is, by at least 0.0025, the best linear factor of the same radius (see Status and checks), which holds under the cautious radius count of Section 1. So at every girth of [1, Table 3], for d = 4, 6, 8, 10 and 40, a classical local algorithm has a value at least as high as QAOA. For d = 3 this was shown in [6] with a different classical algorithm, which also asked about higher degree.
 
-### 5. Classical: colour-vector dynamics, Max-3-Cut on 4- and 6-regular graphs
+### 5. Classical: colour-vector dynamics
 
 Every vertex carries a unit vector ψ in ℂᵏ. It starts at cos α · u + sin α · w_c, where u is the uniform vector, c is a uniformly random colour, the only randomness, and w_c is the unit vector along e_c − u/√k. Each of the p layers multiplies ψ(c) by exp(−iγ_n h(c)), where h(c) is the sum of |ψ_j(c)|² over the neighbours j, and then applies exp(−iβ_n |u⟩⟨u|). The output colour is the c with the largest |ψ(c)|, the smallest such c on a tie. For k = 2 this is the rotation dynamics VIRAL of [6]. In general it is the classical counterpart of QAOA with the Grover mixer, with one vector per vertex in place of the quantum state. Its radius is p, so its tree value holds at girth 2p + 2, as for QAOA at depth p.
 
@@ -145,6 +145,18 @@ For 6-regular graphs, with the same training on a random 6-regular graph and on 
 | 16 | 7 | 0.924 | 0.924 (QAOA) | **0.9359** | 0.9380 ± 0.0004 | 3 · 10⁵ |
 
 On 6-regular graphs it is above QAOA at every girth from 6 to 16 and above every value of [1] from girth 10 to 16, by 0.003 to 0.014, and from girth 14 also above Section 1. Girth 18 to 22 needs depth 8 to 10, where the tree has 2 · 5⁸ or more leaves; there Section 1 is above [1].
+
+For 8-regular graphs (`data/cdyn_params_3_8.jsonl`, `data/cdyn_cert_3_8.jsonl`; girth 10 was evaluated twice, with 10⁶ samples first, so 7 rows hold together with probability at least 1 − 7 · 10⁻⁴):
+
+| girth | p | QAOA [1], depth p | Previous best bound [1] | Lower bound | Mean ± s.e. | Samples |
+|---|---|---|---|---|---|---|
+| 6 | 2 | 0.827 | 0.861 (Local Vector) | 0.8335 | 0.8352 ± 0.0004 | 10⁶ |
+| 8 | 3 | 0.851 | 0.875 (Local Vector) | 0.8659 | 0.8675 ± 0.0003 | 10⁶ |
+| 10 | 4 | 0.867 | 0.882 (Local Vector) | **0.8833** | 0.8840 ± 0.0002 | 4 · 10⁶ |
+| 12 | 5 | 0.878 | 0.887 (Local Vector) | **0.8951** | 0.8966 ± 0.0003 | 10⁶ |
+| 14 | 6 | 0.887 | 0.890 (Local Vector) | **0.9033** | 0.9053 ± 0.0004 | 5 · 10⁵ |
+
+On 8-regular graphs it is above QAOA at every girth from 6 to 14 and above every value of [1] from girth 10 to 14, by 0.001 to 0.013. For Max-4-Cut on 8-regular graphs at girth 12, depth 5 gives the lower bound **0.9578** (0.9588 ± 0.0002, 10⁶ samples, `data/cdyn_cert_4_8.jsonl`) against 0.952 for the Local Vector algorithm and 0.949 for QAOA [1], and against 0.9568 for Section 2.
 
 ## The rules
 
@@ -183,7 +195,7 @@ Numerical results. No part is formalized in Lean.
 - `sim/lv_threshold.py`, `sim/lv_threshold_certify.py`: a threshold rule for large d, and its fresh-sample evaluation (`data/lvthr_cert_3_20.json`).
 - `sim/lv2rounds.py`: Algorithm 1 of [1] with two rounds (`data/lv2rounds_cert.jsonl`).
 - `sim/lv2.py`: the Max-Cut case of Section 4 (`data/lv2_k2.jsonl`); `sim/linfactor.py`: the linear-factor check.
-- `sim/cdyn.py`, `sim/cdyn_train.py`, `sim/cdyn_tree.py`, `sim/cdyn_check.py`: the dynamics of Section 5, its training on a graph and on the tree, the tree value and the cross-check (`data/cdyn_params_3_4.jsonl`, `data/cdyn_cert_3_4.jsonl`, and the same for d = 6).
+- `sim/cdyn.py`, `sim/cdyn_train.py`, `sim/cdyn_tree.py`, `sim/cdyn_check.py`: the dynamics of Section 5, its training on a graph and on the tree, the tree value and the cross-check (`data/cdyn_params_3_4.jsonl`, `data/cdyn_cert_3_4.jsonl`, and the same for the other k and d).
 - `sim/make_tables.py`: builds Tables 1 and 2 from `data/`.
 
 Requirements: Python 3.12 with numpy, scipy and jax. Run the scripts from `sim/`, with the files from `data/` copied in.
