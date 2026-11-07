@@ -511,6 +511,18 @@ standard axioms (`propext`, `Classical.choice`, `Quot.sound`). There is no `sorr
   edge and a shortest path $P$ from $p_0$ to $p_m$ with positive weights. An edge joins two distinct vertices of the cut that a
   dart joins, with the least weight of such a dart. `CutPath.short` is (P), `CutPath.copy` gives the copies of the
   parts of $P$, and `CutPath.witness_interval` is Lemma S1 on the cut.
+- `lean/SsspFlow/Incision.lean`: the cut of a disk along one chord. In the split of the doubled map at a set $\Gamma$ of
+  corners, `Boundary` says that a list holds the corners of $\Gamma$ on one face of the split in their cyclic order; if
+  the map is planar and connected and $\Gamma$ is connected, a corner of $\Gamma$ lies in the component of the list
+  exactly if it lies on the list (`Boundary.gcomp_iff`). A `DiskChord` is a walk from the vertex of a corner $k_a$ to
+  the vertex of another corner $k_b$ of one boundary $k_a,a_1,\dots,a_p,k_b,b_1,\dots,b_q$, along distinct edges that
+  are not cut, through distinct inner vertices without a corner of $\Gamma$. Cutting along it adds the two digon
+  corners $m_j$, $r_j$ of each edge to $\Gamma$. `DiskChord.boundary_one`, `DiskChord.boundary_two`: the cut has the
+  boundaries $m_0,\dots,m_{n-1},k_b,b_1,\dots,b_q$ and $k_a,a_1,\dots,a_p,r_{n-1},\dots,r_0$, and the other
+  boundaries stay. `DiskChord.gcomp_one_iff`, `DiskChord.gcomp_two_iff`, `DiskChord.not_gcomp`: these are two
+  different components. `DiskChord.cut_inner`, `DiskChord.cut_start`, `DiskChord.cut_stop`: every vertex of the chord
+  splits into one vertex on each side, and the other vertices stay (`DiskChord.fconnect_cut_iff`).
+  `DiskChord.isWalk_one`, `DiskChord.isWalk_two`: the two copies of the chord are walks of the cut, one on each side.
 - `lean/SsspFlow/Arborescence.lean`: the arithmetic of the contraction and the halving count of `notes/DMST.md`.
 - `lean/SsspFlow/NegScaling.lean`: the arithmetic of the scaling, the alternation, the short paths in a cluster and the arc inequality of `notes/NEGATIVE.md`.
   - `Setup.negCycle_iff`, `Setup.walks` and `Setup.lemmaD` prove it for any graph with the
@@ -799,8 +811,8 @@ standard axioms (`propext`, `Classical.choice`, `Quot.sound`). There is no `sorr
 Not formalized: the proofs of the cited propositions other than `AggBox` and `SmoothingBox`, among them `LDDBox`, the minimum cut of
 Theorem C, Theorem C′, the construction of the tiles and the rest of Lemma 14′, and Lemmas R5 and R7. Of Theorem D, the
 recursion argument of Lemma S2 and Lemma S1 are formalized, the latter on the cut of a planar map along a shortest path
-between corners of two different faces. Lemmas N, R and O, the reduction of the minimum cut to the lengths $\lambda_t$
-and the round count are not.
+between corners of two different faces, and of Lemma O the cut of a disk along one chord. The rest of Lemma O, Lemmas
+N and R, the reduction of the minimum cut to the lengths $\lambda_t$ and the round count are not.
 
 ## Numerical checks (`sim/`)
 
