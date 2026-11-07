@@ -13,8 +13,8 @@ This folder gives a schedule with a random geometric offset and a certified cons
 | Search, unknown t, expected oracle queries divided by √(N/t), as t/N → 0 | 9/4, proved [1, proof of Theorem 3; 2, Eq. (3)]; about 1.32, numerical [3]; about 1.434, conjectured, for fixed-point search [4] | **≤ 1.1341**, checks included |
 | The same, for every N and every t ≤ N/4 | 9.2/3 ≈ 3.07, proved, checks included [2, Eq. (10)] | **≤ 1.1676** (parameters S) |
 | The same bound uniformly for every t ≤ N | | **≤ 1.6740** (parameters U) |
-| Minimum finding of N distinct values, expected queries until the minimum is found, divided by √N, as N → ∞ | about 4.155, implied by [2, Lemma 6 and Eq. (3)] (the stated closed form has leading term 5.3801); about 2.46, numerical [3] | **≤ 2.0942** |
-| The same, for every N | 6.3505√N + 2.8203, proved [2] | **≤ 2.293√N + 69**, smaller for N ≥ 267 |
+| Minimum finding of N distinct values, expected queries until the minimum is found, divided by √N, as N → ∞ | about 4.185, implied by [2, Lemma 6 and Eq. (3)] (the stated closed form has leading term 5.3801); about 2.46, numerical [3] | **≤ 2.1094** |
+| The same, for every N | 6.3505√N + 2.8203, proved [2] | **≤ 2.309√N + 69**, smaller for N ≥ 269 |
 
 All counts are oracle queries, with c_q = 1 in the notation of [2]. For t ≥ N/4, [2] proves an absolute bound of 2.0344 expected queries, which the bound of parameters U does not improve.
 
@@ -47,7 +47,7 @@ and E(θ) = (1/M) Σ_u Σ_i w_i Π_{j<i} q_j with w_i = a_i + (h_i − 1)/2 + 1.
 
 **Numerics.** All bounds are in double precision. Every interval end of a sine, and every failure probability, is widened by 10⁻¹². The final bounds are multiplied by 1 + 10⁻⁹. The computation is not in interval arithmetic with directed rounding.
 
-**Minimum finding.** In the threshold method, the item of rank r becomes the threshold with probability 1/r, and then the search runs with t = r − 1. So the expected number of queries until the minimum is found is at most 1 + Σ_{t=1}^{N−1} E(N, t)/(t + 1). Dominated convergence with the uniform bound 1.6740 gives the limit 1.1341·Σ_{t≥1} 1/((t + 1)√t) = 1.1341·1.84658 = 2.0942. For every N, the bounds 1.2412 for t/N ≤ 10⁻⁴, 1.5675 for t/N ≤ 10⁻² and 1.6740 otherwise give 2.293√N + 69, using Σ_{t>T} 1/((t + 1)√t) ≤ 2/√T.
+**Minimum finding.** In the threshold method, the item of rank r becomes the threshold with probability 1/r, and then the search runs with t = r − 1. So the expected number of queries until the minimum is found is at most 1 + Σ_{t=1}^{N−1} E(N, t)/(t + 1). Dominated convergence with the uniform bound 1.6740 gives the limit at most 1.13406·Σ_{t≥1} 1/((t + 1)√t) = 1.13406·1.86003 ≤ 2.1094. For every N, the bounds 1.2412 for t/N ≤ 10⁻⁴, 1.5675 for t/N ≤ 10⁻² and 1.6740 otherwise give 1.2412·1.86003·√N + 1 + 65.3 + 2.2 ≤ 2.309√N + 69, using Σ_{t>T} 1/((t + 1)√t) ≤ 2/√T.
 
 ## Status and checks
 
