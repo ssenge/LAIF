@@ -1,0 +1,17 @@
+import Mathlib
+
+/-!
+# The base of the quantum bound for Dominating Set
+
+The classical algorithm of [1] runs in time O*(1.4969^n). A quantum walk on its search tree takes the square root,
+and √1.4969 ≤ 1.2235. References are those of the folder README.
+-/
+
+/-- √1.4969 ≤ 1.2235. -/
+theorem base_le : Real.sqrt 1.4969 ≤ 1.2235 :=
+  Real.sqrt_le_iff.mpr ⟨by norm_num, by norm_num⟩
+
+/-- The square root of the time, as a power: (1.4969^n)^(1/2) ≤ 1.2235^n for every n. -/
+theorem pow_base_le (n : ℕ) : Real.sqrt (1.4969 ^ n) ≤ 1.2235 ^ n := by
+  rw [Real.sqrt_le_left (by positivity), ← pow_mul, mul_comm, pow_mul]
+  exact pow_le_pow_left₀ (by norm_num) (by norm_num) n

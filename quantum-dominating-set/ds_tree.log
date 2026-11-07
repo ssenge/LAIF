@@ -1,0 +1,2 @@
+400 random graphs, n = 4..15: smallest accepted budget = domination number in every case
+largest number of tree nodes per budget, by n: {4: 4, 5: 5, 6: 6, 7: 5, 8: 8, 9: 9, 10: 11, 11: 13, 12: 18, 13: 20, 14: 22, 15: 33}
