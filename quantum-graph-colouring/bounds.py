@@ -37,7 +37,7 @@ def table(f3, kmax=20):
                 a, b = e[:-1], e[1:]
                 hmax = h(np.clip(0.5, a, b))
                 A = b * D[kp][up(mu / a)]
-                B = np.where(b < 1, (1 - a) * D[k - kp][up(np.where(b < 1, b / (kp * np.maximum(1 - b, 1e-300)), 1))], 0)
+                B = (1 - a) * D[k - kp][up(np.where(b < 1, b / (kp * np.maximum(1 - b, 1e-300)), 1))]   # limit 1 at b = 1
                 v = np.max(hmax / 2 + np.maximum(A, B))
                 if v < best[j]:
                     best[j], arg[j] = v, kp
