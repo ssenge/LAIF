@@ -299,9 +299,9 @@ if __name__ == "__main__":
         assert abs(v - m) < 4 * e and abs(uniform_value(n, k) - mu) < 4 * eu
         print(f"   n={n:3d} k={k:2d} (i,j)=(0,{j:2d}) p=0: recursion {v:.4e}, sampled {m:.4e} +- {e:.0e};"
               f" uniform {uniform_value(n, k):.4e}, sampled {mu:.4e} +- {eu:.0e}")
-    for n, k, p in ((16, 4, 3), (32, 8, 5), (64, 16, 9), (128, 32, 77)):
+    for n, k, p in ((8, 2, 3), (16, 2, 0), (32, 2, 7), (64, 2, 9), (16, 4, 3), (32, 8, 5), (64, 16, 9), (128, 32, 77)):
         assert abs(B2_direct(n, k, p) / ((k * (k + 2) * n / 2 - k ** 3 + 1.5 * k ** 2 - 3 * k) / n ** 2) - 1) < 1e-12
-    print("2. closed form of |B|^2 equals its definition at (n, k) = (16, 4), (32, 8), (64, 16), (128, 32)")
+    print("2. closed form of |B|^2 equals its definition at (n, k) = (8, 2), (16, 2), (32, 2), (64, 2), (16, 4), (32, 8), (64, 16), (128, 32)")
     print("3. ratio of the butterfly value to the uniform value, i = 0, p = 0")
     for kind in ("k=2", "k=n/8", "k=n/4"):
         for K in (6, 9, 12, 15):

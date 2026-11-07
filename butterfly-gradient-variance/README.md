@@ -6,7 +6,7 @@ Written 7 Nov 2026.
 
 [1] trains k-particle fermionic circuits on n modes. The input has k/2 blocks (|1100⟩ + |0011⟩)/√2 on the modes 0, …, 2k − 1, with the other n − 2k modes empty. It is spread by the sign transform H_ab = (−1)^{a·b}/√n on mode labels a, b ∈ {0, …, n − 1} (a·b is the bitwise inner product), and a layer of data phases follows [1, Section II]. The trainable circuit is the unitary butterfly [1, Section III C]: for n = 2^K, layer ℓ = 1, …, K applies one Rz phase to every mode and then rotations on the n/2 pairs at stride 2^{ℓ−1}. All angles and phases are independent and uniform on [0, 2π). The loss is L = ⟨n_i n_j⟩ for a pair of modes i ≠ j.
 
-For a parameter whose prefix circuit is the identity, such as a phase φ_p of the first Rz layer, [1] writes the gradient variance as a single scalar: the pairing of the fourth moment of the two-particle action of the circuit with B ⊗ B, where B is the commutator of the gate generator with the encoded two-particle density matrix. For the uniformly distributed unitary this scalar is evaluated exactly [1, Theorem 11]: it is Θ(k³/n⁵) whenever n − 2k = Ω(n).
+For a parameter whose prefix circuit is the identity, such as a phase φ_p of the first Rz layer, [1] writes the gradient variance as a single scalar: the pairing of the fourth moment of the two-particle action of the circuit with B ⊗ B, where B is the commutator of the gate generator with the encoded two-particle density matrix. As in the proof of [1, Claim 1], the scalar is read with the conjugation L2(W)† M L2(W) that the gradient uses, where L2(W) is the two-particle action of the circuit and M the readout (for the uniform unitary the two conjugations agree; for the butterfly they do not, since W and W† have different laws). For the uniformly distributed unitary this scalar is evaluated exactly [1, Theorem 11]: it is Θ(k³/n⁵) whenever n − 2k = Ω(n).
 
 **Conjecture 22 of [1].** Fix 0 < γ < 1/2. There are constants 0 < c ≤ C, independent of n and k, such that for every even k with 2 ≤ k ≤ γn, every readout n_i n_j and every such parameter, the butterfly value of this scalar lies between c and C times the value for the uniform unitary.
 
@@ -14,19 +14,19 @@ Under this conjecture, [1, Theorem 21] gives the gradient variance Θ(k³/n⁵) 
 
 ## Result
 
-**Theorem 1.** Let n = 2^K ≥ 8 and k = n/4. Take the readout n_0 n_{n/2} and the phase φ_0 of mode 0 in the first Rz layer. Then E[∂L/∂φ_0] = 0 and
+**Theorem 1.** Let n = 2^K ≥ 8 and k = n/4. Take the readout n_0 n_{n/2} and the phase φ_0 of mode 0 in the first Rz layer. Then for every data input x, E[∂L/∂φ_0] = 0 and
 
 Var[∂L/∂φ_0] = 9^K/(18n⁶) + 4·9^K/(3n⁷) − 1/(16n³) − 3/(2n⁴) = (1 + o(1)) n^{2log₂3 − 6}/18,
 
 with 2log₂3 − 6 ≈ −2.830. For n = 8, 16, 32 the values are 17/131072, 1085/67108864 and 17255/8589934592.
 
-**Corollary 2.** For the uniform unitary the same scalar is at least 2(k − 1)²(k/n)(1 − 2k/n)/(n²(n² − 1)) = (1 + o(1))/(64n²) [1, Theorem 11 and Claim 2]. So in Theorem 1 the ratio of the butterfly value to the uniform value is at most (32/9 + o(1)) n^{2log₂3 − 4}, with 2log₂3 − 4 ≈ −0.830, and it tends to 0. Since k = n/4 ≤ γn for every γ ≥ 1/4, Conjecture 22 does not hold for any γ in [1/4, 1/2). For this readout at k = n/4 the variance is n^{−2.83+o(1)}, far below the rate k³/n⁵ = n^{−2}/64, and for large n also below k⁴/n⁶ = n^{−2}/256. [1, Theorem 19] gives Ω(k⁴/n⁶) for some readout and some rotation angle, so it is consistent with this.
+**Corollary 2.** For the uniform unitary the same scalar is at least 2(k − 1)²(k/n)(1 − 2k/n)/(n²(n² − 1)) = (1 + o(1))/(64n²) [1, Theorem 11 and Claim 2]. So in Theorem 1 the ratio of the butterfly value to the uniform value is at most (32/9 + o(1)) n^{2log₂3 − 4}, with 2log₂3 − 4 ≈ −0.830, and it tends to 0. Since k = n/4 ≤ γn for every γ ≥ 1/4, Conjecture 22 does not hold for any γ in [1/4, 1/2). For this readout at k = n/4 the variance is n^{−2.83+o(1)}, far below the rate k³/n⁵ = n^{−2}/64, and for n ≥ 32 also below k⁴/n⁶ = n^{−2}/256. [1, Theorem 19] gives Ω(k⁴/n⁶) for some readout and some rotation angle, so it is consistent with this.
 
 So the range of γ in Conjecture 22 needs γ < 1/4. [1] already expects the upper constant to fail on a range that reaches k = n/2; here the lower constant fails at k = n/4.
 
 **Why.** The last layer rotates the pair of modes (i, i + n/2), and n_i n_j is invariant under every unitary on these two modes. So L depends only on the rows x and y of mode i in the two half-size butterflies. At 2k = n/2 the spread input puts every particle in the even combination of the two halves, so ⟨n(x)⟩ = ⟨n(y)⟩ = 1/4 for all angles, including φ_0. The one-particle part of the signal, which carries the rate Θ(k³/n⁵) for the uniform unitary, therefore vanishes for this readout. In the closed form the leading base is 9/64 = (3/8)², the square of E[cos⁴θ], a fourth moment of the rotation entries along the paths of the butterfly.
 
-**Other cases (exact values, n up to 32768).** The recursion below also evaluates the scalar exactly for other readouts and fillings. With p = 0, i = 0 and j ∈ {1, n/4, n/2, n/2 + 1}, the ratio to the uniform value converges in all tested cases except the one of Theorem 1: to about 0.97 to 0.98 for k = 2, to 0.334 to 0.584 for k = n/8, and to 0.500 for k = n/4 with j ≠ n/2. These values are consistent with Conjecture 22 for γ < 1/4.
+**Other cases (exact values, n up to 32768).** The recursion below also evaluates the scalar exactly for other readouts and fillings. With p = 0, i = 0 and j ∈ {1, n/4, n/2, n/2 + 1}, the ratio to the uniform value converges in all tested cases except the one of Theorem 1: it tends to 1 for k = 2 (0.973 to 0.980 at n = 32768, above 0.997 at n = 2^24), to 0.334 to 0.584 for k = n/8, and to 0.500 for k = n/4 with j ≠ n/2. These values are consistent with Conjecture 22 for γ < 1/4.
 
 ## Method: an exact recursion for the fourth moment
 
@@ -43,7 +43,7 @@ where E_{αβγδ} = ⟨c†_α c†_β c_γ c_δ⟩ in the spread input and χ 
 
 Hence E[(∂L/∂φ_p)²] is a sum, over the product terms, of products of K matrices acting on functions of the partition. At most 4140 partitions occur, and in practice about 130. The recursion takes O(log n) steps for any i, j, p when 2k is a power of 2.
 
-**Proof of Theorem 1.** E[∂L/∂φ_0] = 0 because the derivative of a periodic function in φ_0 averages to 0. For the readout (0, n/2), p = 0 and k = n/4, the bit types are fixed: the top bit has empty modes and i, j differ there; the middle bits K − 2, …, 2 all have the same type; bits 1 and 0 carry the blocks. So
+**Proof of Theorem 1 (computer-assisted).** The data phases are diagonal in the modes, so they commute with n_p and are absorbed into the uniform phases of the first Rz layer; the law of the circuit, and hence the variance, does not depend on x. E[∂L/∂φ_0] = 0 because the derivative of a periodic function in φ_0 averages to 0. For the readout (0, n/2), p = 0 and k = n/4, the bit types are fixed: the top bit has empty modes and i, j differ there; the middle bits K − 2, …, 2 all have the same type; bits 1 and 0 carry the blocks. So
 
 Var = −Σ_τ w_τ^T M_τ^{K−3} u_τ
 
@@ -54,7 +54,7 @@ for each product term τ, with fixed rational matrices M_τ (one middle bit), st
 - the closed form is a combination of (9/64)^K, (9/128)^K, (1/8)^K and (1/16)^K, so it satisfies the same recurrence;
 - the two agree exactly for K = 3, …, 23, more than the 20 values that determine a solution, so they agree for all K ≥ 3.
 
-The coefficients of the larger roots 3/8, …, 5/32 vanish.
+The coefficients of the larger roots 3/8, …, 5/32 vanish. The reduction of the variance to the recursion is the argument of the Method section; the exact arithmetic certifies the evaluation of the recursion.
 
 ## Scope
 
@@ -89,7 +89,7 @@ Output of `sim/butterfly.py`:
    n= 32 k= 8 (i,j)=(0,16) p=0: recursion 2.0087e-06, sampled 2.0139e-06 +- 1e-08; uniform 1.4826e-05, sampled 1.4846e-05 +- 3e-08
    n= 64 k=16 (i,j)=(0,32) p=0: recursion 2.6293e-07, sampled 2.6061e-07 +- 2e-09; uniform 3.6712e-06, sampled 3.6766e-06 +- 7e-09
    n= 64 k=16 (i,j)=(0, 1) p=0: recursion 1.9694e-06, sampled 1.9806e-06 +- 2e-08; uniform 3.6712e-06, sampled 3.6800e-06 +- 7e-09
-2. closed form of |B|^2 equals its definition at (n, k) = (16, 4), (32, 8), (64, 16), (128, 32)
+2. closed form of |B|^2 equals its definition at (n, k) = (8, 2), (16, 2), (32, 2), (64, 2), (16, 4), (32, 8), (64, 16), (128, 32)
 3. ratio of the butterfly value to the uniform value, i = 0, p = 0
    k=2    n=    64: j=1 0.8641, j=n/4 0.7064, j=n/2 0.677788, j=n/2+1 0.8641
    k=2    n=   512: j=1 0.9071, j=n/4 0.8669, j=n/2 0.854701, j=n/2+1 0.9071
@@ -105,6 +105,8 @@ Output of `sim/butterfly.py`:
    k=n/4  n= 32768: j=1 0.5002, j=n/4 0.5002, j=n/2 0.000513, j=n/2+1 0.5002
 4. n = 64, k = 16, readout (i, i + 32): the same value for i in {0, 5} and p in {0, 7, ..., 63}
 ```
+
+In step 1 the sampled value for n = 8, (i, j) = (0, 1) lies 3.2 standard errors from the exact value 4.42743e-4 for this seed; with other seeds the deviation is below 0.4 standard errors. The heavy tails of (∂L/∂φ_p)² make the printed error estimates unreliable at this level.
 
 ## References
 
