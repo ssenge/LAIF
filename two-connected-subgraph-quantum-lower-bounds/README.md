@@ -23,7 +23,7 @@ Condition (a) holds whenever the 2-core of H is 2-connected, for example for a c
 | K_{a,b}, 2 ≤ a ≤ b | N^{β_r − o(1)} for a = b = r ≥ 10 [2] | Ω(N^{1 + 1/(6(a+b−1))}) |
 | triangle | Ω(N^{13/12}) [1] | Ω(N^{13/12}) (the same) |
 
-To our knowledge these are the first superlinear lower bounds for the four-cycle, for even cycles, for K_{r,r} with r ≤ 9 and for unbalanced K_{a,b}. Gilani and Zhou list the four-cycle and K_{r,r} with r < 10 as open [2, Section 1.4]. For non-bipartite H the bound Ω(N^{13/12}) of [1] is at least as large, so the new cases are the bipartite ones. For K_{10,10}, Theorem 1 gives 115/114, which improves β_10 = 181/180; for larger r the bounds of [2] are larger.
+To our knowledge these are the first superlinear lower bounds for the four-cycle, for even cycles, for K_{r,r} with r ≤ 9 and for unbalanced K_{a,b}. Gilani and Zhou list the four-cycle and K_{r,r} with r < 10 as open [2, Section 1.4]. For non-bipartite H the bound Ω(N^{13/12}) of [1] is at least as large, so the new cases are the bipartite ones. Counting the extensions of larger patterns gives sharper bounds for dense H, for example Ω(N^{41/38}) for K_{3,3} and Ω(N^{615/542}) for K_{10,10}; see [complete-bipartite-quantum-lower-bounds](../complete-bipartite-quantum-lower-bounds/).
 
 ## The argument
 
@@ -72,7 +72,7 @@ So p d_s and p d_m are O(p (np)^{v−2}) = O(c₀^{v−1}), which is small, and 
 
 So detecting H is at least as hard as detecting B.
 
-**Limits.** Applied to H directly, the degree bounds fail at a cut vertex joining two blocks with cycles. An edge at the cut vertex interacts with about n(np)^{β−2} edges through another block with β vertices when that block minus the cut vertex is a tree. Corollary 2 avoids this by reducing to one block. Whether the block reduction holds for every block with the most edges is open; if it does, every connected graph with a cycle is superlinear. Paths, subdivided claws and stars with two subdivided legs are linear. The bound n^{7/6} p^{1/6} does not depend on H, so a pattern gains only through a larger admissible density. For cycles the planting condition already caps the density at n^{−(v−2)/(v−1)}. For cliques the admissible density is larger, see [clique-quantum-query-lower-bounds](../clique-quantum-query-lower-bounds/).
+**Limits.** Applied to H directly, the degree bounds fail at a cut vertex joining two blocks with cycles. An edge at the cut vertex interacts with about n(np)^{β−2} edges through another block with β vertices when that block minus the cut vertex is a tree. Corollary 2 avoids this by reducing to one block. Whether the block reduction holds for every block with the most edges is open; if it does, every connected graph with a cycle is superlinear. Paths, subdivided claws and stars with two subdivided legs are linear. The bound n^{7/6} p^{1/6} does not depend on H, so a pattern gains only through a larger admissible density. For cycles the planting condition already caps the density at n^{−(v−2)/(v−1)}. For cliques the admissible density is larger, see [clique-quantum-query-lower-bounds](../clique-quantum-query-lower-bounds/), and for K_{a,b} see [complete-bipartite-quantum-lower-bounds](../complete-bipartite-quantum-lower-bounds/).
 
 ## Check
 
