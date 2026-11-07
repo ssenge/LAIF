@@ -31,15 +31,15 @@ So x0 is a fold point. J has rank 15 at random points, so full rank almost every
 
 **The instance.** For the fold of Theorem 1, F(x0) has a regular preimage x1, with smallest singular value 0.245 of J(x1). For ε = 10⁻², 10⁻³ and 10⁻⁴ on the trap side, the check finds the strict local minimum of Theorem 2 and a parameter with loss below 10⁻¹⁵. So these targets have spurious local minima at loss ε²/8, at the critical parameter count d = dim SU(4) and with rank saturated almost everywhere.
 
-**Theorem 3 (a fold of the SU(8) brick wall of [1]).** Take the SU(8) circuit of [1]: RZ, RY and RZ on each of the three qubits, then 14 bricks on the qubit pairs (0, 1), (1, 2), (0, 1), …, each CZ followed by RY on both qubits and RZ on both qubits, except that the last brick keeps only the two RY. It has d = 63 = dim SU(8) rotations and 14 CZ gates. Fix all angles except x_36 (counting from 1) at the values listed in the check. Then there is t* in an interval of width 1.4 · 10⁻⁴³ around 5.0230182363654284306 such that the point x* with x_36 = t* is a fold point. There, σ_62 = 0.0205 and κ = −0.0232 for unit null vectors (floating point).
+**Theorem 3 (a fold of the SU(8) brick wall of [1]).** Take the SU(8) circuit of [1]: RZ, RY and RZ on each of the three qubits, then 14 bricks on the qubit pairs (0, 1), (1, 2), (0, 1), …, each CZ followed by RY on both qubits and RZ on both qubits, except that the last brick keeps only the two RY. It has d = 63 = dim SU(8) rotations and 14 CZ gates. Fix all angles except x_36 (counting from 1; the RZ on qubit 0 in the 7th brick) at the double precision values listed in the check. Then there is t* in an interval of width 1.4 · 10⁻⁴³ around 5.0230182363654284306 such that the point x* with x_36 = t* is a fold point. There, σ_62 = 0.0205 and κ = −0.0232 for unit null vectors (floating point).
 
 So F(C) contains a 62-dimensional embedded piece through F(x*), and [1, Conjecture 3] does not hold for this circuit; J has full rank almost everywhere, since det J changes sign at x*.
 
-**The instance for the brick wall.** F(x*) has a regular preimage x1, found by least squares from the first random start (max |F(x1) − F(x*)| = 7 · 10⁻¹⁵, smallest singular value 0.021 of J(x1)). For ε = 10⁻³ and 10⁻⁴ on the trap side, the check finds the strict local minimum of Theorem 2, at loss ε²/8 to within 10⁻⁵ relative, with smallest second-derivative eigenvalue |εκ|/4 to within 1%, while a parameter near x1 reaches loss below 10⁻¹⁴. So the brick wall circuit of [1] for SU(8) has compilation targets with spurious strict local minima.
+**The instance for the brick wall (floating point).** Let x0 be the double precision point nearest to x*. F(x0) has a regular preimage x1, found by least squares from the first random start (max |F(x1) − F(x*)| = 7 · 10⁻¹⁵, smallest singular value 0.021 of J(x1)). For ε = 10⁻³ and 10⁻⁴ on the trap side, the check finds the strict local minimum of Theorem 2, at loss ε²/8 to within 10⁻⁵ relative, with smallest second-derivative eigenvalue |εκ|/4 to within 1%, while a parameter near x1 reaches loss below 10⁻¹⁴. So the brick wall circuit of [1] for SU(8) has compilation targets with spurious strict local minima.
 
 ## Proof
 
-**Fold conditions.** At a point x0 of corank one, adj J(x0) = c v u^T with c = ± σ_1 ⋯ σ_14 ≠ 0. So for every direction w,
+**Fold conditions.** At a point x0 of corank one, adj J(x0) = c v u^T with c = ± σ_1 ⋯ σ_{d−1} ≠ 0. So for every direction w,
 
 ∂_w det J(x0) = tr(adj J(x0) ∂_w J(x0)) = c u^T (∂_w J)(x0) v.
 
@@ -68,7 +68,7 @@ So F(C) contains a 62-dimensional embedded piece through F(x*), and [1, Conjectu
 
 1. **Scope.**
    - F(x0) has a regular preimage, so it is an interior point of the image F(T^15). The fold does not bound the image there, and the surjectivity of this circuit is not treated.
-   - The same holds for the fold of the SU(8) brick wall in Theorem 3: its value is an interior point of the image, and the universality of that circuit is not treated here. For the SO(8) brick wall of [1], see [10].
+   - The same holds for the fold of the SU(8) brick wall in Theorem 3, whose value has a regular preimage in floating point, so it is an interior point of the image up to that precision; and the universality of that circuit is not treated here. For the SO(8) brick wall of [1], see [10].
    - Theorem 2 needs d = dim G, so that F is locally a map between spaces of equal dimension. Circuits with more parameters than dim G are not treated.
 2. **Sign changes of det J.** For d = dim SU(D), the degree of F is 0: F is the product of d maps of circles into SU(D), and the primitive generators of the cohomology of SU(D) have degree at least 3, so they pull back to 0 on T^d. If J has full rank somewhere, a regular value in the open image has a preimage, and degree 0 forces preimages of both orientations. So det J takes both signs and C is never empty. A sign change alone does not make a fold, which is why Theorem 1 checks κ.
 3. **Overparametrization.** The rank of J saturates almost everywhere at d = dim SU(4). Theorem 2 shows that this saturation alone does not exclude spurious local minima for compilation targets near F(C).

@@ -2,8 +2,9 @@
 arithmetic, and the traps of Theorem 2 next to it.
 
 Certificate. Fix all angles but x_36 (counting from 1, index 35 in the code). Let g = det J and h = tr(adj J d_w J) with w = adj J e_j.
-If g(a) g(b) < 0 and |h(a)| > (b - a) * 125 d^{5/2}, a bound for |h'|, then some t in (a, b) is a fold point.
-Both conditions are checked with interval arithmetic at 160 digits (mpmath.iv).
+If g(a) g(b) < 0 and |h(a)| > (b - a) * 125 d^3, where 125 d^{5/2} bounds |h'|, then some t in (a, b) is a fold point.
+Both conditions are checked with interval arithmetic at 160 digits (mpmath.iv). The regular preimage and the traps
+next to the fold are checked in double precision at x0, the double nearest the fold point.
 """
 import itertools
 import numpy as np
@@ -235,7 +236,7 @@ for eps in (-np.sign(kap) * 1e-3, -np.sign(kap) * 1e-4):
     lmin = np.linalg.eigvalsh(hess(x, Ut))[0]
     other = fit(x1, Ut)
     L, Lo = loss(x, Ut), loss(other, Ut)
-    assert abs(L / (eps ** 2 / 8) - 1) < 1e-3 and lmin > 0.5 * abs(eps * kap) / 4 and Lo < 1e-14 and np.linalg.norm(x - x0) < 1e-8
+    assert abs(L / (eps ** 2 / 8) - 1) < 1e-5 and abs(lmin / (abs(eps * kap) / 4) - 1) < 0.01 and Lo < 1e-14 and np.linalg.norm(x - x0) < 1e-8
     print(f"eps = {eps:+.0e} (trap side): critical point at distance {np.linalg.norm(x - x0):.1e} from x0, loss {L:.6e} = "
           f"{L / (eps ** 2 / 8):.5f} eps^2/8, smallest second-derivative eigenvalue {lmin:.2e} (|eps kappa|/4 = "
           f"{abs(eps * kap) / 4:.2e}); from x1 the loss reaches {Lo:.1e}, so the minimum is spurious")
