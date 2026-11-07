@@ -2,7 +2,7 @@
 
 1. The volume formula for the state set, against the ball of qubit states (d = 2) and a sampled count (d = 3).
 2. Linear inversion with uniform rank-one outcomes is unbiased with second moment (d + 1) k / d per round.
-3. The constants of Theorem 1: c_d and C_d = exp(2 c_d / k) / d^3, largest at d = 2 for d <= 10^5.
+3. The constants of Theorem 1: c_d and C_d = exp(2 c_d / k) / d^3, decreasing over every d <= 10^5.
 4. A plug-in learner on d = 2 against the best state in hindsight, versus the lower bound.
 5. The uniform-prior mixture on d = 2 stays below the bound log C(T + k, k) of [1, Theorem 4.5].
 """
@@ -29,7 +29,7 @@ def lower_bound(d, T):
 
 
 def herm_basis(d):
-    """Orthonormal basis (trace inner product) of the traceless Hermitian matrices."""
+    """Orthonormal basis (trace inner product) of the traceless self-adjoint matrices."""
     B = []
     for i in range(d):
         for j in range(i + 1, d):
@@ -79,7 +79,7 @@ def sample_outcomes(rho, n):
 
 
 def random_state(d):
-    """A state from the flat measure: G G^* / tr with G square complex Gaussian."""
+    """A state from the flat measure: G G^* / tr with G a square matrix of complex normal entries."""
     g = rng.normal(size=(d, d)) + 1j * rng.normal(size=(d, d))
     r = g @ g.conj().T
     return r / np.trace(r).real
@@ -103,18 +103,23 @@ def check_inversion():
 
 
 def check_constants():
-    print("3. c_d and C_d = exp(2 c_d / k) / d^3:")
-    worst = 0
-    C2 = math.exp(2 * c_const(2) / 3) / 8
-    for d in list(range(2, 3001)) + list(range(3000, 100001, 97)):
+    print("3. c_d and C_d = exp(2 c_d / k) / d^3 for every d <= 10^5:")
+    lg, prev = 0.0, math.inf  # lg: running sum of log Gamma(j), j <= d
+    for d in range(1, 100001):
+        lg += math.lgamma(d)
+        if d < 2:
+            continue
         k = d * d - 1
-        C = math.exp(2 * c_const(d) / k) / d ** 3
-        worst = max(worst, C)
-        if d in (2, 3, 4, 5, 10, 50, 400, 2000):
-            print(f"   d={d:4d}: c_d = {c_const(d):12.3f}, C_d = {C:.4f}")
-    lim = math.exp(0.5)
-    print(f"   max C_d = {worst:.4f}; limit e^(1/2) = {lim:.4f}")
-    assert worst == C2 and worst < 2.47
+        logv = 0.5 * math.log(d) + d * (d - 1) / 2 * math.log(2 * math.pi) + lg - math.lgamma(d * d)
+        c = k / 2 * math.log(2 * math.pi * math.e * (d + 1) / d) - logv
+        C = math.exp(2 * c / k) / d ** 3
+        assert C < prev
+        prev = C
+        if d in (2, 3, 5, 10, 50, 400, 2000, 100000):
+            assert abs(logv - log_volume(d)) <= 1e-9 * abs(logv)
+            print(f"   d={d:6d}: c_d = {c:15.3f}, C_d = {C:.6f}, e^(1/2)(1 + 1/d) = {math.exp(0.5) * (1 + 1 / d):.6f}")
+    assert math.exp(2 * c_const(2) / 3) / 8 < 2.47
+    print("   C_d is strictly decreasing and C_2 < 2.47")
 
 
 def mle(A, iters=400):
