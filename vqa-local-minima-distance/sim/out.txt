@@ -1,0 +1,3 @@
+1. dichotomy holds at all descent end points (311 graph/threshold pairs; 15 runs stopped at 0, not a minimiser)
+2. decoder correct on 12000 adversarial points, p in {1, 1.5, 2, 3}, r up to 64
+all checks passed
