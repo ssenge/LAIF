@@ -3,8 +3,8 @@
 1. The dichotomy of the base instance on small graphs: projected descent on [0,1]^n for
    q(x) = x^T ((k - 1/2)(A + I) - J) x ends at 0 when alpha(G) < k and at a point with a
    coordinate 1 when alpha(G) >= k (or at the stationary point 0, which is then not a minimiser).
-2. The decoder of Theorem 1: with r copies and delta^p <= (pi/2)^p r/2, the count of coordinates in
-   (pi/2, 3pi/2) separates the two cases, also for adversarial points that spend the whole budget.
+2. The decoder of Theorem 1: with r copies, the distance to the corners {0, 2pi}^N separates the two
+   cases for every point within (1 - 1/N)(pi/2) r^(1/p) of a local minimiser.
 """
 import itertools
 import math
@@ -56,43 +56,52 @@ def check_dichotomy():
     print(f"1. dichotomy holds at all descent end points ({cases} graph/threshold pairs; {stalled} runs stopped at 0, not a minimiser)")
 
 
-def classify(theta, r):
-    return np.sum((theta > np.pi / 2) & (theta < 3 * np.pi / 2)) > r / 2
+def corner_distance(theta, p):
+    return np.sum(np.minimum(theta, 2 * np.pi - theta) ** p) ** (1 / p)
 
 
 def check_decoder():
-    worst = 0
+    count = 0
     for p in (1, 1.5, 2, 3):
         for r in (1, 2, 5, 16, 64):
             n = 4
             N = r * n
-            delta = (np.pi / 2) * (r / 2) ** (1 / p) * (1 - 1e-9)
+            rho = (np.pi / 2) * r ** (1 / p)
+            radius = (1 - 1 / N) * rho
             for case in ("no", "yes"):
-                for _ in range(300):
+                for trial in range(300):
                     v = np.where(rng.random(N) < 0.5, 0.0, 2 * np.pi)
-                    if case == "yes":  # one coordinate at pi in each copy, others anywhere allowed
+                    if case == "yes":  # at least one coordinate at pi in each copy
                         for s in range(r):
                             v[s * n + rng.integers(n)] = np.pi
-                        v[rng.random(N) < 0.2] = np.pi
-                    # adversary: push as many coordinates as the budget allows just across pi/2
+                    budget = radius ** p * (1 - 1e-12)
                     theta = v.copy()
-                    budget = delta ** p
-                    order = rng.permutation(N)
-                    for i in order:
-                        step = np.pi / 2 + 1e-12
-                        if step ** p > budget:
-                            break
-                        budget -= step ** p
-                        if v[i] == 0:
-                            theta[i] = step
-                        elif v[i] == 2 * np.pi:
-                            theta[i] = 2 * np.pi - step
+                    if trial % 3 == 0:  # worst case: spread the budget evenly over the moved coordinates
+                        idx = np.flatnonzero(v == np.pi) if case == "yes" else rng.permutation(N)[: max(1, r)]
+                        step = (budget / len(idx)) ** (1 / p)
+                    else:
+                        idx = rng.permutation(N)[: int(rng.integers(1, N + 1))]
+                        step = (budget / len(idx)) ** (1 / p) * rng.random()
+                    for i in idx:  # move towards the other case
+                        if v[i] == np.pi:
+                            theta[i] = np.pi - min(step, np.pi)
+                        elif v[i] == 0:
+                            theta[i] = min(step, np.pi)
                         else:
-                            theta[i] = np.pi - step
-                    assert np.sum(np.abs(theta - v) ** p) < delta ** p
-                    assert classify(theta, r) == (case == "yes")
-                    worst += 1
-    print(f"2. decoder correct on {worst} adversarial points, p in {{1, 1.5, 2, 3}}, r up to 64")
+                            theta[i] = 2 * np.pi - min(step, np.pi)
+                    assert np.sum(np.abs(theta - v) ** p) < radius ** p
+                    D = corner_distance(theta, p)
+                    assert (D > (1 + 1 / N) * rho * (1 - 1e-9)) if case == "yes" else (D < (1 - 1 / N) * rho)
+                    count += 1
+            # the radius rho is best possible from the dichotomy alone
+            v_yes = np.zeros(N)
+            v_yes[:r] = np.pi
+            mid = np.zeros(N)
+            mid[:r] = np.pi / 2
+            assert abs(np.sum(np.abs(mid - v_yes) ** p) ** (1 / p) - rho) < 1e-9
+            assert abs(np.sum(np.abs(mid) ** p) ** (1 / p) - rho) < 1e-9
+    print(f"2. corner-distance decoder correct on {count} points, p in {{1, 1.5, 2, 3}}, r up to 64;"
+          " the midpoint example is at distance exactly rho from both cases")
 
 
 if __name__ == "__main__":
