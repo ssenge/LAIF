@@ -416,6 +416,10 @@ for a in range(28):
 assert not kap.zero()
 nrm = lambda z: float(sum((t * t for t in z), Q2(0))) ** 0.5
 s27 = np.linalg.svd(Jac(THEIRS, np.array(MS) * np.pi / 4), compute_uv=False)[-2]
+x0f = np.array(MS) * np.pi / 4                             # the exact derivative agrees with finite differences
+uf, vf = np.array([float(t) for t in u]) / nrm(u), np.array([float(t) for t in v]) / nrm(v)
+kfd = uf @ ((Jac(THEIRS, x0f + 1e-6 * vf) - Jac(THEIRS, x0f - 1e-6 * vf)) / 2e-6) @ vf
+assert abs(kfd - float(kap) / (nrm(u) * nrm(v) ** 2)) < 1e-8 and abs(s27 - 0.170) < 5e-4
 print(f"fold of the circuit of [1] at x = (pi/4) {MS}: exact over Q(sqrt 2), rank J = 27, sigma_27 = {s27:.3f}, "
       f"u^T (d_v J) v = {kap} for the null vectors of the check, {float(kap) / (nrm(u) * nrm(v) ** 2):+.4f} for unit ones")
 
@@ -441,6 +445,7 @@ rng = np.random.default_rng(3)
 out = [compile_(THEIRS, U, rng, 120) for U in T]
 print("circuit of [1], the 10 targets of [1] (best loss, starts): " + ", ".join(f"{L:.1e} ({s})" for L, s, _ in out))
 assert [i for i, (L, _, _) in enumerate(out) if L > 1e-12] == [1, 4, 5]
+assert all(L < 1e-22 and s <= 20 for i, (L, s, _) in enumerate(out) if i not in (1, 4, 5))
 for i in (1, 4, 5):
     x = out[i][2]
     Uu, S, Vt = np.linalg.svd(Jac(THEIRS, x))
@@ -451,14 +456,14 @@ for i in (1, 4, 5):
     kap = u @ ((Jac(THEIRS, x + h * v) - Jac(THEIRS, x - h * v)) / (2 * h)) @ v
     print(f"  target {i}: at the best point sigma_min(J) = {S[-1]:.1e}, sigma_27 = {S[-2]:.3f}, "
           f"|kappa| = {abs(kap):.3f} for unit null vectors, |cos(residual, u)| = {abs(a @ u) / np.linalg.norm(a):.6f}")
-    assert S[-1] < 1e-7 and abs(kap) > 1e-2 and abs(a @ u) / np.linalg.norm(a) > 0.9999
+    assert S[-1] < 1e-8 and S[-2] > 0.08 and 0.06 < abs(kap) < 0.1 and abs(a @ u) / np.linalg.norm(a) > 0.9999
 out = [compile_(PAIRED, U, rng, 20) for U in T]
 print("paired circuit, the 10 targets of [1]: " + ", ".join(f"{L:.1e} ({s})" for L, s, _ in out))
-assert max(L for L, _, _ in out) < 1e-20
+assert max(L for L, _, _ in out) < 1e-22 and max(s for _, s, _ in out) == 1
 out = [compile_(PAIRED, special_ortho_group.rvs(8, random_state=rng), rng, 20) for _ in range(100)]
 print(f"paired circuit, 100 uniform targets: largest loss {max(L for L, _, _ in out):.1e}, starts used at most "
       f"{max(s for _, s, _ in out)}")
-assert max(L for L, _, _ in out) < 1e-20
+assert max(L for L, _, _ in out) < 1e-21 and max(s for _, s, _ in out) == 1
 
 
 # ---------------- 5. exact compilation into the paired circuit, along the proof of Theorem 2 ----------------
@@ -568,5 +573,5 @@ special += [F(THEIRS, np.array(MS) * np.pi / 4)]
 errs = [compile_exact(U) for U in list(T) + special + [special_ortho_group.rvs(8, random_state=rng) for _ in range(200)]]
 print(f"exact compilation into the paired circuit (lift, nested word, moves): {len(errs)} targets (the 10 of [1], "
       f"{len(special)} special ones, 200 uniform), largest max |F(x) - U| = {max(errs):.1e}")
-assert max(errs) < 1e-9
+assert max(errs) < 1e-12
 print("all checks pass")

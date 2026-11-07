@@ -4,7 +4,7 @@ Written 7 Nov 2026.
 
 ## Problem
 
-[1] gives brick wall circuits of CZ gates and one-qubit rotations that use the minimal number of parameters and of two-qubit gates for SU(2^n), SO(2^n) and the symplectic group, and conjectures that they are universal. For SO(8), on three qubits, the circuit has three Y rotations, then 13 bricks, each a CZ gate followed by a Y rotation on both of its qubits, alternating between the qubit pairs (0, 1) and (1, 2); the last brick keeps only the rotation on qubit 0. This is 28 = dim SO(8) parameters and 13 CZ gates, both minimal by [1, Eq. (A1)]. [1] reports that three of its ten random SO(8) targets could not be compiled to this circuit from any start, and calls the evidence for SO(8) less conclusive than for the other groups. Its route to a proof of universality needs [1, Conjecture 3], that the critical values of such a circuit have dimension at most d − 2. [2] gives a counterexample for a circuit of 15 rotations about two-qubit strings that is onto SU(4).
+[1] gives brick wall circuits of CZ gates and one-qubit rotations that use the minimal number of parameters and of two-qubit gates for SU(2^n), SO(2^n) and the symplectic group, and conjectures that they are universal. For SO(8), on three qubits, the circuit has three Y rotations, then 13 bricks, each a CZ gate followed by a Y rotation on both of its qubits, alternating between the qubit pairs (0, 1) and (1, 2); the last brick keeps only the rotation on qubit 0. This is 28 = dim SO(8) parameters and 13 CZ gates, both minimal for circuits of CZ gates and Y rotations (Remark 4, following [1, Eq. (A1)]). [1] reports that three of its ten random SO(8) targets could not be compiled to this circuit from any start, and calls the evidence for SO(8) less conclusive than for the other groups. Its route to a proof of universality needs [1, Conjecture 3], that the critical values of such a circuit have dimension at most d − 2. [2] gives a counterexample for a circuit of 15 rotations about two-qubit strings that is onto SU(4).
 
 This note uses triality of SO(8) [4] to turn three-qubit circuits of CZ gates and Y rotations into networks of rotations in coordinate planes. In that form, a small change of the brick order gives a circuit with 13 CZ gates and 28 parameters that is provably universal for SO(8).
 
@@ -22,12 +22,12 @@ This note uses triality of SO(8) [4] to turn three-qubit circuits of CZ gates an
 
 (0, 1), (1, 2), (1, 2), (0, 1), (0, 1), (1, 2), (1, 2), (0, 1), (0, 1), (1, 2), (1, 2), (0, 1), (0, 1),
 
-each a CZ gate followed by a Y rotation on both qubits, except that the last brick keeps only the rotation on qubit 1 (where [1] keeps qubit 0). This is the circuit of [1] with the bricks after the first one taken in pairs. It has 28 parameters and 13 CZ gates, both minimal by [1, Eq. (A1)], and nearest neighbour connectivity. Every element of SO(8) is F(x) for some x.
+each a CZ gate followed by a Y rotation on both qubits, except that the last brick keeps only the rotation on qubit 1 (where [1] keeps qubit 0). This is the circuit of [1] with the bricks after the first one taken in pairs. It has 28 parameters and 13 CZ gates, both minimal (Remark 4), and nearest neighbour connectivity. Every element of SO(8) is F(x) for some x.
 
 **Theorem 3 (the circuit of [1]).**
 
 - Its word uses all 8 edges of a cycle through the eight basis vectors, while every word of the kind used in Theorem 2 uses the 7 edges of a path.
-- It has a fold point: at x0 = (π/4)(5, 7, 0, 0, 7, 6, 3, 1, 3, 0, 6, 0, 3, 5, 6, 6, 2, 7, 6, 7, 6, 3, 6, 0, 0, 5, 1, 2), the derivative matrix J has entries in ℚ(√2), rank 27 with σ_27 = 0.170, and κ = u^T (∂_v J) v ≠ 0 for its null vectors u and v, with |κ| = 0.0452 for unit ones (κ as in [3]). So F(C) contains a 27-dimensional piece, and [1, Conjecture 3] does not hold for this circuit.
+- It has a fold point: at x0 = (π/4)(5, 7, 0, 0, 7, 6, 3, 1, 3, 0, 6, 0, 3, 5, 6, 6, 2, 7, 6, 7, 6, 3, 6, 0, 0, 5, 1, 2), the derivative matrix J has entries in ℚ(√2), rank 27 with σ_27 = 0.170, and κ = u^T (∂_v J) v ≠ 0 for its null vectors u and v, with |κ| = 0.0452 for unit ones (κ as in [3]). So F(C) contains a 27-dimensional piece. The circuit has full rank almost everywhere, the hypothesis of [1, Conjecture 3], and that conjecture does not hold for it. The SU(8) brick wall circuit of [1] also has a fold point [3, Theorem 3].
 
 **The targets of [1].** The check samples the ten SO(8) targets as the code of [1] does. Here are the results with least squares from random starts:
 
@@ -36,7 +36,7 @@ each a CZ gate followed by a Y rotation on both qubits, except that the last bri
 | circuit of [1] | loss below 10⁻²², within 20 starts | best loss 1.2 · 10⁻⁴, 3.8 · 10⁻³, 1.5 · 10⁻³ after 120 starts each |
 | paired circuit (Theorem 2) | loss below 10⁻²², first start | loss below 10⁻²², first start |
 
-The three hard targets are the same three, by the costs stored in the code repository of [1]. At the best points found for them, J has one singular value below 10⁻⁸ and the next one above 0.08, and |κ| is between 0.069 and 0.093 for unit null vectors, so up to numerical precision these are fold points. The residual is parallel to the missed direction u, as stationarity requires at such a point. This is what one expects if these targets lie outside the image of the circuit of [1], beyond a fold, but the numerics do not prove it. For the paired circuit, 100 further uniform targets also reach loss below 10⁻²¹ from the first start.
+The three hard targets are the same three, by the costs stored in the code repository of [1]. At the best points found for them, J has one singular value below 10⁻⁸ and the next one above 0.08, and |κ| is between 0.069 and 0.093 for unit null vectors, which is consistent with fold points nearby. The residual, measured by the logarithm of U F(x)^T, is parallel to the missed direction u to six digits; to first order this is what stationarity requires. This is what one expects if these targets lie outside the image of the circuit of [1], beyond a fold, but the numerics do not prove it. For the paired circuit, 100 further uniform targets also reach loss below 10⁻²¹ from the first start.
 
 ## Proof
 
@@ -62,7 +62,7 @@ For the last claim, let F̃ be the lift of F to the spin group, so that F = ρ(F
 
 The signs ±x_k are a change of parameters. So F+(T^28) = K · SO(8) = SO(S+), and F is onto by Theorem 1. □
 
-**Theorem 3.** The check computes the word and finds 8 distinct edges, each vertex on two of them, connected: a cycle. A reduced word of the reversal on a path has exactly 7 distinct edges, the path's. The fold conditions are checked in exact arithmetic as in [3]: the conjugation action of each gate on strings has entries in {0, ±1, ±cos t, ±sin t}, which at t ∈ (π/4)ℤ lie in ℚ(√2). The check finds rank 27, null vectors u and v, and u^T (∂_v J) v = −√2 for its unnormalized null vectors. Then F(C) contains a 27-dimensional embedded piece through F(x0) [3]. □
+**Theorem 3.** The check computes the word and finds 8 distinct edges, each vertex on two of them, connected: a cycle. A reduced word of the reversal on a path has exactly 7 distinct edges, the path's. The fold conditions are checked in exact arithmetic as in [3]: the conjugation action of each gate on strings has entries in {0, ±1, ±cos t, ±sin t}, which at t ∈ (π/4)ℤ lie in ℚ(√2). The check finds rank 27, null vectors u and v, and u^T (∂_v J) v = −√2 for its unnormalized null vectors. Then F(C) contains a 27-dimensional embedded piece through F(x0) [3]. Since det J is analytic on the connected torus and its derivative at x0 is not zero, it vanishes only on a null set, so J has full rank almost everywhere. □
 
 ## Remarks
 
@@ -71,6 +71,8 @@ The signs ±x_k are a change of parameters. So F+(T^28) = K · SO(8) = SO(S+), a
    - That the circuit of [1] misses the three targets is a numerical observation, not a theorem.
 2. **Other circuits.** Among circuits of this shape (three Y rotations, 13 bricks, one of the 29 rotations left out), 8 with nearest neighbour CZ gates have a reduced word on a path, and 24 when CZ gates on all three pairs are allowed. All 8 take the bricks in pairs. The paired circuit is the only one of them that, like the circuit of [1], starts with a CZ gate on (0, 1) and leaves out a rotation of the last brick.
 3. **Compilation.** The proof gives a direct compiler for the paired circuit. Lift the target U to SO(S+) through a real logarithm, write the result along the nested word by elimination one coordinate at a time, then apply the moves that lead to the word of the circuit, solving each braid move on three coordinates in closed form; if the angles give −U, shift one of them by 2π. The check runs this on 235 targets with largest entrywise error 1.4 · 10⁻¹³. Least squares also works for this circuit: every target tried converged from its first start.
+
+4. **Minimal counts.** In a circuit of CZ gates and Y rotations, a Y rotation commutes with every CZ gate on other qubits and merges with an earlier Y rotation on its qubit. So a circuit with c CZ gates factors through a torus of dimension at most 3 + 2c, and it can be onto SO(8) only if 3 + 2c ≥ 28. This gives c ≥ 13 and at least 28 rotations, the count of [1, Eq. (A1)].
 
 ## Check
 
