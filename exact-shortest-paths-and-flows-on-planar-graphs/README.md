@@ -75,7 +75,8 @@ Please read this before relying on anything here.
     be $O(\log^2 n)$.
   - This restores the $\tilde O(D/\varepsilon)$ bound of [1] for the labels and the
     $\tilde O(D)$ of Theorem A. The separator is our Lemma B5, a fundamental cycle found
-    with prefix sums along an Euler tour of the shallow tree $T_X$, in $O(D\log^2 n)$ rounds.
+    with prefix sums along a tour of the shallow tree $T_X$ that passes each edge twice, in
+    $O(D\log^2 n)$ rounds.
     It is deterministic and adds no black box.
 - **Theorem D** (2026-10-29) is new. The auxiliary graph $\hat G_\ell$ of [18], as we read its
   Remark 3.3, fails at $s$ and $t$ on small instances (smallest: 4 vertices, minimum cut 2,
@@ -284,7 +285,7 @@ are not artefacts of the linear program. The scripts are in `sim/counterexamples
   - The separator is Lemma B5. A thin neighbourhood of $T_X$ has a circle as boundary, and
     non-tree edges are non-crossing chords of the outside. The number of vertices on one side
     of a fundamental cycle is read off the number of tree-edge sides along one arc of that
-    circle, so all counts are prefix sums along an Euler tour, computed in $O(\text{depth})$
+    circle, so all counts are prefix sums along a tour that passes each tree edge twice, computed in $O(\text{depth})$
     rounds. If no real fundamental cycle is balanced, a fan of virtual chords inside one face
     finds one, as in the classical planar
     separator theorem. Every other step is flooding or BFS inside $R_X$. We use
@@ -368,7 +369,7 @@ the maximum st-flow value, in $\tilde O(D)$ rounds; every vertex learns its side
 edges. It is deterministic given the embedding algorithm of [15], as in [18], and
 deterministic face identifiers (G6).
 
-[18] computes a $(1+o(1))$-approximate minimum st-cut with Reif's algorithm: $O(\log n)$
+[18] computes a $(1+o(1))$-approximate minimum st-cut with a recursion: $O(\log n)$
 levels of incisions in the dual, each with $O(1)$ rounds of SSSP, one source per annulus. Its correctness argument
 [18, Lemma 2.7] holds unchanged with exact shortest paths. Its recursion needs one repair
 (Lemma S below), and the SSSP step needs replacing. [18] runs approximate SSSP on each annulus through minor aggregation, because
@@ -409,13 +410,15 @@ graphs built for a planarity check was planar with hop diameter at most $4D+4$. 
 graph failed in about a third of the instances. Lemma R (`notes/GHAT_REPAIR.md`, 2026-10-29)
 defines the repaired graph formally and proves what Theorem D needs from it: the properties
 [18, Thm 3.1 (1), (2)], planarity with an explicit rotation at every copy, the diameter bound,
-and the local phase of [18, Lemma 3.17]. An independent implementation of its definition
+and the local phase of [18, Lemma 3.17]. Its definition, its properties (1) and (2) and the
+distances on the repaired graph hold in Lean (`lean/SsspFlow/GHat.lean`,
+`lean/SsspFlow/GHatDist.lean`). An independent implementation of its definition
 matched the tested graph on 98,000 instances. Lemma R needs a description of the dual nodes
 that is not stated in [18]. Lemma N proves it, by induction over the levels, and the reduction
 is correct for every legal choice at $s$ and $t$. These failures may come from a misreading of
 [18] on our side. We have not checked whether they affect the approximate algorithm of [18].
 
-**The recursion repair (Lemma S).** Reif's recursion in [18, Alg. 3] computes the shortest
+**The recursion repair (Lemma S).** The recursion of [18, Alg. 3] computes the shortest
 cycle $P_i$ through the middle index $i$ of an annulus with index range $[j,k]$, and then
 drops every index strictly between $i_1$ and $i_2$, the least and greatest index of the first
 cut path on $P_i$ ([18, Claim 2.4, Lemma 5.6]). The reason given is that $P_{i_1}$ or $P_{i_2}$
@@ -621,6 +624,32 @@ standard axioms (`propext`, `Classical.choice`, `Quot.sound`). There is no `sorr
   avoids its bound, so that its child is a live annulus. `CutPath.recursion_cut` collects these facts for a planar
   connected map, natural dart weights that agree on the two darts of each edge, and a shortest path with positive
   weights between corners of two different faces.
+- `lean/SsspFlow/GHat.lean`: Definition R of `notes/GHAT_REPAIR.md`, for a graph with a rotation system, a set of
+  incised edges, a set of cut corners with their modes and a host for the pair of each unincised edge (`RData`): the
+  tokens (`RData.IsTok`) and their pairs (`partner`), the face walk of the tokens (`RData.succ`), the links between
+  consecutive tokens without a cut between them (`RData.Link`), the pieces (`RData.Piece`), the copies (`Copy`,
+  `RData.Valid`), the E_R edges after repair (a) (`RData.alpha`, `RData.beta`), the E_S edges (`RData.ES`) and the
+  ends of the E_C edges after repair (b) (`RData.att`). Claims 1 and 2 of the note: the ends of an E_R edge are valid
+  copies other than star centres (`RData.valid_alpha`, `RData.valid_beta`, `RData.alpha_ne_star`,
+  `RData.beta_ne_star`), distinct if the graph has no loops (`RData.alpha_ne_beta`); $\alpha$ and $\beta$ are
+  injective on tokens (`RData.alpha_inj`, `RData.beta_inj`); $\beta(y)=\alpha(z)$ exactly when $z$ follows $y$ in a
+  piece (`RData.beta_eq_alpha_iff`); and every valid copy other than a star centre is an end of an E_R edge
+  (`RData.exists_end`). So the E_R edges, directed from $\alpha$ to $\beta$, have in- and out-degree at most one.
+  A copy belongs to the piece of its tokens (`RData.pieceOf_eq`), an E_R edge joins two copies of one piece
+  (`RData.pieceOf_er`), and the copies of one piece are joined by E_R edges (`RData.ring_conn`). Hence the E_R edges
+  of each piece form a path or a cycle, and those of distinct pieces are disjoint: property (1) of Lemma R. Property
+  (2): the E_C edge of a pair joins the paths of the pieces of its two tokens (`RData.pieceOf_att`), at two copies of
+  its host (`RData.owner_att_partner`).
+- `lean/SsspFlow/GHatDist.lean`: the repaired graph as a multigraph on the copies (`RData.Arc`), with weight $0$ on
+  E_R edges, a weight $\lambda(x)\ge0$ on the E_C edge of each token $x$ and $M\ge0$ on E_S edges, and the token
+  graph on the pieces with the same weights. A walk of the token graph lifts to a walk of the repaired graph of the
+  same weight between any copies of its end pieces (`RData.lift`). A walk of the repaired graph of weight below $M$
+  between copies on E_R edges projects to a walk of the token graph between their pieces of the same weight
+  (`RData.project`). So the distance of two copies is the distance of their pieces if that is below $M$, and at
+  least $M$ otherwise (`RData.gdist_eq`), and a walk from a set of pieces closed under pairs stays in it
+  (`RData.mem_of_walk`): the distance bullet of Theorem D. For the weights $K\cdot c+1$ with natural costs $c$ and
+  $K$ at least the number of nodes, a walk of least weight has fewer than $K$ edges and least cost, and its weight
+  divided by $K$ is that cost (`FaceDisjoint.Walk.wt_scaled`, `FaceDisjoint.Walk.decode`).
 - `lean/SsspFlow/Arborescence.lean`: the arithmetic of the contraction and the halving count of `notes/DMST.md`.
 - `lean/SsspFlow/NegScaling.lean`: the arithmetic of the scaling, the alternation, the short paths in a cluster and the arc inequality of `notes/NEGATIVE.md`.
   - `Setup.negCycle_iff`, `Setup.walks` and `Setup.lemmaD` prove it for any graph with the
@@ -660,7 +689,7 @@ standard axioms (`propext`, `Classical.choice`, `Quot.sound`). There is no `sorr
   [FourColorTheorem-Lean4](https://github.com/RBarish-UTokyo/FourColorTheorem-Lean4) of the Coq
   development, vendored under its Apache-2.0 licence with its notices; the upstream commit is
   recorded in `lean/FourColor/PORTING.md`, and no file was changed. It provides combinatorial
-  maps with their genus, planarity as genus zero, the equivalence of planarity with the Jordan
+  maps with their genus, planarity as genus zero, the equivalence of planarity with a contour
   property (`planar_iff_jordan`), cutting a planar map along a ring into two planar maps
   (`Snip`), gluing two maps along a border with additive genus (`Sew`, `Patch`), and dart
   deletion (`Walkup`). It builds unchanged on the pinned toolchain, and
@@ -754,7 +783,7 @@ standard axioms (`propext`, `Classical.choice`, `Quot.sound`). There is no `sorr
     `exactAlg_ok` is its correctness.
 - `lean/SsspFlow/PlanarDual.lean`, theorem `RotSystem.exists_face_potential`: an integer circulation
   on a connected planar rotation system is the difference of an integer potential on the faces. The
-  proof is a count of dimensions from Euler's formula.
+  proof is a count of dimensions from the formula $V+F=E+2$.
 - `lean/SsspFlow/NetPad.lean`: `planar_of_count` says that a connected rotation system with enough
   vertices and faces is planar, because the genus is not negative. `padNet` hangs identifiers as
   pendant nodes at chosen nodes. It stays planar (`padNet_planar`), and its diameter grows by at most
@@ -785,7 +814,7 @@ standard axioms (`propext`, `Classical.choice`, `Quot.sound`). There is no `sorr
   - `negFlow_subpoly`, `negFlow_polylog`: `LabelHypothesis`, `AggBox`, `SmoothingBox` and
     `NegReduction τ` give `NegSsspBound τ` and the matching `MaxFlowBound`. With `tauSubpoly C` these
     are $D\cdot n^{o(1)}$ rounds, and with `tauPolylog c` they are $\tilde O(D)$ rounds.
-- `lean/SsspFlow/Tour.lean`: tours of a spanning forest in a planar map, by Euler's formula alone.
+- `lean/SsspFlow/Tour.lean`: tours of a spanning forest in a planar map, by the formula $V+F=E+2$ alone.
   `fconnect_tour_iff`: the cycles of the tour are the components. `walk_strict`: the corners of a face
   appear on the tour in the order of the face. `exists_balanced`: a cycle with at least four forest darts
   has two corners of one face, such that each arc between them holds about three quarters of these darts
@@ -911,8 +940,9 @@ Theorem C, Theorem C′, the construction of the tiles and the rest of Lemma 14�
 Lemmas S1 and S2 and the facts of Lemma O that the recursion uses are formalized, in a split model of the incisions on
 the cut of a planar map along a shortest path between corners of two different faces: a run of the recursion on the
 cut exists, every length it computes is a length $\lambda_t$, and the least of them is the least $\lambda_t$.
-Lemmas N and R, on the token graph and the graph $\hat G_\ell$ of the algorithm, the reduction of the minimum cut to
-the lengths $\lambda_t$ and the round count are not.
+Of Lemma R, Definition R, its properties (1) and (2) and the distances on the repaired graph are formalized, for any
+set of cut corners with modes and any host of the unincised pairs. Lemma N, properties (3) to (6) of Lemma R, the
+reduction of the minimum cut to the lengths $\lambda_t$ and the round count are not.
 
 ## Numerical checks (`sim/`)
 
@@ -957,7 +987,7 @@ test round counts.
   `exh.py` and `exh_trees.py` enumerate all instances for small n, `rand.py`, `fams.py` and
   `geo_cmp.py` run larger ones, `hill.py` climbs towards the step bounds, and `negctl.py`
   runs the negative controls.
-- `sim/thmD/`: simulation of Theorem D. `thmD.py` runs Reif's algorithm as in [18],
+- `sim/thmD/`: simulation of Theorem D. `thmD.py` runs the recursion of [18, Alg. 3],
   driven only by the exact trees of Theorem D, on the literal and the repaired $\hat G_\ell$,
   and checks every distance, tree and final cut against networkx. `minimize.py` shrinks
   failures, `planar_check.py` tests planarity and diameter, `endpoints.py` reruns the three
