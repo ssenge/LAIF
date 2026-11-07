@@ -1,2 +1,4 @@
 'base_le' depends on axioms: [propext, Classical.choice, Quot.sound]
 'pow_base_le' depends on axioms: [propext, Classical.choice, Quot.sound]
+'edge_base_le' depends on axioms: [propext, Classical.choice, Quot.sound]
+'indep_base_le' depends on axioms: [propext, Classical.choice, Quot.sound]

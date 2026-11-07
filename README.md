@@ -69,7 +69,7 @@
 
 | Problem | Result | Posted | Details |
 |---|---|---|---|
-| Dominating Set on n vertices, quantum, polynomial space, no quantum random access memory | O(1.2235^n), the square root of the classical O*(1.4969^n) of van Rooij and Bodlaender by a quantum walk on its search tree; quantum O(2^{n/2}) stated before | 2026-11-07 | [quantum-dominating-set](quantum-dominating-set/) |
+| Domination problems on n vertices, quantum, polynomial space, no quantum random access memory | Dominating Set O(1.2235^n) (quantum O(2^{n/2}) stated before), Independent Dominating Set O(1.1583^n), Edge Dominating Set and Minimum Maximal Matching O(1.1501^n): square roots of the classical branching algorithms by a quantum walk on their search trees | 2026-11-07 | [quantum-dominating-set](quantum-dominating-set/) |
 | Binary paint shop (automotive painting), uniformly random sequences, expected colour changes per car model as n → ∞ | ≤ 0.3120 by a classical local algorithm in O(n) time (Monte Carlo, confidence 1 − 10⁻⁴); the best certified value before was 0.334, QAOA at depth 17 [31] | 2026-11-06 | [binary-paint-shop](binary-paint-shop/) |
 | Max-Cut on 4-regular graphs of large girth, local algorithms | expected cut fraction ≥ 0.8440 (Monte Carlo, confidence 1 − 10⁻⁴), against a proved value above 5/6 [32] | 2026-11-06 | [binary-paint-shop](binary-paint-shop/) |
 | Maximum matching on general graphs with adjacency-matrix quantum queries | Õ(n^{3/2}√(1 + n/g)) queries at odd girth g | 2026-11-04 | [quantum-matching-queries](quantum-matching-queries/) |
