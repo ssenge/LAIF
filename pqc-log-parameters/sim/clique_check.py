@@ -1,11 +1,11 @@
 """Checks ../README.md: the circuit of the reduction from M-Clique to PQC optimization with M parameters.
 
-Register j has b qubits, starts in the uniform superposition, gets the gates exp(-i theta_j 2^q n_q) on its qubits
+Register j has s qubits, starts in the uniform superposition, gets the gates exp(-i theta_j 2^q n_q) on its qubits
 (n_q = |1><1| on qubit q, integer spectra), then the quantum frequency transform |x> -> sum_u e^{2 pi i x u / m} |u> / sqrt(m). The observable is the fraction of the
 pairs j < j' whose outcomes u_j, u_j' are equal or not adjacent in the graph.
 
 1. A state vector simulation agrees with the closed form: outcome u of register j has probability
-   F_m(theta_j - 2 pi u / m), with F_m(t) = sin^2(m t / 2) / (m^2 sin^2(t / 2)) and m = 2^b.
+   F_m(theta_j - 2 pi u / m), with F_m(t) = sin^2(m t / 2) / (m^2 sin^2(t / 2)) and m = 2^s.
 2. With an M-clique (v_1, ..., v_M), theta_j = 2 pi v_j / m gives f = 0.
 3. Without an M-clique, f(theta) >= 1 / C(M, 2) at every theta (checked on random points and after local
    minimization; the proof is one line: every outcome has a bad pair).
@@ -37,13 +37,13 @@ def f_closed(adj, theta):
     return sum(P[j] @ bad @ P[k] for j, k in itertools.combinations(range(M), 2)) / (M * (M - 1) / 2)
 
 
-def f_statevector(adj, theta, b):
-    """Simulate the circuit on M * b qubits."""
-    m = 2 ** b
+def f_statevector(adj, theta, s):
+    """Simulate the circuit on M * s qubits."""
+    m = 2 ** s
     regs = []
     for t in theta:
         psi = np.ones(m, dtype=complex) / np.sqrt(m)           # gate H on each qubit
-        for q in range(b):                                    # exp(-i t 2^q n_q), qubit q = bit q of the index
+        for q in range(s):                                    # exp(-i t 2^q n_q), qubit q = bit q of the index
             bit = (np.arange(m) >> q) & 1
             psi = psi * np.exp(-1j * t * 2 ** q * bit)
         idft = np.exp(2j * np.pi * np.outer(np.arange(m), np.arange(m)) / m) / np.sqrt(m)
@@ -57,19 +57,19 @@ def f_statevector(adj, theta, b):
     for idx, pr in enumerate(p):
         if pr < 1e-15:
             continue
-        u = [(idx >> (b * (M - 1 - j))) & (m - 1) for j in range(M)]
+        u = [(idx >> (s * (M - 1 - j))) & (m - 1) for j in range(M)]
         val += pr * sum(1 - adj[u[j], u[k]] for j, k in itertools.combinations(range(M), 2))
     return val / (M * (M - 1) / 2)
 
 
 rng = np.random.default_rng(0)
-b, M = 3, 3
-m = 2 ** b
+s, M = 3, 3
+m = 2 ** s
 for trial in range(3):
     A = np.triu((rng.random((m, m)) < 0.5).astype(int), 1); A = A + A.T
     th = rng.uniform(-np.pi, np.pi, M)
-    assert abs(f_closed(A, th) - f_statevector(A, th, b)) < 1e-12
-print(f"1. state vector simulation on {M * b} qubits agrees with the closed form (3 random graphs and angles)")
+    assert abs(f_closed(A, th) - f_statevector(A, th, s)) < 1e-12
+print(f"1. state vector simulation on {M * s} qubits agrees with the closed form (3 random graphs and angles)")
 
 # graph on 8 vertices with a 4-clique {0, 2, 5, 7}
 M = 4
