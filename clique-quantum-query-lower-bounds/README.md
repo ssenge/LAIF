@@ -2,6 +2,8 @@
 
 Written 6 Nov 2026. Extended to K5, K6 and K7 on 7 Nov 2026.
 
+**Paper:** [`../two-connected-subgraph-quantum-lower-bounds/paper/main.pdf`](../two-connected-subgraph-quantum-lower-bounds/paper/main.pdf).
+
 ## Result
 
 Model: an N-vertex graph given by its adjacency matrix, one query per pair of vertices. Task: decide whether the graph contains a k-clique K_k, or find one.

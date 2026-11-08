@@ -2,6 +2,8 @@
 
 Written 7 Nov 2026.
 
+**Paper:** [`paper/main.pdf`](paper/main.pdf), with its source in [`paper/`](paper/). It also covers the bounds of [complete-bipartite-quantum-lower-bounds](../complete-bipartite-quantum-lower-bounds/) and [clique-quantum-query-lower-bounds](../clique-quantum-query-lower-bounds/).
+
 ## Result
 
 Model: an N-vertex graph given by its adjacency matrix, one query per pair of vertices. Task: for a fixed graph H, decide whether the graph contains a copy of H as a subgraph, or find one.

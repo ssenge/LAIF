@@ -2,6 +2,8 @@
 
 Written 7 Nov 2026.
 
+**Paper:** [`../two-connected-subgraph-quantum-lower-bounds/paper/main.pdf`](../two-connected-subgraph-quantum-lower-bounds/paper/main.pdf).
+
 ## Result
 
 Model: an N-vertex graph given by its adjacency matrix, one query per pair of vertices. Task: for a fixed graph H, decide whether the graph contains a copy of H as a subgraph, or find one.
