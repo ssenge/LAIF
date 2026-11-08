@@ -2,6 +2,8 @@
 
 Written 7 Nov 2026.
 
+**Paper:** [`../quantum-graph-colouring/paper/main.pdf`](../quantum-graph-colouring/paper/main.pdf), Section 6.1.
+
 Approximate monotone local search [1, 4] turns extension algorithms with ratio α and running time c^k into an exponential-time β-approximation. Here the same scheme is run with amplitude amplification over the samples, and with a quantum walk on the extension algorithm where that algorithm is an exact backtracking tree. The quantum time is the square root of the classical time. For Vertex Cover, d-Hitting Set, Feedback Vertex Set, Subset Feedback Vertex Set, Cluster Vertex Deletion, Proper Interval Vertex Deletion and Multicut on Trees, and for weighted versions of several of them (Section 5), this gives quantum exponential-time approximation algorithms below both the quantum exact algorithms and the quantum form of brute-force approximation. To our knowledge, none have been stated before.
 
 **Setting [1].** An implicit set system Φ maps an instance I of size N to a universe U_I of n elements and a monotone family F_I of subsets, with membership decidable in polynomial time. Φ_min-Subset asks for a set in F_I of minimum size OPT. A β-approximation returns some S ∈ F_I with |S| ≤ β · OPT.

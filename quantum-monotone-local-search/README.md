@@ -2,6 +2,8 @@
 
 Written 7 Nov 2026.
 
+**Paper:** [`../quantum-graph-colouring/paper/main.pdf`](../quantum-graph-colouring/paper/main.pdf), Section 6.
+
 Monotone local search [1] turns an algorithm that extends a partial solution into an exact algorithm. If the extension problem is solved in time c^k, a solution is found in time (2 − 1/c)^n. Here the same scheme is run with amplitude amplification over the samples and a quantum walk on the extension algorithm. This gives (2 − 1/c)^{n/2} whenever the extension algorithm is a backtracking tree.
 
 **Setting [1].** An implicit set system Φ maps an instance I of size N to a universe U_I of n elements and a family F_I of subsets, with membership decidable in polynomial time.

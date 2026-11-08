@@ -2,6 +2,8 @@
 
 Written 7 Nov 2026.
 
+**Paper:** [`paper/main.pdf`](paper/main.pdf), with its source in [`paper/`](paper/). It also covers [domination problems](../quantum-dominating-set/) and [monotone local search](../quantum-monotone-local-search/), including its [approximate form](../quantum-approximate-monotone-local-search/).
+
 Input: a graph G on n vertices and a number k. Output: whether G has a proper colouring with k colours.
 
 **Theorem 1.** 3-Colouring has a quantum algorithm with bounded error, polynomial space and no quantum random access memory, running in time O*(1.3217^{n/2}) ⊂ O(1.1497^n).

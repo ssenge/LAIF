@@ -2,6 +2,8 @@
 
 Written 7 Nov 2026.
 
+**Paper:** [`../quantum-graph-colouring/paper/main.pdf`](../quantum-graph-colouring/paper/main.pdf), Section 5.
+
 Input: a graph G on n vertices and a number k. Output: whether G has a solution of size at most k for the problems below. The smallest k, and a solution, follow by trying every k and by self-reduction.
 
 - **Dominating Set:** a set D of vertices such that every vertex is in D or has a neighbour in D.
