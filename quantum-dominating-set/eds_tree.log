@@ -1,1 +1,1 @@
-300 random graphs, n = 3..10: smallest accepted budget = edge domination number in every case
+300 random graphs, n = 3..10, at most 18 edges: smallest accepted budget = edge domination number in every case

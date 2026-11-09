@@ -1,0 +1,5 @@
+branching steps: 27463 states, largest sum 1.00000, cases {'1': 11929, '2': 224, '3.1': 10154, '3.2.1': 39, '3.2.2': 67, '3.2.3': 53, '5.1': 2691, '5.2.1': 600, '5.2.2': 6, '5.2.3': 10, '5.3': 17, '5.4': 549, '5.5': 67, '5.6.1': 108, '5.6.2': 949}
+terminal instances: 400 (284 colourable), all three algorithms agree with brute force; cheapest algorithm counts {0: 36, 1: 298, 2: 66}
+block of 1 triangle(s): 18 colourings covered by 6 candidates, bound 14, 4.5^j = 4.5
+block of 2 triangle(s): 324 colourings covered by 27 candidates, bound 118, 4.5^j = 20.25
+whole algorithm, full tree: 300 graphs with n <= 16 (260 colourable), 0 stopped at the node limit; answers equal brute force, terminal costs sum to at most r^mu(root); cases {'1': 2460, '2': 58, '3.1': 526, '3.2.2': 2, '4': 324, '5.1': 39, '5.2.1': 10, '5.4': 16, '5.5': 1, '5.6.1': 2, '5.6.2': 19}

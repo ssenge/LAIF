@@ -5,7 +5,8 @@ of polynomial-space quantum 3-colouring: time O*(2^{d_k(1) n}) for k-colouring.
                    min_{2 <= k' <= k/2} max_{delta in [k'/k, min(1, mu k')]} h(delta)/2
                         + max(delta d_{k'}(min(1, mu/delta)), (1 - delta) d_{k-k'}(min(1, delta/(k'(1 - delta))))) )
 
-with d_3 = f3 and d_1 = d_2 = 0. The maximum over delta is bounded from above on each piece [a, b] of a partition by
+with d_3 = f3 and d_1 = d_2 = 0, and with d_4(mu) replaced by the smaller of this value and f4, the exponent of a
+4-colouring algorithm that ignores the size limit. The maximum over delta is bounded from above on each piece [a, b] of a partition by
 max h/2 + max(b d_{k'}(mu/a), (1 - a) d_{k-k'}(b/(k'(1 - b)))), and every mu is rounded up to the grid j/M. The
 algorithm may call each subproblem with these larger size limits u, since that only weakens its promise, so the
 values are upper bounds for the algorithm with those calls, not only approximations. A margin of 1e-9 covers the
@@ -20,7 +21,7 @@ def h(x):
     return -(x * np.log2(x) + np.where(x < 1, (1 - x) * np.log2(np.clip(1 - x, 1e-300, 1)), 0))
 
 
-def table(f3, kmax=20):
+def table(f3, f4=None, kmax=20):
     D = {1: np.zeros(M + 1), 2: np.zeros(M + 1), 3: np.full(M + 1, f3)}
     up = lambda mu: np.minimum(np.ceil(np.minimum(mu, 1) * M - 1e-9).astype(int), M)
     out = {3: (f3, 0)}
@@ -41,6 +42,8 @@ def table(f3, kmax=20):
                 v = np.max(hmax / 2 + np.maximum(A, B))
                 if v < best[j]:
                     best[j], arg[j] = v, kp
+        if k == 4 and f4 is not None:
+            best = np.minimum(best, f4)
         D[k] = best
         out[k] = (best[M] + 1e-9, arg[M])
     return out
@@ -49,11 +52,13 @@ def table(f3, kmax=20):
 if __name__ == "__main__":
     Lam = np.roots([1, 0, 0, 0, -2, -2])
     Lam = max(r.real for r in Lam if abs(r.imag) < 1e-12)
-    f_be = (3 + 4 * np.log2(3) + 24 * np.log2(Lam)) / 98            # Beigel-Eppstein, used in [SM]
-    f_me = np.log2(1.3217) / 2                                       # Meijer, stated bound O*(1.3217^n)
+    f_be = (3 + 4 * np.log2(3) + 24 * np.log2(Lam)) / 98            # 3-colouring from [3], used in [1]
     sm = [1.1528, 1.3231, 1.4695, 1.5261, 1.6511, 1.6585, 1.7460, 1.7775, 1.7775, 1.8246, 1.8499, 1.8580,
-          1.9303, 1.9303, 1.9303, 1.9366, 1.9575, 1.9575]            # Table 1 of [SM], k = 3..20
-    tb, tm = table(f_be), table(f_me)
-    print("k   [SM] Table 1   recomputed with BE   with Meijer   k'")
+          1.9303, 1.9303, 1.9303, 1.9366, 1.9575, 1.9575]            # Table 1 of [1], k = 3..20
+    tb = table(f_be)                                                 # the test: no 4-colouring step
+    t8 = table(f_be, np.log2(1.7159) / 2)                            # 4-colouring from [8] alone
+    t9 = table(f_be, np.log2(1.6981) / 2)                            # 4-colouring from [8] with the terminals of [9]
+    tc = table(np.log2(1.32703) / 2, np.log2(1.6981) / 2)            # conditional: optimum 1.32702 of the program in [2]
+    print("k   [1] Table 1   no 4-colouring step   with [8]    with [8],[9]   conditional   k'")
     for k in range(3, 21):
-        print(f"{k:2d}   {sm[k - 3]:.4f}         {2 ** tb[k][0]:.6f}          {2 ** tm[k][0]:.6f}      {tm[k][1]}")
+        print(f"{k:2d}   {sm[k - 3]:.4f}        {2 ** tb[k][0]:.6f}              {2 ** t8[k][0]:.6f}    {2 ** t9[k][0]:.6f}       {2 ** tc[k][0]:.6f}      {t9[k][1]}")

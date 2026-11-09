@@ -1,4 +1,7 @@
 'term_le' depends on axioms: [propext, Classical.choice, Quot.sound]
 'row3' depends on axioms: [propext, Classical.choice, Quot.sound]
+'row3_cond' depends on axioms: [propext, Classical.choice, Quot.sound]
 'row4' depends on axioms: [propext, Classical.choice, Quot.sound]
+'row4_base8' depends on axioms: [propext, Classical.choice, Quot.sound]
 'row5' depends on axioms: [propext, Classical.choice, Quot.sound]
+'row5_base8' depends on axioms: [propext, Classical.choice, Quot.sound]

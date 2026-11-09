@@ -1,0 +1,7 @@
+branching constraints at r = 1.69804: largest sum 0.999996510
+terminal inequalities with eta = ['0.0822508347', '0.8778792406', '0.0398699247']: smallest slack 0.000001491
+3-colouring base used: 1.3288552, (3,2)-CSP base: 1.36443011
+r = 1.69804 < 1.6981, so the subexponential factors fit below 1.6981^n; sqrt(1.6981) = 1.303112 <= 1.3032
+Table 2 of [8] at r = 1.7159: largest sum 0.999999705, terminal slack 0.000000104; sqrt(1.7159) = 1.309924 <= 1.3100
+leaf factor of [8] at beta = 1/3: 4.836128 < 4.837
+triangle lists: 18 colourings, 9 list assignments, each colouring compatible with exactly 2, factor 9/2 = 9/2

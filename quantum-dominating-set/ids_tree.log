@@ -1,1 +1,3 @@
-400 random graphs, n = 3..13: smallest accepted budget = independent domination number in every case
+400 random graphs, n = 3..13, K = 0 and 4: smallest accepted budget = independent domination number in every case
+60 unions of regular graphs, K = 4: bad branchings on a path / n at most 0.200 <= 4/K = 1.0
+6 disjoint triangles: 6 bad branchings on a path with K = 0, 0 with K = 4

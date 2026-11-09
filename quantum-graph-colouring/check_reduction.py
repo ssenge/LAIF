@@ -48,6 +48,8 @@ def col(V, E, k, u, broken=False, p1=0.5):
         return True
     if k <= 3:
         return colourable(V, E, k, u)                   # base case, strict: the limit u is respected
+    if k == 4 and random.random() < 0.5:                # 4-colouring algorithm that ignores the limit, which is allowed
+        return colourable(V, E, 4)
     if random.random() < p1:                           # Reduction 1: a maximal independent set of size >= n/k
         return any(col(V - I, E, k - 1, n, broken, p1) for I in maximal_independent_sets(V, E) if len(I) * k >= n)
     kp = random.randint(2, k // 2)                      # Reduction 2: k' largest classes, the rest smaller
