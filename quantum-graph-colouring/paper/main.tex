@@ -4,6 +4,9 @@
 \usepackage[margin=1in]{geometry}
 \usepackage{amsmath,amssymb,amsthm,booktabs,array}
 \usepackage[shortlabels]{enumitem}
+\usepackage{pgfplots}
+\usepgfplotslibrary{groupplots}
+\pgfplotsset{compat=1.18}
 \usepackage[hidelinks]{hyperref}
 
 \setlist{itemsep=1pt,topsep=3pt}
@@ -45,7 +48,7 @@ Quantum search applies to branching algorithms, as noted in~\cite{Fur08}, and gi
 
 For domination problems, the best polynomial-space classical algorithms are branch and reduce algorithms analysed by measure and conquer~\cite{RB11,RB12,BEP10,BDEP13,Iwa11,XN14}. For Dominating Set, a quantum bound of $O(2^{n/2})$ queries was stated in~\cite{WCCV23}. For many vertex deletion and hitting set problems the best classical bounds come from monotone local search~\cite{FGLS19}, which samples part of a solution at random and completes it with a parameterized algorithm.
 
-\paragraph{Our contribution.} We show that the 4-colouring algorithm of~\cite{WGJ24} is a backtracking tree in the sense of~\cite{Mon18}, which gives 4-colouring in quantum time $O^*(1.7159^{n/2}) \subset O(1.3100^n)$. The terminal algorithms of~\cite{YS26} that use no dynamic programming over decompositions keep this form, and with 3-colouring from~\cite{BE05} they give at most $p(n)\,1.6981^n$ nodes, so quantum time $O^*(1.6981^{n/2}) \subset O(1.3032^n)$. We then evaluate the recursion of~\cite{SM22} with 4-colouring as a second base case. The evaluation bounds the recursion from above on pieces of a partition, with all size limits rounded up to a grid, and we show that the algorithm can be run with these rounded limits. So the values are upper bounds on the time of an explicit algorithm. Table~\ref{tab:results} lists the results. In Section~\ref{sec:dom} we show that the polynomial-space algorithms of~\cite{RB11,RB12,BEP10} for domination problems are backtracking trees in their decision form, which gives the bounds of Table~\ref{tab:dom}. In Section~\ref{sec:mls} we give a quantum form of monotone local search, with amplitude amplification over the samples and the walk of~\cite{Mon18} on the extension algorithm, and apply it to the problems of Table~\ref{tab:mls}.
+\paragraph{Our contribution.} We show that the 4-colouring algorithm of~\cite{WGJ24} is a backtracking tree in the sense of~\cite{Mon18}, which gives 4-colouring in quantum time $O^*(1.7159^{n/2}) \subset O(1.3100^n)$. The terminal algorithms of~\cite{YS26} that use no dynamic programming over decompositions keep this form, and with 3-colouring from~\cite{BE05} they give at most $p(n)\,1.6981^n$ nodes, so quantum time $O^*(1.6981^{n/2}) \subset O(1.3032^n)$. We then evaluate the recursion of~\cite{SM22} with 4-colouring as a second base case. The evaluation bounds the recursion from above on pieces of a partition, with all size limits rounded up to a grid, and we show that the algorithm can be run with these rounded limits. So the values are upper bounds on the time of an explicit algorithm. Table~\ref{tab:results} and Figure~\ref{fig:bases} show the results. In Section~\ref{sec:dom} we show that the polynomial-space algorithms of~\cite{RB11,RB12,BEP10} for domination problems are backtracking trees in their decision form, which gives the bounds of Table~\ref{tab:dom}. In Section~\ref{sec:mls} we give a quantum form of monotone local search, with amplitude amplification over the samples and the walk of~\cite{Mon18} on the extension algorithm, and apply it to the problems of Table~\ref{tab:mls}.
 
 \begin{table}[h]
 \centering
@@ -74,6 +77,27 @@ $k$ & Previous best bound~\cite{SM22} & With~\cite{WGJ24} alone & This paper, wi
 \label{tab:results}
 \end{table}
 
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}
+\begin{groupplot}[group style={group size=2 by 1, horizontal sep=2.1cm}, width=0.47\textwidth, height=5.2cm,
+  xmin=2.5, xmax=20.5, xtick={4,6,...,20}, xlabel={$k$}, tick label style={font=\small}, label style={font=\small}]
+\nextgroupplot[ylabel={base $c$ of $c^n$}, ymin=1.1, ymax=2.0, legend pos=south east, legend style={font=\scriptsize}]
+\addplot[only marks, mark=o, mark size=2pt] coordinates {(3,1.1528) (4,1.3231) (5,1.4695) (6,1.5261) (7,1.6511) (8,1.6585) (9,1.746) (10,1.7775) (11,1.7775) (12,1.8246) (13,1.8499) (14,1.858) (15,1.9303) (16,1.9303) (17,1.9303) (18,1.9366) (19,1.9575) (20,1.9575)};
+\addlegendentry{previous~\cite{SM22}}
+\addplot[thick, mark=*, mark size=1.3pt] coordinates {(3,1.1528) (4,1.3032) (5,1.4518) (6,1.5261) (7,1.6369) (8,1.6427) (9,1.7343) (10,1.7629) (11,1.7726) (12,1.8246) (13,1.8413) (14,1.8503) (15,1.9183) (16,1.9201) (17,1.9217) (18,1.9233) (19,1.9575) (20,1.9575)};
+\addlegendentry{this paper}
+\addplot[dashed, domain=2.5:20.5] {1.7956};
+\addlegendentry{with QRAM~\cite{GL24}}
+\nextgroupplot[ylabel={previous base minus new base}, ymin=0, ybar, bar width=5pt, ytick={0,0.005,0.01,0.015,0.02}, scaled y ticks=false,
+  yticklabel style={/pgf/number format/fixed, /pgf/number format/precision=3}]
+\addplot[fill=black!35] coordinates {(3,0.0) (4,0.0199) (5,0.0177) (6,0.0) (7,0.0142) (8,0.0158) (9,0.0117) (10,0.0146) (11,0.0049) (12,0.0) (13,0.0086) (14,0.0077) (15,0.012) (16,0.0102) (17,0.0086) (18,0.0133) (19,0.0) (20,0.0)};
+\end{groupplot}
+\end{tikzpicture}
+\caption{Quantum time $c^n$ for $k$-colouring with bounded error, polynomial space and no quantum random access memory. Left: the bases of~\cite{SM22} and of Table~\ref{tab:results}, and the bound $1.7956^n$ of~\cite{GL24}, which uses quantum random access memory. Right: the decrease of the base for each $k$; it is zero for $k = 3, 6, 12, 19, 20$.}
+\label{fig:bases}
+\end{figure}
+
 \paragraph{Scope.} The last column of Table~\ref{tab:results} uses terminal algorithms of~\cite{YS26}, an arXiv paper that is, to our knowledge, unrefereed. The column with~\cite{WGJ24} alone does not depend on it. The bound $O^*(1.3217^n)$ for 3-colouring in the arXiv paper~\cite{Mei23} is not used. Its linear program, as printed, has a larger optimum~\cite[Appendix~F]{YS26}, and Remark~\ref{rem:mei} states what follows from that program. For the rows $k = 4, 5$, the arithmetic of the closed forms is checked in Lean. The rows $k = 6$ to $18$ come from a floating point computation with a margin far above its rounding error, not from interval arithmetic. The bases of the domination problems come from numerically computed analyses in their sources, used as stated there. Numbers of theorems, lemmas and appendices of~\cite{SM22,YS26} refer to their arXiv versions. Code and Lean files are at \url{https://github.com/ssenge/LAIF}, in the folders \texttt{quantum-graph-colouring}, \texttt{quantum-dominating-set}, \texttt{quantum-monotone-local-search}, \texttt{quantum-approximate-monotone-local-search} and \texttt{quantum-vertex-cover}, built with Lean v4.36.0-rc1 and Mathlib at revision {\sloppy\texttt{d875a8de5222f62cf1c2fafc7984588adadc990a}.\par}
 
 \section{Preliminaries}
@@ -96,7 +120,29 @@ The 3-colouring algorithm of~\cite{BE05} is a backtracking tree with at most $p(
 The algorithm first applies reductions and the branching on cycles of vertices of degree three, each an OR over smaller instances. It then chooses a forest in polynomial time, and tries colourings of a set of vertices, one vertex at a time, with a node that stores the forest, the order and the partial colouring. Each such colouring leaves a $(3,2)$-constraint satisfaction instance. Theorem~2 of~\cite{BE05} bounds the product of these counts with the size of the search trees of the last step, which gives the bound on the nodes, up to the polynomial depth. This is the form used in Lemma~6 of~\cite{SM22}.
 \end{proof}
 
-\paragraph{The instances of 4-colouring.} We use the framework of~\cite{WGJ24}, with the notation of~\cite{YS26}. An instance is $P = (G, I, S)$, where $I$ is an independent set, $S \supseteq N(I)$ is disjoint from $I$, the vertices of $I$ get colour $4$, the vertices of $S$ get colours in $\{1,2,3\}$, and the vertices of $U = V \setminus (I \cup S)$ are free. The instance is terminal if every component of $G[U]$ is a $K_3$ or a $K_4$. Let $n_3$ and $n_4$ count these components. The measure is
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}[v/.style={circle, draw, inner sep=0pt, minimum size=4.2mm, font=\scriptsize}, every edge/.style={draw}]
+\draw[rounded corners, black!40] (-0.6,-0.6) rectangle (0.6,2.6); \node at (0,2.9) {$I$};
+\draw[rounded corners, black!40] (1.4,-0.6) rectangle (3.2,2.6); \node at (2.3,2.9) {$S$};
+\draw[rounded corners, black!40] (4.0,-0.6) rectangle (9.6,2.6); \node at (6.8,2.9) {$U$};
+\node[v, fill=black!25] (i1) at (0,2) {4}; \node[v, fill=black!25] (i2) at (0,0) {4};
+\node[v] (s1) at (1.9,2.1) {}; \node[v] (s2) at (2.7,1.6) {}; \node[v] (s3) at (1.9,1.0) {};
+\node[v] (s4) at (2.7,0.4) {}; \node[v] (s5) at (1.9,-0.1) {};
+\node[v] (a1) at (4.6,2.1) {}; \node[v] (a2) at (5.6,2.1) {}; \node[v] (a3) at (5.1,1.3) {};
+\node[v] (b1) at (6.4,2.2) {}; \node[v] (b2) at (7.4,2.2) {}; \node[v] (b3) at (6.4,1.2) {}; \node[v] (b4) at (7.4,1.2) {};
+\node[v] (c1) at (4.6,0.1) {}; \node[v] (c2) at (5.6,0.1) {}; \node[v] (c3) at (6.6,0.1) {}; \node[v] (c4) at (7.6,0.1) {}; \node[v] (c5) at (8.6,0.6) {};
+\draw (i1) edge (s1) (i1) edge (s2) (i2) edge (s3) (i2) edge (s5) (s1) edge (s2) (s3) edge (s4) (s4) edge (s5);
+\draw (a1) edge (a2) (a2) edge (a3) (a3) edge (a1);
+\draw (b1) edge (b2) (b1) edge (b3) (b1) edge (b4) (b2) edge (b3) (b2) edge (b4) (b3) edge (b4);
+\draw (c1) edge (c2) (c2) edge (c3) (c3) edge (c4) (c4) edge (c5) (c3) edge (c5);
+\draw[black!50] (s2) edge (a1) (s3) edge (a3) (s4) edge (c1) (s4) edge (c2);
+\end{tikzpicture}
+\caption{An instance $P = (G, I, S)$ of 4-colouring. The vertices of $I$ have colour $4$, the vertices of $S \supseteq N(I)$ have colours in $\{1,2,3\}$, and the vertices of $U$ are free. The components of $G[U]$ at the top are a $K_3$ and a $K_4$. The component at the bottom is neither, so the instance is not terminal, and a branching rule of~\cite{WGJ24} acts on it.}
+\label{fig:instance}
+\end{figure}
+
+\paragraph{The instances of 4-colouring.} We use the framework of~\cite{WGJ24}, with the notation of~\cite{YS26}. An instance is $P = (G, I, S)$, where $I$ is an independent set, $S \supseteq N(I)$ is disjoint from $I$, the vertices of $I$ get colour $4$, the vertices of $S$ get colours in $\{1,2,3\}$, and the vertices of $U = V \setminus (I \cup S)$ are free (Figure~\ref{fig:instance}). The instance is terminal if every component of $G[U]$ is a $K_3$ or a $K_4$. Let $n_3$ and $n_4$ count these components. The measure is
 \[
 \mu(P) = \omega_c |S| + \omega_{3}' n_3 + \omega_{4}' n_4 + \sum_{C} \sum_{v \in C} \omega_{\deg_C(v)},
 \]
