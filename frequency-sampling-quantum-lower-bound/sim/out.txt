@@ -1,8 +1,7 @@
 1. reduction identities hold (m = 5, 20 random cases)
 2. E Z_u^2 = 1 - (S^2 - M)/(M(M - 1)) exactly for M = 8, every u != 0 and S = 0, 2, 4, 6
    and by sampling for M = 64, S = 0, 16, 32
-   case A: largest sampled P(D > 21) = 0.0000 <= 1/20 (M = 64, 256, 1024; K = 2, 4, M/8)
-3. r = 1500 runs, accept case A iff at least 44 outcomes are the extra symbol: errors 0.0356, 0.0091
-4. (sum g)^2 in [cKM, M^2/2] for K <= M/400, c = 99, 2^9 <= M <= 2^39
-5. zero queries: two inputs whose targets are at total variation >= 1/2
+   sum g = Sigma*: largest sampled P(p_f(s0) < 99/120) = 0.0000 <= 1/20 (M = 512, 1024, 2048)
+3. (sum g)^2 in [cKM, M^2/2] for K <= M/400, c = 99, 2^9 <= M <= 2^39
+4. zero queries: the targets of chi_s and chi_t are at total variation >= 1/2 (K = 1, 2, 40, 64)
 all checks passed

@@ -14,7 +14,7 @@ V_d = √d (2π)^{d(d−1)/2} Γ(1)Γ(2)⋯Γ(d) / Γ(d²),
 
 and c_d = (k/2) log(2πe(d + 1)/d) − log V_d.
 
-**Theorem 1.** For every d ≥ 2, every T ≥ 1 and every learner, possibly randomised, there is an opponent whose matrices A_t are rank-one projectors such that the expected regret is at least
+**Theorem 1.** For every d ≥ 2, every T ≥ 1 and every learner, possibly randomized, there is an opponent whose matrices A_t are rank-one projectors such that the expected regret is at least
 
 (k/2) log T − c_d.
 

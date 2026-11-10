@@ -2,16 +2,14 @@
 
 1. The reduction identities Z_{s0}(f) = M^{-1/2} sum g and Z_s(f) = Z_{s xor s0}(g) for f = g chi_{s0}.
 2. For g uniform among functions with sum S, E Z_u(g)^2 = 1 - (S^2 - M)/(M(M - 1)) for u != 0 (exact enumeration
-   for M = 8, sampling for M = 64), so E R <= K in case A, and the tail P(D > 21) <= 1/20 by sampling.
-3. The repetition count r: binomial tails with per-run probabilities >= 0.0376 (case A) and <= 0.02 (case B).
-4. The numbers in the proof: (sum g)^2 <= M^2/2 when K <= M/400 and c = 99.
-5. The zero-query case: total variation between the targets of two inputs is at least 1/2.
+   for M = 8, sampling for M = 64); for sum g = Sigma*, p_f(s0) >= 99/120 with probability >= 19/20 (sampled).
+3. The numbers in the proof: c K M <= Sigma*^2 <= M^2/2 when K <= M/400 and c = 99.
+4. The zero-query case: total variation between the targets of two inputs is at least 1/2.
 """
 import itertools
 import math
 
 import numpy as np
-from scipy.stats import binom
 
 rng = np.random.default_rng(3)
 
@@ -68,33 +66,20 @@ def check_moments():
         pred = 1 - (S * S - M) / (M * (M - 1))
         assert np.max(np.abs(z2[:, 1:].mean(0) - pred)) < 0.08
     print("   and by sampling for M = 64, S = 0, 16, 32")
-    worst = 0
-    for m in [6, 8, 10]:
+    c, worst = 99, 0.0
+    for m in [9, 10, 11]:
         M = 2 ** m
         chi = chars(m)
-        G = fixed_weight(M, 0, 4000)
-        z2 = (G @ chi.T / math.sqrt(M)) ** 2
-        for K in [2, 4, M // 8]:
-            for _ in range(5):
+        for K in [1, 2, 4, M // 400]:
+            Sig = 2 * math.ceil(math.sqrt(c * K * M) / 2)
+            G = fixed_weight(M, Sig, 1000)
+            z2 = (G @ chi.T / math.sqrt(M)) ** 2  # chi[0] is the constant character: z2[:, 0] = Sig^2 / M
+            for _ in range(3):
                 U = rng.choice(np.arange(1, M), K - 1, replace=False)
-                D = 1 + z2[:, U].sum(1) / K
-                worst = max(worst, np.mean(D > 21))
+                p = z2[:, 0] / (K + z2[:, 0] + z2[:, U].sum(1))
+                worst = max(worst, np.mean(p < 99 / 120))
     assert worst <= 1 / 20
-    print(f"   case A: largest sampled P(D > 21) = {worst:.4f} <= 1/20 (M = 64, 256, 1024; K = 2, 4, M/8)")
-
-
-def binom_tail_ge(r, p, k):
-    return float(binom.sf(k - 1, r, p))
-
-
-def check_repetitions():
-    pa, pb = 1 / 21 - 1 / 100, 1 / 100 + 1 / 100
-    r = 1500
-    k = math.ceil(r * (pa + pb) / 2)
-    errA = 1 - binom_tail_ge(r, pa, k)
-    errB = binom_tail_ge(r, pb, k)
-    assert errA <= 0.05 and errB <= 0.05
-    print(f"3. r = {r} runs, accept case A iff at least {k} outcomes are the extra symbol: errors {errA:.4f}, {errB:.4f}")
+    print(f"   sum g = Sigma*: largest sampled P(p_f(s0) < 99/120) = {worst:.4f} <= 1/20 (M = 512, 1024, 2048)")
 
 
 def check_numbers():
@@ -106,21 +91,28 @@ def check_numbers():
                 continue
             S = 2 * math.ceil(math.sqrt(c * K * M) / 2)
             assert S * S >= c * K * M and S * S <= M * M / 2 and S <= M
-    print("4. (sum g)^2 in [cKM, M^2/2] for K <= M/400, c = 99, 2^9 <= M <= 2^39")
+    print("3. (sum g)^2 in [cKM, M^2/2] for K <= M/400, c = 99, 2^9 <= M <= 2^39")
+
+
+def target(f, chi, S):
+    z2 = (chi[S] @ f / math.sqrt(len(f))) ** 2
+    D = 1 + z2.sum() / len(S)
+    return np.concatenate([z2 / (len(S) * D), [1 / D]])
 
 
 def check_trivial():
-    # K >= 2: f = chi_s and f' = chi_t for s != t in S; targets put M/(K + M) >= 1/2 on s and on t
-    for M, K in [(16, 2), (16, 16), (1024, 3), (1024, 1024)]:
-        assert M / (K + M) >= 0.5
-    # K = 1: f = chi_s0 gives the extra symbol probability 1/(1 + M), a balanced f gives 1
-    print("5. zero queries: two inputs whose targets are at total variation >= 1/2")
+    m = 6
+    chi = chars(m)
+    for S in [[5], [3, 9], list(range(40)), list(range(64))]:
+        s, t = S[0], (S[1] if len(S) > 1 else S[0] ^ 1)
+        tv = 0.5 * np.abs(target(chi[s], chi, S) - target(chi[t], chi, S)).sum()
+        assert tv >= 0.5
+    print("4. zero queries: the targets of chi_s and chi_t are at total variation >= 1/2 (K = 1, 2, 40, 64)")
 
 
 if __name__ == "__main__":
     check_identities()
     check_moments()
-    check_repetitions()
     check_numbers()
     check_trivial()
     print("all checks passed")
