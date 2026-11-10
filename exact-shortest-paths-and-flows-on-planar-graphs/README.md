@@ -417,10 +417,11 @@ graph hold in Lean (`lean/SsspFlow/GHat.lean`, `lean/SsspFlow/GHatDist.lean`,
 matched the tested graph on 98,000 instances. Lemma R needs a description of the dual nodes
 that is not stated in [18]. Lemma N proves it, by induction over the levels, and the reduction
 is correct for every legal choice at $s$ and $t$. In Lean, the pieces of Definition R are the
-vertices of the split model of the incisions and its pairs are the edges, so the length
-$\lambda_t$ of a live annulus is the distance of its two pieces in the token graph, and in the
-repaired graph when it is below $M$ (`lean/SsspFlow/GHatSplit.lean`). These failures may come from a misreading of
-[18] on our side. We have not checked whether they affect the approximate algorithm of [18].
+vertices of the split model of the incisions and its pairs are the edges, every annulus of a
+level is a component of the token graph of the whole level, and so the length $\lambda_t$ of an
+annulus is the distance of its two pieces in that token graph, and in the repaired graph when it
+is below $M$ (`lean/SsspFlow/GHatSplit.lean`, `lean/SsspFlow/Annuli.lean`). These failures may
+come from a misreading of [18] on our side. We have not checked whether they affect the approximate algorithm of [18].
 
 **The recursion repair (Lemma S).** The recursion of [18, Alg. 3] computes the shortest
 cycle $P_i$ through the middle index $i$ of an annulus with index range $[j,k]$, and then
@@ -678,6 +679,17 @@ standard axioms (`propext`, `Classical.choice`, `Quot.sound`). There is no `sorr
   (`RData.ddist_live_ofCorners`). For any data whose further corners lie out of the reach of the annulus, it is that
   distance in the token graph and, below $M$, the distance in the repaired graph between copies on the paths of the
   two pieces (`RData.ddist_live`, `RData.gdist_live`).
+- `lean/SsspFlow/Annuli.lean`: Lemma N for a whole level. The root of a run of the recursion is the annulus of level
+  1, and the annuli at depth $\ell$ are those of level $\ell + 1$ (`CutPath.Run.nodes`). The digon corners of the
+  steps of all annuli above them, also of the annuli whose sides are not called, are the incisions of the levels
+  before (`CutPath.Run.steps`). Every annulus and every incision below a side of a step lie in the component of that
+  side in the cut along the step (`CutPath.Run.inv`), and the two sides lie in different components
+  (`Live.not_gcomp_sides`). So the corners of an annulus of a level are corners of the level
+  (`CutPath.Run.subset_level`), the other corners of the level lie out of its reach (`CutPath.Run.unreach_level`),
+  and from the annulus the walks in the split at all the corners of the level are those in the split at its own
+  corners (`CutPath.Run.isWalk_level_iff`): every annulus of a level is a component of the token graph of the level.
+  Hence $\lambda_t$ of an annulus of a level is the distance between its two pieces in the token graph of the whole
+  level and, below $M$, in its repaired graph (`CutPath.Run.ddist_level`, `CutPath.Run.gdist_level`).
 - `lean/SsspFlow/Arborescence.lean`: the arithmetic of the contraction and the halving count of `notes/DMST.md`.
 - `lean/SsspFlow/NegScaling.lean`: the arithmetic of the scaling, the alternation, the short paths in a cluster and the arc inequality of `notes/NEGATIVE.md`.
   - `Setup.negCycle_iff`, `Setup.walks` and `Setup.lemmaD` prove it for any graph with the
@@ -970,11 +982,10 @@ the cut of a planar map along a shortest path between corners of two different f
 cut exists, every length it computes is a length $\lambda_t$, and the least of them is the least $\lambda_t$.
 Of Lemma R, Definition R, its properties (1), (2) and (5), the hop bound of (4), the refinement in (6) and the
 distances on the repaired graph are formalized, for any set of cut corners with modes and any host of the unincised
-pairs. Of Lemma N, the pieces and pairs as the vertices and edges of the split model and the lengths $\lambda_t$ of
-the live annuli as distances in the token graph and in the repaired graph are formalized. That each annulus of a
-level is a component of the token graph of the whole level, the planarity (3), the count of copies and the
-simulation in (4), the rest of (6), the reduction of the minimum cut to the lengths $\lambda_t$ and the round count
-are not.
+pairs. Lemma N is formalized in the split model: the pieces and pairs are the vertices and edges of the split, every
+annulus of a level is a component of the token graph of the level, and its lengths $\lambda_t$ are distances in that
+token graph and, below $M$, in the repaired graph. The planarity (3), the count of copies and the simulation in (4),
+the rest of (6), the reduction of the minimum cut to the lengths $\lambda_t$ and the round count are not.
 
 ## Numerical checks (`sim/`)
 

@@ -204,6 +204,13 @@ Expected output for each: `propext`, `Classical.choice`, `Quot.sound` (or a subs
 #print axioms SsspFlow.RotSystem.RData.ddist_live
 #print axioms SsspFlow.RotSystem.RData.gdist_live
 #print axioms SsspFlow.RotSystem.RData.ddist_live_ofCorners
+#print axioms SsspFlow.RotSystem.CutPath.Live.not_gcomp_sides
+#print axioms SsspFlow.RotSystem.CutPath.Run.inv
+#print axioms SsspFlow.RotSystem.CutPath.Run.subset_level
+#print axioms SsspFlow.RotSystem.CutPath.Run.unreach_level
+#print axioms SsspFlow.RotSystem.CutPath.Run.isWalk_level_iff
+#print axioms SsspFlow.RotSystem.CutPath.Run.ddist_level
+#print axioms SsspFlow.RotSystem.CutPath.Run.gdist_level
 #print axioms SsspFlow.RotSystem.plain
 #print axioms SsspFlow.RotSystem.dual_toHypermap
 #print axioms SsspFlow.RotSystem.dual_dual
