@@ -162,22 +162,22 @@ On 8-regular graphs it is above QAOA at every girth from 6 to 14 and above every
 
 As d → ∞ at fixed depth p, the cut fraction is (k − 1)/k + C/√d + o(1/√d), and [1, Table 2] gives the coefficient C for QAOA and the Local Vector algorithm, at girth 2p + 2. There QAOA is above the Local Vector algorithm from p = 9 for k = 2 and 3 and from p = 8 for k = 4, up to the largest depth computed: p = 20, 19 and 15.
 
-Take the dynamics of Section 5 with γ_n = G_n/√d. As d → ∞ the phase of layer n at a vertex becomes G_n φ_n(c), up to a phase common to all colours, and φ follows a single-site description:
+Take the dynamics of Section 5 with γ_n = G_n/√d. As d → ∞ the phase of layer t at a vertex becomes G_t φ_t(c), up to a phase common to all colours, and φ follows a single-site description:
 
   φ_t = η_t + Σ_{s<t} R(t, s) ΔP_s,  ΔP_t = |ψ_t|² − 1/k,
 
-where ψ_t is the vertex's own vector before layer t + 1, η is a centred normal process over layers and colours with covariance E[ΔP_t ΔP_sᵀ], and R(t, s) = E[∂ΔP_t/∂φ_s] is the mean response. Both are computed layer by layer from samples of the process itself. The edge term then gives
+where ψ_t is the vertex's own vector before layer t, for the layers t = 0, ..., p − 1 of Section 5, η is a centred normal process over layers and colours with covariance E[ΔP_t ΔP_sᵀ], and R(t, s) = E[∂ΔP_t/∂φ_s] is the mean total response, including the feedback through R itself. Both are computed layer by layer from samples of the process itself. The edge term then gives
 
   C = −2 Σ_c ⟨Σ⁻¹ E[η 1{c}], E[ΔP 1{c}]⟩,
 
-with 1{c} the event that the output colour is c and Σ the covariance of η. This is the usual single-site description of local dynamics at large degree, the same kind of limit that [1] and [5] compute for QAOA. It is used here without a proof for this dynamics, and checked against tree values at finite degree (Status and checks).
+with 1{c} the event that the output colour is c, Σ the covariance of η and Σ⁻¹ its inverse on the subspace of vectors whose coordinates sum to zero. This is the usual single-site description of local dynamics at large degree, the same kind of limit that [1] and [5] compute for QAOA. It is used here without a proof for this dynamics, and checked against tree values at finite degree (Status and checks).
 
-The 2p + 1 parameters are trained by gradient descent on the limit itself (`sim/cdyn_limit.py`), each depth starting from the previous one with its last layer repeated. Depth 2 starts from the schedule of Section 5 for d = 8 (k = 3, 4), or from one trained the same way on the 4-regular tree (k = 2), with γ scaled by √d. Depth 1 starts from the first layer of depth 2. Each value is the mean of 5 independent solves with 2 · 10⁵ samples each (`sim/cdyn_limit_eval.py`, `data/cdyn_limit_k.jsonl`), with standard error at most 0.0014. For k = 3 and p = 4, solves with 10⁵ to 8 · 10⁵ samples give 0.6833 to 0.6837, against 0.6844 here. The comparisons below allow an error of 0.003 on every value.
+The 2p + 1 parameters are trained by gradient descent on the limit itself (`sim/cdyn_limit.py`), each depth starting from the previous one with its last layer repeated. Depth 2 starts from the schedule of Section 5 for d = 8 (k = 3, 4), or from one trained the same way on the 4-regular tree (k = 2), with γ scaled by √d. For k = 2 and 4, depth 1 starts from the first layer of depth 2. For k = 3, depths 1 and 2 come from a grid and a random search on the limit followed by local refinement, and depth 2 is not the start of depth 3. Each value is the mean of 5 independent solves with 2 · 10⁵ samples each (`sim/cdyn_limit_eval.py`, `data/cdyn_limit_k.jsonl`), with standard error at most 0.0014. For k = 3 and p = 4, solves with 10⁵ to 8 · 10⁵ samples give 0.6833 to 0.6837, against 0.6844 here. The comparisons below allow an error of 0.003 on every value.
 
 | p | k = 2, QAOA [1] | k = 2, here | k = 3, QAOA [1] | k = 3, here | k = 4, QAOA [1] | k = 4, here |
 |---|---|---|---|---|---|---|
-| 1 | 0.303 | 0.3366 | 0.350 | 0.3310 | 0.353 | 0.4098 |
-| 2 | 0.408 | 0.4583 | 0.475 | 0.5192 | 0.483 | 0.5471 |
+| 1 | 0.303 | 0.3367 | 0.350 | 0.4006 | 0.353 | 0.4099 |
+| 2 | 0.408 | 0.4583 | 0.475 | 0.5344 | 0.483 | 0.5471 |
 | 3 | 0.473 | 0.5389 | 0.552 | 0.6241 | 0.562 | 0.6451 |
 | 4 | 0.516 | 0.5861 | 0.604 | 0.6844 | 0.616 | 0.7035 |
 | 5 | 0.548 | 0.6170 | 0.642 | 0.7243 | 0.656 | 0.7439 |
@@ -190,9 +190,9 @@ The 2p + 1 parameters are trained by gradient descent on the limit itself (`sim/
 | 12 | 0.649 | **0.6988** | 0.768 | **0.8313** | 0.788 | |
 | largest in [1] | 0.688 (p = 20) | | 0.814 (p = 19) | | 0.814 (p = 15) | |
 
-A layer with G_n = β_n = 0 changes nothing, so the schedule in bold, followed by such layers, has the same value at every larger depth. So the dynamics is above QAOA at every depth of [1, Table 2], except p = 1 for k = 3: for k = 2 by at least 0.010, for k = 3 by at least 0.016, and for k = 4 by at least 0.023, allowing for the rounding of [1] and before the error allowance. At p = 1 for k = 3 the Local Vector algorithm of [1] is above QAOA, 0.358 against 0.350. In the infinite-degree limit, with the single-site description, a classical local algorithm is therefore above QAOA at every depth computed in [1], for k = 2, 3 and 4. From p = 4 the dynamics is also above the Local Vector algorithm of [1], which is higher at p = 2 and 3, and for k = 3 at p = 1.
+A layer with G_n = β_n = 0 changes nothing, so the schedule in bold, followed by such layers, has the same value at every larger depth. So the dynamics is above QAOA at every depth of [1, Table 2]: for k = 2 by at least 0.010, for k = 3 by at least 0.016, and for k = 4 by at least 0.023, allowing for the rounding of [1] and before the error allowance. Provided the single-site description holds for this dynamics, a classical local algorithm is therefore above QAOA in the infinite-degree limit at every depth computed in [1], for k = 2, 3 and 4. The error allowance covers the sampling of the limit, not the limit itself. With the schedules found, the dynamics is also above the Local Vector algorithm of [1] from p = 4, and for k = 3 at p = 1. The Local Vector algorithm is higher at p = 2 and 3, and for k = 2 and 4 at p = 1.
 
-For k = 2 the maximum cut of random d-regular graphs has coefficient 0.7632 at large degree [8]. Random regular graphs have few short cycles, so no local algorithm exceeds this coefficient, and the values above stay below it. Reference [9] studies local message-passing algorithms for k = 2 that approach it as the radius grows.
+For k = 2 the maximum cut of random d-regular graphs has coefficient 0.7632 at large degree [8]. Random regular graphs have few short cycles, so no local algorithm exceeds this coefficient, and the values above stay below it. For k = 2, [9] gives local message-passing algorithms that approach it when d → ∞ and then the radius grows, under a condition on the optimizer of the variational formula for the infinite-range spin glass stated there.
 
 ## The rules
 
@@ -213,8 +213,8 @@ Numerical results. No part is formalized in Lean.
   - The tree evaluation of Section 5 (`sim/cdyn_tree.py`, single precision, one level of the tree per array) agrees with the graph dynamics of `sim/cdyn.py` run in double precision on an explicit radius-3 tree (`sim/cdyn_check.py`): 0.93463 ± 0.00025 from 10⁶ samples against 0.93461 from 2 · 10⁵ edges.
   - For k = 2, the reduced sampler of `sim/lv2.py` agrees with the full program of `sim/lv_plus_rule.py` within the statistical error: 0.7800 against 0.7798 at d = 4, m = 3, and 0.7530 against 0.7528 at d = 6, m = 5, with s.e. 0.0007.
   - For k = 2, the best linear factor of i.i.d. normal variables of the same radius with sign rounding, the class of [7], computed exactly as a generalized eigenvalue problem (`sim/linfactor.py`), is at least 0.0025 below every cell of Section 4. At every girth of [1, Table 3] not covered by Section 4, it is above QAOA by at least 0.0025 for d = 4, 6, 8, 10 and 40.
-  - Section 6 against finite degree (`sim/cdyn_limit_check.py`, `data/cdyn_limit_check.txt`): the tree value of Section 5 with γ = G/√d, written as (cut − 2/3)·√d for k = 3, moves towards the limit as d grows. At p = 2 it is 0.4758, 0.5047 and 0.5065 ± 0.0051 for d = 8, 32 and 128, against 0.5192. At p = 4 it is 0.6182 and 0.6460 for d = 8 and 16, against 0.6844.
-  - Section 6 has two implementations of the single-site process: `sim/cdyn_limit_np.py`, layer by layer in numpy, and the differentiable `sim/cdyn_limit.py`. On the schedules for k = 3 they give 0.5189 against 0.5192 at p = 2, and 0.6219 against 0.6241 at p = 3, within the spread of a single solve (standard deviation 0.0017 at p = 3).
+  - Section 6 against finite degree (`sim/cdyn_limit_check.py`, `data/cdyn_limit_check.txt`, on the trained depth-2 and depth-4 schedules for k = 3 in `data/cdyn_limit_check_3.jsonl`): the tree value of Section 5 with γ = G/√d, written as (cut − 2/3)·√d, moves towards the limit as d grows. At p = 2 it is 0.4758, 0.5047 and 0.5065 ± 0.0051 for d = 8, 32 and 128, against 0.5192. At p = 4 it is 0.6182 and 0.6460 for d = 8 and 16, against 0.6844.
+  - Section 6 has two implementations of the single-site process: `sim/cdyn_limit_np.py`, layer by layer in numpy, and the differentiable `sim/cdyn_limit.py`. They give 0.5189 against 0.5192 on the depth-2 schedule of `data/cdyn_limit_check_3.jsonl`, and 0.6219 against 0.6241 at p = 3 for k = 3, within the spread of a single solve (standard deviation 0.0017 at p = 3).
 - **Not covered:**
   - for k = 3 and 4, degrees above 8, except the one row for d = 20;
   - the dynamics of Section 5 for other k and d at finite degree. The tree has 2(d − 1)^p leaves, which limits sampling to small d;
@@ -234,7 +234,7 @@ Numerical results. No part is formalized in Lean.
 - `sim/lv2rounds.py`: Algorithm 1 of [1] with two rounds (`data/lv2rounds_cert.jsonl`).
 - `sim/lv2.py`: the Max-Cut case of Section 4 (`data/lv2_k2.jsonl`); `sim/linfactor.py`: the linear-factor check.
 - `sim/cdyn.py`, `sim/cdyn_train.py`, `sim/cdyn_tree.py`, `sim/cdyn_check.py`: the dynamics of Section 5, its training on a graph and on the tree, the tree value and the cross-check (`data/cdyn_params_3_4.jsonl`, `data/cdyn_cert_3_4.jsonl`, and the same for the other k and d).
-- `sim/cdyn_limit.py`, `sim/cdyn_limit_eval.py`, `sim/cdyn_limit_np.py`, `sim/cdyn_limit_check.py`: the infinite-degree limit of Section 6, its training, the repeated solves, the numpy cross-check and the finite-degree check (`data/cdyn_limit_2.jsonl`, `data/cdyn_limit_3.jsonl`, `data/cdyn_limit_4.jsonl`, `data/cdyn_limit_check.txt`).
+- `sim/cdyn_limit.py`, `sim/cdyn_limit_eval.py`, `sim/cdyn_limit_np.py`, `sim/cdyn_limit_check.py`: the infinite-degree limit of Section 6, its training, the repeated solves, the numpy cross-check and the finite-degree check (`data/cdyn_limit_2.jsonl`, `data/cdyn_limit_3.jsonl`, `data/cdyn_limit_4.jsonl`, `data/cdyn_limit_check.txt`, `data/cdyn_limit_check_3.jsonl`).
 - `sim/make_tables.py`: builds Tables 1 and 2 from `data/`.
 
 Requirements: Python 3.12 with numpy, scipy and jax. Run the scripts from `sim/`, with the files from `data/` copied in.
