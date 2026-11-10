@@ -1,0 +1,14 @@
+tau(3, 3) = 1.2599
+tau(3, 4) = 1.2207
+tau(3, 5) = 1.1939
+tau(4, 4) = 1.1892
+bad, (3,4), children of either kind: True
+bad, (3,3), both children good: True
+good, (3,5), children of either kind: True
+good, (4,4), children of either kind: True
+good, (3,4), both children good: True
+reduction from good to bad removes a clause: True
+quantum base sqrt(1.2226) = 1.105712 <= 1.1058
+walk on the 1.239^m algorithm: 1.1131
+walk on the 1.260^m algorithm: 1.1225
+below 2^(n/2) whenever m < 3.4461 n
