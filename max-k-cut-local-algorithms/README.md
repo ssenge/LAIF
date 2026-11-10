@@ -2,7 +2,7 @@
 
 _6 November 2026_
 
-Max-k-Cut asks for a colouring of the vertices with k colours that leaves as many edges as possible with two different colours. We study local algorithms on d-regular graphs whose girth is large compared with the radius of the algorithm. There the expected cut fraction is the same on every such graph and equals its value on the d-regular tree. Reference [1] computes this value for QAOA with the Grover mixer and for a classical Local Vector algorithm (its Algorithm 1). We compare against its Tables 4 and 5 at the same girth, and for Max-Cut against its Table 3.
+Max-k-Cut asks for a colouring of the vertices with k colours that leaves as many edges as possible with two different colours. We study local algorithms on d-regular graphs whose girth is large compared with the radius of the algorithm. There the expected cut fraction is the same on every such graph and equals its value on the d-regular tree. Reference [1] computes this value for QAOA with the Grover mixer and for a classical Local Vector algorithm (its Algorithm 1). We compare against its Tables 4 and 5 at the same girth, for Max-Cut against its Table 3, and in the limit of infinite degree against its Table 2.
 
 Both algorithms below add one classical round to a known local algorithm. In that round every vertex sees its own colour and the colour counts of its neighbours, and may change its colour. The round adds one to the radius. An algorithm of radius R has the tree value on every d-regular graph of girth at least 2R + 2, since then the radius-R neighbourhood of an edge is a tree.
 
@@ -158,6 +158,42 @@ For 8-regular graphs (`data/cdyn_params_3_8.jsonl`, `data/cdyn_cert_3_8.jsonl`; 
 
 On 8-regular graphs it is above QAOA at every girth from 6 to 14 and above every value of [1] from girth 10 to 14, by 0.001 to 0.013. For Max-4-Cut on 8-regular graphs at girth 12, depth 5 gives the lower bound **0.9578** (0.9588 ± 0.0002, 10⁶ samples, `data/cdyn_cert_4_8.jsonl`) against 0.952 for the Local Vector algorithm and 0.949 for QAOA [1], and against 0.9568 for Section 2.
 
+### 6. Infinite degree
+
+As d → ∞ at fixed depth p, the cut fraction is (k − 1)/k + C/√d + o(1/√d), and [1, Table 2] gives the coefficient C for QAOA and the Local Vector algorithm, at girth 2p + 2. There QAOA is above the Local Vector algorithm from p = 9 for k = 2 and 3 and from p = 8 for k = 4, up to the largest depth computed: p = 20, 19 and 15.
+
+Take the dynamics of Section 5 with γ_n = G_n/√d. As d → ∞ the phase of layer n at a vertex becomes G_n φ_n(c), up to a phase common to all colours, and φ follows a single-site description:
+
+  φ_t = η_t + Σ_{s<t} R(t, s) ΔP_s,  ΔP_t = |ψ_t|² − 1/k,
+
+where ψ_t is the vertex's own vector before layer t + 1, η is a centred normal process over layers and colours with covariance E[ΔP_t ΔP_sᵀ], and R(t, s) = E[∂ΔP_t/∂φ_s] is the mean response. Both are computed layer by layer from samples of the process itself. The edge term then gives
+
+  C = −2 Σ_c ⟨Σ⁻¹ E[η 1{c}], E[ΔP 1{c}]⟩,
+
+with 1{c} the event that the output colour is c and Σ the covariance of η. This is the usual single-site description of local dynamics at large degree, the same kind of limit that [1] and [5] compute for QAOA. It is used here without a proof for this dynamics, and checked against tree values at finite degree (Status and checks).
+
+The 2p + 1 parameters are trained by gradient descent on the limit itself (`sim/cdyn_limit.py`), each depth starting from the previous one with its last layer repeated. Depth 2 starts from the schedule of Section 5 for d = 8 (k = 3, 4), or from one trained the same way on the 4-regular tree (k = 2), with γ scaled by √d. Depth 1 starts from the first layer of depth 2. Each value is the mean of 5 independent solves with 2 · 10⁵ samples each (`sim/cdyn_limit_eval.py`, `data/cdyn_limit_k.jsonl`), with standard error at most 0.0014. For k = 3 and p = 4, solves with 10⁵ to 8 · 10⁵ samples give 0.6833 to 0.6837, against 0.6844 here. The comparisons below allow an error of 0.003 on every value.
+
+| p | k = 2, QAOA [1] | k = 2, here | k = 3, QAOA [1] | k = 3, here | k = 4, QAOA [1] | k = 4, here |
+|---|---|---|---|---|---|---|
+| 1 | 0.303 | 0.3366 | 0.350 | 0.3310 | 0.353 | 0.4098 |
+| 2 | 0.408 | 0.4583 | 0.475 | 0.5192 | 0.483 | 0.5471 |
+| 3 | 0.473 | 0.5389 | 0.552 | 0.6241 | 0.562 | 0.6451 |
+| 4 | 0.516 | 0.5861 | 0.604 | 0.6844 | 0.616 | 0.7035 |
+| 5 | 0.548 | 0.6170 | 0.642 | 0.7243 | 0.656 | 0.7439 |
+| 6 | 0.572 | 0.6379 | 0.672 | 0.7506 | 0.687 | 0.7712 |
+| 7 | 0.591 | 0.6548 | 0.696 | 0.7731 | 0.712 | 0.7930 |
+| 8 | 0.607 | 0.6666 | 0.715 | 0.7899 | 0.733 | 0.8117 |
+| 9 | 0.620 | 0.6777 | 0.732 | 0.8019 | 0.750 | 0.8255 |
+| 10 | 0.631 | 0.6850 | 0.745 | 0.8149 | 0.765 | **0.8379** |
+| 11 | 0.641 | 0.6934 | 0.757 | 0.8212 | 0.777 | |
+| 12 | 0.649 | **0.6988** | 0.768 | **0.8313** | 0.788 | |
+| largest in [1] | 0.688 (p = 20) | | 0.814 (p = 19) | | 0.814 (p = 15) | |
+
+A layer with G_n = β_n = 0 changes nothing, so the schedule in bold, followed by such layers, has the same value at every larger depth. So the dynamics is above QAOA at every depth of [1, Table 2], except p = 1 for k = 3: for k = 2 by at least 0.010, for k = 3 by at least 0.016, and for k = 4 by at least 0.023, allowing for the rounding of [1] and before the error allowance. At p = 1 for k = 3 the Local Vector algorithm of [1] is above QAOA, 0.358 against 0.350. In the infinite-degree limit, with the single-site description, a classical local algorithm is therefore above QAOA at every depth computed in [1], for k = 2, 3 and 4. From p = 4 the dynamics is also above the Local Vector algorithm of [1], which is higher at p = 2 and 3, and for k = 3 at p = 1.
+
+For k = 2 the maximum cut of random d-regular graphs has coefficient 0.7632 at large degree [8]. Random regular graphs have few short cycles, so no local algorithm exceeds this coefficient, and the values above stay below it. Reference [9] studies local message-passing algorithms for k = 2 that approach it as the radius grows.
+
 ## The rules
 
 The rule space is every deterministic rule that is equivariant under renaming the colours. A rule chooses, for each pair (count of neighbours with my colour, sorted counts of the other colours), whether to keep the colour or to move to the colour with a given count rank, splitting ties at random. The rules were optimized by exact coordinate ascent, on the tree value for the quantum algorithm and on random samples for the classical one.
@@ -177,10 +213,12 @@ Numerical results. No part is formalized in Lean.
   - The tree evaluation of Section 5 (`sim/cdyn_tree.py`, single precision, one level of the tree per array) agrees with the graph dynamics of `sim/cdyn.py` run in double precision on an explicit radius-3 tree (`sim/cdyn_check.py`): 0.93463 ± 0.00025 from 10⁶ samples against 0.93461 from 2 · 10⁵ edges.
   - For k = 2, the reduced sampler of `sim/lv2.py` agrees with the full program of `sim/lv_plus_rule.py` within the statistical error: 0.7800 against 0.7798 at d = 4, m = 3, and 0.7530 against 0.7528 at d = 6, m = 5, with s.e. 0.0007.
   - For k = 2, the best linear factor of i.i.d. normal variables of the same radius with sign rounding, the class of [7], computed exactly as a generalized eigenvalue problem (`sim/linfactor.py`), is at least 0.0025 below every cell of Section 4. At every girth of [1, Table 3] not covered by Section 4, it is above QAOA by at least 0.0025 for d = 4, 6, 8, 10 and 40.
+  - Section 6 against finite degree (`sim/cdyn_limit_check.py`, `data/cdyn_limit_check.txt`): the tree value of Section 5 with γ = G/√d, written as (cut − 2/3)·√d for k = 3, moves towards the limit as d grows. At p = 2 it is 0.4758, 0.5047 and 0.5065 ± 0.0051 for d = 8, 32 and 128, against 0.5192. At p = 4 it is 0.6182 and 0.6460 for d = 8 and 16, against 0.6844.
+  - Section 6 has two implementations of the single-site process: `sim/cdyn_limit_np.py`, layer by layer in numpy, and the differentiable `sim/cdyn_limit.py`. On the schedules for k = 3 they give 0.5189 against 0.5192 at p = 2, and 0.6219 against 0.6241 at p = 3, within the spread of a single solve (standard deviation 0.0017 at p = 3).
 - **Not covered:**
   - for k = 3 and 4, degrees above 8, except the one row for d = 20;
-  - the dynamics of Section 5 for other k and d. The tree has 2(d − 1)^p leaves, which limits sampling to small d;
-  - the infinite-degree limit, where [1] reports its largest QAOA advantage;
+  - the dynamics of Section 5 for other k and d at finite degree. The tree has 2(d − 1)^p leaves, which limits sampling to small d;
+  - a proof of the single-site description of Section 6 for this dynamics, and error bounds for its sampling beyond the repeated solves;
   - more than two classical rounds;
   - randomized rules.
 
@@ -196,6 +234,7 @@ Numerical results. No part is formalized in Lean.
 - `sim/lv2rounds.py`: Algorithm 1 of [1] with two rounds (`data/lv2rounds_cert.jsonl`).
 - `sim/lv2.py`: the Max-Cut case of Section 4 (`data/lv2_k2.jsonl`); `sim/linfactor.py`: the linear-factor check.
 - `sim/cdyn.py`, `sim/cdyn_train.py`, `sim/cdyn_tree.py`, `sim/cdyn_check.py`: the dynamics of Section 5, its training on a graph and on the tree, the tree value and the cross-check (`data/cdyn_params_3_4.jsonl`, `data/cdyn_cert_3_4.jsonl`, and the same for the other k and d).
+- `sim/cdyn_limit.py`, `sim/cdyn_limit_eval.py`, `sim/cdyn_limit_np.py`, `sim/cdyn_limit_check.py`: the infinite-degree limit of Section 6, its training, the repeated solves, the numpy cross-check and the finite-degree check (`data/cdyn_limit_2.jsonl`, `data/cdyn_limit_3.jsonl`, `data/cdyn_limit_4.jsonl`, `data/cdyn_limit_check.txt`).
 - `sim/make_tables.py`: builds Tables 1 and 2 from `data/`.
 
 Requirements: Python 3.12 with numpy, scipy and jax. Run the scripts from `sim/`, with the files from `data/` copied in.
@@ -209,3 +248,5 @@ Requirements: Python 3.12 with numpy, scipy and jax. Run the scripts from `sim/`
 5. J. Basso, E. Farhi, K. Marwaha, B. Villalonga, L. Zhou. The Quantum Approximate Optimization Algorithm at High Depth for MaxCut on Large-Girth Regular Graphs and the Sherrington-Kirkpatrick Model. TQC 2022, arXiv:2110.14206.
 6. F. Morone, S. Rawat, D. Sels. Whither quantum advantage? New classical lower bounds for Max-Cut on large-girth 3-regular graphs. arXiv:2610.17236, 2026.
 7. J. Thompson, O. Parekh, K. Marwaha. An explicit vector algorithm for high-girth MaxCut. SOSA 2022, arXiv:2108.12477.
+8. A. Dembo, A. Montanari, S. Sen. Extremal cuts of sparse random graphs. Annals of Probability 45(2), 1190-1217 (2017), arXiv:1503.03923.
+9. A. El Alaoui, A. Montanari, M. Sellke. Local algorithms for Maximum Cut and Minimum Bisection on locally treelike regular graphs of large degree. Random Structures & Algorithms 63(3), 689-715 (2023), arXiv:2111.06813.

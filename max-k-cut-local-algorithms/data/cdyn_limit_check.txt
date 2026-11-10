@@ -1,0 +1,8 @@
+# sim/cdyn_limit_check.py, k = 3: (tree value - 2/3) * sqrt(d) at degree d, schedule of data/cdyn_limit_3.jsonl with gamma = G / sqrt(d)
+# p = 2, 10^6 samples per degree; limit value 0.5192
+8 0.4758 +- 0.001
+32 0.5047 +- 0.0024
+128 0.5065 +- 0.0051
+# p = 4, 4 * 10^5 samples per degree; limit value 0.6844
+8 0.6182 +- 0.0014
+16 0.646 +- 0.0024
