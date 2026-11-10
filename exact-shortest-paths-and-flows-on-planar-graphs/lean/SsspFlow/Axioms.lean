@@ -194,6 +194,16 @@ Expected output for each: `propext`, `Classical.choice`, `Quot.sound` (or a subs
 #print axioms SsspFlow.RotSystem.RData.link_parent
 #print axioms SsspFlow.RotSystem.RData.piece_parent
 #print axioms SsspFlow.RotSystem.RData.pieceOf_att_parent
+#print axioms SsspFlow.RotSystem.RData.piece_eq_iff
+#print axioms SsspFlow.RotSystem.RData.vertexEquiv
+#print axioms SsspFlow.RotSystem.RData.tokOf_rev
+#print axioms SsspFlow.RotSystem.RData.head_tokDart
+#print axioms SsspFlow.RotSystem.RData.ddist_eq
+#print axioms SsspFlow.RotSystem.RData.Γ_ofCorners
+#print axioms SsspFlow.RotSystem.walkDist_split_split
+#print axioms SsspFlow.RotSystem.RData.ddist_live
+#print axioms SsspFlow.RotSystem.RData.gdist_live
+#print axioms SsspFlow.RotSystem.RData.ddist_live_ofCorners
 #print axioms SsspFlow.RotSystem.plain
 #print axioms SsspFlow.RotSystem.dual_toHypermap
 #print axioms SsspFlow.RotSystem.dual_dual

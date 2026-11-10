@@ -416,7 +416,10 @@ graph hold in Lean (`lean/SsspFlow/GHat.lean`, `lean/SsspFlow/GHatDist.lean`,
 `lean/SsspFlow/GHatProps.lean`). An independent implementation of its definition
 matched the tested graph on 98,000 instances. Lemma R needs a description of the dual nodes
 that is not stated in [18]. Lemma N proves it, by induction over the levels, and the reduction
-is correct for every legal choice at $s$ and $t$. These failures may come from a misreading of
+is correct for every legal choice at $s$ and $t$. In Lean, the pieces of Definition R are the
+vertices of the split model of the incisions and its pairs are the edges, so the length
+$\lambda_t$ of a live annulus is the distance of its two pieces in the token graph, and in the
+repaired graph when it is below $M$ (`lean/SsspFlow/GHatSplit.lean`). These failures may come from a misreading of
 [18] on our side. We have not checked whether they affect the approximate algorithm of [18].
 
 **The recursion repair (Lemma S).** The recursion of [18, Alg. 3] computes the shortest
@@ -662,6 +665,19 @@ standard axioms (`propext`, `Classical.choice`, `Quot.sound`). There is no `sorr
   cut corners, the parents of linked tokens are linked (`RData.link_parent`). So every piece refines a piece of the
   level before (`RData.parentPiece`, `RData.piece_parent`), and the end at the host of the parent of a token lies on
   the path of that piece (`RData.pieceOf_att_parent`): the refinement of Lemma N and the first part of Claim 3.
+- `lean/SsspFlow/GHatSplit.lean`: Lemma N in the split model, which cuts the doubled dual at the digon corners of the
+  incised darts and at the cut corners (`RData.dualSplit`). Two tokens lie in one piece exactly when their darts lie
+  at one vertex of the split (`RData.piece_eq_iff`), so the pieces are the vertices of the split
+  (`RData.vertexEquiv`). The token at the reverse of a dart is the partner of the token at the dart
+  (`RData.tokOf_rev`), so the pairs are the edges of the split (`RData.head_tokDart`), and for weights that agree on
+  the two darts of an edge the distances of the token graph are those of the split (`RData.ddist_eq`). Every set of
+  corners that holds both digon corners of each of its edges is the set of corners of some data
+  (`RData.Γ_ofCorners`), and further corners out of the reach of a vertex do not change the distances from it
+  (`RotSystem.walkDist_split_split`). Hence the length $\lambda_t$ of a live annulus is the distance between the
+  pieces at its corners $\kappa_0(t)$ and $\kappa_1(t)$ in the token graph of its own corners
+  (`RData.ddist_live_ofCorners`). For any data whose further corners lie out of the reach of the annulus, it is that
+  distance in the token graph and, below $M$, the distance in the repaired graph between copies on the paths of the
+  two pieces (`RData.ddist_live`, `RData.gdist_live`).
 - `lean/SsspFlow/Arborescence.lean`: the arithmetic of the contraction and the halving count of `notes/DMST.md`.
 - `lean/SsspFlow/NegScaling.lean`: the arithmetic of the scaling, the alternation, the short paths in a cluster and the arc inequality of `notes/NEGATIVE.md`.
   - `Setup.negCycle_iff`, `Setup.walks` and `Setup.lemmaD` prove it for any graph with the
@@ -954,8 +970,11 @@ the cut of a planar map along a shortest path between corners of two different f
 cut exists, every length it computes is a length $\lambda_t$, and the least of them is the least $\lambda_t$.
 Of Lemma R, Definition R, its properties (1), (2) and (5), the hop bound of (4), the refinement in (6) and the
 distances on the repaired graph are formalized, for any set of cut corners with modes and any host of the unincised
-pairs. Lemma N, the planarity (3), the count of copies and the simulation in (4), the rest of (6), the reduction of
-the minimum cut to the lengths $\lambda_t$ and the round count are not.
+pairs. Of Lemma N, the pieces and pairs as the vertices and edges of the split model and the lengths $\lambda_t$ of
+the live annuli as distances in the token graph and in the repaired graph are formalized. That each annulus of a
+level is a component of the token graph of the whole level, the planarity (3), the count of copies and the
+simulation in (4), the rest of (6), the reduction of the minimum cut to the lengths $\lambda_t$ and the round count
+are not.
 
 ## Numerical checks (`sim/`)
 

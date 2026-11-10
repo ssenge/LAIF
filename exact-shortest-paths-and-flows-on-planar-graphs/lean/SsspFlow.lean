@@ -86,3 +86,4 @@ import SsspFlow.Run
 import SsspFlow.GHat
 import SsspFlow.GHatDist
 import SsspFlow.GHatProps
+import SsspFlow.GHatSplit
