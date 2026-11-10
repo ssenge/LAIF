@@ -44,3 +44,8 @@ qm = math.ceil(math.sqrt(1.2886) * 1e4) / 1e4
 assert math.sqrt(1.2886) <= qm
 print(f"MaxSAT: tau(6,6,5,5) = {tau(6, 6, 5, 5):.5f}; sqrt(1.2886) = {math.sqrt(1.2886):.6f} <= {qm}; "
       f"below 2^(n/2) whenever m < {math.log(2) / (2 * math.log(qm)):.4f} n")
+
+# SAT in terms of the length L: the bound 2^(0.0926 L) of SparseSAT and its square root
+ql = math.ceil(math.sqrt(2 ** 0.0926) * 1e4) / 1e4
+assert 2 ** 0.0926 <= 1.0663 and math.sqrt(2 ** 0.0926) <= ql
+print(f"SAT in L: 2^0.0926 = {2 ** 0.0926:.6f}; square root {math.sqrt(2 ** 0.0926):.6f} <= {ql}")

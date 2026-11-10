@@ -13,3 +13,4 @@ walk on the 1.239^m algorithm: 1.1131
 walk on the 1.260^m algorithm: 1.1225
 below 2^(n/2) whenever m < 3.4461 n
 MaxSAT: tau(6,6,5,5) = 1.28854; sqrt(1.2886) = 1.135165 <= 1.1352; below 2^(n/2) whenever m < 2.7330 n
+SAT in L: 2^0.0926 = 1.066290; square root 1.032613 <= 1.0327
