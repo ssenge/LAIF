@@ -14,4 +14,3 @@
    n=7: 4095  63
    n=8: 16380  126
 all checks passed
-/Users/sebastian.senge/Documents/src/Science/Algos/QC/.conda-qc/bin/python -I  7.48s user 0.03s system 99% cpu 7.584 total
