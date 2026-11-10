@@ -1,6 +1,6 @@
 """Checks for the note on the nonadaptive constant of the ternary family (README.md).
 
-1. Lemma 2: sum_a prod_l mu_l(a_l) <psi|P_a|psi>^2 <= prod_l (sum of the two largest mu_l), for random pure states
+1. Lemma 3: sum_a prod_l mu_l(a_l) <psi|P_a|psi>^2 <= prod_l (sum of the two largest mu_l), for random pure states
    and weights (L <= 4), and at the vertices of the weight polytope.
 2. The strategy: information I(a; 0) >= (1/2) q^L, q = 2/(3 - u), the same for every label (L = 1, 2, 3).
 3. The weighted budget: sum_a pi(a) I_M(a; 0) <= q^L for random global POVMs on marker and signal (L = 1, 2).
@@ -54,7 +54,6 @@ def check_lemma():
                 mu = np.array([[1.0 if k == c else 0.0 for k in range(3)] if c < 3 else [0.5] * 3 for c in choice])
                 w = np.array([np.prod([mu[l][LET.index(c)] for l, c in enumerate(word)]) for word in words])
                 worst = max(worst, w @ ev)
-    # the cat state attains half of the bound for weights 1 on two letters per site
     assert worst <= 1 + 1e-9
     print(f"1. weighted sum over the bound: largest ratio {worst:.4f} <= 1 (L <= 4, random states, weights and vertices)")
 
