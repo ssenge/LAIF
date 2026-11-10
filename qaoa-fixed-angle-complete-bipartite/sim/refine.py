@@ -1,5 +1,5 @@
 """Tree-optimal p = 2 angles to high accuracy (second-order steps on central differences) and K_{d,d} at them.
-Usage: python refine.py d0 d1 > out   (continuation from the d = 9 optimum)"""
+Usage: python refine.py d0 d1 > out   (continuation from the d = 9 optimum; columns as in scan.txt)"""
 import math, os, sys
 import numpy as np
 from scipy.optimize import minimize
@@ -45,4 +45,6 @@ if __name__ == "__main__":
             continue
         t = tree(x, d)
         k = kdd_cut(x[:2], x[2:] / math.sqrt(d), d)
-        print(f"{d} {t:.13f} {k:.13f} {k - t:+.6e} {gn:.1e} " + " ".join(f"{v:.12f}" for v in x), flush=True)
+        k1 = kdd_cut(np.array([-0.360743, -0.564711]), np.array([-3.2955, -3.0938]) / d, d)  # 1/d family, result 4
+        print(f"{d} {t:.13f} {k:.13f} {k - t:+.6e} {k1:.13f} " + " ".join(f"{v:.12f}" for v in x), flush=True)
+        print(f"{d} gradient {gn:.1e}", file=sys.stderr)

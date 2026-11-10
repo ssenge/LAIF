@@ -3,7 +3,7 @@
 1. The exact evaluators (regular tree by a sum over histories, K_{d,d} by two collective spins) agree
    with a plain statevector on small cases.
 2. Tree-optimal angles from scratch (multi-start, then second-order steps) at selected d, the K_{d,d} value at them,
-   and the sign of the difference: d = 2..8 and the window edges 351, 352, 384, 385, 585, 586, 643, 644.
+   and the sign of the difference: d = 2..8 and the window edges 351, 352, 384, 385, 585, 586, 643, 644, 883, 884, 966, 967.
 3. The value at d = 9 matches the threshold b of [1, Theorem 8].
 4. The angles of the 1/d family give K_{d,d} above the tree optimum at selected d (Conjecture 1).
 The full scan over 9 <= d <= 1060 is produced by refine.py (output in scan.txt).
@@ -48,7 +48,8 @@ def tree_optimum(d, starts=40):
 def check_edges():
     print("2. d, tree optimum, K_{d,d} at the tree-optimal angles, difference:")
     expect = {d: +1 for d in range(2, 9)}
-    expect.update({9: -1, 22: -1, 351: -1, 352: +1, 384: +1, 385: -1, 585: -1, 586: +1, 643: +1, 644: -1})
+    expect.update({9: -1, 22: -1, 351: -1, 352: +1, 384: +1, 385: -1, 585: -1, 586: +1, 643: +1, 644: -1,
+                   883: -1, 884: +1, 966: +1, 967: -1})
     for d, sign in expect.items():
         x, t, g = tree_optimum(d, 40 if d < 100 else 12)
         k = kdd_cut(x[:2], x[2:] / math.sqrt(d), d)

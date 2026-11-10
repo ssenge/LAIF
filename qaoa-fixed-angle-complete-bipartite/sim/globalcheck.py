@@ -1,5 +1,6 @@
-"""Multi-start search for the tree maximiser at given d, in the box beta in [-pi/4, pi/4), gamma in [-pi, pi)
-(gamma_1 >= 0 by time reversal). Compares with the continuation value in scan.txt."""
+"""Multi-start search for the tree maximiser at given d, with beta in [-pi/4, pi/4) and scaled angles g = gamma sqrt(d)
+in [0, 8] x [-8, 8] (g_1 >= 0 by time reversal). Compares with the continuation value in scan.txt.
+Usage: python globalcheck.py d ... > global.txt"""
 import math, os, sys
 import numpy as np
 from scipy.optimize import minimize
@@ -15,7 +16,7 @@ rng = np.random.default_rng(11)
 for d in [int(a) for a in sys.argv[1:]]:
     best = -1
     for _ in range(300):
-        x0 = np.array([*rng.uniform(-math.pi / 4, math.pi / 4, 2), rng.uniform(0, math.pi), rng.uniform(-math.pi, math.pi)])
-        r = minimize(lambda x: -tree_cut(x[:2], x[2:], d), x0, method="L-BFGS-B")
+        x0 = np.array([*rng.uniform(-math.pi / 4, math.pi / 4, 2), rng.uniform(0, 8), rng.uniform(-8, 8)])
+        r = minimize(lambda x: -tree_cut(x[:2], x[2:] / math.sqrt(d), d), x0, method="L-BFGS-B")
         best = max(best, -r.fun)
     print(f"{d} multistart {best:.12f} continuation {ref.get(d, float('nan')):.12f} diff {best - ref.get(d, float('nan')):+.2e}", flush=True)
