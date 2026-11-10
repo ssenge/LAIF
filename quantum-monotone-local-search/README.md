@@ -121,7 +121,7 @@ Not formalized: Lemma 2.2 of [1], the quantum walk, the error analysis of the or
 6. M. Boyer, G. Brassard, P. Høyer and A. Tapp. Tight bounds on quantum searching. Fortschritte der Physik 46, 1998. G. Brassard, P. Høyer, M. Mosca and A. Tapp. Quantum amplitude amplification and estimation. Contemporary Mathematics 305, 2002.
 7. D. Tsur. Faster parameterized algorithm for 3-Hitting Set. arXiv:2501.06452.
 8. Y. Iwata, M. Wahlström and Y. Yoshida. Half-integrality, LP-branching and FPT algorithms. SIAM Journal on Computing 45(4), 2016. SODA 2014. arXiv:1310.2841.
-9. Kvantu algoritms maksimāla inducēta meža problēmai (a quantum algorithm for the maximum induced forest problem). Thesis, University of Latvia. https://dspace.lu.lv/handle/7/66169.
+9. M. Kica. Kvantu algoritms maksimāla inducēta meža problēmai (a quantum algorithm for the maximum induced forest problem). Bachelor's thesis, University of Latvia, 2024. https://dspace.lu.lv/handle/7/66169.
 10. M. Cygan, M. Pilipczuk and M. Pilipczuk. On group feedback vertex set parameterized by the size of the cutset. Algorithmica 74, 2016. arXiv:1112.6255.
 11. H. Shachnai and M. Zehavi. A multivariate approach for weighted FPT algorithms. ESA 2015. arXiv:1407.2033 (as A multivariate framework for weighted FPT algorithms).
 12. Y. Cao. Unit interval editing is fixed-parameter tractable. ICALP 2015. arXiv:1504.04470.
