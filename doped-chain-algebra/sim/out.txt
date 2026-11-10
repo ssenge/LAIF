@@ -1,0 +1,17 @@
+1. generators lie in F and map to XY, YX on bonds and XY or YX on next-nearest bonds (n <= 30)
+2. base case: the mapped generators on 4 qubits give all 56 odd strings commuting with Z^4
+3. n, dim g, 4^(n-1) - 2^(n-1), |F|, d_Z:
+   n=3: 9  12  12  0
+   n=4: 56  56  56  0
+   n=5: 240  240  240  0
+   n=6: 992  992  992  0
+   n=7: 4032  4032  4032  0
+   n=8: 16256  16256  16256  0
+4. odd chord: n, dim g, d_Z, 2^(n-1) - 2 (n even) or 2^(n-1) - 1 (n odd):
+   n=4: 60  6
+   n=5: 255  15
+   n=6: 1020  30
+   n=7: 4095  63
+   n=8: 16380  126
+all checks passed
+/Users/sebastian.senge/Documents/src/Science/Algos/QC/.conda-qc/bin/python -I  7.48s user 0.03s system 99% cpu 7.584 total
