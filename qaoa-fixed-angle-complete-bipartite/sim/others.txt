@@ -1,0 +1,7 @@
+Q_3                      d=3 tree*=0.7559064585 graph=0.7898968925 diff=+3.399e-02
+Q_4                      d=4 tree*=0.7160916355 graph=0.7415301119 diff=+2.544e-02
+K_4,4 minus matching     d=3 tree*=0.7559064585 graph=0.7898968843 diff=+3.399e-02
+K_5,5 minus matching     d=4 tree*=0.7160916355 graph=0.7538512237 diff=+3.776e-02
+K_6,6 minus matching     d=5 tree*=0.6907089419 graph=0.7271822583 diff=+3.647e-02
+K_7,7 minus matching     d=6 tree*=0.6726440514 graph=0.7033678606 diff=+3.072e-02
+K_8,8 minus matching     d=7 tree*=0.6589236029 graph=0.6811307367 diff=+2.221e-02
