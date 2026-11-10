@@ -1,3 +1,4 @@
+0. dense matrices U^dagger Y_j U match [1] for n = 3 and the string arithmetic for n = 3, 4, 5
 1. closed forms of Ad_U(Y_j) and of the inverse on X_i, Z_i hold for 3 <= n <= 40
 2. Q_4: the generated algebra contains all 126 odd strings commuting with K_4, outside K_4 (126 strings in all)
 2. Q_5: the generated algebra contains all 510 odd strings commuting with K_5, outside K_5 (510 strings in all)

@@ -4,7 +4,7 @@ Written 10 Nov 2026.
 
 ## Problem
 
-In [1], each layer of the circuit applies RY(θ_j) to every qubit j = 1, …, n, followed by a fixed ring U of CX gates. The trainable directions after L layers are the conjugates Ad_U^k(Y_j) for 0 ≤ k < L, with Ad_U(A) = U†AU as in [1]. Their commutator closure, times i, is the depth-L dynamical algebra g_L, and g is the union of all g_L. [1] computes g = so(2ⁿ) up to n = 8 and writes that this "is very likely to be true for all n". [1] also notes that the smallest L with g_L = g "is 4 if n is a multiple of 3, and 2 otherwise", and that this "should not be too difficult to prove". Both statements are used there for parameter counts and gradient variance.
+In [1], each layer of the circuit applies RY(θ_j) to every qubit j = 1, …, n, followed by a fixed ring U of CX gates. The trainable directions after L layers are the conjugates Ad_U^k(Y_j) for 0 ≤ k < L, with Ad_U(A) = U†AU as in [1]. Their commutator closure, times i, is the depth-L dynamical algebra g_L, and g is the union of all g_L. [1] computes g = so(2ⁿ) up to n = 8 and writes that this "is very likely to be true for all n". [1] also notes that the smallest L with g_L = g "is 4 if n is a multiple of 3, and 2 otherwise", and that this "should not be too difficult to prove". The first is used there for parameter counts and gradient variance; the second describes how fast the trainable directions fill the algebra.
 
 ## Result
 
@@ -30,20 +30,20 @@ The inverse map ψ = Ad_U^{−1} acts on single factors by:
 - ψ(X_i) = X_i X_{i+1}⋯X_n for i ≤ n − 1, and ψ(X_n) = X_1⋯X_{n−1};
 - ψ(Z_1) = Z_1 Z_{n−1} Z_n, and ψ(Z_i) = Z_{i−1} Z_i for i ≥ 2.
 
-**Sectors.** A string commutes with every Y_j exactly when it is Y-type. So a string J commutes with Ad_U^k(Y_j) for all j exactly when ψ^k(J) is Y-type. Let K = {I, J_1, J_2, J_1J_2} be a group of commuting Y-type strings on a set Q of q qubits. For a string P, its character τ_P: K → F₂ records which elements of K it anticommutes with. Write O^τ for the odd strings on Q with character τ that are not in K.
+**Sectors.** A string commutes with every Y_j exactly when it is Y-type. So a string J commutes with Ad_U^k(Y_j) for all j exactly when ψ^k(J) is Y-type. Let K = {I, J_1, J_2, J_1J_2} be a group of commuting Y-type strings on a set Q of k qubits. For a string P, its character τ_P: K → F₂ records which elements of K it anticommutes with. Write O^τ for the odd strings on Q with character τ that are not in K.
 
-**Lemma 1.** Let u_1, …, u_c ∈ F₂^{2q} be linearly independent, c ≤ 4, and b ∈ F₂^c. Then at least (2^{2q−c} − 2^q)/2 odd strings x satisfy ⟨u_i, x⟩ = b_i for all i.
+**Lemma 1.** Let u_1, …, u_c ∈ F₂^{2k} be linearly independent and b ∈ F₂^c. Then at least (2^{2k−c} − 2^k)/2 odd strings x satisfy ⟨u_i, x⟩ = b_i for all i.
 
-*Proof.* The solutions form a coset a + W, where W is the subspace orthogonal to V = span(u_i) and has dimension d = 2q − c. Then f(w) = q(a + w) is a quadratic function on W with polar form ⟨·,·⟩, whose radical W ∩ V has dimension r ≤ c. Substituting w′ = w + v gives (Σ_w (−1)^{f(w)})² = Σ_v (−1)^{q(v)+⟨a,v⟩} Σ_w (−1)^{⟨w,v⟩}. The inner sum vanishes unless v is in the radical, so the square is at most 2^{d+r} ≤ 2^{2q}. Hence the odd values number at least (2^d − 2^q)/2. ∎
+*Proof.* The solutions form a coset a + W, where W is the subspace orthogonal to V = span(u_i) and has dimension d = 2k − c. Then f(w) = q(a + w) is a quadratic function on W with polar form ⟨·,·⟩, whose radical W ∩ V has dimension r ≤ c. Substituting w′ = w + v gives (Σ_w (−1)^{f(w)})² = Σ_v (−1)^{q(v)+⟨a,v⟩} Σ_w (−1)^{⟨w,v⟩}. The inner sum vanishes unless v is in the radical, so the square is at most 2^{d+r} ≤ 2^{2q}. Hence the odd values number at least (2^d − 2^q)/2. ∎
 
-**Lemma 2 (filling a sector).** Let q ≥ 5, let E be a further set of qubits, and let S be a set of strings on Q ∪ E closed as in F1, with O^0 ⊗ I_E ⊆ S. If p ⊗ T ∈ S for some p ∈ O^τ, τ ≠ 0, and some string T on E, then O^τ ⊗ T ⊆ S.
+**Lemma 2 (filling a sector).** Let k ≥ 5, let E be a further set of qubits, and let S be a set of strings on Q ∪ E closed as in F1, with O^0 ⊗ I_E ⊆ S. If p ⊗ T ∈ S for some p ∈ O^τ, τ ≠ 0, and some string T on E, then O^τ ⊗ T ⊆ S.
 
-*Proof.* Join R, R′ ∈ O^τ when they anticommute and RR′ ∉ K. Suppose p ⊗ T ∈ S and p is joined to R′. Then the string Q′ proportional to pR′ is odd (F2), has character 0, and is not in K, so Q′ ⊗ I ∈ S. It anticommutes with p ⊗ T, and their product is proportional to R′ ⊗ T, so R′ ⊗ T ∈ S. It remains to show that this graph on O^τ is connected.
+*Proof.* Join R, R′ ∈ O^τ when they anticommute and RR′ ∉ K. Suppose p ⊗ T ∈ S and p is joined to R′. Then the string C proportional to pR′ is odd (F2), has character 0, and is not in K, so C ⊗ I ∈ S. It anticommutes with p ⊗ T, and their product is proportional to R′ ⊗ T, so R′ ⊗ T ∈ S. It remains to show that this graph on O^τ is connected.
 
-Take R_1, R_2 ∈ O^τ with R_2 ∉ R_1K. Then J_1, J_2, R_1, R_2 are linearly independent. By Lemma 1 with c = 4, at least 2^{q−1}(2^{q−4} − 1) ≥ 16 odd strings have character τ and anticommute with both R_1 and R_2. At most 12 of them lie in K ∪ R_1K ∪ R_2K, so R_1 and R_2 have a common neighbour. If R_2 ∈ R_1K, pass through any R_3 ∈ O^τ outside R_1K. ∎
+Take R_1, R_2 ∈ O^τ with R_2 ∉ R_1K. Then J_1, J_2, R_1, R_2 are linearly independent. By Lemma 1 with c = 4, at least 2^{k−1}(2^{k−4} − 1) ≥ 16 odd strings have character τ and anticommute with both R_1 and R_2. At most 8 of them lie in R_1K ∪ R_2K (none lies in K, since τ ≠ 0), so R_1 and R_2 have a common neighbour. If R_2 ∈ R_1K, pass through any R_3 ∈ O^τ outside R_1K. ∎
 
-**Proposition 3 (the local algebra).** Let n ≥ 5 and 4 ≤ m ≤ n − 1. Let Q_m = {1, …, m, n}, and let h_m be generated by iY_j for j ∈ Q_m and is_j for 1 ≤ j ≤ m − 1, all supported in Q_m. Let K_m be the set of Y_A (Y on the qubits in A) with indicator a satisfying a_1, a_2 free, a_{i+2} = a_i + a_{i+1} for 1 ≤ i ≤ m − 2, and a_n = a_2. Then:
-- K_m is a group of four strings, each commuting with every generator of h_m;
+**Proposition 3 (the local algebra).** Let n ≥ 5 and 4 ≤ m ≤ n − 1. Let Q_m = {1, …, m, n}, and let h_m be generated by iY_j for j ∈ Q_m and i·s_j for 1 ≤ j ≤ m − 1, all supported in Q_m. Let K_m be the set of Y_A (Y on the qubits in A) with indicator a satisfying a_1, a_2 free, a_{i+2} = a_i + a_{i+1} for 1 ≤ i ≤ m − 2, and a_n = a_2. Then:
+- K_m is a group of four strings, and it is exactly the set of Y-type strings on Q_m that commute with every generator of h_m;
 - the strings of h_m include every odd string on Q_m that commutes with K_m and is not in K_m.
 
 *Proof.* Y_A commutes with s_j exactly when |A ∩ {1, …, j − 1, j + 1, n}| is even. For j = 1 this gives a_2 = a_n, and the difference of the conditions for j and j + 1 gives a_{j+2} = a_j + a_{j+1}. The case m = 4 (five qubits) is a finite computation (check 2).
@@ -53,13 +53,13 @@ Step from m to m + 1 ≤ n − 1. The new generators are Y_{m+1} and s_m = p ⊗
 - σ ∈ {X, Z}, P odd and τ_P = β.
 
 We obtain all of these strings outside K_{m+1}:
-- *σ ∈ {X, Z}.* Since s_m commutes with K_{m+1}, p ∈ O^β. Lemma 2 (q = m + 1 ≥ 5, E = {m + 1}, T = X), with O^0 ⊆ h_m by induction, gives O^β ⊗ X. Multiplying by Y_{m+1} gives O^β ⊗ Z.
+- *σ ∈ {X, Z}.* Since s_m commutes with K_{m+1}, p ∈ O^β. Lemma 2 (k = m + 1 ≥ 5, E = {m + 1}, T = X), with O^0 ⊆ h_m by induction, gives O^β ⊗ X. Multiplying by Y_{m+1} gives O^β ⊗ Z.
 - *σ = I.* The case P ∉ K_m is covered by induction. Let P = J ∈ K_m be odd with β(J) = 1. Take any A ∈ O^β. Then A anticommutes with J, so B = AJ ∈ O^β is odd (F2) and anticommutes with A. The pair A ⊗ X, B ⊗ X gives J ⊗ I.
 - *σ = Y.* For P = I this is the generator Y_{m+1}. For P even with τ_P = 0 and P ≠ I, Lemma 1 (c ≤ 3) gives an A ∈ O^β commuting with P. If P ∈ K_m, any A ∈ O^β commutes with P exactly when β(P) = 0, and P ⊗ Y ∈ K_{m+1} when β(P) = 1. Then B = AP ∈ O^β, and A ⊗ X, B ⊗ Z anticommute with product proportional to P ⊗ Y. ∎
 
 **Proof of Theorem 1 (n ≥ 5).** Let K = K_{n−1}. Since s_j for j ≤ n − 2 is a generator of g_2, g_L contains h_{n−1} for every L ≥ 2, and with it O^0.
 
-*If no J ∈ K other than I commutes with all generators of g_L, then g_L = so(2ⁿ).* The characters of the generators then span the dual of K, so two generators have independent characters τ_1, τ_2. Lemma 2 (E empty) gives O^{τ_1} and O^{τ_2}. By Lemma 1 there are anticommuting A ∈ O^{τ_1} and B ∈ O^{τ_2}; their product is odd with character τ_1 + τ_2 ≠ 0, so Lemma 2 gives O^{τ_1+τ_2}. Every odd J ∈ K has τ(J) = 1 for one of these three τ. For A ∈ O^τ the pair A, AJ then anticommutes with product J. So g_L contains every odd string, which is all of so(2ⁿ) by F2. *Otherwise* g_L commutes with some J ≠ I, so g_L ≠ so(2ⁿ).
+*If no J ∈ K other than I commutes with all generators of g_L, then g_L = so(2ⁿ).* The characters of the generators then span the dual of K, so two generators have independent characters τ_1, τ_2; they are odd by F3 and, having nonzero characters, not in K, so they lie in O^{τ_1} and O^{τ_2}. Lemma 2 (E empty) gives O^{τ_1} and O^{τ_2}. By Lemma 1 there are anticommuting A ∈ O^{τ_1} and B ∈ O^{τ_2}; their product is odd with character τ_1 + τ_2 ≠ 0, so Lemma 2 gives O^{τ_1+τ_2}. Every odd J ∈ K has τ(J) = 1 for one of these three τ. For A ∈ O^τ the pair A, AJ then anticommutes with product J. So g_L contains every odd string, which is all of so(2ⁿ) by F2. *Otherwise* g_L commutes with some J ≠ I, so g_L ≠ so(2ⁿ).
 
 It remains to decide, for each J = Y_A ∈ K, the least k at which ψ^k(J) is not Y-type. From the closed forms, the image ψ(Y_A) has X part c_k = S_k + a_n for k ≤ n − 1 and c_n = S_{n−1}, where S_k = a_1 + ⋯ + a_k. Its Z part is a_k + a_{k+1} for k ≤ n − 2, a_{n−1} + a_n + a_1 at n − 1, and a_n + a_1 at n. For J ∈ K the two parts agree at k ≤ n − 2. So ψ(J) is Y-type exactly when S_{n−2} = a_1 and S_{n−1} = a_1 + a_2. Along the pattern of K, the sums S_k repeat with period 3 as (a_1, a_1 + a_2, 0).
 - n ≡ 1 (mod 3): the conditions read a_2 = 0 and a_1 + a_2 = 0.
@@ -67,24 +67,26 @@ It remains to decide, for each J = Y_A ∈ K, the least k at which ψ^k(J) is no
 
 In both cases only J = I survives, so g_2 = so(2ⁿ). Since g_1 is abelian, the saturation depth is 2.
 
-- n ≡ 0 (mod 3): both conditions always hold, so all of K commutes with g_2. Write J(a_1, a_2). The image ψ(J(a_1, a_2)) is the Y-type string with c = (a_1 + a_2, a_1, a_2, a_1 + a_2, …) and c_n = a_1 + a_2. It lies in K exactly when c_n = c_2, that is a_2 = 0. Hence only J(1, 0) commutes with the third layer, and g_3 ≠ so(2ⁿ). Next, ψ(J(1, 0)) = J(1, 1) ∈ K, and ψ(J(1, 1)) is Y-type but not in K. So ψ³(J(1, 0)) is not Y-type, no J ≠ I survives four layers, and g_4 = so(2ⁿ).
+- n ≡ 0 (mod 3): both conditions always hold, so all of K commutes with g_2. A Y-type string P has ψ(P) Y-type exactly when P commutes with every s_j, which for 3 | n means P ∈ K. So J commutes with the first three layers exactly when J ∈ K and ψ(J) ∈ K, and with the first four exactly when also ψ²(J) ∈ K. Write J(a_1, a_2). The image ψ(J(a_1, a_2)) is the Y-type string with c = (a_1 + a_2, a_1, a_2, a_1 + a_2, …) and c_n = a_1 + a_2. It lies in K exactly when c_n = c_2, that is a_2 = 0. Hence only J(1, 0) commutes with the third layer, and g_3 ≠ so(2ⁿ). Next, ψ(J(1, 0)) = J(1, 1) ∈ K, and ψ(J(1, 1)) is Y-type but not in K. So ψ³(J(1, 0)) is not Y-type, no J ≠ I survives four layers, and g_4 = so(2ⁿ).
 
 Part 1 follows from part 2.
 
-*Part 3.* Let 3 divide n and n ≥ 6. Every generator of g_2 commutes with K and none lies in K. A product of two strings commuting with J equals J only if they also commute with each other. So g_2 is spanned by O^0 and nothing else. With the generating function Π(1 + t + 2u_A) over qubits, sorted by membership in the supports A_1 of J(1, 0) and A_2 of J(0, 1), there are exactly 4ⁿ/8 odd strings commuting with K. Of the elements of K, J(1, 0) and J(1, 1) are odd, since |A_1| = 2n/3 − 1 and |A_1 Δ A_2| = 2n/3 + 1. Hence dim g_2 = 2·4^{n−2} − 2.
+*Part 3.* Let 3 divide n and n ≥ 6. Every generator of g_2 commutes with K, and none lies in K: the Y_j have weight 1, every element of K other than I has weight at least 2n/3 − 1 ≥ 3, and the s_j have X or Z factors. A product of two strings commuting with J equals J only if they also commute with each other. So g_2 is spanned by O^0 and nothing else. The odd strings commuting with K are counted as follows. W = K^⊥ has 4ⁿ/4 elements and radical K, since K is isotropic. On K the form q is linear (q(u + v) = q(u) + q(v) + ⟨u, v⟩ with ⟨u, v⟩ = 0) and nonzero (J(1, 0) is odd), so the character sum in the proof of Lemma 1 (with a = 0) vanishes, and exactly 4ⁿ/8 strings of W are odd. Of the elements of K, J(1, 0) and J(1, 1) are odd, since |A_1| = 2n/3 − 1 and |A_1 Δ A_2| = 2n/3 + 1. Hence dim g_2 = 2·4^{n−2} − 2.
 
-For g_3, a third-layer generator that anticommutes with J(0, 1) has the unique nonzero character τ* with τ*(J(1, 0)) = 0. So Lemma 2 fills O^{τ*}, and J(1, 1) follows as above. By the same counting, 4^{n−1} odd strings commute with the odd string J(1, 0). Hence dim g_3 = 4^{n−1} − 1. Then g_3 is a subalgebra of codimension one in the centralizer of iJ(1, 0) in so(2ⁿ). That centralizer is isomorphic to u(2^{n−1}), because iJ(1, 0) is real, antisymmetric and squares to −I. Since g_3 does not contain the centre, it is su(2^{n−1}). ∎
+For g_3, a third-layer generator that anticommutes with J(0, 1) has the unique nonzero character τ* with τ*(J(1, 0)) = 0. So Lemma 2 fills O^{τ*}, and J(1, 1) follows as above. By the same counting with W = J(1, 0)^⊥, 4^{n−1} odd strings commute with the odd string J(1, 0). Hence dim g_3 = 4^{n−1} − 1. Then g_3 is a subalgebra of codimension one in the centralizer of iJ(1, 0) in so(2ⁿ). That centralizer is isomorphic to u(2^{n−1}), because iJ(1, 0) is real, antisymmetric and squares to −I. The projection of u(M), M = 2^{n−1}, onto su(M) along the centre is a map of algebras and is injective on g_3, which does not contain the centre; as dim g_3 = M² − 1, g_3 ≅ su(M), and since su(M) is perfect, g_3 = [g_3, g_3] ⊆ su(M), so g_3 = su(M). ∎
 
 ## Remarks
 
-- The obstruction for 3 | n is concrete: the three strings of K are Y factors on the qubits of two residue classes mod 3 (with qubit n following qubit 2), and the first two layers commute with them.
+- The obstruction for 3 | n is concrete: the three strings of K are Y factors on the qubits of two residue classes mod 3 (let C_r be the qubits i ≤ n − 1 with i ≡ r mod 3 and add qubit n to C_2; then J(1, 0), J(0, 1), J(1, 1) are Y on C_0 ∪ C_1, C_0 ∪ C_2, C_1 ∪ C_2), and the first two layers commute with them.
+- Lemma 2 needs k ≥ 5: for some groups K on four qubits the graph in its proof is disconnected.
 - The method is not specific to the ring. Once the local generators contain all odd strings that commute with a small group of Y-type strings, saturation reduces to a linear computation over F₂ with ψ.
 
 ## Check
 
 `sim/check.py` (about 1 minute) checks:
+- the convention, with dense matrices U†Y_jU against the orbits of [1] for n = 3 and against the string arithmetic for n ≤ 5;
 - the closed forms of the first layer and of ψ for 3 ≤ n ≤ 40;
-- the base case of Proposition 3 on five qubits, and also on six;
+- the base case of Proposition 3 on five qubits, and also on six, with equality;
 - that K has four elements commuting with the local generators, with the layer count of the proof for 5 ≤ n ≤ 60;
 - for 2 ≤ n ≤ 8, the direct closure dims of g_1, …, g_5, including 510 and 1023 for g_2 and g_3 at n = 6.
 
