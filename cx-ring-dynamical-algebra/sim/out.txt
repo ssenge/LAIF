@@ -1,0 +1,13 @@
+1. closed forms of Ad_U(Y_j) and of the inverse on X_i, Z_i hold for 3 <= n <= 40
+2. Q_4: the generated algebra contains all 126 odd strings commuting with K_4, outside K_4 (126 strings in all)
+2. Q_5: the generated algebra contains all 510 odd strings commuting with K_5, outside K_5 (510 strings in all)
+3. the layer criterion gives 2 for 3 not dividing n and 4 for 3 dividing n, 5 <= n <= 60
+4. direct closure: n, dim g_1..g_5, dim so(2^n), saturation depth
+   n=2: [2, 6, 6, 6, 6]  6  depth=2
+   n=3: [3, 8, 16, 28, 28]  28  depth=4
+   n=4: [4, 120, 120, 120, 120]  120  depth=2
+   n=5: [5, 496, 496, 496, 496]  496  depth=2
+   n=6: [6, 510, 1023, 2016, 2016]  2016  depth=4
+   n=7: [7, 8128, 8128, 8128, 8128]  8128  depth=2
+   n=8: [8, 32640, 32640, 32640, 32640]  32640  depth=2
+all checks passed
