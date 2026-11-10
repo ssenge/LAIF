@@ -1,0 +1,27 @@
+1. weighted sum over the bound: largest ratio 0.9993 <= 1 (L <= 4, random states, weights and vertices)
+   u=0.1, L=1: I(a; 0) = 0.344828 for every label, q^L/2 = 0.344828, q^L = 0.689655
+   u=0.1, L=2: I(a; 0) = 0.334126 for every label, q^L/2 = 0.237812, q^L = 0.475624
+   u=0.1, L=3: I(a; 0) = 0.164008 for every label, q^L/2 = 0.164008, q^L = 0.328017
+   u=0.3, L=1: I(a; 0) = 0.370370 for every label, q^L/2 = 0.370370, q^L = 0.740741
+   u=0.3, L=2: I(a; 0) = 0.341564 for every label, q^L/2 = 0.274348, q^L = 0.548697
+   u=0.3, L=3: I(a; 0) = 0.203221 for every label, q^L/2 = 0.203221, q^L = 0.406442
+   u=0.49, L=1: I(a; 0) = 0.398406 for every label, q^L/2 = 0.398406, q^L = 0.796813
+   u=0.49, L=2: I(a; 0) = 0.358740 for every label, q^L/2 = 0.317455, q^L = 0.634911
+   u=0.49, L=3: I(a; 0) = 0.252952 for every label, q^L/2 = 0.252952, q^L = 0.505905
+2. the strategy gives the same I(a; 0) >= q^L / 2 for every label (L = 1, 2, 3)
+3. random global POVMs: largest sum_a pi(a) I_M(a; 0) / q^L = 0.4431 <= 1 (L = 1, 2)
+4. L = 1: strategy and weighted budget both give I* = (1 + u)/(3 + u), constant (3 + u)/(1 + u)
+5. u, L: paper lower 1/B_L, new lower ((3-u)/2)^L, new upper 2((3-u)/2)^L, paper upper 2^L + 1
+   u=0.1   L=1          2.727         1.45          2.9            3
+   u=0.1   L=4          3.688        4.421        8.841           17
+   u=0.1   L=10         22.25        41.08        82.17         1025
+   u=0.1   L=20         494.3         1688         3376    1.049e+06
+   u=0.25  L=1            2.4        1.375         2.75            3
+   u=0.25  L=4          2.212        3.574        7.149           17
+   u=0.25  L=10         6.198        24.16        48.31         1025
+   u=0.25  L=20         38.34        583.5         1167    1.049e+06
+   u=0.49  L=1          2.013        1.255         2.51            3
+   u=0.49  L=4          1.096        2.481        4.961           17
+   u=0.49  L=10          1.07        9.693        19.39         1025
+   u=0.49  L=20         1.143        93.95        187.9    1.049e+06
+all checks passed
