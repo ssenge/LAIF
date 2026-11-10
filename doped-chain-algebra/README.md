@@ -1,4 +1,4 @@
-# The doped chain generates so(2^{n−1}) ⊕ so(2^{n−1}) for every n ≥ 4
+# The doped chain is a graph algebra after phase gates: so(2^{n−1}) ⊕ so(2^{n−1}) for every n ≥ 4
 
 Written 10 Nov 2026.
 
@@ -20,12 +20,12 @@ Let V = Z_1Z_3Z_5⋯ (Z on the odd qubits). Let F be the set of strings P that c
 
 #Y(P) + #{odd i : P_i ∈ {X, Y}} is odd.
 
-**Theorem 1.** For every n ≥ 4, the doped-chain algebra is spanned by iP, P ∈ F. In particular:
+**Theorem 1.** For every n ≥ 4, the doped-chain algebra is the real span of iP, P ∈ F. In particular:
 1. dim g = |F| = 4^{n−1} − 2^{n−1}.
 2. Let S be the phase gate diag(1, i), and apply it on every odd qubit. This conjugates g onto the real antisymmetric matrices that commute with Z^{⊗n}, that is so(2^{n−1}) ⊕ so(2^{n−1}). The two summands act on the even and odd parity subspaces. They are simple ideals of equal dimension, because 2^{n−1} ≥ 8.
 3. d_Z = 0: no string made of I and Z factors lies in g.
 
-So the component structure that [1] assumes holds for every n ≥ 4, and the statements of [1] that are conditional on it hold under the remaining assumptions stated there.
+This confirms, for every n ≥ 4, the component structure that [1] observed numerically, so the statements of [1] that are conditional on it hold under the remaining assumptions stated there. Parts 1 and 2 can also be derived from the classification of [2] once the phase gates are applied (see the first remark); the proof below is direct and identifies the algebra as the span of iF.
 
 ## Proof
 
@@ -54,11 +54,11 @@ For the step from m to m + 1, write J = Z^{⊗m}. Call a string on m qubits of s
 
 The strings with σ = I are in h_m by induction. The new generators include Y_m ⊗ X_{m+1} and X_m ⊗ Y_{m+1}.
 
-*Lemma (common neighbours).* Let q ≥ 4, and let R_1 ≠ R_2 be strings on q qubits of sector 1 with the same parity of #Y. Then some string R′ of sector 1 with that parity anticommutes with both.
+*Lemma (common neighbours).* Let k ≥ 4, and let R_1 ≠ R_2 be strings on k qubits of sector 1 with the same parity of #Y. Then some string R′ of sector 1 with that parity anticommutes with both.
 
-*Proof.* Here R_2 ≠ R_1J, because R_1J has the other parity (a product of anticommuting strings of which exactly one is odd is even, and vice versa). So the functionals ⟨J, ·⟩, ⟨R_1, ·⟩, ⟨R_2, ·⟩ are linearly independent. Their prescribed values define a coset of dimension d = 2q − 3. On it, q is a quadratic function whose polar form has radical of dimension at most 3. The square of its character sum is therefore at most 2^{d+3} = 2^{2q}, so each parity occurs at least (2^{2q−3} − 2^q)/2 ≥ 8 times. ∎
+*Proof.* Here R_2 ≠ R_1J, because R_1J has the other parity (a product of anticommuting strings of which exactly one is odd is even, and vice versa). So the functionals ⟨J, ·⟩, ⟨R_1, ·⟩, ⟨R_2, ·⟩ are linearly independent. Their prescribed values define a coset a + W with W of dimension d = 2k − 3. On it, q is a quadratic function whose polar form ⟨·,·⟩ has radical W ∩ W^⊥ of dimension at most 3, since W^⊥ is spanned by the three functionals. For such a function, (Σ_{w∈W} (−1)^{q(a+w)})² = Σ_v (−1)^{q(v)+⟨a,v⟩} Σ_w (−1)^{⟨w,v⟩} ≤ 2^{d+3} = 2^{2k}, because the inner sum vanishes unless v lies in the radical. So each parity occurs at least (2^{2k−3} − 2^k)/2 ≥ 8 times. ∎
 
-- *σ = X.* Suppose R ⊗ X ∈ h_{m+1}, with R odd of sector 1, and R′ is odd of sector 1 and anticommutes with R. Then the string proportional to RR′ is odd, of sector 0, and in h_m. Its product with R ⊗ X is proportional to R′ ⊗ X. By the lemma, any two such R are joined by a path of length 2. Starting from Y_m gives every R ⊗ X.
+- *σ = X.* Suppose R ⊗ X ∈ h_{m+1}, with R odd of sector 1, and R′ is odd of sector 1 and anticommutes with R. Then the string C proportional to RR′ is odd, of sector 0, and in h_m, and C ⊗ I anticommutes with R ⊗ X. Its product with R ⊗ X is proportional to R′ ⊗ X. By the lemma, any two such R are joined by a path of length 2. Starting from Y_m gives every R ⊗ X.
 - *σ = Y.* The same argument, with R even of sector 1 and starting from X_m ⊗ Y_{m+1}, gives every R ⊗ Y. Here RR′ is odd since R and R′ are even and anticommute.
 - *σ = Z.* Let P be odd of sector 0. The functionals ⟨J, ·⟩ and ⟨P, ·⟩ are independent, since P ∉ {I, J}. The same count gives an odd A of sector 1 that commutes with P. Then B = AP is even of sector 1. A ⊗ X and B ⊗ Y anticommute, and their product is proportional to P ⊗ Z.
 
@@ -66,19 +66,16 @@ This completes the induction. With m = n, g = span(iW†OW) = span(iF). ∎
 
 ## Remarks
 
-- The obstruction to a larger algebra is an antiunitary symmetry: complex conjugation composed with V. The phase gates W turn it into plain complex conjugation, as for the so(n) ⊕ so(n) chain without dopants. The doping keeps it, since each dopant joins two qubits of the same parity.
-- The odd chord of [1]: add XX and YY on the bond (1, 3) to the chain. These generators commute with X^{⊗n} and Z^{⊗n}, so g lies in the span of the strings that commute with both, other than I, X^{⊗n}, Y^{⊗n} and Z^{⊗n}.
-  - For odd n, X^{⊗n} and Z^{⊗n} anticommute, and there are 4^{n−1} − 1 such strings.
-  - For even n they commute, and there are 4^{n−1} − 4.
-
-  These are the dimensions of the algebra of XY interactions on a connected non-bipartite graph, which [1] takes from [2], and check 4 confirms them for 4 ≤ n ≤ 8. Whenever dim g takes this value, g is spanned by exactly these strings. Its diagonal strings are then the Z-strings of even weight, other than I and, for even n, Z^{⊗n}. So d_Z = 2^{n−1} − 1 for odd n and 2^{n−1} − 2 for even n, the counts that [1] observes for n ≤ 8.
+- Parts 1 and 2 also follow from [2]. After W, the generators are XY and YX on the path edges and one of them on each next-nearest edge. The base case on any four consecutive qubits supplies the other orientation, so W g W† is generated by XY and YX on every edge of the square of the path. That graph is connected and not bipartite, and it has a vertex of degree at least 3, so Theorem I.1 of [2] gives so(2^{n−1}) ⊕ so(2^{n−1}). The dopant does not look like a graph interaction until the phase gates are applied, which may be why [1] treats this family numerically. The general classification [3] decides each fixed set of strings, but does not by itself give a statement for every n.
+- The obstruction to a larger algebra is an antiunitary symmetry, complex conjugation composed with V, together with the parity Z^{⊗n}. The phase gates W turn the first into plain complex conjugation, as for the so(n) ⊕ so(n) chain without dopants. The doping keeps it, since each dopant joins two qubits of the same parity.
+- The odd chord of [1]: add XX and YY on the bond (1, 3) to the chain. The resulting graph is connected, not bipartite, and has a vertex of degree 3, so Theorem I.1 of [2] for XX and YY on every edge gives su(2^{n−1}) for odd n and four copies of su(2^{n−2}) for even n, for every n ≥ 4. The generators commute with X^{⊗n} and Z^{⊗n}. If anticommuting strings P, Q had PQ proportional to one of X^{⊗n}, Y^{⊗n}, Z^{⊗n}, then Q would be proportional to P times that string and would commute with P; so these strings never arise. The strings commuting with both, other than these four and I, number 4^{n−1} − 1 for odd n (where X^{⊗n} and Z^{⊗n} anticommute) and 4^{n−1} − 4 for even n, which are exactly the dimensions above. So g is spanned by them, and its diagonal strings are the Z-strings of even weight other than I and, for even n, Z^{⊗n}. Hence d_Z = 2^{n−1} − 1 for odd n and 2^{n−1} − 2 for even n, for every n ≥ 4, as [1] observes for n ≤ 8.
 
 ## Check
 
 `sim/check.py` (about 10 seconds) checks:
 - the generators and their images under W for n ≤ 30;
 - the base case on 4 qubits;
-- for 3 ≤ n ≤ 8, that the closure of the generators is exactly F, with dim g and d_Z = 0;
+- for 4 ≤ n ≤ 8, that the closure of the generators is exactly F, with dim g and d_Z = 0 (for n = 3 it is a proper subset);
 - the odd-chord statements for 4 ≤ n ≤ 8.
 
 `sim/pauli.py` and `sim/closure.py` hold the string arithmetic. The output is in `sim/out.txt`.
@@ -87,3 +84,4 @@ This completes the induction. With m = n, g = span(iW†OW) = span(iF). ∎
 
 1. M. Strobl, G. Mejia, E. Kuehn, A. Streit. Unflattening by Flattening: How Input Distributions Shape Output Variance in Angle-Encoded Circuits. arXiv:2610.01446 (2026).
 2. E. Kökcü, R. Wiersema, A. F. Kemper, B. Bakalov. Classification of Dynamical Lie Algebras Generated by Spin Interactions on Undirected Graphs. J. Math. Phys. 67, 052205 (2026), arXiv:2409.19797.
+3. G. Aguilar, S. Cichy, J. Eisert, L. Bittel. Full classification of Pauli Lie algebras. arXiv:2408.00081 (2024).
