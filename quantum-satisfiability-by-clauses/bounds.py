@@ -37,3 +37,10 @@ for name, b in (("1.239^m", 1.239), ("1.260^m", 1.26)):
     print(f"walk on the {name} algorithm: {math.sqrt(b):.4f}")
 # against quantum search over all assignments, 2^(n/2): 1.1058^m is smaller iff m < n ln(2) / (2 ln 1.1058)
 print(f"below 2^(n/2) whenever m < {math.log(2) / (2 * math.log(q)):.4f} n")
+
+# MaxSAT: the largest branching factor (6, 6, 5, 5) of the 1.2886^m algorithm and its square root
+assert tau(6, 6, 5, 5) <= 1.2886 and 1.2576 <= 1.2886
+qm = math.ceil(math.sqrt(1.2886) * 1e4) / 1e4
+assert math.sqrt(1.2886) <= qm
+print(f"MaxSAT: tau(6,6,5,5) = {tau(6, 6, 5, 5):.5f}; sqrt(1.2886) = {math.sqrt(1.2886):.6f} <= {qm}; "
+      f"below 2^(n/2) whenever m < {math.log(2) / (2 * math.log(qm)):.4f} n")
