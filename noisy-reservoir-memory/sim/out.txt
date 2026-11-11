@@ -1,6 +1,14 @@
 1. class map: capacities hold and f(w) <= w for r <= 39; explicit injective maps built for r <= 11
 2. full bit-level simulation (r <= 11) gives the same flip rate as the weight chain
 3. r = 41, kp = 8, q = 0.9: lam = 5.71909962911e-12 (exact rationals) and 5.71909962911e-12 (floating point)
+5. index compression: W(eps) >= (1 - eps)/(2 F*) for every r; per input qubit, ln(1/F*)/k with r = k'/kappa,
+   against the limit gamma_q = ln 2 q^2/(1 - q^2):
+   q = 0.5, kappa = 0.2: k=50: 0.2365, k=200: 0.2188, k=400: 0.2151;  limit psi(s)/kappa = 0.2098
+   q = 0.5, kappa = 0.05: k=50: 0.2518, k=200: 0.2340, k=400: 0.2303;  limit psi(s)/kappa = 0.2253
+   q = 0.5: psi/kappa at kappa = 1e-3, 1e-4, 1e-5: 0.2309, 0.2310, 0.2310;  gamma_q = 0.2310, alpha_q = 0.1438
+   q = 0.9, kappa = 0.2: k=50: 1.5356, k=200: 1.5868, k=400: 1.5985;  limit psi(s)/kappa = 1.6085
+   q = 0.9, kappa = 0.05: k=50: 2.0853, k=200: 2.1743, k=400: 2.1936;  limit psi(s)/kappa = 2.2145
+   q = 0.9: psi/kappa at kappa = 1e-3, 1e-4, 1e-5: 2.9220, 2.9516, 2.9547;  gamma_q = 2.9550, alpha_q = 0.8304
 4. q = 0.9: alpha_q = 0.8304 nats; the upper bound of [1] grows by 2^beta_q = e^59.428 per input qubit
    k   r (best, r <= 2400)   ln(1/lam)   ln W(0.01): here    [1, Thm 1(ii)]   upper bound [1, Thm 1(i)]
     5    1537       17.20            16.49             1.78           330.41

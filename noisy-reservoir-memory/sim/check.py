@@ -136,6 +136,52 @@ def check_precision():
     print(f"3. r = 41, kp = 8, q = 0.9: lam = {float(lam):.11e} (exact rationals) and {lam_d:.11e} (floating point)", flush=True)
 
 
+def v_index(r, kp):
+    """Largest weight after index compression: patterns of weight <= h in weight order, index i -> floor(i / 2^kp)."""
+    need, tot = 1 << (r - 1 - kp), 0
+    for v in range(r + 1):
+        tot += comb(r, v)
+        if tot >= need:
+            return v
+
+
+def log_f_star(r, kp, p):
+    """ln of the one-step flip probability bound P(v - X + Y > h) at v = v_index (it increases with v), in logarithms."""
+    h = (r - 1) // 2; v = v_index(r, kp); n = r - v
+    ly = binom.logpmf(np.arange(n + 1), n, p)
+    tail = np.array([logsumexp(ly[m:]) for m in range(n + 2)] + [-np.inf])  # tail[m] = ln P(Y >= m)
+    x = np.arange(v + 1); m = np.minimum(h + 1 - v + x, n + 1)
+    return float(logsumexp(binom.logpmf(x, v, p) + tail[m])), v
+
+
+def psi(s, p):
+    """One-step exponent from fraction s to 1/2: sup_th [th (1/2 - s) - (1 - s) ln(1 - p + p e^th) - s ln(1 - p + p e^-th)]."""
+    from scipy.optimize import minimize_scalar
+    g = lambda th: -(th * (0.5 - s) - (1 - s) * np.log(1 - p + p * np.exp(th)) - s * np.log(1 - p + p * np.exp(-th)))
+    return -minimize_scalar(g, bounds=(0, 60), method="bounded").fun
+
+
+def check_index_bound():
+    from scipy.optimize import brentq
+    h2 = lambda t: -(t * np.log2(t) + (1 - t) * np.log2(1 - t))
+    print("5. index compression: W(eps) >= (1 - eps)/(2 F*) for every r; per input qubit, ln(1/F*)/k with r = k'/kappa,")
+    print("   against the limit gamma_q = ln 2 q^2/(1 - q^2):")
+    for q in (0.5, 0.9):
+        p = (1 - q) / 2; gam = log(2) * q * q / (1 - q * q); alpha = 0.5 * log(1 / (1 - q * q))
+        for kappa in (0.2, 0.05):
+            row = []
+            for k in (50, 200, 400):
+                kp = k - 2; r = int(kp / kappa) | 1
+                lF, v = log_f_star(r, kp, p)
+                row.append(f"k={k}: {-lF / k:.4f}")
+            s = brentq(lambda t: h2(t) - (1 - kappa), 1e-12, 0.5)
+            print(f"   q = {q}, kappa = {kappa}: " + ", ".join(row) + f";  limit psi(s)/kappa = {psi(s, p) / kappa:.4f}", flush=True)
+        lim = [psi(brentq(lambda t: h2(t) - (1 - kap), 1e-12, 0.5), p) / kap for kap in (1e-3, 1e-4, 1e-5)]
+        assert abs(lim[-1] - gam) < 1e-2 * gam and gam > 2 * log(2) * alpha * 0.999
+        print(f"   q = {q}: psi/kappa at kappa = 1e-3, 1e-4, 1e-5: " + ", ".join(f"{x:.4f}" for x in lim)
+              + f";  gamma_q = {gam:.4f}, alpha_q = {alpha:.4f}", flush=True)
+
+
 def best_r(kp, p, rmax=2400):
     """Best odd r <= rmax on the grid r = 2^j kp + 1 (stopping once it gets worse), refined near small optima.
     Every r gives a valid reservoir, so the cap only weakens the bound."""
@@ -175,6 +221,7 @@ if __name__ == "__main__":
     check_map()
     check_simulation()
     check_precision()
+    check_index_bound()
     table(0.9, [5, 10, 15, 20, 30])
     table(0.5, [5, 10, 15, 20, 30, 40])
     print("all checks passed")
