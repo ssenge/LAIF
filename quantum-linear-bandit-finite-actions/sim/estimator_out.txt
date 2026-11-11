@@ -1,0 +1,5 @@
+M=  16 m= 12: 1-lambda=1.85e-03, max |bias|/se=1.94, max P(|Y-p|>4/M)=0.0e+00 <= e^-m/4=5.0e-02
+M=  32 m= 12: 1-lambda=4.58e-04, max |bias|/se=1.95, max P(|Y-p|>4/M)=0.0e+00 <= e^-m/4=5.0e-02
+M=  64 m= 16: 1-lambda=9.66e-05, max |bias|/se=1.14, max P(|Y-p|>4/M)=0.0e+00 <= e^-m/4=1.8e-02
+M= 128 m= 20: 1-lambda=2.10e-05, max |bias|/se=1.48, max P(|Y-p|>4/M)=0.0e+00 <= e^-m/4=6.7e-03
+Lemma E checks: ok

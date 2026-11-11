@@ -1,0 +1,4 @@
+d=6 K=    10 eps=0.05: support 6, queries/phase 27600, queries*eps/(d sqrt(ln K)) 152, P(sup err > eps) = 0.000
+d=6 K=   100 eps=0.05: support 6, queries/phase 38700, queries*eps/(d sqrt(ln K)) 150, P(sup err > eps) = 0.000
+d=6 K=  1000 eps=0.05: support 6, queries/phase 47400, queries*eps/(d sqrt(ln K)) 150, P(sup err > eps) = 0.000
+d=6 K= 10000 eps=0.05: support 6, queries/phase 54900, queries*eps/(d sqrt(ln K)) 151, P(sup err > eps) = 0.000
