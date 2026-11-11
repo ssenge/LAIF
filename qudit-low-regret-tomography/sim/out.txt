@@ -1,0 +1,34 @@
+$ python checks.py
+max |grad q|^2 / (q (1 - q)) (Lemma 2, at most 4): 3.9999934535479946
+linear model and update bound: ok
+
+$ python consts.py
+epoch regret <= 7420 (d-1)^2 + 1150 (d-1) x + 1.012 (d-1)
+warm-up run failure probability <= 0.23582730710666025
+E Regret <= 98638 d^2 ln T + 9956 d ln^2 T  (+ lower order)
+all constants: ok
+
+$ python regret.py 2,4,8 1e4,1e5,1e6 10
+practical d=  2 T=    10000 regret mean      384.7 max      412.8  mean/(d^2 ln T)  10.44  warm-up regret     229.3 warm-up infid 0.0096  all epochs on track 1.00
+practical d=  2 T=   100000 regret mean      534.3 max      571.3  mean/(d^2 ln T)  11.60  warm-up regret     227.5 warm-up infid 0.0052  all epochs on track 1.00
+practical d=  2 T=  1000000 regret mean      722.4 max      736.7  mean/(d^2 ln T)  13.07  warm-up regret     230.4 warm-up infid 0.0051  all epochs on track 1.00
+practical d=  4 T=    10000 regret mean     2138.0 max     2300.0  mean/(d^2 ln T)  14.51  warm-up regret    1748.4 warm-up infid 0.0202  all epochs on track 1.00
+practical d=  4 T=   100000 regret mean     2901.6 max     3127.8  mean/(d^2 ln T)  15.75  warm-up regret    1757.3 warm-up infid 0.0316  all epochs on track 0.80
+practical d=  4 T=  1000000 regret mean     3626.4 max     3998.6  mean/(d^2 ln T)  16.41  warm-up regret    1711.7 warm-up infid 0.0219  all epochs on track 0.90
+practical d=  8 T=    10000 regret mean     8260.1 max     8710.3  mean/(d^2 ln T)  14.01  warm-up regret    8260.1 warm-up infid 0.0301  all epochs on track 0.90
+practical d=  8 T=   100000 regret mean    12372.0 max    13124.7  mean/(d^2 ln T)  16.79  warm-up regret    9359.7 warm-up infid 0.0322  all epochs on track 0.90
+practical d=  8 T=  1000000 regret mean    15893.7 max    16924.6  mean/(d^2 ln T)  17.98  warm-up regret    9447.8 warm-up infid 0.0520  all epochs on track 0.70
+
+$ python regret.py 2,3,4,8 1e8,1e10,1e12 10 proof
+proof d=  2 T=100000000 regret mean   691066.2 max   739939.0  mean/(d^2 ln T) 9378.94  warm-up regret  615177.4 warm-up infid 0.0001  all epochs on track 1.00
+proof d=  2 T=10000000000 regret mean   918053.3 max   960858.5  mean/(d^2 ln T) 9967.64  warm-up regret  768103.8 warm-up infid 0.0002  all epochs on track 1.00
+proof d=  2 T=1000000000000 regret mean  1147546.6 max  1196306.6  mean/(d^2 ln T) 10382.77  warm-up regret  907474.3 warm-up infid 0.0003  all epochs on track 1.00
+proof d=  3 T=100000000 regret mean  2319778.4 max  2547983.0  mean/(d^2 ln T) 13992.60  warm-up regret 2158954.1 warm-up infid 0.0004  all epochs on track 1.00
+proof d=  3 T=10000000000 regret mean  2954999.5 max  3098329.0  mean/(d^2 ln T) 14259.33  warm-up regret 2625992.4 warm-up infid 0.0003  all epochs on track 1.00
+proof d=  3 T=1000000000000 regret mean  3671291.1 max  3931552.6  mean/(d^2 ln T) 14763.16  warm-up regret 3139370.4 warm-up infid 0.0004  all epochs on track 1.00
+proof d=  4 T=100000000 regret mean  5135669.2 max  5327832.4  mean/(d^2 ln T) 17424.94  warm-up regret 4880667.4 warm-up infid 0.0007  all epochs on track 1.00
+proof d=  4 T=10000000000 regret mean  6336813.6 max  6761915.8  mean/(d^2 ln T) 17200.27  warm-up regret 5791957.0 warm-up infid 0.0006  all epochs on track 1.00
+proof d=  4 T=1000000000000 regret mean  7925147.6 max  8265414.6  mean/(d^2 ln T) 17926.29  warm-up regret 7045641.0 warm-up infid 0.0005  all epochs on track 1.00
+proof d=  8 T=100000000 regret mean 26459784.8 max 27364435.6  mean/(d^2 ln T) 22444.02  warm-up regret 25790709.3 warm-up infid 0.0013  all epochs on track 1.00
+proof d=  8 T=10000000000 regret mean 32811961.5 max 33720550.4  mean/(d^2 ln T) 22265.71  warm-up regret 31093446.0 warm-up infid 0.0011  all epochs on track 1.00
+proof d=  8 T=1000000000000 regret mean 39336855.6 max 40202421.0  mean/(d^2 ln T) 22244.50  warm-up regret 36513898.9 warm-up infid 0.0014  all epochs on track 1.00
