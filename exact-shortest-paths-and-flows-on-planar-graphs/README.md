@@ -698,6 +698,17 @@ standard axioms (`propext`, `Classical.choice`, `Quot.sound`). There is no `sorr
   (`RData.hatHost_of_adj`), and at most four such edges go from one node to another (`RData.card_cross_le`). So if
   each node knows the edges of the repaired graph at its own copies, the nodes run any algorithm on the repaired graph
   round for round, with messages of four times the width (`RData.run_hatSim`).
+- `lean/SsspFlow/SubNet.lean`: each edge of a rotation system becomes a path of three edges (`RotSystem.subNet`).
+  The result is a simple network for every rotation system, planar if the rotation system is connected and planar
+  (`RotSystem.subNet_planar`), and of diameter at most $3k + 2$ if any two vertices are joined by a walk of at most $k$
+  darts (`RotSystem.subNet_diam`). Renaming the nodes keeps planarity and diameter (`Net.relabel_planar`,
+  `Net.relabel_diam`).
+- `lean/SsspFlow/GHatNet.lean`: the repaired graph as a network. Every dart of the full repaired graph starts at a
+  valid copy (`RData.valid_tl`), and a walk of $\hat G_\ell$ is a walk of the full repaired graph
+  (`RData.isWalk_of_arcs`). Two valid copies whose vertices are at distance at most $D$ in $G$ are joined by at most
+  $4D + 4$ arcs (`RData.arc_hop`). So the subdivided full repaired graph of every level of a run is a planar network
+  on $\{0, \dots, n - 1\}$ of diameter at most $12D + 14$ (`CutPath.Run.hatNet`). The edges that $\hat G_\ell$
+  drops can get the length $\infty$.
 - `lean/SsspFlow/GHatPhase.lean`: the combinatorics of property (6). Two copies on E_R edges are joined by E_R edges
   exactly when they lie on the path of one piece (`RData.er_comp_iff`), and by E_R and E_C edges exactly when their
   pieces are joined in the token graph (`RData.erc_comp_iff`), whose components are those of the split
@@ -1038,7 +1049,7 @@ distances on the repaired graph are formalized, for any set of cut corners with 
 pairs. Lemma N is formalized in the split model: the pieces and pairs are the vertices and edges of the split, every
 annulus of a level is a component of the token graph of the level, and its lengths $\lambda_t$ are distances in that
 token graph and, below $M$, in the repaired graph. The planarity (3) is formalized for every level of a run, for any modes
-and hosts, and so is the count of copies in (4). The combinatorics of (6) is formalized, and so is the simulation in (4) for nodes that know the edges of the repaired graph at their own copies. The computation of these edges, the distributed phases of (6) and the round count are not formalized. The reduction of the minimum st-cut to the least computed length is
+and hosts, and so is the count of copies in (4). The combinatorics of (6) is formalized, and so is the simulation in (4) for nodes that know the edges of the repaired graph at their own copies, and the repaired graph of every level as a planar network of diameter $O(D)$. The computation of these edges, the distributed phases of (6) and the round count are not formalized. The reduction of the minimum st-cut to the least computed length is
 formalized, assuming the classical cut duality (`CutDuality`).
 
 ## Numerical checks (`sim/`)

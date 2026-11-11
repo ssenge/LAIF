@@ -92,6 +92,8 @@ import SsspFlow.GHatPlanar
 import SsspFlow.GHatRun
 import SsspFlow.GHatPhase
 import SsspFlow.GHatSim
+import SsspFlow.SubNet
+import SsspFlow.GHatNet
 import SsspFlow.ListRot
 import SsspFlow.GHatSplit
 import SsspFlow.Annuli
