@@ -2,16 +2,16 @@
 
 Written 11 Nov 2026.
 
-**Setting.** The input is a map f : {0, …, n − 1} × {0, …, n − 1} → {0, 1}, and a query returns one value f(i, j). A rectangle of d rows and h columns is a set [r, r + d) × [c, c + h) inside the grid. It is *empty* if f is 0 on all of its cells. The problems are those of [1]: the largest empty square (LSQR), the empty rectangle with d rows and the most columns, for a fixed d (LRECW), and the empty rectangle of largest area, with at least a given number of rows and columns (LREC).
+**Setting.** The input is a map f : {0, …, n − 1} × {0, …, n − 1} → {0, 1}, and a query returns one value f(i, j). A rectangle of d rows and h columns is a set [r, r + d) × [c, c + h) inside the grid. It is *empty* if f is 0 on all of its cells, and its area is its number of cells, as in the proof of Theorem 10 of [1]. The problems are those of [1]: the largest empty square (LSQR), the empty rectangle with d rows and the most columns, for a fixed d (LRECW), and the empty rectangle of largest area, with at least a given number of rows and columns (LREC).
 
 | | Problem | Previous best bound | This folder | Status |
 |---|---|---|---|---|
-| Thm 1 | Is there an empty d × h rectangle? (any fixed d, h) | no quantum bound stated | O(n log² n), and Ω(n) for h = n and every d | Claim; checked by script |
+| Thm 1 | Is there an empty d × h rectangle? (any fixed d, h) | O(n √min(d, h) log n log log n), implied by [1] | O(n log² n), and Ω(n) for every d and h | Claim; checked by script |
 | Thm 2 | Largest empty square (LSQR) | O(n^{1.5} log n log log n), Ω(n) [1] | O(n log³ n log log n), so Θ̃(n) | Claim; checked by script |
 | Thm 3 | Largest empty rectangle with d rows (LRECW) | O(n √d log n log log n), Ω(√(nd)) [1] | O(n log³ n log log n) and Ω(n) for every d, so Θ̃(n) | Claim; checked by script |
 | Thm 4 | Largest empty rectangle by area (LREC) | Ω(n) quantum; no quantum speedup over the classical Θ(n²) known [1] | O(n^{1.5} log⁴ n) | Claim |
 
-Classically, all of these need Ω(n²) queries [1]. The algorithms also return an optimal rectangle.
+Classically, LSQR and LREC need Ω(n²) queries and LRECW needs Ω(nd) queries [1]. For d up to a polylogarithm in n, the bound of [1] for LRECW is already Õ(n). The algorithms also return an optimal rectangle.
 
 ## 1. Lattice cells and windows
 
@@ -27,17 +27,19 @@ So each 1 of the window rules out a box of offsets at one corner of [0, d) × [0
 
 ## 2. Learning a front
 
-**Lemma 3.** The front of the 1-cells in a region of d′ rows and h′ columns can be learned with O(d′ log d′) minimum findings, each erring with probability at most δ, using O(√(d′h′) log(d′) log(1/δ)) queries in total.
+**Lemma 3.** The front of the 1-cells in a region of d′ rows and h′ columns can be learned with at most 2 min(d′, h′)(⌈log₂ d′⌉ + 1) + 1 minimum findings, each erring with probability at most δ, using O(√(d′h′) log(d′ + 1) log(1/δ)) queries in total.
 
 *Proof.* Split the rows into halves. Minimum finding [3] over the cells of the upper half returns a 1-cell of least column m, or reports that there is none, with O(√(cells)) queries. The front of the upper half is the front of the region in the upper rows, and it lies in the columns from m on. A 1-cell of the lower half is on the front iff its column is below m and it is on the front of the lower half restricted to these columns. So the algorithm recurses on the upper half with columns [m, h′) and on the lower half with columns [0, m), and stops on regions without a 1-cell or with one row.
 
-At each depth the regions have at most d′ rows and h′ columns in total, since the column ranges of the two halves are disjoint. So the cost at one depth is at most a constant times log(1/δ) times Σ√(rᵢwᵢ) ≤ √(Σrᵢ · Σwᵢ) ≤ √(d′h′). There are O(log d′) depths. Each region with a 1-cell contains a point of the front, and the regions at one depth are disjoint, so there are at most min(d′, h′) such regions per depth, and at most twice as many regions in all. ∎
+At each depth the regions have at most d′ rows and h′ columns in total, since the column ranges of the two halves are disjoint. So the cost at one depth is at most a constant times log(1/δ) times Σ√(rᵢwᵢ) ≤ √(Σrᵢ · Σwᵢ) ≤ √(d′h′). There are ⌈log₂ d′⌉ + 1 depths. Each region with a 1-cell contains a point of the front, and the regions at one depth have disjoint rows and disjoint columns, so at most min(d′, h′) of them contain a 1-cell. Only these regions have children, so each depth has at most 2 min(d′, h′) regions. ∎
 
 ## 3. The algorithms
 
 **Theorem 1.** For any d and h, deciding whether f has an empty d × h rectangle, and finding one, takes O(n log² n) quantum queries.
 
-*Proof.* The window test learns the four fronts of a window by Lemma 3 with δ = 1/(100 d log n), so with error at most 1/10, in O(√(dh) log² n) queries, and decides by Lemmas 1 and 2. A search over the at most ⌈n/d⌉⌈n/h⌉ ≤ 4n²/(dh) lattice cells with this bounded-error test [4] uses O(n/√(dh)) tests, so O(n log² n) queries. ∎
+*Proof.* The window test learns the four fronts of a window by Lemma 3 with δ = 1/(120 min(d, h)(⌈log₂ d⌉ + 1)), so with at most 12 min(d, h)(⌈log₂ d⌉ + 1) minimum findings and error at most 1/10, in O(√(dh) log² n) queries, and decides by Lemmas 1 and 2. A search over the at most ⌈n/d⌉⌈n/h⌉ ≤ 4n²/(dh) lattice cells with this bounded-error test [4] uses O(n/√(dh)) tests, so O(n log² n) queries.
+
+For the lower bound, take a = ⌊(n + 1)/(d + 1)⌋ by b = ⌊(n + 1)/(h + 1)⌋ blocks of d × h cells, with a row of ones after each block row, a column of ones after each block column, and ones in all remaining cells. If each block is either all zero or not, then f has an empty d × h rectangle iff some block is all zero, since d consecutive rows and h consecutive columns that avoid the ones form a block. Since ad ≥ (n + 1)/4 and bh ≥ (n + 1)/4, this is OR over ab blocks of AND over dh values with ab · dh ≥ n²/16, which needs Ω(n) queries [5]. ∎
 
 **Theorem 2.** The largest empty square can be found with O(n log³ n log log n) quantum queries.
 
@@ -58,7 +60,8 @@ At each depth the regions have at most d′ rows and h′ columns in total, sinc
 - the window test with the four fronts, on 1500 random grids of up to 14 × 14 cells, for random d and h;
 - that the divide-and-conquer learner returns exactly the front, and that its cost at each depth is at most √(dh) per quadrant;
 - the largest square by binary search, on 400 random grids;
-- the lower-bound instances of Theorem 3, for all n ≤ 12, all d and all choices of zero blocks.
+- the lower-bound instances of Theorem 3, for all n ≤ 12, all d and all choices of zero blocks;
+- the lower-bound instances of Theorem 1, for all n ≤ 10 and all d and h, with all choices of zero blocks when there are at most 10 blocks and 300 random choices otherwise, and random positions of the 1 in the other blocks.
 
 ## Use of AI
 

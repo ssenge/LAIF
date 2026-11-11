@@ -101,6 +101,20 @@ def lower_bound_instance(n, d, blocks_zero):
             g[t * (d + 1) + (t % d)][(3 * t) % n] = 1
     return g
 
+def block_instance(n, d, h, zero, ones):
+    """Blocks of d x h cells separated by rows and columns of ones, ones everywhere else.
+    Block (s, t) is all zero iff zero[s][t]; otherwise it has one 1 at offset ones[s][t]."""
+    g = [[1] * n for _ in range(n)]
+    for s in range(len(zero)):
+        for t in range(len(zero[0])):
+            r, c = s * (d + 1), t * (h + 1)
+            for i in range(r, r + d):
+                for j in range(c, c + h):
+                    g[i][j] = 0
+            if not zero[s][t]:
+                g[r + ones[s][t][0]][c + ones[s][t][1]] = 1
+    return g
+
 def max_height(g, d):
     n, m = len(g), len(g[0])
     best = 0
@@ -125,8 +139,19 @@ def check_more(rng):
                 zs = [(mask >> t) & 1 == 1 for t in range(a)]
                 g = lower_bound_instance(n, d, zs)
                 assert (max_height(g, d) == n) == any(zs), (n, d, zs)
+    for n in range(2, 11):
+        for d in range(1, n + 1):
+            for h in range(1, n + 1):
+                a, b = (n + 1) // (d + 1), (n + 1) // (h + 1)
+                masks = range(1 << (a * b)) if a * b <= 10 else [rng.randrange(1 << (a * b)) for _ in range(300)] + [0]
+                for mask in masks:
+                    for _ in range(3):
+                        zero = [[(mask >> (s * b + t)) & 1 == 1 for t in range(b)] for s in range(a)]
+                        ones = [[(rng.randrange(d), rng.randrange(h)) for _ in range(b)] for _ in range(a)]
+                        g = block_instance(n, d, h, zero, ones)
+                        assert brute(g, d, h) == any(map(any, zero)), (n, d, h, zero)
     return True
 
 if __name__ == "__main__":
     assert check_more(random.Random(2))
-    print("largest square by binary search agrees with brute force; lower-bound instances checked")
+    print("largest square by binary search agrees with brute force; lower-bound instances (rows, and rows and columns) checked")
