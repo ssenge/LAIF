@@ -63,7 +63,7 @@ def run(r, C, T, b, A0, N0, rng):
 if __name__ == "__main__":
     rng = np.random.default_rng(5)
     m, dres, b = 6, 3, 0.25
-    A0, N0 = 2.0, 2
+    A0, N0 = 2.0, 1
     for inst in range(3):
         r = np.concatenate([[0.0], rng.uniform(0.1, 1, m)])
         C = np.concatenate([np.zeros((dres, 1)), rng.uniform(0, 1, (dres, m))], axis=1)
