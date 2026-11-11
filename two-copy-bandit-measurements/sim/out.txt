@@ -1,0 +1,10 @@
+1. instance of [1]: K_inf = 0.830366; product spectral 0.830366; maximally entangled basis 0.34506
+2. dual certificate at the instance of [1]:
+   instance of [1]: arm (0.9, 0, 0.0), zs = 0.9: K_inf = 0.830366, circle radius 0.392301, moments ok, tr Y / 2 = K_inf, max violation 4.8e-16, 20 atoms
+3. further instances:
+   instance: arm (0.6, 0, 0.0), zs = 0.9: K_inf = 0.830366, circle radius 0.261534, moments ok, tr Y / 2 = K_inf, max violation 4.4e-16, 10 atoms
+   instance: arm (0.9, 0, 0.3), zs = 0.9: K_inf = 0.434400, circle radius 0.411243, moments ok, tr Y / 2 = K_inf, max violation 4.7e-16, 13 atoms
+   instance: arm (0.5, 0, -0.5), zs = 0.5: K_inf = 0.549306, circle radius 0.500000, moments ok, tr Y / 2 = K_inf, max violation 4.1e-16, 10 atoms
+   instance: arm (0.99, 0, 0.0), zs = 0.5: K_inf = 0.143841, circle radius 0.857365, moments ok, tr Y / 2 = K_inf, max violation 2.2e-16, 12 atoms
+   instance: arm (0.3, 0, 0.2), zs = 0.95: K_inf = 0.817731, circle radius 0.095607, moments ok, tr Y / 2 = K_inf, max violation 3.3e-16, 10 atoms
+all checks passed
