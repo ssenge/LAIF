@@ -636,3 +636,7 @@ Expected output for each: `propext`, `Classical.choice`, `Quot.sound` (or a subs
 #print axioms SsspFlow.RotSystem.RData.labOff_le
 #print axioms SsspFlow.RotSystem.RData.dsrcTop_labOff
 #print axioms SsspFlow.RotSystem.RData.levelConn_sim
+#print axioms SsspFlow.RotSystem.CutPath.Run.nodes_width
+#print axioms SsspFlow.RotSystem.CutPath.SideA.nodes_width
+#print axioms SsspFlow.RotSystem.CutPath.SideB.nodes_width
+#print axioms SsspFlow.RotSystem.CutPath.Run.nodes_eq_nil

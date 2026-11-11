@@ -631,4 +631,8 @@
 'SsspFlow.RotSystem.RData.labOff_le' depends on axioms: [propext, Classical.choice, Quot.sound]
 'SsspFlow.RotSystem.RData.dsrcTop_labOff' depends on axioms: [propext, Classical.choice, Quot.sound]
 'SsspFlow.RotSystem.RData.levelConn_sim' depends on axioms: [propext, Classical.choice, Quot.sound]
-peak rss 1.2 GB
+'SsspFlow.RotSystem.CutPath.Run.nodes_width' depends on axioms: [propext, Classical.choice, Quot.sound]
+'SsspFlow.RotSystem.CutPath.SideA.nodes_width' depends on axioms: [propext, Classical.choice, Quot.sound]
+'SsspFlow.RotSystem.CutPath.SideB.nodes_width' depends on axioms: [propext, Classical.choice, Quot.sound]
+'SsspFlow.RotSystem.CutPath.Run.nodes_eq_nil' depends on axioms: [propext, Classical.choice, Quot.sound]
+peak rss 2.8 GB

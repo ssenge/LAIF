@@ -742,6 +742,10 @@ standard axioms (`propext`, `Classical.choice`, `Quot.sound`). There is no `sorr
   the Exact SSSP bound, the nodes compute these labels in $C \log^c n' \cdot (12D + 16)$ rounds, with messages of four
   times the width, if each node knows the edges and inputs at its own identifiers (`RData.levelConn_sim`). With
   `RData.erc_comp_iff` and `RData.er_comp_iff`, the labels identify the annuli and the paths of the pieces.
+- `lean/SsspFlow/RunDepth.lean`: the depth of a run. The sides of an annulus with the range $[j, k]$ get the ranges
+  $[j, i_1]$ and $[i_2, k]$ with $i_1 \le \lfloor (j+k)/2 \rfloor \le i_2$, so a run on $[j, k]$ has an annulus at depth
+  $\ell + 1$ only if $2^\ell < k - j$ (`CutPath.Run.nodes_width`), and none below depth $\log_2 (k - j) + 1$
+  (`CutPath.Run.nodes_eq_nil`).
 - `lean/SsspFlow/GHatPhase.lean`: the combinatorics of property (6). Two copies on E_R edges are joined by E_R edges
   exactly when they lie on the path of one piece (`RData.er_comp_iff`), and by E_R and E_C edges exactly when their
   pieces are joined in the token graph (`RData.erc_comp_iff`), whose components are those of the split
