@@ -90,3 +90,8 @@ import EthCor
 #print axioms EthCor.Barrier.pow_mem
 #print axioms EthCor.Barrier.barrier
 #print axioms EthCor.Barrier.barrier_rooted
+#print axioms EthCor.Code.logical_iff
+#print axioms EthCor.Code.half
+#print axioms EthCor.Code.cnt_cssF
+#print axioms EthCor.Code.numLog_eq
+#print axioms EthCor.CodeTM.css_counts

@@ -48,3 +48,5 @@ import EthCor.ForestTM
 import EthCor.ForestIsoTM
 import EthCor.OctTM
 import EthCor.Barrier
+import EthCor.CodeFormula
+import EthCor.CodeTM

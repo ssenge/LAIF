@@ -83,6 +83,7 @@ in ⌊log₂ 2n⌋+1 bits)*, 0, then a final 0; unary t = 1ᵗ0.
 | A3 | `EthCor.VcTM.vc_fpt` (also `Vc.good_step`, `Vc.leaves_le`, `VcTM.tm_fpt`) | **Vertex Cover in 2^{εk}·poly(n).** For every ε > 0, one machine is given a graph G on n vertices (of **any density**) and k ≤ n in unary. It outputs whether G has a vertex cover with at most k vertices, within C·(n+2)^C·2^{εk} steps. No kernel is used. | known: Vertex Cover is complete for size-constrained SNP [4, Thm 5], and a 2k-vertex kernel gives 2^{o(k)}·poly(n); see also [11]; formalized |
 | A3′ | `EthCor.NbTM.nb_fpt` (also `Nb.ore`, `Nb.nb_iff`, `Nb.nb_answer`) | **Nonblocker in 2^{εk}·poly(n).** For every ε > 0, one machine is given a graph G on n vertices (of any density) and k ≤ n in unary. It outputs whether G has a dominating set with at most n − k vertices (equivalently, k vertices whose complement dominates), within C·(n+2)^C·2^{εk} steps. | known: Nonblocker is in Linear Monadic NP [17], with Ore's bound [13] or the kernel [14]; formalized |
 | N10 | `EthCor.OctTM.oct_tm` (also `oct_pos`, `oct_iff`) | **Odd cycle transversal, deterministic.** For every δ > 0, one machine is given a graph G on n vertices (of **any density**) and n − k in unary (k ≤ n). It outputs whether G has an odd cycle transversal with at most k vertices (a set X with G − X bipartite, Mathlib's `IsBipartite`), within C·2^{δn} steps. Run for k = 0, 1, … it finds the minimum. | known: odd cycle transversal is in size-constrained SNP [4, Thm 5]; formalized |
+| N11 | `EthCor.CodeTM.css_counts` (also `Code.logical_iff`, `Code.half`, `Code.numLog_eq`) | **Distance of a quantum CSS code, deterministic and exact.** For every check weight w, density D and δ > 0, one machine is given s ≤ n in unary and two lists of checks H₁, H₂ on n qubits, together at most D·n checks of at most w qubits each (an LDPC code). It outputs the number of logical operators of weight s: the vectors x ∈ 𝔽₂ⁿ with \|x\| = s, H₁x = 0 and x outside the row space of H₂ (`numLog`), within C·2^{δn} steps. Runs for s = 1, 2, … give the distance of one error type and the number of logical operators of minimum weight; with H₁ and H₂ swapped, the other type. The code may be degenerate. For H₂ empty it counts the codewords of weight s of a classical code. | ours (to our knowledge); computing the distance is NP-hard [23, 24]; formalized |
 
 **Supporting theorem (for A5b): isolation for arbitrary sets.** `EthCor.Iso.isolation`: for every
 δ > 0 there are k and t such that for all M ≥ M₀(δ) and **every** nonempty S ⊆ {0,1}^M, at least a
@@ -282,6 +283,17 @@ the counting lemma `amplify`).
   G[Y] (`oct_pos`). Induced bipartite subgraphs are closed under removing vertices (`oct_iff`, with
   Mathlib's `Colorable.of_hom`), so one sized count with s = n − k decides, and nothing is random.
   The formula has 3n variables, so the graph may be dense.
+- **N11, the distance of a CSS code.** A vector x with H₁x = 0 is a logical operator iff it lies
+  outside the row space of H₂. Over 𝔽₂ that row space is the set of vectors orthogonal to every
+  y with H₂y = 0, so x is a logical operator iff ⟨x, y⟩ = 1 for some y ∈ ker H₂ (`logical_iff`,
+  by duality in Mathlib). If one such y₀ exists, y ↦ y + y₀ swaps the y with ⟨x, y⟩ = 0 and those
+  with ⟨x, y⟩ = 1, so exactly half of ker H₂ has odd overlap with x (`half`). Hence
+  #{(x, y) : \|x\| = s, H₁x = 0, H₂y = 0, ⟨x, y⟩ = 1} = \|ker H₂\|/2 · numLog(s). The formula
+  has the bits of x and y, a chain c₀ = 0, c_{i+1} = c_i ⊕ x_i y_i with c_n = e, and complement
+  bits for y and c, so a sized count fixes \|x\|. Each check of weight ≤ w becomes the 2^{w−1}
+  clauses that forbid its odd patterns. With e = 1 and weight s the count is the pair count above;
+  with e = 0 and weight 0 it is \|ker H₂\|. The machine outputs twice the first divided by the
+  second (`numLog_eq`). The formula has 5n + 2 variables, width w + 4 and O(D·2^w·n) clauses.
 - **Isolation for arbitrary sets [7].** One check on k coordinates fails to separate two points at
   distance w with probability (1 + (1 − w/M)^k)/2 (`two_mul_card_rv`, by flipping one coefficient).
   Step I: call x ∈ S semi-isolated if no point of S at distance ≥ r passes the same first m checks.
@@ -372,6 +384,11 @@ texts, and the review of the two claims has not published anything yet.
   - A3′: Ganian, de Haan, Kanj and Szeider [17], with Ore's bound or the kernel.
   - N10: odd cycle transversal is in size-constrained SNP (∃X with |X| ≤ k, ∃ a coloring C, ∀ edges
     uv: u ∈ X, v ∈ X or C(u) ≠ C(v)), so its decision version follows from [4, Thm 5].
+- **Quantum codes.** CSS codes are those of [21, 22]. Computing the minimum distance is NP-hard
+  for classical codes [23] and for quantum codes [24]. Exact distance algorithms in use take time
+  exponential in n. To our knowledge, the number of logical operators of a given weight of a sparse
+  CSS code (N11), and with it the distance, had no 2^{o(n)} algorithm before. For a classical code
+  (H₂ empty) N11 is a direct use of the sized counter.
 - **Not found anywhere:** A1′, A2 for growing k, N5, the spectrum in A4, N3, N6′, N2, N2′, N7, N7′,
   N7″, N8, N8′, N8″, and N9, N9′ as proved results (Tulsyan sketches an exact count, see above). Tulsyan lists dominating set on dense graphs as not covered and sketches connected
   dominating set and k-leaf spanning trees only for sparse graphs [15]. Under ETH, connected dominating set has no 2^{o(n)} algorithm
@@ -692,6 +709,25 @@ Lean: `OctTM.edgeOC`, `octF`, `oct_pos`, `oct_iff`, `preO`, `postO`, `octM`, `po
 Python: `oct.octF`, `oct_decide`, `min_oct`; `tests/test_oct.py` checks the count of `oct_pos`
 (pairs of Y and 2-colorings) and the machine against brute force for every k.
 
+### N11: logical operators of a CSS code
+
+```
+CSS(s, H₁, H₂ on n qubits):
+  F_e := rows(H₁ on x) ∧ rows(H₂ on y)        # each check: forbid its odd patterns, 2^{w−1} clauses
+         ∧ c₀ = 0 ∧ c_{i+1} = c_i ⊕ (x_i ∧ y_i) ∧ c_n = e    # 8 clauses of width 4 per step
+         ∧ ȳ = ¬y ∧ c̄ = ¬c                     # on 5n + 2 variables
+  K := SIZED_{w+4}(5n + 2, 2n + 1, F_0)      # |ker H₂|
+  N := SIZED_{w+4}(5n + 2, s + 2n + 1, F_1)  # |ker H₂|/2 · #{logical operators of weight s}
+  return 2N / K
+```
+
+Lean: `Code.rowF`, `chainF`, `cssF`, `codeCNF`, `logical_iff`, `half`, `cnt_cssF`, `numLog_eq`;
+`CodeTM.preQ`, `postQ`, `codeM`, `css_counts`. The checks come in as one CNF (`codeCNF`): the checks
+of H₁ as clauses of positive literals, those of H₂ of negative ones.
+Python: `codes.cssF`, `num_log`, `distance`; `tests/test_codes.py` checks the count against brute
+force (kernel and row space by Gaussian elimination) on random codes, and the Steane, [[4,2,2]] and
+Shor codes (distances 3, 2 and 3).
+
 ## A barrier for Cut & Count
 
 Why are the connectivity results parities (N2, N7, N8, N9) or one-sided (N2′, N7′, N7″, N8′, N8″,
@@ -735,7 +771,7 @@ no gain over 2^n below n ≈ 10^{10}.
 
 ```sh
 cd python
-python3 -m pytest -q                  # 72 tests: every algorithm against brute force on small inputs,
+python3 -m pytest -q                  # 76 tests: every algorithm against brute force on small inputs,
                                       # and every front end against the Lean definitions
 python3 -c "from ethcor.permanent import permanent_signed as p; \
   print(p([[True, True], [True, True]], [[False, True], [True, False]]))"   # [[1,-1],[-1,1]]: 2
@@ -743,7 +779,7 @@ python3 -c "from ethcor.permanent import permanent_signed as p; \
 
 The tests compare each algorithm with a direct enumeration of the quantity in the Lean statement
 (colorings, homomorphisms, assignments, covers, dominating sets, permutations, Hamiltonian cycles,
-connected vertex sets, connected dominating sets, spanning trees, induced forests, bipartite induced subgraphs). They also check the shape bounds
+connected vertex sets, connected dominating sets, spanning trees, induced forests, bipartite induced subgraphs, logical operators of quantum codes). They also check the shape bounds
 the Lean proofs use (width, number of variables and clauses), and the one-sided error of A5b, N2′,
 N7′, N7″, N8′ and N9′ over random seeds.
 
@@ -751,7 +787,7 @@ N7′, N7″, N8′ and N9′ over random seeds.
 random input words to [`lean/Dump.lean`](lean/Dump.lean), which evaluates the Lean definitions
 (`formOf`, `Hom.formHom`, `Spectrum.preS`, `PottsTM.preP`, `PermTM.leafP`, `SPermTM.leafS`,
 `HamTM.formH`, `HamSTM.formS`, `HamITM.formI`, `ConnTM.preC`, `preV`, `ConnITM.preR`,
-`ForestTM.preF`, `ForestITM.preQ`, `OctTM.preO`, `NbTM.preN`, and the leaves of the trees of A1, A1′, A3, N7, N7′,
+`ForestTM.preF`, `ForestITM.preQ`, `OctTM.preO`, `CodeTM.preQ`, `NbTM.preN`, and the leaves of the trees of A1, A1′, A3, N7, N7′,
 N8 and N8′), and compares the formulas clause for clause. It
 needs the built Lean development (`cd lean && lake build`, about 1 minute per run of the test) and is
 skipped if `lake` is not on the PATH or `ETHCOR_SKIP_LEAN` is set.
@@ -863,6 +899,7 @@ lean/
     ForestFormula                         side maps × 2^{edges} = 2^{|V|+j}; induced forests by Cut & Count
     ForestTM, ForestIsoTM                 feedback vertex set on sparse graphs: parity (N9), randomized (N9′)
     OctTM                                 odd cycle transversal, deterministic (N10)
+    CodeFormula, CodeTM                   logical operators and distance of a CSS code (N11)
     Barrier                               Cut & Count with q < ℓ colors cannot separate connected sets
 python/              reference implementations of all algorithms (see "Running the algorithms")
   pyproject.toml     pytest configuration
@@ -875,7 +912,7 @@ python/              reference implementations of all algorithms (see "Running t
     nonblocker.py    A3′               hamcycle.py       A5a, A5a′, A5b
     isolation.py     seeds, isolation  connected.py      N2, N2′
     cds.py           N7, N7′, N7″, N8, N8′   forest.py   N9, N9′
-    oct.py           N10
+    oct.py           N10               codes.py          N11
   tests/             one test file per module, against brute force; test_barrier.py for the
                      barrier; test_lean_agreement.py against the Lean front ends (via lean/Dump.lean)
 ```
@@ -928,6 +965,14 @@ and check proofs, to write the Lean formalisation, and to draft the text.
     SIAM J. Discrete Math. 13(2):202–211, 2000.
 20. M. de Berg and S. Kisfaludi-Bak. Lower bounds for dominating set in ball graphs and for
     weighted dominating set in unit-ball graphs. arXiv:2601.08425, 2026.
+21. A. R. Calderbank and P. W. Shor. Good quantum error-correcting codes exist. Phys. Rev. A
+    54(2):1098–1105, 1996.
+22. A. M. Steane. Multiple-particle interference and quantum error correction. Proc. R. Soc. Lond.
+    A 452:2551–2577, 1996.
+23. A. Vardy. The intractability of computing the minimum distance of a code. IEEE Trans. Inform.
+    Theory 43(6):1757–1766, 1997.
+24. U. Kapshikar and S. Kundu. On the hardness of the minimum distance problem of quantum codes.
+    IEEE Trans. Inform. Theory 69(10), 2023. arXiv:2203.04262.
 
 ## Citation
 

@@ -507,3 +507,25 @@ counts. Outcome: a barrier, no algorithm. `lean/EthCor/Barrier.lean` (imports Ma
   sparse graphs; n log n cut-rank barrier elsewhere, informal) and a citation audit. Steiner tree, FVS,
   forests / T(x,1) still "conjectured, not claimed". His barrier notes (Θ(n log n) shared bits for
   dense permanents) point the same way as ours.
+
+N11 logical operators and distance of a CSS code, deterministic, exact (2026-11-11):
+`lean/EthCor/CodeFormula.lean`, `lean/EthCor/CodeTM.lean`.
+- Code semantics over ZMod 2: `vecR r j = (r.count j : ZMod 2)` (a qubit listed twice cancels), `InKer H x`,
+  `rowSp H = span {vecR r}`, `numLog H₁ H₂ s = #{x : |x| = s, InKer H₁ x, vecB x ∉ rowSp H₂}`.
+- `logical_iff`: vecB x ∉ rowSp H₂ ↔ ∃ y, InKer H₂ y ∧ ⟨x, y⟩ = 1, from
+  `Submodule.exists_dual_map_eq_bot_of_notMem` and `LinearMap.pi_apply_eq_sum_univ`.
+- `half`: if ⟨x, y₀⟩ = 1 with y₀ ∈ ker H₂, then y ↦ y ⊕ y₀ is an involution of ker H₂ that flips ⟨x, y⟩,
+  so 2·#{y ∈ ker H₂ : ⟨x, y⟩ = 1} = |ker H₂|.
+- Formula `cssF w n ψ e` on 5n + 2 variables (x, y, chain c₀..c_n, complements of y and c): `rowF` forbids the
+  odd patterns of each check (`pats w`, padded to width w), `chainF` gives c₀ = 0, c_{i+1} = c_i ⊕ x_i y_i,
+  c_n = e with `xorC` (8 clauses of width 4), `compF`. `shaped_cssF : Shaped (w + 4) (5n + 2)`,
+  `length_cssF ≤ |ψ|·2^{w+1} + 12n + 4`.
+- `cnt_cssF`, `card_pairs`, `pairs_true`, `pairs_false`, `numLog_eq`:
+  2·cntS (s + 2n + 1) (cssF … true) / cntS (2n + 1) (cssF … false) = numLog H₁ H₂ s.
+- Machine `codeM`: K = SIZED_{w+4}(preQ false), N = SIZED_{w+4}(preQ true), output `Nat.bits (2N/K)`. Input
+  `unary s ++ SatFree.enc (codeCNF H₁ H₂)`, H₁ as positive and H₂ as negative literals, so the reader of A1
+  is reused. Input length ≤ (2D(w+1)+3)(n+2)²; `css_counts` with SIZED at δ/14.
+- Python `codes.py` with `brute_num_log` (Gaussian elimination on bitmasks), `tests/test_codes.py`: random
+  codes; Steane [[7,1,3]] (7 logical operators of weight 3 per type), [[4,2,2]] (distance 2, 6 of weight 2),
+  Shor [[9,1,3]] (distance 3 for both types, degenerate). Dump `css0`, `css1`.
+- General stabilizer codes: the same with the symplectic product and one support bit per qubit.
