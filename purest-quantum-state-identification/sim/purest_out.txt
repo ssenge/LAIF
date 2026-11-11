@@ -1,0 +1,50 @@
+moments and basis variance (Lemma 2):
+  d=  2 pure   : Var_U S = 2.201e-02, bound 2.667e+00, ratio 0.008
+  d=  2 rank2  : Var_U S = 0.000e+00, bound 2.667e+00, ratio 0.000
+  d=  2 skew2  : Var_U S = 2.875e-03, bound 2.667e+00, ratio 0.001
+  d=  2 random : Var_U S = 2.077e-03, bound 2.667e+00, ratio 0.001
+  d=  2 mixed  : Var_U S = 0.000e+00, bound 2.667e+00, ratio 0.000
+  d=  4 pure   : Var_U S = 1.154e-02, bound 4.267e-01, ratio 0.027
+  d=  4 rank2  : Var_U S = 1.085e-03, bound 4.267e-01, ratio 0.003
+  d=  4 skew2  : Var_U S = 3.705e-03, bound 4.267e-01, ratio 0.009
+  d=  4 rank4  : Var_U S = 0.000e+00, bound 4.267e-01, ratio 0.000
+  d=  4 random : Var_U S = 1.095e-04, bound 4.267e-01, ratio 0.000
+  d=  4 mixed  : Var_U S = 0.000e+00, bound 4.267e-01, ratio 0.000
+  d=  8 pure   : Var_U S = 3.115e-03, bound 6.772e-02, ratio 0.046
+  d=  8 rank2  : Var_U S = 4.407e-04, bound 6.772e-02, ratio 0.007
+  d=  8 skew2  : Var_U S = 1.224e-03, bound 6.772e-02, ratio 0.018
+  d=  8 rank4  : Var_U S = 4.394e-05, bound 6.772e-02, ratio 0.001
+  d=  8 random : Var_U S = 3.282e-05, bound 6.772e-02, ratio 0.000
+  d=  8 mixed  : Var_U S = 0.000e+00, bound 6.772e-02, ratio 0.000
+  d= 16 pure   : Var_U S = 5.923e-04, bound 9.842e-03, ratio 0.060
+  d= 16 rank2  : Var_U S = 9.762e-05, bound 9.842e-03, ratio 0.010
+  d= 16 skew2  : Var_U S = 2.496e-04, bound 9.842e-03, ratio 0.025
+  d= 16 rank4  : Var_U S = 1.549e-05, bound 9.842e-03, ratio 0.002
+  d= 16 random : Var_U S = 1.979e-06, bound 9.842e-03, ratio 0.000
+  d= 16 mixed  : Var_U S = 0.000e+00, bound 9.842e-03, ratio 0.000
+  d= 32 pure   : Var_U S = 9.440e-05, bound 1.338e-03, ratio 0.071
+  d= 32 rank2  : Var_U S = 1.685e-05, bound 1.338e-03, ratio 0.013
+  d= 32 skew2  : Var_U S = 3.947e-05, bound 1.338e-03, ratio 0.029
+  d= 32 rank4  : Var_U S = 3.041e-06, bound 1.338e-03, ratio 0.002
+  d= 32 random : Var_U S = 8.370e-08, bound 1.338e-03, ratio 0.000
+  d= 32 mixed  : Var_U S = 0.000e+00, bound 1.338e-03, ratio 0.000
+block statistic (Lemma 1):
+  d=  4 m=  2: block mean and variance bound hold on all spectra
+  d=  8 m=  3: block mean and variance bound hold on all spectra
+  d= 16 m=  4: block mean and variance bound hold on all spectra
+  d= 16 m= 16: block mean and variance bound hold on all spectra
+  d= 64 m=  8: block mean and variance bound hold on all spectra
+  d= 64 m= 64: block mean and variance bound hold on all spectra
+elimination algorithm:
+  d=   16, gaps 0.5: correct 20/20, mean copies     57376, copies/sqrt(d)    14344
+  d=   64, gaps 0.5: correct 20/20, mean copies     52800, copies/sqrt(d)     6600
+  d=  256, gaps 0.5: correct 20/20, mean copies     68992, copies/sqrt(d)     4312
+  d= 1024, gaps 0.5: correct 20/20, mean copies    112640, copies/sqrt(d)     3520
+  copies(d=1024)/copies(d=16) = 1.96 (sqrt ratio 8, linear ratio 64)
+one basis, gap 1/2:
+  d=   64: m =  148 copies per basis, m/sqrt(d) = 18.50
+  d=  256: m =  185 copies per basis, m/sqrt(d) = 11.56
+  d= 1024: m =  290 copies per basis, m/sqrt(d) = 9.06
+  d= 4096: m =  568 copies per basis, m/sqrt(d) = 8.88
+  d=16384: m = 1110 copies per basis, m/sqrt(d) = 8.67
+purest checks: ok
