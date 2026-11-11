@@ -684,6 +684,11 @@ standard axioms (`propext`, `Classical.choice`, `Quot.sound`). There is no `sorr
   between the same copies and every arc is a kept dart (`RData.arc_of_keep`, `RData.keep_of_arc`). The face
   invariance needs that no incised dart has its tail corner cut in mode R and its head corner cut in mode L
   (`RData.NoConflict`). Any number of cut corners is allowed, at any vertices.
+- `lean/SsspFlow/GHatRun.lean`: the levels of a run have no conflict. The two corners of a conflict are consecutive
+  at one vertex of the dual, so a conflict needs two distinct cut corners there (`RData.noConflict_of_cut`). The cut
+  corners of every level of a run are the corners of the cut at $s$ and $t$ (`CutPath.Run.cut_data`), at the vertices
+  $p_0$ and $p_m$ of the dual path, and for $m = 0$ nothing is incised. So every level has no conflict, for any modes
+  and hosts (`CutPath.Run.noConflict`), and its repaired graph is planar (`CutPath.Run.planar_data`).
 - `lean/SsspFlow/GHatSplit.lean`: Lemma N in the split model, which cuts the doubled dual at the digon corners of the
   incised darts and at the cut corners (`RData.dualSplit`). Two tokens lie in one piece exactly when their darts lie
   at one vertex of the split (`RData.piece_eq_iff`), so the pieces are the vertices of the split
@@ -1010,9 +1015,8 @@ Of Lemma R, Definition R, its properties (1), (2) and (5), the hop bound of (4),
 distances on the repaired graph are formalized, for any set of cut corners with modes and any host of the unincised
 pairs. Lemma N is formalized in the split model: the pieces and pairs are the vertices and edges of the split, every
 annulus of a level is a component of the token graph of the level, and its lengths $\lambda_t$ are distances in that
-token graph and, below $M$, in the repaired graph. The planarity (3) is formalized for data without conflict
-(`RData.NoConflict`); that the cut corners at $s$ and $t$ never conflict is shown in `notes/GHAT_REPAIR.md`. The
-count of copies and the simulation in (4), the rest of (6) and the round count are not formalized. The reduction of the minimum st-cut to the least computed length is
+token graph and, below $M$, in the repaired graph. The planarity (3) is formalized for every level of a run, for any modes
+and hosts. The count of copies and the simulation in (4), the rest of (6) and the round count are not formalized. The reduction of the minimum st-cut to the least computed length is
 formalized, assuming the classical cut duality (`CutDuality`).
 
 ## Numerical checks (`sim/`)
