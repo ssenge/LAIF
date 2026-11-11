@@ -6,7 +6,7 @@ Written 11 Nov 2026.
 
 | | Problem | Previous best bound | This folder | Status |
 |---|---|---|---|---|
-| Thm 1 | Is G a cluster graph? | Ω(n) quantum; Õ(n^{4/3}) and about n^{9/7} suggested by the general algorithms for patterns on three vertices [1, 2], not stated for induced patterns; Θ(n²) classically | Θ(n), with one-sided error | Claim; Facts 1 and 2, Lemma 3 and the success bound checked by script |
+| Thm 1 | Is G a cluster graph? | Ω(n) quantum; Õ(n^{4/3}) and about n^{9/7} suggested by the general algorithms for patterns on three vertices [1, 2], not stated for induced patterns; Θ(n²) classically | Θ(n), with one-sided error | Combinatorics, the arithmetic of the query count and the lower bound in Lean; the quantum search primitives of [3, 4] are a claim |
 
 A rejection comes with an induced path on three vertices, found and checked by the algorithm, and a cluster graph is always accepted. By complementing every query, the same bound holds for complete multipartite graphs.
 
@@ -40,13 +40,26 @@ The algorithm applies amplitude amplification [4] to the event that xz is an edg
 
 For the lower bound, an algorithm for cluster graphs tells the complete graph from the complete graph minus any one of Θ(n²) edges, so it computes OR on Θ(n²) bits, which needs Ω(n) queries. ∎
 
+## Lean
+
+`lean/ClusterRec/`, built against Mathlib, standard axioms only (`lean/axioms.txt`):
+
+- `Graph.lean`: Fact 1 (`cluster_tfae`), Fact 2 (`p3_of_witness`, `witness_of_cnb_ne`), Lemma 3 (`good_end`, `exists_good_vertex`).
+- `Cost.lean`: the arithmetic of the query count, √(cn) (3√n + 4) ≤ 7√c · n (`search_cost`).
+- `Query.lean`: the query model and the reduction from OR of [threshold-graph-recognition-queries](../threshold-graph-recognition-queries/), restated.
+- `LowerBound.lean`: the Ω(n) lower bound (`cluster_lower_bound`).
+
+**Assuming.** `ORLowerBound`, the Ω(√N) lower bound for OR on N bits, is a named hypothesis in `Query.lean`.
+
+**Not formalized:** the search lemma of [3] and amplitude amplification [4], and the probability estimate of the base procedure built on them.
+
 ## Scripts
 
 `sim/check_cluster.py` checks Facts 1 and 2, Lemma 3 for every edge, and that the base procedure, with inner search steps that always succeed, succeeds with probability at least 1/(2n), on 3300 random graphs: cluster graphs with random clique sizes, perturbed by added, removed or switched edges, and dense random graphs.
 
 ## Use of AI
 
-Claude Opus 5.5 (Anthropic) was used throughout this research: to explore approaches, to develop and check proofs, to write the check script, and to draft the text.
+Claude Opus 5.5 (Anthropic) was used throughout this research: to explore approaches, to develop and check proofs, to write the Lean files and the check script, and to draft the text.
 
 ## References
 

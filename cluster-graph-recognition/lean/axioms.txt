@@ -1,0 +1,7 @@
+'ClusterRec.cluster_tfae' depends on axioms: [propext, Classical.choice, Quot.sound]
+'ClusterRec.p3_of_witness' depends on axioms: [propext, Classical.choice, Quot.sound]
+'ClusterRec.witness_of_cnb_ne' depends on axioms: [propext, Classical.choice, Quot.sound]
+'ClusterRec.good_end' depends on axioms: [propext, Classical.choice, Quot.sound]
+'ClusterRec.exists_good_vertex' depends on axioms: [propext, Classical.choice, Quot.sound]
+'ClusterRec.search_cost' depends on axioms: [propext, Classical.choice, Quot.sound]
+'ClusterRec.cluster_lower_bound' depends on axioms: [propext, Classical.choice, Quot.sound]
