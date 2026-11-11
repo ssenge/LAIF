@@ -54,6 +54,24 @@ def warm_run(o, d, N2):
     return z / nz if nz > 0 else np.eye(d, dtype=complex)[0]
 
 
+def split(rng, cc, h):
+    """counts of the four pair types among the first h of sum(cc) pairs (multivariate hypergeometric)."""
+    if cc.sum() < 5 * 10 ** 8:
+        return rng.multivariate_hypergeometric(cc, h)
+    # shortcut: binomial approximation of the hypergeometric split above 5e8 pairs (numpy limit); only moves the abort point by O(sqrt(pairs))
+    first = np.zeros(4, dtype=np.int64); left_h, left_n = h, int(cc.sum())
+    for i in range(3):
+        if left_n <= 0 or left_h <= 0:
+            break
+        x = min(int(rng.binomial(left_h, cc[i] / left_n)), int(cc[i]), left_h)
+        first[i] = x; left_h -= x; left_n -= int(cc[i])
+    first[3] = min(left_h, int(cc[3]))
+    rest = h - first.sum()  # repair the sum if clipping lost pairs
+    for i in range(4):
+        add = min(rest, int(cc[i] - first[i])); first[i] += add; rest -= add
+    return first
+
+
 def phase(o, c, eps, N, B):
     """one phase; pairs are measured alternately, one copy at a time, in blocks.
     Returns ('done', new c) or ('abort', rate) or ('end', None)."""
@@ -67,8 +85,7 @@ def phase(o, c, eps, N, B):
             vp, vm = np.cos(s) * c + np.sin(s) * u, np.cos(s) * c - np.sin(s) * u
             qp, qm = abs(np.vdot(vp, psi)) ** 2, abs(np.vdot(vm, psi)) ** 2
             # N alternating pairs (+, -); pair types (+ outcome, - outcome) are i.i.d. multinomial
-            n_left = o.T - o.used
-            P = min(N, n_left // 2)
+            P = min(N, (o.T - o.used) // 2)
             if P <= 0:
                 return "end", None
             pr = np.array([(1 - qp) * (1 - qm), (1 - qp) * qm, qp * (1 - qm), qp * qm])
@@ -79,7 +96,7 @@ def phase(o, c, eps, N, B):
                 need = B - zeros; off = 0; Pc, cc = P, cnt
                 while Pc > 1:
                     h = Pc // 2
-                    first = o.rng.multivariate_hypergeometric(cc, h)
+                    first = split(o.rng, cc, h)
                     zf = 2 * first[0] + first[1] + first[2]
                     if zf >= need:
                         Pc, cc = h, first
