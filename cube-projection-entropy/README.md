@@ -1,4 +1,4 @@
-# Entropy of cube projections: equal weights are optimal for n = 2 and every n ≥ 7
+# Entropy of cube projections: equal weights are optimal for n = 2, n = 3 and every n ≥ 7
 
 Written 11 Nov 2026.
 
@@ -8,7 +8,7 @@ Let U₁, …, Uₙ be independent and uniform on [−1, 1]. Among all a ∈ R�
 
 ## Result
 
-**Theorem.** For n = 2 and for every 7 ≤ n ≤ 149, equal magnitudes maximize the entropy, and only they do. Together with [1] for n ≥ 150, the conjecture holds for n = 2 and every n ≥ 7. As far as we know, n = 3, 4, 5, 6 remain open.
+**Theorem.** For n = 2, for n = 3 and for every 7 ≤ n ≤ 149, equal magnitudes maximize the entropy, and only they do. Together with [1] for n ≥ 150, the conjecture holds for n = 2, n = 3 and every n ≥ 7. As far as we know, n = 4, 5, 6 remain open.
 
 (For n = 1 there is nothing to prove.)
 
@@ -31,6 +31,21 @@ and (log f)''' = N/F³ with N = F'''F² − 3FF'F'' + 2F'³. So (∗) on that pi
 
 Every piece of every n from 7 to 149 passes. As a control, the same test fails for n = 4, 5, 6, where (∗) is indeed false: exact evaluation gives N > 0 at rational points of (n/2, n), for instance s = n/2 + 1/100 for n = 4, 6 and s = 3 + 1/100 for n = 5. For n = 4, f is only twice continuously differentiable, so (∗) cannot be used there in any case.
 
+**n = 3.** Here (∗) fails, so a different route is used. Let f be the density of the sum of three independent uniforms on [0, 1], so f(s) = s²/2 on [0, 1], f(s) = (s − r₁)(r₂ − s) on [1, 2] with r₁,₂ = (3 ∓ √3)/2, and f(s) = (3 − s)²/2 on [2, 3]. Let φ = −log f, which is convex. For S = Σ aᵢUᵢ put c = (√3/2)a, so that |c|² = 3/4 and (√3 S + 3)/2 = 3/2 + c·U. The cross-entropy inequality gives
+
+h(S) ≤ E[−log q₃(S)] = K(c) − log(√3/2), K(c) = E[φ(3/2 + c·U)],
+
+with equality at c = e = (1/2, 1/2, 1/2), where S has density q₃. By symmetry it suffices to show K(c) < K(e) for every other c with |c|² = 3/4 and c₁ ≥ c₂ ≥ c₃ ≥ 0.
+
+- *Convexity.* K is convex on {Σ|cᵢ| < 3/2}, because φ is convex. A spherical triangle with vertices on the rays of v₁, v₂, v₃ consists of the points λy with y in the flat triangle conv(v₁, v₂, v₃) and λ between R/max|vᵢ| and R/h, where R = √3/2 and h is the distance of the plane of the flat triangle from 0. So the spherical triangle lies in the convex hull of the six points λvᵢ with λ at these two ends, and K on it is at most the largest of the six values.
+- *Values.* With bₑ = 3/2 − ε·c, K(c) = Σ_ε (ε₁ε₂ε₃) Ψ(bₑ)/(16c₁c₂c₃), where Ψ(b) = ∫_b^3 (s − b)² φ(s) ds has a closed form in logarithms. Coordinates equal to 0 lead to the same formula with fewer terms.
+- *Near e.* Integration by parts gives Σ cᵢ ∂K/∂cᵢ = E[(σ − 3/2) φ′(σ)] = 1 at c = e (σ = 3/2 + e·U), so the gradient at e is (2/3)(1, 1, 1). By symmetry the matrix of second derivatives at e is αI + β11ᵀ, with α = 2√3 log(2 + √3) − 10/3 ≈ 1.2287 in closed form and |β| ≤ J = 2√3 log(2 + √3), which equals E[φ″(σ)] = ∫ f′²/f. For c on the sphere with |c − e| = δ one has Σ(cᵢ − eᵢ) = −δ², so an expansion to third order along the chord from e to c gives
+
+ K(c) − K(e) ≤ δ² (−(4/3 − α)/2 + (J/2)δ² + 3^{3/2} δ (A + B(log(1/δ)/3 + 11/36))).
+
+ Here A = (M + 12p)/6 and B = 1/(2(1/2 − δ)³), where M = 2/(r₂ − 2)³ − 2/(2 − r₁)³ ≈ 40 bounds |φ‴| on [1, 2], the term 12p covers the jumps ±6 of φ″ at s = 1 and s = 2 with the density bound p = 1/(1 − 2δ), and B with the logarithm comes from the bound (s − s_min)²/(16 c₁c₂c₃) for the density near the ends of its support. Since 4/3 − α ≈ 0.105, the right side is negative for 0 < δ ≤ 3·10⁻⁴.
+- *Cover.* The script splits the sector adaptively into spherical triangles. Each one either lies within distance 3·10⁻⁴ of e or passes the convexity test, with all values in interval arithmetic at 200 bits. 286 triangles pass the test, and 3 lie near e.
+
 **n = 2.** By symmetry take a = cos θ ≥ b = sin θ ≥ 0, so θ ∈ [0, π/4]. The density of aU₁ + bU₂ is a trapezoid. It equals 1/(2a) on |x| ≤ a − b, and falls linearly to 0 on two ramps of width 2b. The flat part has mass (a − b)/a and contributes ((a − b)/a) log(2a). The ramps have mass b/a and contribute (b/a)(log(2a) + 1/2). Hence
 
 h(aU₁ + bU₂) = log(2a) + b/(2a) = log(2 cos θ) + (tan θ)/2,
@@ -38,6 +53,9 @@ h(aU₁ + bU₂) = log(2a) + b/(2a) = log(2 cos θ) + (tan θ)/2,
 and d/dθ = −tan θ + 1/(2cos²θ) = (1 − sin 2θ)/(2cos²θ) > 0 on [0, π/4). So h increases strictly in θ, and its only maximum is θ = π/4, i.e. a = b. ∎
 
 ## Check
+
+`python sim/cert3.py` needs mpmath and takes about 10 seconds. It checks the closed form of K and of α against numerical quadrature, the local bound and the cover for n = 3. The output is in `sim/out3.txt`.
+
 
 `python sim/cert.py 4 149` uses only the standard library and takes about 3 minutes on 10 cores (`python sim/cert.py lo hi cores`). It builds the pieces F_j and checks three things for each n: f and its first n − 2 derivatives agree across the integers, the total mass is 1, and the last piece is (1 − t)^{n−1}. It then runs the test above. The output is in `sim/out.txt`.
 
