@@ -714,6 +714,11 @@ standard axioms (`propext`, `Classical.choice`, `Quot.sound`). There is no `sorr
   `RData.nameD`, `RData.name_injective`), so the names do not depend on the level. All other names hang as pendant
   nodes at the star centre of their node. The network of a level is planar (`RData.levelNet_planar`) and has diameter
   at most $12D + 16$ (`RData.levelNet_diam`).
+- `lean/SsspFlow/GHatLevelSim.lean`: the nodes simulate the network of a level. The host of an identifier is the node
+  that names it. An edge between two hosts is the middle edge of a token dart (`RData.levelNet_cross`), so it follows
+  an edge of the network (`RData.levelNet_host`), and at most four go from one node to another
+  (`RData.levelNet_card_cross`). If each node knows the edges at its own identifiers, the nodes run any algorithm on
+  the network of a level round for round, with messages of four times the width (`RData.run_levelSim`).
 - `lean/SsspFlow/GHatPhase.lean`: the combinatorics of property (6). Two copies on E_R edges are joined by E_R edges
   exactly when they lie on the path of one piece (`RData.er_comp_iff`), and by E_R and E_C edges exactly when their
   pieces are joined in the token graph (`RData.erc_comp_iff`), whose components are those of the split

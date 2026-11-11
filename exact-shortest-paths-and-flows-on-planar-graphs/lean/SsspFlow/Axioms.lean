@@ -590,3 +590,13 @@ Expected output for each: `propext`, `Classical.choice`, `Quot.sound` (or a subs
 #print axioms SsspFlow.RotSystem.RData.name_injective
 #print axioms SsspFlow.RotSystem.RData.levelNet_planar
 #print axioms SsspFlow.RotSystem.RData.levelNet_diam
+#print axioms SsspFlow.Congest.padNet_adj_cases
+#print axioms SsspFlow.RotSystem.RData.owner_tl
+#print axioms SsspFlow.RotSystem.RData.tok_of_owner_ne
+#print axioms SsspFlow.RotSystem.RData.hostOf_ι
+#print axioms SsspFlow.RotSystem.RData.hostOf_back
+#print axioms SsspFlow.RotSystem.RData.levelNet_cross
+#print axioms SsspFlow.RotSystem.RData.levelNet_host
+#print axioms SsspFlow.RotSystem.RData.tokKey_inj
+#print axioms SsspFlow.RotSystem.RData.levelNet_card_cross
+#print axioms SsspFlow.RotSystem.RData.run_levelSim
