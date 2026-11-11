@@ -49,7 +49,7 @@ For q = 5 the network family is above QAOA at every depth p from 2 to 14:
 | 13 | 0.577 | 0.5991* |
 | 14 | 0.5846 | **0.5991*** |
 
-The entries marked * are the algorithm of depth 12. The smallest margin is 0.0048 (at p = 7), about 7 standard errors. At p = 1 the best algorithm of the class is the threshold algorithm below, with ν = 0.23407 for q = 5.
+The entries marked * are the algorithm of depth 12. The smallest margin is 0.0048 (at p = 7), about 6 standard errors. At p = 1 the best algorithm of the class is the threshold algorithm below, with ν = 0.23407 for q = 5.
 
 For q = 6 the network family is above QAOA at every depth p from 8 to 12:
 
