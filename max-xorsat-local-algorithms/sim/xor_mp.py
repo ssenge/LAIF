@@ -4,7 +4,7 @@ phi_t = (1/sqrt D) sum_{e ni i} J_e prod_{j in e minus i} m_j(t - 1) on the hype
 Warm start from depth p - 1 (init.jsonl): the new message function is a copy of the last one with zero weight on the new field,
 so the start has the value of depth p - 1.
 usage: xor_mp.py q p out.jsonl [steps] [H] [seed] [lr] [init.jsonl]"""
-import sys, json, time
+import os, sys, json, time
 import numpy as np
 import jax, jax.numpy as jnp
 from xor_limit import draws
@@ -80,22 +80,23 @@ if __name__ == "__main__":
     steps = int(sys.argv[4]) if len(sys.argv) > 4 else 1500; H = int(sys.argv[5]) if len(sys.argv) > 5 else 8
     seed = int(sys.argv[6]) if len(sys.argv) > 6 else 0; lr = float(sys.argv[7]) if len(sys.argv) > 7 else 0.01
     f = make(q, p, H); fj = jax.jit(f); rng = np.random.default_rng(seed)
+    NT, NE, NF = (int(os.environ.get(k, d)) for k, d in (("XMP_NT", 20000), ("XMP_NE", 50000), ("XMP_NF", 200000)))   # sample sizes; lower them at large p to fit memory
     init = [r for r in map(json.loads, open(sys.argv[8])) if r["q"] == q and r.get("H") == H] if len(sys.argv) > 8 else []
     same = [r for r in init if r["p"] == p]; prev = [r for r in init if r["p"] == p - 1]
     if same: x = jnp.asarray(max(same, key=lambda r: r["nu"])["params"])
     elif prev: x = jnp.asarray(extend(max(prev, key=lambda r: r["nu"])["params"], p, H, rng))
     else: x = jnp.asarray(0.5 * rng.standard_normal(nparams(p, H)))
     g = jax.jit(jax.value_and_grad(lambda x, *A: -f(x, *A, 10.0)))
-    E = draws(777, 50000, p); best = (float(fj(x, *E)), np.array(x))
+    E = draws(777, NE, p); best = (float(fj(x, *E)), np.array(x))
     mo = jnp.zeros_like(x); v = jnp.zeros_like(x); t0 = time.time()
     for i in range(1, steps + 1):
-        val, gr = g(x, *draws(int(rng.integers(1 << 30)), 20000, p))
+        val, gr = g(x, *draws(int(rng.integers(1 << 30)), NT, p))
         mo = 0.9 * mo + 0.1 * gr; v = 0.999 * v + 0.001 * gr ** 2
         x = x - lr * (mo / (1 - 0.9 ** i)) / (jnp.sqrt(v / (1 - 0.999 ** i)) + 1e-8)
         if i % 100 == 0:
             e = float(fj(x, *E))
             if e > best[0]: best = (e, np.array(x))
             print(i, round(-float(val), 4), round(e, 4), round(time.time() - t0), flush=True)
-    val = float(fj(jnp.asarray(best[1]), *draws(12345, 200000, p)))
+    val = float(fj(jnp.asarray(best[1]), *draws(12345, NF, p)))
     print("q", q, "p", p, "H", H, "nu", val, flush=True)
     with open(out, "a") as fo: fo.write(json.dumps({"q": q, "p": p, "H": H, "nu": val, "params": [float(y) for y in best[1]]}) + "\n")
