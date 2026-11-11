@@ -28,11 +28,11 @@ Here D = m − 2. So the worst-case regret is Ω(m^{3/2} log(T/(1000 m^{3/2}))) 
 
 The bound covers learners with full quantum memory, adaptive classical choice of actions, and any use of the oracle and its inverse. Each query reveals information about one linear functional ⟨x, θ⟩ only. Coherent use of many queries gives the usual quadratic gain in the precision of that functional, but it cannot spread this gain over d − 1 directions at once.
 
-**Theorem 2.** On the same action set, for every θ with |θ| ≤ 1 and any reward oracles of the model, the phase algorithm below has, for all T ≥ 2,
+**Theorem 2.** On the same action set, for every θ' = (1, θ)/√2 with |θ| ≤ 1 and any reward oracles of the model, the phase algorithm below has, for all T ≥ 2,
 
 E[Regret(T)] ≤ (6923 d^{3/2} + 25 d) (log₂ T + 1).
 
-So on this action set the regret is Θ(d^{3/2} log T) for d^{3/2} ≲ T ≲ e^{d/2}, with no further logarithmic factors. Previous best upper bound: O(m^{3/2} log^{3/2} T log(mT)), implied by [3] as shown in [1].
+So on this family the regret is Θ(d^{3/2} log T) for t₀² ≤ T ≤ t₁, with no further logarithmic factors. Previous best upper bound: O(m^{3/2} log^{3/2} T log(mT)), implied by [3] as shown in [1]; that bound holds for every parameter, while Theorem 2 uses the known first coordinate of θ'.
 
 ## Proof
 
@@ -126,7 +126,7 @@ With the constants above, the minimum is at least 3.6 · 10⁻⁶ D^{3/2} L, whi
 
 Since ⟨x_j⁺ − x_j⁻, θ⟩ = 2 sin s ⟨u_j, θ⟩, this gives E|θ̂_new − θ|² ≤ 4 · 154 d / (M² sin² s) ≤ a².
 
-*Regret of a phase.* A pair has regret r(x_j⁺) + r(x_j⁻) = |θ| − cos s ⟨c, θ⟩ ≤ |θ|(s² + |c − n|²)/2, and the centre has regret at most |θ| |c − n|²/2. So a phase costs at most 5 M d |θ| (s² + |c − n|²). With the previous error e = θ̂ − θ, E|e|² ≤ 4a², one gets E[|θ| s / a] ≤ 6 and E[|θ| |c − n|² / (s a)] ≤ 40, so the expected regret of a phase is at most 5K(6 + 40) d^{3/2} + 25 d ≤ 6923 d^{3/2} + 25 d. Phase ℓ uses M ≥ 2^ℓ, so at most log₂ T + 1 phases start before round T, which proves Theorem 2.
+*Regret of a phase.* A pair has regret r(x_j⁺) + r(x_j⁻) = |θ| − cos s ⟨c, θ⟩ ≤ |θ|(s² + |c − n|²)/2, and the centre has regret at most |θ| |c − n|²/2. So a phase costs at most 5 M d |θ| (s² + |c − n|²). With the previous error e = θ̂ − θ, E|e|² ≤ 4a², one gets E[|θ| s / a] ≤ 6 and E[|θ| |c − n|² / (s a)] ≤ 40, so the expected regret of a phase is at most 5K(6 + 40) d^{3/2} + 25 d ≤ 6923 d^{3/2} + 25 d. Phase ℓ uses M ≥ 2^ℓ, and its centre estimate alone takes 5(2M − 1) ≥ 2^{ℓ+1} rounds, so phase ℓ starts only if 2^ℓ < T. At most log₂ T + 1 phases start before round T, which proves Theorem 2.
 
 ## Check
 
