@@ -2,7 +2,7 @@
 # python lbconst.py            check the chosen parameters for D = 2 .. 600
 from math import pi, e, sqrt, log, exp
 
-G = 1 / (2 * sqrt(3))      # generator norm per unit |<x, v>| (mean slope 1/2 times arcsin-sqrt slope <= 1/sqrt(3))
+G = 1 / sqrt(3)            # generator norm per unit |<x, v>| (mean slope 1/2 times arcsin-sqrt slope <= 2/sqrt(3) on [1/4, 3/4])
 YMAX = 0.25                # prior cap |y| <= YMAX
 C, KAPPA = 1000.0, 1.0     # t0 = C D^{3/2}, tau = KAPPA sqrt(D) / (G t0)
 N1A = sqrt(1 - YMAX ** 2)
@@ -62,5 +62,5 @@ def theorem(D, verbose=False):
 if __name__ == "__main__":
     worst = min(theorem(D, verbose=D in (2, 3, 5, 10, 30, 100, 600)) for D in list(range(2, 200)) + [300, 450, 600])
     print("worst constant over the checked D:", worst)
-    assert worst >= 6e-6
-    print("lower bound constants: ok (c >= 6e-6, t0 = 1000 D^{3/2}, window t0 .. t0 e^{D/2})")
+    assert worst >= 3.5e-6
+    print("lower bound constants: ok (c >= 3.5e-6, t0 = 1000 D^{3/2}, window t0 .. t0 e^{D/2})")

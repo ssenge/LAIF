@@ -1,4 +1,4 @@
-# Quantum linear bandits with general action sets: the dimension factor d^{3/2} is necessary
+# Quantum linear bandits with general action sets: the dimension factor d^{3/2} is necessary, and tight on the ball
 
 Written 11 Nov 2026.
 
@@ -22,11 +22,17 @@ with parameters θ' = (1, θ)/√2, |θ| ≤ 1/2. Then μ = (1 + ⟨x, θ⟩)/2 
 
 **Theorem 1.** For every learner in the model above and every T ≥ t₀ := 1000 D^{3/2} there is a parameter θ with |θ| ≤ 1/2 such that
 
-E[Regret(T)] ≥ 6.5 · 10⁻⁶ · D^{3/2} · ln( min(T, t₀ e^{D/2}) / t₀ ).
+E[Regret(T)] ≥ 3.6 · 10⁻⁶ · D^{3/2} · ln( min(T, t₀ e^{D/2}) / t₀ ).
 
 So the worst-case regret is Ω(m^{3/2} log(T/m^{3/2})) for m^{3/2} ≤ T ≤ e^{c m}, and Ω(m^{5/2}) for larger T. The exponent 3/2 of the dimension in the bound implied by [3] cannot be lowered for general action sets. Previous best lower bound: Ω(m log(1 + T/m)) [1].
 
 The bound covers learners with full quantum memory, adaptive classical choice of actions, and any use of the oracle and its inverse. Each query reveals information about one linear functional ⟨x, θ⟩ only. Coherent use of many queries gives the usual quadratic gain in the precision of that functional, but it cannot spread this gain over d − 1 directions at once.
+
+**Theorem 2.** On the same action set, for every θ with |θ| ≤ 1 and any reward oracles of the model, the phase algorithm below has, for all T ≥ 2,
+
+E[Regret(T)] ≤ (6923 d^{3/2} + 25 d) (log₂ T + 1).
+
+So on this action set the regret is Θ(d^{3/2} log T) for d^{3/2} ≲ T ≲ e^{d/2}, with no further logarithmic factors. Previous best upper bound: O(m^{3/2} log^{3/2} T log(mT)), implied by [3] as shown in [1].
 
 ## Proof
 
@@ -34,13 +40,13 @@ The bound covers learners with full quantum memory, adaptive classical choice of
 
 Write θ = s n with |n| = 1 and n = (√(1 − |y|²), y), y ∈ R^D. The prior draws s and y independently. The radius s has density (2/τ) cos²(π(s − s_c)/τ) on [s₀, s₀ + τ] with s₀ + τ = 1/2 (s_c the midpoint), and y has density Π_j (1/h) cos²(π y_j/(2h)) on [−h, h]^D, h = 1/(4√D). So |y| ≤ 1/4. The Cartesian density is p(θ) = f(s) g(y) n₁ s^{−D}.
 
-The oracle of action x is the two-outcome oracle O_μ = CNOT (R(φ) ⊗ 1), R(φ) the real rotation by φ = arcsin √μ. On [1/4, 3/4], |dφ/dμ| ≤ 1/√3. So the derivative of the oracle along a direction v of θ has norm at most γ |⟨x, v⟩| with γ = 1/(2√3), and the same holds for the inverse.
+The oracle of action x is the two-outcome oracle O_μ = CNOT (R(φ) ⊗ 1), R(φ) the real rotation by φ = arcsin √μ. On [1/4, 3/4], |dφ/dμ| ≤ 2/√3. So the derivative of the oracle along a direction v of θ has norm at most γ |⟨x, v⟩| with γ = 1/√3, and the same holds for the inverse.
 
 Regret and direction: with n = θ/|θ|, the regret of action x is r(x) = (|θ| − ⟨x, θ⟩)/2 ≥ (|θ|/4) |x − n|², because |x − n|² ≤ 2 − 2⟨x, n⟩ for |x| ≤ 1.
 
 ### Purification
 
-A register Θ = L²(R^d) holds |θ⟩ with amplitude √p(θ). Measurements of the learner are deferred, and every outcome is also copied into a register E that is never touched again. The record r is the sequence of outcomes. The action x_s(r) and the choice between oracle and inverse in round s depend only on the part of r before round s. Given θ, the joint state ψ_t(θ) of the learner L and of E before round t is pure, and the global state is
+A register Θ = L²(R^d) holds |θ⟩ with amplitude √p(θ). Measurements of the learner are deferred, and every outcome is also copied into two classical registers E and F that are never touched again. The record r is the sequence of outcomes. The action x_s(r) and the choice between oracle and inverse in round s depend only on the part of r before round s. Given θ, the joint state ψ_t(θ) of the learner L, of E and of F before round t is pure, and the global state is
 
 Φ = ∫ √p(θ) |θ⟩ ⊗ ψ_t(θ) dθ.
 
@@ -58,7 +64,7 @@ H(Q_{δ_q} | B) + H(P_{δ_p} | C) ≥ −log c,  c = max_{j,k} ‖Q_j P_k‖² �
 
 where the bound on c comes from ‖Q_j P_k‖² ≤ tr(Q_j P_k Q_j) and |⟨θ|p⟩|² = (2π)^{−d}.
 
-We apply it with B = L before round t and C = (E, k).
+We apply it with B = (L, F) before round t and C = (E, k).
 
 ### Momentum side
 
@@ -90,7 +96,7 @@ The nuclear norm is where the factor √D comes from. A trace bound would allow 
 
 ### Position side
 
-The action x_t comes from a measurement of L, so H(Q_{δ_q} | L) ≤ H(Q_{δ_q} | x_t). In polar coordinates dθ = s^D ds dy / n₁, the radius has a range of length τ, and the grid sides cancel in the limit. This gives
+The action x_t is a function of the records in F, so H(Q_{δ_q} | L, F) ≤ H(Q_{δ_q} | x_t). In polar coordinates dθ = s^D ds dy / n₁, the radius has a range of length τ, and the grid sides cancel in the limit. This gives
 
 h(y | x_t) ≥ d log 2π − (1/2) log(2πe X_t) − D log(√(4πe) Y_t / D) + log n₁ − D log(s₀ + τ) − log τ.
 
@@ -102,23 +108,37 @@ E|x_t − n|² ≥ D³ b_t / (8 e² (s₀ + τ)² Y_t²),  b_t = (2π n₁² / (
 
 Choose τ = √D/(γ t₀), so that γ t τ = √D t/t₀, and in round t ∈ [t₀, t₀ e^{D/2}] choose ε_t ∝ D^{1/4}/√t (exact value in `sim/lbconst.py`). Then Y_t ≤ γ S_t + β√t / √2 with S_t = Σ_{s<t} √(E|x_s − n|²), and b_t ≥ 0.2. With r_t the expected regret in round t and G_t = Σ_{s<t} √r_s, this gives
 
-r_t ≥ q² / (c G_t² + β² t),  c = 8γ²/s₀,  β² ≤ 133.3 D^{3/2},  q² ≥ 0.00176 D³.
+r_t ≥ q² / (c G_t² + β² t),  c = 8γ²/s₀,  β² ≤ 244.7 D^{3/2},  q² ≥ 0.00177 D³.
 
 **Lemma S.** If r_t ≥ q²/(c G_t² + β² t) for t₀ ≤ t < t₁, then Σ_{t<t₁} r_t ≥ min{ L/(2K), β² L/(2c) } with L = ln(t₁/t₀) and K = 2√c/q + β²/q² + c/(β² t₀).
 
 *Proof.* Let V_t = c G_t² + β² t. From r_t ≥ q²/V_t, √r_t ≤ r_t √V_t / q, and so ln(V_{t+1}/V_t) ≤ (2c G_t √r_t + c r_t + β²)/V_t ≤ K r_t. Also V_{t₁} ≥ β² t₁ and V_{t₀} ≤ t₀ (c R + β²), where R is the total, since G_{t₀}² ≤ t₀ R. So L − ln(1 + cR/β²) ≤ K R. Either ln(1 + cR/β²) ≥ L/2, which gives R ≥ β² L/(2c), or K R ≥ L/2. ∎
 
-With the constants above, the minimum is at least 6.5 · 10⁻⁶ D^{3/2} L, which proves Theorem 1. The bound holds for the prior average, so some θ in the support of the prior attains it.
+With the constants above, the minimum is at least 3.6 · 10⁻⁶ D^{3/2} L, which proves Theorem 1. The bound holds for the prior average, so some θ in the support of the prior attains it.
+
+## Algorithm for Theorem 2
+
+*Estimator.* For a mean μ and a register size M, amplitude estimation uses fewer than 2M queries of the oracle and its inverse and returns Y with P(|Y − μ| > πk/M + π²k²/M²) ≤ 1/(2(k − 1)) for k ≥ 2 [6]. The median of 5 independent runs has E(Y − μ)² ≤ 154/M² for every M, using fewer than 10M queries. The constant comes from integrating the binomial tail exactly (`sim/ubconst.py`).
+
+*Phases.* Phase ℓ = 0, 1, 2, … has target error a = 2^{−ℓ}. Let θ̂ be the estimate from the previous phase (θ̂ = 0 at the start), c = θ̂/|θ̂| (any unit vector if θ̂ = 0), s = min(1, a/|θ̂|), and M = ⌈K√d/(s a)⌉ with K = 30.1. Pick an orthonormal basis u₁, …, u_{d−1} of c^⊥. Estimate the means of the 2d − 1 actions c and cos s · c ± sin s · u_j with the estimator above, and set
+
+θ̂_new = (2μ̂(c) − 1) c + Σ_j (μ̂(x_j⁺) − μ̂(x_j⁻)) / sin s · u_j.
+
+Since ⟨x_j⁺ − x_j⁻, θ⟩ = 2 sin s ⟨u_j, θ⟩, this gives E|θ̂_new − θ|² ≤ 4 · 154 d / (M² sin² s) ≤ a².
+
+*Regret of a phase.* A pair has regret r(x_j⁺) + r(x_j⁻) = |θ| − cos s ⟨c, θ⟩ ≤ |θ|(s² + |c − n|²)/2, and the centre has regret at most |θ| |c − n|²/2. So a phase costs at most 5 M d |θ| (s² + |c − n|²). With the previous error e = θ̂ − θ, E|e|² ≤ 4a², one gets E[|θ| s / a] ≤ 6 and E[|θ| |c − n|² / (s a)] ≤ 40, so the expected regret of a phase is at most 5K(6 + 40) d^{3/2} + 25 d ≤ 6923 d^{3/2} + 25 d. Phase ℓ uses M ≥ 2^ℓ, so at most log₂ T + 1 phases start before round T, which proves Theorem 2.
 
 ## Check
 
-`sim/lbconst.py` recomputes every constant of the proof, for D = 2, …, 199 and D = 300, 450, 600, with asserts: the choice of ε_t, the bound on Y_t, the factor b_t, the constants of Lemma S. The constant is smallest at D = 2 (6.6 · 10⁻⁶) and grows with D. Run `python sim/lbconst.py`.
+`sim/lbconst.py` recomputes every constant of the proof, for D = 2, …, 199 and D = 300, 450, 600, with asserts: the choice of ε_t, the bound on Y_t, the factor b_t, the constants of Lemma S. The constant is smallest at D = 2 (3.6 · 10⁻⁶) and grows with D. Run `python sim/lbconst.py`.
+
+`sim/ubconst.py` recomputes the constants of Theorem 2 with asserts: the mean squared error of the median estimator (at most 153.8/M² over the checked register sizes) and the phase constant 6923. `sim/regret_ball.py` runs the phase algorithm with the exact output law of amplitude estimation, for random θ with |θ| between 0.05 and 1, and asserts the bound of Theorem 2. For d = 2, 4, 8, 16 and T up to 10⁸, the mean regret divided by d^{3/2} ln T stays between 5 and 56 with K = 30.1, and between 2.9 and 10.4 with K = 3 (`sim/out_ball.txt`).
 
 ## Scope
 
-- **Assuming:** the entropic uncertainty relation with quantum memory for position and momentum, in the coarse-grained form above [4, 5]. Everything else is proved here on paper.
-- **Not formalized:** Theorem 1 has no Lean proof.
-- The bound grows like log T only up to T = t₀ e^{D/2}. The thin radial prior, which keeps the oracle at the best action uninformative, limits the range.
+- **Assuming:** the entropic uncertainty relation with quantum memory for position and momentum, in the coarse-grained form above [4, 5], for Theorem 1, and the error bound of amplitude estimation [6] for Theorem 2. Everything else is proved here on paper.
+- **Not formalized:** Theorems 1 and 2 have no Lean proof.
+- The lower bound grows like log T only up to T = t₀ e^{D/2}. The thin radial prior, which keeps the oracle at the best action uninformative, limits the range.
 - The constant is small and t₀ = 1000 D^{3/2}. The bound is stated for one action set, the ball above. For finite action sets with K actions, the bound O(m log T log(KT)) of [1] shows that the dimension enters differently.
 
 ## References
@@ -128,6 +148,7 @@ With the constants above, the minimum is at least 6.5 · 10⁻⁶ D^{3/2} L, whi
 [3] Y. Hikima, K. Murao, S. Takemori, Y. Umeda. Quantum kernelized bandits. UAI 2024.
 [4] R. L. Frank, E. H. Lieb. Extended quantum conditional entropy and quantum uncertainty inequalities. Commun. Math. Phys. 323 (2013), arXiv:1204.0825.
 [5] F. Furrer, M. Berta, M. Tomamichel, V. B. Scholz, M. Christandl. Position-momentum uncertainty relations in the presence of quantum memory. J. Math. Phys. 55 (2014) 122205, arXiv:1308.4527.
+[6] G. Brassard, P. Høyer, M. Mosca, A. Tapp. Quantum amplitude amplification and estimation. Contemp. Math. 305 (2002), arXiv:quant-ph/0005055.
 
 ## Use of AI
 
