@@ -8,6 +8,7 @@ Written 11 Nov 2026.
 |---|---|---|---|---|
 | Thm 1 | Two-dimensional pattern matching, n × n text, m × m pattern | O(nm), by search over the positions with an inner search for a mismatch [4] | O(n √m log⁴ n) | Claim; checked by script |
 | Thm 2 | Same, any n₁, n₂, m₁, m₂ | | Ω(√(n₁n₂)) for every pattern size | Claim |
+| Thm 3 | Same, n × n text, m × m pattern without short periods (condition (★) of Section 6 with b ≥ m/8) | O(nm), and O(n √m log⁴ n) by Theorem 1 | O(m² + n log³ m), so O(n log³ n) for m ≤ √n | Claim; checked by script |
 
 In one dimension the problem takes Õ(√n + √m) queries [1], by deterministic sampling [2]. In two dimensions, quantum algorithms that are fast on average are given in [3]; to our knowledge, no worst-case bound below O(nm) was known for an n × n text and an m × m pattern. Classically, Θ(n²) queries are needed in the worst case, by the same family as in Theorem 2.
 
@@ -63,9 +64,35 @@ So the block needs a maximum and a minimum finding for g and h, then Lemma 3 on 
 
 So the gap for an n × n text and an m × m pattern is now Ω(n) against O(n √m log⁴ n).
 
+## 6. Patterns without short periods
+
+Here the text is n × n and the pattern m × m. Copy s of the pattern holds P[z − s] at the cells z ∈ s + [m]². For b ≥ 2, all copies with shifts in F = [0, b)² cover the region C = [b − 1, m)².
+
+**Condition (★).** The copies with shifts in F are pairwise distinct on C.
+
+Condition (★) holds, for instance, if the central square of P on [b − 1, m − b + 1)² has no period δ with 0 < |δ|∞ < b. Two copies s and s′ = s + δ in F then differ at z = u + s′ ∈ C for a cell u of the square with P[u] ≠ P[u + δ]. Condition (★) implies that no δ with 0 < |δ|∞ < b is a period of P, so two occurrences are never closer than b in both coordinates, and for each such δ there is a *witness*, a cell u with P[u] ≠ P[u − δ] and both cells inside the pattern. When the pattern has been read, the sample below and all witnesses are known without further queries.
+
+**Lemma 5.** Under (★) there is a sample of k ≤ 2⌈log₂ b⌉ cells z_t ∈ C with values c_t and a survivor f ∈ F such that copy f has value c_t at z_t for all t, and every copy j ∈ F other than f has a value different from c_t at some z_t.
+
+*Proof.* As in Lemma 2. While two copies survive, take two of them, a cell of C where they differ, and keep the smallest nonempty class of survivors by their value there. This class has at most half of the survivors, and every survivor covers the cell. ∎
+
+A start x *passes* if T[x − f + z_t] = c_t for all t; these k cells lie in the area of x. Every occurrence passes. For each coordinate i, let σᵢ = 1 if fᵢ ≥ b − 1 − fᵢ and σᵢ = −1 otherwise, and let b′ = ⌊b/2⌋.
+
+**Lemma 6.** Let p ≠ x be passing starts with |pᵢ − xᵢ| < b′ and σᵢ(pᵢ − xᵢ) ≥ 0 for both i. Then x is not an occurrence.
+
+*Proof.* Let j = x − p + f. If σᵢ = 1, then xᵢ − pᵢ ∈ (−b′, 0] and fᵢ ≥ (b − 1)/2 ≥ b′ − 1, so jᵢ ∈ [0, b). If σᵢ = −1, then xᵢ − pᵢ ∈ [0, b′) and fᵢ < (b − 1)/2, so again jᵢ ∈ [0, b). So j ∈ F and j ≠ f, and copy j has a value different from c_t at some z_t. The cell p − f + z_t = x + (z_t − j) holds c_t because p passes, while an occurrence at x needs the value P[z_t − j] of copy j there. ∎
+
+**Theorem 3.** Under (★), two-dimensional pattern matching takes O(m² + n log³ m + nm/b) quantum queries. In particular, if (★) holds with b ≥ m/8, it takes O(m² + n log³ m), and O(n log³ n) for m ≤ √n.
+
+*Proof.* Read the pattern with m² queries; compute the sample of Lemma 5 and a witness for every δ with 0 < |δ|∞ < b′. Split the starts into blocks of b′ × b′. In a block, Lemma 6 says that every occurrence is a passing start that no other passing start dominates in the order given by σ. These maximal passing starts form a front, as in Lemma 3 of [largest-empty-rectangle-queries](../largest-empty-rectangle-queries/), with "passes" in place of a 1-cell. That lemma learns the front with O(b′ log² b′) tests and constant error, so with O(b log³ m) queries, on every run. The front has at most b′ starts. A tournament over them keeps one: for the current candidate x and the next start y, one query at x + u, where u is the witness for y − x, either matches P[u] (then y is not an occurrence, since copy y has the other value there) or not (then x is not an occurrence, and y becomes the candidate). This takes fewer than b′ queries. A search for a mismatch over the m² cells of the last candidate decides the block with O(m) queries. So a block costs O(b log³ m + m) queries with bounded error, and the search with bounded-error inputs [7] over the at most (n/b′ + 1)² blocks costs O((n/b)(b log³ m + m)). ∎
+
+Theorem 3 needs the whole pattern, which costs m² queries, and condition (★). Patterns with short periods, such as a pattern of a single letter, are covered by Theorem 1, and the all-zero pattern by the largest empty square of [largest-empty-rectangle-queries](../largest-empty-rectangle-queries/).
+
 ## Scripts
 
 `sim/check_strips.py` builds the period, the sample and the blocks of Sections 2 to 4 with exact searches, and checks the sample property and the occurrence sets of every block against brute force: 20000 one-dimensional instances (periodic and aperiodic patterns over 2 and 3 letters, texts with planted and noisy copies) and 1500 two-dimensional ones. It covers both block types, with and without occurrences. It checks the combinatorics with exact searches; the sample size, the query counts, the error bounds and Theorem 2 rest on the proofs above.
+
+`sim/check_blocks2d.py` checks Section 6 against brute force: condition (★), the sample of Lemma 5 and its size, that every occurrence of a block is on the front of its passing starts (learned by the front learner of `largest-empty-rectangle-queries/sim/check_window.py`, with its cost per depth), and that the tournament and the final check return exactly the occurrences of the block. It covers 400 random and sparse patterns with random texts and planted copies, and 300 texts with passing starts planted on chains and antichains of a block, so that fronts reach the largest possible length b′.
 
 ## Use of AI
 
@@ -79,3 +106,4 @@ Claude Opus 5.5 (Anthropic) was used throughout this research: to explore approa
 4. M. Boyer, G. Brassard, P. Høyer, A. Tapp. Tight bounds on quantum searching. Fortschr. Phys. 46, 1998. arXiv:quant-ph/9605034.
 5. C. Dürr, P. Høyer. A quantum algorithm for finding the minimum. arXiv:quant-ph/9607014, 1996.
 6. B. W. Reichardt. Reflections for quantum query algorithms. SODA 2011. arXiv:1005.1601.
+7. P. Høyer, M. Mosca, R. de Wolf. Quantum search on bounded-error inputs. ICALP 2003. arXiv:quant-ph/0304052.
