@@ -777,6 +777,13 @@ standard axioms (`propext`, `Classical.choice`, `Quot.sound`). There is no `sorr
   of the reverse dart (`RData.nameD_hrev`), and lists the identifiers that name nothing at its star centre
   (`RData.extras_inl`). These are the rotation lists of the network of a level at every identifier
   (`RData.levelNet_rotList_raw`).
+- `lean/SsspFlow/GHatLevelLen.lean`: the inputs of the shortest paths of a level from local data. One round in which
+  every node sends each neighbour a number of its own for it (`Algorithm.run_exchTo`) carries the record of a dart and
+  the three values $\lambda$ of its tokens in $3b + 5$ bits (`DInfo.unpack_pack`, `DInfo.pack_lt`). From the rotation
+  list of $w$, the records and the values $\lambda$ of the darts at $w$ and into $w$, the bound $M$ and the identifier
+  of the source, the node $w$ computes the length of each dart and whether $\hat G_\ell$ keeps it
+  (`RData.rawW_nameD`, `RData.rawW_rev`, `RData.rawKeep_nameD`), and so the input of each of its identifiers, with its
+  neighbours, the lengths to and from them and its offset (`RData.levelNet_oracleIn_raw`).
 - `lean/SsspFlow/GHatPhase.lean`: the combinatorics of property (6). Two copies on E_R edges are joined by E_R edges
   exactly when they lie on the path of one piece (`RData.er_comp_iff`), and by E_R and E_C edges exactly when their
   pieces are joined in the token graph (`RData.erc_comp_iff`), whose components are those of the split
@@ -1117,7 +1124,7 @@ distances on the repaired graph are formalized, for any set of cut corners with 
 pairs. Lemma N is formalized in the split model: the pieces and pairs are the vertices and edges of the split, every
 annulus of a level is a component of the token graph of the level, and its lengths $\lambda_t$ are distances in that
 token graph and, below $M$, in the repaired graph. The planarity (3) is formalized for every level of a run, for any modes
-and hosts, and so is the count of copies in (4). The combinatorics of (6) is formalized, and so is the simulation in (4) for nodes that know the edges of the repaired graph at their own copies, and the repaired graph of every level as a planar network of diameter $O(D)$ whose distances between copies are the distances in $\hat G_\ell$, and, assuming the Exact SSSP bound, the computation of these distances and of the components of $\hat G_\ell[E_R]$ and $\hat G_\ell[E_R \cup E_C]$ by the nodes in $O(\log^c n \cdot D)$ rounds. The round count of the whole recursion is formalized as a cost model over the levels, assuming part-wise aggregation (`PartAggBox`). The rotation lists of the network of a level at every identifier are formalized as functions of the data of its host and the records of the darts into it. The computation of the lengths at the copies, the other distributed steps of a level and one algorithm of the message model for the whole recursion are not formalized. The reduction of the minimum st-cut to the least computed length is
+and hosts, and so is the count of copies in (4). The combinatorics of (6) is formalized, and so is the simulation in (4) for nodes that know the edges of the repaired graph at their own copies, and the repaired graph of every level as a planar network of diameter $O(D)$ whose distances between copies are the distances in $\hat G_\ell$, and, assuming the Exact SSSP bound, the computation of these distances and of the components of $\hat G_\ell[E_R]$ and $\hat G_\ell[E_R \cup E_C]$ by the nodes in $O(\log^c n \cdot D)$ rounds. The round count of the whole recursion is formalized as a cost model over the levels, assuming part-wise aggregation (`PartAggBox`). The rotation lists and the inputs of the shortest paths of the network of a level at every identifier are formalized as functions of the data of its host and the records and values $\lambda$ of the darts into it. The composition of the exchange round with the computation of the distances, the other distributed steps of a level and one algorithm of the message model for the whole recursion are not formalized. The reduction of the minimum st-cut to the least computed length is
 formalized, assuming the classical cut duality (`CutDuality`).
 
 ## Numerical checks (`sim/`)

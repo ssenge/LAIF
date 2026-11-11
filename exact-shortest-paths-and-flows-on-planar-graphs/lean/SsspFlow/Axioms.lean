@@ -687,3 +687,12 @@ Expected output for each: `propext`, `Classical.choice`, `Quot.sound` (or a subs
 #print axioms SsspFlow.RotSystem.RData.isReal_iff
 #print axioms SsspFlow.RotSystem.RData.extras_inl
 #print axioms SsspFlow.RotSystem.RData.levelNet_rotList_raw
+#print axioms Cslib.Congest.Algorithm.run_exchTo
+#print axioms SsspFlow.RotSystem.DInfo.unpack_pack
+#print axioms SsspFlow.RotSystem.DInfo.pack_lt
+#print axioms SsspFlow.RotSystem.RData.lamAt_tok
+#print axioms SsspFlow.RotSystem.RData.rawW_nameD
+#print axioms SsspFlow.RotSystem.RData.rawW_rev
+#print axioms SsspFlow.RotSystem.RData.rawKeep_nameD
+#print axioms SsspFlow.RotSystem.RData.rawReal_host
+#print axioms SsspFlow.RotSystem.RData.levelNet_oracleIn_raw
