@@ -118,3 +118,12 @@ import PlanarMatching
 #print axioms PlanarMatching.ElimData.FromDecomp.J_verts
 #print axioms PlanarMatching.ElimData.FromDecomp.valid
 #print axioms PlanarMatching.ElimData.FromDecomp.correct
+#print axioms PlanarMatching.pick_step
+#print axioms PlanarMatching.search_spec
+#print axioms PlanarMatching.search_hub
+#print axioms PlanarMatching.nsg_block
+#print axioms PlanarMatching.Sched.nsg
+#print axioms PlanarMatching.Sched.done
+#print axioms PlanarMatching.Sched.matched
+#print axioms PlanarMatching.Decomp.escape
+#print axioms PlanarMatching.mates_decomp

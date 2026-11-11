@@ -10,3 +10,5 @@ import PlanarMatching.Labels
 import PlanarMatching.ElimRun
 import PlanarMatching.ElimTree
 import PlanarMatching.ElimDecomp
+import PlanarMatching.MateSearch
+import PlanarMatching.MateDecomp
