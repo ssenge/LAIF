@@ -104,7 +104,7 @@ The spin schedules are trained by gradient descent on the limit with a smoothed 
 
 ## Status and checks
 
-Numerical results, with an exact value at p = 1. No part is formalized in Lean.
+Numerical results, with an exact value at p = 1. The sign independence of the version with τ is proved in Lean: `lean/XorsatLocal/Gauge.lean` shows that if every clause has a vertex that lies in no earlier clause, then for any fixed signs J_e every pattern of signs J_e Π_{j ∈ e} τ_j is reached by the same number of choices of τ (`gauge_uniform`). The neighbourhood of a clause on a hypergraph of girth above 2p + 1, with its clauses ordered by distance from the root clause, has such an order; that step is not formalized. Only the standard axioms are used (`lean/axioms.txt`).
 
 - **Exact radius 1:** the closed form agrees with the sampled limit: 0.2829 ± 0.0004 (spin dynamics) and 0.2837 ± 0.0002 (network) against 0.28377 for q = 3, and 0.2545 ± 0.0003 (network) against 0.25420 for q = 4.
 - **Two implementations:** for q = 2 the spin dynamics of `sim/xor_limit.py` gives 0.3362, 0.4580 and 0.5397 at p = 1, 2, 3 on the schedules of the Max-k-Cut folder, whose separate implementation gives 0.3367, 0.4583 and 0.5389.
@@ -116,6 +116,7 @@ Numerical results, with an exact value at p = 1. No part is formalized in Lean.
 
 ## Files
 
+- `lean/XorsatLocal/Gauge.lean`: uniformity of the gauged signs, with `lean/Axioms.lean` and `lean/axioms.txt`. Lean 4.36.0-rc1 and Mathlib as pinned in `lean/lake-manifest.json`.
 - `sim/xor_limit.py`: the single-site limit of the spin dynamics and its training.
 - `sim/xor_mp.py`: the same for the network family.
 - `sim/xor_p1.py`: the exact value at p = 1.
