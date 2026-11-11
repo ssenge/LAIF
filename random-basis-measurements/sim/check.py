@@ -1,4 +1,4 @@
-"""Checks for the note on three and four random bases (run: python -I sim/check.py, about 10 minutes).
+"""Checks for the note on three and four random bases (run: python -I sim/check.py, about one minute).
 1. Codimension count of Theorem 1: for orthonormal rows (r1, r2) with dark set D (|D| = m), the functionals
    Re(r1_x conj r2_x), x not in D, restricted to the orthogonal complement of r1, have rank d - m - 1.
 2. Three uniformly random bases: a regular zero of the information is found in every sampled instance, d = 3..12.
@@ -23,11 +23,16 @@ def i_top(n):
 
 
 def check_topology(rng):
+    alpha = lambda n: bin(n).count("1")
+    def eps(n): return (0 if alpha(n) % 4 == 1 else 1) if n % 2 == 0 else -1
+    assert all(n >= 2 * alpha(n) + 1 for n in range(4, 10 ** 5))
+    assert 3 * 2 <= 4 * 2 - 2 * alpha(2) + eps(2) and not 3 * 3 <= 4 * 3 - 2 * alpha(3) + eps(3)
+    print("5. 3n <= 4n - 2 alpha(n) + eps(n) for n = 2 and every 4 <= n < 10^5 (not for n = 3): three bases excluded for d = 3 and d >= 5")
     for n in range(1, 200):
         r = n.bit_length() - 1
         assert i_top(n) == 2 ** r - 1 - (n - 2 ** r)
     ds = [n + 1 for n in range(2, 90) if 2 * i_top(n) > n]
-    print(f"5. top degree of the dual class verified for n < 200; three bases are excluded (3n < 2n + 2 i(n)) for d = {ds}")
+    print(f"   top degree of the mod 2 dual class verified for n < 200; three bases are excluded (3n < 2n + 2 i(n)) for d = {ds}")
     d = 5; w = np.exp(2j * np.pi / d); x = np.arange(d)
     F = np.exp(2j * np.pi * np.outer(x, x) / d) / np.sqrt(d); Q = np.diag(w ** (x * x)) @ F
     res, q, _ = solve([np.eye(d), F, Q], 200, rng)

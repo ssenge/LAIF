@@ -23,6 +23,7 @@
    K = 4, d = 4: zero at a regular state in 0/5 instances; residual of the best point between 5.1e-03 and 1.4e-02
    K = 4, d = 5: zero at a regular state in 0/5 instances; residual of the best point between 2.1e-03 and 6.0e-03
    K = 4, d = 6: zero at a regular state in 0/5 instances; residual of the best point between 9.9e-04 and 2.5e-03
-5. top degree of the dual class verified for n < 200; three bases are excluded (3n < 2n + 2 i(n)) for d = [5, 9, 10, 17, 18, 19, 20, 21, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85]
+5. 3n <= 4n - 2 alpha(n) + eps(n) for n = 2 and every 4 <= n < 10^5 (not for n = 3): three bases excluded for d = 3 and d >= 5
+   top degree of the mod 2 dual class verified for n < 200; three bases are excluded (3n < 2n + 2 i(n)) for d = [5, 9, 10, 17, 18, 19, 20, 21, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85]
    three mutually unbiased bases in d = 5: zero with residual 2.2e-16 at smallest outcome probability 3.8e-05
 all checks passed
