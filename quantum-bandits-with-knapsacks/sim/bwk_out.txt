@@ -1,0 +1,13 @@
+instance 0: v* = 0.3771
+  T=   10000: regret    1500.9  (bound    1898.0, width sum   273.6, max deficit 1.08, sqrt(T) =   100.0)
+  T=  100000: regret    1788.6  (bound    2310.2, width sum   352.4, max deficit 1.12, sqrt(T) =   316.2)
+  T= 1000000: regret    2099.2  (bound    2696.5, width sum   405.2, max deficit 1.10, sqrt(T) =  1000.0)
+instance 1: v* = 0.4800
+  T=   10000: regret    1960.8  (bound    2284.0, width sum   218.2, max deficit 0.90, sqrt(T) =   100.0)
+  T=  100000: regret    2348.3  (bound    2733.2, width sum   243.0, max deficit 1.03, sqrt(T) =   316.2)
+  T= 1000000: regret    2798.7  (bound    3193.1, width sum   278.4, max deficit 0.97, sqrt(T) =  1000.0)
+instance 2: v* = 0.2837
+  T=   10000: regret    1121.7  (bound    1533.4, width sum   309.6, max deficit 1.12, sqrt(T) =   100.0)
+  T=  100000: regret    1336.7  (bound    1855.7, width sum   381.2, max deficit 1.08, sqrt(T) =   316.2)
+  T= 1000000: regret    1580.6  (bound    2152.1, width sum   426.7, max deficit 1.00, sqrt(T) =  1000.0)
+bwk checks: ok
