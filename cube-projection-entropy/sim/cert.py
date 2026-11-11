@@ -63,7 +63,10 @@ def selfcheck(n):
     from fractions import Fraction
     P = [piece(n, j) for j in range(n)]
     ev = lambda p, t: sum(c * t ** i for i, c in enumerate(p))
-    assert all(ev(P[j], 1) == ev(P[j + 1], 0) for j in range(n - 1))          # f is continuous
+    for j in range(n - 1):                                                     # f is C^(n-2) across the integers
+        p, q = P[j], P[j + 1]
+        for _ in range(n - 1):
+            assert ev(p, 1) == ev(q, 0); p, q = der(p), der(q)
     assert sum(sum(Fraction(c, i + 1) for i, c in enumerate(p)) for p in P) == comb(n - 1, 0) * __import__("math").factorial(n - 1)   # total mass 1
     assert P[-1] == [comb(n - 1, i) * (-1) ** i for i in range(n)]               # last piece (1 - t)^(n-1)
 
@@ -74,7 +77,7 @@ def check_n(n):
         N = Nof(piece(n, j))
         while len(N) > 1 and N[-1] == 0: N.pop()
         if n % 2 == 0 and j == n // 2:                  # centre at t = 0
-            assert N[0] == 0 or n < 5; Q = N[1:] if N[0] == 0 else N
+            assert N[0] == 0 or n < 5; Q = N[1:] if N[0] == 0 else N   # n = 4 (control only): f''' jumps at the centre
         elif n % 2 == 1 and j == n // 2:                # centre at t = 1/2: t = (1 + u)/2, divide by u
             Q = compose_affine(N, 1, 1, 2); assert Q[0] == 0; Q = Q[1:]
         else:
