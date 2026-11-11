@@ -709,6 +709,11 @@ standard axioms (`propext`, `Classical.choice`, `Quot.sound`). There is no `sorr
   $4D + 4$ arcs (`RData.arc_hop`). So the subdivided full repaired graph of every level of a run is a planar network
   on $\{0, \dots, n - 1\}$ of diameter at most $12D + 14$ (`CutPath.Run.hatNet`). The edges that $\hat G_\ell$
   drops can get the length $\infty$.
+- `lean/SsspFlow/GHatLevel.lean`: the network of a level on fixed identifiers. For a plane network on $n$ nodes,
+  the nodes of the subdivided repaired graph are named by a node, a neighbour and one of 21 kinds (`Net.nameC`,
+  `RData.nameD`, `RData.name_injective`), so the names do not depend on the level. All other names hang as pendant
+  nodes at the star centre of their node. The network of a level is planar (`RData.levelNet_planar`) and has diameter
+  at most $12D + 16$ (`RData.levelNet_diam`).
 - `lean/SsspFlow/GHatPhase.lean`: the combinatorics of property (6). Two copies on E_R edges are joined by E_R edges
   exactly when they lie on the path of one piece (`RData.er_comp_iff`), and by E_R and E_C edges exactly when their
   pieces are joined in the token graph (`RData.erc_comp_iff`), whose components are those of the split

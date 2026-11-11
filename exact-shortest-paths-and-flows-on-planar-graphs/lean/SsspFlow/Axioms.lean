@@ -582,3 +582,11 @@ Expected output for each: `propext`, `Classical.choice`, `Quot.sound` (or a subs
 #print axioms SsspFlow.RotSystem.RData.hatNet_fin
 #print axioms SsspFlow.RotSystem.CutPath.Run.card_cut
 #print axioms SsspFlow.RotSystem.CutPath.Run.hatNet
+#print axioms SsspFlow.Congest.Net.vnode_injective
+#print axioms SsspFlow.Congest.Net.nameC_injective
+#print axioms SsspFlow.Congest.Net.isWalk_of_diam
+#print axioms SsspFlow.RotSystem.RData.nameD_injective
+#print axioms SsspFlow.RotSystem.RData.vcopy_injective
+#print axioms SsspFlow.RotSystem.RData.name_injective
+#print axioms SsspFlow.RotSystem.RData.levelNet_planar
+#print axioms SsspFlow.RotSystem.RData.levelNet_diam
