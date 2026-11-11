@@ -1,4 +1,4 @@
-# Largest empty squares and rectangles with quantum queries
+# Largest empty squares, rectangles and segments with quantum queries
 
 Written 11 Nov 2026.
 
@@ -10,6 +10,7 @@ Written 11 Nov 2026.
 | Thm 2 | Largest empty square (LSQR) | O(n^{1.5} log n log log n), Ω(n) [1] | O(n log³ n), so Θ̃(n) | Claim; checked by script |
 | Thm 3 | Largest empty rectangle with d rows (LRECW) | O(n √d log n log log n), Ω(√(nd)) [1] | O(n log³ n) and Ω(n) for every d, so Θ̃(n) | Claim; checked by script |
 | Thm 4 | Largest empty rectangle by area (LREC) | Ω(n) quantum; no quantum speedup over the classical Θ(n²) known [1] | O(n log⁴ n), so Θ̃(n) | Claim; checked by script |
+| Thm 5 | Longest empty segment in a string of n bits (LSEG), and longest run of identical characters (LSIC) | O(√n log n), implied by [6]; O(√n log n log log n) for LSEG [1]; Ω(√n) | O(√n log log n) | Claim; checked by script |
 
 Classically, LSQR and LREC need Ω(n²) queries and LRECW needs Ω(nd) queries [1]. For d up to a polylogarithm in n, the bound of [1] for LRECW is already Õ(n). The algorithms also return an optimal rectangle.
 
@@ -59,6 +60,24 @@ Theorems 2 to 4 search over classes of shapes. A *shape* is a pair (d, h) of a n
 
 *Proof.* Run Lemma 4 for the O(log² n) classes of (D, H), each with the shapes (d, h) of the class with d ≥ w and h ≥ h₀, and return the largest result, as in Theorem 2. The lower bound Ω(n) is from [1]. By the last sentence of Lemma 4, the same bound holds for the size (d − 1)(h − 1) of the formal definition in [1]. ∎
 
+## 4. One dimension
+
+In one dimension the input is f : {0, …, n − 1} → {0, 1}, and LSEG asks for a longest *empty segment*, a longest run of consecutive positions where f is 0 [1]. LSIC asks for a longest run of consecutive positions with the same character, for f with values in a finite alphabet [6]. Write L for the length of a longest run. LSEG reduces to LSIC with one query per position, by replacing each 1 at position i by one of two new characters chosen by the parity of i; then every run of new characters has length 1.
+
+The run through a position p is found by two searches for the first position to the right of p, and the last position to the left of p, whose value differs from the run. Restricted to a window of w positions on each side, these are minimum findings over w positions with O(√w) queries [3].
+
+**Lemma 5.** Let K ≥ 1.
+1. There is a run of length at least K iff the run through some multiple p of K has length at least K. Whether the run through p has length at least K depends only on the positions within distance K − 1 of p.
+2. If K ≤ L < 2K, then L is the largest length of a run through a multiple of K, and the length of the run through any position p depends only on the positions within distance 2K of p.
+
+*Proof.* A run of length at least K contains a multiple of K, by Lemma 1. The run through p has length at least K iff K consecutive positions containing p belong to it, and these lie within distance K − 1 of p. If every run is shorter than 2K, both ends of the run through p lie within distance 2K of p. ∎
+
+**Theorem 5.** LSEG and LSIC can be solved with O(√n log log n) quantum queries, and the algorithms return a longest run.
+
+*Proof.* For a power of two K, decide whether there is a run of length at least K by a search over the at most ⌈n/K⌉ multiples of K with the bounded-error test of Lemma 5.1, which costs O(√K) queries. Search with a bounded-error test [4] uses O(√(n/K)) tests, so O(√n) queries, with error at most 1/3. The answer is monotone in K, so a binary search over the ⌊log₂ n⌋ + 1 powers of two that tolerates errors [8] finds the power of two K with K ≤ L < 2K, or that L = 0, with O(log log n) such decisions and error at most 1/10, so with O(√n log log n) queries. Then compare two multiples p and q of K by the lengths of their runs within distance 2K, with O(√K) queries and error at most 1/4. Minimum finding with a bounded-error comparison oracle uses O(√N) comparisons for N items [7], so a multiple of K with a longest run is found with O(√(n/K) · √K) = O(√n) queries. By Lemma 5.2 its run is a longest run. ∎
+
+Both problems need Ω(√n) queries, since a string of n zeros and a string with a single 1 differ in L [1].
+
 ## Scripts
 
 `sim/check_window.py` checks, against brute force:
@@ -71,6 +90,8 @@ Theorems 2 to 4 search over classes of shapes. A *shape* is a pair (d, h) of a n
 
 `sim/check_area.py` checks that the largest value over all classes and lattice cells in Lemma 4, computed from the four fronts only, equals the largest empty rectangle found by brute force, on 1200 random grids of up to 13 × 13 cells, some with rows of ones, for random lower limits w and h₀ on the rows and columns, and that the front learner costs at most √(4DH) per depth and quadrant.
 
+`sim/check_segment.py` checks Lemma 5 against brute force: the scale test and the largest window value over the multiples of K, for LSEG and for LSIC, on 3000 random strings of each kind of up to 40 positions and on all binary strings of up to 14 positions.
+
 ## Use of AI
 
 Claude Opus 5.5 (Anthropic) was used throughout this research: to explore approaches, to develop and check proofs, to write the check scripts, and to draft the text.
@@ -82,3 +103,6 @@ Claude Opus 5.5 (Anthropic) was used throughout this research: to explore approa
 3. C. Dürr, P. Høyer. A quantum algorithm for finding the minimum. arXiv:quant-ph/9607014, 1996.
 4. P. Høyer, M. Mosca, R. de Wolf. Quantum search on bounded-error inputs. ICALP 2003. arXiv:quant-ph/0304052.
 5. B. W. Reichardt. Reflections for quantum query algorithms. SODA 2011. arXiv:1005.1601.
+6. J. Allcock, J. Bao, A. Belovs, T. Lee, M. Santha. On the quantum time complexity of divide and conquer. ICALP 2025. arXiv:2311.16401.
+7. Q. Wang, M. Ying. Quantum algorithm for lexicographically minimal string rotation. arXiv:2012.09376.
+8. U. Feige, P. Raghavan, D. Peleg, E. Upfal. Computing with noisy information. SIAM J. Comput. 23(5), 1994.
