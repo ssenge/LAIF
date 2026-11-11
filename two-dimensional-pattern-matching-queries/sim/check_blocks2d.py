@@ -79,7 +79,7 @@ def block(T, P, B, bb, f, ds, b, W):
         v = T[champ[0] + u[0]][champ[1] + u[1]]; duels += 1
         if v != P[u[0]][u[1]]:                              # champion fails at its own cell
             champ = y
-    assert duels <= bb
+    assert duels <= max(0, len(M) - 1) and len(M) <= bb
     LONG[0] = max(LONG[0], len(M))
     got = {champ} if champ is not None and occurs(T, P, champ) else set()
     assert got == truth, (got, truth)

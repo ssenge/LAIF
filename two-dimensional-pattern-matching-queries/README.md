@@ -6,9 +6,9 @@ Written 11 Nov 2026.
 
 | | Problem | Previous best bound | This folder | Status |
 |---|---|---|---|---|
-| Thm 1 | Two-dimensional pattern matching, n × n text, m × m pattern | O(nm), by search over the positions with an inner search for a mismatch [4] | O(n √m log⁴ n) | Claim; checked by script |
+| Thm 1 | Two-dimensional pattern matching, n × n text, m × m pattern | O(nm), by search over the positions with an inner search for a mismatch [4] | O(n √m log⁴ n) | Claim; checked by script; lemmas in Lean |
 | Thm 2 | Same, any n₁, n₂, m₁, m₂ | | Ω(√(n₁n₂)) for every pattern size | Claim |
-| Thm 3 | Same, n × n text, m × m pattern without short periods (condition (★) of Section 6 with b ≥ m/8) | O(nm), and O(n √m log⁴ n) by Theorem 1 | O(m² + n log³ m), so O(n log³ n) for m ≤ √n | Claim; checked by script |
+| Thm 3 | Same, n × n text, m × m pattern without short periods (condition (★) of Section 6 with b ≥ m/8) | O(nm), and O(n √m log⁴ n) by Theorem 1 | O(m² + n log³ m), so O(n log³ n) for m ≤ √n | Claim; checked by script; lemmas in Lean |
 
 In one dimension the problem takes Õ(√n + √m) queries [1], by deterministic sampling [2]. In two dimensions, quantum algorithms that are fast on average are given in [3]; to our knowledge, no worst-case bound below O(nm) was known for an n × n text and an m × m pattern. Classically, Θ(n²) queries are needed in the worst case, by the same family as in Theorem 2.
 
@@ -88,6 +88,18 @@ A start x *passes* if T[x − f + z_t] = c_t for all t; these k cells lie in the
 
 Theorem 3 needs the whole pattern, which costs m² queries, and condition (★). Patterns with short periods, such as a pattern of a single letter, are covered by Theorem 1, and the all-zero pattern by the largest empty square of [largest-empty-rectangle-queries](../largest-empty-rectangle-queries/).
 
+## Lean
+
+`lean/PatternMatch/Blocks.lean`, built against Mathlib, standard axioms only (`lean/axioms.txt`):
+
+- Lemma 1(a): two occurrences at distance d make d a period (`period_of_occ`), so occurrences lie at least the smallest period apart (`occ_gap`).
+- Lemma 1(b): an infinite word with the periods t and L has the period gcd(t, L) (`gcd_period`), and two windows of an L-periodic word that both equal the first L letters of the pattern start in the same residue class modulo L (`residue_unique`).
+- Lemmas 2 and 5: copies that are pairwise distinct on a set of cells have a sample of k cells and a survivor with 2^k at most the number of copies (`sample_exists`), by keeping the smaller class.
+- Sections 2 to 4: a passing start excludes the other starts of [x − f, x − f + L) (`pass_excludes`); Lemma 3 in both cases (`two_right`, `two_left`); the cell c* of Lemma 4 (`run_cell`).
+- Section 6: the exclusions of a passing start in two dimensions (`pass_excludes2`), the sides used in Lemma 6 (`side_cover`), Lemma 6 (`occ_undominated`), and one duel of the tournament (`duel`).
+
+**Not formalized:** search [4], minimum finding [5], search with bounded-error inputs [7], the lower bound for composed functions [6], the front learner (Lemma 3 of [largest-empty-rectangle-queries](../largest-empty-rectangle-queries/)), the random choice of values in Lemma 2, the step of Lemma 4 from the run to the set X, and the counting of queries and errors in Theorems 1 and 3.
+
 ## Scripts
 
 `sim/check_strips.py` builds the period, the sample and the blocks of Sections 2 to 4 with exact searches, and checks the sample property and the occurrence sets of every block against brute force: 20000 one-dimensional instances (periodic and aperiodic patterns over 2 and 3 letters, texts with planted and noisy copies) and 1500 two-dimensional ones. It covers both block types, with and without occurrences. It checks the combinatorics with exact searches; the sample size, the query counts, the error bounds and Theorem 2 rest on the proofs above.
@@ -96,7 +108,7 @@ Theorem 3 needs the whole pattern, which costs m² queries, and condition (★).
 
 ## Use of AI
 
-Claude Opus 5.5 (Anthropic) was used throughout this research: to explore approaches, to develop and check proofs, to write the check scripts, and to draft the text.
+Claude Opus 5.5 (Anthropic) was used throughout this research: to explore approaches, to develop and check proofs, to write the Lean files and the check scripts, and to draft the text.
 
 ## References
 
