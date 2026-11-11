@@ -651,4 +651,14 @@
 'SsspFlow.Congest.Net.relist_planar' depends on axioms: [propext, Classical.choice, Quot.sound]
 'SsspFlow.Congest.Net.relist_diam' depends on axioms: [propext, Classical.choice, Quot.sound]
 'SsspFlow.RotSystem.planar_of_inst' depends on axioms: [propext, Classical.choice, Quot.sound]
-peak rss 1.2 GB
+'List.isRotated_of_formPerm' depends on axioms: [propext, Classical.choice, Quot.sound]
+'SsspFlow.RotSystem.RData.dinfoAt_dart' depends on axioms: [propext, Classical.choice, Quot.sound]
+'SsspFlow.RotSystem.RData.dinfoAt_symm' depends on axioms: [propext, Classical.choice, Quot.sound]
+'SsspFlow.RotSystem.RData.movA_dinfo' depends on axioms: [propext, Classical.choice, Quot.sound]
+'SsspFlow.RotSystem.RData.movB_dinfo' depends on axioms: [propext, Classical.choice, Quot.sound]
+'SsspFlow.RotSystem.RData.dList_raw' depends on axioms: [propext, Classical.choice, Quot.sound]
+'SsspFlow.RotSystem.RData.lList_raw' depends on axioms: [propext, Classical.choice, Quot.sound]
+'SsspFlow.RotSystem.RData.rList_raw' depends on axioms: [propext, Classical.choice, Quot.sound]
+'SsspFlow.RotSystem.RData.xList_raw' depends on axioms: [propext, Classical.choice, Quot.sound]
+'SsspFlow.RotSystem.RData.starList_raw' depends on axioms: [propext, Classical.choice, Quot.sound]
+peak rss 2.8 GB

@@ -102,6 +102,7 @@ import SsspFlow.GHatLevelConn
 import SsspFlow.RunDepth
 import SsspFlow.TheoremDCost
 import SsspFlow.GHatLevelLocal
+import SsspFlow.GHatTableRaw
 import SsspFlow.ListRot
 import SsspFlow.GHatSplit
 import SsspFlow.Annuli

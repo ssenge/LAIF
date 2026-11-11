@@ -760,6 +760,13 @@ standard axioms (`propext`, `Classical.choice`, `Quot.sound`). There is no `sorr
   (`RData.levelNet_rotList_pend`). A node that knows its own name and these lists at its own identifiers knows the edges
   at them (`Congest.view_of_lists`). Lists that are rotations of these lists give a network with the same graph and the
   same rotation, so it is planar too (`Congest.Net.relist_planar`, `Congest.Net.relist_diam`).
+- `lean/SsspFlow/GHatTableRaw.lean`: the lists of Table R from local data. Every dart carries a record of five bits that
+  its tail computes (`RData.dinfo`): incised, cut corner, mode, host bit, and whether its tail corner is cut in mode R.
+  Read as names, the lists at the copies $D(c)$, $L(c)$, $R(c)$ and $X(c)$ of a corner $c = (w, u)$ are functions of the
+  records of the darts at $w$, the records of the darts into $w$ and the successor of $u$ in the rotation list of $w$
+  (`RData.dList_raw`, `RData.lList_raw`, `RData.rList_raw`, `RData.xList_raw`), and the list at the star centre of $w$
+  is a rotation of the rotation list of $w$ (`RData.starList_raw`). So a node knows these lists after one round in
+  which every node sends each neighbour the record of the dart to it.
 - `lean/SsspFlow/GHatPhase.lean`: the combinatorics of property (6). Two copies on E_R edges are joined by E_R edges
   exactly when they lie on the path of one piece (`RData.er_comp_iff`), and by E_R and E_C edges exactly when their
   pieces are joined in the token graph (`RData.erc_comp_iff`), whose components are those of the split

@@ -656,3 +656,13 @@ Expected output for each: `propext`, `Classical.choice`, `Quot.sound` (or a subs
 #print axioms SsspFlow.Congest.Net.relist_planar
 #print axioms SsspFlow.Congest.Net.relist_diam
 #print axioms SsspFlow.RotSystem.planar_of_inst
+#print axioms List.isRotated_of_formPerm
+#print axioms SsspFlow.RotSystem.RData.dinfoAt_dart
+#print axioms SsspFlow.RotSystem.RData.dinfoAt_symm
+#print axioms SsspFlow.RotSystem.RData.movA_dinfo
+#print axioms SsspFlow.RotSystem.RData.movB_dinfo
+#print axioms SsspFlow.RotSystem.RData.dList_raw
+#print axioms SsspFlow.RotSystem.RData.lList_raw
+#print axioms SsspFlow.RotSystem.RData.rList_raw
+#print axioms SsspFlow.RotSystem.RData.xList_raw
+#print axioms SsspFlow.RotSystem.RData.starList_raw
