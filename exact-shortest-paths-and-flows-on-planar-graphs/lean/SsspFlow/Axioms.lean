@@ -696,3 +696,10 @@ Expected output for each: `propext`, `Classical.choice`, `Quot.sound` (or a subs
 #print axioms SsspFlow.RotSystem.RData.rawKeep_nameD
 #print axioms SsspFlow.RotSystem.RData.rawReal_host
 #print axioms SsspFlow.RotSystem.RData.levelNet_oracleIn_raw
+#print axioms SsspFlow.RotSystem.RData.inn_recv
+#print axioms SsspFlow.RotSystem.RData.lamI_recv
+#print axioms SsspFlow.RotSystem.RData.lists_recv
+#print axioms SsspFlow.RotSystem.RData.vin_recv
+#print axioms SsspFlow.RotSystem.RData.view_recv
+#print axioms SsspFlow.RotSystem.RData.lam_lt_pow
+#print axioms SsspFlow.RotSystem.RData.levelSssp_local
