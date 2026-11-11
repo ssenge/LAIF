@@ -20,11 +20,11 @@ A = { (1, x)/√2 : x ∈ R^d, |x| ≤ 1 },
 
 with parameters θ' = (1, θ)/√2, |θ| ≤ 1/2. Then μ = (1 + ⟨x, θ⟩)/2 ∈ [1/4, 3/4], so the model of [1] applies, and every action is reached through the two-outcome oracle of [1, Section 3].
 
-**Theorem 1.** For every learner in the model above and every T ≥ t₀ := 1000 D^{3/2} there is a parameter θ with |θ| ≤ 1/2 such that
+**Theorem 1.** Let t₀ = ⌈1000 D^{3/2}⌉ and t₁ = 1000 D^{3/2} e^{D/2}. For every learner in the model above and every T ≥ t₀ there is a parameter θ with |θ| ≤ 1/2 such that
 
-E[Regret(T)] ≥ 3.6 · 10⁻⁶ · D^{3/2} · ln( min(T, t₀ e^{D/2}) / t₀ ).
+E[Regret(T)] ≥ 3.6 · 10⁻⁶ · D^{3/2} · ln( min(T, t₁) / t₀ ).
 
-So the worst-case regret is Ω(m^{3/2} log(T/m^{3/2})) for m^{3/2} ≤ T ≤ e^{c m}, and Ω(m^{5/2}) for larger T. The exponent 3/2 of the dimension in the bound implied by [3] cannot be lowered for general action sets. Previous best lower bound: Ω(m log(1 + T/m)) [1].
+Here D = m − 2. So the worst-case regret is Ω(m^{3/2} log(T/(1000 m^{3/2}))) for T ≤ e^{c m}, and Ω(m^{5/2}) for larger T. The exponent 3/2 of the dimension in the bound implied by [3] cannot be lowered for general action sets. Previous best lower bound: Ω(m log(1 + T/m)) [1].
 
 The bound covers learners with full quantum memory, adaptive classical choice of actions, and any use of the oracle and its inverse. Each query reveals information about one linear functional ⟨x, θ⟩ only. Coherent use of many queries gives the usual quadratic gain in the precision of that functional, but it cannot spread this gain over d − 1 directions at once.
 
@@ -58,11 +58,11 @@ For the analysis only, cover R^D by cubes of side 2ε with the partition of unit
 
 ### Uncertainty relation
 
-**Assumption U** (entropic uncertainty relation with quantum memory for position and momentum [4, 5]). For every state on Θ ⊗ B ⊗ C, every cubic grid of side δ_q in position and every cubic grid of side δ_p in momentum P = −i∇,
+**Assumption U** (entropic uncertainty relation with quantum memory for position and momentum, in the coarse-grained form of [5, Proposition 11, eq. (98)], see also [4]). For every state on Θ ⊗ B ⊗ C, every cubic grid of side δ_q in position and every cubic grid of side δ_p in momentum P = −i∇,
 
 H(Q_{δ_q} | B) + H(P_{δ_p} | C) ≥ −log c,  c = max_{j,k} ‖Q_j P_k‖² ≤ (δ_q δ_p / (2π))^d,
 
-where the bound on c comes from ‖Q_j P_k‖² ≤ tr(Q_j P_k Q_j) and |⟨θ|p⟩|² = (2π)^{−d}.
+where the bound on c comes from ‖Q_j P_k‖² ≤ tr(Q_j P_k Q_j) and |⟨θ|p⟩|² = (2π)^{−d} [5, eq. (112)]. The same position and momentum scheme, for a single parameter, gives the resolution limits of [7].
 
 We apply it with B = (L, F) before round t and C = (E, k).
 
@@ -90,13 +90,13 @@ E_{rk}[(1/2) log det(2πe M_{rk})] ≤ (1/2) log(2πe X_t) + D log(√(4πe) Y_t
 
 Y_t = √(D T_tan) + γ Σ_{s<t} √(E[(|x_s − n| + δ)²]),  T_tan ≤ 2 Cells + 4 δ² R + 4 Tang.
 
-The binned momentum entropy of each branch is at most (1/2) log det(2πe M_{rk}) − d log δ_p + o(1) as δ_p → 0, since the normal distribution has the largest entropy at a given second moment.
+The binned momentum entropy of each branch is at most (1/2) log det(2πe M̃_{rk}) − d log δ_p, since the normal distribution has the largest entropy at a given second moment. Here M̃_{rk} is the second moment of the binned momentum, and M̃_{rk} ≤ (1 + η) M_{rk} + (1 + 1/η) d δ_p² I for every η > 0. So the whole chain runs with M_{rk} + ε I in place of M_{rk}, which adds ε to the radial part and at most D√ε to tr((P M P)^{1/2}), uniformly over the branches; then ε → 0.
 
 The nuclear norm is where the factor √D comes from. A trace bound would allow information D times larger, as if every query could inform all directions at once.
 
 ### Position side
 
-The action x_t is a function of the records in F, so H(Q_{δ_q} | L, F) ≤ H(Q_{δ_q} | x_t). In polar coordinates dθ = s^D ds dy / n₁, the radius has a range of length τ, and the grid sides cancel in the limit. This gives
+The action x_t is a function of the records in F, so H(Q_{δ_q} | L, F) ≤ H(Q_{δ_q} | x_t). Let θ̃ be the centre of the bin of θ plus an independent uniform point of the bin. Then H(Q_{δ_q} | x_t) = h(θ̃ | x_t) − d log δ_q, and the term d log δ_q cancels against the one in c. In polar coordinates dθ = s^D ds dy / n₁, the radius of θ̃ has a range of length τ + 2δ_q√d, and |θ̃ − θ| ≤ δ_q√d. All steps below are done for θ̃, and δ_q → 0 is taken only in the final moment inequality. This gives
 
 h(y | x_t) ≥ d log 2π − (1/2) log(2πe X_t) − D log(√(4πe) Y_t / D) + log n₁ − D log(s₀ + τ) − log τ.
 
@@ -106,11 +106,11 @@ E|x_t − n|² ≥ D³ b_t / (8 e² (s₀ + τ)² Y_t²),  b_t = (2π n₁² / (
 
 ### Parameters and summation
 
-Choose τ = √D/(γ t₀), so that γ t τ = √D t/t₀, and in round t ∈ [t₀, t₀ e^{D/2}] choose ε_t ∝ D^{1/4}/√t (exact value in `sim/lbconst.py`). Then Y_t ≤ γ S_t + β√t / √2 with S_t = Σ_{s<t} √(E|x_s − n|²), and b_t ≥ 0.2. With r_t the expected regret in round t and G_t = Σ_{s<t} √r_s, this gives
+Write t₀' = 1000 D^{3/2}. Choose τ = √D/(γ t₀'), so that γ t τ = √D t/t₀', and in round t ∈ [t₀', t₁] choose ε_t ∝ D^{1/4}/√t (exact value in `sim/lbconst.py`). Then Y_t ≤ γ S_t + β√t / √2 with S_t = Σ_{s<t} √(E|x_s − n|²), and b_t ≥ 0.2. With r_t the expected regret in round t and G_t = Σ_{s<t} √r_s, this gives
 
 r_t ≥ q² / (c G_t² + β² t),  c = 8γ²/s₀,  β² ≤ 244.7 D^{3/2},  q² ≥ 0.00177 D³.
 
-**Lemma S.** If r_t ≥ q²/(c G_t² + β² t) for t₀ ≤ t < t₁, then Σ_{t<t₁} r_t ≥ min{ L/(2K), β² L/(2c) } with L = ln(t₁/t₀) and K = 2√c/q + β²/q² + c/(β² t₀).
+**Lemma S.** If r_t ≥ q²/(c G_t² + β² t) for all rounds t (integers) with t₀ ≤ t < t₁, then Σ_{t<t₁} r_t ≥ min{ L/(2K), β² L/(2c) } with L = ln(t₁/t₀) and K = 2√c/q + β²/q² + c/(β² t₀).
 
 *Proof.* Let V_t = c G_t² + β² t. From r_t ≥ q²/V_t, √r_t ≤ r_t √V_t / q, and so ln(V_{t+1}/V_t) ≤ (2c G_t √r_t + c r_t + β²)/V_t ≤ K r_t. Also V_{t₁} ≥ β² t₁ and V_{t₀} ≤ t₀ (c R + β²), where R is the total, since G_{t₀}² ≤ t₀ R. So L − ln(1 + cR/β²) ≤ K R. Either ln(1 + cR/β²) ≥ L/2, which gives R ≥ β² L/(2c), or K R ≥ L/2. ∎
 
@@ -130,7 +130,7 @@ Since ⟨x_j⁺ − x_j⁻, θ⟩ = 2 sin s ⟨u_j, θ⟩, this gives E|θ̂_new
 
 ## Check
 
-`sim/lbconst.py` recomputes every constant of the proof, for D = 2, …, 199 and D = 300, 450, 600, with asserts: the choice of ε_t, the bound on Y_t, the factor b_t, the constants of Lemma S. The constant is smallest at D = 2 (3.6 · 10⁻⁶) and grows with D. Run `python sim/lbconst.py`.
+`sim/lbconst.py` recomputes every constant of the proof, with asserts: the choice of ε_t, the bound on Y_t, the factor b_t, the constants of Lemma S. Times are handled in logarithmic form, so the check runs for every D from 2 to 4999. For D ≥ 5000 the script bounds each scaled quantity by its closed form, which is monotone in D, and gets a constant of at least 6.3 · 10⁻⁶. The constant is smallest at D = 2 (3.608 · 10⁻⁶). Run `python sim/lbconst.py`.
 
 `sim/ubconst.py` recomputes the constants of Theorem 2 with asserts: the mean squared error of the median estimator (at most 153.8/M² over the checked register sizes) and the phase constant 6923. `sim/regret_ball.py` runs the phase algorithm with the exact output law of amplitude estimation, for random θ with |θ| between 0.05 and 1, and asserts the bound of Theorem 2. For d = 2, 4, 8, 16 and T up to 10⁸, the mean regret divided by d^{3/2} ln T stays between 5 and 56 with K = 30.1, and between 2.9 and 10.4 with K = 3 (`sim/out_ball.txt`).
 
@@ -138,8 +138,8 @@ Since ⟨x_j⁺ − x_j⁻, θ⟩ = 2 sin s ⟨u_j, θ⟩, this gives E|θ̂_new
 
 - **Assuming:** the entropic uncertainty relation with quantum memory for position and momentum, in the coarse-grained form above [4, 5], for Theorem 1, and the error bound of amplitude estimation [6] for Theorem 2. Everything else is proved here on paper.
 - **Not formalized:** Theorems 1 and 2 have no Lean proof.
-- The lower bound grows like log T only up to T = t₀ e^{D/2}. The thin radial prior, which keeps the oracle at the best action uninformative, limits the range.
-- The constant is small and t₀ = 1000 D^{3/2}. The bound is stated for one action set, the ball above. For finite action sets with K actions, the bound O(m log T log(KT)) of [1] shows that the dimension enters differently.
+- The lower bound grows like log T only up to T = t₁. The thin radial prior, which keeps the oracle at the best action uninformative, limits the range.
+- The constant is small and t₀ ≈ 1000 D^{3/2}. The bound is stated for one action set, the ball above. For finite action sets with K actions, the bound O(m log T log(KT)) of [1] shows that the dimension enters differently.
 
 ## References
 
@@ -149,6 +149,7 @@ Since ⟨x_j⁺ − x_j⁻, θ⟩ = 2 sin s ⟨u_j, θ⟩, this gives E|θ̂_new
 [4] R. L. Frank, E. H. Lieb. Extended quantum conditional entropy and quantum uncertainty inequalities. Commun. Math. Phys. 323 (2013), arXiv:1204.0825.
 [5] F. Furrer, M. Berta, M. Tomamichel, V. B. Scholz, M. Christandl. Position-momentum uncertainty relations in the presence of quantum memory. J. Math. Phys. 55 (2014) 122205, arXiv:1308.4527.
 [6] G. Brassard, P. Høyer, M. Mosca, A. Tapp. Quantum amplitude amplification and estimation. Contemp. Math. 305 (2002), arXiv:quant-ph/0005055.
+[7] M. J. W. Hall, H. M. Wiseman. Does nonlinear metrology offer improved resolution? Answers from quantum information theory. Phys. Rev. X 2 (2012) 041006, arXiv:1205.2405.
 
 ## Use of AI
 
