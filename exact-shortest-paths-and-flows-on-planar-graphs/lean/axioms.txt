@@ -639,4 +639,12 @@
 'SsspFlow.Congest.logN_level' depends on axioms: [propext, Classical.choice, Quot.sound]
 'SsspFlow.Congest.log_levels' depends on axioms: [propext, Classical.choice, Quot.sound]
 'SsspFlow.Congest.theoremD_cost' depends on axioms: [propext, Classical.choice, Quot.sound]
-peak rss 3.0 GB
+'SsspFlow.Congest.view_of_lists' depends on axioms: [propext, Classical.choice, Quot.sound]
+'SsspFlow.RotSystem.RData.levelPad_ι' depends on axioms: [propext, Classical.choice, Quot.sound]
+'SsspFlow.RotSystem.RData.starV_name' depends on axioms: [propext, Classical.choice, Quot.sound]
+'SsspFlow.RotSystem.RData.back_of_not_real' depends on axioms: [propext, Classical.choice, Quot.sound]
+'SsspFlow.RotSystem.RData.extras_inr' depends on axioms: [propext, Classical.choice, Quot.sound]
+'SsspFlow.RotSystem.RData.levelNet_rotList_dart' depends on axioms: [propext, Classical.choice, Quot.sound]
+'SsspFlow.RotSystem.RData.levelNet_rotList_copy' depends on axioms: [propext, Classical.choice, Quot.sound]
+'SsspFlow.RotSystem.RData.levelNet_rotList_pend' depends on axioms: [propext, Classical.choice, Quot.sound]
+peak rss 2.9 GB

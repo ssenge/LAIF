@@ -644,3 +644,11 @@ Expected output for each: `propext`, `Classical.choice`, `Quot.sound` (or a subs
 #print axioms SsspFlow.Congest.logN_level
 #print axioms SsspFlow.Congest.log_levels
 #print axioms SsspFlow.Congest.theoremD_cost
+#print axioms SsspFlow.Congest.view_of_lists
+#print axioms SsspFlow.RotSystem.RData.levelPad_ι
+#print axioms SsspFlow.RotSystem.RData.starV_name
+#print axioms SsspFlow.RotSystem.RData.back_of_not_real
+#print axioms SsspFlow.RotSystem.RData.extras_inr
+#print axioms SsspFlow.RotSystem.RData.levelNet_rotList_dart
+#print axioms SsspFlow.RotSystem.RData.levelNet_rotList_copy
+#print axioms SsspFlow.RotSystem.RData.levelNet_rotList_pend

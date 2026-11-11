@@ -753,6 +753,12 @@ standard axioms (`propext`, `Classical.choice`, `Quot.sound`). There is no `sorr
   With $\log n' \le 7 \log n$ (`logN_level`) and at most $4 \log n$ levels for a cut path of length $m \le n^2$
   (`log_levels`, `CutPath.Run.nodes_eq_nil`), all levels take $O(\log^{c+1} n \cdot D)$ rounds (`theoremD_cost`).
   This is a count of rounds over the levels, not one algorithm of the message model for the whole recursion.
+- `lean/SsspFlow/GHatLevelLocal.lean`: the rotation lists of the network of a level, by names. At the name of a dart
+  they hold the name of the copy at which it starts and the name of the reverse dart (`RData.levelNet_rotList_dart`),
+  at the name of a copy the names of its darts in rotation order and the identifiers that hang at it
+  (`RData.levelNet_rotList_copy`), and at an identifier that names nothing the star centre $(u, u, 0)$ of its node $u$
+  (`RData.levelNet_rotList_pend`). A node that knows its own name and these lists at its own identifiers knows the edges
+  at them (`Congest.view_of_lists`).
 - `lean/SsspFlow/GHatPhase.lean`: the combinatorics of property (6). Two copies on E_R edges are joined by E_R edges
   exactly when they lie on the path of one piece (`RData.er_comp_iff`), and by E_R and E_C edges exactly when their
   pieces are joined in the token graph (`RData.erc_comp_iff`), whose components are those of the split
