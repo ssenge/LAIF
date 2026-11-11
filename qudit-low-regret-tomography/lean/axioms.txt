@@ -1,0 +1,7 @@
+'QuditRegret.chart_bound' depends on axioms: [propext, Classical.choice, Quot.sound]
+'QuditRegret.chart_region' depends on axioms: [propext, Classical.choice, Quot.sound]
+'QuditRegret.norm_sub_proj_sq' depends on axioms: [propext, Classical.choice, Quot.sound]
+'QuditRegret.inner_orth_sq_le' depends on axioms: [propext, Classical.choice, Quot.sound]
+'QuditRegret.overlap_deriv_sq_le' depends on axioms: [propext, Classical.choice, Quot.sound]
+'QuditRegret.pair_difference' depends on axioms: [propext, Classical.choice, Quot.sound]
+'QuditRegret.update_bound' depends on axioms: [propext, Classical.choice, Quot.sound]

@@ -129,9 +129,23 @@ A *phase* at level ℓ with base vector c measures the same 4(d − 1) vectors a
 
 In the runs with small constants, the regret divided by d² ln T stays between 10 and 18 for d = 2, 4, 8 and T up to 10⁶.
 
+## Lean
+
+The folder [lean/](lean/) checks the deterministic inequalities behind Lemmas 1 to 4 in Lean 4 with Mathlib, with no `sorry` and only the standard axioms. Build it with `lake build`. Running `lake env lean QuditRegret/Axioms.lean` prints the axioms of each theorem (output in `lean/axioms.txt`). Vectors live in any complex inner product space.
+
+**Checked** (`QuditRegret/Basic.lean`):
+
+- **Lemma 1** (`chart_bound`): (1 + |a|²)(1 + |b|²) − |1 + ⟨a, b⟩|² ≥ |a − b|².
+- **The region |a| > 1 in Theorem 1** (`chart_region`): (u − 1/2)² ≥ (1 + u²)/8 for u ≥ 1.
+- **Lemma 2** (`inner_orth_sq_le`, `overlap_deriv_sq_le`): for unit φ, ψ and v ⊥ ψ, |⟨φ|v⟩|² ≤ (1 − |⟨ψ|φ⟩|²)|v|², and the derivative 2 Re(conj⟨φ|ψ⟩ ⟨φ|iλψ + v⟩) of the overlap has square at most 4q(1 − q)|v|².
+- **Lemma 3** (`pair_difference`): |⟨x + y|ψ⟩|² − |⟨x − y|ψ⟩|² = 4 Re(conj⟨x|ψ⟩ ⟨y|ψ⟩).
+- **Lemma 4** (`update_bound`): for unit c, ψ with ⟨c|ψ⟩ ≠ 0 and y ⊥ c, the infidelity of (c + y)/|c + y| with ψ is at most |y − β/α|².
+
+**Not formalized:** the chart bound |v| ≤ |θ̇| in Lemma 2, the information inequality and the prior in the proof of Theorem 1, Lemma 5, the warm-up, the epoch analysis and Theorems 1 to 3 themselves.
+
 ## Scope
 
-- Claim with written proofs, not formalized. The constants are not optimized.
+- Written proofs, with the inequalities of Lemmas 1 to 4 checked in Lean. The constants are not optimized.
 - Theorem 2 gives high-probability guarantees and the online infidelity; Theorem 3 bounds the expected regret without the term d ln² T. Theorem 3 is stated for T ≤ 2^(10^50); the bound on the rare completions from a far state uses ℓ ≤ 10^50.
 - Theorem 1 is for single copies and two-outcome measurements onto one vector, the model of [1]. For general measurements and for collective measurements, [2] gives Ω(d log(T/d)). Related lower bounds for tomography with few-outcome measurements are in [5, 6]; for rank one, [5] gives Ω(d²/ε²) copies for trace distance ε, so Ω(d²/δ) for infidelity δ, with nonadaptive constant-outcome measurements, the nonadaptive counterpart of the estimation bound in Theorem 1.
 
