@@ -89,6 +89,7 @@ import SsspFlow.GHatProps
 import SsspFlow.GHatRot
 import SsspFlow.GHatPlanar
 import SsspFlow.GHatRun
+import SsspFlow.GHatPhase
 import SsspFlow.ListRot
 import SsspFlow.GHatSplit
 import SsspFlow.Annuli

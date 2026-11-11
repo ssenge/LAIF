@@ -220,6 +220,17 @@ Expected output for each: `propext`, `Classical.choice`, `Quot.sound` (or a subs
 #print axioms SsspFlow.RotSystem.RData.mem_copiesAt
 #print axioms SsspFlow.RotSystem.RData.card_copiesAt
 #print axioms SsspFlow.RotSystem.CutPath.Run.card_copiesAt
+#print axioms SsspFlow.RotSystem.RData.er_comp_iff
+#print axioms SsspFlow.RotSystem.RData.erc_comp_iff
+#print axioms SsspFlow.RotSystem.RData.tg_comp_iff
+#print axioms SsspFlow.RotSystem.RData.owner_end
+#print axioms SsspFlow.RotSystem.RData.parent_partner
+#print axioms SsspFlow.RotSystem.RData.parent_tg
+#print axioms SsspFlow.RotSystem.RData.parent_comp
+#print axioms SsspFlow.RotSystem.CutPath.Run.steps_mono
+#print axioms SsspFlow.RotSystem.CutPath.Run.inc_mono
+#print axioms SsspFlow.RotSystem.CutPath.Run.cut_eq
+#print axioms SsspFlow.RotSystem.CutPath.Run.parent_comp
 #print axioms SsspFlow.RotSystem.RData.piece_eq_iff
 #print axioms SsspFlow.RotSystem.RData.vertexEquiv
 #print axioms SsspFlow.RotSystem.RData.tokOf_rev

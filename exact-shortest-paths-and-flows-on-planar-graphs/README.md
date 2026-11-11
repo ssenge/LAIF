@@ -411,8 +411,8 @@ graph failed in about a third of the instances. Lemma R (`notes/GHAT_REPAIR.md`,
 defines the repaired graph formally and proves what Theorem D needs from it: the properties
 [18, Thm 3.1 (1), (2)], planarity with an explicit rotation at every copy, the diameter bound,
 and the local phase of [18, Lemma 3.17]. Its definition, its properties (1), (2) and (5), the
-planarity (3) with the rotation of Table R, the hop bound of (4), the refinement behind the local
-phase in (6) and the distances on the repaired graph hold in Lean (`lean/SsspFlow/GHat.lean`,
+planarity (3) with the rotation of Table R, the hop bound and the copy count of (4), the
+combinatorics of the global and local phases in (6) and the distances on the repaired graph hold in Lean (`lean/SsspFlow/GHat.lean`,
 `lean/SsspFlow/GHatDist.lean`, `lean/SsspFlow/GHatProps.lean`, `lean/SsspFlow/GHatPlanar.lean`). An independent implementation of its definition
 matched the tested graph on 98,000 instances. Lemma R needs a description of the dual nodes
 that is not stated in [18]. Lemma N proves it, by induction over the levels, and the reduction
@@ -693,6 +693,16 @@ standard axioms (`propext`, `Classical.choice`, `Quot.sound`). There is no `sorr
   $\deg$ has at most $3\deg + 1$ copies plus one for each cut corner at it (`RData.card_copiesAt`), and on a level of
   a run $s$ and $t$ have at most $3\deg + 2$ copies and every other vertex at most $3\deg + 1$
   (`CutPath.Run.card_copiesAt`).
+- `lean/SsspFlow/GHatPhase.lean`: the combinatorics of property (6). Two copies on E_R edges are joined by E_R edges
+  exactly when they lie on the path of one piece (`RData.er_comp_iff`), and by E_R and E_C edges exactly when their
+  pieces are joined in the token graph (`RData.erc_comp_iff`), whose components are those of the split
+  (`RData.tg_comp_iff`). So the global phase finds the paths of the pieces and, with Lemma N, the annuli. Every copy on
+  the path of a piece is a copy of an end of a dart of the piece (`RData.owner_end`), so the leader copy belongs to a
+  vertex of the piece. For Rule M, the parent of the other token of a pair is the other token of the parent pair
+  (`RData.parent_partner`), so arcs of the token graph map to arcs of the level before (`RData.parent_tg`) and a
+  component of a level lies in one component of the level before (`RData.parent_comp`): the second part of Claim 3. On
+  a run the incisions grow with the level and the cut corners stay fixed (`CutPath.Run.inc_mono`,
+  `CutPath.Run.cut_eq`), so this holds for every two consecutive levels (`CutPath.Run.parent_comp`).
 - `lean/SsspFlow/GHatSplit.lean`: Lemma N in the split model, which cuts the doubled dual at the digon corners of the
   incised darts and at the cut corners (`RData.dualSplit`). Two tokens lie in one piece exactly when their darts lie
   at one vertex of the split (`RData.piece_eq_iff`), so the pieces are the vertices of the split
@@ -1020,7 +1030,7 @@ distances on the repaired graph are formalized, for any set of cut corners with 
 pairs. Lemma N is formalized in the split model: the pieces and pairs are the vertices and edges of the split, every
 annulus of a level is a component of the token graph of the level, and its lengths $\lambda_t$ are distances in that
 token graph and, below $M$, in the repaired graph. The planarity (3) is formalized for every level of a run, for any modes
-and hosts, and so is the count of copies in (4). The simulation in (4), the rest of (6) and the round count are not formalized. The reduction of the minimum st-cut to the least computed length is
+and hosts, and so is the count of copies in (4). The combinatorics of (6) is formalized. The simulation in (4), the distributed phases of (6) and the round count are not formalized. The reduction of the minimum st-cut to the least computed length is
 formalized, assuming the classical cut duality (`CutDuality`).
 
 ## Numerical checks (`sim/`)
