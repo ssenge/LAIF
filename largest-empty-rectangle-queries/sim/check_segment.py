@@ -62,10 +62,15 @@ if __name__ == "__main__":
         check(x, lambda i, x=x: x[i] == 0)            # longest empty segment: runs of zeros
         y = [rng.choice("ab" if rng.random() < 0.5 else "abc") if rng.random() < p1 else "a" for _ in range(n)]
         check(y, lambda i: True)                      # longest run of identical characters
+        a = [rng.randint(0, 6) for _ in range(n + 1)]   # longest increasing substring: runs of ones of [a_i < a_{i+1}]
+        bits = [1 if a[i] < a[i + 1] else 0 for i in range(n)]
+        L = check(bits, lambda i, b=bits: b[i] == 1)
+        best = max(j - i + 1 for i in range(n + 1) for j in range(i, n + 1) if all(a[t] < a[t + 1] for t in range(i, j)))
+        assert L + 1 == best, (a, L, best)
         cnt += 1
     for n in range(1, 15):                            # all binary strings up to length 14
         for m in range(1 << n):
             x = [(m >> i) & 1 for i in range(n)]
             check(x, lambda i, x=x: x[i] == 0)
             check(x, lambda i: True)
-    print("scale test and lattice maximum agree with brute force on", cnt, "random strings of each kind and all binary strings up to length 14")
+    print("scale test and lattice maximum agree with brute force on", cnt, "random strings and arrays of each kind (LSEG, LSIC, LISST) and all binary strings up to length 14")
