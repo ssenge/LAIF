@@ -719,6 +719,19 @@ standard axioms (`propext`, `Classical.choice`, `Quot.sound`). There is no `sorr
   an edge of the network (`RData.levelNet_host`), and at most four go from one node to another
   (`RData.levelNet_card_cross`). If each node knows the edges at its own identifiers, the nodes run any algorithm on
   the network of a level round for round, with messages of four times the width (`RData.run_levelSim`).
+- `lean/SsspFlow/GHatLevelDist.lean`: distances in the network of a level. The arcs of $\hat G_\ell$ get length $0$
+  on E_R arcs, $\lambda$ of the token on E_C arcs and $M$ on E_S arcs (`RData.arcW`), and every kept dart of the full
+  repaired graph is an arc of the same length between the same copies, and conversely (`RData.arc_of_keep_w`,
+  `RData.keep_of_arc_w`). With these lengths on the middle edges of kept darts, $0$ between a copy and a dart and
+  $\infty$ elsewhere (`RData.levelLen`), the distance between two copies in the network of a level is their distance
+  in $\hat G_\ell$ (`RData.levelNet_dist`).
+- `lean/SsspFlow/GHatLevelSssp.lean`: distances of a level in $O(\log^c n \cdot D)$ rounds, assuming the Exact SSSP
+  bound (`ExactSsspBound`). With offset $0$ at one source copy and $\infty$ elsewhere (`RData.levelOff`), the distance
+  from the virtual source is the distance in $\hat G_\ell$ from the source copy (`RData.dsrcTop_levelOff`). One
+  algorithm, fixed for $n$ and $D$, computes at every copy its distance from the source copy in
+  $C \log^c n' \cdot (12D + 16)$ rounds on the network of the level, with $n' = 21 n^2$ (`RData.levelSssp`), and the
+  nodes of the network compute the same distances in the same number of rounds, with messages of four times the width,
+  if each node knows the edges and inputs at its own identifiers (`RData.levelSssp_sim`).
 - `lean/SsspFlow/GHatPhase.lean`: the combinatorics of property (6). Two copies on E_R edges are joined by E_R edges
   exactly when they lie on the path of one piece (`RData.er_comp_iff`), and by E_R and E_C edges exactly when their
   pieces are joined in the token graph (`RData.erc_comp_iff`), whose components are those of the split
@@ -1059,7 +1072,7 @@ distances on the repaired graph are formalized, for any set of cut corners with 
 pairs. Lemma N is formalized in the split model: the pieces and pairs are the vertices and edges of the split, every
 annulus of a level is a component of the token graph of the level, and its lengths $\lambda_t$ are distances in that
 token graph and, below $M$, in the repaired graph. The planarity (3) is formalized for every level of a run, for any modes
-and hosts, and so is the count of copies in (4). The combinatorics of (6) is formalized, and so is the simulation in (4) for nodes that know the edges of the repaired graph at their own copies, and the repaired graph of every level as a planar network of diameter $O(D)$. The computation of these edges, the distributed phases of (6) and the round count are not formalized. The reduction of the minimum st-cut to the least computed length is
+and hosts, and so is the count of copies in (4). The combinatorics of (6) is formalized, and so is the simulation in (4) for nodes that know the edges of the repaired graph at their own copies, and the repaired graph of every level as a planar network of diameter $O(D)$ whose distances between copies are the distances in $\hat G_\ell$, and, assuming the Exact SSSP bound, the computation of these distances by the nodes in $O(\log^c n \cdot D)$ rounds. The computation of the edges and inputs at the copies, the distributed phases of (6) and the round count of the whole recursion are not formalized. The reduction of the minimum st-cut to the least computed length is
 formalized, assuming the classical cut duality (`CutDuality`).
 
 ## Numerical checks (`sim/`)
