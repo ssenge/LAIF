@@ -1,8 +1,8 @@
 # Purest-state identification with single-copy measurements in random bases.
 # Checks, with asserts:
 #  (1) the moment identities E_U S = (1 + P)/(d + 1) and E_U sum_x p_x^3 = (1 + 3P + 2 tr rho^3)/((d + 1)(d + 2));
-#  (2) the basis variance bound Var_U S <= 48 d / ((d^2 - 1)(d + 1)(d + 2)) (Lemma 2) on several spectra;
-#  (3) the block variance bound V_m = 64/d^3 + 24/(m d^2) + 8/(m^2 d) (Lemma 1) and unbiasedness of the block statistic;
+#  (2) the basis variance bound Var_U S <= 48 d / ((d^2 - 1)(d + 1)(d + 2)) (Lemma 1) on several spectra;
+#  (3) the block variance bound V_m = 64/d^3 + 24/(m d^2) + 8/(m^2 d) (Lemma 2) and unbiasedness of the block statistic;
 #  (4) the elimination algorithm (scaled-down constants) returns the purest state, and its copy count per arm
 #      follows sqrt(d)/Delta + 1/Delta^2: at a fixed gap the count grows like sqrt(d), not like d.
 # python -I purest.py
@@ -142,8 +142,8 @@ def check_single_basis(rng):
 
 if __name__ == "__main__":
     rng = np.random.default_rng(int(sys.argv[1]) if len(sys.argv) > 1 else 1)
-    print("moments and basis variance (Lemma 2):"); check_moments(rng)
-    print("block statistic (Lemma 1):"); check_block(rng)
+    print("moments and basis variance (Lemma 1):"); check_moments(rng)
+    print("block statistic (Lemma 2):"); check_block(rng)
     print("elimination algorithm:"); check_algorithm(rng)
     print("one basis, gap 1/2:"); check_single_basis(rng)
     print("purest checks: ok")

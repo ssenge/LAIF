@@ -1,4 +1,4 @@
-moments and basis variance (Lemma 2):
+moments and basis variance (Lemma 1):
   d=  2 pure   : Var_U S = 2.201e-02, bound 2.667e+00, ratio 0.008
   d=  2 rank2  : Var_U S = 0.000e+00, bound 2.667e+00, ratio 0.000
   d=  2 skew2  : Var_U S = 2.875e-03, bound 2.667e+00, ratio 0.001
@@ -28,7 +28,7 @@ moments and basis variance (Lemma 2):
   d= 32 rank4  : Var_U S = 3.041e-06, bound 1.338e-03, ratio 0.002
   d= 32 random : Var_U S = 8.370e-08, bound 1.338e-03, ratio 0.000
   d= 32 mixed  : Var_U S = 0.000e+00, bound 1.338e-03, ratio 0.000
-block statistic (Lemma 1):
+block statistic (Lemma 2):
   d=  4 m=  2: block mean and variance bound hold on all spectra
   d=  8 m=  3: block mean and variance bound hold on all spectra
   d= 16 m=  4: block mean and variance bound hold on all spectra
