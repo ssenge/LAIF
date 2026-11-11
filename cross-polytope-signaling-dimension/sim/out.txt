@@ -1,0 +1,81 @@
+== signdim.py 2 1
+d = 2: 2 orbits of affinely independent 2-sets, primitive so far 1
+d = 2: 0 orbits of affinely independent 3-sets with 0 inside, primitive so far 1
+support sizes: 2: 1
+d = 2, r = 1: 1 primitive measurements up to symmetry, 1 not r-simulable
+== signdim.py 3 2
+d = 3: 3 orbits of affinely independent 2-sets, primitive so far 1
+d = 3: 3 orbits of affinely independent 3-sets, primitive so far 1
+d = 3: 1 orbits of affinely independent 4-sets with 0 inside, primitive so far 2
+support sizes: 2: 1, 4: 1
+d = 3, r = 2: 2 primitive measurements up to symmetry, 1 not r-simulable
+== signdim.py 3 3
+d = 3: 3 orbits of affinely independent 2-sets, primitive so far 1
+d = 3: 3 orbits of affinely independent 3-sets, primitive so far 1
+d = 3: 1 orbits of affinely independent 4-sets with 0 inside, primitive so far 2
+support sizes: 2: 1, 4: 1
+d = 3, r = 3: 2 primitive measurements up to symmetry, 0 not r-simulable
+exact rational certificates: 2 of 2
+== signdim.py 4 2
+d = 4: 4 orbits of affinely independent 2-sets, primitive so far 1
+d = 4: 6 orbits of affinely independent 3-sets, primitive so far 1
+d = 4: 15 orbits of affinely independent 4-sets, primitive so far 2
+d = 4: 1 orbits of affinely independent 5-sets with 0 inside, primitive so far 3
+support sizes: 2: 1, 4: 1, 5: 1
+d = 4, r = 2: 3 primitive measurements up to symmetry, 2 not r-simulable
+== signdim.py 4 3
+d = 4: 4 orbits of affinely independent 2-sets, primitive so far 1
+d = 4: 6 orbits of affinely independent 3-sets, primitive so far 1
+d = 4: 15 orbits of affinely independent 4-sets, primitive so far 2
+d = 4: 1 orbits of affinely independent 5-sets with 0 inside, primitive so far 3
+support sizes: 2: 1, 4: 1, 5: 1
+d = 4, r = 3: 3 primitive measurements up to symmetry, 0 not r-simulable
+exact rational certificates: 3 of 3
+== signdim.py 5 2
+d = 5: 5 orbits of affinely independent 2-sets, primitive so far 1
+d = 5: 10 orbits of affinely independent 3-sets, primitive so far 1
+d = 5: 41 orbits of affinely independent 4-sets, primitive so far 3
+d = 5: 106 orbits of affinely independent 5-sets, primitive so far 4
+d = 5: 5 orbits of affinely independent 6-sets with 0 inside, primitive so far 9
+support sizes: 2: 1, 4: 2, 5: 1, 6: 5
+d = 5, r = 2: 9 primitive measurements up to symmetry, 8 not r-simulable
+== signdim.py 5 3
+d = 5: 5 orbits of affinely independent 2-sets, primitive so far 1
+d = 5: 10 orbits of affinely independent 3-sets, primitive so far 1
+d = 5: 41 orbits of affinely independent 4-sets, primitive so far 3
+d = 5: 106 orbits of affinely independent 5-sets, primitive so far 4
+d = 5: 5 orbits of affinely independent 6-sets with 0 inside, primitive so far 9
+support sizes: 2: 1, 4: 2, 5: 1, 6: 5
+d = 5, r = 3: 9 primitive measurements up to symmetry, 0 not r-simulable
+exact rational certificates: 9 of 9
+== signdim.py 6 3
+d = 6: 6 orbits of affinely independent 2-sets, primitive so far 1
+d = 6: 16 orbits of affinely independent 3-sets, primitive so far 1
+d = 6: 94 orbits of affinely independent 4-sets, primitive so far 4
+d = 6: 445 orbits of affinely independent 5-sets, primitive so far 6
+d = 6: 2445 orbits of affinely independent 6-sets, primitive so far 18
+d = 6: 37 orbits of affinely independent 7-sets with 0 inside, primitive so far 55
+support sizes: 2: 1, 4: 3, 5: 2, 6: 12, 7: 37
+d = 6, r = 3: 55 primitive measurements up to symmetry, 0 not r-simulable
+exact rational certificates: 55 of 55
+== signdim.py --brute 3
+d = 3: primitive supports containing a fixed vertex: brute force 2, from the orbit list 2
+== signdim.py --brute 4
+d = 4: primitive supports containing a fixed vertex: brute force 12, from the orbit list 12
+== signdim.py --brute 5
+d = 5: primitive supports containing a fixed vertex: brute force 484, from the orbit list 484
+== signdim.py --brute 6
+d = 6: primitive supports containing a fixed vertex: brute force 75852, from the orbit list 75852
+== signdim.py 7 4
+d = 7: 7 orbits of affinely independent 2-sets, primitive so far 1
+d = 7: 23 orbits of affinely independent 3-sets, primitive so far 1
+d = 7: 191 orbits of affinely independent 4-sets, primitive so far 5
+d = 7: 1510 orbits of affinely independent 5-sets, primitive so far 8
+d = 7: 16166 orbits of affinely independent 6-sets, primitive so far 41
+d = 7: 171697 orbits of affinely independent 7-sets, primitive so far 220
+d = 7: 1948 orbits of affinely independent 8-sets with 0 inside, primitive so far 2168
+support sizes: 2: 1, 4: 4, 5: 3, 6: 33, 7: 179, 8: 1948
+d = 7, r = 4: 2168 primitive measurements up to symmetry, 0 not r-simulable
+exact rational certificates by rounding: 2152 of 2168
+exact rational certificates from the active constraints of an LP vertex: 16 of 16
+(run time 2:55 on 10 cores)
