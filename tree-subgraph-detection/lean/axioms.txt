@@ -1,0 +1,6 @@
+'TreeDetect.le_add_of_steps' depends on axioms: [propext, Quot.sound]
+'TreeDetect.exists_hit' depends on axioms: [propext, Quot.sound]
+'TreeDetect.lt_of_lt_first' depends on axioms: [propext, Quot.sound]
+'TreeDetect.first_arrival' depends on axioms: [propext, Quot.sound]
+'TreeDetect.window' depends on axioms: [propext, Classical.choice, Quot.sound]
+'TreeDetect.tree_copy' depends on axioms: [propext, Classical.choice, Quot.sound]
