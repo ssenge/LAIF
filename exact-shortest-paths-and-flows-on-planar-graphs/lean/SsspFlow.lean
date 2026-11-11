@@ -88,3 +88,4 @@ import SsspFlow.GHatDist
 import SsspFlow.GHatProps
 import SsspFlow.GHatSplit
 import SsspFlow.Annuli
+import SsspFlow.TheoremD

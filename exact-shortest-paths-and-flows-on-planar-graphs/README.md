@@ -690,6 +690,14 @@ standard axioms (`propext`, `Classical.choice`, `Quot.sound`). There is no `sorr
   corners (`CutPath.Run.isWalk_level_iff`): every annulus of a level is a component of the token graph of the level.
   Hence $\lambda_t$ of an annulus of a level is the distance between its two pieces in the token graph of the whole
   level and, below $M$, in its repaired graph (`CutPath.Run.ddist_level`, `CutPath.Run.gdist_level`).
+- `lean/SsspFlow/TheoremD.lean`: correctness of Theorem D, assuming the classical duality of planar minimum cuts and
+  shortest paths in the cut along a shortest dual path ([21], [22]), stated as the
+  proposition `CutDuality`. The capacity of a cut and the minimum st-cut are defined on the network itself
+  (`cutVal`, `cutVals`), and a minimum st-cut exists for $s \neq t$ (`exists_isLeast_cutVals`). For $K$ larger than
+  the number of darts, a minimum cut $v$ for the lengths $K\cdot c+1$ gives the minimum cut $\lfloor v/K \rfloor$ for
+  the capacities $c$ (`isLeast_scale`). `theoremD_correct`: if the dual map is planar and connected, the capacities
+  agree on the two darts of an edge and the path is shortest for $K\cdot c+1$, a run of the recursion on the cut
+  exists, and for every run the least computed length $v$ gives the minimum st-cut $\lfloor v/K \rfloor$ for $c$.
 - `lean/SsspFlow/Arborescence.lean`: the arithmetic of the contraction and the halving count of `notes/DMST.md`.
 - `lean/SsspFlow/NegScaling.lean`: the arithmetic of the scaling, the alternation, the short paths in a cluster and the arc inequality of `notes/NEGATIVE.md`.
   - `Setup.negCycle_iff`, `Setup.walks` and `Setup.lemmaD` prove it for any graph with the
@@ -985,7 +993,8 @@ distances on the repaired graph are formalized, for any set of cut corners with 
 pairs. Lemma N is formalized in the split model: the pieces and pairs are the vertices and edges of the split, every
 annulus of a level is a component of the token graph of the level, and its lengths $\lambda_t$ are distances in that
 token graph and, below $M$, in the repaired graph. The planarity (3), the count of copies and the simulation in (4),
-the rest of (6), the reduction of the minimum cut to the lengths $\lambda_t$ and the round count are not.
+the rest of (6) and the round count are not. The reduction of the minimum st-cut to the least computed length is
+formalized, assuming the classical cut duality (`CutDuality`).
 
 ## Numerical checks (`sim/`)
 
@@ -1150,6 +1159,9 @@ The numbers match those in `notes/`.
 19. M. Parter. Distributed Planar Reachability in Nearly Optimal Time. DISC 2020.
 20. M. Ghaffari, B. Haeupler. Low-Congestion Shortcuts for Graphs Excluding Dense Minors.
     arXiv:2008.03091.
+21. J. H. Reif. Minimum s-t cut of a planar undirected network in O(n log² n) time. SIAM J.
+    Comput. 12(1), 1983.
+22. A. Itai, Y. Shiloach. Maximum flow in planar networks. SIAM J. Comput. 8(2), 1979.
 
 ## License
 

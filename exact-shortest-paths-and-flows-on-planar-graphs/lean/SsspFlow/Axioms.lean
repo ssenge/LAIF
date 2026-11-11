@@ -211,6 +211,10 @@ Expected output for each: `propext`, `Classical.choice`, `Quot.sound` (or a subs
 #print axioms SsspFlow.RotSystem.CutPath.Run.isWalk_level_iff
 #print axioms SsspFlow.RotSystem.CutPath.Run.ddist_level
 #print axioms SsspFlow.RotSystem.CutPath.Run.gdist_level
+#print axioms SsspFlow.RotSystem.exists_isLeast_cutVals
+#print axioms SsspFlow.RotSystem.isLeast_scale
+#print axioms SsspFlow.RotSystem.CutPath.tail_cs_ne
+#print axioms SsspFlow.RotSystem.theoremD_correct
 #print axioms SsspFlow.RotSystem.plain
 #print axioms SsspFlow.RotSystem.dual_toHypermap
 #print axioms SsspFlow.RotSystem.dual_dual
