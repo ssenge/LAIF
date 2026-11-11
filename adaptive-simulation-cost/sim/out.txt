@@ -1,0 +1,10 @@
+1. C = 80, mesh 0.1: per-M factor 0.168 < 1, bound at M = 1 is 0.600 < 1, so good triples exist for every M
+2. M = 3, R = 240: smallest eigenvalue of the A_a -6.65e-16, |sum A_a - 1| <= 3.3e-16, |A_a u| <= 1.5e-16 on 30 random inputs
+2. M = 6, R = 60: smallest eigenvalue of the A_a -5.76e-16, |sum A_a - 1| <= 4.4e-16, |A_a u| <= 1.5e-16 on 30 random inputs
+2. M = 10, R = 100: smallest eigenvalue of the A_a -5.55e-16, |sum A_a - 1| <= 4.4e-16, |A_a u| <= 2.2e-16 on 30 random inputs
+2. M = 15, R = 150: smallest eigenvalue of the A_a -8.89e-16, |sum A_a - 1| <= 5.6e-16, |A_a u| <= 3.3e-16 on 30 random inputs
+3. lower bounds (R = 80 M, ground set 240 M) against the upper bound of the guessing scheme:
+   eps = 1e-06: d = 3: 3 <= M_eps <= 36;  d = 30: 11 <= M_eps <= 409
+   eps = 1e-12: d = 3: 5 <= M_eps <= 70;  d = 30: 21 <= M_eps <= 817
+   eps = 1e-30: d = 3: 11 <= M_eps <= 172;  d = 30: 51 <= M_eps <= 2039
+   eps = 1e-100: d = 3: 36 <= M_eps <= 569;  d = 30: 176 <= M_eps <= 6793

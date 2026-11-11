@@ -112,6 +112,7 @@
 | Memory depth of noisy reservoirs with k fresh qubits per step under depolarising noise (keep probability q); [85] proves it is exponential in k, with per-qubit growth between e^{α_q} (a repetition-code reservoir, α_q = ½ ln(1/(1 − q²))) and 2^{β_q}, and asks to close the gap and whether a quantum code can beat α_q | A classical reversible reservoir beats α_q at the same k: it keeps many more copies than fresh qubits, and uses the fresh qubits only to compress the error pattern. Its memory exponent is at least γ_q = ln 2 · q²/(1 − q²) ≥ 1.39 α_q for every q, so the ratio to the upper exponent drops to at most (1 + q²)/(q(1 − q)). An exact finite random walk gives larger values at finite k, for example growth 5.5 to 6.9 per qubit at q = 0.9 (α_q = 0.83) | 2026-11-11 | [noisy-reservoir-memory](noisy-reservoir-memory/) |
 | Retained information of measurements that mix K random orthonormal bases of a d-level system (worst pure state and direction); [86] proves a d-free fraction for K ≥ 5, positivity almost surely when K(d − 1) > 4d, and asks whether three or four bases suffice | Three do not: for d = 3 and every d ≥ 5, every choice of three bases loses all information at some state, since the probability map would immerse the complex projective space in too few dimensions; in d = 4 random triples do so with positive probability (exact computer-assisted proof). Four random bases keep a positive fraction almost surely in every dimension d ≥ 2 | 2026-11-11 | [random-basis-measurements](random-basis-measurements/) |
 | Matrix product verification AB = C with quantum queries | Ω(n^{5/3}), so Θ(n^{5/3}). Previous proof by Kintali. Our contribution: a Lean proof over F₂ and a short written proof | 2026-11-04 | [matrix-product-verification-queries](matrix-product-verification-queries/) |
+| Non-adaptive simulation of adaptive entanglement-assisted messages (d values) within total-variation error ε; [89] proves M_ε ≤ 1 + ln(1/ε)/ln(d/(d − 1)) for every protocol and asks whether this scaling is tight | Tight up to a constant factor: Θ(d log(1/ε)) in the worst case for every d ≥ 3, with Bob having no input. The exclusion task of [89] works with three uniformly random bases in dimension 80M instead of M² + 1, which makes the classical error e^{−O(M)}; a label on Alice's input supplies the factor d | 2026-11-11 | [adaptive-simulation-cost](adaptive-simulation-cost/) |
 
 ## Former repositories
 
@@ -202,6 +203,7 @@ The folders `exact-planar-bipartite-matching`, `exact-shortest-paths-and-flows-o
 86. W. Li, J. Liu. The exact information cost of randomized measurements in quantum metrology. arXiv:2611.00599 (2026).
 87. D. Turturean. A proof of the Aaronson–Ambainis conjecture. arXiv:2611.09773 (2026).
 88. A. Agarwal, S. Ben-David. Oracle separations for the quantum-classical polynomial hierarchy. arXiv:2410.19062 (2024); ITCS 2026.
+89. A. Tavakoli. Unbounded advantage of adaptivity in entanglement-assisted communication. arXiv:2611.11333 (2026).
 
 ## License
 
