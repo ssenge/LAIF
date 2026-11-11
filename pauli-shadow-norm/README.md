@@ -20,7 +20,7 @@ For an observable on k qubits the known bounds grow like 4^k ‖O‖²_∞ [2]. 
 
 E_{B, x∼σ} |Tr(O ρ̂_{B,x})|² ≤ (1 + 1/√2)^N Tr(O†O).
 
-So ‖O‖²_shadow ≤ d^{0.7716} ‖O‖₂², since log₂(1 + 1/√2) = 0.77155. The constant is exact for every N: a product operator O = O₁^{⊗N} with O₁ ∝ I + (1 + √2) Z and σ = |0⟩⟨0|^{⊗N} attains equality.
+So ‖O‖²_shadow ≤ d^{0.7716} ‖O‖₂², since log₂(1 + 1/√2) = 0.77155. The constant is exact for every N: a product operator O = O₁^{⊗N} with O₁ ∝ I + (1 + √2) Z and σ = |0⟩⟨0|^{⊗N} attains equality. For this pair the variance is (1 − 2^{−N}) (1 + 1/√2)^N Tr(O²), so the bound is also tight for the variance up to that factor.
 
 **Corollary 1** (fidelity estimation). For every target state ρ, pure or mixed, the classical-shadow protocol of [1] with random Pauli basis measurements estimates Tr(ρσ) to ±ε with probability 1 − δ using
 
@@ -44,7 +44,7 @@ with Π_{B,x} = ⊗_i |b_i x_i⟩⟨b_i x_i|. The map L has the measure-and-prep
 
 ⟨φ| (L₁ ⊗ L₂)(σ) |φ⟩ = Σ_k Tr(Y_k L₂(X_k)) ≤ ν(L₂) Σ_k Tr X_k Tr Y_k = ν(L₂) Tr(φ₁ L₁(σ₁)) ≤ ν(L₁) ν(L₂),
 
-where σ₁ and φ₁ are the reduced states on the first factor. This is the case p = ∞ of the multiplicativity of maximal output norms of entanglement-breaking channels [3]. By induction ν(L₁^{⊗N}) ≤ ν(L₁)^N, and products of single-qubit optimizers give equality.
+where σ₁ and φ₁ are the reduced states on the first factor. Since Tr R_k = 5 for every k and Σ_k E_k = I, the map L₁/5 is a trace-preserving entanglement-breaking channel, and the product step is the case p = ∞ of the multiplicativity of maximal output norms of such channels [3]. By induction ν(L₁^{⊗N}) ≤ ν(L₁)^N, and products of single-qubit optimizers give equality.
 
 *One qubit.* In the basis {I, X, Y, Z}/√2 the estimator ρ̂_{b,s} = (I + 3s P_b)/2 has coordinates (1, 3s e_b)/√2, and a state with Bloch vector r gives outcome s in basis b with probability (1 + s r_b)/2. So
 
