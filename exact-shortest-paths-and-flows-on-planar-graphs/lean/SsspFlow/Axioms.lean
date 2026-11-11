@@ -640,3 +640,7 @@ Expected output for each: `propext`, `Classical.choice`, `Quot.sound` (or a subs
 #print axioms SsspFlow.RotSystem.CutPath.SideA.nodes_width
 #print axioms SsspFlow.RotSystem.CutPath.SideB.nodes_width
 #print axioms SsspFlow.RotSystem.CutPath.Run.nodes_eq_nil
+#print axioms SsspFlow.Congest.PartAggBox
+#print axioms SsspFlow.Congest.logN_level
+#print axioms SsspFlow.Congest.log_levels
+#print axioms SsspFlow.Congest.theoremD_cost

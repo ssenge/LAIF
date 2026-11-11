@@ -746,6 +746,13 @@ standard axioms (`propext`, `Classical.choice`, `Quot.sound`). There is no `sorr
   $[j, i_1]$ and $[i_2, k]$ with $i_1 \le \lfloor (j+k)/2 \rfloor \le i_2$, so a run on $[j, k]$ has an annulus at depth
   $\ell + 1$ only if $2^\ell < k - j$ (`CutPath.Run.nodes_width`), and none below depth $\log_2 (k - j) + 1$
   (`CutPath.Run.nodes_eq_nil`).
+- `lean/SsspFlow/TheoremDCost.lean`: the rounds of Theorem D in a cost model. A level makes a constant number of
+  calls on the network of the level: shortest paths from a virtual source (`RData.levelSssp_sim`), labels of
+  components (`RData.levelConn_sim`) and part-wise aggregations, assuming part-wise aggregation on planar networks in
+  $\tilde O(D)$ rounds ([9, Cor. 4.6]), stated as the proposition `PartAggBox`, plus a constant number of rounds.
+  With $\log n' \le 7 \log n$ (`logN_level`) and at most $4 \log n$ levels for a cut path of length $m \le n^2$
+  (`log_levels`, `CutPath.Run.nodes_eq_nil`), all levels take $O(\log^{c+1} n \cdot D)$ rounds (`theoremD_cost`).
+  This is a count of rounds over the levels, not one algorithm of the message model for the whole recursion.
 - `lean/SsspFlow/GHatPhase.lean`: the combinatorics of property (6). Two copies on E_R edges are joined by E_R edges
   exactly when they lie on the path of one piece (`RData.er_comp_iff`), and by E_R and E_C edges exactly when their
   pieces are joined in the token graph (`RData.erc_comp_iff`), whose components are those of the split
@@ -1086,7 +1093,7 @@ distances on the repaired graph are formalized, for any set of cut corners with 
 pairs. Lemma N is formalized in the split model: the pieces and pairs are the vertices and edges of the split, every
 annulus of a level is a component of the token graph of the level, and its lengths $\lambda_t$ are distances in that
 token graph and, below $M$, in the repaired graph. The planarity (3) is formalized for every level of a run, for any modes
-and hosts, and so is the count of copies in (4). The combinatorics of (6) is formalized, and so is the simulation in (4) for nodes that know the edges of the repaired graph at their own copies, and the repaired graph of every level as a planar network of diameter $O(D)$ whose distances between copies are the distances in $\hat G_\ell$, and, assuming the Exact SSSP bound, the computation of these distances and of the components of $\hat G_\ell[E_R]$ and $\hat G_\ell[E_R \cup E_C]$ by the nodes in $O(\log^c n \cdot D)$ rounds. The computation of the edges and inputs at the copies, the distributed phases of (6) and the round count of the whole recursion are not formalized. The reduction of the minimum st-cut to the least computed length is
+and hosts, and so is the count of copies in (4). The combinatorics of (6) is formalized, and so is the simulation in (4) for nodes that know the edges of the repaired graph at their own copies, and the repaired graph of every level as a planar network of diameter $O(D)$ whose distances between copies are the distances in $\hat G_\ell$, and, assuming the Exact SSSP bound, the computation of these distances and of the components of $\hat G_\ell[E_R]$ and $\hat G_\ell[E_R \cup E_C]$ by the nodes in $O(\log^c n \cdot D)$ rounds. The round count of the whole recursion is formalized as a cost model over the levels, assuming part-wise aggregation (`PartAggBox`). The computation of the edges and inputs at the copies, the other distributed steps of a level and one algorithm of the message model for the whole recursion are not formalized. The reduction of the minimum st-cut to the least computed length is
 formalized, assuming the classical cut duality (`CutDuality`).
 
 ## Numerical checks (`sim/`)
