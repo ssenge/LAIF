@@ -6,10 +6,10 @@ Written 11 Nov 2026.
 
 | | Problem | Previous best bound | This folder | Status |
 |---|---|---|---|---|
-| Thm 1 | Is there an empty d × h rectangle? (any fixed d, h) | O(n √min(d, h) log n log log n), implied by [1] | O(n log² n), and Ω(n) for every d and h | Claim; checked by script |
-| Thm 2 | Largest empty square (LSQR) | O(n^{1.5} log n log log n), Ω(n) [1] | O(n log³ n), so Θ̃(n) | Claim; checked by script |
-| Thm 3 | Largest empty rectangle with d rows (LRECW) | O(n √d log n log log n), Ω(√(nd)) [1] | O(n log³ n) and Ω(n) for every d, so Θ̃(n) | Claim; checked by script |
-| Thm 4 | Largest empty rectangle by area (LREC) | Ω(n) quantum; no quantum speedup over the classical Θ(n²) known [1] | O(n log⁴ n), so Θ̃(n) | Claim; checked by script |
+| Thm 1 | Is there an empty d × h rectangle? (any fixed d, h) | O(n √min(d, h) log n log log n), implied by [1] | O(n log² n), and Ω(n) for every d and h | Claim; checked by script; lemmas in Lean |
+| Thm 2 | Largest empty square (LSQR) | O(n^{1.5} log n log log n), Ω(n) [1] | O(n log³ n), so Θ̃(n) | Claim; checked by script; lemmas in Lean |
+| Thm 3 | Largest empty rectangle with d rows (LRECW) | O(n √d log n log log n), Ω(√(nd)) [1] | O(n log³ n) and Ω(n) for every d, so Θ̃(n) | Claim; checked by script; lemmas in Lean |
+| Thm 4 | Largest empty rectangle by area (LREC) | Ω(n) quantum; no quantum speedup over the classical Θ(n²) known [1] | O(n log⁴ n), so Θ̃(n) | Claim; checked by script; lemmas in Lean |
 | Thm 5 | Longest empty segment in a string of n bits (LSEG), longest run of identical characters (LSIC), longest increasing substring (LISST) | LSIC and LISST: O(√(n log n)) [6]; LSEG: O(√(n log n)), implied by [6], and O(√n log n log log n) [1]; Ω(√n) | O(√n log log n) | Claim; checked by script |
 
 Classically, LSQR and LREC need Ω(n²) queries and LRECW needs Ω(nd) queries [1]. For d up to a polylogarithm in n, the bound of [1] for LRECW is already Õ(n). The algorithms also return an optimal rectangle.
@@ -78,6 +78,15 @@ The run through a position p is found by two searches for the first position to 
 
 All three problems need Ω(√n) queries, since a string of n zeros and a string with a single 1 differ in L [1].
 
+## Lean
+
+`lean/EmptyRect/`, built against Mathlib, standard axioms only (`lean/axioms.txt`):
+
+- `Window.lean`: Lemma 1 (`lattice_unique`), its form for the shape classes (`lattice_exists`), Lemma 2 (`mem_rect_iff`), that every 1-cell of a quadrant lies at greater or equal distances than a point of its front (`exists_front_le`), the split of a front used in Lemma 3 (`front_split`), and that d consecutive rows avoiding the rows of ones of the lower-bound grids form a block (`block_start`).
+- `Cost.lean`: the cost at one depth in Lemma 3, Σ√(rᵢwᵢ) ≤ √(RW) when Σrᵢ ≤ R and Σwᵢ ≤ W (`level_cost`), ⌈n/d⌉ · d ≤ 2n (`ceil_mul_le`), and the cost of the outer search, √(AB) · √(dh) ≤ 2n when Ad ≤ 2n and Bh ≤ 2n (`outer_cost`).
+
+**Not formalized:** minimum finding [3], search with a bounded-error test [4], the lower bound for composed functions [5], the decision of the window test from the four fronts, and the maximum searches of Lemma 4 and Theorems 2 to 4.
+
 ## Scripts
 
 `sim/check_window.py` checks, against brute force:
@@ -94,7 +103,7 @@ All three problems need Ω(√n) queries, since a string of n zeros and a string
 
 ## Use of AI
 
-Claude Opus 5.5 (Anthropic) was used throughout this research: to explore approaches, to develop and check proofs, to write the check scripts, and to draft the text.
+Claude Opus 5.5 (Anthropic) was used throughout this research: to explore approaches, to develop and check proofs, to write the Lean files and the check scripts, and to draft the text.
 
 ## References
 
