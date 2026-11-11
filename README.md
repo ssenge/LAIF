@@ -67,6 +67,7 @@
 | Quantum algorithms, amplitude estimation | Worst-case applications of the Grover operator for amplitude estimation without phase estimation, |â − a| ≤ ε with probability 1 − α, ε ∈ {10⁻², 10⁻³, 10⁻⁴}, α from 0.1 to 10⁻⁶ | (85.6 + 55.7 ln(1/α))/ε [64] and (50/ε) ln((2/α) log₂(π/(4ε))) [63], e.g. 252/ε at α = 0.05; 77/ε to 88/ε at α = 0.05 only [63, Theorem 2] | A version with exact Clopper-Pearson intervals uses at most 14/ε to 67.4/ε over this range, 4.5 to 15 times fewer, e.g. 18.4/ε at ε = 10⁻³, α = 0.05 | Numerical certificate in double precision with safety margins, with simulation | 2026-11-06 | [amplitude-estimation-constants](amplitude-estimation-constants/) |
 | Quantum algorithms, search | Expected oracle queries of Grover search with an unknown number t of marked items among N, checks included, and of quantum minimum finding | 9/4·√(N/t) as t/N → 0 [65] and 3.07·√(N/t) for t < N/4 [66], proved; about 1.32·√(N/t), numerical [67]; minimum finding about 4.19·√N, implied by [66] | A schedule with a random geometric offset needs at most 1.1341·√(N/t) as t/N → 0, 1.1676·√(N/t) for every t ≤ N/4, and gives minimum finding in at most 2.1094·√N as N → ∞ | Numerical certificate in double precision with safety margins, for every N and t, with simulation | 2026-11-07 | [grover-search-constants](grover-search-constants/) |
 | Fine-grained complexity | Algorithmic consequences of the October 2026 claims [6, 7] that the Exponential Time Hypothesis is false | Time 2^{o(n)} for these problems would contradict ETH | One Turing machine in time 2^{εn} for several counting and parity problems, conditional on the unrefereed claims [6, 7]; some results have since turned out to be known or superseded, see the folder | Lean, as theorems about Turing machines on top of the formalized algorithm of [7] | 2026-11-04 | [eth-corollaries](eth-corollaries/) |
+| Boolean function analysis, quantum query complexity | Row constant c∗ of bounded functions: the least c such that every f : {−1, 1}ⁿ → [−1, 1] of degree d has a row (fractional certificate) of cost c d² at every point, asked in [87]; equivalently the constant in fbs(f) ≤ C deg(f)² | 2 ≤ c∗ ≤ π²/2 ≈ 4.935 [87, 88], from fbs(f) ≤ (π²/4) deg(f)² [88] | c∗ ≤ 3.4454, so fbs(f) ≤ 1.7227 deg(f)²; the constant of the influence bound of [87, Theorem 1.1] becomes about 1.30 · 10⁻³. The composition only needs a polynomial bounded at the integers, not on an interval | Claim, computer-assisted (certificate in 50-digit decimal arithmetic) | 2026-11-11 | [fractional-row-constant](fractional-row-constant/) |
 
 ## Minor results
 
@@ -199,6 +200,8 @@ The folders `exact-planar-bipartite-matching`, `exact-shortest-paths-and-flows-o
 84. S. H. Ng. The Single-Copy Quantum Bandit Is Classical: An Exact Spectral Collapse. arXiv:2609.40339 (2026).
 85. M. Baumann, J. Stein, C. Linnhoff-Popien. The Fundamental Memory Ceiling of Noisy Quantum Reservoirs. arXiv:2610.26228 (2026).
 86. W. Li, J. Liu. The exact information cost of randomized measurements in quantum metrology. arXiv:2611.00599 (2026).
+87. D. Turturean. A proof of the Aaronson–Ambainis conjecture. arXiv:2611.09773 (2026).
+88. A. Agarwal, S. Ben-David. Oracle separations for the quantum-classical polynomial hierarchy. arXiv:2410.19062 (2024); ITCS 2026.
 
 ## License
 

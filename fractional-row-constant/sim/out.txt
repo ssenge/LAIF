@@ -1,0 +1,54 @@
+m=1: N_max = 1, N_max/m^2 = 1.0000, bounded on the whole interval 1.0000
+m=2: N_max = 3, N_max/m^2 = 0.7500, bounded on the whole interval 0.5000
+m=3: N_max = 6, N_max/m^2 = 0.6667, bounded on the whole interval 0.4444
+m=4: N_max = 10, N_max/m^2 = 0.6250, bounded on the whole interval 0.4268
+m=5: N_max = 15, N_max/m^2 = 0.6000, bounded on the whole interval 0.4189
+m=6: N_max = 21, N_max/m^2 = 0.5833, bounded on the whole interval 0.4147
+m=7: N_max = 29, N_max/m^2 = 0.5918, bounded on the whole interval 0.4122
+m=8: N_max = 38, N_max/m^2 = 0.5938, bounded on the whole interval 0.4105
+m=9: N_max = 47, N_max/m^2 = 0.5802, bounded on the whole interval 0.4094
+m=10: N_max = 58, N_max/m^2 = 0.5800, bounded on the whole interval 0.4086
+m=11: N_max = 71, N_max/m^2 = 0.5868, bounded on the whole interval 0.4081
+m=12: N_max = 84, N_max/m^2 = 0.5833, bounded on the whole interval 0.4076
+m=13: N_max = 99, N_max/m^2 = 0.5858, bounded on the whole interval 0.4073
+m=14: N_max = 114, N_max/m^2 = 0.5816, bounded on the whole interval 0.4070
+m=15: N_max = 131, N_max/m^2 = 0.5822, bounded on the whole interval 0.4068
+m=16: N_max = 149, N_max/m^2 = 0.5820, bounded on the whole interval 0.4066
+m=17: N_max = 168, N_max/m^2 = 0.5813, bounded on the whole interval 0.4064
+m=18: N_max = 189, N_max/m^2 = 0.5833, bounded on the whole interval 0.4063
+m=19: N_max = 210, N_max/m^2 = 0.5817, bounded on the whole interval 0.4062
+m=20: N_max = 233, N_max/m^2 = 0.5825, bounded on the whole interval 0.4061
+m=25: N_max = 364, N_max/m^2 = 0.5824, bounded on the whole interval 0.4058
+m=30: N_max = 524, N_max/m^2 = 0.5822, bounded on the whole interval 0.4057
+m=40: N_max = 932, N_max/m^2 = 0.5825, bounded on the whole interval 0.4055
+m=50: N_max = 1455, N_max/m^2 = 0.5820, bounded on the whole interval 0.4054
+m=60: N_max = 2096, N_max/m^2 = 0.5822, bounded on the whole interval 0.4054
+
+tau = 2.625: largest margin 0.0033
+a = 0.998081, sum |b_k| = 1.1563
+  Phi0 = 1.0000000000
+  Phi1 = -1.0000000000
+  alpha = 1.0000000000
+  beta = 0.0000000000
+  M_points = 0.9980282539
+  M_grid = 0.9985992931
+  M_tail = 0.9983547108
+  sum_abs_b = 1.1563335958
+  a = 0.9980807311
+  result = 0.9985992931
+certified: alpha M + |beta| = 0.998599 < 1, so c* <= tau^2/2 = 3.44531
+
+n=2 d=1: max min-row cost 2.000000 = 2.0000 d^2 (4 vertices); argmax y=[1.] blocks=[(0,)]
+n=2 d=2: max min-row cost 4.000000 = 1.0000 d^2 (4 vertices); argmax y=[1. 1.] blocks=[(0,), (1,)]
+n=3 d=1: max min-row cost 2.000000 = 2.0000 d^2 (15 vertices); argmax y=[1. 1.] blocks=[(1,), (2,)]
+n=3 d=2: max min-row cost 6.000000 = 1.5000 d^2 (15 vertices); argmax y=[1. 1. 1.] blocks=[(0,), (1,), (2,)]
+n=3 d=3: max min-row cost 6.000000 = 0.6667 d^2 (15 vertices); argmax y=[1. 1. 1.] blocks=[(0,), (1,), (2,)]
+n=4 d=1: max min-row cost 2.000000 = 2.0000 d^2 (94 vertices); argmax y=[0.5 0.5 0.5 0.5] blocks=[(1,), (0, 3), (2, 3), (0, 1, 2)]
+n=4 d=2: max min-row cost 6.000000 = 1.5000 d^2 (94 vertices); argmax y=[1. 1. 1.] blocks=[(0,), (1,), (3,)]
+n=4 d=3: max min-row cost 8.000000 = 0.8889 d^2 (94 vertices); argmax y=[1. 1. 1. 1.] blocks=[(0,), (1,), (2,), (3,)]
+n=4 d=4: max min-row cost 8.000000 = 0.5000 d^2 (94 vertices); argmax y=[1. 1. 1. 1.] blocks=[(0,), (1,), (2,), (3,)]
+n=5 d=1: max min-row cost 2.000000 = 2.0000 d^2 (2317 vertices); argmax y=[0.5 0.5 0.5] blocks=[(2, 3), (0, 2, 4), (1, 3, 4)]
+n=5 d=2: max min-row cost 6.666667 = 1.6667 d^2 (2317 vertices); argmax y=[1. 1. 1. 1. 1.] blocks=[(0,), (1,), (2,), (3,), (4,)]
+n=5 d=3: max min-row cost 10.000000 = 1.1111 d^2 (2317 vertices); argmax y=[1. 1. 1. 1. 1.] blocks=[(0,), (1,), (2,), (3,), (4,)]
+n=5 d=4: max min-row cost 10.000000 = 0.6250 d^2 (2317 vertices); argmax y=[1. 1. 1. 1. 1.] blocks=[(0,), (1,), (2,), (3,), (4,)]
+n=5 d=5: max min-row cost 10.000000 = 0.4000 d^2 (2317 vertices); argmax y=[1. 1. 1. 1. 1.] blocks=[(0,), (1,), (2,), (3,), (4,)]
