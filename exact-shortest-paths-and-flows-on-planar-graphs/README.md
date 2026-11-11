@@ -1098,8 +1098,11 @@ line numbers in plain-text extractions of [1] (arXiv v2), [9] and [18].
   needs a deterministic version of [6].
 - Can the realization step run in polynomial local time, with a prescribed cyclic order of the
   terminals? [1, Thm 1] claims a polynomial-time construction but promises no order.
-- A maximum st-flow assignment in undirected planar networks in $\tilde O(D)$. Theorem D
-  gives the value and a minimum cut; [18] asks for the assignment as well.
+- A deterministic maximum st-flow assignment in undirected planar networks in $\tilde O(D)$ from the
+  Label Hypothesis alone. Theorem D gives the value and a minimum cut. An undirected network is a
+  directed one with two opposite arcs per edge, so `notes/NEGATIVE.md` gives the flow on every edge
+  with high probability, and `notes/MAXFLOW.md` gives it deterministically with one extension of the
+  labels; [18] asks for the assignment as well.
 
 ## Use of AI
 
