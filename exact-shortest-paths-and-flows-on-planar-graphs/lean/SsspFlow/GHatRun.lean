@@ -1,5 +1,6 @@
 import SsspFlow.Annuli
 import SsspFlow.GHatPlanar
+import SsspFlow.TheoremD
 
 /-!
 # The levels of a run have no conflict
@@ -12,6 +13,10 @@ are the corners at `s` and `t` (`CutPath.Run.cut_data`), which lie at the vertic
 of the dual path. For `m ≥ 1` these differ, and for `m = 0` nothing is incised. So every level of a
 run has no conflict, for any modes and any hosts (`CutPath.Run.noConflict`), and its repaired graph
 is planar (`CutPath.Run.planar_data`).
+
+The count of copies of property (4): a vertex of degree `deg` has at most `3 deg + 1` copies plus
+one for each cut corner at it (`RData.card_copiesAt`). On a level of a run, `s` and `t` have at most
+`3 deg + 2` copies and every other vertex at most `3 deg + 1` (`CutPath.Run.card_copiesAt`).
 -/
 
 set_option autoImplicit false
@@ -49,6 +54,47 @@ theorem noConflict_of_cut
 theorem noConflict_of_inc (h : S.inc = ∅) : S.NoConflict := by
   intro d hd
   simp [h] at hd
+
+open Classical in
+/-- The copies of a vertex: its star centre, `D(c)` at each corner, `L(c)` and `R(c)` where `in(c)`
+or `out(c)` is incised, and `X(c)` at each cut corner. -/
+noncomputable def copiesAt (v : G.Vertex) : Finset (Copy G.Vertex E) :=
+  {Copy.star v} ∪ (Finset.univ.filter fun c => G.tail c = v).image Copy.dc ∪
+    ((Finset.univ.filter fun c => G.tail c = v ∧ G.inDart c ∈ S.inc).image Copy.lc ∪
+      (Finset.univ.filter fun c => G.tail c = v ∧ G.outDart c ∈ S.inc).image Copy.rc) ∪
+    (S.cut.filter fun c => G.tail c = v).image Copy.xc
+
+open Classical in
+/-- Every copy that exists at this level is a copy of its vertex. -/
+theorem mem_copiesAt {u : Copy G.Vertex E} (hu : S.Valid u) : u ∈ S.copiesAt (G.owner u) := by
+  cases u <;> simp_all [copiesAt, Valid, owner] <;> first
+    | exact Finset.mem_filter.2 ⟨Finset.mem_univ _, rfl⟩
+    | exact Finset.mem_filter.2 ⟨Finset.mem_univ _, rfl, hu⟩
+    | exact Finset.mem_filter.2 ⟨hu, rfl⟩
+
+open Classical in
+/-- **A vertex of degree `deg` has at most `3 deg + 1` copies, plus one for each cut corner at
+it.** -/
+theorem card_copiesAt (v : G.Vertex) :
+    (S.copiesAt v).card ≤ 3 * (Finset.univ.filter fun c => G.tail c = v).card + 1 +
+      (S.cut.filter fun c => G.tail c = v).card := by
+  have h2 := (Finset.card_image_le (s := Finset.univ.filter fun c => G.tail c = v) (f := (Copy.dc : E → Copy G.Vertex E)))
+  have h3 := (Finset.card_image_le
+    (s := Finset.univ.filter fun c => G.tail c = v ∧ G.inDart c ∈ S.inc) (f := (Copy.lc : E → Copy G.Vertex E))).trans
+    (Finset.card_le_card (t := Finset.univ.filter fun c => G.tail c = v) fun c hc => by
+      simp only [Finset.mem_filter] at hc ⊢; exact ⟨hc.1, hc.2.1⟩)
+  have h4 := (Finset.card_image_le
+    (s := Finset.univ.filter fun c => G.tail c = v ∧ G.outDart c ∈ S.inc) (f := (Copy.rc : E → Copy G.Vertex E))).trans
+    (Finset.card_le_card (t := Finset.univ.filter fun c => G.tail c = v) fun c hc => by
+      simp only [Finset.mem_filter] at hc ⊢; exact ⟨hc.1, hc.2.1⟩)
+  have h5 := Finset.card_image_le (s := S.cut.filter fun c => G.tail c = v) (f := (Copy.xc : E → Copy G.Vertex E))
+  unfold copiesAt
+  refine (Finset.card_union_le _ _).trans ?_
+  refine (Nat.add_le_add_right ((Finset.card_union_le _ _).trans (Nat.add_le_add_left
+    (Finset.card_union_le _ _) _)) _).trans ?_
+  refine (Nat.add_le_add_right (Nat.add_le_add_right (Finset.card_union_le _ _) _) _).trans ?_
+  simp only [Finset.card_singleton] at *
+  omega
 
 end RData
 
@@ -160,6 +206,26 @@ theorem Run.noConflict : (r.data ℓ modeL hostT hhost).NoConflict := by
     · exact absurd he hst
     · exact absurd he.symm hst
     · rfl
+
+open Classical in
+/-- **On a level of a run, `s` and `t` have at most `3 deg + 2` copies, and every other vertex at
+most `3 deg + 1`.** -/
+theorem Run.card_copiesAt (v : G.Vertex) :
+    ((r.data ℓ modeL hostT hhost).copiesAt v).card ≤
+      3 * (Finset.univ.filter fun c => G.tail c = v).card + 1 +
+        (if v = G.tail C.cs ∨ v = G.tail C.ct then 1 else 0) := by
+  refine ((r.data ℓ modeL hostT hhost).card_copiesAt v).trans (Nat.add_le_add_left ?_ _)
+  have hsub : (r.data ℓ modeL hostT hhost).cut.filter (fun c => G.tail c = v) ⊆
+      ({C.cs, C.ct} : Finset E).filter fun c => G.tail c = v := fun c hc => by
+    rw [Finset.mem_filter] at hc ⊢
+    refine ⟨?_, hc.2⟩
+    rcases r.cut_data ℓ modeL hostT hhost hc.1 with rfl | rfl <;> simp
+  refine (Finset.card_le_card hsub).trans ?_
+  have hne := C.tail_cs_ne
+  have hcs : C.cs ≠ C.ct := fun h => hne (by rw [h])
+  rw [Finset.filter_insert, Finset.filter_singleton]
+  split_ifs with h1 h2 h3 <;> simp_all [Finset.card_insert_of_notMem]
+  all_goals first | omega | (exact absurd (h1.symm.trans h2) hne)
 
 /-- **The repaired graph of every level of a run is planar**, for a connected planar network. -/
 theorem Run.planar_data (hP : G.Planar) (hc : G.Connected) :

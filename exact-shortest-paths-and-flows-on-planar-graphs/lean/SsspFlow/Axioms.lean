@@ -217,6 +217,9 @@ Expected output for each: `propext`, `Classical.choice`, `Quot.sound` (or a subs
 #print axioms SsspFlow.RotSystem.CutPath.Run.cut_data
 #print axioms SsspFlow.RotSystem.CutPath.Run.noConflict
 #print axioms SsspFlow.RotSystem.CutPath.Run.planar_data
+#print axioms SsspFlow.RotSystem.RData.mem_copiesAt
+#print axioms SsspFlow.RotSystem.RData.card_copiesAt
+#print axioms SsspFlow.RotSystem.CutPath.Run.card_copiesAt
 #print axioms SsspFlow.RotSystem.RData.piece_eq_iff
 #print axioms SsspFlow.RotSystem.RData.vertexEquiv
 #print axioms SsspFlow.RotSystem.RData.tokOf_rev

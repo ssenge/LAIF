@@ -688,7 +688,11 @@ standard axioms (`propext`, `Classical.choice`, `Quot.sound`). There is no `sorr
   at one vertex of the dual, so a conflict needs two distinct cut corners there (`RData.noConflict_of_cut`). The cut
   corners of every level of a run are the corners of the cut at $s$ and $t$ (`CutPath.Run.cut_data`), at the vertices
   $p_0$ and $p_m$ of the dual path, and for $m = 0$ nothing is incised. So every level has no conflict, for any modes
-  and hosts (`CutPath.Run.noConflict`), and its repaired graph is planar (`CutPath.Run.planar_data`).
+  and hosts (`CutPath.Run.noConflict`), and its repaired graph is planar (`CutPath.Run.planar_data`). The count of
+  copies of property (4): every copy of a level is a copy of its vertex (`RData.mem_copiesAt`), a vertex of degree
+  $\deg$ has at most $3\deg + 1$ copies plus one for each cut corner at it (`RData.card_copiesAt`), and on a level of
+  a run $s$ and $t$ have at most $3\deg + 2$ copies and every other vertex at most $3\deg + 1$
+  (`CutPath.Run.card_copiesAt`).
 - `lean/SsspFlow/GHatSplit.lean`: Lemma N in the split model, which cuts the doubled dual at the digon corners of the
   incised darts and at the cut corners (`RData.dualSplit`). Two tokens lie in one piece exactly when their darts lie
   at one vertex of the split (`RData.piece_eq_iff`), so the pieces are the vertices of the split
@@ -1016,7 +1020,7 @@ distances on the repaired graph are formalized, for any set of cut corners with 
 pairs. Lemma N is formalized in the split model: the pieces and pairs are the vertices and edges of the split, every
 annulus of a level is a component of the token graph of the level, and its lengths $\lambda_t$ are distances in that
 token graph and, below $M$, in the repaired graph. The planarity (3) is formalized for every level of a run, for any modes
-and hosts. The count of copies and the simulation in (4), the rest of (6) and the round count are not formalized. The reduction of the minimum st-cut to the least computed length is
+and hosts, and so is the count of copies in (4). The simulation in (4), the rest of (6) and the round count are not formalized. The reduction of the minimum st-cut to the least computed length is
 formalized, assuming the classical cut duality (`CutDuality`).
 
 ## Numerical checks (`sim/`)
