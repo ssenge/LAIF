@@ -255,6 +255,16 @@ def check_block_examples():
         es = sorted({tuple(sorted(e)) for i in range(k)
                      for e in [(0, 3 * i + 1), (3 * i + 1, 3 * i + 2), (3 * i + 2, 3 * i + 3), (3 * i + 3, 0)]})
         check_block_reduction(3 * k + 1, es, {(0, 1), (1, 2), (2, 3), (0, 3)})
+    # two windmills of four-cycles joined by a path, condition (d)
+    for w1, w2, L in [(2, 2, 1), (2, 2, 2), (3, 2, 1), (2, 2, 3)]:
+        left = [e for i in range(w1) for e in [(0, 3 * i + 1), (3 * i + 1, 3 * i + 2), (3 * i + 2, 3 * i + 3), (3 * i + 3, 0)]]
+        a = 3 * w1 + 1
+        path = [(0, a)] + [(a + t, a + t + 1) for t in range(L - 1)]
+        rc = a + L - 1
+        right = [e for i in range(w2) for e in [(rc, rc + 3 * i + 1), (rc + 3 * i + 1, rc + 3 * i + 2),
+                                                 (rc + 3 * i + 2, rc + 3 * i + 3), (rc + 3 * i + 3, rc)]]
+        es = sorted({tuple(sorted(e)) for e in left + path + right})
+        check_block_reduction(rc + 3 * w2 + 1, es, {(0, 1), (1, 2), (2, 3), (0, 3)})
 
 
 def check_exponents():
