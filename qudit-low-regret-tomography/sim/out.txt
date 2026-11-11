@@ -32,3 +32,36 @@ proof d=  4 T=1000000000000 regret mean  7925147.6 max  8265414.6  mean/(d^2 ln 
 proof d=  8 T=100000000 regret mean 26459784.8 max 27364435.6  mean/(d^2 ln T) 22444.02  warm-up regret 25790709.3 warm-up infid 0.0013  all epochs on track 1.00
 proof d=  8 T=10000000000 regret mean 32811961.5 max 33720550.4  mean/(d^2 ln T) 22265.71  warm-up regret 31093446.0 warm-up infid 0.0011  all epochs on track 1.00
 proof d=  8 T=1000000000000 regret mean 39336855.6 max 40202421.0  mean/(d^2 ln T) 22244.50  warm-up regret 36513898.9 warm-up infid 0.0014  all epochs on track 1.00
+
+$ python consts2.py
+theta=3.5 C=40 a=10 w=4 C2=500: drift I 0.5804, II 1.3767, warm 0.5695, eta 0.5695; g1 1.031, r1 3.043, r2 5.694; pI 3.75e-05 pIII 1.70e-55 S1 3.05e-94 S2 2.43e-116; log2 T <= 1.472e+53; cB 560.3 cW 2003; lead 983.8 d^2 log2 T = 1419.3 d^2 ln T
+all constants of Theorem 3: ok
+
+$ python regret2.py 2,4,8 1e4,1e6,1e8 20
+practical d=  2 T=1e+04 regret mean       180.3 max       481.8  mean/(d^2 ln T)     4.89  phases    3.4 warm-ups 1.20 aborts  0.20 final infid 2.42e-04
+practical d=  2 T=1e+06 regret mean       386.7 max       565.0  mean/(d^2 ln T)     7.00  phases    9.3 warm-ups 1.15 aborts  0.15 final infid 3.25e-06
+practical d=  2 T=1e+08 regret mean       640.7 max       955.5  mean/(d^2 ln T)     8.70  phases   16.6 warm-ups 1.30 aborts  0.30 final infid 2.42e-08
+practical d=  4 T=1e+04 regret mean       980.3 max      2148.4  mean/(d^2 ln T)     6.65  phases    2.2 warm-ups 1.15 aborts  0.15 final infid 6.67e-02
+practical d=  4 T=1e+06 regret mean      3308.5 max      7987.7  mean/(d^2 ln T)    14.97  phases    9.4 warm-ups 2.20 aborts  1.20 final infid 2.46e-05
+practical d=  4 T=1e+08 regret mean      6042.2 max     14223.9  mean/(d^2 ln T)    20.50  phases   17.5 warm-ups 3.25 aborts  2.25 final infid 3.01e-07
+practical d=  8 T=1e+04 regret mean      3413.4 max      4267.4  mean/(d^2 ln T)     5.79  phases    2.0 warm-ups 1.00 aborts  0.00 final infid 4.06e-02
+practical d=  8 T=1e+06 regret mean     33376.8 max     88380.1  mean/(d^2 ln T)    37.75  phases   13.3 warm-ups 5.60 aborts  4.60 final infid 4.18e-03
+practical d=  8 T=1e+08 regret mean     50098.1 max    139117.5  mean/(d^2 ln T)    42.49  phases   23.5 warm-ups 7.25 aborts  6.25 final infid 1.72e-06
+
+$ python regret2.py 2,3,4,8,16 1e8,1e12,1e16 10 proof
+proof d=  2 T=1e+08 regret mean      5897.2 max      6454.0  mean/(d^2 ln T)    80.04  phases   13.0 warm-ups 1.00 aborts  0.00 final infid 2.99e-08
+proof d=  2 T=1e+12 regret mean     10273.7 max     10867.8  mean/(d^2 ln T)    92.95  phases   26.0 warm-ups 1.00 aborts  0.00 final infid 1.80e-12
+proof d=  2 T=1e+16 regret mean     14601.2 max     14909.7  mean/(d^2 ln T)    99.08  phases   39.0 warm-ups 1.00 aborts  0.00 final infid 3.89e-16
+proof d=  3 T=1e+08 regret mean     17564.1 max     19147.2  mean/(d^2 ln T)   105.94  phases   11.0 warm-ups 1.00 aborts  0.00 final infid 1.75e-07
+proof d=  3 T=1e+12 regret mean     30188.2 max     31094.5  mean/(d^2 ln T)   121.39  phases   24.0 warm-ups 1.00 aborts  0.00 final infid 1.64e-11
+proof d=  3 T=1e+16 regret mean     43052.5 max     44926.3  mean/(d^2 ln T)   129.84  phases   38.0 warm-ups 1.00 aborts  0.00 final infid 9.88e-16
+proof d=  4 T=1e+08 regret mean     34933.3 max     36138.8  mean/(d^2 ln T)   118.53  phases   10.0 warm-ups 1.00 aborts  0.00 final infid 3.13e-07
+proof d=  4 T=1e+12 regret mean     60772.5 max     64399.4  mean/(d^2 ln T)   137.46  phases   23.0 warm-ups 1.00 aborts  0.00 final infid 2.64e-11
+proof d=  4 T=1e+16 regret mean     87039.7 max     89687.0  mean/(d^2 ln T)   147.66  phases   37.0 warm-ups 1.00 aborts  0.00 final infid 1.72e-15
+proof d=  8 T=1e+08 regret mean    151627.0 max    161518.6  mean/(d^2 ln T)   128.61  phases    8.0 warm-ups 1.00 aborts  0.00 final infid 1.38e-06
+proof d=  8 T=1e+12 regret mean    269926.0 max    284389.9  mean/(d^2 ln T)   152.64  phases   21.0 warm-ups 1.00 aborts  0.00 final infid 1.57e-10
+proof d=  8 T=1e+16 regret mean    400047.4 max    412008.1  mean/(d^2 ln T)   169.67  phases   35.0 warm-ups 1.00 aborts  0.00 final infid 9.44e-15
+proof d= 16 T=1e+08 regret mean    621855.3 max    635596.7  mean/(d^2 ln T)   131.87  phases    6.0 warm-ups 1.00 aborts  0.00 final infid 6.20e-06
+proof d= 16 T=1e+12 regret mean   1145081.2 max   1211112.8  mean/(d^2 ln T)   161.88  phases   19.0 warm-ups 1.00 aborts  0.00 final infid 6.75e-10
+proof d= 16 T=1e+16 regret mean   1651994.7 max   1669088.4  mean/(d^2 ln T)   175.16  phases   32.0 warm-ups 1.00 aborts  0.00 final infid 8.43e-14
+

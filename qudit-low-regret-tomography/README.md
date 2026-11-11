@@ -24,7 +24,11 @@ E[Regret(T)] ≤ 10⁵ d² ln T + 10⁴ d ln² T.
 
 Let W ≤ 10⁵ d² ln T be the length of its warm-up. With probability at least 1 − 1/T, at every round t ≥ 2W its current base vector has infidelity at most 16(d − 1)(458(d − 1) + 71x)/t = O((d² + d log T)/t) with the state, where x ≤ 3 ln T is defined below. In expectation the same holds with 1/t added, for 2W ≤ t ≤ T. The online infidelity of [1] is O(d³ log T / t) in expectation.
 
-So in this model the regret is Θ(d² log T) whenever ln T ≤ d and T ≥ d³, up to constant factors that are far apart. Previous best bounds: O(d³ log² T) [1] and Ω(d log(T/d)) [2]. In particular, with two-outcome measurements onto one vector, the regret of order d log T and the online infidelity of order d/t up to logarithms, hoped for in [1, Section 7], are out of reach; they would need richer measurements.
+**Theorem 3 (budgeted phases).** A variant of the epoch algorithm, in which each phase stops once it has seen a fixed number of outcomes 0, has, for every pure state ψ ∈ C^d, d ≥ 2 and 2 ≤ T ≤ 2^(10^50),
+
+E[Regret(T)] ≤ 1420 d² ln T + 6000 d².
+
+So in this model the regret is Θ(d² log T) for all T ≥ d³ (in this range of T), with constants about 3600 apart for large T. Previous best bounds: O(d³ log² T) [1] and Ω(d log(T/d)) [2]. In particular, with two-outcome measurements onto one vector, the regret of order d log T and the online infidelity of order d/t up to logarithms, hoped for in [1, Section 7], are out of reach; they would need richer measurements.
 
 ## Proof of Theorem 1
 
@@ -92,16 +96,43 @@ So the epoch keeps D_m ≤ ε_m with probability at least 1 − e^{−x}, and co
 
 **Total.** Epoch m needs at least 4 · 458 · 16 · 2^m copies, so at most log₂ T + 1 epochs start. By a union bound, the warm-up and all epochs succeed with probability at least 1 − (log₂ T + 2)e^{−x} = 1 − 1/T. On the remaining event the regret is at most T, which adds at most 1. With x ≤ 3 ln T, the warm-up costs at most (8.1x + 1) · 3000d² and the epochs at most (log₂ T + 1)(7420(d − 1)² + 1151(d − 1)x + 1.02(d − 1)). Together this is at most 10⁵ d² ln T + 10⁴ d ln² T. For the second claim, write P = 458(d − 1) + 71x and let t ≥ 2W lie in epoch m. Then t ≤ W + 4(d − 1)Σ_{k≤m} N_k, and ε_m Σ_{k≤m} N_k ≤ Σ_{k≤m} (P 2^{k−m} + ε_m) ≤ 2P, because (m + 1)ε_m ≤ 1/16 ≤ P 2^{−m}. With t − W ≥ t/2 this gives t/2 ≤ 8(d − 1)P/ε_m, so D_m ≤ ε_m ≤ 16(d − 1)P/t on the good event. The expected infidelity adds at most P(bad event) ≤ 1/T ≤ 1/t. ∎
 
+## Budgeted phases and proof of Theorem 3
+
+**The algorithm.** Let ε₀ = 1/128 and, for levels ℓ ≥ 0, ε_ℓ = 2^{−ℓ} ε₀, N_ℓ = ⌈40d/ε_ℓ⌉, n_ℓ = 4(d − 1)N_ℓ and B_ℓ = ⌈3.5 ε_ℓ n_ℓ⌉. A *warm-up* is one warm-up run with N₂ = 500d; if its rejection step fails or ẑ = 0, the base vector is |1⟩. The algorithm starts with a warm-up and then runs phases.
+
+A *phase* at level ℓ with base vector c measures the same 4(d − 1) vectors as an epoch with ε = ε_ℓ and N = N_ℓ, but the two vectors cos s · c ± sin s · u of a pair alternate, one copy each, and the phase counts the outcomes 0.
+
+- If the count reaches B_ℓ, after n′ copies of the phase, the phase *aborts*. Let ρ̂ = B_ℓ/n′. The new level is the largest k ≤ ℓ with ε_k ≥ 2ρ̂; if there is none, the next step is a warm-up. The base vector is kept.
+- Otherwise the phase *completes*: c is updated as in an epoch, and the level becomes ℓ + 1.
+
+**Regret is counted by outcomes 0.** Given the past, the round t outcome is 0 with probability 1 − |⟨φ_t|ψ⟩|². So E[Regret(T)] is the expected number of outcomes 0. A phase sees at most B_ℓ ≤ 560.4 d² of them, and a warm-up uses at most 8d + N₂(4d − 3) ≤ 2003 d² copies.
+
+**Zero rates.** For a pair, (q₊ + q₋)/2 = cos²s (1 − D) + sin²s |⟨u|β⟩|² with |⟨u|β⟩|² ≤ D. So the average probability p̄ of outcome 0 over the two vectors satisfies λ(ε + D) ≤ p̄ ≤ ε + D, with λ = 1 − 2ε₀, for every u.
+
+**Potential.** At the start of a phase at level ℓ, let g = log₂(D/ε_ℓ) if D > ε_ℓ and g = 0 otherwise, and Ψ = ℓ − 10g. Before a warm-up, Ψ = −4. Give a phase weight 1 and a warm-up weight 4.
+
+**Lemma 6 (drift).** Let η = 0.5695. For every state with ℓ ≤ 10^50, the next phase or warm-up increases E Ψ by at least η times its weight.
+
+*Proof.* Write ε = ε_ℓ, r = (ε + D)/ε, and note that εn_ℓ ≥ 4 · 40 · d(d − 1) ≥ 320 and B_ℓ ≥ 1120.
+
+- *Completed phase.* If the phase starts with r ≤ r̄, Lemma 4 gives D′ ≤ 2|x̂ − ξ|² + 2D³/(1 − D). Summing the variances of the frequencies with the zero rates above gives E|x̂ − ξ|² ≤ rε/(160(1 − 2ε₀/3)²). With log₂ y ≤ y/(e ln 2) for y > 0, E[g′; completed] ≤ (4 · 0.2526 r̄/40 + 4K³ε₀²/(1 − Kε₀))/(e ln 2) with K = r̄ − 1.
+- *Aborted phase.* Since ρ̂ ≥ B_ℓ/n_ℓ ≥ 3.5ε, the new level is at most ℓ − 3, and its ε_k is below 4ρ̂ (or a warm-up follows with ε₀ < 2ρ̂). With R = log₂(ρ̂/(ε + D)), Ψ drops by at most g + 6 + R in levels, and the new gap is at most (−1 − R)₊ because ε_k ≥ 2ρ̂. R ≥ k ≥ 1 needs B_ℓ outcomes 0 among the first B_ℓ 2^{−k}/(ε + D) copies, and −1 − R > k needs fewer than B_ℓ among the first B_ℓ 2^{k+1}/(ε + D). The two exponential bounds for sums of independent indicators give Σ_{k≥1} P(R ≥ k) ≤ 10^{−90} and Σ_{k≥0} P(−1 − R > k) ≤ 10^{−110}.
+- *r ≤ 3.043*, i.e. D ≤ 2.043ε. The expected number of outcomes 0 of the whole phase is at most B_ℓ/1.15, so the phase aborts with probability at most 4 · 10^{−5}. The gain is at least 1 − 10 E[g′; completed] − (small terms) ≥ 0.580.
+- *r > 3.043*, so g ≥ 1.031. A completed phase gains 1 + 10g − 10g′, and an aborted one gains at least 9g − 6 − R − 10(−1 − R)₊ ≥ 3.28 − R − 10(−1 − R)₊. For r ≤ 5.694 the bound on E[g′; completed] applies with r̄ = 5.694. For r > 5.694 the expected number of outcomes 0 of the whole phase is at least 1.6 B_ℓ, so the phase completes with probability at most 1.7 · 10^{−55}, and then g′ ≤ ℓ + 8. Together the gain is at least 1.377 − 0.25.
+- *Warm-up.* After a warm-up, g₀ ≤ log₂(1/ε₀) = 7 always, and when its rejection step succeeds, E D₀ ≤ (2d + 1)/(2N₂) ≤ 1.25/500 as in the warm-up analysis above. So E g₀ ≤ 128 · 1.25/500/(e ln 2) + 7e^{−8}, and the gain 4 − 10 E g₀ is at least 4η. ∎
+
+*Proof of Theorem 3.* Run the algorithm with unlimited copies and stop it at the first phase or warm-up that would need copy T + 1. A completed phase at level ℓ uses n_ℓ ≥ 512 · 40 · d(d − 1) · 2^ℓ copies, so every level reached before that point is at most log₂ T − 14, and Ψ ≤ max(0, log₂ T − 14) there. By Lemma 6 and optional stopping, the expected total weight of the phases and warm-ups before the last one is at most (max(0, log₂ T − 14) + 4)/η. Each unit of weight costs at most 560.4 d² outcomes 0, and the last step at most 2003 d². This gives E[Regret(T)] ≤ 983.8 d² (max(0, log₂ T − 14) + 4) + 2003 d² ≤ 1420 d² ln T + 6000 d². ∎
+
 ## Check
 
-`python sim/checks.py` tests Lemma 2 at random charts and vectors, and Lemmas 3 and 4 on random instances. `python sim/consts.py` recomputes the constants above with asserts, including the online constant 16 and the bound on W. `python sim/regret.py 2,4,8 1e4,1e5,1e6 10` runs the algorithm with small constants. `python sim/regret.py 2,3,4,8 1e8,1e10,1e12 10 proof` runs it with the constants of the proof and asserts D_m ≤ ε_m in every epoch of every run. All three need numpy and take a few seconds. Their output is in `sim/out.txt`.
+`python sim/checks.py` tests Lemma 2 at random charts and vectors, and Lemmas 3 and 4 on random instances. `python sim/consts.py` recomputes the constants above with asserts, including the online constant 16 and the bound on W. `python sim/regret.py 2,4,8 1e4,1e5,1e6 10` runs the algorithm with small constants. `python sim/regret.py 2,3,4,8 1e8,1e10,1e12 10 proof` runs it with the constants of the proof and asserts D_m ≤ ε_m in every epoch of every run. All three need numpy and take a few seconds. Their output is in `sim/out.txt`. For Theorem 3, `python sim/consts2.py` checks every inequality of Lemma 6 and the totals with asserts, and `python sim/regret2.py 2,3,4,8,16 1e8,1e12,1e16 10 proof` runs the budgeted algorithm with the constants of the proof; its regret stays below 180 d² ln T in these runs.
 
 In the runs with small constants, the regret divided by d² ln T stays between 10 and 18 for d = 2, 4, 8 and T up to 10⁶.
 
 ## Scope
 
 - Claim with written proofs, not formalized. The constants are not optimized.
-- The term d ln² T is of lower order once d ≥ ln T. For smaller d the two bounds differ by a factor of order ln T / d at most.
+- Theorem 2 gives high-probability guarantees and the online infidelity; Theorem 3 bounds the expected regret without the term d ln² T. Theorem 3 is stated for T ≤ 2^(10^50); the bound on the rare completions from a far state uses ℓ ≤ 10^50.
 - Theorem 1 is for single copies and two-outcome measurements onto one vector, the model of [1]. For general measurements and for collective measurements, [2] gives Ω(d log(T/d)). Related lower bounds for tomography with few-outcome measurements are in [5, 6]; for rank one, [5] gives Ω(d²/ε²) copies for trace distance ε, so Ω(d²/δ) for infidelity δ, with nonadaptive constant-outcome measurements, the nonadaptive counterpart of the estimation bound in Theorem 1.
 
 ## References
