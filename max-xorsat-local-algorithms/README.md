@@ -10,7 +10,7 @@ Reference [1] computes the coefficient ν for QAOA at depth p, which has radius 
 
 ## Result
 
-For q = 3 and q = 4, a classical local message-passing algorithm of radius p has a larger coefficient ν than QAOA at depth p, for every p from 1 to 14, in the limit D → ∞. For q = 5 the same holds for every p from 2 to 14. For p ≥ 2 this rests on the single-site description of the limit below, which is used here without a proof for these algorithms. For p = 1 the value is exact.
+For q = 3 and q = 4, a classical local message-passing algorithm of radius p has a larger coefficient ν than QAOA at depth p, for every p from 1 to 14, in the limit D → ∞. For q = 5 the same holds for every p from 2 to 14, and for q = 6 for every p from 8 to 12. For p ≥ 2 this rests on the single-site description of the limit below, which is used here without a proof for these algorithms. For p = 1 the value is exact.
 
 | p | q = 3, QAOA [1, 2] | q = 3, here | q = 4, QAOA [1, 2] | q = 4, here |
 |---|---|---|---|---|
@@ -51,6 +51,18 @@ For q = 5 the network family is above QAOA at every depth p from 2 to 14:
 
 The entries marked * are the algorithm of depth 12. The smallest margin is 0.0048 (at p = 7), about 7 standard errors. At p = 1 the best algorithm of the class is the threshold algorithm below, with ν = 0.23407 for q = 5.
 
+For q = 6 the network family is above QAOA at every depth p from 8 to 12:
+
+| p | q = 6, QAOA [1, 2] | q = 6, here |
+|---|---|---|
+| 8 | 0.4984 | 0.5040 |
+| 9 | 0.5122 | 0.5261 |
+| 10 | 0.5241 | 0.5410 |
+| 11 | 0.5345 | 0.5438 |
+| 12 | 0.5437 | 0.5531 |
+
+The smallest margin is 0.0056 (at p = 8), about 8 standard errors.
+
 ## The algorithms
 
 Every vertex i draws a random sign s_i and starts with the message m_0(i) = μ s_i. In round t = 1, ..., p it computes the field
@@ -88,7 +100,7 @@ which is maximal at λ = 1.1322 for q = 3 and λ = 1.2922 for q = 4, with the va
 
 ### Training and evaluation
 
-The spin schedules are trained by gradient descent on the limit with a smoothed output, each depth starting from the previous one with a nearly idle last layer, and refined by a random search and a simplex search for the smallest depths (`sim/xsearch.py`, `sim/xaxis.py`). The networks are trained the same way, each depth starting from the previous one with its last message function copied (`sim/xor_mp.py`). Each value for p ≥ 2 is the mean of independent solves of the limit on noise that played no part in training or in the choice of the schedule (`sim/xeval.py`, seeds from 5000): 10 solves with 4 · 10⁵ samples for q = 3 and p ≤ 10, and 40 solves with 10⁵ samples otherwise (all of q = 5). The standard error is at most 0.0008. For q = 3 and 4 a second evaluation on other noise (5 solves with 2 · 10⁵ samples) agrees with every value to within 0.003. With fewer samples per solve the estimate is lower, by up to about 0.008 at 5 · 10⁴ samples.
+The spin schedules are trained by gradient descent on the limit with a smoothed output, each depth starting from the previous one with a nearly idle last layer, and refined by a random search and a simplex search for the smallest depths (`sim/xsearch.py`, `sim/xaxis.py`). The networks are trained the same way, each depth starting from the previous one with its last message function copied (`sim/xor_mp.py`). Each value for p ≥ 2 is the mean of independent solves of the limit on noise that played no part in training or in the choice of the schedule (`sim/xeval.py`, seeds from 5000): 10 solves with 4 · 10⁵ samples for q = 3 and p ≤ 10, and 40 solves with 10⁵ samples otherwise (all of q = 5 and 6). The standard error is at most 0.0008. For q = 3 and 4 a second evaluation on other noise (5 solves with 2 · 10⁵ samples) agrees with every value to within 0.003. With fewer samples per solve the estimate is lower, by up to about 0.008 at 5 · 10⁴ samples.
 
 ## Status and checks
 
@@ -100,7 +112,7 @@ Numerical results, with an exact value at p = 1. No part is formalized in Lean.
 - **Not covered:**
   - a proof of the single-site description for p ≥ 2, and error bounds for its sampling beyond the repeated solves;
   - finite degree for p ≥ 4, and beyond the checks above for p ≤ 3;
-  - q = 5 at p = 1, and q ≥ 6.
+  - q = 5 at p = 1, q = 6 outside 8 ≤ p ≤ 12, and q ≥ 7.
 
 ## Files
 
@@ -110,7 +122,7 @@ Numerical results, with an exact value at p = 1. No part is formalized in Lean.
 - `sim/xsearch.py`, `sim/xaxis.py`: random search, simplex search and refinement of spin schedules, also with the linear output.
 - `sim/xeval.py`: the repeated solves.
 - `sim/xor_tree.py`, `sim/xor_mp_tree.py`: the finite-degree checks on the hypertree.
-- `data/xor_limit_3.jsonl`, `data/xor_limit_4.jsonl`, `data/xor_limit_5.jsonl`: the schedule, value, standard error and family at each depth.
+- `data/xor_limit_3.jsonl`, `data/xor_limit_4.jsonl`, `data/xor_limit_5.jsonl`, `data/xor_limit_6.jsonl`: the schedule, value, standard error and family at each depth.
 - `data/xor_tree_check.txt`, `data/xor_tree_check_3.jsonl`: the finite-degree checks and the spin schedules they use.
 
 Requirements: Python 3.12 with numpy, scipy and jax. Run the scripts from `sim/`.
