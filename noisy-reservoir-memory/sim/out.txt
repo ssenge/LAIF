@@ -1,7 +1,7 @@
 1. class map: capacities hold and f(w) <= w for r <= 39; explicit injective maps built for r <= 11
 2. full bit-level simulation (r <= 11) gives the same flip rate as the weight chain
 3. r = 41, kp = 8, q = 0.9: lam = 5.71909962911e-12 (exact rationals) and 5.71909962911e-12 (floating point)
-5. index compression: W(eps) >= (1 - eps)/(2 F*) for every r; per input qubit, ln(1/F*)/k with r = k'/kappa,
+5. index compression: W(eps) >= ceil((1 - eps)/(2 F*)) - 1 for every r; per input qubit, ln(1/F*)/k with r = k'/kappa,
    against the limit gamma_q = ln 2 q^2/(1 - q^2):
    q = 0.5, kappa = 0.2: k=50: 0.2365, k=200: 0.2188, k=400: 0.2151;  limit psi(s)/kappa = 0.2098
    q = 0.5, kappa = 0.05: k=50: 0.2518, k=200: 0.2340, k=400: 0.2303;  limit psi(s)/kappa = 0.2253
@@ -11,17 +11,17 @@
    q = 0.9: psi/kappa at kappa = 1e-3, 1e-4, 1e-5: 2.9220, 2.9516, 2.9547;  gamma_q = 2.9550, alpha_q = 0.8304
 4. q = 0.9: alpha_q = 0.8304 nats; the upper bound of [1] grows by 2^beta_q = e^59.428 per input qubit
    k   r (best, r <= 2400)   ln(1/lam)   ln W(0.01): here    [1, Thm 1(ii)]   upper bound [1, Thm 1(i)]
-    5    1537       17.20            16.49             1.78           330.41
-   10    2049       51.86            51.16             5.93           627.55   slope 6.933 per qubit
-   15    1665       83.16            82.46            10.08           924.69   slope 6.261 per qubit
-   20    2305      116.27           115.56            14.23          1221.84   slope 6.621 per qubit
-   30    1793      171.06           170.35            22.54          1816.12   slope 5.479 per qubit
+    5    1537       17.20            16.49             1.78           330.55
+   10    2049       51.86            51.16             5.93           627.69   slope 6.933 per qubit
+   15    1665       83.16            82.46            10.08           924.84   slope 6.261 per qubit
+   20    2305      116.27           115.56            14.23          1221.98   slope 6.621 per qubit
+   30    1793      171.06           170.35            22.54          1816.26   slope 5.479 per qubit
 4. q = 0.5: alpha_q = 0.1438 nats; the upper bound of [1] grows by 2^beta_q = e^1.155 per input qubit
    k   r (best, r <= 2400)   ln(1/lam)   ln W(0.01): here    [1, Thm 1(ii)]   upper bound [1, Thm 1(i)]
-    5       7        2.16             1.46             0.27            11.32
-   10     347        3.85             3.15             0.98            17.10   slope 0.338 per qubit
-   15    1665        5.50             4.79             1.70            22.87   slope 0.329 per qubit
-   20    2305        7.10             6.39             2.42            28.65   slope 0.320 per qubit
-   30    1793       10.14             9.44             3.86            40.20   slope 0.305 per qubit
-   40    1217       13.08            12.38             5.30            51.75   slope 0.294 per qubit
+    5       7        2.16             1.39             0.27*            11.46
+   10     347        3.85             3.14             0.98*            17.24   slope 0.338 per qubit
+   15    1665        5.50             4.79             1.70            23.01   slope 0.329 per qubit
+   20    2305        7.10             6.39             2.42            28.79   slope 0.320 per qubit
+   30    1793       10.14             9.44             3.86            40.34   slope 0.305 per qubit
+   40    1217       13.08            12.38             5.30            51.90   slope 0.294 per qubit
 all checks passed

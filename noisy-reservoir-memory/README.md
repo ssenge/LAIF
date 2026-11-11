@@ -1,4 +1,4 @@
-# Noisy reservoirs: a compressing repetition memory has memory exponent ln 2 · q²/(1 − q²), above α_q
+# Noisy reservoirs: a compressing repetition memory has memory exponent at least ln 2 · q²/(1 − q²), above α_q
 
 Written 11 Nov 2026.
 
@@ -12,19 +12,19 @@ In the model of [1], a reservoir of n qubits gets one classical input per time s
 The memory depth W(ε) is the smallest L such that any two input histories agreeing on their last L inputs lead to echo states within trace distance ε.
 
 [1, Theorem 1] shows that the largest memory depth W_{q,k}(ε) over all reservoirs is exponential in k:
-- **Upper bound.** For every reservoir, W(ε) ≤ δ^{−1}⌈ln(1/(2ε))⌉, with δ^{−1} = 2^{(1+4q)/(1−q)} 2^{β_q k} and β_q = q(1 + q²)/((1 − q)(1 − q²)).
-- **Lower bound.** A repetition-code reservoir with k = r + 2 input qubits has W(ε) ≥ ¼ e^{α_q(k−3)} ln(q/ε), with α_q = ½ ln(1/(1 − q²)).
+- **Upper bound.** For every reservoir, W(ε) ≤ ⌈δ^{−1} ln(1/ε)⌉, with δ^{−1} = 2^{(1+4q)/(1−q)} 2^{β_q k} and β_q = q(1 + q²)/((1 − q)(1 − q²)).
+- **Lower bound.** A repetition-code reservoir with k = r + 2 input qubits has W(ε) ≥ ¼ e^{α_q(k−3)} ln(q/ε), with α_q = ½ ln(1/(1 − q²)), when e^{α_q(k−3)} ≥ 4.
 
 Per input qubit, the two bounds grow by the factors 2^{β_q} and e^{α_q}. At q = 0.5 these are e^{1.155} and e^{0.144}; at q = 0.9 they are e^{59.4} and e^{0.83}. [1] lists closing the gap between the exponents as an open problem. It also asks whether a quantum code can beat the classical rate α_q.
 
 ## Result
 
-A classical reservoir already beats the rate α_q. The repetition reservoir of [1] uses r fresh qubits per step to rewrite all r copies. The reservoirs below instead keep r ≫ k copies and use the k − 2 fresh qubits only to remove the information in the error pattern, as much as fits.
+A classical reservoir beats the rate α_q. The repetition reservoir of [1] uses r fresh qubits per step to rewrite all r copies. The reservoirs below instead keep r ≫ k copies and use the k − 2 fresh qubits only to remove the information in the error pattern, as much as fits. The comparison is at the same number k of input qubits, as in [1], whose upper bound holds for every number n of qubits. The reservoirs below use more memory qubits: n = r + k with n/k → ∞ in Theorem 2.
 
 - **Theorem 2** (asymptotic): lim inf_{k→∞} (1/k) ln W_{q,k}(ε) ≥ γ_q = ln 2 · q²/(1 − q²) for every 0 < q < 1 and 0 < ε < 1. Since α_q ≤ q²/(2(1 − q²)), this gives γ_q ≥ 2 ln 2 · α_q ≈ 1.39 α_q. The ratio between the upper exponent β_q ln 2 of [1] and the lower exponent drops from β_q ln 2/α_q to at most (1 + q²)/(q(1 − q)).
-- **Theorem 1** (exact, finite k): a variant with a class-preserving map has a memory depth that is computable exactly from a random walk on h + 1 states. At finite k its values are larger still (table).
+- **Proposition 1** (exact, finite k): a variant with a class-preserving map has a lower bound on the memory depth that is computable exactly from a random walk on h + 1 states. At finite k its values are larger still (table).
 
-| q | α_q (repetition) | γ_q (Theorem 2) | growth per qubit in the table (Theorem 1) | upper exponent β_q ln 2 of [1] |
+| q | α_q (repetition) | γ_q (Theorem 2) | finite-k slope of ln(1/λ), k ≤ 40, r ≤ 2400 (Proposition 1) | upper exponent β_q ln 2 of [1] |
 |---|---|---|---|---|
 | 0.5 | 0.144 | 0.231 | 0.29 to 0.34 | 1.155 |
 | 0.9 | 0.830 | 2.955 | 5.5 to 6.9 | 59.4 |
@@ -34,31 +34,34 @@ A classical reservoir already beats the rate α_q. The repetition reservoir of [
 2. *Compress.* Fix an injective map e ↦ (e′, g), with g ∈ {0, 1}^{k′}, that sends every pattern of weight w to a pattern e′ of weight f(w) ≤ w. The function f is chosen greedily: class w goes to the smallest class v whose remaining capacity, C(r, v) 2^{k′} minus what earlier classes use, holds its C(r, w) patterns. Write g into the k′ fresh qubits, which are discarded at the next step.
 3. *Write or keep.* If c = 0, set the memory to m^r ⊕ e′. If c = 1, set it to b^r ⊕ e′ and move m into the qubit that held b. This costs one bit, not r bits.
 
-**Theorem 1 (class map).** Let λ_{r,k′} = Σ_w π(w) F(w), where π is the stationary distribution of the error weight w ≤ h (relative to the majority) and F(w) is the probability that one step moves more than h copies away from the current majority. Then the reservoir has memory depth
+**Proposition 1 (class map).** Let λ_{r,k′} = Σ_w π(w) F(w), where π is the stationary distribution of the error weight w ≤ h (relative to the majority) right after the unitary and F(w) is the probability that one step moves more than h copies away from the current majority. Then the reservoir has memory depth
 
-W(ε) ≥ (1 − ε)/(2λ_{r,k′}).
+W(ε) ≥ ⌈(1 − ε)/(2λ_{r,k′})⌉ − 1.
 
 Both π and F come from a random walk on h + 1 states with an explicit transition matrix, so λ is computable exactly.
 
 *Proof.*
-- *The chain is exact.* Noise acts independently on the copies. The weight after noise depends only on the weight before it, and step 2 maps every pattern of weight w to weight f(w). So the error weight is a random walk on {0, …, h} whose next value depends only on the current one, with the transition from w given by the noise followed by w ↦ f(w), or w ↦ f(r − w) after a majority flip.
+- *The chain is exact.* Noise acts independently on the copies. The weight after noise depends only on the weight before it, and step 2 maps every pattern of weight w to weight f(w). So the error weight is a random walk on {0, …, h} whose next value depends only on the current one, with the transition from w given by the noise followed by w ↦ f(w), or w ↦ f(r − w) after a majority flip. From every state the walk reaches 0 in one step with positive probability, and it stays at 0 with positive probability, so π is unique and the reservoir has a unique echo state.
 - *A flip has probability λ at every step.* In the echo state the error weight has the stationary distribution π. Writing a bit does not change the error weight, so after the write the weight stays stationary. Hence the majority flips with probability exactly λ at every later step.
-- *The bias survives.* Consider two histories that differ only in the bit b written at some step, and agree afterwards on t steps of "keep". The dynamics commutes with complementing all copies, so the majority equals b exactly when the number of flips so far is even. The majority readout therefore distinguishes the two echo states with bias at least 1 − 2P(some flip in t steps) ≥ 1 − 2tλ. The trace distance is at least this bias, so W(ε) > t whenever 1 − 2tλ > ε. ∎
+- *The bias survives.* Consider two histories that differ only in the bit b written at some step, and agree afterwards on t steps of "keep". After the write, t + 1 noise layers act: the one of the write step and t later ones. If none of them flips the majority, the majority equals b, so P_b(majority = b) ≥ 1 − (t + 1)λ by the union bound, for each value of b. The majority readout therefore distinguishes the two echo states with bias at least 1 − 2(t + 1)λ. The trace distance is at least this bias, so W(ε) > t whenever 1 − 2(t + 1)λ > ε, and the largest such t gives the bound. ∎
 
-**Values.** The table gives ln(1/λ) for the best r found (r ≤ 2400), and ln W(0.01) from Theorem 1, against both bounds of [1].
+**Values.** The table gives ln(1/λ) for the best r found (r ≤ 2400), and ln W(0.01) from Proposition 1, against both bounds of [1].
 
-| q | k | r | ln(1/λ) | ln W(0.01), Theorem 1 | ln W(0.01), lower bound of [1] | ln W(0.01), upper bound of [1] |
+| q | k | r | ln(1/λ) | ln W(0.01), Proposition 1 | ln W(0.01), lower bound of [1] | ln W(0.01), upper bound of [1] |
 |---|---|---|---|---|---|---|
-| 0.9 | 5 | 1537 | 17.20 | 16.49 | 1.78 | 330.4 |
-| 0.9 | 10 | 2049 | 51.86 | 51.16 | 5.93 | 627.6 |
-| 0.9 | 15 | 1665 | 83.16 | 82.46 | 10.08 | 924.7 |
-| 0.9 | 20 | 2305 | 116.27 | 115.56 | 14.23 | 1221.8 |
-| 0.9 | 30 | 1793 | 171.06 | 170.35 | 22.54 | 1816.1 |
-| 0.5 | 5 | 7 | 2.16 | 1.46 | 0.27 | 11.3 |
-| 0.5 | 10 | 347 | 3.85 | 3.15 | 0.98 | 17.1 |
-| 0.5 | 20 | 2305 | 7.10 | 6.39 | 2.42 | 28.7 |
-| 0.5 | 30 | 1793 | 10.14 | 9.44 | 3.86 | 40.2 |
-| 0.5 | 40 | 1217 | 13.08 | 12.38 | 5.30 | 51.8 |
+| 0.9 | 5 | 1537 | 17.20 | 16.49 | 1.78 | 330.6 |
+| 0.9 | 10 | 2049 | 51.86 | 51.16 | 5.93 | 627.7 |
+| 0.9 | 15 | 1665 | 83.16 | 82.46 | 10.08 | 924.8 |
+| 0.9 | 20 | 2305 | 116.27 | 115.56 | 14.23 | 1222.0 |
+| 0.9 | 30 | 1793 | 171.06 | 170.35 | 22.54 | 1816.3 |
+| 0.5 | 5 | 7 | 2.16 | 1.39 | 0.27* | 11.5 |
+| 0.5 | 10 | 347 | 3.85 | 3.14 | 0.98* | 17.2 |
+| 0.5 | 15 | 1665 | 5.50 | 4.79 | 1.70 | 23.0 |
+| 0.5 | 20 | 2305 | 7.10 | 6.39 | 2.42 | 28.8 |
+| 0.5 | 30 | 1793 | 10.14 | 9.44 | 3.86 | 40.3 |
+| 0.5 | 40 | 1217 | 13.08 | 12.38 | 5.30 | 51.9 |
+
+\* Outside the range e^{α_q(k−3)} ≥ 4 of the lower bound of [1], which needs k ≥ 13 at q = 0.5; the formula is shown for comparison.
 
 At q = 0.9 and k = 5, for example, the memory depth is at least 1.4 · 10⁷ steps.
 
@@ -70,9 +73,9 @@ Between consecutive rows, ln(1/λ) grows by 5.5 to 6.9 per input qubit at q = 0.
 
 v(r, k′) = min{v : Σ_{u≤v} C(r, u) ≥ 2^{r−1−k′}}.
 
-**Lemma 3.** In every step the majority flips with probability at most F* = P(v − X + Y > h), where v = v(r, k′), X ~ Bin(v, p) and Y ~ Bin(r − v, p) are independent. Hence W(ε) ≥ (1 − ε)/(2F*).
+**Lemma 3.** In every step the majority flips with probability at most F* = P(v − X + Y > h), where v = v(r, k′), X ~ Bin(v, p) and Y ~ Bin(r − v, p) are independent. Hence W(ε) ≥ ⌈(1 − ε)/(2F*)⌉ − 1.
 
-*Proof.* The weight after noise is a sum over copies: a wrong copy stays wrong with probability 1 − p, a correct copy becomes wrong with probability p. For p < ½ the first is stochastically larger, so the weight after noise is stochastically increasing in the weight before it. The weight before noise is at most v, which gives the first claim at every step and for every history. The bias argument of Theorem 1, with the union bound over t steps, gives the second. ∎
+*Proof.* The weight after noise is a sum over copies: a wrong copy stays wrong with probability 1 − p, a correct copy becomes wrong with probability p. For p < ½ the first is stochastically larger, so the weight after noise is stochastically increasing in the weight before it. The weight before noise is at most v, which gives the first claim at every step and for every history. The bias argument of Proposition 1, with the union bound over t + 1 noise layers, gives the second. ∎
 
 *Proof of Theorem 2.* Fix 0 < κ < 1, let k′ = k − 2 and r the odd integer next to k′/κ. Let s_κ < ½ solve h₂(s_κ) = 1 − κ, with h₂ the binary entropy in bits.
 1. *The weight bound.* For v ≤ r/2, C(r, v) ≥ 2^{r h₂(v/r)}/(r + 1) and Σ_{u≤v} C(r, u) ≤ 2^{r h₂(v/r)}. So v(r, k′)/r → s_κ as k → ∞.
@@ -90,8 +93,8 @@ For example, at q = 0.9 and κ = 0.05 the exact value (1/k) ln(1/F*) is 2.09, 2.
 
 ## Remarks
 
-- *Why r ≫ k helps.* Noise injects about r h₂(p) bits of entropy per step into r copies (h₂ is the binary entropy), and k′ fresh qubits remove k′ bits. For large r the error weight settles at a typical fraction well below ½, where compression removes as much entropy as noise adds. A majority flip then needs a large deviation over one or several steps, and its cost grows with r. Writing κ = k′/r, a large-deviation computation (`sim/ldp.py`) gives an exponent per input qubit that increases as κ decreases: about 0.28 at q = 0.5 and above 6 at q = 0.9, as κ → 0. These are estimates, not part of Theorem 1.
-- *What it means for the open problem.* The lower exponent of [1] is the exact rate of the majority vote. The compressing reservoirs keep the majority vote but use the fresh qubits more efficiently, and by Theorem 2 the exponent of the best reservoir is at least γ_q > α_q. They are classical, so a quantum code is not needed to beat α_q. Whether quantum codes do better still is open, and so is the remaining factor (1 + q²)/(q(1 − q)) between the exponents.
+- *Why r ≫ k helps.* At error fraction s, noise adds about r[h₂(s + p(1 − 2s)) − h₂(s)] bits of entropy per step to the r copies (h₂ is the binary entropy), and k′ fresh qubits remove k′ bits. For large r the error weight settles at a typical fraction well below ½, where compression removes as much entropy as noise adds. A majority flip then needs a large deviation over one or several steps, and its cost grows with r. Writing κ = k′/r, a large-deviation computation (`sim/ldp.py`) gives an exponent per input qubit that increases as κ decreases: at κ = 0.01 it is about 0.28 at q = 0.5 and 6.1 at q = 0.9. These are estimates, not part of Proposition 1 or Theorem 2.
+- *What it means for the open problem.* α_q is the exact rate of the majority-vote repetition reservoir [1, Sec. III G]. The classical reservoirs here have a larger exponent, γ_q or more, so the question in [1] whether quantum codes can do better may be read relative to this larger classical exponent. The remaining factor (1 + q²)/(q(1 − q)) between the exponents is open.
 
 ## Check
 

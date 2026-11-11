@@ -8,12 +8,13 @@ of weight f(w), writing kp garbage bits into the fresh qubits, which are discard
 1. The class map: capacities, f(w) <= w, and an explicit injective map on bit strings for small r.
 2. Exact simulation of the full bit system for small r: its flip rate equals that of the weight chain.
 3. The flip rate lam from the stationary distribution (elimination with nonnegative sums), against 50-digit arithmetic.
-4. Table: for each k the best r, ln(1/lam), and the memory depth bound W(eps) >= (1 - eps)/(2 lam), with the
-   two bounds of [1, Theorem 1] for comparison.
+4. Table: for each k the best r, ln(1/lam), and the memory depth bound W(eps) >= ceil((1 - eps)/(2 lam)) - 1, with the
+   two bounds of [1, Theorem 1] for comparison (* marks the formula of Theorem 1(ii) outside its range e^(alpha(k-3)) >= 4).
+5. Index compression: the bound with F*, and the limit gamma_q of the exponent.
 """
 import itertools
 import sys
-from math import comb, log, ceil
+from math import comb, log, ceil, exp
 
 import numpy as np
 from scipy.special import logsumexp
@@ -164,7 +165,7 @@ def psi(s, p):
 def check_index_bound():
     from scipy.optimize import brentq
     h2 = lambda t: -(t * np.log2(t) + (1 - t) * np.log2(1 - t))
-    print("5. index compression: W(eps) >= (1 - eps)/(2 F*) for every r; per input qubit, ln(1/F*)/k with r = k'/kappa,")
+    print("5. index compression: W(eps) >= ceil((1 - eps)/(2 F*)) - 1 for every r; per input qubit, ln(1/F*)/k with r = k'/kappa,")
     print("   against the limit gamma_q = ln 2 q^2/(1 - q^2):")
     for q in (0.5, 0.9):
         p = (1 - q) / 2; gam = log(2) * q * q / (1 - q * q); alpha = 0.5 * log(1 / (1 - q * q))
@@ -208,12 +209,13 @@ def table(q, ks, eps=0.01):
     for k in ks:
         kp = k - 2
         lam, r = best_r(kp, p)
-        lnW = log((1 - eps) / (2 * lam))
+        lnW = log(ceil((1 - eps) / (2 * lam)) - 1)  # t + 1 noise layers after the write
         lnW1 = alpha * (k - 3) + log(log(q / eps) / 4)
-        lnU = ((1 + 4 * q) / (1 - q) + beta * k) * log(2) + log(ceil(log(1 / (2 * eps))))
+        lnU = ((1 + 4 * q) / (1 - q) + beta * k) * log(2) + log(log(1 / eps))  # W <= ceil(delta^-1 ln(1/eps)), [1, Eq. (3)]
+        inrange = exp(alpha * (k - 3)) >= 4  # range of [1, Theorem 1(ii)]
         assert lnW > lnW1 and lnW < lnU
         slope = "" if prev is None else f"   slope {(log(1 / lam) - prev[1]) / (k - prev[0]):.3f} per qubit"
-        print(f"   {k:2d}  {r:6d}   {log(1 / lam):9.2f}   {lnW:14.2f}   {lnW1:14.2f}   {lnU:14.2f}{slope}", flush=True)
+        print(f"   {k:2d}  {r:6d}   {log(1 / lam):9.2f}   {lnW:14.2f}   {lnW1:14.2f}{'' if inrange else '*'}   {lnU:14.2f}{slope}", flush=True)
         prev = (k, log(1 / lam))
 
 

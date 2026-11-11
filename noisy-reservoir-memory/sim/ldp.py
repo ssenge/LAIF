@@ -54,8 +54,8 @@ if __name__ == "__main__":
     alpha = 0.5 * np.log(1 / (1 - q * q))
     print(f"q={q} p={p:.3f} alpha_q={alpha:.4f} h2(p)={h2(p):.4f}", flush=True)
     best = (0, None)
-    for kappa in [1.0, 0.8, 0.6, 0.5, 0.4, 0.35, 0.3, 0.25, 0.2, 0.15, 0.1]:
-        th, s = theta(kappa, p)
+    for kappa in [1.0, 0.3, 0.1, 0.03, 0.01]:
+        th, s = theta(kappa, p, N=321)
         print(f"  kappa={kappa}: typical fraction {s:.4f}, theta={th:.4f}, per input qubit {th / kappa:.4f}", flush=True)
         best = max(best, (th / kappa, kappa))
     print("best", best)

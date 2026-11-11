@@ -1,0 +1,14 @@
+q=0.5 p=0.250 alpha_q=0.1438 h2(p)=0.8113
+  kappa=1.0: typical fraction 0.0000, theta=0.1438, per input qubit 0.1438
+  kappa=0.3: typical fraction 0.1499, theta=0.0721, per input qubit 0.2404
+  kappa=0.1: typical fraction 0.2892, theta=0.0270, per input qubit 0.2700
+  kappa=0.03: typical fraction 0.3829, theta=0.0084, per input qubit 0.2785
+  kappa=0.01: typical fraction 0.4322, theta=0.0028, per input qubit 0.2775
+best (np.float64(0.27845402161154675), 0.03)
+q=0.9 p=0.050 alpha_q=0.8304 h2(p)=0.2864
+  kappa=1.0: typical fraction 0.0000, theta=0.8304, per input qubit 0.8304
+  kappa=0.3: typical fraction 0.0000, theta=0.7608, per input qubit 2.5360
+  kappa=0.1: typical fraction 0.1202, theta=0.4122, per input qubit 4.1221
+  kappa=0.03: typical fraction 0.2738, theta=0.1626, per input qubit 5.4213
+  kappa=0.01: typical fraction 0.3664, theta=0.0609, per input qubit 6.0913
+best (np.float64(6.091342914472071), 0.01)
