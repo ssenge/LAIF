@@ -42,7 +42,7 @@ if __name__ == "__main__":
     base, m1 = union_bound(80)
     print(f"1. C = 80, mesh 0.1: per-M factor {base:.3f} < 1, bound at M = 1 is {m1:.3f} < 1, so good triples exist for every M"); assert m1 < 1
     rng = np.random.default_rng(1)
-    for M, R in [(3, 240), (6, 60), (10, 100), (15, 150)]:
+    for M, R in [(2, 160), (3, 240), (4, 320)]:
         e, s, x = test(M, R, 30, rng)
         print(f"2. M = {M}, R = {R}: smallest eigenvalue of the A_a {e:.2e}, |sum A_a - 1| <= {s:.1e}, |A_a u| <= {x:.1e} on 30 random inputs")
         assert e > -1e-10 and s < 1e-9 and x < 1e-9

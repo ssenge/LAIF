@@ -14,13 +14,13 @@ The upper bound π²/2 comes from the bound fbs(f) ≤ (π²/4) deg(f)² for the
 
 - **Theorem 1.** c∗ ≤ 3.4454. Equivalently, every f : {−1, 1}ⁿ → [−1, 1] satisfies fbs(f) ≤ 1.7227 deg(f)², against the previous best bound (π²/4) deg(f)² ≈ 2.4674 deg(f)² [2].
 - **Theorem 2 (reduction).** Let m(N) be the least degree of a real polynomial p with p(0) = 1, p(1) = −1 and |p(j)| ≤ 1 at the integers j = 0, 1, …, N. Then c∗ ≤ 2 liminf_{N→∞} m(N)²/N.
-- **Proposition 3 (construction).** Let Φ(s) = a cos(τs) + Ψ(s), where Ψ is a finite sum of shifted squared sinc functions with frequencies in [−τ, τ]. If Φ satisfies the inequalities (★) below, then m(N) ≤ τ√N/2 for all large N. The script `sim/cert.py` checks (★) for τ = 2.625 in 50-digit decimal arithmetic, so c∗ ≤ τ²/2 = 3.4453.
+- **Proposition 3 (construction).** Let Φ(s) = a cos(τs) + Ψ(s) with Ψ(s) = Σ_k b_k [K(s − t_k) + K(s + t_k)] and K(s) = (sin(τs/2)/(τs/2))², an even function with frequencies in [−τ, τ]. If Φ satisfies the inequalities (★) below, then m(N) ≤ τ√N/2 for all large N. The script `sim/cert.py` checks (★) for τ = 2.625 in 50-digit decimal arithmetic, so c∗ ≤ τ²/2 = 3.4453125.
 
 The reduction is the composition argument of [2] and [1, Lemmas 6.4 and 6.5]. The only change is that the polynomial needs to be bounded at the integers and not on a whole interval: the number of flipped blocks through a coordinate is always an integer. The bound of [2] uses the polynomial T_m(1 − 2(1 − cos(π/m))x), where T_m(cos t) = cos(mt). That polynomial is bounded on the whole interval [0, 2/(1 − cos(π/m))], which gives m(N)²/N → π²/4. A polynomial that is bounded only at the integers can overshoot between 1 and 2, and near N, and then N can be about 0.582 m² instead of about 0.405 m².
 
 In [1, Theorem 1.4] the row bound enters through K. With K = 3.4454 d² and the bound L(f) ≤ 2d² of [3], the constant of [1, Theorem 1.1] becomes √15/(250 · 3.4454²) ≈ 1.30 · 10⁻³, so Inf_j(f) ≥ 1.30 · 10⁻³ Var(f)^{5/2}/d⁶ for some coordinate j. With the bounds of [2] and [3] the constant is about 6.36 · 10⁻⁴ [1, remarks after Theorem 1.1].
 
-**Scope.** For this composition the constant cannot go much lower. Every polynomial with p(0) = 1, p(1) = −1, bounded at the integers 0, …, N, gives a bounded symmetric function on N bits that changes by 2 in every coordinate at one point, so N ≤ m² by [3]. Numerically, N_max(m)/m² levels off at 0.582 (table below), so the method gives at best about 2/0.582 ≈ 3.435. Whether c∗ = 2 stays open. As a check in small cases: for n ≤ 5 and every d, the largest minimal row cost over all f is attained with blocks of size one, where [3] gives at most 2d².
+**Scope.** For this composition the constant cannot go much lower. Every polynomial with p(0) = 1, p(1) = −1, bounded at the integers 0, …, N, gives a bounded symmetric function on N bits that changes by 2 in every coordinate at one point, so N ≤ m² by [3]. In floating-point linear programs, N_max(m)/m² levels off at 0.582 (table below), so the method seems to give at best about 2/0.582 ≈ 3.435; only N ≤ m² is proved. Whether c∗ = 2 stays open. As a check in small cases: for n ≤ 5 and every d, the largest minimal row cost over all f equals the largest value over packings by blocks of size one, where [3] gives at most 2d² (for d = 1 other packings tie).
 
 ## Proofs
 
@@ -49,7 +49,7 @@ The condition is
 
 The third entry of M bounds |Φ(s)| for s ≥ S, since |sin z/z| ≤ 1/|z|.
 
-For N large, let c = √N/2 and m = ⌊cτ⌋, and define g(φ) = a cos(mφ) + Σ_{ℓ∈ℤ} Ψ(c(φ + 2πℓ)). By the periodization (summation) formula, the second part equals (2πc)⁻¹ Σ_k Ψ̂(k/c) e^{ikφ}. Since Ψ̂ vanishes outside [−τ, τ], only |k| ≤ cτ occur. So g is an even trigonometric polynomial of degree at most m, and q(x) = g(arccos(1 − 2x/N)) is a polynomial of degree at most m.
+For N large, let c = √N/2 and m = ⌊cτ⌋, and define g(φ) = a cos(mφ) + Σ_{ℓ∈ℤ} Ψ(c(φ + 2πℓ)). Since Ψ(s) = O(s⁻²) and Ψ̂ is continuous with compact support, the sum over ℓ converges absolutely and uniformly, and by the periodization (summation) formula it equals (2πc)⁻¹ Σ_k Ψ̂(k/c) e^{ikφ}. Since Ψ̂ vanishes outside [−τ, τ], only |k| ≤ cτ occur. So g is an even trigonometric polynomial of degree at most m, and q(x) = g(arccos(1 − 2x/N)) is a polynomial of degree at most m.
 
 The integer j ∈ [0, N] corresponds to φ_j = 2 arcsin √(j/N), that is, to s_j = cφ_j = √N arcsin √(j/N). These satisfy s_j ≥ √j, and s_j → √j as N → ∞ for each fixed j.
 - *Far copies.* For φ ∈ [0, π] the terms with ℓ ≠ 0 have |φ + 2πℓ| ≥ (2|ℓ| − 1)π, so they add up to at most ε_N = Σ_{ℓ≥1} 4B (2/(τ(c(2ℓ − 1)π − T)))², which tends to 0.
@@ -57,12 +57,14 @@ The integer j ∈ [0, N] corresponds to φ_j = 2 arcsin √(j/N), that is, to s_
 
 Hence g(φ_0) → Φ(0), g(φ_1) → Φ(1), and g(φ_j) → Φ(√j) for 2 ≤ j ≤ J. For j > J, s_j ≥ √j > √J − 1, so |g(φ_j)| ≤ M + o(1) uniformly in j: use the second entry of M while s_j ≤ S and the third beyond. With α_N = 2/(g(φ_0) − g(φ_1)) and β_N = 1 − α_N g(φ_0), the polynomial p = α_N q + β_N has p(0) = 1, p(1) = −1, and max_{2≤j≤N} |p(j)| ≤ α_N(M + o(1)) + |β_N| → αM + |β| < 1. So m(N) ≤ ⌊τ√N/2⌋ for all large N, and liminf m(N)²/N ≤ τ²/4. ∎
 
+The statement is asymptotic. With the coefficients of the certificate below, the polynomial p first works for N of order 10⁵; at N up to about 3 · 10⁴ it still exceeds 1 slightly at j = 2. This does not affect the lower limit.
+
 **The certificate.** `sim/cert.py` chooses the coefficients by a linear program (t_k = k/8 for k = 0, …, 160, so T = 20, plus J = 150 and S = 90). It then evaluates everything in 50-digit decimal arithmetic:
 - sine and cosine by series after reduction modulo 2π, with an allowance of 10⁻³⁰ added to every value of Φ;
 - Φ on a grid of step at most 0.02 on [√J − 1, S], with the interpolation error bounded by |Φ''| ≤ τ²|a| + (7/12)τ²B, from |(sin z/z)'| ≤ 1/2 and |(sin z/z)''| ≤ 1/3;
 - the tail bound for s ≥ S.
 
-For τ = 2.625 the results are a = 0.99808, B = 1.1563, α = 1.0000, |β| < 10⁻¹⁰ and αM + |β| = 0.99860 < 1. Hence c∗ ≤ 2.625²/2 = 3.4453 < 3.4454.
+For τ = 2.625 the results are a = 0.99808, B = 1.1563, α = 1.0000, |β| < 10⁻¹⁰ and αM + |β| = 0.99860 < 1. Hence c∗ ≤ 2.625²/2 = 3.4453125 < 3.4454.
 
 ## Numbers
 
