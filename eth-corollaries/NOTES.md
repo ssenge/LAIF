@@ -517,7 +517,7 @@ N11 logical operators and distance of a CSS code, deterministic, exact (2026-11-
 - `half`: if ⟨x, y₀⟩ = 1 with y₀ ∈ ker H₂, then y ↦ y ⊕ y₀ is an involution of ker H₂ that flips ⟨x, y⟩,
   so 2·#{y ∈ ker H₂ : ⟨x, y⟩ = 1} = |ker H₂|.
 - Formula `cssF w n ψ e` on 5n + 2 variables (x, y, chain c₀..c_n, complements of y and c): `rowF` forbids the
-  odd patterns of each check (`pats w`, padded to width w), `chainF` gives c₀ = 0, c_{i+1} = c_i ⊕ x_i y_i,
+  odd patterns of each check (the patterns of `pats w` of the check's length), `chainF` gives c₀ = 0, c_{i+1} = c_i ⊕ x_i y_i,
   c_n = e with `xorC` (8 clauses of width 4), `compF`. `shaped_cssF : Shaped (w + 4) (5n + 2)`,
   `length_cssF ≤ |ψ|·2^{w+1} + 12n + 4`.
 - `cnt_cssF`, `card_pairs`, `pairs_true`, `pairs_false`, `numLog_eq`:

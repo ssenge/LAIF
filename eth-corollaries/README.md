@@ -83,7 +83,7 @@ in ⌊log₂ 2n⌋+1 bits)*, 0, then a final 0; unary t = 1ᵗ0.
 | A3 | `EthCor.VcTM.vc_fpt` (also `Vc.good_step`, `Vc.leaves_le`, `VcTM.tm_fpt`) | **Vertex Cover in 2^{εk}·poly(n).** For every ε > 0, one machine is given a graph G on n vertices (of **any density**) and k ≤ n in unary. It outputs whether G has a vertex cover with at most k vertices, within C·(n+2)^C·2^{εk} steps. No kernel is used. | known: Vertex Cover is complete for size-constrained SNP [4, Thm 5], and a 2k-vertex kernel gives 2^{o(k)}·poly(n); see also [11]; formalized |
 | A3′ | `EthCor.NbTM.nb_fpt` (also `Nb.ore`, `Nb.nb_iff`, `Nb.nb_answer`) | **Nonblocker in 2^{εk}·poly(n).** For every ε > 0, one machine is given a graph G on n vertices (of any density) and k ≤ n in unary. It outputs whether G has a dominating set with at most n − k vertices (equivalently, k vertices whose complement dominates), within C·(n+2)^C·2^{εk} steps. | known: Nonblocker is in Linear Monadic NP [17], with Ore's bound [13] or the kernel [14]; formalized |
 | N10 | `EthCor.OctTM.oct_tm` (also `oct_pos`, `oct_iff`) | **Odd cycle transversal, deterministic.** For every δ > 0, one machine is given a graph G on n vertices (of **any density**) and n − k in unary (k ≤ n). It outputs whether G has an odd cycle transversal with at most k vertices (a set X with G − X bipartite, Mathlib's `IsBipartite`), within C·2^{δn} steps. Run for k = 0, 1, … it finds the minimum. | known: odd cycle transversal is in size-constrained SNP [4, Thm 5]; formalized |
-| N11 | `EthCor.CodeTM.css_counts` (also `Code.logical_iff`, `Code.half`, `Code.numLog_eq`) | **Distance of a quantum CSS code, deterministic and exact.** For every check weight w, density D and δ > 0, one machine is given s ≤ n in unary and two lists of checks H₁, H₂ on n qubits, together at most D·n checks of at most w qubits each (an LDPC code). It outputs the number of logical operators of weight s: the vectors x ∈ 𝔽₂ⁿ with \|x\| = s, H₁x = 0 and x outside the row space of H₂ (`numLog`), within C·2^{δn} steps. Runs for s = 1, 2, … give the distance of one error type and the number of logical operators of minimum weight; with H₁ and H₂ swapped, the other type. The code may be degenerate. For H₂ empty it counts the codewords of weight s of a classical code. | ours (to our knowledge); computing the distance is NP-hard [23, 24]; formalized |
+| N11 | `EthCor.CodeTM.css_counts` (also `Code.logical_iff`, `Code.half`, `Code.numLog_eq`) | **Distance of a quantum CSS code, deterministic and exact.** For every check weight w, density D and δ > 0, one machine is given s ≤ n in unary and two lists of checks H₁, H₂ on n qubits, together at most D·n checks, each a list of at most w qubits (an LDPC code; a qubit listed twice cancels). It outputs the number of logical operators of weight s: the vectors x ∈ 𝔽₂ⁿ with \|x\| = s, H₁x = 0 and x outside the row space of H₂ (`numLog`), within C·2^{δn} steps. Runs for s = 1, 2, … give the distance of one error type and the number of logical operators of minimum weight; with H₁ and H₂ swapped, the other type. The code may be degenerate, and H₁H₂ᵀ = 0 is not needed. For H₂ empty and s ≥ 1 it counts the codewords of weight s of a classical code. | the counts are ours (to our knowledge); deciding whether the distance is at most s follows from [4, Thm 5], see [Related and concurrent work](#related-and-concurrent-work); formalized |
 
 **Supporting theorem (for A5b): isolation for arbitrary sets.** `EthCor.Iso.isolation`: for every
 δ > 0 there are k and t such that for all M ≥ M₀(δ) and **every** nonempty S ⊆ {0,1}^M, at least a
@@ -290,8 +290,8 @@ the counting lemma `amplify`).
   with ⟨x, y⟩ = 1, so exactly half of ker H₂ has odd overlap with x (`half`). Hence
   #{(x, y) : \|x\| = s, H₁x = 0, H₂y = 0, ⟨x, y⟩ = 1} = \|ker H₂\|/2 · numLog(s). The formula
   has the bits of x and y, a chain c₀ = 0, c_{i+1} = c_i ⊕ x_i y_i with c_n = e, and complement
-  bits for y and c, so a sized count fixes \|x\|. Each check of weight ≤ w becomes the 2^{w−1}
-  clauses that forbid its odd patterns. With e = 1 and weight s the count is the pair count above;
+  bits for y and c, so a sized count fixes \|x\|. Each check on L ≤ w qubits becomes the 2^{L−1}
+  clauses that forbid its odd patterns (none for an empty check). With e = 1 and weight s the count is the pair count above;
   with e = 0 and weight 0 it is \|ker H₂\|. The machine outputs twice the first divided by the
   second (`numLog_eq`). The formula has 5n + 2 variables, width w + 4 and O(D·2^w·n) clauses.
 - **Isolation for arbitrary sets [7].** One check on k coordinates fails to separate two points at
@@ -386,9 +386,12 @@ texts, and the review of the two claims has not published anything yet.
     uv: u ∈ X, v ∈ X or C(u) ≠ C(v)), so its decision version follows from [4, Thm 5].
 - **Quantum codes.** CSS codes are those of [21, 22]. Computing the minimum distance is NP-hard
   for classical codes [23] and for quantum codes [24]. Exact distance algorithms in use take time
-  exponential in n. To our knowledge, the number of logical operators of a given weight of a sparse
-  CSS code (N11), and with it the distance, had no 2^{o(n)} algorithm before. For a classical code
-  (H₂ empty) N11 is a direct use of the sized counter.
+  exponential in n. Deciding whether a sparse CSS code has a logical operator of weight at most s
+  is in size-constrained SNP: by `logical_iff` it asks for x with \|x\| ≤ s, y and a parity chain
+  c with constraints of bounded arity, as in N10, so the distance itself follows from [4, Thm 5].
+  To our knowledge, the number of logical operators of each weight, in particular of minimum
+  weight, had no 2^{o(n)} algorithm before (N11). For a classical code (H₂ empty) N11 is a direct
+  use of the sized counter.
 - **Not found anywhere:** A1′, A2 for growing k, N5, the spectrum in A4, N3, N6′, N2, N2′, N7, N7′,
   N7″, N8, N8′, N8″, and N9, N9′ as proved results (Tulsyan sketches an exact count, see above). Tulsyan lists dominating set on dense graphs as not covered and sketches connected
   dominating set and k-leaf spanning trees only for sparse graphs [15]. Under ETH, connected dominating set has no 2^{o(n)} algorithm
