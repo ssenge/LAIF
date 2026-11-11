@@ -63,4 +63,15 @@ for d in [2, 3, 5, 10]:
     for T in [1, 10, 1000, 100000]:
         s_ = sum(0.4 * m * m / (4 * t + 4 * pi ** 2 * m * m) for t in range(T))
         assert s_ >= 0.4 * (d - 1) ** 2 * log(1 + T / (4 * pi ** 2 * (d - 1) ** 2)) - 1e-12
+# epoch regret constants: 4 kappa (d-1) eps N_m <= 4 kappa (d-1) (P + eps), P = 458 (d-1) + 71 x
+assert 4 * kappa * A <= 7420 and 4 * kappa * B <= 1151 and 4 * kappa * eps0 <= 1.02
+# warm-up length W <= (8.1 x + 1) * 3000 d^2 <= 1e5 d^2 ln T (x <= 3 ln T, 1 <= ln T / ln 2)
+assert (8.1 * 3 + 1 / log(2)) * W <= 1e5
+# online constant: eps_m * sum_{k <= m} N_k <= 2 P, hence eps_m <= 16 (d-1) P / t for t >= 2W
+for d in [2, 3, 8, 100]:
+    for T in [2, 1e3, 1e9, 1e30]:
+        x = log(T * (log(T, 2) + 2)); P = A * (d - 1) + B * x
+        for m in range(0, 120):
+            em = eps0 * 2 ** -m
+            assert em * sum(ceil(P / (eps0 * 2 ** -k)) for k in range(m + 1)) <= 2 * P
 print("all constants: ok")

@@ -22,9 +22,9 @@ So sup_ψ E[Regret(T)] = Ω(d² log(T/d²)). By the same argument, any estimate 
 
 E[Regret(T)] ≤ 10⁵ d² ln T + 10⁴ d ln² T.
 
-Let W ≤ 10⁵ d² ln T be the length of its warm-up. With probability at least 1 − 1/T, at every round t ≥ 2W its current base vector has infidelity at most 16(d − 1)(458(d − 1) + 71x)/t = O((d² + d log T)/t) with the state, where x ≤ 3 ln T is defined below. The online infidelity of [1] is O(d³ log T / t).
+Let W ≤ 10⁵ d² ln T be the length of its warm-up. With probability at least 1 − 1/T, at every round t ≥ 2W its current base vector has infidelity at most 16(d − 1)(458(d − 1) + 71x)/t = O((d² + d log T)/t) with the state, where x ≤ 3 ln T is defined below. In expectation the same holds with 1/t added, for 2W ≤ t ≤ T. The online infidelity of [1] is O(d³ log T / t) in expectation.
 
-So in this model the regret is Θ(d² log T) whenever ln T ≤ d and T ≥ d³. Previous best bounds: O(d³ log² T) [1] and Ω(d log(T/d)) [2].
+So in this model the regret is Θ(d² log T) whenever ln T ≤ d and T ≥ d³, up to constant factors that are far apart. Previous best bounds: O(d³ log² T) [1] and Ω(d log(T/d)) [2]. In particular, with two-outcome measurements onto one vector, the regret of order d log T and the online infidelity of order d/t up to logarithms, hoped for in [1, Section 7], are out of reach; they would need richer measurements.
 
 ## Proof of Theorem 1
 
@@ -84,17 +84,17 @@ A centred binomial Y = X − Np with X ~ Bin(N, p) satisfies E e^{λY} ≤ exp(N
 - *Estimate.* Apply Lemma 5 to the counts of outcome 0 at the M = 4(d − 1) measured vectors: each has p ≤ κε, so μ = κεN_m ≥ M ln 5 + x. The error x̂ − ξ is (2 sin 2s)^{−1} N_m^{−1} times a ±1 combination of pairs of these Y, so |x̂ − ξ|² ≤ 2 (2 sin 2s)^{−2} N_m^{−2} |Y|². With sin 2s ≥ 2s · 23/24 for s ≤ 1/4 this gives, with probability at least 1 − e^{−x}, |x̂ − ξ|² ≤ 8.82(M ln 5 + x)/N_m ≤ ε/8.
 - *Contraction.* By Lemma 4, D_{m+1} ≤ 2|x̂ − ξ|² + 2D³/(1 − D) ≤ ε/4 + 2ε³/(1 − ε) ≤ ε/2 = ε_{m+1}.
 
-So the epoch keeps D_m ≤ ε_m with probability at least 1 − e^{−x}, and costs at most 4κ(d − 1)(N_m + 1)ε ≤ 7420(d − 1)² + 1150(d − 1)x + 1.02(d − 1).
+So the epoch keeps D_m ≤ ε_m with probability at least 1 − e^{−x}, and costs at most 4κ(d − 1)N_m ε ≤ 7420(d − 1)² + 1151(d − 1)x + 1.02(d − 1).
 
-**One warm-up run** ends within angle r of ψ with probability at least 3/4. The rejection step fails with probability at most (1 − 1/d)^{8d} ≤ e^{−8}. Given j, write p* = p_j. Then z = conj(ψ_j) ψ has |z|² = p* and E ẑ = z, because the four phases cancel the cross terms. Each frequency has variance at most q/N₂, and the four probabilities for l sum to 2(p* + p_l). So E|ẑ − z|² ≤ ((d + 1)p* + 1)/(2N₂), and sin²∠(ẑ, z) ≤ |ẑ − z|²/|z|². Since E[1/p*] = Σ_j p_j/p_j ≤ d, the mean of sin²∠ is at most (2d + 1)/(2N₂). By the first-moment bound, P(sin²∠ > sin² r) is at most this mean divided by sin² r. With N₂ = 750d and the rejection step, a run fails with probability at most 0.236.
+**One warm-up run** ends within angle r of ψ with probability at least 3/4. The rejection step fails with probability at most (1 − 1/d)^{8d} ≤ e^{−8}. Given j, write p* = p_j. Then z = conj(ψ_j) ψ has |z|² = p* and E ẑ = z, because the four phases cancel the cross terms. Each frequency has variance at most q/N₂, and the four probabilities for l sum to 2(p* + p_l). So E|ẑ − z|² ≤ ((d + 1)p* + 1)/(2N₂), and sin²∠(ẑ, z) ≤ |ẑ − z|²/|z|². Since E[1/p*] = Σ_j p_j/p_j ≤ d, the mean of sin²∠ is at most (2d + 1)/(2N₂). A run with ẑ = 0 counts as failed. By the first-moment bound, P(sin²∠ > sin² r) is at most this mean divided by sin² r. With N₂ = 750d and the rejection step, a run fails with probability at most 0.236.
 
-**Warm-up.** If more than L/2 runs succeed, every chosen candidate lies within 2r of a successful one, so ∠(c₀, ψ) ≤ 3r and D₀ ≤ sin²(3r) = 1/16. By the exponential bound for sums of independent indicators, at most L/2 runs fail with probability e^{−2L(1/2 − 0.236)²} ≤ e^{−x}. One run uses at most 8d + N₂ + 4(d − 1)N₂ ≤ 3000d² copies.
+**Warm-up.** If more than L/2 runs succeed, every chosen candidate lies within 2r of a successful one, so ∠(c₀, ψ) ≤ 3r and D₀ ≤ sin²(3r) = 1/16. By the exponential bound for sums of independent indicators, at least L/2 runs fail with probability at most e^{−2L(1/2 − 0.236)²} ≤ e^{−x}. If no candidate passes the majority test, which happens only then, take c₀ = |1⟩. One run uses at most 8d + N₂ + 4(d − 1)N₂ ≤ 3000d² copies.
 
-**Total.** Epoch m needs at least 4 · 458 · 16 · 2^m copies, so at most log₂ T + 1 epochs start. By a union bound, the warm-up and all epochs succeed with probability at least 1 − (log₂ T + 2)e^{−x} = 1 − 1/T. On the remaining event the regret is at most T, which adds at most 1. With x ≤ 3 ln T, the warm-up costs at most (8.1x + 1) · 3000d² and the epochs at most (log₂ T + 1)(7420(d − 1)² + 1150(d − 1)x + 1.02(d − 1)). Together this is at most 10⁵ d² ln T + 10⁴ d ln² T. For the second claim, write P = 458(d − 1) + 71x, so that P/ε_m ≤ N_m ≤ 2P/ε_m, and let t ≥ 2W lie in epoch m. If m ≥ 1, the full epoch m − 1 came before t, so 4(d − 1)N_{m−1} ≤ t − W ≤ t and D_m ≤ ε_m = ε_{m−1}/2 ≤ P/N_{m−1} ≤ 4(d − 1)P/t. If m = 0, then t ≤ W + 4(d − 1)N₀ ≤ t/2 + 4(d − 1)N₀, so t ≤ 8(d − 1)N₀ ≤ 16(d − 1)P/ε₀ and D₀ ≤ ε₀ ≤ 16(d − 1)P/t. ∎
+**Total.** Epoch m needs at least 4 · 458 · 16 · 2^m copies, so at most log₂ T + 1 epochs start. By a union bound, the warm-up and all epochs succeed with probability at least 1 − (log₂ T + 2)e^{−x} = 1 − 1/T. On the remaining event the regret is at most T, which adds at most 1. With x ≤ 3 ln T, the warm-up costs at most (8.1x + 1) · 3000d² and the epochs at most (log₂ T + 1)(7420(d − 1)² + 1151(d − 1)x + 1.02(d − 1)). Together this is at most 10⁵ d² ln T + 10⁴ d ln² T. For the second claim, write P = 458(d − 1) + 71x and let t ≥ 2W lie in epoch m. Then t ≤ W + 4(d − 1)Σ_{k≤m} N_k, and ε_m Σ_{k≤m} N_k ≤ Σ_{k≤m} (P 2^{k−m} + ε_m) ≤ 2P, because (m + 1)ε_m ≤ 1/16 ≤ P 2^{−m}. With t − W ≥ t/2 this gives t/2 ≤ 8(d − 1)P/ε_m, so D_m ≤ ε_m ≤ 16(d − 1)P/t on the good event. The expected infidelity adds at most P(bad event) ≤ 1/T ≤ 1/t. ∎
 
 ## Check
 
-`python sim/checks.py` tests Lemma 2 at random charts and vectors, and Lemmas 3 and 4 on random instances. `python sim/consts.py` recomputes every constant above with asserts. `python sim/regret.py 2,4,8 1e4,1e5,1e6 10` runs the algorithm with small constants. `python sim/regret.py 2,3,4,8 1e8,1e10,1e12 10 proof` runs it with the constants of the proof and asserts D_m ≤ ε_m in every epoch of every run. All three need numpy and take a few seconds. Their output is in `sim/out.txt`.
+`python sim/checks.py` tests Lemma 2 at random charts and vectors, and Lemmas 3 and 4 on random instances. `python sim/consts.py` recomputes the constants above with asserts, including the online constant 16 and the bound on W. `python sim/regret.py 2,4,8 1e4,1e5,1e6 10` runs the algorithm with small constants. `python sim/regret.py 2,3,4,8 1e8,1e10,1e12 10 proof` runs it with the constants of the proof and asserts D_m ≤ ε_m in every epoch of every run. All three need numpy and take a few seconds. Their output is in `sim/out.txt`.
 
 In the runs with small constants, the regret divided by d² ln T stays between 10 and 18 for d = 2, 4, 8 and T up to 10⁶.
 
@@ -102,7 +102,7 @@ In the runs with small constants, the regret divided by d² ln T stays between 1
 
 - Claim with written proofs, not formalized. The constants are not optimized.
 - The term d ln² T is of lower order once d ≥ ln T. For smaller d the two bounds differ by a factor of order ln T / d at most.
-- Theorem 1 is for single copies and two-outcome measurements onto one vector, the model of [1]. For general measurements and for collective measurements, [2] gives Ω(d log(T/d)). Related lower bounds for learning mixed states with few-outcome measurements are in [5, 6].
+- Theorem 1 is for single copies and two-outcome measurements onto one vector, the model of [1]. For general measurements and for collective measurements, [2] gives Ω(d log(T/d)). Related lower bounds for tomography with few-outcome measurements are in [5, 6]; for rank one, [5] gives Ω(d²/ε²) copies for trace distance ε, so Ω(d²/δ) for infidelity δ, with nonadaptive constant-outcome measurements, the nonadaptive counterpart of the estimation bound in Theorem 1.
 
 ## References
 
