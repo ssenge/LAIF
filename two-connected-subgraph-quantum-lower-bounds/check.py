@@ -269,6 +269,58 @@ def check_exponents():
     assert 1 + Fr(1, 12) == Fr(13, 12) and 1 + Fr(1, 18) == Fr(19, 18)
 
 
+def check_disjoint_unions(rng, trials=40):
+    """Corollary 4: C is a component of H with a cycle and the most edges, t copies of it in H. For random C-free
+    hosts G, the union of G with a disjoint copy of H minus one copy of C contains no copy of H; with a copy of C added
+    to G, it does."""
+    C4 = [(0, 1), (1, 2), (2, 3), (3, 0)]
+    C6 = [(t, (t + 1) % 6) for t in range(6)]
+    P5 = [(t, t + 1) for t in range(4)]
+    K23 = [(a, b) for a in range(2) for b in range(2, 5)]
+    W2 = C4 + [(0, 4), (4, 5), (5, 6), (6, 0)]                       # two four-cycles sharing a vertex
+    P8 = [(t, t + 1) for t in range(7)]                              # a tree component with more edges than C
+    cases = [[C4, C4], [C4, C6], [C4, P5], [C4, P8], [C6, C6, C4], [K23, C4, C4], [W2, C4], [C4, C4, C4, P5]]
+
+    def union(parts):
+        es, off = [], 0
+        for part in parts:
+            k = 1 + max(max(e) for e in part)
+            es += shift(part, off)
+            off += k
+        return off, es
+
+    def adj_of(nv, es):
+        adj = {x: set() for x in range(nv)}
+        for a, b in es:
+            adj[a].add(b)
+            adj[b].add(a)
+        return adj
+
+    for parts in cases:
+        cyc = [q for q in parts if len(q) >= 1 + max(max(e) for e in q)]   # connected with a cycle: edges >= vertices
+        big = max(len(q) for q in cyc)
+        C = next(q for q in cyc if len(q) == big)
+        rest = list(parts)
+        rest.remove(C)
+        hv, he = union(parts)
+        cv = 1 + max(max(e) for e in C)
+        done = 0
+        while done < trials:
+            n = rng.randint(6, 9)
+            gp = rng.choice([0.3, 0.45, 0.6])
+            ges = [e for e in itertools.combinations(range(n), 2) if rng.random() < gp]
+            if embeds(range(cv), C, adj_of(n, ges)):
+                continue
+            rv, res = union(rest) if rest else (0, [])
+            tot = n + rv
+            allE = ges + shift(res, n)
+            assert not embeds(range(hv), he, adj_of(tot, allE)), ("disjoint union", parts)
+            planted = allE + shift(C, tot)
+            assert embeds(range(hv), he, adj_of(tot + cv, planted)), ("planted", parts)
+            done += 1
+    return len(cases)
+
+
 if __name__ == "__main__":
     rng = random.Random(1)
     print("2-connected graphs checked:", all_two_connected(6))
@@ -281,4 +333,5 @@ if __name__ == "__main__":
     check_interactions(K4, 4, complete_multipartite_host(4, 2), 0.7, 3, rng)
     check_exponents()
     check_block_examples()
+    print("disjoint unions checked:", check_disjoint_unions(rng))
     print("all checks passed")
