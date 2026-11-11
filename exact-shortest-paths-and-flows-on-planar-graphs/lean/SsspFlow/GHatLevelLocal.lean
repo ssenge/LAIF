@@ -45,6 +45,46 @@ theorem view_of_lists {V W I : Type} [Fintype W] [DecidableEq W] (N' : Net W) (h
     · exact .inl ⟨hb, by rw [hL w b hb]; exact (N'.mem_rotList b a).2 hadj⟩
     · exact .inr ⟨ha, by rw [hL w a ha]; exact (N'.mem_rotList a b).2 (N'.G.adj_symm hadj)⟩
 
+namespace Net
+
+variable {V : Type} [Fintype V] [DecidableEq V] (N : Net V)
+
+/-- The same network with lists that are rotations of its lists. -/
+def relist (L : V → List V) (hL : ∀ v, L v ~r N.rotList v) : Net V where
+  G := N.G
+  rotList := L
+  nodup v := (hL v).nodup_iff.2 (N.nodup v)
+  mem_rotList v w := (hL v).mem_iff.trans (N.mem_rotList v w)
+
+theorem relist_rotPerm (L : V → List V) (hL : ∀ v, L v ~r N.rotList v) :
+    (N.relist L hL).rotPerm = N.rotPerm :=
+  Equiv.ext fun d => SimpleGraph.Dart.ext _ _ (Prod.ext rfl (by
+    show (L d.fst).formPerm d.snd = (N.rotList d.fst).formPerm d.snd
+    rw [List.formPerm_eq_of_isRotated ((hL d.fst).nodup_iff.2 (N.nodup _)) (hL d.fst)]))
+
+/-- Planarity does not depend on the instance of finiteness. -/
+theorem _root_.SsspFlow.RotSystem.planar_of_inst {E : Type} [DecidableEq E] {i₁ i₂ : Fintype E}
+    (R₁ : @RotSystem E i₁ _) (R₂ : @RotSystem E i₂ _)
+    (hrev : @RotSystem.rev E i₁ _ R₁ = @RotSystem.rev E i₂ _ R₂)
+    (hrot : @RotSystem.rot E i₁ _ R₁ = @RotSystem.rot E i₂ _ R₂)
+    (h : @RotSystem.Planar E i₁ _ R₁) : @RotSystem.Planar E i₂ _ R₂ := by
+  obtain rfl : i₁ = i₂ := Subsingleton.elim _ _
+  cases R₁
+  cases R₂
+  cases hrev
+  cases hrot
+  exact h
+
+/-- **Rotated lists keep planarity.** The rotation is the same permutation of the same darts. -/
+theorem relist_planar (L : V → List V) (hL : ∀ v, L v ~r N.rotList v) (h : N.toRot.Planar) :
+    (N.relist L hL).toRot.Planar :=
+  RotSystem.planar_of_inst N.toRot (N.relist L hL).toRot rfl (N.relist_rotPerm L hL).symm h
+
+theorem relist_diam (L : V → List V) (hL : ∀ v, L v ~r N.rotList v) {D : ℕ} (h : N.DiamLE D) :
+    (N.relist L hL).DiamLE D := h
+
+end Net
+
 end Congest
 
 namespace RotSystem

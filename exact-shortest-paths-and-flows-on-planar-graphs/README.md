@@ -758,7 +758,8 @@ standard axioms (`propext`, `Classical.choice`, `Quot.sound`). There is no `sorr
   at the name of a copy the names of its darts in rotation order and the identifiers that hang at it
   (`RData.levelNet_rotList_copy`), and at an identifier that names nothing the star centre $(u, u, 0)$ of its node $u$
   (`RData.levelNet_rotList_pend`). A node that knows its own name and these lists at its own identifiers knows the edges
-  at them (`Congest.view_of_lists`).
+  at them (`Congest.view_of_lists`). Lists that are rotations of these lists give a network with the same graph and the
+  same rotation, so it is planar too (`Congest.Net.relist_planar`, `Congest.Net.relist_diam`).
 - `lean/SsspFlow/GHatPhase.lean`: the combinatorics of property (6). Two copies on E_R edges are joined by E_R edges
   exactly when they lie on the path of one piece (`RData.er_comp_iff`), and by E_R and E_C edges exactly when their
   pieces are joined in the token graph (`RData.erc_comp_iff`), whose components are those of the split

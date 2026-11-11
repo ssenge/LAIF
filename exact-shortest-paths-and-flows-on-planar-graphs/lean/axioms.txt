@@ -647,4 +647,8 @@
 'SsspFlow.RotSystem.RData.levelNet_rotList_dart' depends on axioms: [propext, Classical.choice, Quot.sound]
 'SsspFlow.RotSystem.RData.levelNet_rotList_copy' depends on axioms: [propext, Classical.choice, Quot.sound]
 'SsspFlow.RotSystem.RData.levelNet_rotList_pend' depends on axioms: [propext, Classical.choice, Quot.sound]
-peak rss 2.9 GB
+'SsspFlow.Congest.Net.relist_rotPerm' depends on axioms: [propext, Classical.choice, Quot.sound]
+'SsspFlow.Congest.Net.relist_planar' depends on axioms: [propext, Classical.choice, Quot.sound]
+'SsspFlow.Congest.Net.relist_diam' depends on axioms: [propext, Classical.choice, Quot.sound]
+'SsspFlow.RotSystem.planar_of_inst' depends on axioms: [propext, Classical.choice, Quot.sound]
+peak rss 1.2 GB
