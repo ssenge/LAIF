@@ -16,10 +16,10 @@ We also prove [a barrier](#a-barrier-for-cut--count): Cut & Count with few color
 connected vertex sets from disconnected ones over the rationals, which is why the connectivity
 results are parities or have one-sided error.
 
-Some of the results have since turned out to be known or superseded. In particular, Tulsyan [15]
-counts Hamiltonian cycles exactly and deterministically, which subsumes A5a, A5a′ and A5b; see
+Some of the results are known or superseded. In particular, Tulsyan [15] counts Hamiltonian
+cycles exactly and deterministically, which subsumes A5a, A5a′ and A5b; see
 [Related and concurrent work](#related-and-concurrent-work). The Novelty column of the table says
-which results are still ours.
+which results are ours.
 
 ## Background
 
@@ -37,8 +37,7 @@ come with Lean formalizations.
 | Lean | a weaker exponent, n(loglog n)²/√log n | both bounds, multi-stack Turing machines (Mathlib's TM2), standard axioms |
 | Core tool | contraction of Boolean tensor networks: s wires in 2^{O(s/√log s)} | sum-product on the clause graph with recursive merge/cut steps |
 
-A review is led by Impagliazzo, Paturi and Ryan Williams, who stress that taking part is not a
-certification. If the claims hold, ETH, SETH, #ETH, Gap-ETH and NSETH all fall. Still standing: the
+If the claims hold, ETH, SETH, #ETH, Gap-ETH and NSETH all fall. Still standing: the
 OV conjecture, the CNF-SAT hypothesis for poly(n) clauses of unbounded width, the k-Clique conjecture,
 the Set Cover conjecture, and of course P ≠ NP. The algorithms are galactic; Anthropic reports no
 gain over 2^n below n ≈ 10^{10}.
@@ -101,7 +100,7 @@ Hamiltonian cycles is `numHamCycles G`, the number of connected spanning subgrap
 degree 2. This agrees with Mathlib. For n ≠ 1, `0 < numHamCycles G` if and only if
 `G.IsHamiltonian` (`EthCor.Ham.numHamCycles_pos_iff`). And `numHamCycles G` is the number of edge
 sets of walks in G with Mathlib's `IsHamiltonianCycle` (`EthCor.Ham.numHamCycles_eq`), so each
-Hamiltonian cycle counts once, whatever its start and direction. The "ours" entries are results we did not find in the literature searches of 28 and 29 October 2026 (see [Related and concurrent work](#related-and-concurrent-work)). That means we did not find them, not that they are certainly new.
+Hamiltonian cycle counts once, whatever its start and direction. The "ours" entries are new to our knowledge (see [Related and concurrent work](#related-and-concurrent-work)).
 
 In A5b, the seeds are the elements of the finite type `Seed m k t (3m + 3)`, m being the number of
 edges. In N2′, N7′, N8′ and N9′ they are the elements of `Seed n k t (3n + 3)`, checks on the vertex bits. The fraction
@@ -276,7 +275,7 @@ the counting lemma `amplify`).
   (`Stepped.bind`). For m ≤ D·n the formula has O(n) variables. Induced forests are closed under
   removing vertices, so a feedback vertex set with at most k vertices exists iff an induced forest
   with exactly n − k vertices does (`fvs_iff`). N9′ adds the checks of a seed as in N2′. Steps C–E
-  are now proved for any formula on N₀ variables (`Forest.iso_count`), not only for `connF`.
+  hold for any formula on N₀ variables (`Forest.iso_count`), not only for `connF`.
 - **N10, odd cycle transversal.** Use the variables of N2 with s_v as a color: s̄_v = ¬s_v, s_v = 0
   outside the kept set Y, and for every edge uv two clauses of width 4 that say u ∉ Y, v ∉ Y or
   s_u ≠ s_v. A solution with n + s true variables is a set Y of size s with a proper 2-coloring of
@@ -317,60 +316,42 @@ the counting lemma `amplify`).
 
 ## Related and concurrent work
 
-This is a literature search of 28 October 2026, repeated for each new result on 29 October. It
-covered papers, preprints, blogs and GitHub. It could not reach X/Twitter or some journal full
-texts, and the review of the two claims has not published anything yet.
-
 - **Tulsyan [15]**, posted 27–28 October 2026, independently of this repository, also builds on
   Anthropic's Lean development. His `theorem1` counts the Hamiltonian cycles of graphs with
   |E| ≤ D·n exactly and deterministically in C·2^{δn} steps. His `theorem2` is one machine with
   C·2^{C(m+n)/√lg(n+2)} steps. His method uses Anthropic's network machinery with a matrix-tree
   identity, not the CNF counter. An exact count gives parity and a deterministic decision, so it
-  subsumes A5a, A5a′ and A5b. Our A5a and A5b were pushed earlier (27 October, 12:20 and
-  19:33 UTC), but his result is stronger. He also formalizes the isolation lemma for arbitrary sets,
-  and sketches Steiner tree and feedback vertex set on sparse graphs. We rebuilt
-  `theorem1` and `theorem2` from his repository (commit ae323a3) on our copy of Anthropic's
-  development (same revision, 16a5ce4). Both compile and depend only on `propext`,
+  subsumes A5a, A5a′ and A5b. A5a and A5b were posted here on 27 October 2026; his result is
+  stronger. He also formalizes the isolation lemma for arbitrary sets. `theorem1` and `theorem2`
+  build on the same revision of Anthropic's development (16a5ce4) and depend only on `propext`,
   `Classical.choice` and `Quot.sound`. His `hamCycles G` is the set of edge sets of G in which every
   vertex meets exactly two edges and which form a connected graph, the same quantity as our
-  `numHamCycles G`. We have not reviewed his proofs beyond that.
-
-  **Update, 29 October 2026.** We checked his repository again, at commit ba4c161 (29 October,
-  07:13 UTC). Since our first check (commit ae323a3) he has added:
+  `numHamCycles G`. His repository also contains:
   - **Sparse TSP**, verified in Lean (`EthFollowup.ExactHC.theoremTSP`, `theoremTSP_decode`): the
     tours of every weight on graphs with |E| ≤ D·n and integer weights ≤ W, in 2^{δn}·poly(W).
   - **#HC for average degree d̄**: exact #HC in 2^{O(n·log d̄/√lg n)}, subexponential for
-    d̄ = 2^{o(√lg n)}. This goes beyond the range of A5a′. At ba4c161 it was a written proof; at
-    c01f010 (29 October, 11:06 UTC) it is verified in Lean (`theorem3`, `theorem3_maxdeg`).
+    d̄ = 2^{o(√lg n)}, verified in Lean (`theorem3`, `theorem3_maxdeg`). This goes beyond the range
+    of A5a′.
+  - **Decision, search and Hamiltonian paths** at the level of Turing machines, and exact directed
+    Hamiltonian cycle and ATSP, verified in Lean.
   - **A sketch of Steiner tree, feedback vertex set, connected vertex cover, connected dominating
-    set and k-leaf spanning trees**, deterministic, for graphs with |E| ≤ D·n and bounded degree. It
-    is conditional on Anthropic's paper lemmas and checked numerically on graphs with up to seven
-    vertices only. He labels it "conjectured, not claimed" and gives only decision and minimum for
-    connected vertex cover and connected dominating set. Their exact counts he lists as open.
+    set and k-leaf spanning trees**, deterministic, for graphs with |E| ≤ D·n and bounded degree.
+    It is stated there as a conjecture, conditional on the lemmas of [2] and checked numerically on
+    graphs with up to seven vertices. For connected vertex cover and connected dominating set it
+    gives decision and minimum; their exact counts are listed there as open.
+  - **Exact counts of induced forests** of each size, and so the exact minimum feedback vertex set
+    and the number of minimum ones, for |E| = O(n), via a determinant identity. The research notes
+    state this as a claim, checked numerically. Such a count is deterministic and exact, so
+    stronger than N9 and N9′, which are also for sparse graphs and are machine-checked.
+  - **A sketch of connected odd cycle transversal.** N10 is plain odd cycle transversal.
   - **Informal notes on barriers** for the dense permanent, the k-dependence of #k-SAT, and
-    crossover estimates. He puts Anthropic's Lean algorithm's first gain over 2^n at about
+    crossover estimates. They put Anthropic's Lean algorithm's first gain over 2^n at about
     n ≈ 2^{552 000}.
 
-  At commit 16fe4eb (29 October, 08:05 UTC) he has also added Lean proofs of decision, search and
-  Hamiltonian paths at the level of Turing machines, a mathematical layer for directed
-  Hamiltonian cycle and ATSP, and lemmas behind his barrier notes. At c01f010 (11:06 UTC) exact
-  directed Hamiltonian cycle and ATSP are verified in Lean too. None of this is about domination,
-  leaves, hitting sets or groups.
-
-  None of this touches the labels below. N2, N2′, N7, N7′, N7″, N8, N8′ and N8″ hold on graphs of **any density**
-  and are machine-checked. His sketch, if it were proved, would give deterministic decisions for
-  Steiner tree, connected vertex cover, connected dominating set and k-leaf spanning trees on sparse
-  graphs only.
-
-  **Feedback vertex set (checked at commit 60d1679, 29 October, 15:30 UTC).** His research notes
-  list the exact number of induced forests of each size, and so the exact minimum feedback vertex
-  set and the number of minimum ones, for |E| = O(n), via a determinant identity. They mark it
-  "numerically verified, unrefereed" and as a claim "if the core holds"; it is not in Lean. If it
-  were proved it would be deterministic and exact, so stronger than N9 and N9′. N9 and N9′ are also
-  for sparse graphs only, but they are machine-checked.
-
-  **Odd cycle transversal (checked at commit 974ea29, 29 October, 18:28 UTC).** His notes sketch
-  only connected odd cycle transversal; plain odd cycle transversal (N10) does not appear.
+  None of these concern domination, leaves, hitting sets or groups. N2, N2′, N7, N7′, N7″, N8, N8′
+  and N8″ hold on graphs of **any density** and are machine-checked. The sketch in [15] would give
+  deterministic decisions for Steiner tree, connected vertex cover, connected dominating set and
+  k-leaf spanning trees on sparse graphs.
 - **The two papers themselves** list corollaries. OpenAI [1, Cor. 1.3] counts independent sets and,
   for each fixed q, proper q-colorings in 2^{o(v)}, and perfect matchings in 2^{o(v+e)}; this
   covers N6. Anthropic [2, Cor. 7] counts independent sets, cliques, vertex covers and dominating
@@ -392,15 +373,16 @@ texts, and the review of the two claims has not published anything yet.
   To our knowledge, the number of logical operators of each weight, in particular of minimum
   weight, had no 2^{o(n)} algorithm before (N11). For a classical code (H₂ empty) N11 is a direct
   use of the sized counter.
-- **Not found anywhere:** A1′, A2 for growing k, N5, the spectrum in A4, N3, N6′, N2, N2′, N7, N7′,
-  N7″, N8, N8′, N8″, and N9, N9′ as proved results (Tulsyan sketches an exact count, see above). Tulsyan lists dominating set on dense graphs as not covered and sketches connected
-  dominating set and k-leaf spanning trees only for sparse graphs [15]. Under ETH, connected dominating set has no 2^{o(n)} algorithm
-  even on some geometric intersection graphs [20].
+- **New to our knowledge:** A1′, A2 for growing k, N5, the spectrum in A4, N3, N6′, N2, N2′, N7,
+  N7′, N7″, N8, N8′, N8″, and N9, N9′ as proved results (an exact count is sketched in [15], see
+  above). Tulsyan lists dominating set on dense graphs as not covered and sketches connected
+  dominating set and k-leaf spanning trees for sparse graphs [15]. Under ETH, connected dominating
+  set has no 2^{o(n)} algorithm even on some geometric intersection graphs [20].
   Connectivity problems were open in this direction. Impagliazzo, Paturi and Zane list Hamiltonian
   Circuit only as SNP-hard [4], and Ganian et al. state as an open problem whether Feedback Vertex
-  Set reduces to 3-CNF-SAT in this way [17]. N9′ does not answer that question. It reduces sparse
-  Feedback Vertex Set to counting with a prescribed number of true variables, not to satisfiability,
-  and it is randomized.
+  Set reduces to 3-CNF-SAT in this way [17]. N9′ reduces sparse Feedback Vertex Set to counting with
+  a prescribed number of true variables, not to satisfiability, and it is randomized, so that
+  question stays open.
 
 ## Algorithms
 
@@ -817,53 +799,45 @@ lake env lean CheckAxioms.lean
 - Lean checks that every proof is complete, with no `sorry`, and uses only the standard axioms.
 - The 2^{o(n)} algorithm is itself a Lean theorem in the dependency. These results are therefore not
   conditional on an unproved hypothesis. They are as sound as Anthropic's formalization.
-- Lean cannot tell whether a formal statement means what it should. Read the theorem statements and
-  the definitions they use by hand. Ours: `numHom`, `hmat` (proved to match Mathlib's `G →g H` and
+- Lean cannot tell whether a formal statement means what it should; that rests on the theorem
+  statements and the definitions they use. Ours: `numHom`, `hmat` (proved to match Mathlib's `G →g H` and
   `numColorings`), `numHamCycles` (proved equal to Mathlib's count, see
   above), `spectrum`, `pottsSpec`, `mono`, `comps`, `tutte` (the rank-generating form; Mathlib has no
   Tutte polynomial to compare with), `cutSize`, `isingSum`, `Seed`, the input codes
   (including `seedCode`). Anthropic's:
   the TM2 machine model and their statement files.
 
-## Status and next steps
+## Open problems
 
-- **A5a, A5a′, A5b** are done (see the table), and superseded by Tulsyan's exact count [15], which
-  is now machine-checked up to average degree 2^{o(√lg n)} [15]. Open: Hamiltonian cycle on denser
-  graphs.
-- **N2′** is randomized. Open: deterministic Steiner tree and connected vertex cover on dense
-  graphs, and the exact number of connected vertex sets of size ℓ on dense graphs (we have its
-  parity, N2). By the barrier above, neither follows from Cut & Count with fewer than ℓ colors.
-- **A3** is done for Vertex Cover and Nonblocker (A3, A3′ in the table). Nonblocker needs no
-  branching: Ore's bound leaves at most 2k relevant vertices.
-- **N10** is done: odd cycle transversal, deterministic, any density. Open: the number of odd cycle
-  transversals of each size (the count weights each one by the 2-colorings of the rest).
-- **N9, N9′** are done for sparse graphs (see the table). Open: feedback vertex set on denser
-  graphs (the edge bits make the formula grow with m, and by the barrier above vertex colorings
-  alone cannot see cycles), and a deterministic version.
-- **N2, N2′, N7, N7′, N7″, N8, N8′ and N8″** are done (see the table). N7 and N8 combine the Cut & Count
-  formula with Anthropic's shortening tree, so they handle positive clauses of unbounded width. Open:
-  more than linearly many such clauses (for example Group Steiner tree with n·ω(1) groups), long
-  clauses with negative literals, and deterministic versions.
-- **N5** is done (see the table). The range of h is that of A2; it ends where b³ ≈ √lg n/lglg n.
-  The number of clauses grows with h², not the number of variables, so dense targets cost nothing extra.
-- **N6 and N6′** are done (see the table): 0/1 and {−1, 0, 1} entries. Open: the matching
-  polynomial of general graphs (the same formula with clauses for edges sharing an endpoint, s = j)
-  and permanents with larger integer weights, which need a counter modulo small primes or a
-  binary expansion of the weights.
-- **S3** is done: `numHamCycles` is checked against Mathlib's `IsHamiltonian` and
-  `IsHamiltonianCycle` (see the notes under the table).
-- **N3** is done (see the table). Here q is a constant: the formula has width q + 3, and `SIZED`
-  takes a fixed width. Open: the Tutte polynomial off the hyperbolas (x−1)(y−1) ∈ ℕ.
-- The full list of ten candidate problems is in [NOTES.md](NOTES.md), together with the research
-  log and the deep dive on both papers. It includes harder Tier B items: dense Max-Cut, the
-  permanent, CNF-SAT with poly(n) clauses, planar problems below 2^{O(√n)}, and Subset Sum.
+- **Hamiltonian cycle** on graphs denser than the range of the exact count of [15], which is
+  machine-checked up to average degree 2^{o(√lg n)}.
+- **Connected solutions on dense graphs, deterministically:** Steiner tree and connected vertex
+  cover, and the exact number of connected vertex sets of size ℓ (N2 gives its parity). By the
+  barrier above, neither follows from Cut & Count with fewer than ℓ colors.
+- **Positive clauses beyond N8:** more than linearly many clauses of unbounded width (for example
+  Group Steiner tree with n·ω(1) groups), long clauses with negative literals, and deterministic
+  versions of N7′, N8′ and N8″.
+- **Feedback vertex set** on denser graphs, and a deterministic version. The edge bits of N9 make
+  the formula grow with m, and by the barrier above vertex colorings alone cannot see cycles.
+- **Odd cycle transversals:** the number of them of each size. The count of N10 weights each one by
+  the 2-colorings of the rest.
+- **Colorings and homomorphisms** with more colors than A2 and N5 allow: their range of k and h ends
+  where b³ ≈ √lg n/lglg n.
+- **Permanents and matchings:** the matching polynomial of general graphs (the formula of N6 with
+  clauses for edges sharing an endpoint, s = j), and permanents with larger integer weights, which
+  need a counter modulo small primes or a binary expansion of the weights.
+- **The Tutte polynomial** off the hyperbolas (x−1)(y−1) ∈ ℕ. In N3, q is a constant: the formula
+  has width q + 3, and `SIZED` takes a fixed width.
+- **Problems the claims do not reach directly:** dense Max-Cut and Max-2-CSP, the permanent of dense
+  matrices, CNF-SAT with poly(n) clauses in 2^{(1−ε)n}, planar problems below 2^{O(√n)}, and Subset
+  Sum (see [NOTES.md](NOTES.md)).
 
 ## Layout
 
 ```
 README.md            this file
 paper/               the write-up (LaTeX source and PDF)
-NOTES.md             deep dive on both papers, ten candidate problems, research log
+NOTES.md             technical notes on both papers and on each result
 lean/
   lakefile.toml      pins Anthropic's formal-math `eth` development
   CheckAxioms.lean   prints the axioms of the main theorems
@@ -955,8 +929,7 @@ and check proofs, to write the Lean formalisation, and to draft the text.
     algorithmics for minimum dominating set. SOFSEM 2006, LNCS 3831, 237–245.
 15. V. Tulsyan. Counting Hamiltonian cycles in sparse graphs in subexponential time, assuming the
     new #SAT algorithms. October 2026. https://github.com/xennygrimmato/eth-hamiltonicity (Lean:
-    `EthFollowup.ExactHC.theorem1`, `theorem2`, `theoremTSP`; checked at commits ae323a3,
-    ba4c161, 16fe4eb, c01f010, 60d1679 and 974ea29).
+    `EthFollowup.ExactHC.theorem1`, `theorem2`, `theoremTSP`; commit 4193596).
 16. P. Jonsson, V. Lagerkvist, J. Schmidt, and H. Uppman. Relating the time complexity of
     optimization problems in light of the exponential-time hypothesis. MFCS 2014, LNCS 8635,
     408–419. arXiv:1406.3247.
