@@ -14,7 +14,7 @@ Model: an N-vertex graph given by its adjacency matrix, one query per pair of ve
 - (a) B has the most edges among the blocks of H, and at most one other block is isomorphic to B; or
 - (b) every component of H − E(B) has fewer than e(H)/2 edges; or
 - (c) for every vertex c of B, every component of H − c that avoids B − c has at most e(H)/2 edges, counting its edges to c; or
-- (d) B has the most edges among the blocks of H, B contains a vertex u that lies in the largest number of blocks isomorphic to B, and at most one other vertex of H lies in that many.
+- (d) B has the most edges among the blocks of H, B contains a vertex u that lies in as many blocks isomorphic to B as any vertex of H, and at most one other vertex of H lies in that many.
 
 Then detecting or finding H takes Ω(N^{1 + 1/(6(v−1))}) queries.
 
