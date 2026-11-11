@@ -411,9 +411,9 @@ graph failed in about a third of the instances. Lemma R (`notes/GHAT_REPAIR.md`,
 defines the repaired graph formally and proves what Theorem D needs from it: the properties
 [18, Thm 3.1 (1), (2)], planarity with an explicit rotation at every copy, the diameter bound,
 and the local phase of [18, Lemma 3.17]. Its definition, its properties (1), (2) and (5), the
-hop bound of (4), the refinement behind the local phase in (6) and the distances on the repaired
-graph hold in Lean (`lean/SsspFlow/GHat.lean`, `lean/SsspFlow/GHatDist.lean`,
-`lean/SsspFlow/GHatProps.lean`). An independent implementation of its definition
+planarity (3) with the rotation of Table R, the hop bound of (4), the refinement behind the local
+phase in (6) and the distances on the repaired graph hold in Lean (`lean/SsspFlow/GHat.lean`,
+`lean/SsspFlow/GHatDist.lean`, `lean/SsspFlow/GHatProps.lean`, `lean/SsspFlow/GHatPlanar.lean`). An independent implementation of its definition
 matched the tested graph on 98,000 instances. Lemma R needs a description of the dual nodes
 that is not stated in [18]. Lemma N proves it, by induction over the levels, and the reduction
 is correct for every legal choice at $s$ and $t$. In Lean, the pieces of Definition R are the
@@ -666,6 +666,24 @@ standard axioms (`propext`, `Classical.choice`, `Quot.sound`). There is no `sorr
   cut corners, the parents of linked tokens are linked (`RData.link_parent`). So every piece refines a piece of the
   level before (`RData.parentPiece`, `RData.piece_parent`), and the end at the host of the parent of a token lies on
   the path of that piece (`RData.pieceOf_att_parent`): the refinement of Lemma N and the first part of Claim 3.
+- `lean/SsspFlow/ListRot.lean`: a rotation system given by a list of darts at each vertex (`ListData.toRot`). Two
+  darts lie at one vertex exactly when they lie in one list (`ListData.tail_eq_iff`), and a label of the darts that
+  agrees on each dart and the reverse of the next dart in its list is invariant along faces
+  (`ListData.lab_rev_rot_of_mem`).
+- `lean/SsspFlow/GHatRot.lean`: the full repaired graph, Definition R with a rim edge at both ends of every edge, the
+  copies $X(c)$ of the cut corners and the rerouted rims, with the lists of Table R at all copies (`RData.lst`).
+  Every dart lies in the list of its tail (`RData.mem_lst_tl`, `RData.tl_of_mem`) and no list repeats a dart
+  (`RData.lst_nodup`), so the lists define a rotation system (`RData.hRot`).
+- `lean/SsspFlow/GHatPlanar.lean`: property (3) of Lemma R. The faces of the full repaired graph carry labels: a wheel
+  at each dart of the graph, a quad at each edge, a face of the graph, and a lens at each incised dart
+  (`RData.lab`). The label is invariant along faces (`RData.lab_face`) and takes every value (`RData.lab_surj`). With
+  the counts of edges, vertices and faces (`RData.numEdges_hRot`, `RData.numVertices_hRot`, `RData.numFaces_hRot`),
+  Euler's formula for the graph and connectivity (`RData.hRot_connected`), the full repaired graph is planar
+  (`RData.hRot_planar`). The repaired graph $\hat G_\ell$ keeps all edges except the rims that are no E_C edges. Its
+  rotation is the restriction, so it is planar (`RData.gRot_planar`), every kept dart is an arc of $\hat G_\ell$
+  between the same copies and every arc is a kept dart (`RData.arc_of_keep`, `RData.keep_of_arc`). The face
+  invariance needs that no incised dart has its tail corner cut in mode R and its head corner cut in mode L
+  (`RData.NoConflict`). Any number of cut corners is allowed, at any vertices.
 - `lean/SsspFlow/GHatSplit.lean`: Lemma N in the split model, which cuts the doubled dual at the digon corners of the
   incised darts and at the cut corners (`RData.dualSplit`). Two tokens lie in one piece exactly when their darts lie
   at one vertex of the split (`RData.piece_eq_iff`), so the pieces are the vertices of the split
@@ -992,8 +1010,9 @@ Of Lemma R, Definition R, its properties (1), (2) and (5), the hop bound of (4),
 distances on the repaired graph are formalized, for any set of cut corners with modes and any host of the unincised
 pairs. Lemma N is formalized in the split model: the pieces and pairs are the vertices and edges of the split, every
 annulus of a level is a component of the token graph of the level, and its lengths $\lambda_t$ are distances in that
-token graph and, below $M$, in the repaired graph. The planarity (3), the count of copies and the simulation in (4),
-the rest of (6) and the round count are not. The reduction of the minimum st-cut to the least computed length is
+token graph and, below $M$, in the repaired graph. The planarity (3) is formalized for data without conflict
+(`RData.NoConflict`); that the cut corners at $s$ and $t$ never conflict is shown in `notes/GHAT_REPAIR.md`. The
+count of copies and the simulation in (4), the rest of (6) and the round count are not formalized. The reduction of the minimum st-cut to the least computed length is
 formalized, assuming the classical cut duality (`CutDuality`).
 
 ## Numerical checks (`sim/`)
