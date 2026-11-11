@@ -8,8 +8,8 @@ The rotation list of the network of a level at an identifier, in terms of the na
 
 * `RData.levelNet_rotList_dart`: at the name of a dart `x`, the name of the copy at which `x` starts and
   the name of the reverse dart.
-* `RData.levelNet_rotList_copy`: at the name of a copy, the names of its darts in rotation order, then
-  the identifiers that hang at it.
+* `RData.levelNet_rotList_copy`: at the name of a copy, the names of its darts in the order of
+  Table R, then the identifiers that hang at it in increasing order.
 * `RData.levelNet_rotList_pend`: at an identifier that names nothing, the star centre `(u, u, 0)` of its
   node `u`.
 
@@ -44,46 +44,6 @@ theorem view_of_lists {V W I : Type} [Fintype W] [DecidableEq W] (N' : Net W) (h
     rcases hba with hb | ha
     · exact .inl ⟨hb, by rw [hL w b hb]; exact (N'.mem_rotList b a).2 hadj⟩
     · exact .inr ⟨ha, by rw [hL w a ha]; exact (N'.mem_rotList a b).2 (N'.G.adj_symm hadj)⟩
-
-namespace Net
-
-variable {V : Type} [Fintype V] [DecidableEq V] (N : Net V)
-
-/-- The same network with lists that are rotations of its lists. -/
-def relist (L : V → List V) (hL : ∀ v, L v ~r N.rotList v) : Net V where
-  G := N.G
-  rotList := L
-  nodup v := (hL v).nodup_iff.2 (N.nodup v)
-  mem_rotList v w := (hL v).mem_iff.trans (N.mem_rotList v w)
-
-theorem relist_rotPerm (L : V → List V) (hL : ∀ v, L v ~r N.rotList v) :
-    (N.relist L hL).rotPerm = N.rotPerm :=
-  Equiv.ext fun d => SimpleGraph.Dart.ext _ _ (Prod.ext rfl (by
-    show (L d.fst).formPerm d.snd = (N.rotList d.fst).formPerm d.snd
-    rw [List.formPerm_eq_of_isRotated ((hL d.fst).nodup_iff.2 (N.nodup _)) (hL d.fst)]))
-
-/-- Planarity does not depend on the instance of finiteness. -/
-theorem _root_.SsspFlow.RotSystem.planar_of_inst {E : Type} [DecidableEq E] {i₁ i₂ : Fintype E}
-    (R₁ : @RotSystem E i₁ _) (R₂ : @RotSystem E i₂ _)
-    (hrev : @RotSystem.rev E i₁ _ R₁ = @RotSystem.rev E i₂ _ R₂)
-    (hrot : @RotSystem.rot E i₁ _ R₁ = @RotSystem.rot E i₂ _ R₂)
-    (h : @RotSystem.Planar E i₁ _ R₁) : @RotSystem.Planar E i₂ _ R₂ := by
-  obtain rfl : i₁ = i₂ := Subsingleton.elim _ _
-  cases R₁
-  cases R₂
-  cases hrev
-  cases hrot
-  exact h
-
-/-- **Rotated lists keep planarity.** The rotation is the same permutation of the same darts. -/
-theorem relist_planar (L : V → List V) (hL : ∀ v, L v ~r N.rotList v) (h : N.toRot.Planar) :
-    (N.relist L hL).toRot.Planar :=
-  RotSystem.planar_of_inst N.toRot (N.relist L hL).toRot rfl (N.relist_rotPerm L hL).symm h
-
-theorem relist_diam (L : V → List V) (hL : ∀ v, L v ~r N.rotList v) {D : ℕ} (h : N.DiamLE D) :
-    (N.relist L hL).DiamLE D := h
-
-end Net
 
 end Congest
 
@@ -124,23 +84,24 @@ theorem extras_inr (x : S.HD) : (S.levelPad hN).extras (.inr x) = ∅ := by
 theorem levelNet_rotList_dart (x : S.HD) :
     (S.levelNet hN).rotList ((S.levelPad hN).ι (.inr x)) =
       [(S.levelPad hN).ι (.inl (S.hRot.tail x)), (S.levelPad hN).ι (.inr (S.hrev x))] := by
-  show padList (S.levelPad hN) S.hRot.subNet _ = _
-  rw [padList_ι, S.hRot.subNet_rotList_inr, S.extras_inr hN, Finset.toList_empty, List.append_nil]
+  show padList (S.levelPad hN) S.hatNet _ = _
+  rw [padList_ι, show S.hatNet.rotList (.inr x) = _ from S.hRot.subNet_rotList_inr x, S.extras_inr hN, PadMap.order_empty, List.append_nil]
   rfl
 
 /-- **The list at the name of a copy.** -/
 theorem levelNet_rotList_copy (v : S.hRot.Vertex) :
     (S.levelNet hN).rotList ((S.levelPad hN).ι (.inl v)) =
-      (S.hRot.vList v).map (fun x => (S.levelPad hN).ι (.inr x)) ++
-        ((S.levelPad hN).extras (.inl v)).toList := by
-  show padList (S.levelPad hN) S.hRot.subNet _ = _
-  rw [padList_ι, S.hRot.subNet_rotList_inl, List.map_map]
+      (S.lstR (S.vcopy v)).map (fun x => (S.levelPad hN).ι (.inr x)) ++
+        (S.levelPad hN).order ((S.levelPad hN).extras (.inl v)) := by
+  show padList (S.levelPad hN) S.hatNet _ = _
+  rw [padList_ι, show S.hatNet.rotList (.inl v) = (S.lstR (S.vcopy v)).map Sum.inr from rfl,
+    List.map_map]
   rfl
 
 /-- **The list at an identifier that names nothing.** -/
 theorem levelNet_rotList_pend {z : Fin (n * (n * 21))} (h : ¬ (S.levelPad hN).IsReal z) :
     (S.levelNet hN).rotList z = [idEquiv (hostOf z, hostOf z, 0)] := by
-  show padList (S.levelPad hN) S.hRot.subNet _ = _
+  show padList (S.levelPad hN) S.hatNet _ = _
   rw [padList_of_not h, S.back_of_not_real hN h]
   rfl
 

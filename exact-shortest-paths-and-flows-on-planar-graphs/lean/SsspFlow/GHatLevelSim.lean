@@ -34,7 +34,7 @@ theorem padNet_adj_cases {b a : W} (h : (padNet P N₀).G.Adj b a) :
     rcases h' with h' | h'
     · obtain ⟨y, hy, rfl⟩ := List.mem_map.1 h'
       exact .inl ⟨P.back b, y, hb, rfl, (N₀.mem_rotList _ _).1 hy⟩
-    · rw [Finset.mem_toList, P.mem_extras] at h'
+    · rw [P.mem_order, P.mem_extras] at h'
       exact .inr (.inr ⟨h'.1, by rw [h'.2]; exact hb⟩)
   · have h' : a ∈ padList P N₀ b := h
     rw [padList_of_not hb, List.mem_singleton] at h'

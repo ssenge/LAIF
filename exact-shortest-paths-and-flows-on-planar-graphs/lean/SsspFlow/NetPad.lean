@@ -229,6 +229,10 @@ structure PadMap (V₀ W : Type) where
   /-- The node of an identifier: the one it names, or the one at which it hangs. -/
   back : W → V₀
   back_ι : ∀ x, back (ι x) = x
+  /-- The order in which the identifiers that hang at a node follow its neighbours. -/
+  order : Finset W → List W
+  order_nodup : ∀ s, (order s).Nodup
+  mem_order : ∀ s e, e ∈ order s ↔ e ∈ s
 
 section Pad
 
@@ -259,6 +263,15 @@ theorem mem_extras [Fintype W] [DecidableEq W] [DecidableEq V₀] {x : V₀} {e 
     e ∈ P.extras x ↔ ¬ P.IsReal e ∧ P.back e = x := by
   simp [extras]
 
+theorem order_empty : P.order ∅ = [] :=
+  List.eq_nil_iff_forall_not_mem.2 fun e h => by simpa using (P.mem_order _ e).1 h
+
+theorem length_order [DecidableEq W] (s : Finset W) : (P.order s).length = s.card := by
+  rw [← List.toFinset_card_of_nodup (P.order_nodup s)]
+  congr 1
+  ext e
+  rw [List.mem_toFinset, P.mem_order]
+
 end PadMap
 
 variable [Fintype V₀] [DecidableEq V₀] [Fintype W] [DecidableEq W]
@@ -267,24 +280,24 @@ variable (P : PadMap V₀ W)
 /-- The list of an identifier: for a node its old list and the identifiers that hang at it, and
 otherwise the node at which it hangs. -/
 noncomputable def padList (N₀ : Net V₀) (a : W) : List W :=
-  if P.IsReal a then (N₀.rotList (P.back a)).map P.ι ++ (P.extras (P.back a)).toList
+  if P.IsReal a then (N₀.rotList (P.back a)).map P.ι ++ P.order (P.extras (P.back a))
   else [P.ι (P.back a)]
 
 variable {P} {N₀ : Net V₀}
 
 theorem padList_ι (x : V₀) :
-    padList P N₀ (P.ι x) = (N₀.rotList x).map P.ι ++ (P.extras x).toList := by
+    padList P N₀ (P.ι x) = (N₀.rotList x).map P.ι ++ P.order (P.extras x) := by
   rw [padList, ite_eq_left (P.isReal_ι x), P.back_ι]
 
 theorem padList_of_not {a : W} (h : ¬ P.IsReal a) : padList P N₀ a = [P.ι (P.back a)] := by
   rw [padList, ite_eq_right h]
 
-theorem padList_nodup_ι (x : V₀) : ((N₀.rotList x).map P.ι ++ (P.extras x).toList).Nodup := by
+theorem padList_nodup_ι (x : V₀) : ((N₀.rotList x).map P.ι ++ P.order (P.extras x)).Nodup := by
   rw [List.nodup_append]
-  refine ⟨(N₀.nodup x).map P.ι_injective, Finset.nodup_toList _, ?_⟩
+  refine ⟨(N₀.nodup x).map P.ι_injective, P.order_nodup _, ?_⟩
   intro a ha b hb hab
   obtain ⟨y, -, rfl⟩ := List.mem_map.1 ha
-  rw [Finset.mem_toList, P.mem_extras] at hb
+  rw [P.mem_order, P.mem_extras] at hb
   exact hb.1 (hab ▸ P.isReal_ι y)
 
 theorem padList_nodup (a : W) : (padList P N₀ a).Nodup := by
@@ -302,13 +315,13 @@ theorem padList_symm {a b : W} (h : b ∈ padList P N₀ a) : a ∈ padList P N�
       have hsymm := (N₀.mem_rotList _ _).2 ((N₀.mem_rotList _ _).1 hy).symm
       rw [padList_ι, List.mem_append]
       exact Or.inl (List.mem_map.2 ⟨_, hsymm, ha.symm⟩)
-    · rw [Finset.mem_toList, P.mem_extras] at h
+    · rw [P.mem_order, P.mem_extras] at h
       rw [padList_of_not h.1, h.2, List.mem_singleton]
       exact ha
   · rw [padList_of_not ha, List.mem_singleton] at h
     subst h
     rw [padList_ι, List.mem_append]
-    exact Or.inr (Finset.mem_toList.2 (P.mem_extras.2 ⟨ha, rfl⟩))
+    exact Or.inr ((P.mem_order _ _).2 (P.mem_extras.2 ⟨ha, rfl⟩))
 
 theorem padList_irrefl (a : W) : a ∉ padList P N₀ a := by
   intro h
@@ -319,7 +332,7 @@ theorem padList_irrefl (a : W) : a ∉ padList P N₀ a := by
       have hb : P.back a = y := by rw [← hya, P.back_ι]
       rw [hb] at hy
       exact (N₀.G.loopless.irrefl y) ((N₀.mem_rotList _ _).1 hy)
-    · rw [Finset.mem_toList, P.mem_extras] at h
+    · rw [P.mem_order, P.mem_extras] at h
       exact h.1 ha
   · rw [padList_of_not ha, List.mem_singleton] at h
     exact ha h
@@ -405,7 +418,7 @@ theorem padNet_sum :
   rw [hsplit]
   have h1 : ∀ x, (padList P N₀ (P.ι x)).length = (N₀.rotList x).length + (P.extras x).card := by
     intro x
-    rw [padList_ι, List.length_append, List.length_map, Finset.length_toList]
+    rw [padList_ι, List.length_append, List.length_map, P.length_order]
   have h2 : ∑ e ∈ Finset.univ.filter (fun e => ¬ P.IsReal e), (padList P N₀ e).length =
       (Finset.univ.filter fun e => ¬ P.IsReal e).card := by
     rw [Finset.card_eq_sum_ones]
@@ -486,8 +499,8 @@ private theorem padLab_step (a b : W) (hab : b ∈ padList P N₀ a) :
     padLab P hN ((padList P N₀ a).formPerm b) a = padLab P hN a b := by
   by_cases ha : P.IsReal a
   · obtain ⟨x, rfl⟩ : ∃ x, a = P.ι x := ⟨_, ha⟩
-    have hnd : ((N₀.rotList x).map P.ι ++ (P.extras x).toList).Nodup := padList_nodup_ι x
-    have hL : padList P N₀ (P.ι x) = (N₀.rotList x).map P.ι ++ (P.extras x).toList := padList_ι x
+    have hnd : ((N₀.rotList x).map P.ι ++ P.order (P.extras x)).Nodup := padList_nodup_ι x
+    have hL : padList P N₀ (P.ι x) = (N₀.rotList x).map P.ι ++ P.order (P.extras x) := padList_ι x
     rw [hL] at hab ⊢
     have hmem := List.formPerm_apply_mem_of_mem hab
     rcases List.mem_append.1 hab with hb | hb
@@ -500,7 +513,7 @@ private theorem padLab_step (a b : W) (hab : b ∈ padList P N₀ a) :
         have hadj : N₀.G.Adj ((N₀.rotList x).formPerm y) x := ((N₀.mem_rotList _ _).1 hy').symm
         rw [padLab_real hN hadj]
         exact face_step hxy rfl hadj
-      · have he := Finset.mem_toList.1 hb'
+      · have he := (P.mem_order _ _).1 hb'
         rw [P.mem_extras] at he
         rw [padLab_left hN he.1 he.2]
         obtain ⟨-, a₀, l, hA, hstep⟩ := formPerm_append_last hnd hb hb'
@@ -510,7 +523,7 @@ private theorem padLab_step (a b : W) (hab : b ∈ padList P N₀ a) :
         have hadj : N₀.G.Adj y₀ x := ((N₀.mem_rotList _ _).1 (by rw [hr]; simp)).symm
         rw [cFace_eq hN hr hadj]
         exact face_step hxy hy₀.symm hadj
-    · have he := Finset.mem_toList.1 hb
+    · have he := (P.mem_order _ _).1 hb
       rw [P.mem_extras] at he
       rw [padLab_right hN he.1]
       rcases List.mem_append.1 hmem with hb' | hb'
@@ -518,7 +531,7 @@ private theorem padLab_step (a b : W) (hab : b ∈ padList P N₀ a) :
         obtain ⟨y₀, l', hr, rfl, -⟩ := List.map_eq_cons_iff.1 hA
         have hadj : N₀.G.Adj y₀ x := ((N₀.mem_rotList _ _).1 (by rw [hr]; simp)).symm
         rw [hstep, padLab_real hN hadj, cFace_eq hN hr hadj]
-      · have he' := Finset.mem_toList.1 hb'
+      · have he' := (P.mem_order _ _).1 hb'
         rw [P.mem_extras] at he'
         exact padLab_left hN he'.1 he'.2
   · rw [padList_of_not ha] at hab ⊢

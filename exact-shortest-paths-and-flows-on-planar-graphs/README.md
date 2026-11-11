@@ -712,8 +712,12 @@ standard axioms (`propext`, `Classical.choice`, `Quot.sound`). There is no `sorr
 - `lean/SsspFlow/GHatLevel.lean`: the network of a level on fixed identifiers. For a plane network on $n$ nodes,
   the nodes of the subdivided repaired graph are named by a node, a neighbour and one of 21 kinds (`Net.nameC`,
   `RData.nameD`, `RData.name_injective`), so the names do not depend on the level. All other names hang as pendant
-  nodes at the star centre of their node. The network of a level is planar (`RData.levelNet_planar`) and has diameter
-  at most $12D + 16$ (`RData.levelNet_diam`).
+  nodes at the star centre of their node, in increasing order. The lists at the copies are those of Table R, with the
+  star centre of a node in the order of its rotation list (`RData.hatNet`). They are rotations of the lists of the
+  subdivided repaired graph (`RData.hatList_rot`, `RData.vList_rot`), and lists that are rotations of the lists of a
+  network give the same graph and the same rotation (`Congest.Net.relist_planar`, `Congest.Net.relist_connected`,
+  `Congest.Net.relist_diam`). The network of a level is planar (`RData.levelNet_planar`) and has diameter at most
+  $12D + 16$ (`RData.levelNet_diam`).
 - `lean/SsspFlow/GHatLevelSim.lean`: the nodes simulate the network of a level. The host of an identifier is the node
   that names it. An edge between two hosts is the middle edge of a token dart (`RData.levelNet_cross`), so it follows
   an edge of the network (`RData.levelNet_host`), and at most four go from one node to another
@@ -755,11 +759,10 @@ standard axioms (`propext`, `Classical.choice`, `Quot.sound`). There is no `sorr
   This is a count of rounds over the levels, not one algorithm of the message model for the whole recursion.
 - `lean/SsspFlow/GHatLevelLocal.lean`: the rotation lists of the network of a level, by names. At the name of a dart
   they hold the name of the copy at which it starts and the name of the reverse dart (`RData.levelNet_rotList_dart`),
-  at the name of a copy the names of its darts in rotation order and the identifiers that hang at it
+  at the name of a copy the names of its darts in the order of Table R and the identifiers that hang at it
   (`RData.levelNet_rotList_copy`), and at an identifier that names nothing the star centre $(u, u, 0)$ of its node $u$
   (`RData.levelNet_rotList_pend`). A node that knows its own name and these lists at its own identifiers knows the edges
-  at them (`Congest.view_of_lists`). Lists that are rotations of these lists give a network with the same graph and the
-  same rotation, so it is planar too (`Congest.Net.relist_planar`, `Congest.Net.relist_diam`).
+  at them (`Congest.view_of_lists`).
 - `lean/SsspFlow/GHatTableRaw.lean`: the lists of Table R from local data. Every dart carries a record of five bits that
   its tail computes (`RData.dinfo`): incised, cut corner, mode, host bit, and whether its tail corner is cut in mode R.
   Read as names, the lists at the copies $D(c)$, $L(c)$, $R(c)$ and $X(c)$ of a corner $c = (w, u)$ are functions of the
@@ -767,6 +770,13 @@ standard axioms (`propext`, `Classical.choice`, `Quot.sound`). There is no `sorr
   (`RData.dList_raw`, `RData.lList_raw`, `RData.rList_raw`, `RData.xList_raw`), and the list at the star centre of $w$
   is a rotation of the rotation list of $w$ (`RData.starList_raw`). So a node knows these lists after one round in
   which every node sends each neighbour the record of the dart to it.
+- `lean/SsspFlow/GHatLevelRaw.lean`: the rotation lists of the network of a level from local data. The node $w$ computes
+  the list at each identifier $(w, u, k)$ from its rotation list, the records of the darts at $w$ and the records of
+  the darts into $w$ (`rawAt`): it decides which identifiers name a node (`RData.rawReal_iff`), reads the lists of
+  Table R at its copies (`RData.rCopy_name`), finds the copy at which a dart starts (`RData.rTail_nameD`) and the name
+  of the reverse dart (`RData.nameD_hrev`), and lists the identifiers that name nothing at its star centre
+  (`RData.extras_inl`). These are the rotation lists of the network of a level at every identifier
+  (`RData.levelNet_rotList_raw`).
 - `lean/SsspFlow/GHatPhase.lean`: the combinatorics of property (6). Two copies on E_R edges are joined by E_R edges
   exactly when they lie on the path of one piece (`RData.er_comp_iff`), and by E_R and E_C edges exactly when their
   pieces are joined in the token graph (`RData.erc_comp_iff`), whose components are those of the split
@@ -945,8 +955,8 @@ standard axioms (`propext`, `Classical.choice`, `Quot.sound`). There is no `sorr
   proof is a count of dimensions from the formula $V+F=E+2$.
 - `lean/SsspFlow/NetPad.lean`: `planar_of_count` says that a connected rotation system with enough
   vertices and faces is planar, because the genus is not negative. `padNet` hangs identifiers as
-  pendant nodes at chosen nodes. It stays planar (`padNet_planar`), and its diameter grows by at most
-  two (`padNet_diam`).
+  pendant nodes at chosen nodes, in an order given with the identifiers (`PadMap.order`). It stays planar
+  (`padNet_planar`), and its diameter grows by at most two (`padNet_diam`).
 - `lean/SsspFlow/DualNet.lean`, `Net.xNet`: a version of $\hat G$ in which all edges of crowns and
   rings are subdivided, so that it is a simple graph for every network. It is planar (`xNet_planar`)
   and has diameter at most $5D+4$ (`xNet_diam`).
@@ -1107,7 +1117,7 @@ distances on the repaired graph are formalized, for any set of cut corners with 
 pairs. Lemma N is formalized in the split model: the pieces and pairs are the vertices and edges of the split, every
 annulus of a level is a component of the token graph of the level, and its lengths $\lambda_t$ are distances in that
 token graph and, below $M$, in the repaired graph. The planarity (3) is formalized for every level of a run, for any modes
-and hosts, and so is the count of copies in (4). The combinatorics of (6) is formalized, and so is the simulation in (4) for nodes that know the edges of the repaired graph at their own copies, and the repaired graph of every level as a planar network of diameter $O(D)$ whose distances between copies are the distances in $\hat G_\ell$, and, assuming the Exact SSSP bound, the computation of these distances and of the components of $\hat G_\ell[E_R]$ and $\hat G_\ell[E_R \cup E_C]$ by the nodes in $O(\log^c n \cdot D)$ rounds. The round count of the whole recursion is formalized as a cost model over the levels, assuming part-wise aggregation (`PartAggBox`). The computation of the edges and inputs at the copies, the other distributed steps of a level and one algorithm of the message model for the whole recursion are not formalized. The reduction of the minimum st-cut to the least computed length is
+and hosts, and so is the count of copies in (4). The combinatorics of (6) is formalized, and so is the simulation in (4) for nodes that know the edges of the repaired graph at their own copies, and the repaired graph of every level as a planar network of diameter $O(D)$ whose distances between copies are the distances in $\hat G_\ell$, and, assuming the Exact SSSP bound, the computation of these distances and of the components of $\hat G_\ell[E_R]$ and $\hat G_\ell[E_R \cup E_C]$ by the nodes in $O(\log^c n \cdot D)$ rounds. The round count of the whole recursion is formalized as a cost model over the levels, assuming part-wise aggregation (`PartAggBox`). The rotation lists of the network of a level at every identifier are formalized as functions of the data of its host and the records of the darts into it. The computation of the lengths at the copies, the other distributed steps of a level and one algorithm of the message model for the whole recursion are not formalized. The reduction of the minimum st-cut to the least computed length is
 formalized, assuming the classical cut duality (`CutDuality`).
 
 ## Numerical checks (`sim/`)

@@ -164,49 +164,6 @@ theorem xList_raw (c : N.G.Dart) :
     by_cases h4 : N.toRot.rot c ∈ S.inc <;>
     simp_all [dinfo, nameD, fw, bw, lastLab, firstLab]
 
-/-- Lists without repeats, with the same entries and the same cycle, are rotations of each other. -/
-theorem _root_.List.isRotated_of_formPerm {α : Type*} [DecidableEq α] {l l' : List α} (hl : l.Nodup)
-    (hl' : l'.Nodup) (hm : ∀ x, x ∈ l ↔ x ∈ l') (hf : l.formPerm = l'.formPerm) : l ~r l' := by
-  have hp : l.Perm l' := (List.perm_ext_iff_of_nodup hl hl').2 hm
-  rcases l with _ | ⟨x, _ | ⟨y, t⟩⟩
-  · rw [← hp.nil_eq]
-  · rw [List.singleton_perm.1 hp]
-  · rcases l' with _ | ⟨x', _ | ⟨y', t'⟩⟩
-    · exact absurd hp.length_eq (by simp)
-    · exact absurd hp.length_eq (by simp)
-    · exact (List.formPerm_ext_iff hl hl').1 hf
-
-/-- **The list at a star centre from local data**, up to rotation: the darts at the node in rotation
-order. -/
-theorem starList_raw (d : N.G.Dart) :
-    (N.toRot.starList (N.toRot.tail d)).map (fun c : N.G.Dart => c.toProd) ~r
-      (N.rotList d.fst).map (Prod.mk d.fst) := by
-  have hinj : Function.Injective (fun c : N.G.Dart => c.toProd) := fun a b h => SimpleGraph.Dart.ext _ _ h
-  have hmem : ∀ c : N.G.Dart, c ∈ N.toRot.starList (N.toRot.tail d) ↔ c.fst = d.fst := fun c =>
-    mem_starList.trans N.tail_eq_iff
-  have hmem' : ∀ p : Fin n × Fin n, p ∈ (N.toRot.starList (N.toRot.tail d)).map (fun c => c.toProd) ↔
-      p ∈ (N.rotList d.fst).map (Prod.mk d.fst) := by
-    intro p
-    constructor
-    · intro h
-      obtain ⟨c, hc, rfl⟩ := List.mem_map.1 h
-      have hcf := (hmem c).1 hc
-      exact List.mem_map.2 ⟨c.snd, by rw [← hcf]; exact (N.mem_rotList _ _).2 c.adj, Prod.ext hcf.symm rfl⟩
-    · intro h
-      obtain ⟨u, hu, rfl⟩ := List.mem_map.1 h
-      exact List.mem_map.2 ⟨⟨(d.fst, u), (N.mem_rotList _ _).1 hu⟩, (hmem _).2 rfl, rfl⟩
-  refine List.isRotated_of_formPerm ((starList_nodup _).map hinj)
-    ((N.nodup _).map (Prod.mk_right_injective d.fst)) hmem' (Equiv.ext fun p => ?_)
-  by_cases hp : p ∈ (N.toRot.starList (N.toRot.tail d)).map (fun c => c.toProd)
-  · obtain ⟨c, hc, rfl⟩ := List.mem_map.1 hp
-    have hcf : c.fst = d.fst := (hmem c).1 hc
-    rw [formPerm_map_apply hinj (starList_nodup _) hc, formPerm_starList hc]
-    have hcs : c.snd ∈ N.rotList d.fst := hcf ▸ (N.mem_rotList _ _).2 c.adj
-    have e : c.toProd = (d.fst, c.snd) := Prod.ext hcf rfl
-    rw [e, formPerm_map_apply (Prod.mk_right_injective d.fst) (N.nodup _) hcs]
-    exact Prod.ext hcf (by rw [← hcf]; rfl)
-  · rw [List.formPerm_apply_of_notMem hp, List.formPerm_apply_of_notMem (fun h => hp ((hmem' p).2 h))]
-
 end RData
 
 end RotSystem

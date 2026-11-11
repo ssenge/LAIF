@@ -120,7 +120,7 @@ def xBack (p : V × V × Kind) : XNode V N.G.Dart :=
   if h : N.G.Adj p.1 p.2.1 then node p.2.2 ⟨(p.1, p.2.1), h⟩ else center p.1
 
 /-- The identifiers of the expansion, and the centres at which all others hang. -/
-def xPad : PadMap (XNode V N.G.Dart) W where
+noncomputable def xPad : PadMap (XNode V N.G.Dart) W where
   ι
     | center v => e (v, v, corner)
     | node k x => e (x.fst, x.snd, k)
@@ -133,6 +133,9 @@ def xPad : PadMap (XNode V N.G.Dart) W where
     | node k x =>
       simp only [Equiv.symm_apply_apply, xBack]
       rw [dite_eq_left x.adj]
+  order s := s.toList
+  order_nodup s := s.nodup_toList
+  mem_order _ _ := Finset.mem_toList
 
 /-- The identifier of the node of kind `k` of a dart. -/
 def idx (k : Kind) (x : N.G.Dart) : W := e (x.fst, x.snd, k)
@@ -232,7 +235,7 @@ theorem dualNet_rotList (v i : V) (k : Kind) :
   · let x : N.G.Dart := ⟨(v, i), h⟩
     have ha : e (v, i, k) = (xPad N e).ι (node k x) := rfl
     have hi : i ∈ N.rotList v := (N.mem_rotList _ _).2 h
-    rw [ha, padList_ι, xPad_extras_node, Finset.toList_empty, List.append_nil]
+    rw [ha, padList_ι, xPad_extras_node, PadMap.order_empty, List.append_nil]
     unfold vRot
     rw [ite_eq_left hi]
     cases k <;> rfl
@@ -348,7 +351,7 @@ theorem dual_arc {a b : W} {y : ℤ} (hab : (dualNet N e).G.Adj a b) (hw : dualW
           · exact .r12 _
           · exact .r2c _
           · exact .r21 _
-      · rw [xPad_extras_node] at hb
+      · rw [xPad_extras_node, PadMap.order_empty] at hb
         simp at hb
   · rw [padList_of_not ha, List.mem_singleton] at hab'
     subst hab'
