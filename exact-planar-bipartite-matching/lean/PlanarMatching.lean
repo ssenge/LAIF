@@ -7,3 +7,6 @@ import PlanarMatching.DagSearch
 import PlanarMatching.GeneralSearch
 import PlanarMatching.Dominators
 import PlanarMatching.Labels
+import PlanarMatching.ElimRun
+import PlanarMatching.ElimTree
+import PlanarMatching.ElimDecomp
