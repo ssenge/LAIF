@@ -34,7 +34,7 @@ proof d=  8 T=10000000000 regret mean 32811961.5 max 33720550.4  mean/(d^2 ln T)
 proof d=  8 T=1000000000000 regret mean 39336855.6 max 40202421.0  mean/(d^2 ln T) 22244.50  warm-up regret 36513898.9 warm-up infid 0.0014  all epochs on track 1.00
 
 $ python consts2.py
-theta=3.5 C=40 a=10 w=4 C2=500: drift I 0.5804, II 1.3767, warm 0.5695, eta 0.5695; g1 1.031, r1 3.043, r2 5.694; pI 3.75e-05 pIII 1.70e-55 S1 3.05e-94 S2 2.43e-116; log2 T <= 1.472e+53; cB 560.3 cW 2003; lead 983.8 d^2 log2 T = 1419.3 d^2 ln T
+theta=3.5 C=40 a=10 w=4 C2=500: drift I 0.5804, II 1.3767, warm 0.5695, eta 0.5695; g1 1.031, r1 3.043, r2 5.694; pI 3.75e-05 pIII 1.70e-55 S1 3.08e-94 S2 2.44e-116; log2 T <= 1.472e+53; cB 560.3 cW 2003; lead 984.0 d^2 log2 T = 1419.5 d^2 ln T
 all constants of Theorem 3: ok
 
 $ python regret2.py 2,4,8 1e4,1e6,1e8 20
