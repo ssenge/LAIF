@@ -549,3 +549,11 @@ Expected output for each: `propext`, `Classical.choice`, `Quot.sound` (or a subs
 #print axioms SsspFlow.Congest.negFlow_polylog_of_cited
 #print axioms SsspFlow.Congest.negFlow_subpoly_of_cited
 #print axioms SsspFlow.Congest.negFlow_of_cited
+#print axioms Cslib.Congest.Algorithm.msgUnpack_pack
+#print axioms Cslib.Congest.Algorithm.viewPairs_eq
+#print axioms Cslib.Congest.Algorithm.run_simulateView
+#print axioms SsspFlow.RotSystem.RData.arc_symm
+#print axioms SsspFlow.RotSystem.RData.er_of_arc
+#print axioms SsspFlow.RotSystem.RData.hatHost_of_adj
+#print axioms SsspFlow.RotSystem.RData.card_cross_le
+#print axioms SsspFlow.RotSystem.RData.run_hatSim

@@ -25,6 +25,7 @@ import SsspFlow.DualNet
 import SsspFlow.DualFlow
 import SsspFlow.Flood
 import SsspFlow.HostSim
+import SsspFlow.HostSimK
 import SsspFlow.MaxFlow
 import SsspFlow.Tour
 import SsspFlow.Disks
@@ -90,6 +91,7 @@ import SsspFlow.GHatRot
 import SsspFlow.GHatPlanar
 import SsspFlow.GHatRun
 import SsspFlow.GHatPhase
+import SsspFlow.GHatSim
 import SsspFlow.ListRot
 import SsspFlow.GHatSplit
 import SsspFlow.Annuli

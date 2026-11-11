@@ -693,6 +693,11 @@ standard axioms (`propext`, `Classical.choice`, `Quot.sound`). There is no `sorr
   $\deg$ has at most $3\deg + 1$ copies plus one for each cut corner at it (`RData.card_copiesAt`), and on a level of
   a run $s$ and $t$ have at most $3\deg + 2$ copies and every other vertex at most $3\deg + 1$
   (`CutPath.Run.card_copiesAt`).
+- `lean/SsspFlow/GHatSim.lean`: the simulation of (4). The repaired graph as a simple graph on the copies
+  (`RData.hatGraph`). An edge between copies at two different nodes is an E_R edge and follows an edge of the network
+  (`RData.hatHost_of_adj`), and at most four such edges go from one node to another (`RData.card_cross_le`). So if
+  each node knows the edges of the repaired graph at its own copies, the nodes run any algorithm on the repaired graph
+  round for round, with messages of four times the width (`RData.run_hatSim`).
 - `lean/SsspFlow/GHatPhase.lean`: the combinatorics of property (6). Two copies on E_R edges are joined by E_R edges
   exactly when they lie on the path of one piece (`RData.er_comp_iff`), and by E_R and E_C edges exactly when their
   pieces are joined in the token graph (`RData.erc_comp_iff`), whose components are those of the split
@@ -888,6 +893,9 @@ standard axioms (`propext`, `Classical.choice`, `Quot.sound`). There is no `sorr
   one bit give a unit of flow from $s$ to $t$.
 - `lean/SsspFlow/HostSim.lean`, theorem `Algorithm.run_simulate`: under these conditions the hosts run
   an algorithm on identifiers in the same number of rounds, with messages of twice the width.
+- `lean/SsspFlow/HostSimK.lean`, theorem `Algorithm.run_simulateView`: the same with at most $k$ edges between two
+  hosts in each direction and messages of $k$ times the width. The slots need not be fixed in advance: each host
+  knows the edges at its own identifiers, and both ends of an edge list the pairs between them in the same order.
 - `lean/SsspFlow/MaxFlow.lean`: the algorithm and the round count of Theorem C.
   - `negSsspBound_of_reduction`: `ExactSsspBound` and `NegReduction τ` give `NegSsspBound τ`. So,
     given `ExactSsspBound`, `NegReduction` fails with the factor $0$ (`not_negReduction_zero`).
@@ -1030,7 +1038,7 @@ distances on the repaired graph are formalized, for any set of cut corners with 
 pairs. Lemma N is formalized in the split model: the pieces and pairs are the vertices and edges of the split, every
 annulus of a level is a component of the token graph of the level, and its lengths $\lambda_t$ are distances in that
 token graph and, below $M$, in the repaired graph. The planarity (3) is formalized for every level of a run, for any modes
-and hosts, and so is the count of copies in (4). The combinatorics of (6) is formalized. The simulation in (4), the distributed phases of (6) and the round count are not formalized. The reduction of the minimum st-cut to the least computed length is
+and hosts, and so is the count of copies in (4). The combinatorics of (6) is formalized, and so is the simulation in (4) for nodes that know the edges of the repaired graph at their own copies. The computation of these edges, the distributed phases of (6) and the round count are not formalized. The reduction of the minimum st-cut to the least computed length is
 formalized, assuming the classical cut duality (`CutDuality`).
 
 ## Numerical checks (`sim/`)
