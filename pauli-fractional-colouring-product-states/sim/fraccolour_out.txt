@@ -1,0 +1,5 @@
+product states, n <= 3: chi_f eps^2 <= 1 in all cases (largest 0.5000)
+random pure states, n = 2: chi_f eps^2 in [0.160, 0.500]
+random pure states, n = 3: chi_f eps^2 in [0.280, 0.750]
+one qubit, <X> = <Z> = 1/sqrt2, eps = 1/sqrt2: chi_f eps^2 = 1
+fractional colouring checks: ok

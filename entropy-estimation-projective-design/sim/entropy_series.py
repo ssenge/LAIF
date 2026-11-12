@@ -1,10 +1,12 @@
 # Checks for the power-series estimator of entropy near I/d from a projective 2-design, with asserts.
 #  (1) exact second moments of the shifted snapshot Y = (d+1)P - I - I/d under the design measure, for the stabilizer
 #      2-designs on 1 and 2 qubits: E[Y (x) Y] = ((d+1)/d)(F - I (x) I/d), and E[Y C Y] <= ((d+1)/d) tr(C) I for C >= 0;
-#  (2) the chain bound E|tr(Y_1 B_1 ... Y_j B_j)|^2 <= (1 + 1/d)^j prod_i ||B_i||_F^2, exactly by enumeration (j <= 3, d = 4)
-#      and with the likelihood ratio d tr(rho P) <= 5/4 on the local ball;
+#  (2) the chain bound E|tr(Y_1 B_1 ... Y_j B_j)|^2 <= (1 + 1/d)^j prod_i ||B_i||_F^2 under the design measure, and Lemma 4
+#      with m = 1, E_rho|tr((Y_1 - H) B_1 ... (Y_j - H) B_j)|^2 <= beta^j prod_i ||B_i||_F^2 for random states of the ball,
+#      exactly by enumeration over all tuples of outcomes (j <= 3, d = 2 and 4);
 #  (3) the estimator: risk of the degree-K batch estimator against the quadratic one, with uniformly random pure-state measurements,
-#      and against the explicit bound of Theorem 1.
+#      and against the intermediate bound (sum of standard deviations plus remainder)^2 of the proof of Theorem 1, which is
+#      below the stated bound; here K = ceil(log_16(n/d)) + 1.
 # python -I entropy_series.py
 import itertools
 import math
@@ -67,8 +69,6 @@ for q, count in ((1, 6), (2, 60)):
 
     # (2) chain bound, exactly over all tuples, with random B_i and with the reweighting by a local state
     for j in (1, 2, 3):
-        if d == 2 and j == 3:
-            pass
         for trial in range(3):
             Bs = []
             for _ in range(j):
@@ -82,12 +82,12 @@ for q, count in ((1, 6), (2, 60)):
             assert max(w) <= 1.25 + 1e-12 and min(w) >= 0.75 - 1e-12
             tot_u = tot_r = 0.0
             for idx in itertools.product(range(len(St)), repeat=j):
-                M = np.eye(d, dtype=complex)
+                M = np.eye(d, dtype=complex); Mc = np.eye(d, dtype=complex)
                 for a, B in zip(idx, Bs):
                     M = M @ Ys[a] @ B
-                val = abs(np.trace(M)) ** 2
-                tot_u += val
-                tot_r += val * np.prod([w[a] for a in idx])
+                    Mc = Mc @ (Ys[a] - H) @ B
+                tot_u += abs(np.trace(M)) ** 2
+                tot_r += abs(np.trace(Mc)) ** 2 * np.prod([w[a] for a in idx])
             tot_u /= len(St) ** j
             tot_r /= len(St) ** j
             assert tot_u <= bound * (1 + 1e-9), (d, j, tot_u, bound)
@@ -171,7 +171,7 @@ for d, n, reps in ((4, 40000, 300), (8, 160000, 100), (4, 1000000, 60)):
     H = rho - np.eye(d) / d
     bq = math.log(d) - d / 2 * np.trace(H @ H).real - S0
     print(f"d = {d}, n = {n}, dr = 1/4, K = {K}: MSE quadratic {mse[0]:.2e} (bias {bias_q:+.2e}), "
-          f"degree K {mse[1]:.2e} +- {se[1]:.1e}; rate d^3 r^2/n + d^4/n^2 = {rate:.2e}; Theorem 1 bound {bnd:.2e}; "
+          f"degree K {mse[1]:.2e} +- {se[1]:.1e}; rate d^3 r^2/n + d^4/n^2 = {rate:.2e}; proof bound {bnd:.2e}; "
           f"squared bias of the quadratic estimator {bq ** 2:.2e}")
     assert mse[1] <= bnd + 3 * se[1]
     if bq ** 2 > 2 * rate:
