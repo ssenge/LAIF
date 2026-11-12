@@ -28,10 +28,10 @@ Let m = ⌈200/ε²⌉ + 1 and partition [n] into consecutive buckets B_0, B_1, 
 - then, for k = 2, …, m − 1, ⌈m/k⌉ buckets of length k;
 - then one bucket of length m, and after each bucket of length ℓ ≥ m one of length ⌈(1 + 1/m)ℓ⌉, until [n] is covered, with the last bucket cut at n.
 
-This gives K ≤ m(ln n + 3) = O(log(n)/ε²) buckets; if m ≥ n, all buckets are singletons. Let w_j = p(B_j).
+This gives K ≤ (m + 1)(ln n + 3) = O(log(n)/ε²) buckets; if m ≥ n, all buckets are singletons. Let w_j = p(B_j).
 
 1. *Learn.* Let η = ε²/(300K). Estimate all K bucket masses at once to additive error η with the algorithm for multiple expectation values of [4, Theorem 37], which gives z_j, and set the upper estimate ŵ_j = z_j + η.
-2. *Hypothesis.* Form the shifted flattening ŝ. A singleton keeps its value, ŝ_i = ŵ_j for B_j = {i}. Every element of a bucket B_j of length at least 2 gets the average of the previous bucket, ŝ_i = ŵ_{j−1}/ℓ_{j−1}. Let Z = Σ_i ŝ_i and q = ŝ/Z.
+2. *Hypothesis.* Form the shifted flattening ŝ. Each of the m first buckets (the singletons) keeps its value, ŝ_i = ŵ_j for B_j = {i}, j < m. Every element of a bucket B_j with j ≥ m gets the average of the previous bucket, ŝ_i = ŵ_{j−1}/ℓ_{j−1}. Let Z = Σ_i ŝ_i and q = ŝ/Z.
 3. *Check the hypothesis.* Compute the total variation distance from q to the monotone distributions by a linear program over the K bucket values. A monotone distribution that is closest to a bucket-constant q can be taken bucket-constant, since averaging over the buckets keeps it monotone and does not increase the distance. If this distance exceeds ε/4, reject.
 4. *Test.* Apply the kernel F_q below to the code for p′ = (p + u_n)/2. Then run the uniformity tester of [3, Theorem 4.1] on [6n] with θ = ε²/17 and B = 2, and output its answer.
 
@@ -46,7 +46,7 @@ This gives K ≤ m(ln n + 3) = O(log(n)/ε²) buckets; if m ≥ n, all buckets a
 
 **Lemma 3 (shifted flattening).** Let p be monotone, w_j = p(B_j), and s the shifted flattening built from the exact masses w. Then p_i ≤ s_i for every i, and Σ_i s_i ≤ 1 + 4/(m − 1). If upper estimates ŵ_j ≥ w_j have total excess Δ = Σ_j (ŵ_j − w_j), then p ≤ ŝ, Z ≤ 1 + 4/(m − 1) + 3Δ, χ²(p ‖ q) ≤ Z − 1 and p_i/q_i ≤ Z.
 
-*Proof.* For a singleton, s_i = p_i. For i in a bucket B_j of length at least 2, every element of B_{j−1} lies before i, so w_{j−1}/ℓ_{j−1} ≥ p_i.
+*Proof.* For j < m, s_i = p_i. For i in a bucket B_j with j ≥ m, every element of B_{j−1} lies before i, so w_{j−1}/ℓ_{j−1} ≥ p_i.
 
 For the total, Σ_i s_i − 1 = Σ_{j ≥ m} (ℓ_j/ℓ_{j−1} − 1) w_{j−1} + w_{m−1} − w_{K−1}, where w_{m−1} = p_m is the last singleton. This holds because Σ_{j≥m} ℓ_j w_{j−1}/ℓ_{j−1} = Σ_{j≥m} w_{j−1} + Σ_{j≥m}(ℓ_j/ℓ_{j−1} − 1) w_{j−1}. The ratio exceeds 1 only where the length grows:
 
@@ -57,7 +57,7 @@ With a = p_1 + … + p_m, the last singleton and the first transition together c
 
 With upper estimates, each excess ŵ_j − w_j enters Z once with weight 1 and once with weight ℓ_{j+1}/ℓ_j ≤ 2, which gives the bound on Z. Since p_i ≤ ŝ_i, Σ_i p_i²/ŝ_i ≤ Σ_i p_i = 1. Hence χ²(p ‖ q) = Z Σ_i p_i²/ŝ_i − 1 ≤ Z − 1, and p_i/q_i = Z p_i/ŝ_i ≤ Z. ∎
 
-**Lemma 4 (upper estimates).** Apply [4, Theorem 37] to the state ρ = Σ_j w_j |j⟩⟨j| on the bucket register, whose purification is prepared by one use of the code followed by the classical map from an element to its bucket, with E_j = |j⟩⟨j|, ε_j = η and failure probability 0.03. Since the E_j are orthogonal projectors, ‖Σ_j E_j²/η²‖ = 1/η², so σ = (2 ln(67K))^{1/2}/η and the algorithm makes O(K polylog(K)/ε²) uses of the code and its inverse. With probability at least 0.97, |z_j − w_j| ≤ η for all j, hence ŵ_j ≥ w_j and Δ = Σ_j (ŵ_j − w_j) ≤ 2Kη = ε²/150. ∎
+**Lemma 4 (upper estimates).** Apply [4, Theorem 37] to the state ρ = Σ_j w_j |j⟩⟨j| on the bucket register, whose purification is prepared by one use of the code followed by the classical map from an element to its bucket, with E_j = |j⟩⟨j|, ε_j = η and failure probability 0.03. Since the E_j are orthogonal projectors, ‖Σ_j E_j²/η²‖ = 1/η², so σ = (2 ln(134K))^{1/2}/η (the bucket register has dimension at most 2K) and the algorithm makes O(K polylog(K)/ε²) uses of the code and its inverse. With probability at least 0.97, |z_j − w_j| ≤ η for all j, hence ŵ_j ≥ w_j and Δ = Σ_j (ŵ_j − w_j) ≤ 2Kη = ε²/150. ∎
 
 *Proof of Theorem 1.*
 
@@ -69,19 +69,19 @@ With upper estimates, each excess ŵ_j − w_j enters Z once with weight 1 and o
 
 *Proof of Theorem 2.*
 
-*The bound Ω(n^{1/3}).* Distinguishing a one-to-one f: [n] → [n] from a two-to-one f takes Ω(n^{1/3}) quantum queries [5, 6]. Given f, pick a uniformly random permutation π of [n] and let p be the law of π(f(x)) for uniform x. One use of the code for p costs one query to f. If f is one-to-one, p is uniform, hence monotone. If f is two-to-one, p is uniform on a uniformly random set T of n/2 elements.
+*The bound Ω(n^{1/3}).* Distinguishing a one-to-one f: [n] → [n] from a two-to-one f takes Ω(n^{1/3}) quantum queries [5, 6]. Given f, pick a uniformly random permutation π of [n] and let p be the law of π(f(x)) for uniform x. One use of the code for p, of its inverse or of its controlled version costs O(1) queries to f. If f is one-to-one, p is uniform, hence monotone. If f is two-to-one, p is uniform on a uniformly random set T of n/2 elements.
 
 Such a p is more than 0.4-far from monotone with probability at least 0.99 for n ≥ 4000. For a monotone g and positions z < t with z ∉ T and t ∈ T, |p_z − g_z| + |p_t − g_t| ≥ g_z + 2/n − g_t ≥ 2/n. A greedy matching of such pairs has n/2 − max_k(T_k − (k − T_k))⁺ pairs, where T_k = |T ∩ [k]|. So d_TV(p, monotone) ≥ 1/2 − max_k(2T_k − k)⁺/n. By the tail bound for sampling without replacement, P(2T_k − k ≥ 0.09n) ≤ exp(−0.004n) for each k, and n exp(−0.004n) < 0.01 for n ≥ 4000.
 
 A tester with ε = 0.4 and success probability 2/3 therefore solves the collision problem with probability at least 0.65.
 
-*The bound Ω(1/ε).* On [2], the distribution (1/2 − ε, 1/2 + ε) is ε-far from monotone and (1/2 + ε, 1/2 − ε) is monotone. Distinguishing the two needs Ω(1/ε) uses of the code (see [3]). ∎
+*The bound Ω(1/ε).* On [2], for ε ≤ 0.4, the distribution (1/2 − 1.25ε, 1/2 + 1.25ε) is 1.25ε-far from monotone (the nearest monotone distribution is (1/2, 1/2)) and (1/2 + 1.25ε, 1/2 − 1.25ε) is monotone. Distinguishing the two needs Ω(1/ε) uses of the code (see [3]). ∎
 
 ## Check
 
 `sim/check.py` asserts the following:
 
-- For partitions with n up to 10⁶ and m ∈ {5, 20, 100}, and for five families of monotone distributions (sorted exponentials, power laws, steps with sharp drops, uniform prefixes, point masses with tails), the bucket count is at most m(ln n + 3), p ≤ s, and Σ s − 1 ≤ 4/(m − 1). The largest observed value is 1.81/(m − 1).
+- For partitions with n up to 10⁶ and m ∈ {5, 20, 100}, and for five families of monotone distributions (sorted exponentials, power laws, steps with sharp drops, uniform prefixes, point masses with tails), the bucket count is at most (m + 1)(ln n + 3), p ≤ s, and Σ s − 1 ≤ 4/(m − 1). The largest observed value is 1.81/(m − 1).
 - With random upper estimates, the bounds on Z, χ² and p/q hold.
 - On random instances with n ≤ 40, F_q(q′) is uniform, and the TV, maximum-value and χ² properties of F_q hold.
 - The matching bound lies below the exact linear-program distance to monotonicity for random half sets with n ≤ 120. At n = 4000 the matching bound is never below 0.4 in 1000 samples.
@@ -91,7 +91,7 @@ Output is in `sim/out.txt`.
 
 ## Scope
 
-- Written proofs with numerical checks. The uniformity tester [3, Theorem 4.1] (with its constant B = 2), the estimation of multiple expectation values [4, Theorem 37] (which uses controlled versions of the code) and the collision lower bound [5, 6] are used as stated.
+- Written proofs with numerical checks. The uniformity tester [3, Theorem 4.1] (with its constant B = 2), the estimation of multiple expectation values [4, Theorem 37] (which uses controlled versions of the code, counted as uses of the code in [3, Section 3]) and the collision lower bound [5, 6] are used as stated.
 - The learning term log(n)/ε⁴ matches the classical one of [1] up to polylogarithmic factors; the gain is in the term that depends on n.
 - Only non-increasing distributions on [n] are treated, and the range ε ≥ 2/√n.
 

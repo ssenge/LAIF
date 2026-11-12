@@ -118,7 +118,7 @@ def main():
             L = partition(n, m)
             assert sum(L) == n and min(L) >= 1
             K = len(L)
-            assert K <= m * (np.log(n) + 3), (n, m, K)
+            assert K <= (m + 1) * (np.log(n) + 3), (n, m, K)
             for _ in range(40 if n < 10 ** 6 else 8):
                 p = rand_monotone(n)
                 w, idx = bucket_masses(p, L)
