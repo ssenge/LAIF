@@ -17,7 +17,7 @@ For 3-regular graphs of large girth, [1] computes the value of QAOA at depth 1 a
 | 7 | 0.748364 | **0.77638 ± 0.00003** | 0.7761 |
 | 8 | 0.828952 | **0.87675 ± 0.00002** | 0.8765 |
 
-The entries are expected fractions of satisfied vertices. Previous best bound: for d = 3, 0.819292 by QAOA at depth 1 and below 0.8 for the one-round flip algorithms of [1]. For d ≥ 4, to our knowledge, no value is stated before. The QAOA values for d ≥ 4 are computed here, exactly on the d-regular tree and maximized over the two angles. The classical values hold on every d-regular graph of girth at least 5.
+The entries are expected fractions of satisfied vertices. Previous best bound: for d = 3, 0.819292 by QAOA at depth 1 and below 0.8 for the one-round flip algorithms of [1]. For d ≥ 4, to our knowledge, no value is stated before. The QAOA values for d ≥ 4 are computed here, exactly on the d-regular tree and maximized over the two angles. The classical values hold on every d-regular graph of girth at least 5, and the QAOA values on every d-regular graph of girth at least 7, so the comparison holds at girth at least 7. The ± is one standard error.
 
 So at depth 1 the classical rule satisfies more vertices than QAOA at every degree from 3 to 8. The difference is 0.002 at d = 3, between 0.011 and 0.028 at the odd degrees 5 and 7, and between 0.029 and 0.048 at the even degrees 4, 6 and 8. This differs from the trend expected in [1], where the advantage of the QAOA grows with the degree.
 
@@ -35,7 +35,7 @@ At depth p, the output bit of QAOA for this objective depends on the qubits with
 | Rule of radius 1, then one round of priority flips | 3 | **0.94414 ± 0.00003** | 0.9438 |
 | The same, then one round in which every unsatisfied vertex flips | 4 | **0.96986 ± 0.00002** | 0.9695 |
 
-The QAOA value is computed here, exactly on the 3-regular tree and maximized over the four angles. So a classical rule whose output depends on a smaller neighbourhood than that of depth-2 QAOA satisfies more vertices.
+The QAOA value is computed here, exactly on the 3-regular tree and maximized over the four angles. The QAOA value holds on 3-regular graphs of girth at least 11, the classical values at girth at least 9 and 11. So a classical rule whose output depends on a smaller neighbourhood than that of depth-2 QAOA satisfies more vertices.
 
 **Priority flips.** Every vertex u draws a second seed h_u, uniform on [0, 1]. Start from the output z of the rule of radius 1. Call u unsatisfied when fewer than 2 of its neighbours differ from z_u. An unsatisfied vertex flips its bit when its h is larger than the h of each unsatisfied neighbour. Flipping an unsatisfied vertex satisfies it. No two adjacent vertices flip in the same round. The output at u depends on the seeds within distance 3 of u, so the satisfaction of v depends on those within distance 4. On a 3-regular graph of girth at least 9 that ball is a tree, and the value equals the tree value. For the rule with the further round, distance 5 and girth at least 11.
 
