@@ -1,0 +1,27 @@
+$ python teleport.py
+teleportation moments, Choi covariance bounds and E|z|^2: all asserts passed
+$ python fock_check.py
+(1) Gaussian trace-distance bound holds on 40 random pairs, largest ratio 0.636
+(2) pure-loss attenuators, eta2 = eta1 + delta, input TMSV with mean photon number E:
+   E = 0.5, eta = 0.5 -> 0.5 + 0.05: distance 0.0320 <= bound 3.407
+   E = 0.5, eta = 0.9 -> 0.9 + 0.05: distance 0.0356 <= bound 3.192
+   E = 0.5, eta = 0.98 -> 0.98 + 0.01: distance 0.0074 <= bound 2.138
+   E = 0.5, eta = 0.9 -> 0.9 + 1e-06: distance 0.0000 <= bound 0.321
+   E = 2.0, eta = 0.5 -> 0.5 + 0.05: distance 0.0654 <= bound 4.877
+   E = 2.0, eta = 0.9 -> 0.9 + 0.05: distance 0.1005 <= bound 4.561
+   E = 2.0, eta = 0.98 -> 0.98 + 0.01: distance 0.0244 <= bound 3.062
+   E = 2.0, eta = 0.9 -> 0.9 + 1e-06: distance 0.0000 <= bound 0.463
+$ python learn.py
+m = 1, margin 0.0: error bounds violated in 0/300 runs (allowed 30); repaired channels valid in all successful runs
+m = 1, margin 0.3: error bounds violated in 0/300 runs (allowed 30); repaired channels valid in all successful runs
+m = 2, margin 0.0: error bounds violated in 0/300 runs (allowed 30); repaired channels valid in all successful runs
+m = 2, margin 0.2: error bounds violated in 0/300 runs (allowed 30); repaired channels valid in all successful runs
+$ python queries.py
+(1) simplified forms of Theorem 1 dominate the explicit bounds on 20000 random parameter sets
+(2) total queries (4m + 1) N of Theorem 2, delta = 0.01, z = 1, y = 1, E = 1, inputs with at most 10 photons:
+   m = 1, eps = 0.1: general 3.03e+27; noise margin 0.5: 1.37e+13
+   m = 1, eps = 0.01: general 3.03e+37; noise margin 0.5: 1.37e+15
+   m = 2, eps = 0.1: general 2.34e+29; noise margin 0.5: 6.73e+13
+   m = 2, eps = 0.01: general 2.34e+39; noise margin 0.5: 6.73e+15
+   m = 4, eps = 0.1: general 1.96e+31; noise margin 0.5: 3.55e+14
+   m = 4, eps = 0.01: general 1.96e+41; noise margin 0.5: 3.55e+16
