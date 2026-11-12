@@ -746,3 +746,6 @@
 'SsspFlow.RotSystem.RData.exists_vcopy' depends on axioms: [propext, Classical.choice, Quot.sound]
 'SsspFlow.RotSystem.RData.chain_erc' depends on axioms: [propext, Classical.choice, Quot.sound]
 'SsspFlow.RotSystem.RData.level_min_idx' depends on axioms: [propext, Classical.choice, Quot.sound]
+'SsspFlow.Nat.iInf_isLeast' depends on axioms: [propext, Classical.choice, Quot.sound]
+'SsspFlow.Nat.iInf_sub_isGreatest' depends on axioms: [propext, Classical.choice, Quot.sound]
+'SsspFlow.RotSystem.RData.level_least_greatest' depends on axioms: [propext, Classical.choice, Quot.sound]
