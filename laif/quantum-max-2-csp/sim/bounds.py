@@ -45,4 +45,8 @@ print("Max 2-CSP below 2^(n/2) when m/n <", 0.5 / 0.09)
 # Classical exponential-space bound 2^((7/48)m) from pathwidth <= 7m/48 + o(n).
 print("exp-space classical 2^(7/48) =", 2 ** (7 / 48), " poly-space 2^(9/50) =", 2 ** 0.18, " 2^we =", 2 ** we)
 assert 2 ** 0.09 < 2 ** (7 / 48) and 2 ** (we / 2) < 2 ** (7 / 48)
+# Bisection and other cardinality constraints: implied plain-tree bounds count all branchings,
+# at most m/5 in general ([SS] Lemma 4) and n/4 on cubic graphs, so 2^(m/10) and 2^(n/8).
+assert 2 ** 0.1 < 1.0718 and 2 ** 0.09 < 2 ** 0.1 and 2 ** (1 / 10) < 2 ** (1 / 8)
+print("bisection implied: 2^(m/10) =", 2 ** 0.1, " cubic 2^(n/8) =", 2 ** 0.125)
 print("all asserts passed")
