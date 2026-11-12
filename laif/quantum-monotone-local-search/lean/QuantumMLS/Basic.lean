@@ -53,6 +53,22 @@ theorem cvd_base : sqrt (2 - 1 / 1.811) ≤ 1.2033 :=
 theorem hs3_base : sqrt (2 - 1 / 2.168) ≤ 1.2405 :=
   sqrt_le_iff.mpr ⟨by norm_num, by norm_num⟩
 
+/-- 3-Hitting Set with the quantum extension algorithm of base 2.0409: √(2 − 1/2.0409) ≤ 1.2289. -/
+theorem hs3q_base : sqrt (2 - 1 / 2.0409) ≤ 1.2289 :=
+  sqrt_le_iff.mpr ⟨by norm_num, by norm_num⟩
+
+/-- 4-Hitting Set, extension base 3.0409: √(2 − 1/3.0409) ≤ 1.2928. -/
+theorem hs4q_base : sqrt (2 - 1 / 3.0409) ≤ 1.2928 :=
+  sqrt_le_iff.mpr ⟨by norm_num, by norm_num⟩
+
+/-- 5-Hitting Set, extension base 4.0409: √(2 − 1/4.0409) ≤ 1.3239. -/
+theorem hs5q_base : sqrt (2 - 1 / 4.0409) ≤ 1.3239 :=
+  sqrt_le_iff.mpr ⟨by norm_num, by norm_num⟩
+
+/-- 6-Hitting Set, extension base 5.0409: √(2 − 1/5.0409) ≤ 1.3423. -/
+theorem hs6q_base : sqrt (2 - 1 / 5.0409) ≤ 1.3423 :=
+  sqrt_le_iff.mpr ⟨by norm_num, by norm_num⟩
+
 /-- Proper Interval Vertex Deletion, extension base 6: √(2 − 1/6) ≤ 1.3541. -/
 theorem pivd_base : sqrt (2 - 1 / 6) ≤ 1.3541 :=
   sqrt_le_iff.mpr ⟨by norm_num, by norm_num⟩

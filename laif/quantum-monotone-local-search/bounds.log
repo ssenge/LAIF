@@ -13,6 +13,26 @@ Cluster Vertex Deletion          c = 1.811000 (Tsur, branching); classical 2-1/c
     n =   200: log(max min) - n log(2-1/c) = -0.171  (2 log(n+1) = 10.607)
     n =  1000: log(max min) - n log(2-1/c) = -0.172  (2 log(n+1) = 13.818)
     n =  3000: log(max min) - n log(2-1/c) = -0.172  (2 log(n+1) = 16.013)
+3-Hitting Set, quantum extension c = 2.040900 (Tsur with value calls, quantum-hitting-set); classical 2-1/c = 1.510020; quantum sqrt = 1.228829 <= 1.2289
+    n =    50: log(max min) - n log(2-1/c) = -0.151  (2 log(n+1) = 7.864)
+    n =   200: log(max min) - n log(2-1/c) = -0.152  (2 log(n+1) = 10.607)
+    n =  1000: log(max min) - n log(2-1/c) = -0.151  (2 log(n+1) = 13.818)
+    n =  3000: log(max min) - n log(2-1/c) = -0.151  (2 log(n+1) = 16.013)
+4-Hitting Set, quantum extension c = 3.040900 (iterative compression on the above); classical 2-1/c = 1.671150; quantum sqrt = 1.292730 <= 1.2928
+    n =    50: log(max min) - n log(2-1/c) = -0.302  (2 log(n+1) = 7.864)
+    n =   200: log(max min) - n log(2-1/c) = -0.302  (2 log(n+1) = 10.607)
+    n =  1000: log(max min) - n log(2-1/c) = -0.299  (2 log(n+1) = 13.818)
+    n =  3000: log(max min) - n log(2-1/c) = -0.299  (2 log(n+1) = 16.013)
+5-Hitting Set, quantum extension c = 4.040900 (iterative compression on the above); classical 2-1/c = 1.752530; quantum sqrt = 1.323832 <= 1.3239
+    n =    50: log(max min) - n log(2-1/c) = -0.422  (2 log(n+1) = 7.864)
+    n =   200: log(max min) - n log(2-1/c) = -0.418  (2 log(n+1) = 10.607)
+    n =  1000: log(max min) - n log(2-1/c) = -0.418  (2 log(n+1) = 13.818)
+    n =  3000: log(max min) - n log(2-1/c) = -0.418  (2 log(n+1) = 16.013)
+6-Hitting Set, quantum extension c = 5.040900 (iterative compression on the above); classical 2-1/c = 1.801623; quantum sqrt = 1.342245 <= 1.3423
+    n =    50: log(max min) - n log(2-1/c) = -0.528  (2 log(n+1) = 7.864)
+    n =   200: log(max min) - n log(2-1/c) = -0.512  (2 log(n+1) = 10.607)
+    n =  1000: log(max min) - n log(2-1/c) = -0.514  (2 log(n+1) = 13.818)
+    n =  3000: log(max min) - n log(2-1/c) = -0.515  (2 log(n+1) = 16.013)
 Proper Interval Vertex Deletion  c = 6.000000 (Cao, branching on small obstructions); classical 2-1/c = 1.833333; quantum sqrt = 1.354006 <= 1.3541
     n =    50: log(max min) - n log(2-1/c) = -0.599  (2 log(n+1) = 7.864)
     n =   200: log(max min) - n log(2-1/c) = -0.593  (2 log(n+1) = 10.607)

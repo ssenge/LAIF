@@ -11,7 +11,7 @@ Monotone local search [1] turns an algorithm that extends a partial solution int
 - *Φ-Subset:* find a set in F_I.
 - *Φ-Extension:* given I, a set X ⊆ U_I and an integer k, decide whether some S ⊆ U_I \ X with |S| ≤ k has X ∪ S ∈ F_I.
 
-**Theorem 1.** Let c > 1. Suppose Φ-Extension is decided by a backtracking tree with at most p(N) · c^k nodes, for a fixed polynomial p. That is, every node answers, makes one call, or branches into the OR of polynomially many children; it computes them in polynomial time and stores an instance of polynomial size; and the depth is polynomial. Then Φ-Subset has a quantum algorithm with bounded error, polynomial space and no quantum random access memory, running in time (2 − 1/c)^{n/2} N^{O(1)}. It also holds in the permissive form [1]: the tree on (I, X, k) accepts whenever some S with |S| ≤ k has X ∪ S ∈ F_I, and each accepting leaf gives a set S of any size with X ∪ S ∈ F_I.
+**Theorem 1.** Let c > 1. Suppose Φ-Extension is decided by a backtracking tree with at most p(N) · c^k nodes, for a fixed polynomial p. That is, every node answers, makes one call, or branches into the OR of polynomially many children; it computes them in polynomial time and stores an instance of polynomial size; and the depth is polynomial. Then Φ-Subset has a quantum algorithm with bounded error, polynomial space and no quantum random access memory, running in time (2 − 1/c)^{n/2} N^{O(1)}. It holds as well when Φ-Extension is decided by a bounded-error quantum algorithm with polynomial space and no quantum random access memory that, for each budget k, is one fixed circuit with running time √(p(N) c^k) · poly(N); step 2 below then runs that algorithm in place of the walk. It also holds in the permissive form [1]: the tree on (I, X, k) accepts whenever some S with |S| ≤ k has X ∪ S ∈ F_I, and each accepting leaf gives a set S of any size with X ∪ S ∈ F_I.
 
 Status: Claim, implied by the quantum walk of [2], amplitude amplification [6] and Lemma 2.2 of [1], with the classical extension algorithms of [3], [4], [5], [8], [11] and [12] as stated. The averaging lemma for amplitude amplification and the bases of the corollaries are in Lean. The amplitude amplification over samples is simulated with an exact classical oracle on small instances.
 
@@ -23,17 +23,19 @@ Status: Claim, implied by the quantum walk of [2], amplitude amplification [6] a
 | Cluster Vertex Deletion | branching [4] | 1.811 | O(1.4479^n) | **O(1.2033^n)** |
 | Subset Feedback Vertex Set, Group Feedback Vertex Set | LP-branching [8] | 4 | O(1.7500^n) | **O(1.3229^n)** |
 | Node Unique Label Cover, constant label set Σ | LP-branching [8] | \|Σ\|² | (2 − \|Σ\|^{−2})^n | **(2 − \|Σ\|^{−2})^{n/2}** |
-| 3-Hitting Set, also weighted | branching [11] | 2.168 | O(1.5388^n) | **O(1.2405^n)** |
+| 3-Hitting Set | quantum algorithm with value calls on the branching of [7], [17] | 2.0409 | O(1.5101^n) | **O(1.2289^n)** |
+| Weighted 3-Hitting Set | branching [11] | 2.168 | O(1.5388^n) | **O(1.2405^n)** |
 | Proper Interval Vertex Deletion | branching on small obstructions [12] | 6 | O(1.8334^n) | **O(1.3541^n)** |
 | Multicut on Trees (n edges) | branch and search [5] | √(√2 + 1) ≈ 1.5538 | O(1.3565^n) | **O(1.1647^n)** |
 | Min-Ones d-SAT, d ≥ 3 | branching on an unsatisfied clause [1] | d | (2 − 1/d)^n | **(2 − 1/d)^{n/2}**: 1.2910^n, 1.3229^n, 1.3417^n for d = 3, 4, 5 |
-| d-Hitting Set, d ≥ 4 | the same, as a special case | d | below this, by [1] | **(2 − 1/d)^{n/2}** |
+| d-Hitting Set, d = 4, 5, 6 | quantum algorithm by iterative compression on the above [17] | d − 0.9591 | (2 − 1/c)^n | **O(1.2928^n), O(1.3239^n), O(1.3423^n)** |
+| d-Hitting Set, d ≥ 7 | the same as Min-Ones d-SAT, as a special case | d | below this, by [1] | **(2 − 1/d)^{n/2}** |
 
 All quantum rows are for bounded error, polynomial space and no quantum random access memory, up to polynomial factors, and use the classical analyses as stated.
 
 **Before.** Quantum search over all subsets takes 2^{n/2} ≈ 1.4142^n. For Feedback Vertex Set, a quantum walk on the branching algorithm of [15] gives O*(1.8899^{n/2}) ⊂ O(1.3748^n), stated for Maximum Induced Forest in [9]. A quantum walk on a classical exact algorithm with base b gives √b, but only if that algorithm is a backtracking tree. Even the square roots of the exact bases listed in [1] are larger than the bounds above: √1.7347 ≈ 1.3171 for Feedback Vertex Set, √1.6181 ≈ 1.2721 for Cluster Vertex Deletion, √1.8638 ≈ 1.3652 for Subset Feedback Vertex Set and √1.8704 ≈ 1.3677 for 4-Hitting Set. For Group Feedback Vertex Set, Node Unique Label Cover, Multicut on Trees and Min-Ones d-SAT, [1] lists no exact algorithm faster than brute force, and for Proper Interval Vertex Deletion only (2 − ε)^n with ε < 10^{−20}. To our knowledge, no quantum version of monotone local search has been stated before. The classical column uses the same extension algorithm; faster classical bounds exist for some rows, such as 1.6097^n for Min-Ones 3-SAT in [1] and the randomized bounds for Feedback Vertex Set.
 
-For 3-Hitting Set, a walk on the exact algorithm of [14] would give about 1.2759^n if it is a backtracking tree, and on the exact weighted algorithm listed in [1] about √1.6755 ≈ 1.2945^n. The 2.168^k algorithm of [11] is a backtracking tree and gives 1.2405^n for both. The faster 2.0409^k algorithm of [7] contains a step that computes the optimum of a component by recursive calls before a tail call, so it is not a plain OR tree and is not used here. Problems that reduce to 3-Hitting Set on the same universe in polynomial time, such as Feedback Vertex Set in Tournaments (hitting all directed triangles), get the same bound, although their own extension algorithms may give better bounds if they are backtracking trees.
+For 3-Hitting Set, a walk on the exact algorithm of [14] would give about 1.2759^n if it is a backtracking tree, and on the exact weighted algorithm listed in [1] about √1.6755 ≈ 1.2945^n. The 2.168^k algorithm of [11] is a backtracking tree and gives 1.2405^n for both. The faster 2.0409^k algorithm of [7] contains a step that computes the optimum of a component by recursive calls before a tail call, so it is not a plain OR tree. It still gives a quantum extension algorithm in time O(1.4287^k) · poly(n) through the value calls of [17], and the quantum form of Theorem 1 gives 1.2289^n for unweighted 3-Hitting Set. Problems that reduce to 3-Hitting Set on the same universe in polynomial time, such as Feedback Vertex Set in Tournaments (hitting all directed triangles), get the same bound, although their own extension algorithms may give better bounds if they are backtracking trees.
 
 ## 1. The algorithm
 
@@ -105,6 +107,7 @@ The Lean library [`lean/`](lean/) is built on Mathlib and uses only the standard
 | `fvs_base` | √(2 − 1/3.460) ≤ 1.3081 |
 | `cvd_base` | √(2 − 1/1.811) ≤ 1.2033 |
 | `hs3_base` | √(2 − 1/2.168) ≤ 1.2405 |
+| `hs3q_base`, `hs4q_base`, `hs5q_base`, `hs6q_base` | √(2 − 1/c) ≤ 1.2289, 1.2928, 1.3239, 1.3423 for c = 2.0409, 3.0409, 4.0409, 5.0409 |
 | `pivd_base` | √(2 − 1/6) ≤ 1.3541 |
 | `mct_base` | √(2 − 1/√(√2 + 1)) ≤ 1.1647 |
 | `d3_base`, `d4_base`, `d5_base` | √(2 − 1/d) ≤ 1.2910, 1.3229, 1.3417 (d = 4 also for c = 4 in the feedback vertex set rows) |
@@ -129,3 +132,4 @@ Not formalized: Lemma 2.2 of [1], the quantum walk, the error analysis of the or
 14. M. Wahlström. Algorithms, measures and upper bounds for satisfiability and related problems. PhD thesis, Linköping University, 2007.
 15. I. Razgon. Exact computation of maximum induced forest. SWAT 2006, LNCS 4059.
 16. M. Cygan, M. Pilipczuk, M. Pilipczuk and J. O. Wojtaszczyk. Subset feedback vertex set is fixed-parameter tractable. ICALP 2011.
+17. 3-Hitting Set and d-Hitting Set with a quantum algorithm, parameterized by the solution size. [quantum-hitting-set](../quantum-hitting-set/).

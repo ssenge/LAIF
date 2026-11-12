@@ -15,11 +15,11 @@ Status: Claim. Theorem 1 of [2] is used as stated there, where its time recursio
 | Problem | Previous best bound | After |
 |---|---|---|
 | 3-Hitting Set | 2.0409^k classically [1]; 1.4725^k quantum, implied by [3] on the plain search tree of [4] | **1.4287^k** |
-| 4-Hitting Set | 3.0409^k classically, implied by [1], [5], [6]; 1.7799^k quantum, implied by [3] on [4] with [5], [6] | **1.7439^k** |
-| 5-Hitting Set | 4.0409^k classically, implied by [1], [5], [6]; 2.0416^k quantum, implied as above | **2.0102^k** |
-| 6-Hitting Set | 5.0409^k classically, implied by [1], [5], [6]; 2.2734^k quantum, implied as above | **2.2452^k** |
+| 4-Hitting Set | 3.0409^k classically [1], from [5], [6]; 1.7799^k quantum, implied by [3] on [4] with [5], [6] | **1.7439^k** |
+| 5-Hitting Set | 4.0409^k classically [1], from [5], [6]; 2.0416^k quantum, implied as above | **2.0102^k** |
+| 6-Hitting Set | 5.0409^k classically [1], from [5], [6]; 2.2734^k quantum, implied as above | **2.2452^k** |
 
-All bounds hide polynomial factors in n. Each new base is the square root of the classical one, rounded up. To our knowledge no quantum bound for these problems has been stated before. A walk on the 2.0755^k algorithm of [7] would give 1.4407^k if its search tree is plain, and walks on the d-Hitting Set algorithms of [8], with bases 3.115, 4.08 and 5.049, would give 1.7650^k, 2.0199^k and 2.2470^k under the same condition. The new bounds are below all of these.
+All bounds hide polynomial factors in n. Each new base is the square root of the classical one, rounded up. To our knowledge no quantum bound for these problems parameterized by k has been stated before. A walk on the 2.0755^k algorithm of [7] would give 1.4407^k if its search tree is plain, and walks on the d-Hitting Set algorithms of [8], with bases 3.115, 4.08 and 5.049, would give 1.7650^k, 2.0199^k and 2.2470^k under the same condition. The new bounds are below all of these.
 
 ## 1. The tool
 
@@ -31,12 +31,12 @@ The algorithm HS of [1] applies reduction rules (R1) to (R5) and branching rules
 
 **The split step.** For k ≥ 10, replace (B7) as follows, with K = ⌊k/2⌋. Make value calls HS(H, i) for i = 4, … , K. If one succeeds at i = k′, make the tail call HS(G − H, k − k′). Otherwise make value calls HS(G − H, i) for i = 4, … , K, and if one succeeds at i = k″, make the tail call HS(H, k − k″). If neither succeeds, both optima exceed K, so their sum exceeds k, and the answer is no. For k < 10 keep (B7) as it is. The answer is the same as before, since both orders decide whether opt(H) + opt(G − H) ≤ k.
 
-**Measure.** Let b = 2.0409 and B(G, k) = b^{μ(G, k) + 2d̂(G) + α(G, k)}, with μ, d̂ and α as in [1]. Here μ(G, k) = k − Ψ(…) with 0 ≤ Ψ ≤ 2 by Property (P1) of [1], d̂ is the maximum degree clipped to [3, 6], and α(G, k) is 3 if the recursion tree of (G, k) contains rule (B8) at maximum degree at most 3, and 0 otherwise. The recursion tree of every call made at a node lies inside the tree of that node, so its α is at most the α of the node.
+**Measure.** Let b = 2.0409 and B(G, k) = b^{μ(G, k) + 2d̂(G) + α(G, k)}, with μ, d̂ and α as in [1]. Here μ(G, k) = k − Ψ(…) with 0 ≤ Ψ ≤ 2 by Property (P1) of [1], d̂ is the maximum degree clipped to [3, 6], and α(G, k) is 0 if G is good in the sense of [1] and 3 otherwise, which is computable in polynomial time. In [1], α is 3 exactly when rule (B8) at maximum degree at most 3 occurs below the node. The form used here serves the same purpose: (B8) at maximum degree at most 3 is applied only to a hypergraph that is not good, its children are good [1, Lemmas 13 and 15], and goodness survives the deletion of vertices and hyperedges [1, Lemma 14], so also the passage to H or G − H. So α never grows from a node to a call it makes.
 
-- **(M1) and (M3).** The proof of Lemma 30 of [1] shows, rule by rule, that the measures of the children of a node sum to at most its own measure. For the reductions and branchings this is the OR-tree condition. For the split step the calls go up to K and the tail has budget at most k − 4, since the other part has optimum at least 4. Its leaves therefore number at most 2 Σ_{i=4}^{K} b^{i+E} + b^{k−4+E}, with E = 2d̂(G) + α(G, k), and this is at most b^{k−2+E} ≤ B(G, k) for k ≥ 10. The tail alone has measure at most b^{k−4+E} ≤ B(G, k). Induction then gives (M1) for every antichain and bounds the number of leaves, and every node deletes a vertex or a hyperedge, so the depth is at most n + m and (M3) holds.
+- **(M1) and (M3).** The proof of Lemma 30 of [1] bounds the measures of the children of each rule by the measure of the node. For (B6) and (B8) the branching vectors include the rule applied next in a child, so these are macro steps of constant size in the sense of Lemma 0 of [2], which gives (M1) with a constant factor. None of them passes through (B7). For the split step the calls go up to K and the tail has budget at most k − 4, since the other part has optimum at least 4. Its leaves therefore number at most 2 Σ_{i=4}^{K} b^{i+E} + b^{k−4+E}, with E = 2d̂(G) + α(G, k), and this is at most b^{k−2+E} ≤ B(G, k) for k ≥ 10. The tail alone has measure at most b^{k−4+E} ≤ B(G, k). Induction then gives (M1) for every antichain and bounds the number of leaves, and every node deletes a vertex or a hyperedge, so the depth is at most n + m and (M3) holds.
 - **(M2).** A value call has budget at most K ≤ k/2, so its log measure is at most (k/2 + 15) log b, against at least (k − 2) log b for its caller. For k above a constant this is at most 3/4 of it. Below that constant the call has constant measure, which the term C log n covers. For k < 10 the value calls of (B7) have budget at most 9 and constant measure too.
 
-Theorem 1 of [2] then gives √(2.0409^{k + O(1)}) · poly(n) = O(1.4287^k) · poly(n). A hitting set comes by self-reduction.
+Theorem 1 of [2] then gives √(2.0409^{k + O(1)}) · poly(n) = O(1.4287^k) · poly(n). A hitting set comes by self-reduction, fixing vertices one at a time into the solution, G[+v], or out of it.
 
 ## 3. d ≥ 4: Theorem 2
 
