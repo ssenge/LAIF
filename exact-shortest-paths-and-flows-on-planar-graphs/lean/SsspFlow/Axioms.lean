@@ -754,3 +754,4 @@ Expected output for each: `propext`, `Classical.choice`, `Quot.sound` (or a subs
 #print axioms SsspFlow.Nat.iInf_isLeast
 #print axioms SsspFlow.Nat.iInf_sub_isGreatest
 #print axioms SsspFlow.RotSystem.RData.level_least_greatest
+#print axioms SsspFlow.RotSystem.RData.levelI12_local

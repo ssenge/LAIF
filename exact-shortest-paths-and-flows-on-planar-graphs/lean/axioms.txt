@@ -749,3 +749,4 @@
 'SsspFlow.Nat.iInf_isLeast' depends on axioms: [propext, Classical.choice, Quot.sound]
 'SsspFlow.Nat.iInf_sub_isGreatest' depends on axioms: [propext, Classical.choice, Quot.sound]
 'SsspFlow.RotSystem.RData.level_least_greatest' depends on axioms: [propext, Classical.choice, Quot.sound]
+'SsspFlow.RotSystem.RData.levelI12_local' depends on axioms: [propext, Classical.choice, Quot.sound]
