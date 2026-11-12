@@ -144,3 +144,10 @@ import PlanarMatching
 #print axioms PlanarMatching.walk_sub
 #print axioms PlanarMatching.window
 #print axioms PlanarMatching.lemmaB
+#print axioms PlanarMatching.Decomp.exists_jpath
+#print axioms PlanarMatching.Decomp.hops_spec
+#print axioms PlanarMatching.Decomp.pathOf_eq
+#print axioms PlanarMatching.Decomp.pathOf_spec
+#print axioms PlanarMatching.Decomp.segment_spec
+#print axioms PlanarMatching.Decomp.repeat_sep
+#print axioms PlanarMatching.Decomp.visits
