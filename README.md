@@ -91,6 +91,7 @@
 
 | Problem | Result | Posted | Details |
 |---|---|---|---|
+| Quantum mean estimation with variance at most σ², additive error ε, confidence 1 − δ, worst case over all distributions | certified worst-case calls to the code of y: 7374 σ/ε at σ/ε = 1000 and δ = 0.05, from 3053 σ/ε at σ/ε = 10 (table for σ/ε from 10 to 1000, δ = 0.05 and 0.01); O((σ/ε) log(1/δ)) with the constant not stated before [115] | 2026-11-12 | [quantum-mean-estimation-constants](quantum-mean-estimation-constants/) |
 | LocalMaxCut (at least 2 of 3 neighbours on the other side) on 3-regular graphs of large girth, one-round local algorithms | expected satisfied fraction 0.82137 ± 0.00002 (at least 0.8212 at confidence 1 − 10⁻⁹) by a classical rule of radius 1, against 0.819292 for QAOA at depth 1 [114] | 2026-11-12 | [local-max-cut-local-algorithms](local-max-cut-local-algorithms/) |
 | Quantum property testing of concatenations of two even palindromes (u u^r v v^r), and of cyclic shifts of strings over any alphabet | O(log n / ε) queries, against O(n^{1/3} log n / ε) for the palindromes | 2026-11-12 | [two-palindromes-property-testing](two-palindromes-property-testing/) |
 | Two-dimensional pattern matching with quantum queries, n × n text, m × m pattern | O(n √m log⁴ n), against O(nm) by nested search; O(m² + n log³ m), so O(n log³ n) for m ≤ √n, for patterns without periods shorter than m/8 in their central square; O(m² + n log² m) for patterns periodic along a lattice that covers side ⌊m/2⌋; Ω(n) for every m | 2026-11-12 | [two-dimensional-pattern-matching-queries](two-dimensional-pattern-matching-queries/) |
@@ -250,6 +251,7 @@ The folders `exact-planar-bipartite-matching`, `exact-shortest-paths-and-flows-o
 112. A. Anshu, Z. Landau, Y. Liu. Distributed quantum inner product estimation. arXiv:2111.03273.
 113. W. Gong, J. Haferkamp, Q. Ye, Z. Zhang. On the sample complexity of purity and inner product estimation. arXiv:2410.12712.
 114. C. Carlson, Z. Jorquera, A. Kolla, S. Kordonowy. A quantum advantage over classical for local max cut. arXiv:2304.08420, 2023.
+115. R. Kothari, R. O'Donnell. Mean estimation when you have the source code; or, quantum Monte Carlo methods. SODA 2023, arXiv:2208.07544.
 115. M. Aliakbarpour, V. Braverman, N.-H. Chia, C.-Y. Lin, Y. Liu, A. Oufkir, Y.-C. Shen. Shadow tomography against adversaries. arXiv:2512.05451.
 116. S. Chen, W. Gong, Q. Ye. Optimal tradeoffs for estimating Pauli observables. arXiv:2404.19105.
 117. J. Beckey, L. Coffman, A. Shlosberg, L. Schatzki, F. Leditzky. Product testing with single-copy measurements. arXiv:2510.07820.
