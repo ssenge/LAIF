@@ -783,6 +783,7 @@
 'SsspFlow.RotSystem.RData.edgeTok_inl_left' depends on axioms: [propext, Classical.choice, Quot.sound]
 'SsspFlow.RotSystem.RData.edgeTok_inl_right' depends on axioms: [propext, Classical.choice, Quot.sound]
 'SsspFlow.RotSystem.RData.levelDarts_walk' depends on axioms: [propext, Classical.choice, Quot.sound]
+'SsspFlow.RotSystem.RData.level_shortest_darts' depends on axioms: [propext, Classical.choice, Quot.sound]
 'SsspFlow.RotSystem.CutPath.Live.sum_add_length_le' depends on axioms: [propext, Quot.sound]
 'SsspFlow.RotSystem.CutPath.Live.shortest_simple' depends on axioms: [propext, Classical.choice, Quot.sound]
 'SsspFlow.RotSystem.CutPath.Live.exists_step_of_shortest' depends on axioms: [propext, Classical.choice, Quot.sound]

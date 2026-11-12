@@ -840,7 +840,9 @@ standard axioms (`propext`, `Classical.choice`, `Quot.sound`). There is no `sorr
   network of a level carries the token of its E_C arc (`RData.edgeTok_dart`, `RData.edgeTok_inl_left`,
   `RData.edgeTok_inl_right`). So a walk of the network of a level below $M$ between copies on E_R edges gives, edge
   by edge, the darts of the split of the doubled dual at its tokens, which form a walk of the split between the
-  pieces of its ends with the sum of costs as length (`RData.levelDarts_walk`).
+  pieces of its ends with the sum of costs as length (`RData.levelDarts_walk`). For such a walk between the pieces at
+  $\kappa_0(t)$ and $\kappa_1(t)$ of length at most $\lambda_t$, these darts form a shortest walk of the annulus
+  (`RData.level_shortest_darts`).
 - `lean/SsspFlow/GHatLevelMark.lean`: the marking on the network of a level from local inputs. Each node knows the
   offsets and flags of the identifiers it hosts. Assuming the Exact SSSP bound, one algorithm of the message model,
   fixed before the network, runs `markAlg` on the network of the level within $2C\log^c n' \cdot (12D + 16) + 2$

@@ -14,6 +14,8 @@ pieces of its ends, of the same length.
   the network of a level.
 * `RData.levelDarts_walk`: the darts of a walk of the network of a level below `M` between copies
   on E_R edges form a walk of the split between their pieces, with the sum of the costs as length.
+* `RData.level_shortest_darts`: for such a walk between the pieces at `κ0(t)` and `κ1(t)` of length at
+  most `λ_t`, these darts form a shortest walk of the annulus.
 -/
 
 set_option autoImplicit false
@@ -223,6 +225,44 @@ theorem levelDarts_walk (c : N.G.Dart → ℕ) (hcr : ∀ d, c (N.toRot.rev d) =
           cases b <;> simp [dartW] at hle1
     · exact absurd (by unfold levelLen; exact ite_eq_right_iff.2 (fun h' => absurd h'.1 hb)) hf
     · exact absurd (by unfold levelLen; exact ite_eq_right_iff.2 (fun h' => absurd h'.2 ha)) hf
+
+/-- **The darts of a short walk of a level are a shortest walk.** For token lengths that are the costs
+`c` of their darts, with `c` equal on the two darts of an edge and giving `g`, and corners of `S` that
+hold those of a live annulus, the others out of its reach: the darts of a walk of the network of a
+level between copies on E_R edges of the pieces at `κ0(t)` and `κ1(t)`, of length below `M` and at
+most `λ_t`, form a shortest walk of the annulus of the same length. -/
+theorem level_shortest_darts (c : N.G.Dart → ℕ) (hcr : ∀ d, c (N.toRot.rev d) = c d)
+    (hlam : ∀ x, lam x = c x.1.1) {C : N.toRot.dual.CutPath} {g : N.G.Dart → ℝ≥0∞}
+    {Γ : Finset (N.G.Dart × Bool)} (hgc : ∀ d, g d = c d) (L : C.Live g Γ) (hS : Γ ⊆ S.Γ) {t : ℕ}
+    (hz : ∀ w ∈ S.Γ, w ∉ Γ → ∀ p, ¬ (N.toRot.dual.double.split Γ).IsWalk
+      ((N.toRot.dual.double.split Γ).tail (L.κ0 t)) p ((N.toRot.dual.double.split Γ).tail w))
+    (h1 : L.xa ≤ t) (h2 : L.ya ≤ t) (h3 : t ≤ L.xb) (h4 : t ≤ L.yb)
+    {u v : S.hRot.Vertex} (p : SsspFlow.Walk (S.levelNet hN).G.Adj ((S.levelPad hN).ι (.inl u))
+      ((S.levelPad hN).ι (.inl v)))
+    (hp : p.wt (lenTop (S.levelLen hN lam M)) < M)
+    (hu : ∃ x : S.Tok, S.IsEnd x.1 (S.vcopy u)) (hv : ∃ x : S.Tok, S.IsEnd x.1 (S.vcopy v))
+    (hpu : S.pieceOf ⟨S.vcopy u, hu⟩ = S.pieceAt (L.κ0 t))
+    (hpv : S.pieceOf ⟨S.vcopy v, hv⟩ = S.pieceAt (L.κ1 t))
+    (hle : p.wt (lenTop (S.levelLen hN lam M)) ≤ C.lamD g t) :
+    L.Shortest t (S.levelDarts hN p) ∧
+      ((S.levelDarts hN p).map (g ∘ Prod.fst)).sum = p.wt (lenTop (S.levelLen hN lam M)) := by
+  have hz₁ : ∃ x : S.Tok, S.IsEnd x.1 (S.copyAt hN ((S.levelPad hN).ι (.inl u))) := by
+    rw [S.copyAt_ι]; exact hu
+  have hz₂ : ∃ x : S.Tok, S.IsEnd x.1 (S.copyAt hN ((S.levelPad hN).ι (.inl v))) := by
+    rw [S.copyAt_ι]; exact hv
+  have e₁ : S.pieceOf ⟨_, hz₁⟩ = S.pieceOf ⟨S.vcopy u, hu⟩ := congrArg S.pieceOf (Subtype.ext (S.copyAt_ι hN _))
+  have e₂ : S.pieceOf ⟨_, hz₂⟩ = S.pieceOf ⟨S.vcopy v, hv⟩ := congrArg S.pieceOf (Subtype.ext (S.copyAt_ι hN _))
+  obtain ⟨hw, hsum⟩ := S.levelDarts_walk hN lam M c hcr hlam p hz₁ hz₂ hp
+  rw [e₁, hpu, e₂, hpv] at hw
+  have hg' : ∀ d, g d = ENNReal.ofReal (c d : ℝ) := fun d => by rw [hgc, ENNReal.ofReal_natCast]
+  have hk : ENNReal.ofReal ((S.levelDarts hN p).map fun z => (c z.1 : ℝ)).sum =
+      p.wt (lenTop (S.levelLen hN lam M)) := by
+    rw [ofReal_sum_map _ (fun _ => Nat.cast_nonneg _), ← hsum]
+    simp only [ENNReal.ofReal_natCast]
+  refine ⟨S.shortest_live (fun d => (c d : ℝ)) (fun _ => Nat.cast_nonneg _) hg' L hS hz h1 h2 h3 h4 _ hw
+    (hk ▸ hle), ?_⟩
+  rw [← hsum]
+  exact congrArg List.sum (List.map_congr_left fun z _ => hgc z.1)
 
 end RData
 
