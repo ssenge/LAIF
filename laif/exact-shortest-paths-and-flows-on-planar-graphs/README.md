@@ -868,6 +868,11 @@ standard axioms (`propext`, `Classical.choice`, `Quot.sound`). There is no `sorr
   and, at each node, the offsets and the three flags of the identifiers it hosts. After
   $T \le 3 C \log^c n' \cdot (12 D + 16) + 2$ rounds its outputs at the identifiers meet the specification of the
   oracle for the three runs of `chainAlg` on the network of the level (`RData.levelChain_local`).
+- `lean/SsspFlow/GHatChainOut.lean`: the ends of the step read from the outputs of the runs. With the target flag and
+  the flags of `RData.nodeFlag` as the input bits, a node of the chain of a target has flag $0$ and count $0$ exactly when
+  it is the first node flagged for $0$, and a node up to it has flag $1$ and distance $0$ in the run down the chains
+  exactly when it is the last such node flagged for $1$; the darts between them are those of a step
+  (`RData.chain_step_out`).
 - `lean/SsspFlow/GHatLevelDarts.lean`: the darts of a walk of a level, in order. A kept rim dart of the repaired graph
   is an E_C arc between the copies of its token and of the partner (`RData.att_rimTok`), and each middle edge of the
   network of a level carries the token of its E_C arc (`RData.edgeTok_dart`, `RData.edgeTok_inl_left`,
