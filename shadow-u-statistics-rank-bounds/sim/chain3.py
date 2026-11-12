@@ -1,11 +1,11 @@
 # Checks for the chain bound of centred projected shadows under a 3-design, with asserts.
 # The outcome law of one global shadow X = (d+1) |phi><phi| - I under the state rho has density d <phi|rho|phi> with respect
 # to a projective 3-design (here: all stabilizer states on 1 and 2 qubits). Checked exactly by enumeration:
-#  (1) the exact second moments of X under rho (Lemma 1), and E_rho[X C X] <= ((3d+4)/(d+2)) tr(C) I for C >= 0, for random
+#  (1) the exact second moments of X under rho (Lemma 5), and E_rho[X C X] <= ((3d+4)/(d+2)) tr(C) I for C >= 0, for random
 #      states rho of every rank;
 #  (2) E_rho|tr(X M)|^2 <= ((3d+4)/(d+2)) ||M||_2^2 for complex M;
 #  (3) the chain bound E|tr(E_1 B_1 ... E_j B_j)|^2 <= 3^j prod ||B_i||_2^2 for independent E_i = P X_i P - A, A = P rho P,
-#      j <= 3, with random B_i and with B_i = A^{e_i};
+#      j <= 4 for d = 2 and j <= 3 for d = 4, with random B_i and with B_i = A^{e_i};
 #  (4) the order-j components zeta_{j,k} of the symmetrized trace kernel h_k (k <= 4, j <= k) against (3s)^j D^{2(k-j)},
 #      D = ||A||_op, and against 3s(d+1)^{2(j-1)} D^{2(k-j)}.
 # python -I chain3.py

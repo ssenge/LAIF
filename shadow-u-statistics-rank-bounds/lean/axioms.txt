@@ -1,0 +1,8 @@
+'ShadowUStat.cd_lt_three' depends on axioms: [propext, Classical.choice, Quot.sound]
+'ShadowUStat.scalar_moment_le' depends on axioms: [propext, Classical.choice, Quot.sound]
+'ShadowUStat.operator_moment_le' depends on axioms: [propext, Classical.choice, Quot.sound]
+'ShadowUStat.power_trace_le' depends on axioms: [propext, Classical.choice, Quot.sound]
+'ShadowUStat.chain_product_le' depends on axioms: [propext, Classical.choice, Quot.sound]
+'ShadowUStat.avg_sq_le' depends on axioms: [propext, Classical.choice, Quot.sound]
+'ShadowUStat.order_term_le' depends on axioms: [propext, Classical.choice, Quot.sound]
+'ShadowUStat.geom_tail_le' depends on axioms: [propext, Classical.choice, Quot.sound]
