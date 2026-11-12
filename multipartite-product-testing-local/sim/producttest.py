@@ -5,8 +5,8 @@
 #  (2) the full test with the constants of Theorem 1 accepts random product states and rejects states at trace
 #      distance eps from the product states (tensor products of entangled pairs, rotated by random local unitaries),
 #      each with error below 1/3 (in fact below 0.2).
-# Stage 1 uses only the marginal outcomes of each qudit, which have the same law under any joint state; stage 2 is
-# simulated exactly through the all-hit probability |<v_1 ... v_n|psi>|^2.
+# Stage 1 draws the v_i independently from the single-qudit marginals: exact for product states, and for entangled states
+# the rejection bound holds for every choice of the v_i. Stage 2 is simulated exactly through |<v_1 ... v_n|psi>|^2.
 # python -I producttest.py
 import sys
 import numpy as np
