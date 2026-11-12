@@ -2,12 +2,13 @@
 
 Written 12 Nov 2026.
 
-**Setting.** A string s ∈ Σ^n over an ordered alphabet is given by queries: a query returns one character s_j. For 1 ≤ ℓ ≤ n, the *minimal length-ℓ substring* task asks for the least start e ∈ [0, n − ℓ] such that s[e, e + ℓ) is lexicographically least among all substrings of length ℓ. The minimal rotation of x ∈ Σ^n is the least start of a minimal length-n substring of x x[0, n − 1), and the minimal suffix, the maximal suffix and the maximal rotation reduce to the same task [1, Propositions 4.2 to 4.5]; [2, Theorem 5].
+**Setting.** A string s ∈ Σ^n over an ordered alphabet is given by queries: a query returns one character s_j. For 1 ≤ ℓ ≤ n, the *minimal length-ℓ substring* task asks for the least start e ∈ [0, n − ℓ] such that s[e, e + ℓ) is lexicographically least among all substrings of length ℓ. The minimal rotation of x ∈ Σ^n is the least start of a minimal length-n substring of x x[0, n − 1), and the minimal suffix, the maximal suffix and the maximal rotation reduce to the same task [1, Propositions 4.2 to 4.5]; [2, Theorem 5]. The same algorithm gives the longest Lyndon substring (Section 3).
 
 | | Problem | Previous best bound | This folder | Status |
 |---|---|---|---|---|
 | Thm 1 | Find the least start of a minimal length-ℓ substring, for every ℓ | n^{1/2+o(1)} [1, Theorem 4.1], and √n · 2^{O(√log n)} by the proof of [3, Theorem 3.3], both for n/2 ≤ ℓ ≤ n; Õ(√n) for the decision version "does the minimal rotation start at i?" [2, Theorem 5] | O(√n (1 + log ℓ) log^{3/2} n (log log n)^{3/2}) | Claim; checked by script |
 | Cor 2 | Find the minimal rotation, the minimal suffix, the maximal suffix, the maximal rotation | √n · 2^{O(√log n)} [3] | Õ(√n), so Θ̃(√n) with the lower bound Ω(√n) [6]; [1, Remark 4.7] | Claim |
+| Thm 3 | Find a longest Lyndon substring | n^{1/2+o(1)} [1, Theorem 4.9] | Õ(√n), so Θ̃(√n) with the lower bound Ω(√n) [1, Remark 4.17] | Claim; checked by script |
 
 The algorithm doubles the length of the minimal substring it knows. Each doubling step is one minimum finding over blocks of starts, and an exclusion rule leaves at most two candidates per block.
 
@@ -42,9 +43,28 @@ A level takes O(√(n/L + 1) · √(L log³ L log log L)) = O(√(n log³ n log 
 
 The lower bound Ω(√n) for the minimal rotation is given in [6], and the reductions carry it to the minimal and maximal suffix [1, Remark 4.7].
 
+## 3. The longest Lyndon substring
+
+A *Lyndon word* is a nonempty string that is smaller than each of its proper rotations. In the *Longest Lyndon Substring* problem the task is to find a longest substring of s that is a Lyndon word. Suffixes are compared lexicographically, with a proper prefix smaller than the longer string.
+
+Two subroutines follow from Theorem 1.
+
+- *Least suffix in a range of starts.* For a string u and r < |u|, the least suffix of u among the starts [0, r] is the least start of a minimal length-|u| substring of u followed by r copies of one letter below Σ, as in [1, Proposition 4.5]. The padded substrings are pairwise distinct, so there are no ties. By Theorem 1 the start is found with Õ(√|u|) queries.
+- *Longest Lyndon prefix.* For a start i of u, let NSS(i) be the least j > i with u[j, |u|) < u[i, |u|), or |u| if there is none. The longest Lyndon prefix of u[i, |u|) has length NSS(i) − i [7, Lemma 15]. The predicate "some suffix with a start in (i, t] is smaller than u[i, |u|)" is monotone in t. One test is one least suffix of u[i + 1, |u|) among the starts [0, t − i − 1], followed by one comparison of two suffixes, a search for the first difference with O(√|u|) queries [3, Lemma 2.2]. So binary search over t finds NSS(i) with O(log |u|) tests, each with error reduced to 1/(10 log |u|), and Õ(√|u|) queries in total.
+
+**Theorem 3.** A longest Lyndon substring of s ∈ Σ^n can be found with Õ(√n) quantum queries and bounded error.
+
+*Proof.* Let e = ⌈εd⌉ with ε = 0.1. As in the proof of [1, Theorem 4.10], cut the lengths into the classes [d, (1 + ε)d), d = (1 + ε)^k, and cover s for each class with the O(n/(εd)) windows of length d + 2e that start at the multiples of e. A Lyndon substring s* with length in [d, (1 + ε)d) then lies in the window whose start j satisfies j ≤ start(s*) < j + e, at an offset of at most e − 1 ≤ εd.
+
+Let u be a window. Let i be the start of the least suffix of u among the starts [0, e − 1], found with the first subroutine, and return the length NSS(i) − i of the longest Lyndon prefix of u[i, |u|), found with the second. This takes Õ(√d) queries, and O(log n) repetitions with a majority vote reduce its error to 1/n². When the subroutines succeed, the returned length is the length of a Lyndon substring of s. Let s* be a longest Lyndon substring of s, with length in the class of d, and let u be the window that holds it at an offset of at most εd. Then s* is a Lyndon factor of u [1, Proposition 4.12], its start is i [1, Lemma 4.13], and the longest Lyndon prefix of u[i, |u|) has length at least |s*|. For each class, maximum finding over its windows takes O(√(n/d)) window evaluations [5]; [6, Lemma 3.4], so Õ(√(n/d) · √d) = Õ(√n) queries, and a loop over the O(log n) classes returns |s*| and locates s*. With the error per window at most 1/n², all evaluations succeed with probability 1 − o(1), and the total is Õ(√n). ∎
+
+The algorithm uses no subroutine other than the doubling algorithm of Theorem 1 and searches for a first difference. In [1], the length of s* is found by a binary search for the longest prefix of the window that is a prefix of a Lyndon word, with the test of [1, Lemma 4.16]. Such a prefix has the form x^k x', where x is a Lyndon word and x' a proper prefix of x, and the proof of the test (arXiv:2110.09696v2) uses that the minimal rotation of x^k x' is x' x^k. For x = ababb and x' = aba the string x x' = ababbaba is a prefix of the Lyndon word ababbabac, but its minimal rotation is aababbab and not x' x = abaababb. This hints at a possible gap in that step. The step can be completed by taking |x| as the least period of the prefix, which [1] already computes with exact string matching. The step through NSS(i) above avoids both, and with the subroutines of [1] in place of Theorem 1 it also gives the bound n^{1/2+o(1)} of [1, Theorem 4.9].
+
 ## Scripts
 
 `sim/check_doubling.py` runs the doubling algorithm with exact subroutines, asserts in every block that the occurrences of u_L form an arithmetic progression and that the least key is at an extreme (Lemma 1), and compares the result with brute force (Lemma 2 and Theorem 1). It covers 30 000 strings of length up to 40 over 2 to 4 letters, periodic strings with changes, Fibonacci prefixes and random strings, each for the minimal rotation and for a random ℓ, and then all binary strings of length up to 12 and all ternary strings of length up to 7, for every ℓ and for the reductions of the minimal and the maximal suffix in Corollary 2. It runs in a few seconds with Python 3 and no extra packages.
+
+`sim/check_lyndon.py` runs the algorithm of Theorem 3 with the doubling algorithm as its only subroutine for least suffixes, over the classes and windows of the reduction. It asserts that every returned length belongs to a Lyndon substring and that the result equals brute force, on 3000 random and nearly periodic strings of length up to 30 over 2 and 3 letters, on all binary strings of length up to 11 and on all ternary strings of length up to 7. On the 3000 strings it also asserts that NSS(i) − i is the length of the longest Lyndon prefix of s[i, n) for every start i, and it checks the example ababbaba. The subroutines are exact, so the script does not test error reduction. It runs in under a minute with Python 3 and no extra packages.
 
 ## Lean
 
@@ -55,7 +75,9 @@ The lower bound Ω(√n) for the minimal rotation is given in [6], and the reduc
 - `min_at_ends`: a sequence that increases up to an index and decreases after it has its least value at an end.
 - `exclusion_rule`: the least key over the progression a, a + p, …, a + kp inside a run of period p is at a or at a + kp (the second part of Lemma 1).
 
-**Not formalized:** the first part of Lemma 1 (that the starts in a block form a full progression of the least period, which follows from `windows_period` of `lean/KnownPattern/Basic.lean`), Lemma 2, the subroutines [3, 5, 6], the reductions of Corollary 2, and the query counts.
+`lean/KnownPattern/Lyndon.lean`: `rotation_example` shows that ababb is a Lyndon word, that ababbaba is a prefix of the Lyndon word ababbabac, and that its rotation aababbab is smaller than abaababb (Section 3).
+
+**Not formalized:** the first part of Lemma 1 (that the starts in a block form a full progression of the least period, which follows from `windows_period` of `lean/KnownPattern/Basic.lean`), Lemma 2, the subroutines [3, 5, 6], the reductions of Corollary 2, Theorem 3 with the results [1, 7] it uses, and the query counts.
 
 ## Use of AI
 
@@ -69,3 +91,4 @@ Claude Opus 5.5 (Anthropic) was used throughout this research: to explore approa
 4. N. J. Fine, H. S. Wilf. Uniqueness theorems for periodic functions. Proc. Amer. Math. Soc. 16, 1965.
 5. C. Dürr, P. Høyer. A quantum algorithm for finding the minimum. arXiv:quant-ph/9607014, 1996.
 6. Q. Wang, M. Ying. Quantum algorithm for lexicographically minimal string rotation. arXiv:2012.09376.
+7. F. Franek, A. S. M. Sohidull Islam, M. S. Rahman, W. F. Smyth. Algorithms to compute the Lyndon array. arXiv:1605.08935.

@@ -2,6 +2,7 @@ import KnownPattern.Basic
 import KnownPattern.Dict
 import KnownPattern.Wild
 import KnownPattern.Rotation
+import KnownPattern.Lyndon
 
 #print axioms KnownPattern.HasPeriod.mono
 #print axioms KnownPattern.period_sub
@@ -20,3 +21,4 @@ import KnownPattern.Rotation
 #print axioms KnownPattern.step_along_run
 #print axioms KnownPattern.min_at_ends
 #print axioms KnownPattern.exclusion_rule
+#print axioms KnownPattern.rotation_example
