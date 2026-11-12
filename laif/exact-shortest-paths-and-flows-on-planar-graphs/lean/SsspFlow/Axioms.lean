@@ -795,3 +795,6 @@ Expected output for each: `propext`, `Classical.choice`, `Quot.sound` (or a subs
 #print axioms SsspFlow.RotSystem.CutPath.Live.exists_step_of_shortest
 #print axioms SsspFlow.RotSystem.RData.levelDarts_append
 #print axioms SsspFlow.RotSystem.RData.level_step_of_split
+#print axioms SsspFlow.Walk.AllEdges.append
+#print axioms SsspFlow.Walk.AllEdges.mono
+#print axioms SsspFlow.Congest.Net.ExactSpec.chain_seg

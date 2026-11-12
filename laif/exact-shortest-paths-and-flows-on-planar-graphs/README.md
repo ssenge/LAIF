@@ -833,6 +833,10 @@ standard axioms (`propext`, `Classical.choice`, `Quot.sound`). There is no `sorr
   a node $a$ to its parent and $\top$ elsewhere, a walk of finite length follows the parents (`Net.walk_markW`), so
   one more run from a set of targets gives at each node the least sum of $f$ along the parent steps from a target
   (`Net.ExactSpec.dsrcTop_markW`, with `Net.ExactSpec.walk_parW`).
+- `lean/SsspFlow/OracleChainSeg.lean`: segments of the parent chains of the oracle. Along valid parent steps from a
+  node, two nodes of the chain are joined by a walk down the chain whose edges are the parent steps between them
+  (`Walk.AllEdges`, `Walk.AllEdges.append`, `Walk.AllEdges.mono`) and whose length is the sum of their lengths
+  (`Net.ExactSpec.chain_seg`).
 - `lean/SsspFlow/OracleChainPos.lean`: positions on the parent chains of the oracle. The rank drops at every valid
   parent step (`Net.ExactSpec.rank_iter`), so a node has one position along the valid steps from a node
   (`Net.ExactSpec.parSteps_inj`). For targets whose valid chains do not meet, one more run with length $1$ on the
