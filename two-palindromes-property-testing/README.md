@@ -6,8 +6,8 @@ Written 12 Nov 2026.
 
 | | Problem | Previous best bound | This folder | Status |
 |---|---|---|---|---|
-| Thm 1 | ε-testing L_REV | O(n^{1/3} log n / ε) quantum queries [1]; classically O(√n log n / ε) [2] and Ω(√n) [3] | O(log n / ε²) quantum queries | Claim; checked by script |
-| Thm 2 | ε-testing whether y is a cyclic shift of x (x, y ∈ Σⁿ, no promise on the letters) | | O(log n / ε²) quantum queries | Claim; checked by script |
+| Thm 1 | ε-testing L_REV | O(n^{1/3} log n / ε) quantum queries [1]; classically O(√n log n / ε) [2] and Ω(√n) [3] | O(log n / ε) quantum queries | Claim; checked by script; lemmas in Lean |
+| Thm 2 | ε-testing whether y is a cyclic shift of x (x, y ∈ Σⁿ, no promise on the letters) | | O(log n / ε) quantum queries | Claim; checked by script; lemmas in Lean |
 
 The tester reads the two palindromes as one hidden reflection of the cyclic word and finds its axis from coset states, as in the hidden subgroup problem of the dihedral group. When all letters are distinct, deciding whether y is a cyclic shift of x is that hidden subgroup problem and takes logarithmically many quantum queries [4, 5]. Here the letters are arbitrary, for example bits, and the phases of the coset states stay exact; only the distribution of the Fourier samples changes, and it equals the autocorrelation of x.
 
@@ -31,7 +31,7 @@ Let ω = e^{2πi/n}, f(i, 0) = x_i and f(i, 1) = x_{(−i) mod n} for (i, b) ∈
 
 Let R(d) = Pr_a[x_a = x_{(a+d) mod n}] be the autocorrelation of x, with a uniform. Then R(0) = 1 and R(−d) = R(d).
 
-**Lemma 2.** If x is symmetric about c, then conditioned on (v, k) the qubit b is (|0⟩ + ω^{−kc}|1⟩)/√2, so E[Z | k] = ω^{−kc}, and the outcome k satisfies E[ω^{kd}] = R(d) for every d.
+**Lemma 2.** If x is symmetric about c, then conditioned on any outcome (v, k) of positive probability the qubit b is (|0⟩ + ω^{−kc}|1⟩)/√2, so E[Z | k] = ω^{−kc}, and the outcome k satisfies E[ω^{kd}] = R(d) for every d.
 
 *Proof.* Let A = {a : x_a = v} and Â(k) = Σ_{a∈A} ω^{ka}. Symmetry gives x_{−j} = x_{j+c}, so {j : x_{−j} = v} = A − c and the state after step 1 is proportional to Σ_{a∈A} (|a, 0⟩ + |a − c, 1⟩). The Fourier transform turns it into a multiple of Σ_k Â(k) |k⟩ (|0⟩ + ω^{−kc}|1⟩). Hence Pr[v, k] = |Â(k)|² / n² and Σ_k Pr[v, k] ω^{kd} = n^{−2} Σ_{a,a′∈A} Σ_k ω^{k(a − a′ + d)} = n^{−1} |{a ∈ A : a + d ∈ A}|. Summing over v gives R(d). The X and Y measurements of (|0⟩ + e^{iθ}|1⟩)/√2 have means cos θ and sin θ, so E[Z] = e^{iθ}. □
 
@@ -41,31 +41,44 @@ Let R(d) = Pr_a[x_a = x_{(a+d) mod n}] be the autocorrelation of x, with a unifo
 
 ## 3. The tester
 
-**Theorem 1.** For every finite alphabet, L_REV has an ε-tester with T + 2m quantum queries, T = ⌈32 ln(6n) / ε²⌉ and m = ⌈32 / ε⌉, so O(log n / ε²) queries.
+**Theorem 1.** For every finite alphabet, L_REV has an ε-tester with T + 2m quantum queries, T = ⌈58 ln(3n) / (3ε)⌉ and m = ⌈32 / ε⌉, so O(log n / ε) queries.
 
 *Algorithm.* Reject if n is odd or n < 4. Take T samples (k_t, Z_t), let score(c′) = T^{−1} Σ_t Re(ω^{k_t c′} Z_t) for c′ ∈ C, and let c* maximize the score. Draw m uniform positions i, count the mismatches M = |{i : x_i ≠ x_{(c* − i) mod n}}|, and accept iff M < 1.5 εm.
 
-*Proof.* Let x be symmetric about c ∈ C. Every term Re(ω^{k c′} Z) lies in [−2, 2] and by Lemma 2 has mean Re E[ω^{k(c′ − c)}] = R(c′ − c). By the Hoeffding bound and a union bound over the at most n/2 axes in C, all scores lie within ε/2 of their means, except with probability n e^{−Tε²/32} ≤ 1/6. Then R(c* − c) ≥ score(c*) − ε/2 ≥ score(c) − ε/2 ≥ 1 − ε, so the mismatch rate of c* is at most ε by Lemma 3, and the Chernoff bound gives Pr[M ≥ 1.5 εm] ≤ e^{−εm/12} ≤ e^{−8/3} < 1/10. The error is below 1/6 + 1/10 < 1/3.
+*Proof.* Let x be symmetric about c ∈ C. By Lemma 2 the term Re(ω^{k c′} Z) has mean Re E[ω^{k(c′ − c)}] = R(c′ − c). Call c′ ∈ C *bad* if η = 1 − R(c − c′) ≥ ε. For a bad c′ the differences X_t = Re((ω^{k_t c} − ω^{k_t c′}) Z_t) are independent with mean η and |X_t| ≤ 4, so X_t − η ≥ −5 as η ≤ 1, and since |Z| = 2 and E|1 − ω^{kd}|² = 2(1 − R(d)), also E[X_t²] ≤ 4 E|ω^{kc} − ω^{kc′}|² = 8η. The Bernstein bound gives Pr[score(c′) ≥ score(c)] = Pr[Σ_t (X_t − η) ≤ −Tη] ≤ e^{−3Tη/58} ≤ 1/(3n). A union bound over the at most n/2 axes shows that no bad axis reaches the score of c, except with probability 1/6. Then c* is not bad, so its mismatch rate 1 − R(c − c*) is below ε by Lemma 3, and the Chernoff bound (whose tail is monotone in the mismatch rate) gives Pr[M ≥ 1.5 εm] ≤ e^{−εm/12} ≤ e^{−8/3} < 1/10. The error is below 1/6 + 1/10 < 1/3.
 
 Let x be ε-far from L_REV. Whatever the samples, c* ∈ C, so its mismatch rate is at least 2ε by Lemma 1(b), and Pr[M < 1.5 εm] ≤ e^{−εm/16} ≤ e^{−2} < 1/6. □
 
 The bound concerns queries. The search for c* as written takes O(nT) classical time.
 
-**Theorem 2.** Given x, y ∈ Σⁿ, accepting if y_i = x_{(i+s) mod n} for some s and rejecting if y differs from every cyclic shift of x in at least εn positions takes O(log n / ε²) quantum queries: T = ⌈128 ln(12n) / ε²⌉ samples and m = ⌈64 / ε⌉ checked positions.
+**Theorem 2.** Given x, y ∈ Σⁿ, accepting if y_i = x_{(i+s) mod n} for some s and rejecting if y differs from every cyclic shift of x in at least εn positions takes T + 2m = O(log n / ε) quantum queries, with T = ⌈116 ln(6n) / (3ε)⌉ samples and m = ⌈64 / ε⌉ checked positions.
 
-*Proof.* Use f(i, 0) = x_i and f(i, 1) = y_i. If y_i = x_{i+s}, then {j : y_j = v} = A − s and Lemmas 2 and 3 hold with s in place of c and every s′ ∈ ℤ_n as a candidate, where the mismatch rate of s′ is 1 − R(s − s′). Estimate every score within ε/4 (failure at most 2n e^{−Tε²/128} ≤ 1/6), so the chosen shift has mismatch rate at most ε/2, and accept iff fewer than 0.75 εm of the m checked positions mismatch. The Chernoff tails are e^{−εm/24} ≤ e^{−8/3} < 1/10 for members and e^{−εm/32} ≤ e^{−2} < 1/6 for inputs ε-far from every shift. □
+*Proof.* Use f(i, 0) = x_i and f(i, 1) = y_i. If y_i = x_{i+s}, then {j : y_j = v} = A − s and Lemmas 2 and 3 hold with s in place of c and every s′ ∈ ℤ_n as a candidate, where the mismatch rate of s′ is 1 − R(s − s′). Call s′ bad if its mismatch rate is at least ε/2. As in Theorem 1, a bad s′ reaches the score of s with probability at most e^{−3Tε/116} ≤ 1/(6n), so the chosen shift has mismatch rate below ε/2 except with probability 1/6, and accept iff fewer than 0.75 εm of the m checked positions mismatch. The Chernoff tails are e^{−εm/24} ≤ e^{−8/3} < 1/10 for members and e^{−εm/32} ≤ e^{−2} < 1/6 for inputs ε-far from every shift. □
+
+## Lean
+
+The library `PalinTest` in `lean/` (Lean 4, Mathlib at the revision pinned in `lean/lakefile.toml`) proves, with only the standard axioms (`lean/axioms.txt`):
+
+- `lrev_iff_axis`: for even n, x ∈ L_REV iff x is symmetric about an odd axis c with c + 3 ≤ n (Lemma 1(a)); `axisSym_iff_zmod` reads the symmetry on ℤ_n.
+- `mismatch_le_two_dist`: the positions i with x_i ≠ x_{c−i} number at most twice the distance from x to any word symmetric about c (Lemma 1(b)).
+- `mismatch_shift_axis`, `mismatch_shift_cyclic`: the mismatches of another axis or shift (Lemma 3 and its version in Theorem 2).
+- `dft_reflect`, `dft_shift`: the Fourier coefficient of the second half of the coset state is the one of the first half times ω^{−kc} (the exact phase of Lemma 2).
+- `fourier_autocorr`: Σ_v Σ_k Â_v(k) Â_v(−k) ω^{kd} = n · |{a : x_a = x_{a+d}}|, the law of k in Lemma 2.
+- `union_const`, `union_const_shift`, `check_consts`: the constants of the union bounds and of the two tails of the classical check.
+
+Not formalized: the quantum part (state preparation, Fourier transform and measurement statistics, which reduce to the identities above), the Bernstein and Chernoff bounds (classical, used as stated), and the assembly of the algorithm.
 
 ## Scripts
 
 `sim/check_tester.py` computes the measurement statistics of Section 2 exactly, from the Fourier transforms of the level sets, and simulates the testers with them.
 
-- On yes-instances (random, sparse and periodic, n up to 398, alphabets of size 2 and 3) and on cyclic shifts, the qubit phase is exact. The mean of the score terms, taken over the measured X and Y outcomes, equals R(c′ − c) to 10⁻⁹.
-- The tester of Theorem 1, with its T and m, for ε = 0.1, made no error on 60 yes-instances with n ∈ {64, 256, 1024, 4096} and 60 inputs at distance at least εn from L_REV, with the distance computed exactly. It also accepted all 40 yes-instances that have a second axis in C with a mismatch rate between 1.25ε and 2.2ε.
+- On yes-instances (random, sparse and periodic, n up to 398, alphabets of size 2 and 3) and on cyclic shifts, the qubit phase is exact. The mean of the score terms, taken over the measured X and Y outcomes, equals R(c′ − c) to 10⁻⁹, and E|1 − ω^{k(c′ − c)}|² equals 2(1 − R(c′ − c)).
+- The tester of Theorem 1, with its T and m, for ε = 0.05, made no error on 60 yes-instances with n ∈ {64, 256, 1024, 4096} and 60 inputs at distance at least εn from L_REV, with the distance computed exactly. It also accepted all 40 yes-instances that have a second axis in C with a mismatch rate between 0.6ε and 2.3ε.
 - The tester of Theorem 2 was correct on 20 shifted pairs and 20 pairs that are ε-far from every shift.
 
 ## Use of AI
 
-Claude Opus 5.5 (Anthropic) was used throughout this research: to explore approaches, to develop and check proofs, to write the check scripts, and to draft the text.
+Claude Opus 5.5 (Anthropic) was used throughout this research: to explore approaches, to develop and check proofs, to write the Lean files and the check scripts, and to draft the text.
 
 ## References
 

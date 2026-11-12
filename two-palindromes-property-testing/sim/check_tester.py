@@ -54,7 +54,7 @@ def tester(x, sig, eps, rng, T):
     return np.sum(x[i] != x[(c - i) % n]) < 1.5 * eps * m, c
 
 def shift_tester(x, y, sig, eps, rng):
-    n = len(x); T = int(np.ceil(128 * np.log(12 * n) / eps ** 2))
+    n = len(x); T = int(np.ceil(116 * np.log(6 * n) / (3 * eps)))
     s = best(*samples(x, sig, rng, T, y), np.arange(n), n)
     m = int(np.ceil(64 / eps)); i = rng.integers(0, n, m)
     return np.sum(y[i] != x[(i + s) % n]) < 0.75 * eps * m, s
@@ -89,11 +89,13 @@ if __name__ == "__main__":
                 assert np.allclose(EZ[P[v] > 1e-12], np.exp(2j * np.pi * k * c / n)[P[v] > 1e-12])
                 tot += (P[v] * EZ * np.exp(-2j * np.pi * k * cp / n)).sum()
             assert abs(tot - R(x, (cp - c) % n)) < 1e-9, (tot, R(x, (cp - c) % n))
+            sec = sum((P[v] * np.abs(1 - np.exp(2j * np.pi * np.arange(n) * (cp - c) / n)) ** 2).sum() for v in range(sig))
+            assert abs(sec - 2 * (1 - R(x, (cp - c) % n))) < 1e-9          # second moment of the Bernstein step
     print("identity: score expectation equals the autocorrelation R(c' - c); qubit phase exact on yes-instances")
-    eps = 0.1; fails = {"yes": 0, "no": 0}; runs = {"yes": 0, "no": 0}
+    eps = 0.05; fails = {"yes": 0, "no": 0}; runs = {"yes": 0, "no": 0}
     for trial in range(120):
         n = int(rng.choice([64, 256, 1024, 4096] if trial % 2 == 0 else [64, 256, 1024])); sig = 2
-        T = int(np.ceil(32 * np.log(6 * n) / eps ** 2))    # the sample count of the theorem
+        T = int(np.ceil(58 * np.log(3 * n) / (3 * eps)))   # the sample count of the theorem
         if trial % 2 == 0:
             x, c = yes_instance(n, sig, rng, ["random", "sparse", "periodic"][trial % 3])
             ok, _ = tester(x, sig, eps, rng, T); runs["yes"] += 1; fails["yes"] += (not ok)
@@ -134,7 +136,7 @@ if __name__ == "__main__":
             x[i] ^= 1; x[(c - i) % n] = x[i]
         assert all(x[i] == x[(c - i) % n] for i in range(n))
         r2 = np.mean(x != x[(c2 - np.arange(n)) % n]); rates.append(r2)
-        runs2 += 1; acc += tester(x, 2, eps, rng, int(np.ceil(32 * np.log(6 * n) / eps ** 2)))[0]
+        runs2 += 1; acc += tester(x, 2, eps, rng, int(np.ceil(58 * np.log(3 * n) / (3 * eps))))[0]
     print("second axis: accepted", acc, "of", runs2, "yes-instances; mismatch rate of the second axis from",
           round(min(rates), 3), "to", round(max(rates), 3), "(eps =", eps, ")")
     assert acc >= 0.8 * runs2
