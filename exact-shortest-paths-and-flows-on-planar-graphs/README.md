@@ -826,6 +826,16 @@ standard axioms (`propext`, `Classical.choice`, `Quot.sound`). There is no `sorr
   a node $a$ to its parent and $\top$ elsewhere, a walk of finite length follows the parents (`Net.walk_markW`), so
   one more run from a set of targets gives at each node the least sum of $f$ along the parent steps from a target
   (`Net.ExactSpec.dsrcTop_markW`, with `Net.ExactSpec.walk_parW`).
+- `lean/SsspFlow/OracleChainPos.lean`: positions on the parent chains of the oracle. The rank drops at every valid
+  parent step (`Net.ExactSpec.rank_iter`), so a node has one position along the valid steps from a node
+  (`Net.ExactSpec.parSteps_inj`). For targets whose valid chains do not meet, one more run with length $1$ on the
+  arcs to the parents gives every node of a chain its number of steps from its target (`Net.ExactSpec.dsrcTop_pos`).
+- `lean/SsspFlow/GHatLevelDarts.lean`: the darts of a walk of a level, in order. A kept rim dart of the repaired graph
+  is an E_C arc between the copies of its token and of the partner (`RData.att_rimTok`), and each middle edge of the
+  network of a level carries the token of its E_C arc (`RData.edgeTok_dart`, `RData.edgeTok_inl_left`,
+  `RData.edgeTok_inl_right`). So a walk of the network of a level below $M$ between copies on E_R edges gives, edge
+  by edge, the darts of the split of the doubled dual at its tokens, which form a walk of the split between the
+  pieces of its ends with the sum of costs as length (`RData.levelDarts_walk`).
 - `lean/SsspFlow/GHatLevelMark.lean`: the marking on the network of a level from local inputs. Each node knows the
   offsets and flags of the identifiers it hosts. Assuming the Exact SSSP bound, one algorithm of the message model,
   fixed before the network, runs `markAlg` on the network of the level within $2C\log^c n' \cdot (12D + 16) + 2$

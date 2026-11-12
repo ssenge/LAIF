@@ -779,3 +779,11 @@ Expected output for each: `propext`, `Classical.choice`, `Quot.sound` (or a subs
 #print axioms SsspFlow.Congest.Net.ExactSpec.adj_par
 #print axioms SsspFlow.Congest.Net.ExactSpec.walk_parW
 #print axioms SsspFlow.Congest.Net.ExactSpec.dsrcTop_markW
+#print axioms SsspFlow.Congest.Net.ExactSpec.rank_iter
+#print axioms SsspFlow.Congest.Net.ExactSpec.parSteps_inj
+#print axioms SsspFlow.Congest.Net.ExactSpec.dsrcTop_pos
+#print axioms SsspFlow.RotSystem.RData.att_rimTok
+#print axioms SsspFlow.RotSystem.RData.edgeTok_dart
+#print axioms SsspFlow.RotSystem.RData.edgeTok_inl_left
+#print axioms SsspFlow.RotSystem.RData.edgeTok_inl_right
+#print axioms SsspFlow.RotSystem.RData.levelDarts_walk
