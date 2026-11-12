@@ -16,7 +16,7 @@ at the vertex of `κ0(t)`, and then `x_a ≤ t ≤ x_b`; at the copy `p_t^1` it 
 
 A simple shortest walk of a live annulus from the vertex of `κ0(i)` to the vertex of `κ1(i)` contains
 a step (`CutPath.Live.exists_step`): its part from its last vertex at a copy `p_x^0` to the first
-vertex at a copy `p_y^1` after it.
+vertex at a copy `p_y^1` after it. `CutPath.Live.exists_step_sel` also keeps these two choices.
 -/
 
 set_option autoImplicit false
@@ -231,10 +231,11 @@ theorem piece (hR : R.Planar) (hC : R.Connected) {c0 z : D × Bool}
     exact Or.inr ⟨hσ' 1 (L.piece1 t' h1 h2), h1, h2, hzc⟩
   · exact absurd hcv (L.off c (List.mem_append_right _ hcb) t ht)
 
-/-- **The step of a shortest walk.** A simple shortest walk of finite length from the vertex of
-`κ0(i)` to the vertex of `κ1(i)` contains a step: its part from its last vertex at a copy `p_x^0` to
-the first vertex at a copy `p_y^1` after it. -/
-theorem exists_step (hR : R.Planar) (hC : R.Connected) {i : ℕ} (h1 : L.xa ≤ i) (h2 : i ≤ L.xb)
+/-- **The step of a shortest walk, with its ends.** A simple shortest walk of finite length from the
+vertex of `κ0(i)` to the vertex of `κ1(i)` contains a step: its part from its last vertex at a copy
+`p_x^0` to the first vertex at a copy `p_y^1` after it. No dart from the start of the step on ends at
+a copy `p_t^0`, and no dart of the step starts at a copy `p_t^1`. -/
+theorem exists_step_sel (hR : R.Planar) (hC : R.Connected) {i : ℕ} (h1 : L.xa ≤ i) (h2 : i ≤ L.xb)
     (h3 : L.ya ≤ i) (h4 : i ≤ L.yb) {p : List (D × Bool)}
     (hp : (R.double.split Γ).IsWalk ((R.double.split Γ).tail (L.κ0 i)) p
       ((R.double.split Γ).tail (L.κ1 i)))
@@ -244,7 +245,9 @@ theorem exists_step (hR : R.Planar) (hC : R.Connected) {i : ℕ} (h1 : L.xa ≤ 
       ((R.double.split Γ).tail (L.κ1 i)) →
       (p.map (g ∘ Prod.fst)).sum ≤ (p'.map (g ∘ Prod.fst)).sum)
     (fin : (p.map (g ∘ Prod.fst)).sum ≠ ⊤) :
-    ∃ S : L.Step, ∃ p₁ p₃, p = p₁ ++ (List.range S.n).map S.q ++ p₃ := by
+    ∃ S : L.Step, ∃ p₁ p₃, p = p₁ ++ (List.range S.n).map S.q ++ p₃ ∧
+      (∀ z ∈ (List.range S.n).map S.q ++ p₃, ¬ C.atCopy Γ 0 ((R.double.split Γ).head z)) ∧
+      ∀ z ∈ (List.range S.n).map S.q, ¬ C.atCopy Γ 1 ((R.double.split Γ).tail z) := by
   have hc0 : L.κ0 i ∈ liveBoundary L.κ0 L.κ1 L.xa L.xb L.ya L.yb L.La L.Lb := by
     unfold liveBoundary
     simp only [List.mem_append]
@@ -388,7 +391,26 @@ theorem exists_step (hR : R.Planar) (hC : R.Connected) {i : ℕ} (h1 : L.xa ≤ 
   · rw [range_map_getD]
     simp only [List.map_append, List.sum_append] at fin
     exact (ENNReal.add_ne_top.1 (ENNReal.add_ne_top.1 fin).2).1
-  · rw [range_map_getD, List.append_assoc]
+  · refine ⟨by rw [range_map_getD, List.append_assoc], ?_, ?_⟩
+    · rw [range_map_getD]; exact hnb
+    · rw [range_map_getD]; exact hnQ
+
+/-- **The step of a shortest walk.** A simple shortest walk of finite length from the vertex of
+`κ0(i)` to the vertex of `κ1(i)` contains a step: its part from its last vertex at a copy `p_x^0` to
+the first vertex at a copy `p_y^1` after it. -/
+theorem exists_step (hR : R.Planar) (hC : R.Connected) {i : ℕ} (h1 : L.xa ≤ i) (h2 : i ≤ L.xb)
+    (h3 : L.ya ≤ i) (h4 : i ≤ L.yb) {p : List (D × Bool)}
+    (hp : (R.double.split Γ).IsWalk ((R.double.split Γ).tail (L.κ0 i)) p
+      ((R.double.split Γ).tail (L.κ1 i)))
+    (hnd : (p.map (R.double.split Γ).tail).Nodup)
+    (hne : ∀ z ∈ p, (R.double.split Γ).tail z ≠ (R.double.split Γ).tail (L.κ1 i))
+    (short : ∀ p', (R.double.split Γ).IsWalk ((R.double.split Γ).tail (L.κ0 i)) p'
+      ((R.double.split Γ).tail (L.κ1 i)) →
+      (p.map (g ∘ Prod.fst)).sum ≤ (p'.map (g ∘ Prod.fst)).sum)
+    (fin : (p.map (g ∘ Prod.fst)).sum ≠ ⊤) :
+    ∃ S : L.Step, ∃ p₁ p₃, p = p₁ ++ (List.range S.n).map S.q ++ p₃ := by
+  obtain ⟨S, p₁, p₃, h, -⟩ := L.exists_step_sel hR hC h1 h2 h3 h4 hp hnd hne short fin
+  exact ⟨S, p₁, p₃, h⟩
 
 end Live
 

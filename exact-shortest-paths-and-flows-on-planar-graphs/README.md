@@ -608,7 +608,12 @@ standard axioms (`propext`, `Classical.choice`, `Quot.sound`). There is no `sorr
   at the copy $p_t^0$ lies at the vertex of $\kappa_0(t)$, and then $x_a\le t\le x_b$; at the copy $p_t^1$ it lies at
   the vertex of $\kappa_1(t)$, and then $y_a\le t\le y_b$ (`CutPath.Live.piece`). A simple shortest walk of finite
   length from the vertex of $\kappa_0(i)$ to the vertex of $\kappa_1(i)$ contains a step: its part from its last
-  vertex at a copy $p_x^0$ to the first vertex at a copy $p_y^1$ after it (`CutPath.Live.exists_step`).
+  vertex at a copy $p_x^0$ to the first vertex at a copy $p_y^1$ after it (`CutPath.Live.exists_step`, and
+  `CutPath.Live.exists_step_sel` with these two choices).
+- `lean/SsspFlow/ShortestSimple.lean`: for costs at least $1$ a sublist costs at least the number of dropped entries
+  less (`CutPath.Live.sum_add_length_le`), so a shortest walk of a live annulus is simple
+  (`CutPath.Live.shortest_simple`) and every shortest walk contains the step of `CutPath.Live.exists_step_sel`
+  (`CutPath.Live.exists_step_of_shortest`).
 - `lean/SsspFlow/Run.lean`: the recursion [18, Alg. 3] with the repair, on the live annuli of the split model. A run
   on a live annulus with the index range $[j,k]$ (`CutPath.Run`) is a leaf if $k\le j+1$, with the lengths at $j$ and
   $k$. Otherwise it takes a shortest walk $P_i$ from $\kappa_0(i)$ to $\kappa_1(i)$ for $i=\lfloor(j+k)/2\rfloor$,

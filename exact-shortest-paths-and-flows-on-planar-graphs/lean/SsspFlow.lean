@@ -130,6 +130,7 @@ import SsspFlow.GHatLevelRoots
 import SsspFlow.OracleChainSum
 import SsspFlow.OracleChainPos
 import SsspFlow.GHatLevelDarts
+import SsspFlow.ShortestSimple
 import SsspFlow.ListRot
 import SsspFlow.GHatSplit
 import SsspFlow.Annuli
