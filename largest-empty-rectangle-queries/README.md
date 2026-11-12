@@ -10,7 +10,7 @@ Written 11 Nov 2026.
 | Thm 2 | Largest empty square (LSQR) | O(n^{1.5} log n log log n), Ω(n) [1] | O(n log³ n), so Θ̃(n) | Claim; checked by script; lemmas in Lean |
 | Thm 3 | Largest empty rectangle with d rows (LRECW) | O(n √d log n log log n), Ω(√(nd)) [1] | O(n log³ n) and Ω(n) for every d, so Θ̃(n) | Claim; checked by script; lemmas in Lean |
 | Thm 4 | Largest empty rectangle by area (LREC) | Ω(n) quantum; no quantum speedup over the classical Θ(n²) known [1] | O(n log⁴ n), so Θ̃(n) | Claim; checked by script; lemmas in Lean |
-| Thm 5 | Longest empty segment in a string of n bits (LSEG), longest run of identical characters (LSIC), longest increasing substring (LISST) | LSIC and LISST: O(√(n log n)) [6]; LSEG: O(√(n log n)), implied by [6], and O(√n log n log log n) [1]; Ω(√n) | O(√n log log n) | Claim; checked by script |
+| Thm 5 | Longest empty segment in a string of n bits (LSEG), longest run of identical characters (LSIC), longest increasing substring (LISST) | LSIC and LISST: O(√(n log n)) [6]; LSEG: O(√(n log n)), implied by [6], and O(√n log n log log n) [1]; Ω(√n) | O(√n), so Θ(√n) | Claim; checked by script |
 
 Classically, LSQR and LREC need Ω(n²) queries and LRECW needs Ω(nd) queries [1]. For d up to a polylogarithm in n, the bound of [1] for LRECW is already Õ(n). The algorithms also return an optimal rectangle.
 
@@ -72,9 +72,26 @@ The run through a position p is found by two searches for the first position to 
 
 *Proof.* K consecutive integers contain a multiple of K. The run through p has length at least K iff K consecutive positions containing p belong to it, and these lie within distance K − 1 of p. If every run is shorter than 2K, both ends of the run through p lie within distance 2K of p. ∎
 
-**Theorem 5.** LSEG, LSIC and LISST can be solved with O(√n log log n) quantum queries, and the algorithms return a longest run.
+**Theorem 5.** LSEG, LSIC and LISST can be solved with O(√n) quantum queries, and the algorithms return a longest run. So all three take Θ(√n) queries.
 
-*Proof.* For a power of two K, decide whether there is a run of length at least K by a search over the at most ⌈n/K⌉ multiples of K with the bounded-error test of Lemma 5.1, which costs O(√K) queries. Search with a bounded-error test [4] uses O(√(n/K)) tests, so O(√n) queries, with error at most 1/3. The answer is monotone in K, so a binary search over the ⌊log₂ n⌋ + 1 powers of two that tolerates errors [8] finds the power of two K with K ≤ L < 2K, or that L = 0, with O(log log n) such decisions and error at most 1/10, so with O(√n log log n) queries. Then compare two multiples p and q of K by the lengths of their runs within distance 2K, with O(√K) queries and error at most 1/4. Minimum finding with a bounded-error comparison oracle, which may leave garbage, uses O(√N) comparisons for N items [7], so a multiple of K with a longest run is found with O(√(n/K) · √K) = O(√n) queries. By Lemma 5.2 its run is a longest run. This succeeds with probability at least 1/2. Repeating the whole algorithm a constant number of times, finding the run through each returned position with O(√n) queries, and keeping the longest raises the success probability to 2/3. ∎
+The proof works with the dual of the general adversary bound, in the form of the filtered γ₂ program [9, 10]. For a function g on a set D of inputs, a *solution* is a family of vectors u_{x,j}, v_{x,j}, for x ∈ D and positions j, with
+
+Σ_{j : x_j ≠ y_j} ⟨u_{x,j}, v_{y,j}⟩ = [g(x) ≠ g(y)] for all x, y ∈ D,
+
+and its *cost* at x is c(x) = max(Σ_j ‖u_{x,j}‖², Σ_j ‖v_{x,j}‖²). The bounded-error query complexity of g is, up to a constant factor, the least value of max_x c(x) over all solutions [9]. Solutions compose with the costs kept per input:
+
+1. *Sequential* [10, Theorems 4 and 5]. If g has a solution with costs c, and for each value e of g the function h restricted to the inputs with g(x) = e has a solution with costs c_e, then x ↦ (g(x), h(x)) has a solution with costs at most c(x) + c_{g(x)}(x).
+2. *Functional.* Let g_1, …, g_M be Boolean functions on D with solutions u^i, v^i of costs c_i, and let f be a function on a set Z that contains every z(x) = (g_1(x), …, g_M(x)), with a solution a_{z,i}, b_{z,i}. Then u_{x,j} = ⊕_i a_{z(x),i} ⊗ u^i_{x,j}, and v_{x,j} in the same way from b and v^i, is a solution for x ↦ f(z(x)) with cost at most max(Σ_i ‖a_{z(x),i}‖² c_i(x), Σ_i ‖b_{z(x),i}‖² c_i(x)) at x. Indeed, Σ_{j : x_j ≠ y_j} ⟨u_{x,j}, v_{y,j}⟩ = Σ_i ⟨a_{z(x),i}, b_{z(y),i}⟩ [g_i(x) ≠ g_i(y)], which is the constraint of f at z(x) and z(y). The g_i may read overlapping parts of the input. This is the composition argument of [9], with the cost kept for each input.
+
+Two scalar solutions with a = b serve as outer functions.
+- *OR of M bits.* a_{0,i} = M^{−1/4}, and for z with t ≥ 1 ones, a_{z,i} = M^{1/4}/t on the ones of z and 0 elsewhere. The cost is √M at z = 0 and √M/t at z with t ones. Two nonzero strings differ only at positions where one of them has value 0.
+- *Boundary of a monotone string.* On the strings z = 1^b 0^{m+1−b}, with b from 0 to m + 1, the function z ↦ b has the solution a_{z,i} = 1 for i ≤ b and 0 for i > b. Two such strings with b < b′ differ at the positions b, …, b′ − 1, and only position b has nonzero values in both. With costs c_i for the bits, the cost of the composition is c_b + Σ_{i<b} c_i, with c_{m+1} = 0.
+
+*Proof of Theorem 5.* Let m = ⌊log₂ n⌋, K_i = 2^i and M_i = ⌈n/K_i⌉. For a multiple p of K_i, let T_{i,p} be 1 iff the run through p has length at least K_i. By Lemma 5.1 it depends on the positions within distance K_i − 1 of p, so two minimum findings compute it with O(√K_i) queries [3], and it has a solution with cost O(√K_i) at every input [9]. Let D_i be the OR of the T_{i,p} over the M_i multiples p; by Lemma 5.1, D_i = 1 iff L ≥ K_i. By the functional composition with the OR solution, D_i has a solution with cost c_i = O(√(M_i K_i)) = O(√n) if L < K_i. If L ≥ K_i, a longest run contains at least ⌊L/K_i⌋ ≥ L/(2K_i) multiples of K_i, all with T_{i,p} = 1, so c_i = O(√n K_i/L).
+
+The string (D_0, …, D_m) is 1^b 0^{m+1−b}, where b is the number of i with K_i ≤ L. By the functional composition with the boundary solution, x ↦ b has a solution with cost O(√n + Σ_{i<b} √n K_i/L) = O(√n), since Σ_{i<b} K_i < 2^b ≤ 2L.
+
+If b = 0, then L = 0. Otherwise K = 2^{b−1} satisfies K ≤ L < 2K, and by Lemma 5.2 L is the largest length of a run through a multiple of K, which depends only on the positions within distance 2K of the multiple. Let p be the leftmost multiple of K at which this largest length is attained. Minimum finding with a bounded-error comparison [7] over the ⌈n/K⌉ multiples, with comparisons in O(√K) queries, followed by two minimum findings for the ends of the run through p, computes p and its run with O(√n) queries on the inputs with this value of b. So for each value of b this has a solution with cost O(√n) [9], and by the sequential composition, x ↦ (b, p, run through p) has a solution with cost O(√n) at every input. By [9], it is computed with O(√n) queries and bounded error. For LSIC and LISST the same proof applies to the runs of Lemma 5. ∎
 
 All three problems need Ω(√n) queries, since a string of n zeros and a string with a single 1 differ in L [1].
 
@@ -100,6 +117,8 @@ All three problems need Ω(√n) queries, since a string of n zeros and a string
 
 `sim/check_area.py` checks that the largest value over all classes and lattice cells in Lemma 4, computed from the four fronts only, equals the largest empty rectangle found by brute force, on 1200 random grids of up to 13 × 13 cells, some with rows of ones, for random lower limits w and h₀ on the rows and columns, and that the front learner costs at most √(4DH) per depth and quadrant.
 
+`sim/check_dual.py` checks the two outer solutions of Theorem 5 against their constraints on all strings of up to 7 bits, the functional composition with overlapping ORs as inner functions on all inputs of up to 6 bits, and the cost of the search for b, at most 5√(2n), on all strings of up to 14 bits and on 3000 random strings of up to 3000 bits.
+
 `sim/check_segment.py` checks Lemma 5 against brute force: the scale test and the largest window value over the multiples of K, for LSEG, LSIC and LISST, on 3000 random strings and arrays of each kind of up to 40 positions and on all binary strings of up to 14 positions.
 
 ## Use of AI
@@ -116,3 +135,5 @@ Claude Opus 5.5 (Anthropic) was used throughout this research: to explore approa
 6. J. Allcock, J. Bao, A. Belovs, T. Lee, M. Santha. On the quantum time complexity of divide and conquer. ICALP 2025. arXiv:2311.16401.
 7. Q. Wang, M. Ying. Quantum algorithm for lexicographically minimal string rotation. arXiv:2012.09376.
 8. U. Feige, P. Raghavan, D. Peleg, E. Upfal. Computing with noisy information. SIAM J. Comput. 23(5), 1994.
+9. T. Lee, R. Mittal, B. W. Reichardt, R. Špalek, M. Szegedy. Quantum query complexity of state conversion. FOCS 2011. arXiv:1011.3020.
+10. R. Kothari. An optimal quantum algorithm for the oracle identification problem. STACS 2014. arXiv:1311.7685.
