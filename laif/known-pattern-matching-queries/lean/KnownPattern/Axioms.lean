@@ -1,4 +1,5 @@
 import KnownPattern.Basic
+import KnownPattern.Dict
 
 #print axioms KnownPattern.HasPeriod.mono
 #print axioms KnownPattern.period_sub
@@ -7,3 +8,4 @@ import KnownPattern.Basic
 #print axioms KnownPattern.left_break
 #print axioms KnownPattern.run_copied
 #print axioms KnownPattern.periodic_occ
+#print axioms KnownPattern.occ_of_parts

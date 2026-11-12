@@ -5,3 +5,4 @@
 'KnownPattern.left_break' depends on axioms: [propext, Quot.sound]
 'KnownPattern.run_copied' depends on axioms: [propext, Quot.sound]
 'KnownPattern.periodic_occ' depends on axioms: [propext, Quot.sound]
+'KnownPattern.occ_of_parts' depends on axioms: [propext, Quot.sound]

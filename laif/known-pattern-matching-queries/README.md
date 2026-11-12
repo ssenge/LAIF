@@ -56,6 +56,7 @@ So B_b is computed with O(√m) queries and bounded error. The blocks start at t
 - `windows_period`: Lemma 1.
 - `left_break`, `run_copied`: an occurrence copies the breaks and the periodic runs of y to the text, the facts behind Lemma 2(1) and (2).
 - `periodic_occ`: Lemma 2(3).
+- `occ_of_parts` (in `lean/KnownPattern/Dict.lean`): if the text and the pattern have period q on overlapping runs, agree on a window of length at least q, and agree outside the run, then the pattern occurs. This is the converse direction of Lemma 1 of [known-dictionary-matching-queries](../known-dictionary-matching-queries/).
 
 `lean/KnownPattern/Axioms.lean` prints the axioms of these theorems. The output, in `lean/axioms.txt` from a build of a clean copy of this folder, shows no axioms beyond `propext`, `Classical.choice` and `Quot.sound`.
 

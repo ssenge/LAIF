@@ -42,6 +42,12 @@ def decide(x, D, b):
     B = [] if rho is None else x[rho:rho + m]
     lefts = [y[:l] for y, Dl, l, r in info if l > 0]
     rights = [y[r:] for y, Dl, l, r in info if r < m]
+    if lefts:
+        walk([tuple(reversed(a)) for a in lefts], tuple(reversed(A)))
+        STATS['walks'] += 1
+    if rights:
+        walk(rights, tuple(B))
+        STATS['walks'] += 1
     a_star = max((a for a in lefts if len(a) <= len(A) and tuple(A[len(A) - len(a):]) == a), key=len, default=None)
     b_star = max((c for c in rights if len(c) <= len(B) and tuple(B[:len(c)]) == c), key=len, default=None)
     # from here on no queries: every pattern is decided by lam, rho, a_star, b_star
@@ -76,6 +82,38 @@ def decide(x, D, b):
         return True
     return False
 
+def walk(Z, u):
+    """Heavy-path walk of Lemma 2 on the trie of Z with the unknown string u. Returns pi, the rounds and the searched
+    lengths; asserts the bounds of Lemma 2."""
+    Z = list(set(Z)); k = len(Z)
+    def weight(pre):
+        return sum(1 for z in Z if z[:len(pre)] == pre)
+    def heavy(pre):                                             # label of the heavy path from node pre
+        while True:
+            kids = {z[len(pre)] for z in Z if len(z) > len(pre) and z[:len(pre)] == pre}
+            if not kids:
+                return pre
+            pre = max((pre + (c,) for c in kids), key=lambda v: (weight(v), v))
+    v = (); rounds = 0; gaps = []
+    while True:
+        rounds += 1
+        z = heavy(v); p0 = len(v)
+        p = next((j for j in range(p0, len(z)) if j >= len(u) or u[j] != z[j]), None)
+        if p is None:
+            gaps.append(len(z) - p0); pi = len(z); break
+        gaps.append(p - p0 + 1)
+        if p >= len(u):
+            pi = p; break
+        child = z[:p] + (u[p],)
+        if weight(child) == 0:
+            pi = p; break
+        assert 2 * weight(child) <= weight(z[:p])               # a light child has at most half the weight
+        v = child
+    assert rounds <= (k.bit_length()) + 1 and sum(gaps) <= len(u) + 1, (rounds, k, gaps)
+    best = max((j for j in range(len(u) + 1) if any(z[:j] == tuple(u[:j]) for z in Z)), default=0)
+    assert pi == best, (pi, best)
+    return pi, rounds, gaps
+
 def brute(x, D, b, m):
     w = max(1, m // 4)
     return any(tuple(x[i:i + m]) in D for i in range(b, b + w) if 0 <= i <= len(x) - m)
@@ -90,7 +128,7 @@ def pattern(m, sig):
         return tuple(y), base
     return tuple(random.randrange(sig) for _ in range(m)), None
 
-STATS = {'patterns with windows ≥ 2': 0, 'left part': 0, 'right part': 0, 'periodic': 0}
+STATS = {'patterns with windows ≥ 2': 0, 'left part': 0, 'right part': 0, 'periodic': 0, 'walks': 0}
 random.seed(11)
 blocks = found = 0
 for trial in range(20000):
@@ -99,8 +137,7 @@ for trial in range(20000):
     D = [first]
     while len(D) < d:
         if base is not None and random.random() < 0.6:          # more patterns from the same periodic run
-            p = len(base); y = [base[(k + random.randrange(p)) % p] for k in range(m)]
-            y = [base[k % p] for k in range(m)]
+            p = len(base); o = random.randrange(p); y = [base[(k + o) % p] for k in range(m)]
             for _ in range(random.choice([1, 1, 2])):
                 y[random.choice([0, 1, m - 2, m - 1, random.randrange(m)]) % m] = random.randrange(sig)
             y = tuple(y)
@@ -126,3 +163,22 @@ for trial in range(20000):
         assert got == want, (x, D, b, got, want)
         blocks += 1; found += want
 print("dictionaries:", 20000, "blocks:", blocks, "with an occurrence:", found, "blocks with:", STATS)
+
+# Lemma 2 on larger tries: random sets, sets of prefixes of one string, and sets close to the unknown string
+random.seed(12)
+maxr = 0
+for trial in range(3000):
+    h = random.randint(1, 24); sig = random.choice([2, 3])
+    u = tuple(random.randrange(sig) for _ in range(h))
+    kind = random.random(); Z = []
+    for _ in range(random.randint(1, 200)):
+        if kind < 0.4:
+            z = list(u[:random.randint(0, h)])
+            z += [random.randrange(sig) for _ in range(random.randint(0, h - len(z)))]
+        elif kind < 0.7:
+            z = list(u); z[random.randrange(h)] = random.randrange(sig); z = z[:random.randint(1, h)]
+        else:
+            z = [random.randrange(sig) for _ in range(random.randint(1, h))]
+        Z.append(tuple(z))
+    pi, rounds, gaps = walk(Z, u); maxr = max(maxr, rounds)
+print("trie walks on larger sets: 3000, largest number of rounds:", maxr)
