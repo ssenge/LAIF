@@ -1,0 +1,6 @@
+d = 3: classical 2.0409^k, quantum 1.4287^k
+d = 4: classical 3.0409^k, quantum 1.7439^k
+d = 5: classical 4.0409^k, quantum 2.0102^k
+d = 6: classical 5.0409^k, quantum 2.2452^k
+340 split decisions equal opt(H) + opt(R) <= k
+all asserts passed
