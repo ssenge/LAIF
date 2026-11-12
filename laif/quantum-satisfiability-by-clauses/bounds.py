@@ -49,3 +49,28 @@ print(f"MaxSAT: tau(6,6,5,5) = {tau(6, 6, 5, 5):.5f}; sqrt(1.2886) = {math.sqrt(
 ql = math.ceil(math.sqrt(2 ** 0.0926) * 1e4) / 1e4
 assert 2 ** 0.0926 <= 1.0663 and math.sqrt(2 ** 0.0926) <= ql
 print(f"SAT in L: 2^0.0926 = {2 ** 0.0926:.6f}; square root {math.sqrt(2 ** 0.0926):.6f} <= {ql}")
+
+# SAT in terms of L, second tree: the branching vectors of the 1.0638^L algorithm [9, Table 3] with its weights
+w3, s = 1.94719, 0.86108
+w4, w5, w6 = 2 * w3, 5.0, 6.0
+d4, d5, d6 = w4 - w3, w5 - w4, 1.0
+vectors = {
+    "3": (w6 + d6, w6 + 11 * d6), "4": (w5 + 2 * w3, w5 + w3 + 7 * d5), "5": (w5 + 2 * d5, w5 + 4 * w3 + 4 * d5),
+    "6": (w5 + 3 * d5 - s, 2 * w5 + 2 * w3 + 3 * d5 - s), "7": (w5 + w3 + 2 * d5, w5 + w3 + 6 * d5),
+    "8": (w5 + 4 * d5, w5 + 2 * w3 + 4 * d5), "9": (w5 + 4 * d5, w5 + d4 + 6 * d5),
+    "10a": (w5 + 4 * d5, w5 + w4 + 6 * d5), "10b": (w5 + 4 * d5, w5 + w3 + 6 * d5),
+    "11": (w5 + 4 * d5, w5 + 7 * d5 + s), "12a": (w5 + 4 * d5, w5 + 4 * d5 + 2 * w3),
+    "12b": (w5 + 4 * d5, w5 + w3 + 5 * d5 + s), "14": (w4 + 2 * w3, w4 + 6 * d4), "15": (w4 + 2 * d4, w4 + 6 * d4),
+}
+a = 1.0638
+for k, v in vectors.items():
+    assert tau(*v) <= a, k
+print("steps " + ", ".join(f"{k}: {tau(*v):.5f}" for k, v in vectors.items()))
+# Step 16: SparseSAT on formulas of maximum degree 3, 1.1279^n with mu = w3 n
+assert 1.1279 ** (1 / w3) <= a
+# Step 13: the 3-CNF part with n* variables of weight 5, by the (4/3 + eps)^n* tree of [12] with 4/3 + eps <= 1.34
+assert 1.34 ** (1 / 5) < a and 1.34 <= a ** 5
+qa = math.ceil(math.sqrt(a) * 1e4) / 1e4
+assert math.sqrt(a) <= qa == 1.0315 and a <= qa ** 2
+print(f"SAT in L, second tree: Step 16 1.1279^(1/w3) = {1.1279 ** (1 / w3):.6f}, Step 13 1.34^(1/5) = {1.34 ** 0.2:.6f}; "
+      f"all <= {a}; square root {math.sqrt(a):.6f} <= {qa}")

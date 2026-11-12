@@ -13,3 +13,4 @@
 'SatTrees.exists_step' depends on axioms: [propext, Classical.choice, Quot.sound]
 'SatTrees.greedy_optimal' depends on axioms: [propext, Classical.choice, Quot.sound]
 'SatTrees.x3satm_cert' depends on axioms: [propext, Classical.choice, Quot.sound]
+'SatTrees.satl2_cert' depends on axioms: [propext, Classical.choice, Quot.sound]

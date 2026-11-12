@@ -15,3 +15,4 @@ open SatTrees
 #print axioms exists_step
 #print axioms greedy_optimal
 #print axioms x3satm_cert
+#print axioms satl2_cert

@@ -170,6 +170,15 @@ theorem satl_root : (2 : ℝ) ^ ((463 : ℝ) / 5000) ≤ (10327 / 10000) ^ 2 := 
     _ = (10327 / 10000) ^ 2 := by
         rw [← Real.rpow_natCast, ← Real.rpow_mul hb]; norm_num
 
+/-- The comparisons behind the `1.0638^L` tree for SAT in terms of the formula length: the
+3-SAT part with `n` variables of weight 5 has `1.34^n ≤ (1.0638^5)^n` nodes; the formula of maximum
+degree 3 with `n` variables of weight `w₃ = 1.94719 ≥ 109/56` has `1.1279^n ≤ 1.0638^(w₃ n)` nodes,
+since `1.1279^56 ≤ 1.0638^109`; and `√1.0638 ≤ 1.0315`. -/
+theorem satl2_cert :
+    (134 / 100 : ℝ) ≤ (10638 / 10000) ^ 5 ∧
+    (11279 / 10000 : ℝ) ^ 56 ≤ (10638 / 10000) ^ 109 ∧ (109 / 56 : ℝ) ≤ 194719 / 100000 ∧
+    (10638 / 10000 : ℝ) ≤ (10315 / 10000) ^ 2 := by norm_num
+
 /-! ### The amortized count for SAT in terms of clauses -/
 
 /-- The base `g = 1.2226` and the constants `c₁ = 2`, `c₂ = c₁ / 0.9136`. -/
