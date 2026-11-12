@@ -16,7 +16,8 @@ at the vertex of `κ0(t)`, and then `x_a ≤ t ≤ x_b`; at the copy `p_t^1` it 
 
 A simple shortest walk of a live annulus from the vertex of `κ0(i)` to the vertex of `κ1(i)` contains
 a step (`CutPath.Live.exists_step`): its part from its last vertex at a copy `p_x^0` to the first
-vertex at a copy `p_y^1` after it. `CutPath.Live.exists_step_sel` also keeps these two choices.
+vertex at a copy `p_y^1` after it. `CutPath.Live.exists_step_sel` also keeps these two choices, and
+`CutPath.Live.step_of_split` gives a step from every split of the walk with these properties.
 -/
 
 set_option autoImplicit false
@@ -231,39 +232,30 @@ theorem piece (hR : R.Planar) (hC : R.Connected) {c0 z : D × Bool}
     exact Or.inr ⟨hσ' 1 (L.piece1 t' h1 h2), h1, h2, hzc⟩
   · exact absurd hcv (L.off c (List.mem_append_right _ hcb) t ht)
 
-/-- **The step of a shortest walk, with its ends.** A simple shortest walk of finite length from the
-vertex of `κ0(i)` to the vertex of `κ1(i)` contains a step: its part from its last vertex at a copy
-`p_x^0` to the first vertex at a copy `p_y^1` after it. No dart from the start of the step on ends at
-a copy `p_t^0`, and no dart of the step starts at a copy `p_t^1`. -/
-theorem exists_step_sel (hR : R.Planar) (hC : R.Connected) {i : ℕ} (h1 : L.xa ≤ i) (h2 : i ≤ L.xb)
-    (h3 : L.ya ≤ i) (h4 : i ≤ L.yb) {p : List (D × Bool)}
-    (hp : (R.double.split Γ).IsWalk ((R.double.split Γ).tail (L.κ0 i)) p
-      ((R.double.split Γ).tail (L.κ1 i)))
-    (hnd : (p.map (R.double.split Γ).tail).Nodup)
-    (hne : ∀ z ∈ p, (R.double.split Γ).tail z ≠ (R.double.split Γ).tail (L.κ1 i))
+/-- **A split of a shortest walk gives a step.** Let a simple shortest walk of finite length from the
+vertex of `κ0(i)` to the vertex of `κ1(i)` be split into `pa`, `Q`, `pc` at a vertex `s` at a copy
+`p_x^0` and a vertex `s'` at a copy `p_y^1`, such that no dart of `Q` or `pc` ends at a copy
+`p_t^0` and no dart of `Q` starts at a copy `p_t^1`. Then `Q` is the walk of a step. -/
+theorem step_of_split (hR : R.Planar) (hC : R.Connected) {i : ℕ} (h1 : L.xa ≤ i) (h2 : i ≤ L.xb)
+    {pa Q pc : List (D × Bool)} {s s' : (R.double.split Γ).Vertex}
+    (hpa : (R.double.split Γ).IsWalk ((R.double.split Γ).tail (L.κ0 i)) pa s)
+    (hQ : (R.double.split Γ).IsWalk s Q s')
+    (hpc : (R.double.split Γ).IsWalk s' pc ((R.double.split Γ).tail (L.κ1 i)))
+    (hs : C.atCopy Γ 0 s) (hs' : C.atCopy Γ 1 s')
+    (hnb : ∀ z ∈ Q ++ pc, ¬ C.atCopy Γ 0 ((R.double.split Γ).head z))
+    (hnQ : ∀ z ∈ Q, ¬ C.atCopy Γ 1 ((R.double.split Γ).tail z))
+    (hnd : ((pa ++ (Q ++ pc)).map (R.double.split Γ).tail).Nodup)
+    (hne : ∀ z ∈ pa ++ (Q ++ pc), (R.double.split Γ).tail z ≠ (R.double.split Γ).tail (L.κ1 i))
     (short : ∀ p', (R.double.split Γ).IsWalk ((R.double.split Γ).tail (L.κ0 i)) p'
       ((R.double.split Γ).tail (L.κ1 i)) →
-      (p.map (g ∘ Prod.fst)).sum ≤ (p'.map (g ∘ Prod.fst)).sum)
-    (fin : (p.map (g ∘ Prod.fst)).sum ≠ ⊤) :
-    ∃ S : L.Step, ∃ p₁ p₃, p = p₁ ++ (List.range S.n).map S.q ++ p₃ ∧
-      (∀ z ∈ (List.range S.n).map S.q ++ p₃, ¬ C.atCopy Γ 0 ((R.double.split Γ).head z)) ∧
-      ∀ z ∈ (List.range S.n).map S.q, ¬ C.atCopy Γ 1 ((R.double.split Γ).tail z) := by
+      ((pa ++ (Q ++ pc)).map (g ∘ Prod.fst)).sum ≤ (p'.map (g ∘ Prod.fst)).sum)
+    (fin : ((pa ++ (Q ++ pc)).map (g ∘ Prod.fst)).sum ≠ ⊤) :
+    ∃ S : L.Step, (List.range S.n).map S.q = Q := by
   have hc0 : L.κ0 i ∈ liveBoundary L.κ0 L.κ1 L.xa L.xb L.ya L.yb L.La L.Lb := by
     unfold liveBoundary
     simp only [List.mem_append]
     exact Or.inl (Or.inl (Or.inl (mem_cornerSeg.2 ⟨i, h1, h2, rfl⟩)))
-  have hgp := IsWalk.gcomp hp
-  have hS0 : C.atCopy Γ 0 ((R.double.split Γ).tail (L.κ0 i)) :=
-    (C.atCopy_tail L.sub).2 ⟨i, h2.trans L.xb_le, L.piece0 i h1 h2⟩
-  have hS1 : C.atCopy Γ 1 ((R.double.split Γ).tail (L.κ1 i)) :=
-    (C.atCopy_tail L.sub).2 ⟨i, h4.trans L.yb_le, L.piece1 i h3 h4⟩
-  obtain ⟨pa, pb, s, rfl, hpa, hpb, hs, hnb⟩ := IsWalk.split_last (C.atCopy Γ 0) hp (Or.inl hS0)
-  have hb1 : C.atCopy Γ 1 s ∨ ∃ z ∈ pb, C.atCopy Γ 1 ((R.double.split Γ).head z) := by
-    rcases IsWalk.mem_heads hpb with e | e
-    · exact Or.inl (by rw [← e]; exact hS1)
-    · obtain ⟨z, hz, hz'⟩ := List.mem_map.1 e
-      exact Or.inr ⟨z, hz, by rw [hz']; exact hS1⟩
-  obtain ⟨Q, pc, s', rfl, hQ, hpc, hs', hnQ⟩ := IsWalk.split_first (C.atCopy Γ 1) hpb hb1
+  have hgp := IsWalk.gcomp (hpa.append (hQ.append hpc))
   have hQpos : 0 < Q.length := by
     rcases Q with _ | ⟨z, Q⟩
     · exfalso
@@ -349,8 +341,7 @@ theorem exists_step_sel (hR : R.Planar) (hC : R.Connected) {i : ℕ} (h1 : L.xa 
   refine ⟨{
       x := x, y := y, hxa := hxa, hxb := hxb, hya := hya, hyb := hyb, n := Q.length
       q := fun j => Q.getD j (L.κ0 x), pos := hQpos, start := ?_, walk := ?_, stop := ?_
-      simple := ?_, simple_last := ?_, inner := ?_, noP := ?_, short := ?_, fin := ?_ },
-    pa, pc, ?_⟩
+      simple := ?_, simple_last := ?_, inner := ?_, noP := ?_, short := ?_, fin := ?_ }, ?_⟩
   · show fconnect _ (Q.getD 0 (L.κ0 x)) _
     rw [List.getD_eq_getElem (n := 0) _ _ hQpos]
     exact hx'
@@ -391,9 +382,41 @@ theorem exists_step_sel (hR : R.Planar) (hC : R.Connected) {i : ℕ} (h1 : L.xa 
   · rw [range_map_getD]
     simp only [List.map_append, List.sum_append] at fin
     exact (ENNReal.add_ne_top.1 (ENNReal.add_ne_top.1 fin).2).1
-  · refine ⟨by rw [range_map_getD, List.append_assoc], ?_, ?_⟩
-    · rw [range_map_getD]; exact hnb
-    · rw [range_map_getD]; exact hnQ
+  · exact range_map_getD Q _
+
+/-- **The step of a shortest walk, with its ends.** A simple shortest walk of finite length from the
+vertex of `κ0(i)` to the vertex of `κ1(i)` contains a step: its part from its last vertex at a copy
+`p_x^0` to the first vertex at a copy `p_y^1` after it. No dart from the start of the step on ends at
+a copy `p_t^0`, and no dart of the step starts at a copy `p_t^1`. -/
+theorem exists_step_sel (hR : R.Planar) (hC : R.Connected) {i : ℕ} (h1 : L.xa ≤ i) (h2 : i ≤ L.xb)
+    (h3 : L.ya ≤ i) (h4 : i ≤ L.yb) {p : List (D × Bool)}
+    (hp : (R.double.split Γ).IsWalk ((R.double.split Γ).tail (L.κ0 i)) p
+      ((R.double.split Γ).tail (L.κ1 i)))
+    (hnd : (p.map (R.double.split Γ).tail).Nodup)
+    (hne : ∀ z ∈ p, (R.double.split Γ).tail z ≠ (R.double.split Γ).tail (L.κ1 i))
+    (short : ∀ p', (R.double.split Γ).IsWalk ((R.double.split Γ).tail (L.κ0 i)) p'
+      ((R.double.split Γ).tail (L.κ1 i)) →
+      (p.map (g ∘ Prod.fst)).sum ≤ (p'.map (g ∘ Prod.fst)).sum)
+    (fin : (p.map (g ∘ Prod.fst)).sum ≠ ⊤) :
+    ∃ S : L.Step, ∃ p₁ p₃, p = p₁ ++ (List.range S.n).map S.q ++ p₃ ∧
+      (∀ z ∈ (List.range S.n).map S.q ++ p₃, ¬ C.atCopy Γ 0 ((R.double.split Γ).head z)) ∧
+      ∀ z ∈ (List.range S.n).map S.q, ¬ C.atCopy Γ 1 ((R.double.split Γ).tail z) := by
+  have hS0 : C.atCopy Γ 0 ((R.double.split Γ).tail (L.κ0 i)) :=
+    (C.atCopy_tail L.sub).2 ⟨i, h2.trans L.xb_le, L.piece0 i h1 h2⟩
+  have hS1 : C.atCopy Γ 1 ((R.double.split Γ).tail (L.κ1 i)) :=
+    (C.atCopy_tail L.sub).2 ⟨i, h4.trans L.yb_le, L.piece1 i h3 h4⟩
+  obtain ⟨pa, pb, s, rfl, hpa, hpb, hs, hnb⟩ := IsWalk.split_last (C.atCopy Γ 0) hp (Or.inl hS0)
+  have hb1 : C.atCopy Γ 1 s ∨ ∃ z ∈ pb, C.atCopy Γ 1 ((R.double.split Γ).head z) := by
+    rcases IsWalk.mem_heads hpb with e | e
+    · exact Or.inl (by rw [← e]; exact hS1)
+    · obtain ⟨z, hz, hz'⟩ := List.mem_map.1 e
+      exact Or.inr ⟨z, hz, by rw [hz']; exact hS1⟩
+  obtain ⟨Q, pc, s', rfl, hQ, hpc, hs', hnQ⟩ := IsWalk.split_first (C.atCopy Γ 1) hpb hb1
+  obtain ⟨S, hS⟩ := L.step_of_split hR hC h1 h2 hpa hQ hpc hs hs' hnb hnQ hnd hne short fin
+  refine ⟨S, pa, pc, ?_, ?_, ?_⟩ <;> rw [hS]
+  · rw [List.append_assoc]
+  · exact hnb
+  · exact hnQ
 
 /-- **The step of a shortest walk.** A simple shortest walk of finite length from the vertex of
 `κ0(i)` to the vertex of `κ1(i)` contains a step: its part from its last vertex at a copy `p_x^0` to

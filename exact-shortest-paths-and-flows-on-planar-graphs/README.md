@@ -609,7 +609,9 @@ standard axioms (`propext`, `Classical.choice`, `Quot.sound`). There is no `sorr
   the vertex of $\kappa_1(t)$, and then $y_a\le t\le y_b$ (`CutPath.Live.piece`). A simple shortest walk of finite
   length from the vertex of $\kappa_0(i)$ to the vertex of $\kappa_1(i)$ contains a step: its part from its last
   vertex at a copy $p_x^0$ to the first vertex at a copy $p_y^1$ after it (`CutPath.Live.exists_step`, and
-  `CutPath.Live.exists_step_sel` with these two choices).
+  `CutPath.Live.exists_step_sel` with these two choices). Every split of such a walk at a vertex at a copy $p_x^0$ and
+  a vertex at a copy $p_y^1$, with no dart after the first ending at a copy $p_r^0$ and no dart between them starting
+  at a copy $p_r^1$, gives a step with the darts between them (`CutPath.Live.step_of_split`).
 - `lean/SsspFlow/ShortestSimple.lean`: for costs at least $1$ a sublist costs at least the number of dropped entries
   less (`CutPath.Live.sum_add_length_le`), so a shortest walk of a live annulus is simple
   (`CutPath.Live.shortest_simple`) and every shortest walk contains the step of `CutPath.Live.exists_step_sel`
@@ -843,6 +845,11 @@ standard axioms (`propext`, `Classical.choice`, `Quot.sound`). There is no `sorr
   pieces of its ends with the sum of costs as length (`RData.levelDarts_walk`). For such a walk between the pieces at
   $\kappa_0(t)$ and $\kappa_1(t)$ of length at most $\lambda_t$, these darts form a shortest walk of the annulus
   (`RData.level_shortest_darts`).
+- `lean/SsspFlow/GHatLevelSplitStep.lean`: the step from a split of a walk of a level. The darts of a joined walk are
+  the darts of its parts (`RData.levelDarts_append`). For positive costs, a walk of the network of a level between
+  the pieces at $\kappa_0(t)$ and $\kappa_1(t)$, below $M$ and at most $\lambda_t$, split at two nodes whose copies lie
+  at a copy $p_x^0$ and a copy $p_y^1$, with no dart after the first node ending at a copy $p_r^0$ and no dart between
+  the nodes starting at a copy $p_r^1$, has the darts of a step between the two nodes (`RData.level_step_of_split`).
 - `lean/SsspFlow/GHatLevelMark.lean`: the marking on the network of a level from local inputs. Each node knows the
   offsets and flags of the identifiers it hosts. Assuming the Exact SSSP bound, one algorithm of the message model,
   fixed before the network, runs `markAlg` on the network of the level within $2C\log^c n' \cdot (12D + 16) + 2$

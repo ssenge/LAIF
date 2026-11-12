@@ -149,6 +149,7 @@
 'SsspFlow.RotSystem.CutPath.Live.piece' depends on axioms: [propext, Classical.choice, Quot.sound]
 'SsspFlow.RotSystem.CutPath.Live.exists_step' depends on axioms: [propext, Classical.choice, Quot.sound]
 'SsspFlow.RotSystem.CutPath.Live.exists_step_sel' depends on axioms: [propext, Classical.choice, Quot.sound]
+'SsspFlow.RotSystem.CutPath.Live.step_of_split' depends on axioms: [propext, Classical.choice, Quot.sound]
 'SsspFlow.RotSystem.IsWalk.exists_adjWalk' depends on axioms: [propext, Classical.choice, Quot.sound]
 'SsspFlow.RotSystem.CutPath.exists_walk' depends on axioms: [propext, Classical.choice, Quot.sound]
 'SsspFlow.RotSystem.CutPath.lamD_eq' depends on axioms: [propext, Classical.choice, Quot.sound]
@@ -787,3 +788,5 @@
 'SsspFlow.RotSystem.CutPath.Live.sum_add_length_le' depends on axioms: [propext, Quot.sound]
 'SsspFlow.RotSystem.CutPath.Live.shortest_simple' depends on axioms: [propext, Classical.choice, Quot.sound]
 'SsspFlow.RotSystem.CutPath.Live.exists_step_of_shortest' depends on axioms: [propext, Classical.choice, Quot.sound]
+'SsspFlow.RotSystem.RData.levelDarts_append' depends on axioms: [propext, Classical.choice, Quot.sound]
+'SsspFlow.RotSystem.RData.level_step_of_split' depends on axioms: [propext, Classical.choice, Quot.sound]

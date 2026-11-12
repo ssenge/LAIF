@@ -154,6 +154,7 @@ Expected output for each: `propext`, `Classical.choice`, `Quot.sound` (or a subs
 #print axioms SsspFlow.RotSystem.CutPath.Live.piece
 #print axioms SsspFlow.RotSystem.CutPath.Live.exists_step
 #print axioms SsspFlow.RotSystem.CutPath.Live.exists_step_sel
+#print axioms SsspFlow.RotSystem.CutPath.Live.step_of_split
 #print axioms SsspFlow.RotSystem.IsWalk.exists_adjWalk
 #print axioms SsspFlow.RotSystem.CutPath.exists_walk
 #print axioms SsspFlow.RotSystem.CutPath.lamD_eq
@@ -792,3 +793,5 @@ Expected output for each: `propext`, `Classical.choice`, `Quot.sound` (or a subs
 #print axioms SsspFlow.RotSystem.CutPath.Live.sum_add_length_le
 #print axioms SsspFlow.RotSystem.CutPath.Live.shortest_simple
 #print axioms SsspFlow.RotSystem.CutPath.Live.exists_step_of_shortest
+#print axioms SsspFlow.RotSystem.RData.levelDarts_append
+#print axioms SsspFlow.RotSystem.RData.level_step_of_split
