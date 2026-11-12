@@ -817,6 +817,11 @@ standard axioms (`propext`, `Classical.choice`, `Quot.sound`). There is no `sorr
   (`Net.ExactSpec.chain`), so the chain is a shortest walk from the virtual source. With length 0 on the arc from each
   node to its parent and offset 0 at one node `t`, one more run gives distance 0 exactly on the chain of `t`
   (`Net.ExactSpec.dsrcTop_mark`): the nodes of one shortest walk are marked.
+- `lean/SsspFlow/OracleMark.lean`: marking with three calls on a planar network. The algorithm `markAlg` runs the
+  oracle, then one round in which every node tells its parent, then the oracle again with length 0 on the arcs to the
+  parents and offset 0 at the nodes whose flag is set. Assuming the Exact SSSP bound, after $2C\log^c n \cdot D + 1$
+  rounds both runs meet the specification of the oracle (`markAlg_spec`), and the second distance is 0 exactly on
+  the parent chains of the flagged nodes (`Net.ExactSpec.dsrcTop_markB`).
 - `lean/SsspFlow/GHatPhase.lean`: the combinatorics of property (6). Two copies on E_R edges are joined by E_R edges
   exactly when they lie on the path of one piece (`RData.er_comp_iff`), and by E_R and E_C edges exactly when their
   pieces are joined in the token graph (`RData.erc_comp_iff`), whose components are those of the split

@@ -724,3 +724,6 @@ Expected output for each: `propext`, `Classical.choice`, `Quot.sound` (or a subs
 #print axioms SsspFlow.Congest.Net.ExactSpec.walk_par
 #print axioms SsspFlow.Congest.Net.mark_closed
 #print axioms SsspFlow.Congest.Net.ExactSpec.dsrcTop_mark
+#print axioms SsspFlow.Congest.Net.ExactSpec.dsrcTop_markB
+#print axioms SsspFlow.Congest.markIn_eq
+#print axioms SsspFlow.Congest.markAlg_spec
