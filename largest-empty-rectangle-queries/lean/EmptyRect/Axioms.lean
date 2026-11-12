@@ -9,3 +9,8 @@ import EmptyRect
 #print axioms EmptyRect.level_cost
 #print axioms EmptyRect.ceil_mul_le
 #print axioms EmptyRect.outer_cost
+#print axioms EmptyRect.lift_dist
+#print axioms EmptyRect.inRect_of_le
+#print axioms EmptyRect.empty_iff_fronts
+#print axioms EmptyRect.inRect_window
+#print axioms EmptyRect.rect_empty_iff_fronts

@@ -7,3 +7,8 @@
 'EmptyRect.level_cost' depends on axioms: [propext, Classical.choice, Quot.sound]
 'EmptyRect.ceil_mul_le' depends on axioms: [propext, Quot.sound]
 'EmptyRect.outer_cost' depends on axioms: [propext, Classical.choice, Quot.sound]
+'EmptyRect.lift_dist' depends on axioms: [propext, Quot.sound]
+'EmptyRect.inRect_of_le' depends on axioms: [propext, Classical.choice, Quot.sound]
+'EmptyRect.empty_iff_fronts' depends on axioms: [propext, Classical.choice, Quot.sound]
+'EmptyRect.inRect_window' depends on axioms: [propext, Classical.choice, Quot.sound]
+'EmptyRect.rect_empty_iff_fronts' depends on axioms: [propext, Classical.choice, Quot.sound]

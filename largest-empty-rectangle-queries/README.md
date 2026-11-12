@@ -83,9 +83,10 @@ All three problems need Ω(√n) queries, since a string of n zeros and a string
 `lean/EmptyRect/`, built against Mathlib, standard axioms only (`lean/axioms.txt`):
 
 - `Window.lean`: Lemma 1 (`lattice_unique`), its form for the shape classes (`lattice_exists`), Lemma 2 (`mem_rect_iff`), that every 1-cell of a quadrant lies at greater or equal distances than a point of its front (`exists_front_le`), the split of a front used in Lemma 3 (`front_split`), and that d consecutive rows avoiding the rows of ones of the lower-bound grids form a block (`block_start`).
+- `Decide.lean`: the window test from the four fronts. The rectangle with offset (a, b) contains no 1-cell of the window iff no front point of the four quadrants lies in it (`empty_iff_fronts`, and `rect_empty_iff_fronts` for the window of a grid), since a cell of a quadrant at smaller or equal distances than a cell of the rectangle lies in it too (`inRect_of_le`).
 - `Cost.lean`: the cost at one depth in Lemma 3, Σ√(rᵢwᵢ) ≤ √(RW) when Σrᵢ ≤ R and Σwᵢ ≤ W (`level_cost`), ⌈n/d⌉ · d ≤ 2n (`ceil_mul_le`), and the cost of the outer search, √(AB) · √(dh) ≤ 2n when Ad ≤ 2n and Bh ≤ 2n (`outer_cost`).
 
-**Not formalized:** minimum finding [3], search with a bounded-error test [4], the lower bound for composed functions [5], the decision of the window test from the four fronts, and the maximum searches of Lemma 4 and Theorems 2 to 4.
+**Not formalized:** minimum finding [3], search with a bounded-error test [4], the lower bound for composed functions [5], and the maximum searches of Lemma 4 and Theorems 2 to 4.
 
 ## Scripts
 
