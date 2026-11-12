@@ -1,0 +1,38 @@
+ m   z   nbar  nin    eps      queries     coarse  doubling*eps^2   bound/eps  max input photons/nin
+ 1  1.5   1.0  2.0  0.2000    5.410e+08  4.925e+07      1.967e+07      0.077    0.254
+ 1  1.5   1.0  2.0  0.1000    2.049e+09  5.003e+07      1.999e+07      0.069    0.256
+ 1  1.5   1.0  2.0  0.0500    8.153e+09  5.070e+07      2.025e+07      0.094    0.256
+ 1  1.5   1.0  2.0  0.0250    3.283e+10  5.128e+07      2.049e+07      0.141    0.257
+ 1  1.5   1.0  2.0  0.0125    1.325e+11  5.180e+07      2.070e+07      0.137    0.255
+
+ 1  2.0  10.0  4.0  0.2000    2.264e+09  2.516e+08      8.050e+07      0.105    0.256
+ 1  2.0  10.0  4.0  0.1000    8.405e+09  2.547e+08      8.150e+07      0.048    0.256
+ 1  2.0  10.0  4.0  0.0500    3.321e+10  2.574e+08      8.238e+07      0.146    0.259
+ 1  2.0  10.0  4.0  0.0250    1.333e+11  2.599e+08      8.316e+07      0.061    0.255
+ 1  2.0  10.0  4.0  0.0125    5.370e+11  2.621e+08      8.387e+07      0.074    0.260
+
+ 2  1.5   2.0  4.0  0.2000    2.900e+09  7.081e+07      1.132e+08      0.097    0.253
+ 2  1.5   2.0  4.0  0.1000    1.152e+10  7.161e+07      1.144e+08      0.112    0.256
+ 2  1.5   2.0  4.0  0.0500    4.629e+10  7.230e+07      1.155e+08      0.125    0.255
+ 2  1.5   2.0  4.0  0.0250    1.865e+11  7.291e+07      1.165e+08      0.136    0.256
+ 2  1.5   2.0  4.0  0.0125    7.515e+11  7.347e+07      1.174e+08      0.119    0.255
+
+ 2  2.0   2.0  1.0  0.2000    3.490e+10  1.745e+10      6.977e+08      0.201    0.252
+ 2  2.0   2.0  1.0  0.1000    8.841e+10  1.768e+10      7.073e+08      0.114    0.252
+ 2  2.0   2.0  1.0  0.0500    3.040e+11  1.788e+10      7.152e+08      0.094    0.252
+ 2  2.0   2.0  1.0  0.0250    1.174e+12  1.805e+10      7.222e+08      0.126    0.253
+ 2  2.0   2.0  1.0  0.0125    4.679e+12  1.821e+10      7.283e+08      0.147    0.252
+
+rotation n = 1, theta = 0.05: trace distance 0.2519 >= sqrt(n theta / pi) = 0.1262
+rotation n = 1, theta = 0.01: trace distance 0.1127 >= sqrt(n theta / pi) = 0.0564
+rotation n = 1, theta = 0.002: trace distance 0.0505 >= sqrt(n theta / pi) = 0.0252
+rotation n = 3, theta = 0.05: trace distance 0.4291 >= sqrt(n theta / pi) = 0.2185
+rotation n = 3, theta = 0.01: trace distance 0.1946 >= sqrt(n theta / pi) = 0.0977
+rotation n = 3, theta = 0.002: trace distance 0.0873 >= sqrt(n theta / pi) = 0.0437
+rotation n = 10, theta = 0.05: trace distance 0.7354 >= sqrt(n theta / pi) = 0.3989
+rotation n = 10, theta = 0.01: trace distance 0.3512 >= sqrt(n theta / pi) = 0.1784
+rotation n = 10, theta = 0.002: trace distance 0.1591 >= sqrt(n theta / pi) = 0.0798
+squeezer z = 1.5: vacuum output photon number 0.1736, bound z^2 (n + m/2) - m/2 at n = 0: 0.6250
+squeezer z = 2.0: vacuum output photon number 0.5625, bound z^2 (n + m/2) - m/2 at n = 0: 1.5000
+squeezer z = 4.0: vacuum output photon number 3.5156, bound z^2 (n + m/2) - m/2 at n = 0: 7.5000
+doubling checks: ok
