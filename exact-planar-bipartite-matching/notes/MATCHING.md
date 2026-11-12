@@ -283,6 +283,9 @@ Section 4, gives Z in Õ(D) rounds.
   simple directed path inside its interval, and Lemmas B and C hold for these walks. Lemma A on the tree: when every bag
   has at most one parent, the requests generated top down from (s,t) have disjoint intervals in each bag, so their paths
   are disjoint. The loop erasure of any walk in a leaf serves as the leaf path, and `pathLemma` collects these facts.
+- `EraseKeys`: the erasure from the reports of the separator, with positions in the walk for the keys. From the length
+  of the walk and the visits that the separator reports, `fromRep` computes the kept positions, and reading the walk
+  there gives the loop erasure, so the path of a request in a bag with children is read off its walk this way.
 - `Decomp`: from (B2), (B3), (B4) and the inclusion of a child in its parent, Fact 1, Fact 2 and the core of the Multi-Source Lemma (`descent`, `multiSource`), the
   J path (`jpath`), and the claims on X° (`chain_comparable`, `arc_in_chain`, `no_cross`).
 - `Hungarian`: weak duality, the dual update, the flip along a simple alternating path, and their combination `insertion`.

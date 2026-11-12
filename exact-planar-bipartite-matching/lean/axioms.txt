@@ -155,3 +155,8 @@
 'PlanarMatching.seq_path' depends on axioms: [propext, Classical.choice, Quot.sound]
 'PlanarMatching.Decomp.walkPath_spec' depends on axioms: [propext, Classical.choice, Quot.sound]
 'PlanarMatching.Decomp.pathLemma' depends on axioms: [propext, Classical.choice, Quot.sound]
+'PlanarMatching.after_drop' depends on axioms: [propext, Classical.choice, Quot.sound]
+'PlanarMatching.reports_eq_some' depends on axioms: [propext, Classical.choice, Quot.sound]
+'PlanarMatching.fromRep_spec' depends on axioms: [propext, Classical.choice, Quot.sound]
+'PlanarMatching.loopErase_fromRep' depends on axioms: [propext, Classical.choice, Quot.sound]
+'PlanarMatching.Decomp.pathOf_fromRep' depends on axioms: [propext, Classical.choice, Quot.sound]

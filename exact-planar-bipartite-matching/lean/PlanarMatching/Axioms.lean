@@ -157,3 +157,8 @@ import PlanarMatching
 #print axioms PlanarMatching.seq_path
 #print axioms PlanarMatching.Decomp.walkPath_spec
 #print axioms PlanarMatching.Decomp.pathLemma
+#print axioms PlanarMatching.after_drop
+#print axioms PlanarMatching.reports_eq_some
+#print axioms PlanarMatching.fromRep_spec
+#print axioms PlanarMatching.loopErase_fromRep
+#print axioms PlanarMatching.Decomp.pathOf_fromRep
