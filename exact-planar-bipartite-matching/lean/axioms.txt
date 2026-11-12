@@ -132,3 +132,10 @@
 'PlanarMatching.card_kerVec_zero' depends on axioms: [propext, Classical.choice, Quot.sound]
 'PlanarMatching.support_iff_rank' depends on axioms: [propext, Classical.choice, Quot.sound]
 'PlanarMatching.lemma8' depends on axioms: [propext, Classical.choice, Quot.sound]
+'PlanarMatching.SPath.disjoint' does not depend on any axioms
+'PlanarMatching.walk_last' depends on axioms: [propext, Quot.sound]
+'PlanarMatching.walk_chain' depends on axioms: [propext, Classical.choice, Quot.sound]
+'PlanarMatching.realize' depends on axioms: [propext, Classical.choice, Quot.sound]
+'PlanarMatching.walk_repeat' depends on axioms: [propext, Classical.choice, Quot.sound]
+'PlanarMatching.realize_eraseAt' depends on axioms: [propext, Classical.choice, Quot.sound]
+'PlanarMatching.realize_tree' depends on axioms: [propext, Classical.choice, Quot.sound]

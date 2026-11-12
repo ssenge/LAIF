@@ -13,3 +13,4 @@ import PlanarMatching.ElimDecomp
 import PlanarMatching.MateSearch
 import PlanarMatching.MateDecomp
 import PlanarMatching.Kernel
+import PlanarMatching.PathAssembly

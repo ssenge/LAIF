@@ -134,3 +134,10 @@ import PlanarMatching
 #print axioms PlanarMatching.card_kerVec_zero
 #print axioms PlanarMatching.support_iff_rank
 #print axioms PlanarMatching.lemma8
+#print axioms PlanarMatching.SPath.disjoint
+#print axioms PlanarMatching.walk_last
+#print axioms PlanarMatching.walk_chain
+#print axioms PlanarMatching.realize
+#print axioms PlanarMatching.walk_repeat
+#print axioms PlanarMatching.realize_eraseAt
+#print axioms PlanarMatching.realize_tree
