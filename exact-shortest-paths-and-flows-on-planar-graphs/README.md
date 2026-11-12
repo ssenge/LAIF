@@ -848,6 +848,16 @@ standard axioms (`propext`, `Classical.choice`, `Quot.sound`). There is no `sorr
   (`RData.shortest_live`). So a walk of the network of a level between copies on E_R edges of these pieces, of
   length below $M$ and at most $\lambda_t$, gives a shortest walk of the annulus of the same length
   (`RData.level_shortest`).
+- `lean/SsspFlow/GHatSupport.lean`: the transferred walks visit the same places. The walk of $\hat G_\ell$ from a
+  walk of the network of a level visits exactly the copies of its nodes (`RData.walk_project_supp`), the walk of the
+  token graph from a walk of $\hat G_\ell$ below $M$ visits exactly the pieces of its copies (`RData.project_supp`),
+  and the walk of the split from a walk of the token graph visits exactly the vertices of its pieces
+  (`RData.split_walk_visits`).
+- `lean/SsspFlow/GHatLevelIdx.lean`: the indices of the cut path on a short walk of a level. Darts at one vertex
+  of the split lie at one vertex of the cut along the path (`RData.cut_tail_of_split`). Under the conditions of
+  `RData.level_shortest`, the shortest walk of the annulus has as its indices on the cut path exactly the indices
+  $r$ of the corners $p_r^\sigma$ that lie, in the cut, at the vertex of the piece of the copy of a node of the
+  walk of the level (`RData.level_shortest_idx`).
 - `lean/SsspFlow/GHatPhase.lean`: the combinatorics of property (6). Two copies on E_R edges are joined by E_R edges
   exactly when they lie on the path of one piece (`RData.er_comp_iff`), and by E_R and E_C edges exactly when their
   pieces are joined in the token graph (`RData.erc_comp_iff`), whose components are those of the split

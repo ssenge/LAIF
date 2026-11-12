@@ -737,3 +737,8 @@ Expected output for each: `propext`, `Classical.choice`, `Quot.sound` (or a subs
 #print axioms SsspFlow.RotSystem.RData.ofReal_sum_map
 #print axioms SsspFlow.RotSystem.RData.shortest_live
 #print axioms SsspFlow.RotSystem.RData.level_shortest
+#print axioms SsspFlow.RotSystem.RData.project_supp
+#print axioms SsspFlow.RotSystem.RData.split_walk_visits
+#print axioms SsspFlow.RotSystem.RData.walk_project_supp
+#print axioms SsspFlow.RotSystem.RData.cut_tail_of_split
+#print axioms SsspFlow.RotSystem.RData.level_shortest_idx

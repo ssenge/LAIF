@@ -117,6 +117,8 @@ import SsspFlow.GHatLevelMin
 import SsspFlow.GHatLevelWalk
 import SsspFlow.GHatLevelSplit
 import SsspFlow.GHatLevelShortest
+import SsspFlow.GHatSupport
+import SsspFlow.GHatLevelIdx
 import SsspFlow.ListRot
 import SsspFlow.GHatSplit
 import SsspFlow.Annuli
