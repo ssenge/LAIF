@@ -1,4 +1,4 @@
-# One-round classical algorithms for LocalMaxCut on regular graphs
+# Few-round classical algorithms for LocalMaxCut on regular graphs
 
 _12 November 2026_
 
@@ -24,6 +24,22 @@ So at depth 1 the classical rule satisfies more vertices than QAOA at every degr
 The rule has radius 1: each vertex reads only its own seed and the seeds of its neighbours. At depth 1, the output bit of QAOA for this objective depends on the neighbourhood of radius 2, since each phase term covers a closed neighbourhood. So the classical rule uses the smaller light cone and still satisfies more vertices.
 
 This hints that the advantage stated in [1, Theorem 2] holds against the one-bit flip algorithms of its Section 3.1, and not against one-round local algorithms in general. For degree 2, [1] already shows a classical algorithm above QAOA.
+
+## Two rounds against QAOA at depth 2, d = 3
+
+At depth p, the output bit of QAOA for this objective depends on the qubits within distance 2p, since each phase term covers a closed neighbourhood. At depth 2 this is distance 4.
+
+| 3-regular graphs of large girth | Output radius | Expected satisfied fraction | At least, confidence 1 − 10⁻⁹ |
+|---|---|---|---|
+| QAOA at depth 2 | 4 | 0.895826 | |
+| Rule of radius 1, then one round of priority flips | 3 | **0.94414 ± 0.00003** | 0.9438 |
+| The same, then one round in which every unsatisfied vertex flips | 4 | **0.96986 ± 0.00002** | 0.9695 |
+
+The QAOA value is computed here, exactly on the 3-regular tree and maximized over the four angles. So a classical rule whose output depends on a smaller neighbourhood than that of depth-2 QAOA satisfies more vertices.
+
+**Priority flips.** Every vertex u draws a second seed h_u, uniform on [0, 1]. Start from the output z of the rule of radius 1. Call u unsatisfied when fewer than 2 of its neighbours differ from z_u. An unsatisfied vertex flips its bit when its h is larger than the h of each unsatisfied neighbour. Flipping an unsatisfied vertex satisfies it. No two adjacent vertices flip in the same round. The output at u depends on the seeds within distance 3 of u, so the satisfaction of v depends on those within distance 4. On a 3-regular graph of girth at least 9 that ball is a tree, and the value equals the tree value. For the rule with the further round, distance 5 and girth at least 11.
+
+**QAOA at depth p on the tree.** Each qubit carries a path of 2p + 1 bits: its bit before each mixer on the ket side, the measured bit, and the bits on the bra side. The amplitude factorizes into one mixer weight per qubit and one phase per vertex term. Each vertex term couples a vertex with its neighbours, so on the tree the sum is computed from the leaves inwards, with one message per edge indexed by the paths of both endpoints. Only the vertex terms with centre within distance 2p of v enter, by the light cone. `sim/qaoa_p.py` implements this. It agrees with the depth-1 code for d = 3 and d = 4. It gives the same value on a tree two levels deeper, and reproduces depth 1 when the second layer is switched off. `sim/opt_p2.py` searches the angles from 46 starts, 40 of them random, and the 5 best local maxima all have the value 0.895826 (`sim/qaoa_p2.jsonl`). The classical values come from `sim/tree_eval.py`, which samples 10⁸ independent trees for each rule, seed 20261112 (`sim/eval_tree.jsonl`), with the Hoeffding bound as above.
 
 ## The rule
 
@@ -63,8 +79,8 @@ The results are numerical, and no part is formalized in Lean.
 - **Not covered:**
   - graphs of girth below 5 (on the cube graph, of girth 4, the value for d = 3 is about 0.8096);
   - degrees above 8;
-  - QAOA at depth 2 or more;
-  - a proof that the angle search finds the global maximum of the depth-1 QAOA value, which the grid and the local refinement replace;
+  - QAOA at depth 3 or more, and at depth 2 for d ≥ 4;
+  - a proof that the angle searches find the global maxima of the QAOA values, which grids, random starts and local refinements replace;
   - a deterministic error bound for the integral, which the Monte Carlo bound replaces.
 
 ## References
