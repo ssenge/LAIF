@@ -1,0 +1,4 @@
+{"eps_norm": 0.002, "eps_abs": 0.056, "rqmc_paths": 4096, "rqmc_rmse": 0.037740858953990986, "classical_s": 0.008502041804604232, "quantum_tdepth": 54000000.0, "breakeven_T_rate_Hz": 6351415488.307363}
+{"eps_norm": 0.001, "eps_abs": 0.028, "rqmc_paths": 8192, "rqmc_rmse": 0.013249328980179186, "classical_s": 0.01713794160168618, "quantum_tdepth": 108000000.0, "breakeven_T_rate_Hz": 6301806979.513456}
+{"eps_norm": 0.0003, "eps_abs": 0.0084, "rqmc_paths": 65536, "rqmc_rmse": 0.008001940187961786, "classical_s": 0.12498629181645811, "quantum_tdepth": 360000000.00000006, "breakeven_T_rate_Hz": 2880315871.1889677}
+{"eps_norm": 0.0001, "eps_abs": 0.0028, "rqmc_paths": 524288, "rqmc_rmse": 0.0027698326205110495, "classical_s": 1.0185048499843106, "quantum_tdepth": 1080000000.0, "breakeven_T_rate_Hz": 1060377866.650941}
