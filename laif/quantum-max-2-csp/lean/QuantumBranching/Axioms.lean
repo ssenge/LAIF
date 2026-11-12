@@ -1,0 +1,102 @@
+import QuantumBranching
+
+/-! Prints the axioms of the main theorems. -/
+
+-- Antichains and macro steps
+#print axioms QuantumBranching.card_le_of_sum_le
+#print axioms QuantumBranching.card_lt_of_sum_le
+#print axioms QuantumBranching.card_lt_of_sum_le_of_pos
+#print axioms QuantumBranching.FinTree.isAntichain_of_depth
+#print axioms QuantumBranching.FinTree.sum_level_le
+#print axioms QuantumBranching.FinTree.macro_sum_le
+#print axioms QuantumBranching.FinTree.lemma0
+#print axioms QuantumBranching.FinTree.card_le_of_antichain_bound
+-- The procedure and its tree
+#print axioms QuantumBranching.Proc.answer_or
+#print axioms QuantumBranching.Proc.answer_seq
+#print axioms QuantumBranching.Proc.answer_iff_marked
+#print axioms QuantumBranching.Proc.orTree_root
+#print axioms QuantumBranching.ORTree.isAntichain_levelNodes
+#print axioms QuantumBranching.ORTree.isAntichain_singleton
+-- The quadratic bound
+#print axioms QuantumBranching.W_sub_div
+#print axioms QuantumBranching.exponent_identity
+#print axioms QuantumBranching.W_gt
+#print axioms QuantumBranching.inner_estimate
+#print axioms QuantumBranching.inner_estimate_pow
+#print axioms QuantumBranching.decrease_condition
+#print axioms QuantumBranching.decrease_sharp
+#print axioms QuantumBranching.padLevel_drop
+#print axioms QuantumBranching.base_fails_below
+#print axioms QuantumBranching.sum_estimate
+#print axioms QuantumBranching.four_terms
+#print axioms QuantumBranching.budget_bound
+#print axioms QuantumBranching.quadratic_bound
+#print axioms QuantumBranching.quadratic_bound_finset
+#print axioms QuantumBranching.time_of_sq
+-- The scan
+#print axioms QuantumBranching.scan_answer_iff
+#print axioms QuantumBranching.scan_tests
+#print axioms QuantumBranching.scan_rounds_le
+#print axioms QuantumBranching.scan_tests_length
+#print axioms QuantumBranching.value_call_log_measure
+#print axioms QuantumBranching.value_call_M2
+#print axioms QuantumBranching.scan_example_yes
+#print axioms QuantumBranching.scan_example_no
+#print axioms QuantumBranching.scan_example_single
+-- Randomized paths and the pairing
+#print axioms QuantumBranching.iterations_le
+#print axioms QuantumBranching.iterations_le_of_rounded
+#print axioms QuantumBranching.pairing_smul
+#print axioms QuantumBranching.pairing_half
+-- Alternating projections
+#print axioms QuantumBranching.agree_prob
+#print axioms QuantumBranching.pathProb_eq
+#print axioms QuantumBranching.bernoulli_sum
+#print axioms QuantumBranching.bernoulli_mean_head
+-- The table
+#print axioms QuantumBranching.quantum_le_classical
+#print axioms QuantumBranching.table_deg4_deterministic
+#print axioms QuantumBranching.table_mis4_deterministic
+#print axioms QuantumBranching.table_tight_deg4
+#print axioms QuantumBranching.table_tight_mis4
+#print axioms QuantumBranching.table_mis5
+#print axioms QuantumBranching.table_mis6
+#print axioms QuantumBranching.table_mis7
+-- The model
+#print axioms QuantumBranching.hypotheses_satisfiable
+#print axioms QuantumBranching.setting_satisfiable
+#print axioms QuantumBranching.M3_box_gap
+-- The composition
+#print axioms QuantumBranching.Setting.sum_nodes_le
+#print axioms QuantumBranching.Setting.runTime_le
+#print axioms QuantumBranching.Setting.level_drop
+#print axioms QuantumBranching.Setting.call_level
+#print axioms QuantumBranching.Setting.stepOf_sq_le
+#print axioms QuantumBranching.Setting.treeSq_le
+#print axioms QuantumBranching.Setting.base_exponent
+#print axioms QuantumBranching.Setting.baseBudget_sq
+#print axioms QuantumBranching.Setting.base_fits
+#print axioms QuantumBranching.Setting.search_valid
+#print axioms QuantumBranching.Setting.quadratic_bound_setting
+#print axioms QuantumBranching.Setting.time_bound
+#print axioms QuantumBranching.theorem1
+#print axioms QuantumBranching.qubits_levels
+#print axioms QuantumBranching.qubits_polynomial
+#print axioms QuantumBranching.threshold_above_fixed_point
+#print axioms QuantumBranching.padLevel_le_recursion
+#print axioms QuantumBranching.amplitude_distance
+#print axioms QuantumBranching.log_factor_le
+#print axioms QuantumBranching.reduction_error
+#print axioms QuantumBranching.amplitude_budget
+-- The halving form
+#print axioms QuantumBranching.Setting.size_le_of_mem_nodes
+#print axioms QuantumBranching.Setting.hsum_nodes_le
+#print axioms QuantumBranching.Setting.hTime_sq
+#print axioms QuantumBranching.Setting.stepH_sq_le
+#print axioms QuantumBranching.Setting.calls_nil_of_size
+#print axioms QuantumBranching.Setting.call_size
+#print axioms QuantumBranching.Setting.call_hLevel
+#print axioms QuantumBranching.Setting.treeSqH_le
+#print axioms QuantumBranching.Setting.hsearch_valid
+#print axioms QuantumBranching.Setting.htime_bound
