@@ -4,14 +4,14 @@
 
 ## Problem
 
-Let A be an N × N matrix with largest singular value σ_1 = 1, given by a unitary block-encoding U_A: either the symmetrized discriminant Π^{1/2}PΠ^{−1/2} of a reversible random walk P with stationary distribution π, or the transition matrix of a doubly stochastic walk [1]. The singular gap is γ = 1 − σ_2. Two tasks are considered:
+Let A be an N × N matrix, N = 2ⁿ, with largest singular value σ_1 = 1, given by a unitary block-encoding U_A: either the symmetrized discriminant Π^{1/2}PΠ^{−1/2} of a reversible random walk P with stationary distribution π, or the transition matrix of a doubly stochastic walk [1]. The singular gap is γ = 1 − σ_2. Two tasks are considered:
 
 - *Thresholding*: for 0 < L < 1 and ε ∈ (0, 1], output 1 if σ_2 ≥ 1 − L(1 − ε) and 0 if σ_2 ≤ 1 − L(1 + ε), with failure probability at most p_f.
 - *Estimation*: output γ̂ with (1 − ε)γ̂ ≤ γ ≤ (1 + ε)γ̂, with failure probability at most p_f.
 
 Cost is the number of uses of U_A, U_A† and their controlled versions.
 
-Previous best bound [1, Theorems 43 and 47]: thresholding with O(√N log N log(1/p_f)/(εL)) uses for every ε, and with O(√(N/L) log N log(1/p_f)) uses only for ε above a critical value that depends on N and tends to 1 as N grows; estimation with Õ(√N/(εγ)) and Õ(√N/√γ) under the same restriction. Lower bounds Ω(√N) and Ω(1/√(Lε)) [1, Propositions 48 and 49]. A filter with the 1/√L scaling for every ε is stated as open problem 2 of [1].
+Previous best bound [1, Theorems 43 and 47]: thresholding with O(√N log N log(1/p_f)/(εL)) uses for ε ≤ min{L, 1 − L}, and with O(√(N/L) log N log(1/p_f)) uses only for ε above a critical value that depends on N and tends to 1 as N grows; estimation with Õ(√N/(εγ)) and Õ(√N/√γ) under the same restriction. Lower bounds Ω(√N) and Ω(1/√(Lε)) [1, Propositions 48 and 49] (the second as given by the proof of Proposition 49). A filter with the 1/√L scaling for every ε is stated as open problem 2 of [1].
 
 ## Results
 
@@ -21,7 +21,7 @@ Previous best bound [1, Theorems 43 and 47]: thresholding with O(√N log N log(
 
 O( √N log N log(1/p_f) / (ε√L) )
 
-applications of U_A and U_A†, with no condition on N and no random input states.
+uses of U_A, U_A† and their controlled versions, with no condition on N and no random input states.
 
 **Theorem 3 (estimation).** The singular gap can be estimated to relative error ε ∈ (0, 1/2] with
 
@@ -33,11 +33,11 @@ uses, with probability at least 1 − p_f.
 
 √N / (12√2 ε√L)
 
-queries, already for symmetric doubly stochastic walks (for which the transition matrix equals the symmetrized discriminant) with a fixed block-encoding. In particular, estimation to relative error ε/3 needs Ω(√N/(ε√γ)) queries.
+queries, already for symmetric doubly stochastic walks (for which the transition matrix equals the symmetrized discriminant) with a fixed block-encoding; for ε < 1 these walks are irreducible and aperiodic. The bound holds equally for strict thresholds, by applying it with ε(1 + η) and letting η → 0. In particular, for ε < 1, estimation to relative error ε/3 needs Ω(√N/(ε√γ)) queries.
 
-So both tasks cost Θ(√N/(ε√γ)) up to the factors log N and log(1/p_f), for every relative error. Against the previous bounds, the upper bound gains a factor 1/√L for every ε, and the lower bound combines the factors √N, 1/ε and 1/√L.
+So both tasks cost Θ(√N/(ε√γ)) up to the factors log N and log(1/p_f) (log(log(1/(εγ))/p_f) for estimation), for every relative error. Against the previous bounds, the upper bound gains a factor 1/√L for every ε, and the lower bound combines the factors √N, 1/ε and 1/√L.
 
-**Remark (random input states).** The thresholding test of [1] applies the filter to a random state ψ from a unitary 2-design and compares the weight Σ_i f(σ_i)²|⟨u_i|ψ⟩|² with a fixed threshold. For a uniformly random ψ, N|⟨u|ψ⟩|² converges in law to an exponential variable with mean 1, so Pr(N|⟨u|ψ⟩|² ≥ 1 − k) tends to e^{−(1−k)} < 1. This hints at a possible gap in Remark 34 of [1], which states that this probability exceeds any p < 1 for large N, and in the step of Theorem 43 that relies on it: a "no" instance, whose weight is f(1)²|⟨u_1|ψ⟩|² + O(α²), exceeds a threshold that half of the "yes" runs exceed with probability about 0.47 per trial when f(σ_2) = 1/4, the value the filters of [1] guarantee at the pass edge, and about 0.19 for f(σ_2) = 1. Theorem 2 uses the purified maximally mixed input instead, for which the weight is the deterministic value Σ_i f(σ_i)²/N.
+**Remark (random input states).** The thresholding test of [1] applies the filter to a random state ψ from a unitary 2-design and compares the weight Σ_i f(σ_i)²|⟨u_i|ψ⟩|² with a fixed threshold. For a uniformly random ψ, N|⟨u|ψ⟩|² converges in law to an exponential variable with mean 1, so Pr(N|⟨u|ψ⟩|² ≥ 1 − k) tends to e^{−(1−k)} < 1. This hints at a possible gap in Remark 34 of [1], which states that this probability exceeds any p < 1 for large N, and in the step of Theorem 43 that relies on it: a "no" instance, whose weight is f(1)²|⟨u_1|ψ⟩|² + O(α²), exceeds a threshold that half of the "yes" runs exceed with probability about 0.47 per trial when f(σ_2) = 1/4, the value the filters of [1] guarantee at the pass edge, and about 0.19 for f(σ_2) = 1. Algorithm 1 of [1] outputs 1 if any of its runs does, so its false-positive rate grows with the number of runs. The difference between the acceptance probabilities of "yes" and "no" instances per trial is still a positive constant, so a frequency test over O(1) further trials repairs the step, and the asymptotic bounds of [1] are not affected. Theorem 2 uses the purified maximally mixed input instead, for which the weight is the deterministic value Σ_i f(σ_i)²/N.
 
 ## Proofs
 
@@ -55,13 +55,13 @@ since the indicator of [−θ_c, θ_c] has cosine coefficients 2 sin(2kθ_c)/(π
 
 Since cos(2kθ) = T_{2k}(cos θ) for the polynomials T_n defined by T_n(cos θ) = cos(nθ), f(x) = (a_0 + Σ_{k=1}^{D} a_k T_{2k}(x))/(1 + α/4) is a real even polynomial of degree 2D with |f| ≤ 1, |f| ≤ (3α/4)/(1 + α/4) ≤ α on the blocked set and f ≥ (1 − 3α/4)/(1 + α/4) ≥ 1 − α on the passed set. ∎
 
-*Theorem 2.* Take f from Lemma 1 with Δ = L, t = ε and α = 1/(8√N). Since f is real, even and bounded by 1, singular value transformation [2, Corollary 10] gives a block-encoding of f(√(A†A)) with 2D uses of U_A and U_A† and one extra qubit. Apply it to the first half of |Φ⟩ = N^{−1/2} Σ_i |i⟩|i⟩. The probability of the flag outcome is
+*Theorem 2.* Take f from Lemma 1 with Δ = L, t = ε and α = 1/(8√N). Since f is real, even and bounded by 1, singular value transformation [2, Corollary 18 in the arXiv version] gives a block-encoding of f(√(A†A)) with 2D uses of U_A and U_A† and one extra qubit. Apply it to the first half of |Φ⟩ = N^{−1/2} Σ_i |i⟩|i⟩, which needs n further qubits. The probability of the flag outcome is
 
 W = ‖(f(√(A†A)) ⊗ 1)|Φ⟩‖² = Σ_i f(σ_i)²/N.
 
-The value f_1 = f(1) ∈ [3/4, 1] is computable from the coefficients. If σ_2 ≤ 1 − L(1 + ε), then W ≤ (f_1² + (N − 1)α²)/N ≤ (f_1² + 1/64)/N =: W_0. If σ_2 ≥ 1 − L(1 − ε), then W ≥ (f_1² + (1 − α)²)/N ≥ (f_1² + 9/16)/N =: W_1. Amplitude estimation with M uses of the flag circuit returns W̃ with |W̃ − W| ≤ 2π√(W(1 − W))/M + π²/M² with probability at least 8/π² [3, Theorem 12]. For M = ⌈34√N⌉ and W ≤ 2/N this error is at most (2π√2/34 + π²/34²)/N < (W_1 − W_0)/2 = 35/(128N); for W ≥ W_1 the lower deviation W − 2π√W/M − π²/M² is increasing in W, so W̃ > (W_0 + W_1)/2 still holds. Output 1 if W̃ > (W_0 + W_1)/2. The median of O(log(1/p_f)) runs fails with probability at most p_f. Total uses: O(D√N log(1/p_f)) = O(√N log N log(1/p_f)/(ε√L)). ∎
+The value f_1 = f(1) ∈ [3/4, 1] is computable from the coefficients. If σ_2 ≤ 1 − L(1 + ε), then W ≤ (f_1² + (N − 1)α²)/N ≤ (f_1² + 1/64)/N =: W_0. If σ_2 ≥ 1 − L(1 − ε), then W ≥ (f_1² + (1 − α)²)/N ≥ (f_1² + 9/16)/N =: W_1. Amplitude estimation with M − 1 iterations, which use the flag circuit, its inverse and their controlled versions O(M) times, returns W̃ with |W̃ − W| ≤ 2π√(W(1 − W))/M + π²/M² with probability at least 8/π² [3, Theorem 12]. For M = ⌈34√N⌉ and W ≤ 2/N this error is at most (2π√2/34 + π²/34²)/N < (W_1 − W_0)/2 = 35/(128N); for W ≥ W_1 the lower deviation W − 2π√W/M − π²/M² is increasing in W, so W̃ > (W_0 + W_1)/2 still holds. Output 1 if W̃ > (W_0 + W_1)/2. The median of O(log(1/p_f)) runs fails with probability at most p_f. Total uses: O(D√N log(1/p_f)) = O(√N log N log(1/p_f)/(ε√L)). ∎
 
-*Theorem 3.* Write Test(L, ε) for Theorem 2: output 1 implies γ ≤ L(1 + ε), output 0 implies γ ≥ L(1 − ε). Phase 1: for k = 1, 2, … run Test(2^{−k}, 1/2) until the first output 0. Then γ ≥ 2^{−k−1}, and γ ≤ min{1, 3 · 2^{−k}} from the output at k − 1 (or from γ ≤ 1 for k = 1). This ends after k ≤ log_2(2/γ) + 1 rounds and costs O(√N log N/√γ) in total, since the costs grow geometrically. Phase 2: keep an interval [a, b] ∋ γ with b ≤ 1, set h = (b − a)/2, L = a + h, ε′ = h/(2L), and run Test(L, ε′). Output 1 gives γ ≤ L + h/2 and output 0 gives γ ≥ L − h/2, so the interval shrinks to length 3h/2 = 3(b − a)/4. Stop when b − a ≤ 2εa and output γ̂ = (a + b)/2, for which |γ̂ − γ| ≤ εa ≤ εγ̂. Each test costs O(√N log N √L/h · log(1/p′)), and h shrinks geometrically to Θ(εa) with a ≥ γ/6, so phase 2 costs O(√N log N/(ε√γ) · log(1/p′)) over O(log(1/ε)) tests. Round k of phase 1 runs its test with failure probability p_f/(4k²), and the r = O(log(1/ε)) tests of phase 2, whose number is fixed by the interval at the end of phase 1, each with p_f/(2r). By a union bound the total failure probability is at most p_f π²/24 + p_f/2 < p_f, and on the success event the rounds and costs are as stated, with log(1/p′) = O(log(log(2/(εγ))/p_f)). All tests satisfy L(1 + ε′) ≤ b ≤ 1 and ε′ ≤ 1. ∎
+*Theorem 3.* Assume γ > 0. Write Test(L, ε) for Theorem 2: output 1 implies γ ≤ L(1 + ε), output 0 implies γ ≥ L(1 − ε). Phase 1: for k = 1, 2, … run Test(2^{−k}, 1/2) until the first output 0. Then γ ≥ 2^{−k−1}, and γ ≤ min{1, 3 · 2^{−k}} from the output at k − 1 (or from γ ≤ 1 for k = 1). This ends after k ≤ log_2(2/γ) + 1 rounds and costs O(√N log N/√γ) in total, since the costs grow geometrically. Phase 2: keep an interval [a, b] ∋ γ with b ≤ 1, set h = (b − a)/2, L = a + h, ε′ = h/(2L), and run Test(L, ε′). Output 1 gives γ ≤ L + h/2 and output 0 gives γ ≥ L − h/2, so the interval shrinks to length 3h/2 = 3(b − a)/4. Stop when b − a ≤ 2εa and output γ̂ = (a + b)/2, for which |γ̂ − γ| ≤ εa ≤ εγ̂. Each test costs O(√N log N √L/h · log(1/p′)), and h shrinks geometrically to Θ(εa) with a ≥ γ/6, so phase 2 costs O(√N log N/(ε√γ) · log(1/p′)) over O(log(1/ε)) tests. Round k of phase 1 runs its test with failure probability p_f/(4k²), and the r = O(log(1/ε)) tests of phase 2, whose number is fixed by the interval at the end of phase 1, each with p_f/(2r). By a union bound the total failure probability is at most p_f π²/24 + p_f/2 < p_f, and on the success event the rounds and costs are as stated, with log(1/p′) = O(log(log(2/(εγ))/p_f)). All tests satisfy L(1 + ε′) ≤ b ≤ 1 and ε′ ≤ 1. ∎
 
 *Theorem 4.* Pair the states as {2i, 2i + 1}, let S swap the two states of each pair and J be the all-ones matrix. For c = 1 − 2L(1 + ε) ≥ 0 let
 
@@ -89,6 +89,10 @@ An algorithm with failure probability at most 1/3 needs ‖ψ_T^j − ψ_T^0‖ 
 
 Output in `sim/out.txt`.
 
+## Related work
+
+The square-root relation between the phase gap of a quantum walk and the spectral gap of the walk is from [5]. Counting eigenvalues below a threshold with filters applied to random or maximally mixed inputs is used in [6] for the k-th spectral gap of a Hermitian matrix and in [7] for spectral estimation by time evolution. Lemma 1 is the smoothed rectangle filter of [2] in the variable θ = arccos x.
+
 ## Scope
 
 - Written proofs with numerical checks. Singular value transformation [2] and amplitude estimation [3] are used as stated there. Constructing the block-encoding U_A is not covered.
@@ -104,6 +108,12 @@ Output in `sim/out.txt`.
 [3] G. Brassard, P. Høyer, M. Mosca, A. Tapp. Quantum amplitude amplification and estimation. Contemporary Mathematics 305 (2002). arXiv:quant-ph/0005055.
 
 [4] C. H. Bennett, E. Bernstein, G. Brassard, U. Vazirani. Strengths and weaknesses of quantum computing. SIAM Journal on Computing 26, 1510-1523 (1997). arXiv:quant-ph/9701001.
+
+[5] M. Szegedy. Spectra of quantized walks and a √(δε) rule. arXiv:quant-ph/0401053.
+
+[6] A. Carrera Vazquez, A. Sobczyk. Spectral gaps with quantum counting queries and oblivious state preparation. arXiv:2508.21002.
+
+[7] K. J. Ferris, Z. Wang, I. Hen, A. Kalev, N. T. Bronn, V. Vlcek. Exploiting maximally mixed states for spectral estimation by time evolution. arXiv:2312.00687.
 
 ## Use of AI
 

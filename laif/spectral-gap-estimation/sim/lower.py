@@ -1,4 +1,4 @@
-"""Lemma 4 instances: P0 = c I + (1-c)(S/2 + J/(2N)) and P_j = P0 + 2 L eps u_j u_j^T, u_j = Pi w_j / |Pi w_j|.
+"""Theorem 4 instances: P0 = c I + (1-c)(S/2 + J/(2N)) and P_j = P0 + 2 L eps u_j u_j^T, u_j = Pi w_j / |Pi w_j|.
 Checks: symmetric, nonnegative, doubly stochastic, second singular values, frame sum_j u_j u_j^T = N/(N-2) Pi_sym,
 ||U_j - U_0|| <= 2 sqrt(2) eps sqrt(L) for the reflection block-encoding, and the threshold weights of Theorem 2."""
 import numpy as np
