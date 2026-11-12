@@ -47,7 +47,8 @@ variable {n : ℕ} {N : Net (Fin n)} (S : N.toRot.RData) (hN : ∀ u, ∃ w, N.G
 `RData.level_least_greatest`, values `x1`, `x2` that agree, capped at `M`, with the least `ix` and the
 least `jx` over the copies of the component of the target whose identifiers lie on the chain of a
 target are, capped at `M`, the least index and `m` minus the greatest index on the cut path of one
-shortest walk of the annulus. -/
+shortest walk of the annulus, whose indices are read at the copies of the nodes of the chain of the
+target. -/
 theorem level_i12_of_marked (c : N.G.Dart → ℕ) (hcr : ∀ d, c (N.toRot.rev d) = c d)
     (hlam : ∀ x, lam x = c x.1.1) (hgc : ∀ d, g d = c d) (L : C.Live g Γ) (hS : Γ ⊆ S.Γ) {t : ℕ}
     (hz : ∀ w ∈ S.Γ, w ∉ Γ → ∀ p, ¬ (N.toRot.dual.double.split Γ).IsWalk
@@ -81,7 +82,12 @@ theorem level_i12_of_marked (c : N.G.Dart → ℕ) (hcr : ∀ d, c (N.toRot.rev 
     ∃ (ps : List (N.G.Dart × Bool)) (i1 i2 : ℕ), L.Shortest t ps ∧
       (ps.map (g ∘ Prod.fst)).sum = ((r ((S.levelPad hN).ι (.inl v))).1 : ℝ≥0∞) ∧
       IsLeast (C.idx (L.κ0 t) ps) i1 ∧ IsGreatest (C.idx (L.κ0 t) ps) i2 ∧
-      min x1 M = min (i1 : ℝ≥0∞) M ∧ min x2 M = min ((C.m - i2 : ℕ) : ℝ≥0∞) M := by
+      min x1 M = min (i1 : ℝ≥0∞) M ∧ min x2 M = min ((C.m - i2 : ℕ) : ℝ≥0∞) M ∧
+      ∀ r', r' ∈ C.idx (L.κ0 t) ps ↔ r' ≤ C.m ∧ ∃ σ, ∃ y,
+        (∃ i, (Net.parOf r)^[i] ((S.levelPad hN).ι (.inl v)) = y) ∧
+        ∃ hy : (∃ x : S.Tok, S.IsEnd x.1 (S.copyAt hN y)), ∃ z,
+          S.dualSplit.tail z = S.vertexEquiv (S.pieceOf ⟨S.copyAt hN y, hy⟩) ∧
+          C.cut.tail z = C.cut.tail (C.k σ r') := by
   have hroot' : ∀ z, ψ z ≠ ⊤ → ∃ u, z = (S.levelPad hN).ι (.inl u) := fun z hz' => by
     obtain ⟨-, u, hu, -⟩ := hroot z hz'
     exact ⟨u, hu⟩
@@ -90,12 +96,12 @@ theorem level_i12_of_marked (c : N.G.Dart → ℕ) (hcr : ∀ d, c (N.toRot.rev 
     refine ⟨fun h0 => ?_, w, hw⟩
     rw [h0, ENat.toENNReal_top] at hlt
     exact not_top_lt hlt
-  obtain ⟨ps, i1, i2, hps, hsum, hi1, hi2, he1, he2, -⟩ := S.level_least_greatest hN lam M c hcr hlam hgc L hS
+  obtain ⟨ps, i1, i2, hps, hsum, hi1, hi2, he1, he2, hidx⟩ := S.level_least_greatest hN lam M c hcr hlam hgc L hS
     hz h1 h2 h3 h4 ψ r hr hv hpv hroot hle isT hT hTv
     (fun u => ∃ t i, isT t = true ∧ (Net.parOf r)^[i] t = (S.levelPad hN).ι (.inl u))
     (fun u => (S.marked_copy_iff hN lam M ψ r hr hroot' isT hT' u).symm)
     (fun u => ixI ((S.levelPad hN).ι (.inl u))) (fun u => jxI ((S.levelPad hN).ι (.inl u))) hix hjx
-  refine ⟨ps, i1, i2, hps, hsum, hi1, hi2, ?_, ?_⟩
+  refine ⟨ps, i1, i2, hps, hsum, hi1, hi2, ?_, ?_, hidx⟩
   · have e := congrArg ENat.toENNReal he1
     simp only [ENat.toENNReal_iInf, ENat.toENNReal_coe] at e
     rw [hx1, e]
@@ -172,8 +178,9 @@ theorem levelI12_run (hE : ExactSsspBound) (K : ℕ) : ∃ C c : ℕ, ∀ n D : 
   obtain ⟨hR, hO⟩ := hA N S hN lam M u₀ ψ isT ixI jxI off flg ixL jxL hP hc hS hcut hD hlam hM hψW hix0
     hixW hoff hflg hixL hjxL
   refine ⟨hR, fun cc hcr hcl Cp g Γ hgc L hΓ t hz h1 h2 h3 h4 v hv hpv hroot hle hTt hTv hix hjx => ?_⟩
-  exact S.level_i12_of_marked hN lam M cc hcr hcl hgc L hΓ hz h1 h2 h3 h4 ψ _ hR hv hpv hroot hle isT hTt
-    hTv ixI jxI hix hjx _ _ (hO v).1 (hO v).2
+  obtain ⟨ps, i1, i2, a1, a2, a3, a4, a5, a6, -⟩ := S.level_i12_of_marked hN lam M cc hcr hcl hgc L hΓ hz
+    h1 h2 h3 h4 ψ _ hR hv hpv hroot hle isT hTt hTv ixI jxI hix hjx _ _ (hO v).1 (hO v).2
+  exact ⟨ps, i1, i2, a1, a2, a3, a4, a5, a6⟩
 
 end RData
 

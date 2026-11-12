@@ -892,8 +892,9 @@ standard axioms (`propext`, `Classical.choice`, `Quot.sound`). There is no `sorr
   tails of its edges, then its end (`Walk.support_eq_edgeFlat`). When the chain of a target at the piece at
   $\kappa_1(t)$ takes $k$ valid parent steps to a root at the piece at $\kappa_0(t)$, with sum of lengths below $M$
   and at most $\lambda_t$, the darts of its parent steps from the root down form a shortest walk of the annulus whose
-  indices on the cut path are read at the copies of the nodes of the chain (`RData.chain_darts_idx`). So the least
-  and the greatest index $i_1$, $i_2$ that the runs compute are those of this walk (`RData.chain_least_greatest`).
+  indices on the cut path are read at the copies of the nodes of the chain (`RData.chain_darts_idx`). Every target of
+  an annulus has such a chain (`RData.chain_data`), so the least and the greatest index $i_1$, $i_2$ that the runs
+  compute are those of this walk (`RData.chain_least_greatest`).
 - `lean/SsspFlow/GHatLevelDarts.lean`: the darts of a walk of a level, in order. A kept rim dart of the repaired graph
   is an E_C arc between the copies of its token and of the partner (`RData.att_rimTok`), and each middle edge of the
   network of a level carries the token of its E_C arc (`RData.edgeTok_dart`, `RData.edgeTok_inl_left`,
@@ -1008,10 +1009,12 @@ standard axioms (`propext`, `Classical.choice`, `Quot.sound`). There is no `sorr
   (`RData.annulus_eq`), copies that are not joined lie at distance at least $M$ (`RData.le_arcDist_of_not_erc`),
   and a distance of $\hat G_\ell$ is the length of a walk (`RData.exists_awt_of_gdist`), so the distance at a target
   is at most $\lambda_t$ when $\lambda_t < M$. So the conditions of `RData.level_i12_of_marked` hold for all annuli
-  of a level at once (`RData.level_i12_roots`), and, assuming the Exact SSSP bound, the algorithm of
-  `RData.levelI12_local` started from these sources and targets holds, capped at $M$, the least index and $m$
-  minus the greatest index of one shortest walk at the target of every annulus of the level
-  (`RData.levelI12_roots_run`).
+  of a level at once (`RData.level_roots_cond`, `RData.level_i12_roots`).
+- `lean/SsspFlow/GHatChainRun.lean`: the least and the greatest index of all annuli of a level, on the chains.
+  Assuming the Exact SSSP bound, the algorithm of `RData.levelI12_local` started from the sources and targets of the
+  annuli of a level holds, capped at $M$, the least index and $m$ minus the greatest index at the target of every
+  annulus of the level, for the shortest walk of the annulus that the darts of the chain of the target form
+  (`RData.levelI12_roots_run`, with `RData.chain_data`).
 - `lean/SsspFlow/GHatPhase.lean`: the combinatorics of property (6). Two copies on E_R edges are joined by E_R edges
   exactly when they lie on the path of one piece (`RData.er_comp_iff`), and by E_R and E_C edges exactly when their
   pieces are joined in the token graph (`RData.erc_comp_iff`), whose components are those of the split

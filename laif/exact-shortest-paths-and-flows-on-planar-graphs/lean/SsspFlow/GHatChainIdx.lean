@@ -14,6 +14,8 @@ for the walk of `RData.level_chain_idx`.
 * `Walk.support_eq_edgeFlat`: the nodes of a walk are the tails of its edges, then its end.
 * `RData.chain_darts_idx`: the darts of the chain of a target form a shortest walk of the annulus
   whose indices on the cut path are the indices at the pieces of the copies of the nodes of the chain.
+* `RData.chain_data`: the chain of a target reaches a root at the piece at `κ0(t)`, and its darts form
+  such a walk.
 * `RData.chain_least_greatest`: the least and the greatest index of `RData.level_least_greatest` are
   the least and the greatest index of the darts of the chain of the target.
 -/
@@ -146,6 +148,76 @@ theorem chain_darts_idx {C : N.toRot.dual.CutPath} {g : N.G.Dart → ℝ≥0∞}
   exact key Q (by rw [Nat.zero_add]; exact hroot) hD hsupp
     (hQw.trans (by rw [Nat.zero_add, Finset.range_eq_Ico]))
 
+/-- **The chain of a target.** Under the conditions of `RData.level_chain_idx`, the chain of the
+target takes `k` valid parent steps to a root at the copy node of a vertex `u` at the piece at
+`κ0(t)`, with sum of lengths the distance of the target, and the darts of the chain form a shortest
+walk of the annulus whose indices on the cut path are read at the copies of the nodes of the chain. -/
+theorem chain_data {C : N.toRot.dual.CutPath} {g : N.G.Dart → ℝ≥0∞}
+    {Γ : Finset (N.G.Dart × Bool)} (c : N.G.Dart → ℕ) (hcr : ∀ d, c (N.toRot.rev d) = c d)
+    (hlam : ∀ x, lam x = c x.1.1) (hgc : ∀ d, g d = c d) (L : C.Live g Γ) (hS : Γ ⊆ S.Γ) {t : ℕ}
+    (hz : ∀ w ∈ S.Γ, w ∉ Γ → ∀ p, ¬ (N.toRot.dual.double.split Γ).IsWalk
+      ((N.toRot.dual.double.split Γ).tail (L.κ0 t)) p ((N.toRot.dual.double.split Γ).tail w))
+    (h1 : L.xa ≤ t) (h2 : L.ya ≤ t) (h3 : t ≤ L.xb) (h4 : t ≤ L.yb)
+    (ψ : Fin (n * (n * 21)) → ℕ∞) (r : Fin (n * (n * 21)) → ℕ∞ × Option (Fin (n * (n * 21))))
+    (hr : (S.levelNet hN).ExactSpec (S.levelLen hN lam M) ψ r) {v : S.hRot.Vertex}
+    (hv : ∃ x : S.Tok, S.IsEnd x.1 (S.vcopy v)) (hpv : S.pieceOf ⟨S.vcopy v, hv⟩ = S.pieceAt (L.κ1 t))
+    (hroot : ∀ z, ψ z ≠ ⊤ → ψ z = 0 ∧ ∃ u, z = (S.levelPad hN).ι (.inl u) ∧
+      ∃ hu : (∃ x : S.Tok, S.IsEnd x.1 (S.vcopy u)),
+        S.pieceOf ⟨S.vcopy u, hu⟩ = S.pieceAt (L.κ0 t) ∨
+          (M : ℝ≥0∞) ≤ S.arcDist lam M (S.vcopy u) (S.vcopy v))
+    (hlt : ((r ((S.levelPad hN).ι (.inl v))).1 : ℝ≥0∞) < M)
+    (hle : ((r ((S.levelPad hN).ι (.inl v))).1 : ℝ≥0∞) ≤ C.lamD g t) :
+    ∃ (k : ℕ) (u : S.hRot.Vertex) (hu : ∃ x : S.Tok, S.IsEnd x.1 (S.vcopy u)),
+      Net.ParSteps r ((S.levelPad hN).ι (.inl v)) k ∧
+      (Net.parOf r)^[k] ((S.levelPad hN).ι (.inl v)) = (S.levelPad hN).ι (.inl u) ∧
+      (r ((S.levelPad hN).ι (.inl u))).2 = none ∧ S.pieceOf ⟨S.vcopy u, hu⟩ = S.pieceAt (L.κ0 t) ∧
+      ((∑ l ∈ Finset.range k, S.levelLen hN lam M ((Net.parOf r)^[l + 1] ((S.levelPad hN).ι (.inl v)))
+        ((Net.parOf r)^[l] ((S.levelPad hN).ι (.inl v))) : ℕ∞) : ℝ≥0∞) =
+        ((r ((S.levelPad hN).ι (.inl v))).1 : ℝ≥0∞) ∧
+      L.Shortest t (S.chainDarts hN r ((S.levelPad hN).ι (.inl v)) 0 k) ∧
+      ∀ r', r' ∈ C.idx (L.κ0 t) (S.chainDarts hN r ((S.levelPad hN).ι (.inl v)) 0 k) ↔
+        r' ≤ C.m ∧ ∃ σ, ∃ y, (∃ i, (Net.parOf r)^[i] ((S.levelPad hN).ι (.inl v)) = y) ∧
+          ∃ hy : (∃ x : S.Tok, S.IsEnd x.1 (S.copyAt hN y)), ∃ z,
+            S.dualSplit.tail z = S.vertexEquiv (S.pieceOf ⟨S.copyAt hN y, hy⟩) ∧
+            C.cut.tail z = C.cut.tail (C.k σ r') := by
+  have hfin : (r ((S.levelPad hN).ι (.inl v))).1 ≠ ⊤ := fun e => by simp [e] at hlt
+  obtain ⟨k, hk0, -, hstep, hsumk⟩ := hr.chain _ hfin
+  have hs : Net.ParSteps r ((S.levelPad hN).ι (.inl v)) k := fun i hi => (hstep i hi).1
+  have hρ : ψ ((Net.parOf r)^[k] ((S.levelPad hN).ι (.inl v))) ≠ ⊤ := fun e => by
+    rw [e, top_add] at hsumk
+    exact hfin hsumk.symm
+  obtain ⟨h0, u, hρu, hu, hcase⟩ := hroot _ hρ
+  rw [h0, zero_add] at hsumk
+  have hsumR : ((∑ l ∈ Finset.range k, S.levelLen hN lam M ((Net.parOf r)^[l + 1] ((S.levelPad hN).ι (.inl v)))
+      ((Net.parOf r)^[l] ((S.levelPad hN).ι (.inl v))) : ℕ∞) : ℝ≥0∞) =
+      ((r ((S.levelPad hN).ι (.inl v))).1 : ℝ≥0∞) := by rw [hsumk]
+  have hlt' : ((∑ l ∈ Finset.range k, S.levelLen hN lam M ((Net.parOf r)^[l + 1] ((S.levelPad hN).ι (.inl v)))
+      ((Net.parOf r)^[l] ((S.levelPad hN).ι (.inl v))) : ℕ∞) : ℝ≥0∞) < M := by rw [hsumR]; exact hlt
+  -- a walk of length below `M` joins the copies of `u` and `v`, so the root lies at the piece at `κ0(t)`
+  have hpu : S.pieceOf ⟨S.vcopy u, hu⟩ = S.pieceAt (L.κ0 t) := by
+    refine hcase.resolve_right fun harc => ?_
+    have aux : ∀ {a : Fin (n * (n * 21))} (p : SsspFlow.Walk (S.levelNet hN).G.Adj a ((S.levelPad hN).ι (.inl v))),
+        a = (S.levelPad hN).ι (.inl u) → p.wt (lenTop (S.levelLen hN lam M)) < M → False := by
+      intro a p ha hp
+      subst ha
+      obtain ⟨q, hq, -⟩ := S.walk_project hN lam M p (ne_top_of_lt hp)
+      have harc' : (M : ℝ≥0∞) ≤ S.arcDist lam M (S.copyAt hN ((S.levelPad hN).ι (.inl u)))
+          (S.copyAt hN ((S.levelPad hN).ι (.inl v))) := by
+        rw [S.copyAt_ι, S.copyAt_ι]
+        exact harc
+      have : S.arcDist lam M (S.copyAt hN ((S.levelPad hN).ι (.inl u)))
+          (S.copyAt hN ((S.levelPad hN).ι (.inl v))) ≤ p.wt (lenTop (S.levelLen hN lam M)) := by
+        rw [← hq]
+        exact iInf_le _ q
+      exact absurd (harc'.trans this) (not_le.2 hp)
+    obtain ⟨Q, -, -, hQw, -⟩ := hr.chain_seg ((S.levelPad hN).ι (.inl v)) hs k 0 (by omega)
+    exact aux Q (by rw [Nat.zero_add]; exact hρu)
+      ((hQw.trans (by rw [Nat.zero_add, Finset.range_eq_Ico])).trans_lt hlt')
+  have hnone : (r ((S.levelPad hN).ι (.inl u))).2 = none := by rw [← hρu]; exact hk0
+  obtain ⟨hsh, hidx'⟩ := S.chain_darts_idx hN lam M c hcr hlam hgc L hS hz h1 h2 h3 h4 ψ r hr hs hρu hnone
+    hu hv hpu hpv hlt' (by rw [hsumR]; exact hle)
+  exact ⟨k, u, hu, hs, hρu, hnone, hpu, hsumR, hsh, hidx'⟩
+
 /-- **The least and the greatest index on the darts of a chain.** Under the conditions of
 `RData.level_least_greatest`, the chain of the target takes `k` valid parent steps to a root at the
 copy node of a vertex `u` at the piece at `κ0(t)`, with sum of lengths the distance of the target. The
@@ -191,45 +263,10 @@ theorem chain_least_greatest {C : N.toRot.dual.CutPath} {g : N.G.Dart → ℝ≥
       (⨅ u, ⨅ (_ : Relation.ReflTransGen S.ERC (S.vcopy u) (S.vcopy v)), ⨅ (_ : fl u), ix u) = i1 ∧
       (⨅ u, ⨅ (_ : Relation.ReflTransGen S.ERC (S.vcopy u) (S.vcopy v)), ⨅ (_ : fl u), jx u) =
         (C.m - i2 : ℕ) := by
-  have hlt := (hT _ hTv).1
   obtain ⟨ps, i1, i2, -, -, hl, hg, e1, e2, hidx⟩ := S.level_least_greatest hN lam M c hcr hlam hgc L hS
     hz h1 h2 h3 h4 ψ r hr hv hpv hroot hle isT hT hTv fl hfl ix jx hix hjx
-  have hfin : (r ((S.levelPad hN).ι (.inl v))).1 ≠ ⊤ := fun e => by simp [e] at hlt
-  obtain ⟨k, hk0, -, hstep, hsumk⟩ := hr.chain _ hfin
-  have hs : Net.ParSteps r ((S.levelPad hN).ι (.inl v)) k := fun i hi => (hstep i hi).1
-  have hρ : ψ ((Net.parOf r)^[k] ((S.levelPad hN).ι (.inl v))) ≠ ⊤ := fun e => by
-    rw [e, top_add] at hsumk
-    exact hfin hsumk.symm
-  obtain ⟨h0, u, hρu, hu, hcase⟩ := hroot _ hρ
-  rw [h0, zero_add] at hsumk
-  have hsumR : ((∑ l ∈ Finset.range k, S.levelLen hN lam M ((Net.parOf r)^[l + 1] ((S.levelPad hN).ι (.inl v)))
-      ((Net.parOf r)^[l] ((S.levelPad hN).ι (.inl v))) : ℕ∞) : ℝ≥0∞) =
-      ((r ((S.levelPad hN).ι (.inl v))).1 : ℝ≥0∞) := by rw [hsumk]
-  have hlt' : ((∑ l ∈ Finset.range k, S.levelLen hN lam M ((Net.parOf r)^[l + 1] ((S.levelPad hN).ι (.inl v)))
-      ((Net.parOf r)^[l] ((S.levelPad hN).ι (.inl v))) : ℕ∞) : ℝ≥0∞) < M := by rw [hsumR]; exact hlt
-  -- a walk of length below `M` joins the copies of `u` and `v`, so the root lies at the piece at `κ0(t)`
-  have hpu : S.pieceOf ⟨S.vcopy u, hu⟩ = S.pieceAt (L.κ0 t) := by
-    refine hcase.resolve_right fun harc => ?_
-    have aux : ∀ {a : Fin (n * (n * 21))} (p : SsspFlow.Walk (S.levelNet hN).G.Adj a ((S.levelPad hN).ι (.inl v))),
-        a = (S.levelPad hN).ι (.inl u) → p.wt (lenTop (S.levelLen hN lam M)) < M → False := by
-      intro a p ha hp
-      subst ha
-      obtain ⟨q, hq, -⟩ := S.walk_project hN lam M p (ne_top_of_lt hp)
-      have harc' : (M : ℝ≥0∞) ≤ S.arcDist lam M (S.copyAt hN ((S.levelPad hN).ι (.inl u)))
-          (S.copyAt hN ((S.levelPad hN).ι (.inl v))) := by
-        rw [S.copyAt_ι, S.copyAt_ι]
-        exact harc
-      have : S.arcDist lam M (S.copyAt hN ((S.levelPad hN).ι (.inl u)))
-          (S.copyAt hN ((S.levelPad hN).ι (.inl v))) ≤ p.wt (lenTop (S.levelLen hN lam M)) := by
-        rw [← hq]
-        exact iInf_le _ q
-      exact absurd (harc'.trans this) (not_le.2 hp)
-    obtain ⟨Q, -, -, hQw, -⟩ := hr.chain_seg ((S.levelPad hN).ι (.inl v)) hs k 0 (by omega)
-    exact aux Q (by rw [Nat.zero_add]; exact hρu)
-      ((hQw.trans (by rw [Nat.zero_add, Finset.range_eq_Ico])).trans_lt hlt')
-  have hnone : (r ((S.levelPad hN).ι (.inl u))).2 = none := by rw [← hρu]; exact hk0
-  obtain ⟨hsh, hidx'⟩ := S.chain_darts_idx hN lam M c hcr hlam hgc L hS hz h1 h2 h3 h4 ψ r hr hs hρu hnone
-    hu hv hpu hpv hlt' (by rw [hsumR]; exact hle)
+  obtain ⟨k, u, hu, hs, hρu, hnone, hpu, hsumR, hsh, hidx'⟩ := S.chain_data hN lam M c hcr hlam hgc L hS
+    hz h1 h2 h3 h4 ψ r hr hv hpv hroot (hT _ hTv).1 hle
   have hE : C.idx (L.κ0 t) (S.chainDarts hN r ((S.levelPad hN).ι (.inl v)) 0 k) = C.idx (L.κ0 t) ps :=
     Set.ext fun r' => (hidx' r').trans (hidx r').symm
   exact ⟨k, u, hu, i1, i2, hs, hρu, hnone, hpu, hsumR, hsh, hE ▸ hl, hE ▸ hg, e1, e2⟩

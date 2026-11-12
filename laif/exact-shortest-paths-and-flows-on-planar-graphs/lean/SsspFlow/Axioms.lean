@@ -775,6 +775,7 @@ Expected output for each: `propext`, `Classical.choice`, `Quot.sound` (or a subs
 #print axioms SsspFlow.RotSystem.RData.endV_end
 #print axioms SsspFlow.RotSystem.RData.pieceOf_endV
 #print axioms SsspFlow.RotSystem.RData.annulus_eq
+#print axioms SsspFlow.RotSystem.RData.level_roots_cond
 #print axioms SsspFlow.RotSystem.RData.level_i12_roots
 #print axioms SsspFlow.RotSystem.RData.levelI12_roots_run
 #print axioms SsspFlow.Congest.Net.walk_markW
@@ -838,4 +839,5 @@ Expected output for each: `propext`, `Classical.choice`, `Quot.sound` (or a subs
 #print axioms SsspFlow.RotSystem.RData.chain_step_local
 #print axioms SsspFlow.Walk.support_eq_edgeFlat
 #print axioms SsspFlow.RotSystem.RData.chain_darts_idx
+#print axioms SsspFlow.RotSystem.RData.chain_data
 #print axioms SsspFlow.RotSystem.RData.chain_least_greatest

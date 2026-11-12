@@ -18,12 +18,12 @@ conditions of `RData.level_i12_of_marked` hold for every annulus at once.
 * `RData.tgt_dist_le`: below `M`, the distance at the target of each annulus is at most `λ_t`.
 * `RData.tgt_same`: an annulus whose component reaches the target of another by E_R and E_C edges
   is that annulus, with the same index.
-* `RData.level_i12_roots`: for the sources and targets of a list of annuli of a level, each with
-  one index and `λ_t < M`, the least values over the marked copies at each target are the least
-  and `m` minus the greatest index on the cut path of one shortest walk of its annulus.
-* `RData.levelI12_roots_run`: assuming the Exact SSSP bound, the algorithm of
-  `RData.levelI12_local`, started from these sources and targets, holds these values at the target
-  of every annulus of the list after at most `2 C log^c n' · (12 D + 16) + 4` rounds.
+* `RData.level_roots_cond`: for the sources and targets of a list of annuli of a level, each with
+  one index and `λ_t < M`, every annulus of the list meets the conditions of
+  `RData.level_i12_of_marked`.
+* `RData.level_i12_roots`: so the least values over the marked copies at each target are the least
+  and `m` minus the greatest index on the cut path of one shortest walk of its annulus, whose
+  indices are read at the copies of the nodes of the chain of the target.
 -/
 
 set_option autoImplicit false
@@ -205,11 +205,11 @@ theorem tgt_same (M : ℕ) (hΓ : S.Γ = Γ₀ ∪ r.steps ℓ)
 /-- **The conditions of a level hold for its annuli.** Let the token lengths be the costs `c` of
 their darts, with `g = c`, and let `Q` list annuli of a level with one index `t` each in their
 ranges and `λ_t < M`. For an output of the oracle on the network of the level from the sources of
-`Q`, and values `x1`, `x2` that agree, capped at `M`, with the least `ix` and the least `jx` over the
-copies of the component of the target of an annulus whose identifiers lie on the chain of a target
-of `Q`, there is a shortest walk of the annulus of the length of the distance at its target whose
-least index and `m` minus its greatest index agree, capped at `M`, with `x1` and `x2`. -/
-theorem level_i12_roots (lam : S.Tok → ℕ) (M : ℕ) (c : N.G.Dart → ℕ)
+`Q`, an annulus of `Q` meets the conditions of `RData.level_i12_of_marked` with the targets of `Q`:
+its corners lie in those of the level, the other corners are out of its reach, every source lies
+at its piece at `κ0(t)` or at distance at least `M`, the distance of its target is at most `λ_t`, and
+each target of distance below `M` is the only target of its component. -/
+theorem level_roots_cond (lam : S.Tok → ℕ) (M : ℕ) (c : N.G.Dart → ℕ)
     (hcr : ∀ d, c (N.toRot.rev d) = c d) (hlam : ∀ x, lam x = c x.1.1) (hgc : ∀ d, g d = c d)
     (hΓ : S.Γ = Γ₀ ∪ r.steps ℓ) (Q : List ((Σ Γ' : Finset (N.G.Dart × Bool), C.Live g Γ') × ℕ))
     (hQ : ∀ q ∈ Q, q.1 ∈ r.nodes ℓ ∧ q.1.2.xa ≤ q.2 ∧ q.1.2.ya ≤ q.2 ∧ q.2 ≤ q.1.2.xb ∧
@@ -217,24 +217,19 @@ theorem level_i12_roots (lam : S.Tok → ℕ) (M : ℕ) (c : N.G.Dart → ℕ)
     (hQu : ∀ q ∈ Q, ∀ q' ∈ Q, q.1 = q'.1 → q.2 = q'.2)
     (R : Fin (n * (n * 21)) → ℕ∞ × Option (Fin (n * (n * 21))))
     (hr : (S.levelNet hN).ExactSpec (S.levelLen hN lam M) (S.srcOff hN Q) R)
-    (ixI jxI : Fin (n * (n * 21)) → ℕ∞)
-    (hix : ∀ u (hu : ∃ x : S.Tok, S.IsEnd x.1 (S.vcopy u)),
-      ixI ((S.levelPad hN).ι (.inl u)) = ⨅ r' ∈ S.cutIdx C ⟨S.vcopy u, hu⟩, (r' : ℕ∞))
-    (hjx : ∀ u (hu : ∃ x : S.Tok, S.IsEnd x.1 (S.vcopy u)),
-      jxI ((S.levelPad hN).ι (.inl u)) = ⨅ r' ∈ S.cutIdx C ⟨S.vcopy u, hu⟩, ((C.m - r' : ℕ) : ℕ∞))
-    {A : Σ Γ' : Finset (N.G.Dart × Bool), C.Live g Γ'} {t : ℕ} (hAt : (A, t) ∈ Q) (x1 x2 : ℝ≥0∞)
-    (hx1 : min x1 M = min (⨅ u, ⨅ (_ : Relation.ReflTransGen S.ERC (S.vcopy u)
-        (S.vcopy (S.endV (A.2.κ1 t)))),
-      ⨅ (_ : ∃ t' i, S.tgtFlag hN Q t' = true ∧ (Net.parOf R)^[i] t' = (S.levelPad hN).ι (.inl u)),
-        (ixI ((S.levelPad hN).ι (.inl u)) : ℝ≥0∞)) M)
-    (hx2 : min x2 M = min (⨅ u, ⨅ (_ : Relation.ReflTransGen S.ERC (S.vcopy u)
-        (S.vcopy (S.endV (A.2.κ1 t)))),
-      ⨅ (_ : ∃ t' i, S.tgtFlag hN Q t' = true ∧ (Net.parOf R)^[i] t' = (S.levelPad hN).ι (.inl u)),
-        (jxI ((S.levelPad hN).ι (.inl u)) : ℝ≥0∞)) M) :
-    ∃ (ps : List (N.G.Dart × Bool)) (i1 i2 : ℕ), A.2.Shortest t ps ∧
-      (ps.map (g ∘ Prod.fst)).sum = ((R ((S.levelPad hN).ι (.inl (S.endV (A.2.κ1 t))))).1 : ℝ≥0∞) ∧
-      IsLeast (C.idx (A.2.κ0 t) ps) i1 ∧ IsGreatest (C.idx (A.2.κ0 t) ps) i2 ∧
-      min x1 M = min (i1 : ℝ≥0∞) M ∧ min x2 M = min ((C.m - i2 : ℕ) : ℝ≥0∞) M := by
+    {A : Σ Γ' : Finset (N.G.Dart × Bool), C.Live g Γ'} {t : ℕ} (hAt : (A, t) ∈ Q) :
+    A.1 ⊆ S.Γ ∧ (∀ w ∈ S.Γ, w ∉ A.1 → ∀ p, ¬ (N.toRot.dual.double.split A.1).IsWalk
+        ((N.toRot.dual.double.split A.1).tail (A.2.κ0 t)) p ((N.toRot.dual.double.split A.1).tail w)) ∧
+      A.2.xa ≤ t ∧ A.2.ya ≤ t ∧ t ≤ A.2.xb ∧ t ≤ A.2.yb ∧
+      (∀ z, S.srcOff hN Q z ≠ ⊤ → S.srcOff hN Q z = 0 ∧ ∃ u, z = (S.levelPad hN).ι (.inl u) ∧
+        ∃ hu : (∃ x : S.Tok, S.IsEnd x.1 (S.vcopy u)),
+          S.pieceOf ⟨S.vcopy u, hu⟩ = S.pieceAt (A.2.κ0 t) ∨
+            (M : ℝ≥0∞) ≤ S.arcDist lam M (S.vcopy u) (S.vcopy (S.endV (A.2.κ1 t)))) ∧
+      ((R ((S.levelPad hN).ι (.inl (S.endV (A.2.κ1 t))))).1 : ℝ≥0∞) ≤ C.lamD g t ∧
+      (∀ t', S.tgtFlag hN Q t' = true → ((R t').1 : ℝ≥0∞) < M ∧ ∃ v', t' = (S.levelPad hN).ι (.inl v') ∧
+        ∃ _ : (∃ x : S.Tok, S.IsEnd x.1 (S.vcopy v')),
+          (Relation.ReflTransGen S.ERC (S.vcopy v') (S.vcopy (S.endV (A.2.κ1 t))) → v' = S.endV (A.2.κ1 t))) ∧
+      S.tgtFlag hN Q ((S.levelPad hN).ι (.inl (S.endV (A.2.κ1 t)))) = true := by
   classical
   have hsub : ∀ {B : Σ Γ' : Finset (N.G.Dart × Bool), C.Live g Γ'}, B ∈ r.nodes ℓ → B.1 ⊆ S.Γ :=
     fun hB => hΓ ▸ r.subset_level ℓ hB
@@ -249,9 +244,7 @@ theorem level_i12_roots (lam : S.Tok → ℕ) (M : ℕ) (c : N.G.Dart → ℕ)
     fun q hq z hz he => S.tgt_same r ℓ M hΓ Q hQ hQu q hq (A, t) hAt z hz he
   obtain ⟨hA, h1, h2, h3, h4, -⟩ := hQ (A, t) hAt
   have hup : ((R ((S.levelPad hN).ι (.inl (S.endV (A.2.κ1 t))))).1 : ℝ≥0∞) ≤ C.lamD g t := upper (A, t) hAt
-  refine S.level_i12_of_marked hN lam M c hcr hlam hgc A.2 (hsub hA) (hunr hA h1 h3) h1 h2 h3 h4
-    (S.srcOff hN Q) R hr (v := S.endV (A.2.κ1 t)) (S.endV_end (A.2.κ1 t)) (S.pieceOf_endV (A.2.κ1 t))
-    ?_ hup (S.tgtFlag hN Q) ?_ ?_ ixI jxI hix hjx x1 x2 hx1 hx2
+  refine ⟨hsub hA, hunr hA h1 h3, h1, h2, h3, h4, ?_, hup, ?_, ?_⟩
   · intro z hz
     unfold srcOff at hz ⊢
     by_cases hc : ∃ q ∈ Q, z = (S.levelPad hN).ι (.inl (S.endV (q.1.2.κ0 q.2)))
@@ -282,78 +275,50 @@ theorem level_i12_roots (lam : S.Tok → ℕ) (M : ℕ) (c : N.G.Dart → ℕ)
   · unfold tgtFlag
     exact decide_eq_true ⟨(A, t), hAt, rfl⟩
 
-end Level
+/-- **The least and the greatest index of the annuli of a level.** Under the conditions of
+`RData.level_roots_cond`, for values `x1`, `x2` that agree, capped at `M`, with the least `ix` and
+the least `jx` over the copies of the component of the target of an annulus whose identifiers lie on
+the chain of a target of `Q`, there is a shortest walk of the annulus of the length of the distance
+at its target whose least index and `m` minus its greatest index agree, capped at `M`, with `x1` and
+`x2`, and whose indices are read at the copies of the nodes of the chain of the target. -/
+theorem level_i12_roots (lam : S.Tok → ℕ) (M : ℕ) (c : N.G.Dart → ℕ)
+    (hcr : ∀ d, c (N.toRot.rev d) = c d) (hlam : ∀ x, lam x = c x.1.1) (hgc : ∀ d, g d = c d)
+    (hΓ : S.Γ = Γ₀ ∪ r.steps ℓ) (Q : List ((Σ Γ' : Finset (N.G.Dart × Bool), C.Live g Γ') × ℕ))
+    (hQ : ∀ q ∈ Q, q.1 ∈ r.nodes ℓ ∧ q.1.2.xa ≤ q.2 ∧ q.1.2.ya ≤ q.2 ∧ q.2 ≤ q.1.2.xb ∧
+      q.2 ≤ q.1.2.yb ∧ C.lamD g q.2 < M)
+    (hQu : ∀ q ∈ Q, ∀ q' ∈ Q, q.1 = q'.1 → q.2 = q'.2)
+    (R : Fin (n * (n * 21)) → ℕ∞ × Option (Fin (n * (n * 21))))
+    (hr : (S.levelNet hN).ExactSpec (S.levelLen hN lam M) (S.srcOff hN Q) R)
+    (ixI jxI : Fin (n * (n * 21)) → ℕ∞)
+    (hix : ∀ u (hu : ∃ x : S.Tok, S.IsEnd x.1 (S.vcopy u)),
+      ixI ((S.levelPad hN).ι (.inl u)) = ⨅ r' ∈ S.cutIdx C ⟨S.vcopy u, hu⟩, (r' : ℕ∞))
+    (hjx : ∀ u (hu : ∃ x : S.Tok, S.IsEnd x.1 (S.vcopy u)),
+      jxI ((S.levelPad hN).ι (.inl u)) = ⨅ r' ∈ S.cutIdx C ⟨S.vcopy u, hu⟩, ((C.m - r' : ℕ) : ℕ∞))
+    {A : Σ Γ' : Finset (N.G.Dart × Bool), C.Live g Γ'} {t : ℕ} (hAt : (A, t) ∈ Q) (x1 x2 : ℝ≥0∞)
+    (hx1 : min x1 M = min (⨅ u, ⨅ (_ : Relation.ReflTransGen S.ERC (S.vcopy u)
+        (S.vcopy (S.endV (A.2.κ1 t)))),
+      ⨅ (_ : ∃ t' i, S.tgtFlag hN Q t' = true ∧ (Net.parOf R)^[i] t' = (S.levelPad hN).ι (.inl u)),
+        (ixI ((S.levelPad hN).ι (.inl u)) : ℝ≥0∞)) M)
+    (hx2 : min x2 M = min (⨅ u, ⨅ (_ : Relation.ReflTransGen S.ERC (S.vcopy u)
+        (S.vcopy (S.endV (A.2.κ1 t)))),
+      ⨅ (_ : ∃ t' i, S.tgtFlag hN Q t' = true ∧ (Net.parOf R)^[i] t' = (S.levelPad hN).ι (.inl u)),
+        (jxI ((S.levelPad hN).ι (.inl u)) : ℝ≥0∞)) M) :
+    ∃ (ps : List (N.G.Dart × Bool)) (i1 i2 : ℕ), A.2.Shortest t ps ∧
+      (ps.map (g ∘ Prod.fst)).sum = ((R ((S.levelPad hN).ι (.inl (S.endV (A.2.κ1 t))))).1 : ℝ≥0∞) ∧
+      IsLeast (C.idx (A.2.κ0 t) ps) i1 ∧ IsGreatest (C.idx (A.2.κ0 t) ps) i2 ∧
+      min x1 M = min (i1 : ℝ≥0∞) M ∧ min x2 M = min ((C.m - i2 : ℕ) : ℝ≥0∞) M ∧
+      ∀ r', r' ∈ C.idx (A.2.κ0 t) ps ↔ r' ≤ C.m ∧ ∃ σ, ∃ y,
+        (∃ i, (Net.parOf R)^[i] ((S.levelPad hN).ι (.inl (S.endV (A.2.κ1 t)))) = y) ∧
+        ∃ hy : (∃ x : S.Tok, S.IsEnd x.1 (S.copyAt hN y)), ∃ z,
+          S.dualSplit.tail z = S.vertexEquiv (S.pieceOf ⟨S.copyAt hN y, hy⟩) ∧
+          C.cut.tail z = C.cut.tail (C.k σ r') := by
+  obtain ⟨hA, hu, h1, h2, h3, h4, hroot, hup, hT, hTv⟩ :=
+    S.level_roots_cond hN r ℓ lam M c hcr hlam hgc hΓ Q hQ hQu R hr hAt
+  exact S.level_i12_of_marked hN lam M c hcr hlam hgc A.2 hA hu h1 h2 h3 h4 (S.srcOff hN Q) R hr
+    (v := S.endV (A.2.κ1 t)) (S.endV_end (A.2.κ1 t)) (S.pieceOf_endV (A.2.κ1 t)) hroot hup (S.tgtFlag hN Q)
+    hT hTv ixI jxI hix hjx x1 x2 hx1 hx2
 
-open Classical in
-/-- **The least and the greatest index of all annuli of a level, as one algorithm.** Assuming the
-Exact SSSP bound, one algorithm of the message model on `N`, fixed before the network, starts from
-the inputs of a level and, at each node, the offsets of the sources and the targets of a list `Q` of
-annuli of a level of a run with one index each and `λ_t < M`, and values `ix`, `jx` at the identifiers
-it hosts. After `T` rounds its outputs `rr` meet the specification of the oracle, and for every
-annulus of `Q` the outputs `o1` and `o2` at its target, capped at `M`, are the least index and `m`
-minus the greatest index on the cut path of one shortest walk of the annulus, whose length is the
-distance at the target. -/
-theorem levelI12_roots_run (hE : ExactSsspBound) (K : ℕ) : ∃ C c : ℕ, ∀ n D : ℕ,
-    ∃ (σ : Type) (A : Cslib.Congest.Algorithm (Fin n)
-        (LevelIn n × (((Fin (n * (n * 21)) → ℕ∞) × (Fin (n * (n * 21)) → Bool)) ×
-          ((Fin (n * (n * 21)) → ℕ∞) × (Fin (n * (n * 21)) → ℕ∞)))) σ
-        (4 * (C * logN (n * (n * 21)) ^ c + 1) + (3 * (K * logN (n * (n * 21)) + 1) + 5)))
-      (T : ℕ) (rr : Fin (n * (n * 21)) → σ → ℕ∞ × Option (Fin (n * (n * 21))))
-      (o1 o2 : Fin (n * (n * 21)) → σ → ℕ∞),
-    T ≤ 4 + 2 * (C * logN (n * (n * 21)) ^ c * (12 * D + 16)) ∧
-    ∀ (N : Net (Fin n)) (S : N.toRot.RData) (hN : ∀ u, ∃ w, N.G.Adj u w)
-      {Cp : N.toRot.dual.CutPath} {g : N.G.Dart → ℝ≥0∞} {hR : N.toRot.dual.Planar}
-      {hC : N.toRot.dual.Connected} {hg : ∀ x, g (N.toRot.dual.rev x) = g x}
-      {Γ₀ : Finset (N.G.Dart × Bool)} {L₀ : Cp.Live g Γ₀} {j k : ℕ}
-      (r : CutPath.Run hR hC hg Γ₀ L₀ j k) (ℓ : ℕ) (lam : S.Tok → ℕ) (M : ℕ) (cc : N.G.Dart → ℕ)
-      (u₀ : S.hRot.Vertex) (Q : List ((Σ Γ' : Finset (N.G.Dart × Bool), Cp.Live g Γ') × ℕ))
-      (ixI jxI : Fin (n * (n * 21)) → ℕ∞)
-      (off : Fin n → Fin (n * (n * 21)) → ℕ∞) (flg : Fin n → Fin (n * (n * 21)) → Bool)
-      (ixL jxL : Fin n → Fin (n * (n * 21)) → ℕ∞),
-      N.toRot.Planar → N.toRot.Connected → S.NoConflict → S.cut.card ≤ 3 → N.DiamLE D →
-      (∀ x, lam x ≤ (n * (n * 21) + 2) ^ K) → M ≤ (n * (n * 21) + 2) ^ K →
-      (∀ d, cc (N.toRot.rev d) = cc d) → (∀ x, lam x = cc x.1.1) → (∀ d, g d = cc d) →
-      S.Γ = Γ₀ ∪ r.steps ℓ →
-      (∀ q ∈ Q, q.1 ∈ r.nodes ℓ ∧ q.1.2.xa ≤ q.2 ∧ q.1.2.ya ≤ q.2 ∧ q.2 ≤ q.1.2.xb ∧
-        q.2 ≤ q.1.2.yb ∧ Cp.lamD g q.2 < M) →
-      (∀ q ∈ Q, ∀ q' ∈ Q, q.1 = q'.1 → q.2 = q'.2) →
-      (∀ z, (∀ u, z ≠ (S.levelPad hN).ι (.inl u)) → ixI z = ⊤ ∧ jxI z = ⊤) →
-      (∀ z, (ixI z = ⊤ ∨ ixI z ≤ (n * (n * 21) + 2) ^ K) ∧ (jxI z = ⊤ ∨ jxI z ≤ (n * (n * 21) + 2) ^ K)) →
-      (∀ u (hu : ∃ x : S.Tok, S.IsEnd x.1 (S.vcopy u)),
-        ixI ((S.levelPad hN).ι (.inl u)) = ⨅ r' ∈ S.cutIdx Cp ⟨S.vcopy u, hu⟩, (r' : ℕ∞)) →
-      (∀ u (hu : ∃ x : S.Tok, S.IsEnd x.1 (S.vcopy u)),
-        jxI ((S.levelPad hN).ι (.inl u)) = ⨅ r' ∈ S.cutIdx Cp ⟨S.vcopy u, hu⟩, ((Cp.m - r' : ℕ) : ℕ∞)) →
-      (∀ a, off (hostOf a) a = S.srcOff hN Q a) → (∀ a, flg (hostOf a) a = S.tgtFlag hN Q a) →
-      (∀ a, ixL (hostOf a) a = ixI a) → (∀ a, jxL (hostOf a) a = jxI a) →
-      let st := A.run N.G (fun w => (S.levelIn hN lam M u₀ w, ((off w, flg w), (ixL w, jxL w)))) T
-      let R := fun a => rr a (st (hostOf a))
-      (S.levelNet hN).ExactSpec (S.levelLen hN lam M) (S.srcOff hN Q) R ∧
-      ∀ At ∈ Q, ∃ (ps : List (N.G.Dart × Bool)) (i1 i2 : ℕ), At.1.2.Shortest At.2 ps ∧
-        (ps.map (g ∘ Prod.fst)).sum =
-          ((R ((S.levelPad hN).ι (.inl (S.endV (At.1.2.κ1 At.2))))).1 : ℝ≥0∞) ∧
-        IsLeast (Cp.idx (At.1.2.κ0 At.2) ps) i1 ∧ IsGreatest (Cp.idx (At.1.2.κ0 At.2) ps) i2 ∧
-        min (o1 ((S.levelPad hN).ι (.inl (S.endV (At.1.2.κ1 At.2))))
-          (st (hostOf ((S.levelPad hN).ι (.inl (S.endV (At.1.2.κ1 At.2))))))  : ℝ≥0∞) M =
-            min (i1 : ℝ≥0∞) M ∧
-        min (o2 ((S.levelPad hN).ι (.inl (S.endV (At.1.2.κ1 At.2))))
-          (st (hostOf ((S.levelPad hN).ι (.inl (S.endV (At.1.2.κ1 At.2)))))) : ℝ≥0∞) M =
-            min ((Cp.m - i2 : ℕ) : ℝ≥0∞) M := by
-  obtain ⟨C, c, hC⟩ := levelI12_local hE K
-  refine ⟨C, c, fun n D => ?_⟩
-  obtain ⟨σ, A, T, rr, o1, o2, hT, hA⟩ := hC n D
-  refine ⟨σ, A, T, rr, o1, o2, hT, ?_⟩
-  intro N S hN Cp g hR hC hg Γ₀ L₀ j k r ℓ lam M cc u₀ Q ixI jxI off flg ixL jxL hP hc hS hcut hD hlam hM
-    hcr hlc hgc hΓ hQ hQu hix0 hixW hix hjx hoff hflg hixL hjxL
-  have hψW : ∀ z, S.srcOff hN Q z = ⊤ ∨ S.srcOff hN Q z ≤ (n * (n * 21) + 2) ^ K := fun z => by
-    unfold srcOff
-    split_ifs
-    · exact .inr zero_le
-    · exact .inl rfl
-  obtain ⟨hR', hO⟩ := hA N S hN lam M u₀ (S.srcOff hN Q) (S.tgtFlag hN Q) ixI jxI off flg ixL jxL hP hc hS
-    hcut hD hlam hM hψW hix0 hixW hoff hflg hixL hjxL
-  refine ⟨hR', fun At hAt => ?_⟩
-  exact S.level_i12_roots hN r ℓ lam M cc hcr hlc hgc hΓ Q hQ hQu _ hR' ixI jxI hix hjx
-    (A := At.1) (t := At.2) (by simpa using hAt) _ _ (hO (S.endV (At.1.2.κ1 At.2))).1 (hO (S.endV (At.1.2.κ1 At.2))).2
+end Level
 
 end RData
 
