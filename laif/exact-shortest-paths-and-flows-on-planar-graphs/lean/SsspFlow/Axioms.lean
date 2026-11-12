@@ -843,3 +843,5 @@ Expected output for each: `propext`, `Classical.choice`, `Quot.sound` (or a subs
 #print axioms SsspFlow.RotSystem.RData.chain_darts_idx
 #print axioms SsspFlow.RotSystem.RData.chain_data
 #print axioms SsspFlow.RotSystem.RData.chain_least_greatest
+#print axioms SsspFlow.RotSystem.RData.chainDarts_split
+#print axioms SsspFlow.RotSystem.RData.level_node_data

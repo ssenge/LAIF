@@ -1018,6 +1018,7 @@ standard axioms (`propext`, `Classical.choice`, `Quot.sound`). There is no `sorr
   is at most $\lambda_t$ when $\lambda_t < M$. So the conditions of `RData.level_i12_of_marked` hold for all annuli
   of a level at once (`RData.level_roots_cond`, `RData.level_i12_roots`).
 - `lean/SsspFlow/GHatChainRun.lean`: the least and the greatest index of all annuli of a level, on the chains.
+- `lean/SsspFlow/GHatLevelNode.lean`: for every annulus of a level, the shortest walk at its middle index, the least and the greatest index of the cut path on it, and a step whose darts form a segment of the walk, all from one output of the oracle and the runs along the chains.
   Assuming the Exact SSSP bound, the algorithm of `RData.levelI12_local` started from the sources and targets of the
   annuli of a level holds, capped at $M$, the least index and $m$ minus the greatest index at the target of every
   annulus of the level, for the shortest walk of the annulus that the darts of the chain of the target form
