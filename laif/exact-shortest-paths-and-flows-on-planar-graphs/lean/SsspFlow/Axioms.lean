@@ -836,3 +836,6 @@ Expected output for each: `propext`, `Classical.choice`, `Quot.sound` (or a subs
 #print axioms SsspFlow.Congest.ENat.one_le_toENNReal
 #print axioms SsspFlow.Congest.Net.ExactSpec.step_iff
 #print axioms SsspFlow.RotSystem.RData.chain_step_local
+#print axioms SsspFlow.Walk.support_eq_edgeFlat
+#print axioms SsspFlow.RotSystem.RData.chain_darts_idx
+#print axioms SsspFlow.RotSystem.RData.chain_least_greatest

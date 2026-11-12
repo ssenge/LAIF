@@ -213,7 +213,8 @@ variable {n : ℕ} {N : Net (Fin n)} (S : N.toRot.RData) (hN : ∀ u, ∃ w, N.G
 `RData.level_min_idx`, with `ix` the least index and `jx` the least value of `m - r` over the indices
 `r` at the piece of a copy: there is a shortest walk of the annulus of the length of the distance of
 the target whose least index on the cut path is the least `ix`, and whose greatest index is `m` minus
-the least `jx`, over the flagged copies of the component of the target. -/
+the least `jx`, over the flagged copies of the component of the target. Its indices are those of
+`RData.level_chain_idx`, read at the copies of the nodes of the chain of the target. -/
 theorem level_least_greatest (c : N.G.Dart → ℕ) (hcr : ∀ d, c (N.toRot.rev d) = c d)
     (hlam : ∀ x, lam x = c x.1.1) (hgc : ∀ d, g d = c d) (L : C.Live g Γ) (hS : Γ ⊆ S.Γ) {t : ℕ}
     (hz : ∀ w ∈ S.Γ, w ∉ Γ → ∀ p, ¬ (N.toRot.dual.double.split Γ).IsWalk
@@ -244,7 +245,12 @@ theorem level_least_greatest (c : N.G.Dart → ℕ) (hcr : ∀ d, c (N.toRot.rev
       IsLeast (C.idx (L.κ0 t) ps) i1 ∧ IsGreatest (C.idx (L.κ0 t) ps) i2 ∧
       (⨅ u, ⨅ (_ : Relation.ReflTransGen S.ERC (S.vcopy u) (S.vcopy v)), ⨅ (_ : fl u), ix u) = i1 ∧
       (⨅ u, ⨅ (_ : Relation.ReflTransGen S.ERC (S.vcopy u) (S.vcopy v)), ⨅ (_ : fl u), jx u) =
-        (C.m - i2 : ℕ) := by
+        (C.m - i2 : ℕ) ∧
+      ∀ r', r' ∈ C.idx (L.κ0 t) ps ↔ r' ≤ C.m ∧ ∃ σ, ∃ y,
+        (∃ i, (Net.parOf r)^[i] ((S.levelPad hN).ι (.inl v)) = y) ∧
+        ∃ hy : (∃ x : S.Tok, S.IsEnd x.1 (S.copyAt hN y)), ∃ z,
+          S.dualSplit.tail z = S.vertexEquiv (S.pieceOf ⟨S.copyAt hN y, hy⟩) ∧
+          C.cut.tail z = C.cut.tail (C.k σ r') := by
   have hlt := (hT _ hTv).1
   obtain ⟨ps, hps, hsum, hidx⟩ := S.level_chain_idx hN lam M c hcr hlam hgc L hS hz h1 h2 h3 h4 ψ r hr hv
     hpv hroot hlt hle
@@ -286,7 +292,7 @@ theorem level_least_greatest (c : N.G.Dart → ℕ) (hcr : ∀ d, c (N.toRot.rev
   have hI : ∀ r' ∈ C.idx (L.κ0 t) ps, r' ≤ C.m := fun r' hr' => hr'.1
   obtain ⟨hl, hl'⟩ := Nat.iInf_isLeast hmem
   obtain ⟨hg, hg'⟩ := Nat.iInf_sub_isGreatest hmem hI
-  exact ⟨ps, _, _, hps, hsum, hl, hg, (key _ ix hix).trans hl', (key _ jx hjx).trans hg'⟩
+  exact ⟨ps, _, _, hps, hsum, hl, hg, (key _ ix hix).trans hl', (key _ jx hjx).trans hg', hidx⟩
 
 end RData
 

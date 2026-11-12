@@ -888,12 +888,19 @@ standard axioms (`propext`, `Classical.choice`, `Quot.sound`). There is no `sorr
   `RData.chain_step_out`, there is a step whose darts are exactly the darts of the tokens of the arcs from the nodes of
   the chain of the target to their parents, for the nodes with count $0$, not flagged for $0$, and with distance $0$ in
   the run down the chains, in the order of the chain (`RData.chain_step_local`).
+- `lean/SsspFlow/GHatChainIdx.lean`: the indices of the cut path on the darts of a chain. The nodes of a walk are the
+  tails of its edges, then its end (`Walk.support_eq_edgeFlat`). When the chain of a target at the piece at
+  $\kappa_1(t)$ takes $k$ valid parent steps to a root at the piece at $\kappa_0(t)$, with sum of lengths below $M$
+  and at most $\lambda_t$, the darts of its parent steps from the root down form a shortest walk of the annulus whose
+  indices on the cut path are read at the copies of the nodes of the chain (`RData.chain_darts_idx`). So the least
+  and the greatest index $i_1$, $i_2$ that the runs compute are those of this walk (`RData.chain_least_greatest`).
 - `lean/SsspFlow/GHatLevelDarts.lean`: the darts of a walk of a level, in order. A kept rim dart of the repaired graph
   is an E_C arc between the copies of its token and of the partner (`RData.att_rimTok`), and each middle edge of the
   network of a level carries the token of its E_C arc (`RData.edgeTok_dart`, `RData.edgeTok_inl_left`,
   `RData.edgeTok_inl_right`). So a walk of the network of a level below $M$ between copies on E_R edges gives, edge
   by edge, the darts of the split of the doubled dual at its tokens, which form a walk of the split between the
-  pieces of its ends with the sum of costs as length (`RData.levelDarts_walk`). For such a walk between the pieces at
+  pieces of its ends with the sum of costs as length, through the pieces of the copies of its nodes
+  (`RData.levelDarts_walk`). For such a walk between the pieces at
   $\kappa_0(t)$ and $\kappa_1(t)$ of length at most $\lambda_t$, these darts form a shortest walk of the annulus
   (`RData.level_shortest_darts`).
 - `lean/SsspFlow/GHatLevelSplitStep.lean`: the step from a split of a walk of a level. The darts of a joined walk are

@@ -144,6 +144,7 @@ import SsspFlow.GHatChainOut
 import SsspFlow.GHatChainTargets
 import SsspFlow.OracleChainStep
 import SsspFlow.GHatChainStepLocal
+import SsspFlow.GHatChainIdx
 import SsspFlow.ListRot
 import SsspFlow.GHatSplit
 import SsspFlow.Annuli

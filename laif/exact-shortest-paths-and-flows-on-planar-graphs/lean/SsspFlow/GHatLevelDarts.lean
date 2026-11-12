@@ -13,7 +13,8 @@ pieces of its ends, of the same length.
 * `RData.edgeTok_dart`, `RData.edgeTok_inl_left`, `RData.edgeTok_inl_right`: the token of an edge of
   the network of a level.
 * `RData.levelDarts_walk`: the darts of a walk of the network of a level below `M` between copies
-  on E_R edges form a walk of the split between their pieces, with the sum of the costs as length.
+  on E_R edges form a walk of the split between their pieces, with the sum of the costs as length,
+  through the pieces of the copies of the nodes of the walk.
 * `RData.level_shortest_darts`: for such a walk between the pieces at `κ0(t)` and `κ1(t)` of length at
   most `λ_t`, these darts form a shortest walk of the annulus.
 -/
@@ -99,7 +100,8 @@ theorem levelDarts_cons {a b z' : Fin (n * (n * 21))} (e : (S.levelNet hN).G.Adj
 
 /-- **The darts of a walk of a level, in order.** For token lengths that are the costs `c` of their
 darts, the darts of a walk of the network of a level of length below `M` between copies on E_R
-edges form a walk of the split between their pieces, and the sum of their costs is its length. -/
+edges form a walk of the split between their pieces, and the sum of their costs is its length. Its
+vertices are the pieces of the copies of the nodes of the walk. -/
 theorem levelDarts_walk (c : N.G.Dart → ℕ) (hcr : ∀ d, c (N.toRot.rev d) = c d)
     (hlam : ∀ x, lam x = c x.1.1) : ∀ {z z' : Fin (n * (n * 21))}
     (p : SsspFlow.Walk (S.levelNet hN).G.Adj z z') (hz : ∃ x : S.Tok, S.IsEnd x.1 (S.copyAt hN z))
@@ -107,11 +109,21 @@ theorem levelDarts_walk (c : N.G.Dart → ℕ) (hcr : ∀ d, c (N.toRot.rev d) =
     p.wt (lenTop (S.levelLen hN lam M)) < M →
     S.dualSplit.IsWalk (S.vertexEquiv (S.pieceOf ⟨S.copyAt hN z, hz⟩)) (S.levelDarts hN p)
         (S.vertexEquiv (S.pieceOf ⟨S.copyAt hN z', hz'⟩)) ∧
-      ((S.levelDarts hN p).map fun d => (c d.1 : ℝ≥0∞)).sum = p.wt (lenTop (S.levelLen hN lam M))
+      ((S.levelDarts hN p).map fun d => (c d.1 : ℝ≥0∞)).sum = p.wt (lenTop (S.levelLen hN lam M)) ∧
+      ∀ w, (w = S.vertexEquiv (S.pieceOf ⟨S.copyAt hN z, hz⟩) ∨
+        ∃ y ∈ S.levelDarts hN p, S.dualSplit.head y = w) ↔
+      ∃ y ∈ p.support, ∃ hy : (∃ x : S.Tok, S.IsEnd x.1 (S.copyAt hN y)),
+        S.vertexEquiv (S.pieceOf ⟨S.copyAt hN y, hy⟩) = w
   | _, _, .nil z, hz, hz', _ => by
-    refine ⟨?_, by simp [levelDarts, SsspFlow.Walk.wt]⟩
-    simp only [levelDarts]
-    exact congrArg S.vertexEquiv (S.pieceOf_eq _ hz'.choose_spec)
+    refine ⟨?_, by simp [levelDarts, SsspFlow.Walk.wt], fun w => ⟨?_, ?_⟩⟩
+    · simp only [levelDarts]
+      exact congrArg S.vertexEquiv (S.pieceOf_eq _ hz'.choose_spec)
+    · rintro (rfl | ⟨_, h, -⟩)
+      · exact ⟨z, List.mem_singleton.2 rfl, hz, rfl⟩
+      · simp [levelDarts] at h
+    · rintro ⟨y, hy, hy', rfl⟩
+      obtain rfl : y = z := List.mem_singleton.1 hy
+      exact .inl rfl
   | z, z', .cons (b := y) e p, hz, hz', hlt => by
     classical
     rw [SsspFlow.Walk.wt_cons] at hlt
@@ -127,12 +139,25 @@ theorem levelDarts_walk (c : N.G.Dart → ℕ) (hcr : ∀ d, c (N.toRot.rev d) =
         S.dualSplit.IsWalk (S.vertexEquiv (S.pieceOf ⟨S.copyAt hN z, hz⟩))
           (S.levelDarts hN (.cons e p)) (S.vertexEquiv (S.pieceOf ⟨S.copyAt hN z', hz'⟩)) ∧
         ((S.levelDarts hN (.cons e p)).map fun d => (c d.1 : ℝ≥0∞)).sum =
-          (lenTop (S.levelLen hN lam M) z y + p.wt (lenTop (S.levelLen hN lam M))) := by
+          (lenTop (S.levelLen hN lam M) z y + p.wt (lenTop (S.levelLen hN lam M))) ∧
+        ∀ w, (w = S.vertexEquiv (S.pieceOf ⟨S.copyAt hN z, hz⟩) ∨
+          ∃ y ∈ S.levelDarts hN (.cons e p), S.dualSplit.head y = w) ↔
+        ∃ y ∈ (SsspFlow.Walk.cons e p).support, ∃ hy : (∃ x : S.Tok, S.IsEnd x.1 (S.copyAt hN y)),
+          S.vertexEquiv (S.pieceOf ⟨S.copyAt hN y, hy⟩) = w := by
       intro hy hp ht h0
-      obtain ⟨h1, h2⟩ := ih hy
+      obtain ⟨h1, h2, h3⟩ := ih hy
       rw [levelDarts_cons, ht, hp] at *
-      refine ⟨by simpa using h1, ?_⟩
-      simp [h2, lenTop, h0]
+      refine ⟨by simpa using h1, by simp [h2, lenTop, h0], fun w => ?_⟩
+      simp only [Option.map_none, Option.toList_none, List.nil_append]
+      constructor
+      · rintro (rfl | h)
+        · exact ⟨z, List.mem_cons.2 (.inl rfl), hz, rfl⟩
+        · obtain ⟨c', hc, hc', e'⟩ := (h3 w).1 (.inr h)
+          exact ⟨c', List.mem_cons.2 (.inr hc), hc', e'⟩
+      · rintro ⟨c', hc, hc', rfl⟩
+        rcases List.mem_cons.1 hc with rfl | hc
+        · exact .inl rfl
+        · exact (h3 _).2 ⟨c', hc, hc', rfl⟩
     rcases padNet_adj_cases e with ⟨x, x', rfl, rfl, hxy⟩ | ⟨hb, -⟩ | ⟨ha, -⟩
     · rw [S.levelLen_ι] at hf
       rcases x with v | d <;> rcases x' with w | d'
@@ -202,14 +227,14 @@ theorem levelDarts_walk (c : N.G.Dart → ℕ) (hcr : ∀ d, c (N.toRot.rev d) =
               rw [← k2]; exact S.isEnd_att _
             · show S.IsEnd (N.toRot.partner (N.toRot.partner (S.rimTok d₀).1)) (S.alphaD (N.toRot.tailCorner d₀))
               rw [N.toRot.partner_partner, ← k1]; exact S.isEnd_att _
-          obtain ⟨h1, h2⟩ := ih ⟨_, hyx⟩
+          obtain ⟨h1, h2, h3⟩ := ih ⟨_, hyx⟩
           have hE : S.edgeTok hN ((S.levelPad hN).ι (.inr (HE.rim d₀, b)))
               ((S.levelPad hN).ι (.inr (S.hRot.rev (HE.rim d₀, b)))) = some x :=
             (S.edgeTok_dart hN _).trans htok
           rw [levelDarts_cons, hE]
           have hpz : S.pieceOf ⟨_, hz⟩ = S.piece x := S.pieceOf_eq _ hzx
           have hpy : S.pieceOf ⟨_, ⟨_, hyx⟩⟩ = S.piece (S.partnerTok x) := S.pieceOf_eq _ hyx
-          refine ⟨(S.dualSplit.isWalk_cons _ _ _ _).2 ⟨?_, ?_⟩, ?_⟩
+          refine ⟨(S.dualSplit.isWalk_cons _ _ _ _).2 ⟨?_, ?_⟩, ?_, ?_⟩
           · rw [hpz]; exact (S.vertexEquiv_piece x).symm
           · rw [S.head_tokDart, ← hpy]; exact h1
           · simp only [Option.map_some, Option.toList_some, List.singleton_append, List.map_cons,
@@ -219,6 +244,24 @@ theorem levelDarts_walk (c : N.G.Dart → ℕ) (hcr : ∀ d, c (N.toRot.rev d) =
             cases b
             · simp [hx, dartW, hlam]
             · simp [hx, dartW, hlam, partnerTok]
+          · intro w
+            simp only [Option.map_some, Option.toList_some, List.singleton_append]
+            have hh : S.dualSplit.head (N.toRot.tokDart x.1) =
+                S.vertexEquiv (S.pieceOf ⟨_, ⟨_, hyx⟩⟩) := by rw [S.head_tokDart, hpy]
+            constructor
+            · rintro (rfl | ⟨y', hy', rfl⟩)
+              · exact ⟨_, List.mem_cons.2 (.inl rfl), hz, rfl⟩
+              · rcases List.mem_cons.1 hy' with rfl | hy'
+                · obtain ⟨c', hc, hc', e'⟩ := (h3 _).1 (.inl hh)
+                  exact ⟨c', List.mem_cons.2 (.inr hc), hc', e'⟩
+                · obtain ⟨c', hc, hc', e'⟩ := (h3 _).1 (.inr ⟨y', hy', rfl⟩)
+                  exact ⟨c', List.mem_cons.2 (.inr hc), hc', e'⟩
+            · rintro ⟨c', hc, hc', rfl⟩
+              rcases List.mem_cons.1 hc with rfl | hc
+              · exact .inl rfl
+              · rcases (h3 _).2 ⟨c', hc, hc', rfl⟩ with h | ⟨y', hy', e'⟩
+                · exact .inr ⟨_, List.mem_cons.2 (.inl rfl), hh.trans h.symm⟩
+                · exact .inr ⟨y', List.mem_cons.2 (.inr hy'), e'⟩
         | sp _ | lsp _ | rsp _ | xsp _ =>
           exfalso
           rw [lenTop, hlen] at hle1
@@ -252,7 +295,7 @@ theorem level_shortest_darts (c : N.G.Dart → ℕ) (hcr : ∀ d, c (N.toRot.rev
     rw [S.copyAt_ι]; exact hv
   have e₁ : S.pieceOf ⟨_, hz₁⟩ = S.pieceOf ⟨S.vcopy u, hu⟩ := congrArg S.pieceOf (Subtype.ext (S.copyAt_ι hN _))
   have e₂ : S.pieceOf ⟨_, hz₂⟩ = S.pieceOf ⟨S.vcopy v, hv⟩ := congrArg S.pieceOf (Subtype.ext (S.copyAt_ι hN _))
-  obtain ⟨hw, hsum⟩ := S.levelDarts_walk hN lam M c hcr hlam p hz₁ hz₂ hp
+  obtain ⟨hw, hsum, -⟩ := S.levelDarts_walk hN lam M c hcr hlam p hz₁ hz₂ hp
   rw [e₁, hpu, e₂, hpv] at hw
   have hg' : ∀ d, g d = ENNReal.ofReal (c d : ℝ) := fun d => by rw [hgc, ENNReal.ofReal_natCast]
   have hk : ENNReal.ofReal ((S.levelDarts hN p).map fun z => (c z.1 : ℝ)).sum =

@@ -90,7 +90,7 @@ theorem level_i12_of_marked (c : N.G.Dart → ℕ) (hcr : ∀ d, c (N.toRot.rev 
     refine ⟨fun h0 => ?_, w, hw⟩
     rw [h0, ENat.toENNReal_top] at hlt
     exact not_top_lt hlt
-  obtain ⟨ps, i1, i2, hps, hsum, hi1, hi2, he1, he2⟩ := S.level_least_greatest hN lam M c hcr hlam hgc L hS
+  obtain ⟨ps, i1, i2, hps, hsum, hi1, hi2, he1, he2, -⟩ := S.level_least_greatest hN lam M c hcr hlam hgc L hS
     hz h1 h2 h3 h4 ψ r hr hv hpv hroot hle isT hT hTv
     (fun u => ∃ t i, isT t = true ∧ (Net.parOf r)^[i] t = (S.levelPad hN).ι (.inl u))
     (fun u => (S.marked_copy_iff hN lam M ψ r hr hroot' isT hT' u).symm)

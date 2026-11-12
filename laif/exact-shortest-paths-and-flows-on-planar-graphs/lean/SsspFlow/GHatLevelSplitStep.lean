@@ -84,9 +84,9 @@ theorem level_step_of_split {C : N.toRot.dual.CutPath} {Γ : Finset (N.G.Dart ×
     rw [S.copyAt_ι]; exact hu
   have hz₂ : ∃ x : S.Tok, S.IsEnd x.1 (S.copyAt hN ((S.levelPad hN).ι (.inl v))) := by
     rw [S.copyAt_ι]; exact hv
-  obtain ⟨wa, -⟩ := S.levelDarts_walk hN lam M c hcr hlam pa hz₁ ⟨xa, hxa⟩ hwa
-  obtain ⟨wq, -⟩ := S.levelDarts_walk hN lam M c hcr hlam pq ⟨xa, hxa⟩ ⟨xb, hxb⟩ hwq
-  obtain ⟨wc, -⟩ := S.levelDarts_walk hN lam M c hcr hlam pc ⟨xb, hxb⟩ hz₂ hwc
+  obtain ⟨wa, -, -⟩ := S.levelDarts_walk hN lam M c hcr hlam pa hz₁ ⟨xa, hxa⟩ hwa
+  obtain ⟨wq, -, -⟩ := S.levelDarts_walk hN lam M c hcr hlam pq ⟨xa, hxa⟩ ⟨xb, hxb⟩ hwq
+  obtain ⟨wc, -, -⟩ := S.levelDarts_walk hN lam M c hcr hlam pc ⟨xb, hxb⟩ hz₂ hwc
   have e₁ : S.vertexEquiv (S.pieceOf ⟨_, hz₁⟩) = S.dualSplit.tail (L.κ0 t) := by
     have e : S.pieceOf ⟨_, hz₁⟩ = S.pieceOf ⟨S.vcopy u, hu⟩ :=
       congrArg S.pieceOf (Subtype.ext (S.copyAt_ι hN _))
