@@ -179,6 +179,15 @@ theorem satl2_cert :
     (11279 / 10000 : ℝ) ^ 56 ≤ (10638 / 10000) ^ 109 ∧ (109 / 56 : ℝ) ≤ 194719 / 100000 ∧
     (10638 / 10000 : ℝ) ≤ (10315 / 10000) ^ 2 := by norm_num
 
+/-- The comparisons behind the tree for SAT with at most three occurrences per variable: the
+branching vectors `(3, 11)` and `(6, 11, 14)` satisfy the step condition at `1.1199`, the last step
+with `n/3` clauses of length 3 has `1.3645^(n/3) ≤ 1.1199^n` nodes, and `√1.1199 ≤ 1.0583`. -/
+theorem occ3_cert :
+    (10000 / 11199 : ℝ) ^ 3 + (10000 / 11199) ^ 11 ≤ 1 ∧
+    (10000 / 11199 : ℝ) ^ 6 + (10000 / 11199) ^ 11 + (10000 / 11199) ^ 14 ≤ 1 ∧
+    (13645 / 10000 : ℝ) ≤ (11199 / 10000) ^ 3 ∧ (11199 / 10000 : ℝ) ≤ (10583 / 10000) ^ 2 := by
+  norm_num
+
 /-! ### The amortized count for SAT in terms of clauses -/
 
 /-- The base `g = 1.2226` and the constants `c₁ = 2`, `c₂ = c₁ / 0.9136`. -/

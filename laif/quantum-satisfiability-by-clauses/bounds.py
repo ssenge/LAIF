@@ -74,3 +74,20 @@ qa = math.ceil(math.sqrt(a) * 1e4) / 1e4
 assert math.sqrt(a) <= qa == 1.0315 and a <= qa ** 2
 print(f"SAT in L, second tree: Step 16 1.1279^(1/w3) = {1.1279 ** (1 / w3):.6f}, Step 13 1.34^(1/5) = {1.34 ** 0.2:.6f}; "
       f"all <= {a}; square root {math.sqrt(a):.6f} <= {qa}")
+
+# SAT with at most 3 occurrences per variable: the branching factors of the 1.1199^n algorithm [13, Table 2],
+# its last step by the 3-SAT algorithm of [8] in 1.3645^t with t <= n/3 clauses of length 3 [13, Lemma 8.2]
+b = 1.1199
+occ = {(6, 7): 1.11278, (5, 8): 1.1148, (4, 9): 1.11925, (3, 11): 1.11984, (6, 11, 14): 1.11984}
+for v, printed in occ.items():
+    assert tau(*v) <= b and abs(tau(*v) - printed) < 1e-5, v
+assert 1.3645 ** (1 / 3) <= b
+qo = math.ceil(math.sqrt(b) * 1e4) / 1e4
+assert math.sqrt(b) <= qo == 1.0583 and b <= qo ** 2
+# with (d - 2) n variables after splitting [13, Lemma 8.4]: below 2^(n/2) iff d - 2 < ln(2) / (2 ln 1.0583),
+# below 1.0315^L for L = d n iff (d - 2) ln 1.0583 < d ln 1.0315
+dmax = 2 + math.log(2) / (2 * math.log(qo))
+dl = 2 * math.log(qo) / (math.log(qo) - math.log(1.0315))
+print("3-occurrence SAT: " + ", ".join(f"tau{v} = {tau(*v):.5f}" for v in occ)
+      + f"; 1.3645^(1/3) = {1.3645 ** (1 / 3):.5f}; sqrt(1.1199) = {math.sqrt(b):.6f} <= {qo}; "
+      f"1.0583^((d-2)n) below 2^(n/2) for d < {dmax:.3f} and below 1.0315^(dn) for d < {dl:.3f}")

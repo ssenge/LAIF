@@ -16,3 +16,4 @@ open SatTrees
 #print axioms greedy_optimal
 #print axioms x3satm_cert
 #print axioms satl2_cert
+#print axioms occ3_cert

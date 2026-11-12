@@ -1,6 +1,6 @@
 # Quantum Satisfiability and MaxSAT in Terms of Clauses and Formula Length
 
-Written 10 Nov 2026; optimal MaxSAT assignments, the Lean library and the 1.0315^L bound added 12 Nov 2026.
+Written 10 Nov 2026; optimal MaxSAT assignments, the Lean library, the 1.0315^L bound and Theorem 4 added 12 Nov 2026.
 
 SAT asks whether a CNF formula with n variables, m clauses of any length and length L (the number of literal occurrences) has a satisfying assignment. MaxSAT asks, for a CNF formula and a number k, whether some assignment satisfies at least k clauses.
 
@@ -16,7 +16,11 @@ Status: Claim, implied by [1] applied to the algorithm of [4], whose last step u
 
 Status: Claim, implied by [1] applied to the algorithm of [9] with its 3-SAT step done by the branching algorithm of [12] and the [subtrees grafted](#the-tree-for-sat-in-terms-of-l) below it, with the analyses of [9], [12], [7] and [8] as stated there. [`bounds.py`](bounds.py) recomputes the branching factors of [9, Table 3] from its weights, all at most 1.0638, and checks 1.34^{1/5} < 1.0638 and √1.0638 ≤ 1.0315.
 
-**Before.** To our knowledge, no quantum bound for SAT or MaxSAT in terms of m or L has been stated. The best classical bounds are 1.2226^m for SAT [2], improving 1.234^m and 1.239^m [3], and 1.2886^m for MaxSAT [4]; in terms of L, the best classical bound is 1.0638^L [9], improving 1.0652^L [10] and 1.0663^L [7]. Quantum search and quantum maximum finding over all assignments take 2^{n/2}; Theorems 1 and 2 are smaller whenever m < 3.4461 n and m < 2.7330 n ([`bounds.log`](bounds.log)), and the bounds can be combined by taking the smaller.
+**Theorem 4.** SAT on formulas in which every variable occurs at most three times has a quantum algorithm with bounded error, polynomial space and no quantum random access memory, running in time O(1.0583^n). For formulas whose variables occur at most d times on average, with no variable occurring once, the time is O(1.0583^{(d−2)n}). It finds a satisfying assignment if one exists.
+
+Status: Claim, implied by [1] applied to the algorithm of [13], whose last step uses the 3-SAT algorithm of [8], with the analyses of [13] and [8] as stated there. [`bounds.py`](bounds.py) recomputes the branching factors of [13, Table 2], all at most 1.1199, and checks 1.3645^{1/3} ≤ 1.1199 and √1.1199 ≤ 1.0583.
+
+**Before.** To our knowledge, no quantum bound for SAT or MaxSAT in terms of m or L has been stated. The best classical bounds are 1.2226^m for SAT [2], improving 1.234^m and 1.239^m [3], and 1.2886^m for MaxSAT [4]; in terms of L, the best classical bound is 1.0638^L [9], improving 1.0652^L [10] and 1.0663^L [7]. Quantum search and quantum maximum finding over all assignments take 2^{n/2}; Theorems 1 and 2 are smaller whenever m < 3.4461 n and m < 2.7330 n ([`bounds.log`](bounds.log)), and the bounds can be combined by taking the smaller. For SAT with at most three occurrences per variable the best classical bound is 1.1199^n [13], improving 1.1238^n [14] and 1.1279^n [7]; Theorem 4 is below 2^{n/2} for d < 8.116 and below Theorem 3 with L = dn for d < 4.418.
 
 The same approach, the walk of [1] on classical branching algorithms with polynomial space, was applied to graph colouring, domination problems and monotone local search in [11], which is the closest prior work.
 
@@ -57,13 +61,24 @@ The tree is an OR of polynomial-time nodes throughout, and its depth is polynomi
 
 The same walk on SparseSAT alone gives O(2^{0.0463 L} · poly(L)) ≤ O(1.0327^L), since the running time of SparseSAT, with the subtrees of its last case, is O(2^{0.0926 L}) [7, Corollary 31].
 
+## The tree for SAT with three occurrences per variable
+
+The algorithm of [13, Section 3] has Steps 1 to 10 and keeps every variable at three occurrences or fewer.
+
+- **Leaves.** Step 1 answers for the empty formula and for a formula with the empty clause; Step 2 answers yes when every clause has a positive literal.
+- **Single calls.** Steps 3 to 6 standardize the formula, set pure literals, resolve (1, 1)-variables and pairs of variables that occur together twice, and apply safe resolutions over every set of at most 10 variables when this lowers the number of variables; resolvents that would raise an occurrence count are split with new variables, so the number of variables never grows. Step 8 sets to 1 every variable outside the all-negative clauses, an autarky [13, Lemma 6.2], which the node can check directly. All of this takes polynomial time.
+- **OR.** Step 7 branches on a variable w of an all-negative clause into F[¬w] and F[w], and Step 9 branches into F[¬x, z], F[¬x, ¬z] and F[x]. Each step first applies Steps 1 to 6 to every child, counts the variables eliminated, and checks that the branching factor is at most 1.1199, which can be done in exact arithmetic. So every branching node satisfies the step condition with base 1.1199 by construction.
+- **Step 10.** The formula has clauses of length 2 and 3 and at most n/3 clauses of length 3 [13, Lemma 8.2], and it is solved by the 3-SAT algorithm of [8], which translates it by duality into a constraint satisfaction instance with one variable per clause, removes the variables of the 2-clauses, which have two colours, in polynomial time [8, Lemma 2], and solves the remaining (3, 2)-instance by its branching algorithm, a backtracking tree with at most 1.3645^{n/3} · poly(n) ≤ 1.1092^n · poly(n) nodes.
+
+The tree is an OR of polynomial-time nodes and has at most 1.1199^n · poly(n) nodes, so the walk of [1] decides satisfiability in O(1.1199^{n/2} · poly(n)) ≤ O(1.0583^n) time, and the self-reduction below finds an assignment. A formula whose variables occur d times on average, with no variable occurring once, becomes in polynomial time an equisatisfiable formula F′ with at most (d − 2)n variables, each occurring at most three times [13, Lemma 8.4]. F′ keeps the original variables, so an assignment of F′ found by the self-reduction restricts to one of F.
+
 ## Solutions by self-reduction
 
 The variables are fixed one at a time. For a variable x, set x = 1 and simplify: remove the satisfied clauses and the literal x̄, count the satisfied clauses, and drop empty clauses, which no assignment satisfies. For the result, the algorithm of Theorem 2 with a binary search over k gives the optimum. Keep x = 1 if the count plus this optimum equals the optimum of the current formula, and set x = 0 otherwise. Neither m, L nor n grows, so there are n steps with O(log m) calls each. With the error of each call reduced to O(1/(n log m)), the total error stays bounded and the time stays 1.1352^m · poly(L). For SAT the same steps keep a value with a yes answer.
 
 ## Lean
 
-[`lean/`](lean/) is a Lean 4 library `SatTrees` (Lean v4.36.0-rc1, Mathlib commit d875a8de5222f62cf1c2fafc7984588adadc990a) with 16 theorems, no `sorry`, and only the standard axioms (propext, Classical.choice, Quot.sound), as printed by `lean/SatTreesAxioms.lean` into [`lean/axioms.txt`](lean/axioms.txt). Build with `lake exe cache get` and then `lake build` in `lean/`.
+[`lean/`](lean/) is a Lean 4 library `SatTrees` (Lean v4.36.0-rc1, Mathlib commit d875a8de5222f62cf1c2fafc7984588adadc990a) with 17 theorems, no `sorry`, and only the standard axioms (propext, Classical.choice, Quot.sound), as printed by `lean/SatTreesAxioms.lean` into [`lean/axioms.txt`](lean/axioms.txt). Build with `lake exe cache get` and then `lake build` in `lean/`.
 
 - `Tree.size_le_of_pays`: a potential Φ with 1 + Σ Φ(child) ≤ Φ at every node bounds the number of nodes by Φ(root).
 - `Tree.size_le_of_branches` and `branch_step`: if Σ c^{μ(child)} ≤ c^μ at every node, which holds when c is at least the branching number of the node's branching vector, and a height h drops by one to each child, then the tree has at most (h(root) + 1) c^{μ(root)} nodes.
@@ -72,9 +87,10 @@ The variables are fixed one at a time. For a variable x, set x = 1 and simplify:
 - `exists_step` and `greedy_optimal`: fixing the variables in order, each to a value that keeps the optimum of a function f over the completions, ends with an assignment that maximizes f.
 - `sat_root`, `maxsat_cert` and `satl_root`: √1.2226 ≤ 1.1058; the branching number of (6, 6, 5, 5) and the set cover base 1.2576 are at most 1.2886, and √1.2886 ≤ 1.1352; √(2^{0.0926}) ≤ 1.0327.
 - `satl2_cert`: 1.34 ≤ 1.0638⁵ and 1.0638 ≤ 1.0315², the comparisons behind Theorem 3.
+- `occ3_cert`: the branching vectors (3, 11) and (6, 11, 14) at 1.1199, 1.3645 ≤ 1.1199³ and 1.1199 ≤ 1.0583², for Theorem 4.
 - `xsat_root`, `x3sat_vectors`, `x3sat_sparse_root` and `x3satm_cert`: the bounds of [quantum-exact-satisfiability](../quantum-exact-satisfiability/).
 
-Not formalized: the case analyses of [2], [4], [5], [6], [7], [8], [9] and [12], which enter the amortized count as hypotheses and the other theorems as cited bounds; the walk of [1] and the embedding of a backtracking tree in it; and the fact that simplifying a formula after fixing a variable preserves the optimum over the completions.
+Not formalized: the case analyses of [2], [4], [5], [6], [7], [8], [9], [12] and [13], which enter the amortized count as hypotheses and the other theorems as cited bounds; the walk of [1] and the embedding of a backtracking tree in it; and the fact that simplifying a formula after fixing a variable preserves the optimum over the completions.
 
 ## Limits
 
@@ -82,7 +98,8 @@ Not formalized: the case analyses of [2], [4], [5], [6], [7], [8], [9] and [12],
 - [4] omits the proof of its Lemma 4 and some reduction rules behind its Lemmas 2 and 3, which it cites from earlier work.
 - Theorems 1 and 2 carry a factor poly(L), which is not polynomial in m when clauses are long; the classical bounds of [2] and [4] carry the same factor.
 - The analyses of [7], [8], [9] and [12] are used as stated, with the argument above for the step that runs after the shift cases of [9]. [9] is an extended version of a conference paper with the bound 1.0646^L.
-- No script runs the algorithms of [2], [4], [5], [7], [8], [9] or [12].
+- No script runs the algorithms of [2], [4], [5], [7], [8], [9], [12] or [13].
+- The analysis of [13] is used as stated.
 
 ## References
 
@@ -98,6 +115,8 @@ Not formalized: the case analyses of [2], [4], [5], [6], [7], [8], [9] and [12],
 10. J. Chen and Y. Liu. An improved SAT algorithm in terms of formula length. WADS 2009.
 11. S. Senge. Polynomial-space quantum algorithms from classical branching: colouring, domination and monotone local search. arXiv:2611.12714, 2026.
 12. R. A. Moser and D. Scheder. A full derandomization of Schöning's k-SAT algorithm. STOC 2011. arXiv:1008.4067.
+13. S. Jain, T. Y. Neoh and F. Stephan. An improved algorithm for sparse instances of SAT. arXiv:2411.07389, 2024.
+14. J. Peng and M. Xiao. Fast algorithms for SAT with bounded occurrences of variables. IJCAI 2023.
 
 ## Use of AI
 
