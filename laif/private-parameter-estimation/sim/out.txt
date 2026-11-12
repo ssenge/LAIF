@@ -8,4 +8,6 @@ d =  128, eps = 0.05: QFI two-outcome / QFI depolarizing = 62.43
 eps = 0.1: classical sup found 0.0100; 4 sinh^2(eps/2) = 0.0100; upper 2(e^eps-1)^2/(e^eps+1) = 0.0105
 eps = 1.0: classical sup found 1.2515; 4 sinh^2(eps/2) = 1.0862; upper 2(e^eps-1)^2/(e^eps+1) = 1.5881
 eps = 3.0: classical sup found 32.9861; 4 sinh^2(eps/2) = 18.1353; upper 2(e^eps-1)^2/(e^eps+1) = 34.5505
+eps = 3.0: three-output kernel reaches 0.9547 of the upper bound (t = 1)
+eps = 6.0: three-output kernel reaches 0.9975 of the upper bound (t = 1)
 check: all asserts passed

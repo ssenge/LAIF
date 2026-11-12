@@ -68,7 +68,6 @@ def rand_ldp_channel(din, dout, eps, k):
     K = np.exp(eps * rng.uniform(0, 1, size=(k, ny)))   # entries within a factor e^eps of each other per column
     K = K / K.sum(axis=1, keepdims=True)
     # enforce the column ratio exactly: K(y|x)/K(y|x') <= e^eps
-    assert (K.max(axis=0) / K.min(axis=0) <= np.exp(eps) + 1e-12).all() or True
     Sy = [rand_state(dout, rng.integers(1, dout + 1)) for _ in range(ny)]
     taus = [sum(K[x, y] * Sy[y] for y in range(ny)) for x in range(k)]
     return (lambda X: sum(np.trace(M[x] @ X) * taus[x] for x in range(k))), K
@@ -147,6 +146,19 @@ def main():
         print(f"eps = {eps}: classical sup found {s:.4f}; 4 sinh^2(eps/2) = {4*np.sinh(eps/2)**2:.4f}; "
               f"upper 2(e^eps-1)^2/(e^eps+1) = {2*(np.exp(eps)-1)**2/(np.exp(eps)+1):.4f}")
         assert s <= 2 * (np.exp(eps) - 1) ** 2 / (np.exp(eps) + 1) * (1 + 1e-9)
+    # sharpness of the upper constant at large eps: three-level family and three-output kernel
+    for eps in [3.0, 6.0]:
+        E = np.exp(eps)
+        u = (1 - 1 / E) / (E + 1 - 2 / E); w = (1 - 2 * u) / E
+        K = np.array([[E * u, u, w], [u, E * u, w], [u, u, E * w]])
+        assert np.allclose(K.sum(axis=1), 1) and is_ldp(K, eps)
+        s = 1e-10
+        p = K.T @ np.array([s, s, 1 - 2 * s]); dp = K.T @ np.array([1.0, -1.0, 0.0])
+        Fk = np.sum(dp ** 2 / p)
+        up = 2 * (E - 1) ** 2 / (E + 1)
+        frac = (1 - 1 / E) * (E + 1) / (E + 1 - 2 / E)
+        assert Fk <= up and abs(Fk / up - frac) < 1e-5
+        print(f"eps = {eps}: three-output kernel reaches {Fk / up:.4f} of the upper bound (t = 1)")
     print("check: all asserts passed")
 
 
