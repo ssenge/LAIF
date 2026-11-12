@@ -1,0 +1,7 @@
+d = 2, N = 50: E||(R - phi)phi||^2 = 0.03961 (formula 0.04000), mean infidelity 0.01771 on 316 runs with ||R - phi|| <= 1/4
+d = 2, N = 400: E||(R - phi)phi||^2 = 0.00493 (formula 0.00500), mean infidelity 0.00362 on 400 runs with ||R - phi|| <= 1/4
+d = 8, N = 200: E||(R - phi)phi||^2 = 0.07008 (formula 0.07000), mean infidelity 0.02469 on 1 runs with ||R - phi|| <= 1/4
+d = 8, N = 1600: E||(R - phi)phi||^2 = 0.00871 (formula 0.00875), mean infidelity 0.00779 on 400 runs with ||R - phi|| <= 1/4
+test n = 6, d = 2, eps = 0.4: copies 5363 + 1000; accepted 40/40 product states, 0/40 states at distance eps
+test n = 10, d = 2, eps = 0.3: copies 15889 + 1778; accepted 20/20 product states, 0/20 states at distance eps
+product test checks: ok
