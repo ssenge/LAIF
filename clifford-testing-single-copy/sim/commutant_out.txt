@@ -1,0 +1,9 @@
+t = 2: |Sigma| = 2, max |T cap T'| = 2; n = 2..39 checked; at n = 2: dev 2.667e-01 <= 5.000e-01, three sums 3.333e-01 <= 1.250e+00
+t = 3: |Sigma| = 6, max |T cap T'| = 4; n = 4..39 checked; at n = 4: dev 6.374e-02 <= 1.000e-01, three sums 3.000e-01 <= 8.125e-01
+t = 4: |Sigma| = 30, max |T cap T'| = 8; n = 6..39 checked; at n = 6: dev 1.567e-02 <= 2.941e-02, three sums 3.127e-01 <= 9.531e-01
+t = 5: |Sigma| = 270, max |T cap T'| = 16; n = 10..39 checked; at n = 10: dev 9.766e-04 <= 1.326e-03, three sums 1.407e-01 <= 5.283e-01
+n = 10: largest t with t^2 + 5t <= 2n - 6 is 2 (sqrt(2n) = 4.5)
+n = 100: largest t with t^2 + 5t <= 2n - 6 is 11 (sqrt(2n) = 14.1)
+n = 1000: largest t with t^2 + 5t <= 2n - 6 is 42 (sqrt(2n) = 44.7)
+n = 1000000: largest t with t^2 + 5t <= 2n - 6 is 1411 (sqrt(2n) = 1414.2)
+commutant checks: ok
