@@ -93,6 +93,20 @@ def main():
         if opt > 1e-9:
             ratio = max(ratio, got / opt)
     print(f"(c) H = 2I - 1 + P, same minimizer, d(U_sel) <= sqrt2 opt on 300 instances; largest ratio {ratio:.4f}")
+    # (d) one qubit: ||phi - sigma||_F^2 = 2 d_tr^2 exactly, so the infidelity minimizer attains opt
+    for _ in range(200):
+        Us = [haar_u(2) for _ in range(5)]
+        K = rand_channel(2, rng.integers(1, 4), near=Us[0], eps=rng.uniform(0, 1.5))
+        I, D = np.zeros(5), np.zeros(5)
+        for p in [rand_state(2) for _ in range(200)]:
+            out = apply(K, np.outer(p, p.conj()))
+            for i, U in enumerate(Us):
+                q = U @ p; Q = np.outer(q, q.conj())
+                assert abs(np.linalg.norm(Q - out) ** 2 - 2 * dtr(Q, out) ** 2) < 1e-12
+                I[i] += 1 - (q.conj() @ out @ q).real
+                D[i] += dtr(Q, out) ** 2
+        assert D[np.argmin(I)] <= D.min() + 1e-12
+    print("(d) one qubit: ||phi - sigma||^2 = 2 d_tr^2 and the infidelity minimizer attains opt on 200 instances")
     print("check: all asserts passed")
 
 

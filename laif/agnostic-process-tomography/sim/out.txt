@@ -1,4 +1,5 @@
 (a) ||phi - sigma||_F^2 / d_tr^2 in [1.2210, 2.0000] within [1, 2]
 (b) fidelity maximizer = Frobenius minimizer on 200 instances
 (c) H = 2I - 1 + P, same minimizer, d(U_sel) <= sqrt2 opt on 300 instances; largest ratio 1.0012
+(d) one qubit: ||phi - sigma||^2 = 2 d_tr^2 and the infidelity minimizer attains opt on 200 instances
 check: all asserts passed
