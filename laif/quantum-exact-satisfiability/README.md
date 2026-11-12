@@ -6,11 +6,11 @@ Exact Satisfiability (XSAT) asks for an assignment to a CNF formula with n varia
 
 **Theorem 1.** XSAT has a quantum algorithm with bounded error, polynomial space and no quantum random access memory, running in time O(1.0805^n). It finds a satisfying assignment if one exists.
 
-Status: Claim, implied by the quantum walk on backtracking trees [1] applied to the DPLL algorithm of [2], with the running-time analysis of [2] as stated there. [2] is an unrefereed preprint. [`bounds.py`](bounds.py) checks √1.1674 ≤ 1.0805.
+Status: Claim, implied by the quantum walk on backtracking trees [1] applied to the DPLL algorithm of [2], with the running-time analysis of [2] as stated there. [2] is an unrefereed preprint. [`bounds.py`](bounds.py) checks √1.1674 ≤ 1.0805, and the same inequality is `xsat_root` in the Lean library of [quantum-satisfiability-by-clauses](../quantum-satisfiability-by-clauses/#lean).
 
 **Theorem 2.** X3SAT has a quantum algorithm with bounded error, polynomial space and no quantum random access memory, running in time O(1.0490^n). It finds a satisfying assignment if one exists.
 
-Status: Claim, implied by [1] applied to the X3SAT algorithm of [4], with the case analysis of [4] as stated there. [`bounds.py`](bounds.py) checks √τ(12, 4) ≤ 1.0490 and the other branching numbers quoted below.
+Status: Claim, implied by [1] applied to the X3SAT algorithm of [4], with the case analysis of [4] as stated there. [`bounds.py`](bounds.py) checks √τ(12, 4) ≤ 1.0490 and the other branching numbers quoted below. In the Lean library of [quantum-satisfiability-by-clauses](../quantum-satisfiability-by-clauses/#lean), `x3sat_vectors` shows that 1.1003 is at least the branching numbers of (12, 4), (11, 5), (9, 6) and (8, 7), and `x3sat_sparse_root` shows 2^{2/15} ≤ 1.1003 and √1.1003 ≤ 1.0490.
 
 **Before.** To our knowledge, the only quantum algorithm stated for XSAT is the search over a subspace of [3], with O(2^{(n − M′)/2}) queries, where M′ is the number of linearly independent clauses. That bound is the better one only for formulas with M′ > 0.7766 n against Theorem 1 and M′ > 0.8620 n against Theorem 2 ([`bounds.log`](bounds.log)); the bounds can be combined by taking the smallest. Quantum search over all assignments takes 2^{n/2} ≈ 1.4142^n. The best classical bounds are 1.1674^n for XSAT [2] and 1.0984^n for X3SAT [5].
 
@@ -47,3 +47,7 @@ So the decision procedure is a backtracking tree in the sense of [1]. Since 2^{2
 3. S. Mandrà, G. G. Guerreschi and A. Aspuru-Guzik. Faster than classical quantum algorithm for dense formulas of exact satisfiability and occupation problems. New Journal of Physics 18, 2016. arXiv:1512.00859.
 4. J. M. Byskov, B. A. Madsen and B. Skjernaa. New algorithms for exact satisfiability. Theoretical Computer Science 332, 2005. BRICS Report RS-03-30, 2003.
 5. M. Wahlström. Algorithms, Measures and Upper Bounds for Satisfiability and Related Problems. PhD thesis, Linköping Studies in Science and Technology, Dissertation No. 1079, Linköping University, 2007.
+
+## Use of AI
+
+Claude Opus 5.5 (Anthropic) was used throughout this research: to explore approaches, to develop and check proofs, to write the scripts and the Lean formalization, and to draft the text.

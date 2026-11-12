@@ -801,3 +801,8 @@ Expected output for each: `propext`, `Classical.choice`, `Quot.sound` (or a subs
 #print axioms SsspFlow.RotSystem.RData.levelDarts_sub
 #print axioms SsspFlow.RotSystem.RData.levelDarts_of_hasEdge
 #print axioms SsspFlow.RotSystem.RData.chain_step
+#print axioms SsspFlow.RotSystem.RData.atCopy_tokDart_iff
+#print axioms SsspFlow.RotSystem.RData.atCopy_head_tokDart_iff
+#print axioms SsspFlow.RotSystem.RData.hdTok_ends
+#print axioms SsspFlow.RotSystem.RData.edgeTok_ends
+#print axioms SsspFlow.RotSystem.RData.chain_step_flags

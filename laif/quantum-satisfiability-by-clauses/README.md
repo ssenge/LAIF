@@ -1,16 +1,16 @@
 # Quantum Satisfiability and MaxSAT in Terms of Clauses and Formula Length
 
-Written 10 Nov 2026.
+Written 10 Nov 2026; optimal MaxSAT assignments and the Lean library added 12 Nov 2026.
 
 SAT asks whether a CNF formula with n variables, m clauses of any length and length L (the number of literal occurrences) has a satisfying assignment. MaxSAT asks, for a CNF formula and a number k, whether some assignment satisfies at least k clauses.
 
 **Theorem 1.** SAT has a quantum algorithm with bounded error, polynomial space and no quantum random access memory, running in time 1.1058^m · poly(L). It finds a satisfying assignment if one exists.
 
-Status: Claim, implied by the quantum walk on backtracking trees [1] applied to the algorithm of [2], with the case analysis of [2] as stated there. [`bounds.py`](bounds.py) checks √1.2226 ≤ 1.1058 and, in exact arithmetic, the six inequalities of the amortized proof of [2, Theorem 1].
+Status: Claim, implied by the quantum walk on backtracking trees [1] applied to the algorithm of [2], with the case analysis of [2] as stated there. [`bounds.py`](bounds.py) checks √1.2226 ≤ 1.1058 and, in exact arithmetic, the six inequalities of the amortized proof of [2, Theorem 1]. The amortized node count itself is in [Lean](#lean), with the branching patterns and the reduction properties of [2] as hypotheses.
 
-**Theorem 2.** MaxSAT has a quantum algorithm with bounded error, polynomial space and no quantum random access memory, running in time 1.1352^m · poly(L). With a binary search over k it computes the maximum number of clauses that an assignment satisfies.
+**Theorem 2.** MaxSAT has a quantum algorithm with bounded error, polynomial space and no quantum random access memory, running in time 1.1352^m · poly(L). It finds an assignment that satisfies the maximum number of clauses.
 
-Status: Claim, implied by [1] applied to the algorithm of [4], whose last step uses the set cover algorithm of [5] as in [6], with the case analyses of [4], [5] and [6] as stated there. [`bounds.py`](bounds.py) checks √1.2886 ≤ 1.1352.
+Status: Claim, implied by [1] applied to the algorithm of [4], whose last step uses the set cover algorithm of [5] as in [6], with the case analyses of [4], [5] and [6] as stated there, and the [self-reduction](#solutions-by-self-reduction) below for the assignment. [`bounds.py`](bounds.py) checks √1.2886 ≤ 1.1352. The counting lemma with attached subtrees, the greedy step of the self-reduction and the numeric bounds are in [Lean](#lean).
 
 **Theorem 3.** SAT has a quantum algorithm with bounded error, polynomial space and no quantum random access memory, running in time O(1.0327^L). It finds a satisfying assignment if one exists.
 
@@ -49,12 +49,29 @@ The algorithm SparseSAT of [7, Algorithm 6] has cases 0 to 12.
 
 There is no splitting into components and no other subroutine. The running time of SparseSAT, which includes the subtrees of case 12, is O(2^{0.0926 L}) [7, Corollary 31], and the tree has at most that many nodes up to a polynomial factor. The walk of [1] decides satisfiability in O(2^{0.0463 L} · poly(L)) ≤ O(1.0327^L) time, and an assignment is found by descending the tree and undoing the reductions as in Theorem 1.
 
+## Solutions by self-reduction
+
+The variables are fixed one at a time. For a variable x, set x = 1 and simplify: remove the satisfied clauses and the literal x̄, count the satisfied clauses, and drop empty clauses, which no assignment satisfies. For the result, the algorithm of Theorem 2 with a binary search over k gives the optimum. Keep x = 1 if the count plus this optimum equals the optimum of the current formula, and set x = 0 otherwise. Neither m, L nor n grows, so there are n steps with O(log m) calls each. With the error of each call reduced to O(1/(n log m)), the total error stays bounded and the time stays 1.1352^m · poly(L). For SAT the same steps keep a value with a yes answer.
+
+## Lean
+
+[`lean/`](lean/) is a Lean 4 library `SatTrees` (Lean v4.36.0-rc1, Mathlib commit d875a8de5222f62cf1c2fafc7984588adadc990a) with 14 theorems, no `sorry`, and only the standard axioms (propext, Classical.choice, Quot.sound), as printed by `lean/SatTreesAxioms.lean` into [`lean/axioms.txt`](lean/axioms.txt). Build with `lake exe cache get` and then `lake build` in `lean/`.
+
+- `Tree.size_le_of_pays`: a potential Φ with 1 + Σ Φ(child) ≤ Φ at every node bounds the number of nodes by Φ(root).
+- `Tree.size_le_of_branches` and `branch_step`: if Σ c^{μ(child)} ≤ c^μ at every node, which holds when c is at least the branching number of the node's branching vector, and a height h drops by one to each child, then the tree has at most (h(root) + 1) c^{μ(root)} nodes.
+- `Tree.size_le_of_branchesAt`: the same count with attachment nodes, whose subtrees come from another algorithm (the set cover algorithm in Theorem 2, the constraint satisfaction algorithm in Theorem 3) and have at most p c^μ nodes. The bound is (h(root) + 1) p c^{μ(root)}.
+- `sat_tree_size` and `amortized_inequalities`: the amortized count of [2, Theorem 1]. A tree whose nodes branch in the patterns of [2, Lemmas 6 and 7], with children reduced as in [2, Lemma 5], has at most 2 · 1.2226^m − 1 nodes on a good formula and (2/0.9136) · 1.2226^m − 1 on a bad one.
+- `exists_step` and `greedy_optimal`: fixing the variables in order, each to a value that keeps the optimum of a function f over the completions, ends with an assignment that maximizes f.
+- `sat_root`, `maxsat_cert` and `satl_root`: √1.2226 ≤ 1.1058; the branching number of (6, 6, 5, 5) and the set cover base 1.2576 are at most 1.2886, and √1.2886 ≤ 1.1352; √(2^{0.0926}) ≤ 1.0327.
+- `xsat_root`, `x3sat_vectors` and `x3sat_sparse_root`: the bounds of [quantum-exact-satisfiability](../quantum-exact-satisfiability/).
+
+Not formalized: the case analyses of [2], [4], [5], [6], [7] and [8], which enter the amortized count as hypotheses and the other theorems as cited bounds; the walk of [1] and the embedding of a backtracking tree in it; and the fact that simplifying a formula after fixing a variable preserves the optimum over the completions.
+
 ## Limits
 
-- The case analyses of [2], [4], [5] and [6] are used as stated and are not reproduced here; [`bounds.py`](bounds.py) checks only the arithmetic of the amortized proof of [2] and the square roots.
+- The case analyses of [2], [4], [5] and [6] are used as stated and are not reproduced here.
 - [4] omits the proof of its Lemma 4 and some reduction rules behind its Lemmas 2 and 3, which it cites from earlier work.
 - Theorems 1 and 2 carry a factor poly(L), which is not polynomial in m when clauses are long; the classical bounds of [2] and [4] carry the same factor.
-- Theorem 2 computes the optimum value. Recovering an assignment would need each reduction rule of [4] to be undone on a solution, which is not treated here.
 - No script runs the algorithms of [2], [4], [5], [7] or [8].
 - Theorem 3 uses the algorithm of [7]. The faster algorithm of [9], with base 1.0638, solves a 3-CNF part with a deterministic 3-SAT algorithm that is not a branching algorithm; a quantum form of it, and of the 1.0652^L algorithm of [10], is not treated here.
 
@@ -70,3 +87,7 @@ There is no splitting into components and no other subroutine. The running time 
 8. R. Beigel and D. Eppstein. 3-coloring in time O(1.3289^n). Journal of Algorithms 54(2), 2005.
 9. J. Peng and M. Xiao. Further improvements for SAT in terms of formula length. arXiv:2105.06131, 2021.
 10. J. Chen and Y. Liu. An improved SAT algorithm in terms of formula length. WADS 2009.
+
+## Use of AI
+
+Claude Opus 5.5 (Anthropic) was used throughout this research: to explore approaches, to develop and check proofs, to write the scripts and the Lean formalization, and to draft the text.

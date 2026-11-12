@@ -861,6 +861,15 @@ standard axioms (`propext`, `Classical.choice`, `Quot.sound`). There is no `sorr
   $p_y^1$ (lower node). If no dart of a chain edge below the upper node ends at a copy $p_r^0$ and no dart of a chain
   edge between the nodes starts at a copy $p_r^1$, the darts of the tokens of the chain edges between the two nodes
   are exactly the darts of a step (`RData.chain_step`).
+- `lean/SsspFlow/GHatChainFlags.lean`: the step on a parent chain from flags at the nodes. A piece lies at a copy
+  $p_t^\sigma$ when a dart at its vertex lies, in the cut, at the vertex of a corner $p_t^\sigma$ (`RData.CopyPiece`,
+  the $\sigma$ part of `RData.cutIdx`). The tail of the dart of a token lies at a copy $p_t^\sigma$ exactly when its
+  piece does, and its head exactly when the piece of the partner does (`RData.atCopy_tokDart_iff`,
+  `RData.atCopy_head_tokDart_iff`); a token edge of finite length joins the copy of its token to the copy of the
+  partner (`RData.hdTok_ends`, `RData.edgeTok_ends`). Flag a node of the chain of a target when the piece of its copy
+  lies at a copy $p_t^\sigma$ (`RData.chainFlag`). The darts of the chain edges between the first node flagged for
+  $0$ going up from the target and the last node below it flagged for $1$ are exactly the darts of a step
+  (`RData.chain_step_flags`).
 - `lean/SsspFlow/GHatLevelMark.lean`: the marking on the network of a level from local inputs. Each node knows the
   offsets and flags of the identifiers it hosts. Assuming the Exact SSSP bound, one algorithm of the message model,
   fixed before the network, runs `markAlg` on the network of the level within $2C\log^c n' \cdot (12D + 16) + 2$
