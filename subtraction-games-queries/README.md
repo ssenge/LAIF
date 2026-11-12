@@ -6,10 +6,11 @@ Written 12 Nov 2026.
 
 | | Problem | Previous best bound | This folder | Status |
 |---|---|---|---|---|
-| Thm 1 | Win(Γ) for subtraction games with n stones | O(n^{3/2} log n) quantum queries [1, 3]; classically Θ(n²) [1] | Ω(n^{3/2}) quantum queries, so Θ̃(n^{3/2}) | Lean (the embedding and the adversary counts); assuming the adversary bound [2] |
-| Cor 2 | Is the last vertex in the lexicographically first maximal independent set? Adjacency matrix of a graph on n + 1 vertices | | Θ̃(n^{3/2}) quantum queries | Lean (as Thm 1, and the identity with the losing positions) |
+| Thm 1 | Win(Γ) for subtraction games with n stones | O(n^{3/2} log n) quantum queries [1, 3]; classically Θ(n²) [1] | Ω(n^{3/2}) quantum queries | Lean (the embedding and the adversary counts); assuming the adversary bound [2] |
+| Thm 3 | Win(Γ), upper bound | O(n^{3/2} log n) quantum queries [1, 3] | O(n^{3/2}), so Θ(n^{3/2}) with Theorem 1 | Claim |
+| Cor 2 | Is the last vertex in the lexicographically first maximal independent set? Adjacency matrix of a graph on n + 1 vertices | | Θ(n^{3/2}) quantum queries | Lean (as Thm 1, and the identity with the losing positions) |
 
-The upper bound of [1] computes the positions in increasing order, each with a search for a losing position among its moves. Theorem 1 shows that this is optimal up to the factor log n.
+The upper bound of [1] computes the positions in increasing order, each with a search for a losing position among its moves. Theorem 1 shows that this is optimal up to the factor log n, and Theorem 3 removes that factor.
 
 ## 1. A parity of ORs inside a game
 
@@ -32,9 +33,19 @@ so with w = Win(u_t), g = Win(b_t) and h = NAND(w, g), Win(u_{t+1}) = NAND(NAND(
 
 *Proof.* Let k = ⌊n/10⌋ and s = n − 5k ≥ n/2, and restrict to the inputs x of Lemma 1 in which every row has at most one 1. Let a = ⌊k/2⌋, let X be the inputs with exactly a nonempty rows and Y those with a + 1, and relate x ∈ X to y ∈ Y if y arises from x by setting one entry of an empty row to 1. By Lemma 1, Win(Γ_x) differs on X and Y. Each x ∈ X has (k − a)s ≥ ks/2 related inputs, each y ∈ Y has a + 1 ≥ k/2, and for each x and each entry there is at most one related y that differs from x there, and in the same way for each y. The adversary bound [2] gives Ω(√((ks/2)(k/2))) = Ω(k√s) queries to x. A query to Γ_x reads at most one entry of x, and the other entries are constants, so it is simulated by one controlled query to x. For n ≥ 20, k ≥ n/20 and s ≥ n/2, so this is Ω(n^{3/2}); smaller n only change the constant. ∎
 
-**Corollary 2.** Let G be a graph on the vertices 0, …, n, given by its adjacency matrix, and let L be its lexicographically first maximal independent set: vertex j belongs to L iff no neighbour i < j does. Deciding whether n ∈ L takes Θ̃(n^{3/2}) quantum queries.
+**Corollary 2.** Let G be a graph on the vertices 0, …, n, given by its adjacency matrix, and let L be its lexicographically first maximal independent set: vertex j belongs to L iff no neighbour i < j does. Deciding whether n ∈ L takes Θ(n^{3/2}) quantum queries.
 
-*Proof.* For the game with Γ_{j,i} = 1 iff {i, j} is an edge, the losing positions are exactly L: position j loses iff no move leads to a losing position, that is, iff no neighbour i < j lies in L. So n ∈ L iff Win(Γ) = 0, and both bounds carry over. ∎
+*Proof.* For the game with Γ_{j,i} = 1 iff {i, j} is an edge, the losing positions are exactly L: position j loses iff no move leads to a losing position, that is, iff no neighbour i < j lies in L. So n ∈ L iff Win(Γ) = 0, and Theorems 1 and 3 carry over. ∎
+
+## 3. The upper bound without the log factor
+
+**Theorem 3.** Win(Γ, j) for all j ≤ n can be computed with O(n^{3/2}) quantum queries and bounded error.
+
+*Proof.* The algorithm of [1] computes Win(Γ, 1), …, Win(Γ, n) in this order. Given the earlier values, Win(Γ, j) is the OR of the at most j bits Γ_{j,i} with Win(Γ, i) = 0, which takes O(√j) queries [4]. The n searches each have bounded error, and running them one after the other with error 1/n each gives the factor log n of [1]. The factor is avoided by working with the dual of the general adversary bound, the filtered γ₂ program [5, 6]. For a function g on a set D of inputs, a solution is a family of vectors u_{x,k}, v_{x,k}, for x ∈ D and the positions k of the input, with Σ_{k : x_k ≠ y_k} ⟨u_{x,k}, v_{y,k}⟩ = [g(x) ≠ g(y)] for all x, y ∈ D, and its cost at x is max(Σ_k ‖u_{x,k}‖², Σ_k ‖v_{x,k}‖²). The bounded-error query complexity of g is, up to a constant factor, the least largest cost over all solutions [5, 7], on any domain D.
+
+Let f_j(Γ) = (Win(Γ, 1), …, Win(Γ, j)). For each value e of f_{j−1}, the function Γ ↦ Win(Γ, j) on the inputs with f_{j−1}(Γ) = e is the OR of the bits Γ_{j,i} with e_i = 0, which has bounded-error query complexity O(√j), so it has a solution of cost O(√j) at every input. By [6, Theorems 5 and 4], f_n has a solution of cost O(Σ_{j ≤ n} √j) = O(n^{3/2}) at every input, so f_n is computed with O(n^{3/2}) queries and bounded error [5]. ∎
+
+The same proof gives O(n^{3/2}) for every game on a directed acyclic graph with n + 1 vertices given by its adjacency matrix in a topological order, and for the set L of Corollary 2.
 
 ## Lean
 
@@ -46,7 +57,7 @@ The library `GameLB` in `lean/` (Lean 4, Mathlib at the revision pinned in `lean
 - `win_weight`, with `row_toMat` and `par_toMat`: on the inputs with at most one 1 per row, read as a matrix, the top position of the game of Lemma 1 wins iff the number of nonempty rows is odd, which is the function used in Theorem 1.
 - `weight_add`, `card_adds`, `card_removes`, `bit_add`, `add_inj`, `add_remove`, `remove_inj`: the counts of the relation in the proof of Theorem 1. Adding a 1 to an empty row raises the number of nonempty rows by one; an input with w nonempty rows has (k − w)s related inputs and arises from w inputs; and a related input differs exactly in the added entry (`bit_add`), and distinct related inputs add distinct entries (`add_inj`, and `add_remove`, `remove_inj` for the other side), so for each entry at most one related input differs there.
 
-Not formalized: the adversary bound [2], which is used as stated, the simulation of a query to Γ_x by a query to x, the step from k and s to n in Theorem 1, and the upper bound of [1].
+Not formalized: the adversary bound [2], which is used as stated, the simulation of a query to Γ_x by a query to x, the step from k and s to n in Theorem 1, the upper bound of [1], and Theorem 3.
 
 ## Scripts
 
@@ -61,3 +72,7 @@ Claude Opus 5.5 (Anthropic) was used throughout this research: to explore approa
 1. K. Khadiev, D. Kravchenko. On the complexity of solving subtraction games. arXiv:1808.03494, 2018.
 2. A. Ambainis. Quantum lower bounds by quantum arguments. J. Comput. Syst. Sci. 64(4), 750–767, 2002. arXiv:quant-ph/0002066.
 3. D. Kravchenko, K. Khadiev, D. Serov, R. Kapralov. Quantum-over-classical advantage in solving multiplayer games. arXiv:2006.06965, 2020.
+4. L. K. Grover. A fast quantum mechanical algorithm for database search. STOC 1996. arXiv:quant-ph/9605043.
+5. T. Lee, R. Mittal, B. W. Reichardt, R. Špalek, M. Szegedy. Quantum query complexity of state conversion. FOCS 2011. arXiv:1011.3020.
+6. R. Kothari. An optimal quantum algorithm for the oracle identification problem. STACS 2014. arXiv:1311.7685.
+7. P. Høyer, T. Lee, R. Špalek. Negative weights make adversaries stronger. STOC 2007. arXiv:quant-ph/0611054.
