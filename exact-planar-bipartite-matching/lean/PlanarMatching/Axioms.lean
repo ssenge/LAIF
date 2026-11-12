@@ -127,3 +127,10 @@ import PlanarMatching
 #print axioms PlanarMatching.Sched.matched
 #print axioms PlanarMatching.Decomp.escape
 #print axioms PlanarMatching.mates_decomp
+#print axioms PlanarMatching.kerVec_mul
+#print axioms PlanarMatching.kerVec_unique
+#print axioms PlanarMatching.mem_support_iff
+#print axioms PlanarMatching.card_zero_mul
+#print axioms PlanarMatching.card_kerVec_zero
+#print axioms PlanarMatching.support_iff_rank
+#print axioms PlanarMatching.lemma8

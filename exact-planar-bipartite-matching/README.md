@@ -105,7 +105,7 @@ Here the thick edges are the matching, and the new vertex h reaches the free ver
 | Check | What it covers | What it does not cover |
 |---|---|---|
 | Simulation in `sim/` | The logic of the proofs on planar instances, against independent solvers, with negative controls that must fail. 863,003 runs for the bipartite note, no failure | Rounds and messages, the published black boxes, sizes above a few hundred vertices |
-| Lean in `lean/` | The combinatorial core: Lemmas A and C, loop erasure, dual updates, the matrix steps of the elimination, its induction over the bags and the search for mates, Fact 1 for walks, the distance formula of the Exact Labels Lemma, and more. No `sorry`, axioms listed in `lean/axioms.txt` | Planarity, anything about rounds, and the facts taken from published papers |
+| Lean in `lean/` | The combinatorial core: Lemmas A and C, loop erasure, dual updates, the matrix steps of the elimination, its induction over the bags, the search for mates, the kernel of Lemma 7 and the rank step of Lemma 8, Fact 1 for walks, the distance formula of the Exact Labels Lemma, and more. No `sorry`, axioms listed in `lean/axioms.txt` | Planarity, anything about rounds, and the facts taken from published papers |
 
 Every bound in the tables rests on published black boxes, which were read and not re-proved. Each note ends with what its checks missed.
 

@@ -12,3 +12,4 @@ import PlanarMatching.ElimTree
 import PlanarMatching.ElimDecomp
 import PlanarMatching.MateSearch
 import PlanarMatching.MateDecomp
+import PlanarMatching.Kernel
