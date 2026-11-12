@@ -18,6 +18,8 @@ Status: Claim, implied by [1] applied to the algorithm SparseSAT of [7], whose l
 
 **Before.** To our knowledge, no quantum bound for SAT or MaxSAT in terms of m or L has been stated. The best classical bounds are 1.2226^m for SAT [2], improving 1.234^m and 1.239^m [3], and 1.2886^m for MaxSAT [4]; in terms of L, the best classical bound is 1.0638^L [9], and 2^{0.0926 L} ≤ 1.0663^L is that of [7]. Quantum search and quantum maximum finding over all assignments take 2^{n/2}; Theorems 1 and 2 are smaller whenever m < 3.4461 n and m < 2.7330 n ([`bounds.log`](bounds.log)), and the bounds can be combined by taking the smaller.
 
+The same approach, the walk of [1] on classical branching algorithms with polynomial space, was applied to graph colouring, domination problems and monotone local search in [11], which is the closest prior work.
+
 ## The tree for SAT
 
 Algorithm 1 of [2] reduces the formula and then branches.
@@ -87,6 +89,7 @@ Not formalized: the case analyses of [2], [4], [5], [6], [7] and [8], which ente
 8. R. Beigel and D. Eppstein. 3-coloring in time O(1.3289^n). Journal of Algorithms 54(2), 2005.
 9. J. Peng and M. Xiao. Further improvements for SAT in terms of formula length. arXiv:2105.06131, 2021.
 10. J. Chen and Y. Liu. An improved SAT algorithm in terms of formula length. WADS 2009.
+11. S. Senge. Polynomial-space quantum algorithms from classical branching: colouring, domination and monotone local search. arXiv:2611.12714, 2026.
 
 ## Use of AI
 
