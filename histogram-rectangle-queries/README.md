@@ -10,9 +10,9 @@ together with an interval that attains it. Classically this takes Θ(n) queries 
 
 | | Problem | Previous best bound | This folder | Status |
 |---|---|---|---|---|
-| Thm 1 | OPT exactly, H distinct heights | O(n) queries | O(√(nH) log n log log n) queries | Claim; Lean for the combinatorial lemmas |
-| Cor 2 | OPT exactly, heights in a known set of H values | O(n) queries | O(√(nH) log log n) queries | Claim |
-| Thm 3 | OPT within a factor 1 + ε | O(n) queries | O(√(n log n / ε) · log log n) queries | Claim; Lean for the threshold grid |
+| Thm 1 | OPT exactly, H distinct heights | O(n) queries | O(√(nH) log n) queries | Claim; Lean for the combinatorial lemmas |
+| Cor 2 | OPT exactly, heights in a known set of H values | O(n) queries | O(√(nH)) queries | Claim |
+| Thm 3 | OPT within a factor 1 + ε | O(n) queries | O(√(n log n / ε)) queries | Claim; Lean for the threshold grid |
 | | Lower bound, any factor, H = 2 | | Ω(√n) queries | Claim |
 
 So a constant number of distinct heights, or a constant approximation factor, gives Θ̃(√n).
@@ -35,21 +35,21 @@ So the best rectangle through p within a window [lo, hi] ∋ p follows from the 
 
 *Proof.* Any w consecutive positions contain a multiple of w, and the interval reaches less than 2w − 1 positions beyond p on each side. ∎
 
-**Theorem 1.** OPT, and an interval that attains it, can be computed with O(√(nH) log n log log n) quantum queries and bounded error.
+**Theorem 1.** OPT, and an interval that attains it, can be computed with O(√(nH) log n) quantum queries and bounded error.
 
 *Proof.* For each scale w = 2^a ≤ n and each multiple p of w, let f(p, w) be the best rectangle through p within the window of Lemma 2, clipped to [0, n − 1]. By Lemma 2, OPT is the largest f(p, w) over all scales and multiples.
 
 The records of p in the window are found one after the other, each as the first position beyond the last record whose height is below it. A search for the first such position at distance g costs O(√g) queries [2, Theorem 6], and the composition theorem for algorithms with input-dependent query complexity [2, Theorem 4] bounds the whole sequence by O(Σ √g_i) with bounded error. With R searches on a side whose distances sum to at most 2w, the Cauchy-Schwarz inequality gives Σ √g_i ≤ √(2Rw). Then f(p, w) follows from the records without further queries (Section 1).
 
-Since H is unknown, it is guessed as H' = 1, 2, 4, …. With guess H', each staircase stops after H' + 1 records, p included, and raises a flag if it got that far, so f(p, w) costs O(√(H'w)). For each scale, maximum finding over the n/w multiples with a bounded-error evaluation [4] costs O(√(n/w) · √(H'w)) = O(√(nH')), and a search for a raised flag with a bounded-error oracle [6] costs the same. If a flag is raised at some scale, the guess doubles and all scales run again. Every side has at most H records, so no flag is raised once H' ≥ H, and the guesses stop below 2H. Over the log n scales and the geometric sum of the guesses this is O(√(nH) log n), and reducing the error of each of the O(log n log H) maximum findings and flag searches to O(1/log² n) costs the factor log log n. ∎
+Since H is unknown, it is guessed as H' = 1, 2, 4, …. With guess H', each staircase stops after H' + 1 records, p included, and raises a flag if it got that far, so f(p, w) costs O(√(H'w)). For each scale, maximum finding over the n/w multiples with a bounded-error evaluation [4] costs O(√(n/w) · √(H'w)) = O(√(nH')), and a search for a raised flag with a bounded-error oracle [6] costs the same. If a flag is raised at some scale, the guess doubles and all scales run again. Every side has at most H records, so no flag is raised once H' ≥ H, and the guesses stop below 2H. Over the log n scales and the geometric sum of the guesses this is O(√(nH) log n). The maximum findings and flag searches run one after the other, and each depends only on the outputs of the earlier ones. Each computes a function of the histogram with bounded error, so it has a solution of the filtered γ₂ program of the same cost, and these solutions add up by the sequential composition of [2, Theorems 4 and 5] (used in the same way in Theorem 5 of [1]), with no loss for error reduction. ∎
 
-**Corollary 2.** If the heights lie in a known set of H values, OPT can be computed with O(√(nH) log H log log n) quantum queries.
+**Corollary 2.** If the heights lie in a known set of H values, OPT can be computed with O(√(nH)) quantum queries.
 
-*Proof.* OPT = max over the H values t of t · L(t), where L(t) is the longest run of heights at least t. This is the longest empty segment of the bit string [h_i < t], which takes O(√n log log n) queries [1]. Maximum finding over the H values with a bounded-error evaluation [4] gives the bound. ∎
+*Proof.* OPT = max over the H values t of t · L(t), where L(t) is the longest run of heights at least t. This is the longest empty segment of the bit string [h_i < t], which takes O(√n) queries [1]. Maximum finding over the H values with a bounded-error evaluation [4] gives the bound. ∎
 
 ## 3. Approximation
 
-**Theorem 3.** For 0 < ε ≤ 1, a value in [OPT/(1 + ε), OPT] can be computed with O(√(n log n / ε) · log log n) quantum queries and bounded error.
+**Theorem 3.** For 0 < ε ≤ 1, a value in [OPT/(1 + ε), OPT] can be computed with O(√(n log n / ε)) quantum queries and bounded error.
 
 *Proof.* Find the largest height m with O(√n) queries [3]. If m = 0, then OPT = 0. Otherwise let t_b = m/(1 + ε)^b for b = 0, …, B, with B = ⌈log_{1+ε} n⌉, and output the largest t_b · L(t_b), with L as in Corollary 2.
 
@@ -82,7 +82,7 @@ Claude Opus 5.5 (Anthropic) was used throughout this research: to explore approa
 
 ## References
 
-1. Longest empty segment in O(√n log log n) queries: Theorem 5 in [largest-empty-rectangle-queries](../largest-empty-rectangle-queries/) of this repository; earlier O(√n log n log log n) in K. Khadiev et al., Quantum algorithm for searching for the longest segment and the largest empty rectangle, arXiv:2512.03788, 2025.
+1. Longest empty segment in O(√n) queries: Theorem 5 in [largest-empty-rectangle-queries](../largest-empty-rectangle-queries/) of this repository; earlier O(√n log n log log n) in K. Khadiev et al., Quantum algorithm for searching for the longest segment and the largest empty rectangle, arXiv:2512.03788, 2025.
 2. R. Kothari. An optimal quantum algorithm for the oracle identification problem. STACS 2014. arXiv:1311.7685.
 3. C. Dürr, P. Høyer. A quantum algorithm for finding the minimum. arXiv:quant-ph/9607014, 1996.
 4. Q. Wang, M. Ying. Quantum algorithm for lexicographically minimal string rotation. arXiv:2012.09376.
