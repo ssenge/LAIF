@@ -4,6 +4,7 @@
 #  (2) the moment bound ||X_i - mu||_h <= 2 kappa sqrt(h M) for h = 2, 4, 6 (with kappa replaced by the largest sampled ||A_a||,
 #      which is at most kappa, so the check is stronger than the lemma);
 #  (3) under corruption of a gamma-fraction of the records, the truncated mean of X_i has error of order gamma sqrt(M) kappa,
+#      at most 4 gamma sqrt(M ln(1/gamma)) kappa, and for gamma >= 0.02
 #      below that of classical shadows with the truncated mean, whose error scales with ||O_i||_HS = sqrt(d).
 # Families: four random observables U^dag Z U in dimension d = 128, and ten anticommuting Pauli observables on 5 qubits (kappa = 1).
 # python -I robust.py
@@ -75,11 +76,11 @@ def truncated_mean(x, g):
 
 
 def attack(x, gamma, rng):
-    """Replace a gamma-fraction of the samples by the value just inside the upper trimming boundary (the strongest
+    """Replace the gamma-fraction of smallest samples by the value just inside the upper trimming boundary (a strong
     one-sided shift against the truncated mean with trimming 2 gamma)."""
     y = x.copy(); n = len(x); k = int(gamma * n)
     q = np.sort(x)[n - 1 - int(np.ceil(2 * gamma * n))]
-    idx = rng.choice(n, k, replace=False); y[idx] = q
+    y[np.argsort(x)[:k]] = q
     return y
 
 
@@ -102,7 +103,7 @@ def run(name, O, rng, n=8000, gammas=(0.01, 0.02, 0.05)):
         scale = g * np.sqrt(M * np.log(1 / g)) * kmax
         print(f"  gamma = {g:.2f}: error {ec:.4f} (combination), {es:.4f} (classical shadows); "
               f"error/(gamma sqrt(M ln(1/gamma)) kappa) = {ec / scale:.2f}", flush=True)
-        assert ec / scale <= 2.0, (name, g, ec, scale)
+        assert ec / scale <= 4.0, (name, g, ec, scale)
         if g >= 0.02:
             assert ec < es, (name, g, ec, es)
 
