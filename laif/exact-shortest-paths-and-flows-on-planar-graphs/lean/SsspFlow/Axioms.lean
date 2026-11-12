@@ -845,3 +845,5 @@ Expected output for each: `propext`, `Classical.choice`, `Quot.sound` (or a subs
 #print axioms SsspFlow.RotSystem.RData.chain_least_greatest
 #print axioms SsspFlow.RotSystem.RData.chainDarts_split
 #print axioms SsspFlow.RotSystem.RData.level_node_data
+#print axioms SsspFlow.RotSystem.RData.level_node_step
+#print axioms SsspFlow.RotSystem.RData.levelNode_run
