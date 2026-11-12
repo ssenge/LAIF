@@ -834,9 +834,9 @@ standard axioms (`propext`, `Classical.choice`, `Quot.sound`). There is no `sorr
   one more run from a set of targets gives at each node the least sum of $f$ along the parent steps from a target
   (`Net.ExactSpec.dsrcTop_markW`, with `Net.ExactSpec.walk_parW`).
 - `lean/SsspFlow/OracleChainSeg.lean`: segments of the parent chains of the oracle. Along valid parent steps from a
-  node, two nodes of the chain are joined by a walk down the chain whose edges are the parent steps between them
-  (`Walk.AllEdges`, `Walk.AllEdges.append`, `Walk.AllEdges.mono`) and whose length is the sum of their lengths
-  (`Net.ExactSpec.chain_seg`).
+  node, two nodes of the chain are joined by a walk down the chain whose edges are exactly the parent steps between
+  them (`Walk.AllEdges`, `Walk.HasEdge`, `Walk.AllEdges.append`, `Walk.AllEdges.mono`) and whose length is the sum of
+  their lengths (`Net.ExactSpec.chain_seg`).
 - `lean/SsspFlow/OracleChainPos.lean`: positions on the parent chains of the oracle. The rank drops at every valid
   parent step (`Net.ExactSpec.rank_iter`), so a node has one position along the valid steps from a node
   (`Net.ExactSpec.parSteps_inj`). For targets whose valid chains do not meet, one more run with length $1$ on the
@@ -854,6 +854,13 @@ standard axioms (`propext`, `Classical.choice`, `Quot.sound`). There is no `sorr
   the pieces at $\kappa_0(t)$ and $\kappa_1(t)$, below $M$ and at most $\lambda_t$, split at two nodes whose copies lie
   at a copy $p_x^0$ and a copy $p_y^1$, with no dart after the first node ending at a copy $p_r^0$ and no dart between
   the nodes starting at a copy $p_r^1$, has the darts of a step between the two nodes (`RData.level_step_of_split`).
+- `lean/SsspFlow/GHatChainStep.lean`: the step on the parent chain of a target. A dart of a walk of a level is the
+  dart of the token of one of its edges (`RData.levelDarts_sub`, `RData.levelDarts_of_hasEdge`). Let the chain of a
+  target copy at the piece at $\kappa_1(t)$ reach a copy at the piece at $\kappa_0(t)$ with sum of lengths below $M$
+  and at most $\lambda_t$, and let the copies of two of its nodes hold tokens at a copy $p_x^0$ (upper node) and a copy
+  $p_y^1$ (lower node). If no dart of a chain edge below the upper node ends at a copy $p_r^0$ and no dart of a chain
+  edge between the nodes starts at a copy $p_r^1$, the darts of the tokens of the chain edges between the two nodes
+  are exactly the darts of a step (`RData.chain_step`).
 - `lean/SsspFlow/GHatLevelMark.lean`: the marking on the network of a level from local inputs. Each node knows the
   offsets and flags of the identifiers it hosts. Assuming the Exact SSSP bound, one algorithm of the message model,
   fixed before the network, runs `markAlg` on the network of the level within $2C\log^c n' \cdot (12D + 16) + 2$

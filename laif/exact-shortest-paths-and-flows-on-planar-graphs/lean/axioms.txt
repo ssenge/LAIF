@@ -793,3 +793,6 @@
 'SsspFlow.Walk.AllEdges.append' does not depend on any axioms
 'SsspFlow.Walk.AllEdges.mono' does not depend on any axioms
 'SsspFlow.Congest.Net.ExactSpec.chain_seg' depends on axioms: [propext, Classical.choice, Quot.sound]
+'SsspFlow.RotSystem.RData.levelDarts_sub' depends on axioms: [propext, Classical.choice, Quot.sound]
+'SsspFlow.RotSystem.RData.levelDarts_of_hasEdge' depends on axioms: [propext, Classical.choice, Quot.sound]
+'SsspFlow.RotSystem.RData.chain_step' depends on axioms: [propext, Classical.choice, Quot.sound]
