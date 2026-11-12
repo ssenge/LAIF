@@ -114,9 +114,26 @@ For the first term, [1, Proposition 2.2] (from [2, Theorem S12]) with S₁ = S, 
 
 The number of doubling-stage queries times ε² stays constant as ε decreases. Output in `sim/doubling_out.txt`.
 
+## Lean
+
+The folder [lean/](lean/) checks the scalar steps of the proofs in Lean 4 with Mathlib, with no `sorry` and only the standard axioms. Build it with `lake build`. Running `lake env lean GaussianDoubling/Axioms.lean` prints the axioms of each theorem (output in `lean/axioms.txt`).
+
+**Checked** (`GaussianDoubling/Basic.lean`):
+
+- **Exponential and logarithm bounds** (`exp_quarter_le`, `exp_half_le`, `exp_056_le`, `exp_028_le`, `exp_le_inv_one_sub`, `expm1_le_mul`, `neg_log_one_sub_le`): e^{1/4} ≤ 1.2841, e^{1/2} ≤ 1.6488, e^{0.56} ≤ 1.7541, e^{0.28} ≤ 1.33, e^x ≤ 1/(1 − x), e^x − 1 ≤ x e^x and −ln(1 − x) ≤ x/(1 − x).
+- **Lemma 4** (`energy_le`): m(e^{2γ} − 1)/2 + (e^γ + 1/4)² η²/2 ≤ 0.92 ñ for η² = ñ/2, γ ≤ 1/4 and 5mγ ≤ ñ.
+- **Lemma 5** (`sigma_le`, `tau_coef`, `nu_coef`): (e^{1/2} + 1)/2 ≤ 1.325, (1.325/200)^{1/2} ≤ 0.0814 and (1.325/400)^{1/2}/4 ≤ 0.0145.
+- **Lemma 6** (`log_lip`, `khat_le`, `wprime_le`, `kappa_le`, `mk_le`, `b_update`, `b_update_one`): the radius 0.305 and constant 1.44 of the logarithm, 0.118 and 0.28 for K̂, e^{0.56} · 0.118 ≤ 0.21, −ln(1 − 0.21y) ≤ y/2 for y ≤ 1/4, e^{1/4} − 1 ≤ 0.285, and the two inequalities of the displacement update.
+- **Coarse stage** (`coarse_norm`, `coarse_dist`, `coarse_log`): (2z + 1)ε₀ < 1/2, ‖T‖ ≤ 1.06z, ‖T^{−1}S − 1‖ ≤ 0.24γ and ‖log W‖ ≤ 0.26γ for ε₀ = γ/(40z³).
+- **Final step** (`prop22_const`, `g_le`, `prop22_combine`, `final_sym`, `final_disp`): 6^{1/2} + 10^{1/2} + 5(2m)^{1/2} ≤ 9(2m)^{1/2}, g(x) ≤ 2.71 for 1 ≤ x ≤ 1.06, the two error terms are at most ε/2 for k_L ≥ k_A and k_L ≥ k_B.
+- **Proposition 2** (`rotation_floor`, `rotation_p`, `rotation_dist`): ⌊π/θ⌋ ≥ 2n̄ for θ ≤ π/(2n̄ + 1), p ≥ n̄θ/π, and 2p(1 − p)(1 − c) ≥ p for p ≤ 1/2 and c ≤ 0.
+- **Query count** (`geom_queries`): Σ_{t ≤ L} 2^t = 2^{L+1} − 1.
+
+**Not formalized:** the matrix statements (Lemma 3, the matrix facts (F1) to (F5), the chain moments), the Gaussian tail bounds, the continuity bounds of [1, 2], the rounding of [1, Lemma 4.3] and the trace distance in Proposition 2.
+
 ## Scope
 
-- Written proof with numerical checks. The bound of [1, Lemma 4.2, eq. (4.33)], the symplectic rounding [1, Lemma 4.3], the continuity bounds [1, Propositions 2.1 and 2.2] from [2], and the norm bound for standard Gaussian vectors are used as stated there.
+- Written proof with numerical checks, and the scalar steps checked in Lean. The bound of [1, Lemma 4.2, eq. (4.33)], the symplectic rounding [1, Lemma 4.3], the continuity bounds [1, Propositions 2.1 and 2.2] from [2], and the norm bound for standard Gaussian vectors are used as stated there.
 - The queries are sequential and adaptive: the known Gaussian operations between queries depend on earlier outcomes, and a chain of length 2^L is coherent. The algorithm of [1] uses independent queries. With independent coherent-probe queries and heterodyne detection, the error of the matrix estimate decreases as the inverse square root of the number of queries, which together with Proposition 2 is the source of the 1/ε⁴.
 - The constants are explicit and not optimized. No lower bound on the query complexity is given here.
 - The bound uses at most ñ = min{n̄_in, 32t²} photons per input and does not improve with larger n̄_in.

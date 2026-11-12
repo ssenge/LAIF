@@ -1,0 +1,32 @@
+import GaussianDoubling.Basic
+
+#print axioms GaussianDoubling.exp_quarter_le
+#print axioms GaussianDoubling.exp_half_le
+#print axioms GaussianDoubling.exp_le_inv_one_sub
+#print axioms GaussianDoubling.exp_056_le
+#print axioms GaussianDoubling.exp_028_le
+#print axioms GaussianDoubling.expm1_le_mul
+#print axioms GaussianDoubling.neg_log_one_sub_le
+#print axioms GaussianDoubling.energy_le
+#print axioms GaussianDoubling.sigma_le
+#print axioms GaussianDoubling.tau_coef
+#print axioms GaussianDoubling.nu_coef
+#print axioms GaussianDoubling.log_lip
+#print axioms GaussianDoubling.khat_le
+#print axioms GaussianDoubling.wprime_le
+#print axioms GaussianDoubling.kappa_le
+#print axioms GaussianDoubling.mk_le
+#print axioms GaussianDoubling.b_update
+#print axioms GaussianDoubling.b_update_one
+#print axioms GaussianDoubling.coarse_norm
+#print axioms GaussianDoubling.coarse_dist
+#print axioms GaussianDoubling.coarse_log
+#print axioms GaussianDoubling.prop22_const
+#print axioms GaussianDoubling.g_le
+#print axioms GaussianDoubling.prop22_combine
+#print axioms GaussianDoubling.final_sym
+#print axioms GaussianDoubling.final_disp
+#print axioms GaussianDoubling.rotation_floor
+#print axioms GaussianDoubling.rotation_p
+#print axioms GaussianDoubling.rotation_dist
+#print axioms GaussianDoubling.geom_queries
