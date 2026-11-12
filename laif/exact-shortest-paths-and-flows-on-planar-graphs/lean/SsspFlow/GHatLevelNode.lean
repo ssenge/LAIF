@@ -156,7 +156,7 @@ theorem level_node_data (lam : S.Tok → ℕ) (M : ℕ) (c : N.G.Dart → ℕ) (
     hQu R hr ixI jxI hix hjx hAt x1 x2 hx1 hx2
   obtain ⟨hA, hun, h1, h2, h3, h4, hroot, hup, hT, hTv⟩ :=
     S.level_roots_cond hN r ℓ lam M c hcr hlam hgc hΓ Q hQ hQu R hr hAt
-  obtain ⟨kk, u, hu, hs, hρu, -, hpu, hsum, hsh, hidx'⟩ := S.chain_data hN lam M c hcr hlam hgc A.2 hA
+  obtain ⟨kk, u, hu, hs, hρu, -, hpu, hsum, hsh, hidx', -⟩ := S.chain_data hN lam M c hcr hlam hgc A.2 hA
     hun h1 h2 h3 h4 _ _ hr (S.endV_end _) (S.pieceOf_endV _) hroot (hT _ hTv).1 hup
   have hE : C.idx (A.2.κ0 t) (S.chainDarts hN R ((S.levelPad hN).ι (.inl (S.endV (A.2.κ1 t)))) 0 kk) =
       C.idx (A.2.κ0 t) ps := Set.ext fun r' => (hidx' r').trans (hidx r').symm

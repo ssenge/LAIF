@@ -70,11 +70,15 @@ theorem chain_darts_idx {C : N.toRot.dual.CutPath} {g : N.G.Dart → ℝ≥0∞}
     (hle : ((∑ l ∈ Finset.range k, S.levelLen hN lam M ((Net.parOf r)^[l + 1] ((S.levelPad hN).ι (.inl v)))
       ((Net.parOf r)^[l] ((S.levelPad hN).ι (.inl v))) : ℕ∞) : ℝ≥0∞) ≤ C.lamD g t) :
     L.Shortest t (S.chainDarts hN r ((S.levelPad hN).ι (.inl v)) 0 k) ∧
-      ∀ r', r' ∈ C.idx (L.κ0 t) (S.chainDarts hN r ((S.levelPad hN).ι (.inl v)) 0 k) ↔
+      (∀ r', r' ∈ C.idx (L.κ0 t) (S.chainDarts hN r ((S.levelPad hN).ι (.inl v)) 0 k) ↔
         r' ≤ C.m ∧ ∃ σ, ∃ y, (∃ i, (Net.parOf r)^[i] ((S.levelPad hN).ι (.inl v)) = y) ∧
           ∃ hy : (∃ x : S.Tok, S.IsEnd x.1 (S.copyAt hN y)), ∃ z,
             S.dualSplit.tail z = S.vertexEquiv (S.pieceOf ⟨S.copyAt hN y, hy⟩) ∧
-            C.cut.tail z = C.cut.tail (C.k σ r') := by
+            C.cut.tail z = C.cut.tail (C.k σ r')) ∧
+      ∀ w, (w = S.dualSplit.tail (L.κ0 t) ∨ ∃ y ∈ S.chainDarts hN r ((S.levelPad hN).ι (.inl v)) 0 k,
+          S.dualSplit.head y = w) ↔
+        ∃ y, (∃ i, (Net.parOf r)^[i] ((S.levelPad hN).ι (.inl v)) = y) ∧
+          ∃ hy : (∃ x : S.Tok, S.IsEnd x.1 (S.copyAt hN y)), S.vertexEquiv (S.pieceOf ⟨S.copyAt hN y, hy⟩) = w := by
   obtain ⟨Q, -, -, hQw, hQf⟩ := hr.chain_seg ((S.levelPad hN).ι (.inl v)) hs k 0 (by omega)
   have hD : S.levelDarts hN Q = S.chainDarts hN r ((S.levelPad hN).ι (.inl v)) 0 k := by
     rw [levelDarts_eq_edgeFlat, hQf]
@@ -113,11 +117,15 @@ theorem chain_darts_idx {C : N.toRot.dual.CutPath} {g : N.G.Dart → ℝ≥0∞}
         ((∑ l ∈ Finset.range k, S.levelLen hN lam M ((Net.parOf r)^[l + 1] ((S.levelPad hN).ι (.inl v)))
           ((Net.parOf r)^[l] ((S.levelPad hN).ι (.inl v))) : ℕ∞) : ℝ≥0∞) →
       L.Shortest t (S.chainDarts hN r ((S.levelPad hN).ι (.inl v)) 0 k) ∧
-      ∀ r', r' ∈ C.idx (L.κ0 t) (S.chainDarts hN r ((S.levelPad hN).ι (.inl v)) 0 k) ↔
+      (∀ r', r' ∈ C.idx (L.κ0 t) (S.chainDarts hN r ((S.levelPad hN).ι (.inl v)) 0 k) ↔
         r' ≤ C.m ∧ ∃ σ, ∃ y, (∃ i, (Net.parOf r)^[i] ((S.levelPad hN).ι (.inl v)) = y) ∧
           ∃ hy : (∃ x : S.Tok, S.IsEnd x.1 (S.copyAt hN y)), ∃ z,
             S.dualSplit.tail z = S.vertexEquiv (S.pieceOf ⟨S.copyAt hN y, hy⟩) ∧
-            C.cut.tail z = C.cut.tail (C.k σ r') := by
+            C.cut.tail z = C.cut.tail (C.k σ r')) ∧
+      ∀ w, (w = S.dualSplit.tail (L.κ0 t) ∨ ∃ y ∈ S.chainDarts hN r ((S.levelPad hN).ι (.inl v)) 0 k,
+          S.dualSplit.head y = w) ↔
+        ∃ y, (∃ i, (Net.parOf r)^[i] ((S.levelPad hN).ι (.inl v)) = y) ∧
+          ∃ hy : (∃ x : S.Tok, S.IsEnd x.1 (S.copyAt hN y)), S.vertexEquiv (S.pieceOf ⟨S.copyAt hN y, hy⟩) = w := by
     intro a Q ha hD hsupp hw
     subst ha
     have hp : Q.wt (lenTop (S.levelLen hN lam M)) < M := hw ▸ hlt
@@ -132,7 +140,8 @@ theorem chain_darts_idx {C : N.toRot.dual.CutPath} {g : N.G.Dart → ℝ≥0∞}
     have hsub : C.Γ ⊆ S.Γ := L.sub.trans hS
     rw [← hD]
     refine ⟨(S.level_shortest_darts hN lam M c hcr hlam hgc L hS hz h1 h2 h3 h4 Q hp hu hv hpu hpv
-      (hw ▸ hle)).1, fun r' => ?_⟩
+      (hw ▸ hle)).1, fun r' => ?_, fun w => (hvis w).trans
+        ⟨fun ⟨y, hy, hcy, h⟩ => ⟨y, (hsupp y).1 hy, hcy, h⟩, fun ⟨y, hy, hcy, h⟩ => ⟨y, (hsupp y).2 hy, hcy, h⟩⟩⟩
     show (r' ≤ C.m ∧ ∃ σ, _) ↔ _
     refine and_congr_right fun _ => exists_congr fun σ => ?_
     constructor
@@ -175,11 +184,15 @@ theorem chain_data {C : N.toRot.dual.CutPath} {g : N.G.Dart → ℝ≥0∞}
         ((Net.parOf r)^[l] ((S.levelPad hN).ι (.inl v))) : ℕ∞) : ℝ≥0∞) =
         ((r ((S.levelPad hN).ι (.inl v))).1 : ℝ≥0∞) ∧
       L.Shortest t (S.chainDarts hN r ((S.levelPad hN).ι (.inl v)) 0 k) ∧
-      ∀ r', r' ∈ C.idx (L.κ0 t) (S.chainDarts hN r ((S.levelPad hN).ι (.inl v)) 0 k) ↔
+      (∀ r', r' ∈ C.idx (L.κ0 t) (S.chainDarts hN r ((S.levelPad hN).ι (.inl v)) 0 k) ↔
         r' ≤ C.m ∧ ∃ σ, ∃ y, (∃ i, (Net.parOf r)^[i] ((S.levelPad hN).ι (.inl v)) = y) ∧
           ∃ hy : (∃ x : S.Tok, S.IsEnd x.1 (S.copyAt hN y)), ∃ z,
             S.dualSplit.tail z = S.vertexEquiv (S.pieceOf ⟨S.copyAt hN y, hy⟩) ∧
-            C.cut.tail z = C.cut.tail (C.k σ r') := by
+            C.cut.tail z = C.cut.tail (C.k σ r')) ∧
+      ∀ w, (w = S.dualSplit.tail (L.κ0 t) ∨ ∃ y ∈ S.chainDarts hN r ((S.levelPad hN).ι (.inl v)) 0 k,
+          S.dualSplit.head y = w) ↔
+        ∃ y, (∃ i, (Net.parOf r)^[i] ((S.levelPad hN).ι (.inl v)) = y) ∧
+          ∃ hy : (∃ x : S.Tok, S.IsEnd x.1 (S.copyAt hN y)), S.vertexEquiv (S.pieceOf ⟨S.copyAt hN y, hy⟩) = w := by
   have hfin : (r ((S.levelPad hN).ι (.inl v))).1 ≠ ⊤ := fun e => by simp [e] at hlt
   obtain ⟨k, hk0, -, hstep, hsumk⟩ := hr.chain _ hfin
   have hs : Net.ParSteps r ((S.levelPad hN).ι (.inl v)) k := fun i hi => (hstep i hi).1
@@ -214,9 +227,9 @@ theorem chain_data {C : N.toRot.dual.CutPath} {g : N.G.Dart → ℝ≥0∞}
     exact aux Q (by rw [Nat.zero_add]; exact hρu)
       ((hQw.trans (by rw [Nat.zero_add, Finset.range_eq_Ico])).trans_lt hlt')
   have hnone : (r ((S.levelPad hN).ι (.inl u))).2 = none := by rw [← hρu]; exact hk0
-  obtain ⟨hsh, hidx'⟩ := S.chain_darts_idx hN lam M c hcr hlam hgc L hS hz h1 h2 h3 h4 ψ r hr hs hρu hnone
+  obtain ⟨hsh, hidx', hvis⟩ := S.chain_darts_idx hN lam M c hcr hlam hgc L hS hz h1 h2 h3 h4 ψ r hr hs hρu hnone
     hu hv hpu hpv hlt' (by rw [hsumR]; exact hle)
-  exact ⟨k, u, hu, hs, hρu, hnone, hpu, hsumR, hsh, hidx'⟩
+  exact ⟨k, u, hu, hs, hρu, hnone, hpu, hsumR, hsh, hidx', hvis⟩
 
 /-- **The least and the greatest index on the darts of a chain.** Under the conditions of
 `RData.level_least_greatest`, the chain of the target takes `k` valid parent steps to a root at the
@@ -265,7 +278,7 @@ theorem chain_least_greatest {C : N.toRot.dual.CutPath} {g : N.G.Dart → ℝ≥
         (C.m - i2 : ℕ) := by
   obtain ⟨ps, i1, i2, -, -, hl, hg, e1, e2, hidx⟩ := S.level_least_greatest hN lam M c hcr hlam hgc L hS
     hz h1 h2 h3 h4 ψ r hr hv hpv hroot hle isT hT hTv fl hfl ix jx hix hjx
-  obtain ⟨k, u, hu, hs, hρu, hnone, hpu, hsumR, hsh, hidx'⟩ := S.chain_data hN lam M c hcr hlam hgc L hS
+  obtain ⟨k, u, hu, hs, hρu, hnone, hpu, hsumR, hsh, hidx', -⟩ := S.chain_data hN lam M c hcr hlam hgc L hS
     hz h1 h2 h3 h4 ψ r hr hv hpv hroot (hT _ hTv).1 hle
   have hE : C.idx (L.κ0 t) (S.chainDarts hN r ((S.levelPad hN).ι (.inl v)) 0 k) = C.idx (L.κ0 t) ps :=
     Set.ext fun r' => (hidx' r').trans (hidx r').symm

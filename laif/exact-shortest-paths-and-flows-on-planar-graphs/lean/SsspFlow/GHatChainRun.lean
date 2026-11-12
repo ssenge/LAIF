@@ -1,4 +1,4 @@
-import SsspFlow.GHatChainIdx
+import SsspFlow.GHatChainVisits
 
 /-!
 # The least and the greatest index of all annuli of a level, on the chains
@@ -34,7 +34,8 @@ it hosts. After `T` rounds its outputs `rr` meet the specification of the oracle
 annulus of `Q` the chain of its target reaches a root at the piece at `κ0(t)` in `k` valid parent
 steps, with sum of lengths the distance at the target, the darts of the chain form a shortest walk of
 the annulus, and the outputs `o1` and `o2` at the target, capped at `M`, are its least index and `m`
-minus its greatest index on the cut path. The outputs `rr` are those of the chosen oracle of the bound
+minus its greatest index on the cut path, and the corners it visits are read at the copies of the
+nodes of the chain. The outputs `rr` are those of the chosen oracle of the bound
 on the network of the level. -/
 theorem levelI12_roots_run (hE : ExactSsspBound) (K : ℕ) : ∃ C c : ℕ, ∀ n D : ℕ,
     ∃ (σ : Type) (A : Cslib.Congest.Algorithm (Fin n)
@@ -90,7 +91,11 @@ theorem levelI12_roots_run (hE : ExactSsspBound) (K : ℕ) : ∃ C c : ℕ, ∀ 
             min (i1 : ℝ≥0∞) M ∧
         min (o2 ((S.levelPad hN).ι (.inl (S.endV (At.1.2.κ1 At.2))))
           (st (hostOf ((S.levelPad hN).ι (.inl (S.endV (At.1.2.κ1 At.2)))))) : ℝ≥0∞) M =
-            min ((Cp.m - i2 : ℕ) : ℝ≥0∞) M := by
+            min ((Cp.m - i2 : ℕ) : ℝ≥0∞) M ∧
+        ∀ c, At.1.2.Visits At.2 (S.chainDarts hN R ((S.levelPad hN).ι (.inl (S.endV (At.1.2.κ1 At.2)))) 0 kk) c ↔
+          ∃ y, (∃ i, (Net.parOf R)^[i] ((S.levelPad hN).ι (.inl (S.endV (At.1.2.κ1 At.2)))) = y) ∧
+            ∃ hy : (∃ x : S.Tok, S.IsEnd x.1 (S.copyAt hN y)),
+              S.vertexEquiv (S.pieceOf ⟨S.copyAt hN y, hy⟩) = S.dualSplit.tail c := by
   obtain ⟨C, c, hC⟩ := levelI12_local hE K
   refine ⟨C, c, fun n D => ?_⟩
   obtain ⟨σ, A, T, rr, o1, o2, hT, hA⟩ := hC n D
@@ -111,12 +116,13 @@ theorem levelI12_roots_run (hE : ExactSsspBound) (K : ℕ) : ∃ C c : ℕ, ∀ 
     (hO (S.endV (At.1.2.κ1 At.2))).2
   obtain ⟨hA, hun, h1, h2, h3, h4, hroot, hup, hT, hTv⟩ :=
     S.level_roots_cond hN r ℓ lam M cc hcr hlc hgc hΓ Q hQ hQu _ hR' hAt'
-  obtain ⟨kk, u, hu, hs, hρu, hnone, hpu, hsum, hsh, hidx'⟩ := S.chain_data hN lam M cc hcr hlc hgc At.1.2 hA
+  obtain ⟨kk, u, hu, hs, hρu, hnone, hpu, hsum, hsh, hidx', hvis⟩ := S.chain_data hN lam M cc hcr hlc hgc At.1.2 hA
     hun h1 h2 h3 h4 _ _ hR' (S.endV_end _) (S.pieceOf_endV _) hroot (hT _ hTv).1 hup
   have hE : Cp.idx (At.1.2.κ0 At.2)
       (S.chainDarts hN _ ((S.levelPad hN).ι (.inl (S.endV (At.1.2.κ1 At.2)))) 0 kk) =
       Cp.idx (At.1.2.κ0 At.2) ps := Set.ext fun r' => (hidx' r').trans (hidx r').symm
-  exact ⟨kk, u, hu, i1, i2, hs, hρu, hnone, hpu, hsum, hsh, hE ▸ hl, hE ▸ hg, e1, e2⟩
+  exact ⟨kk, u, hu, i1, i2, hs, hρu, hnone, hpu, hsum, hsh, hE ▸ hl, hE ▸ hg, e1, e2,
+    fun c => (S.visits_iff_dualSplit At.1.2 hA hun hsh.1 c).trans (hvis _)⟩
 
 end RData
 

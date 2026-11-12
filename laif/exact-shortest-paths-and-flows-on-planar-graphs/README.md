@@ -1017,6 +1017,7 @@ standard axioms (`propext`, `Classical.choice`, `Quot.sound`). There is no `sorr
   and a distance of $\hat G_\ell$ is the length of a walk (`RData.exists_awt_of_gdist`), so the distance at a target
   is at most $\lambda_t$ when $\lambda_t < M$. So the conditions of `RData.level_i12_of_marked` hold for all annuli
   of a level at once (`RData.level_roots_cond`, `RData.level_i12_roots`).
+- `lean/SsspFlow/GHatChainVisits.lean`: a walk of an annulus from `κ0(t)` visits a corner exactly when, in the split at the incisions of the level, the corner lies at `κ0(t)` or at the head of one of its darts; on the chain of a target this is read at the copies of its nodes.
 - `lean/SsspFlow/GHatChainRun.lean`: the least and the greatest index of all annuli of a level, on the chains.
 - `lean/SsspFlow/GHatLevelNode.lean`: for every annulus of a level, the shortest walk at its middle index, the least and the greatest index of the cut path on it, and a step whose darts form a segment of the walk, all from one output of the oracle and the runs along the chains.
 - `lean/SsspFlow/GHatLevelNodeRun.lean`: one algorithm of the message model that computes these data for all annuli of a level from local inputs, in at most `6 + 3 C log^c n (12 D + 16)` rounds: the least and the greatest index of the cut path, followed by the runs along the chains with the same chosen oracle.

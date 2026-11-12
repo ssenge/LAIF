@@ -34,7 +34,8 @@ from its target, its least and greatest index `i1`, `i2` and a step, such that t
 of `kk` parent steps form a shortest walk of the annulus, `i1` and `i2` are the least and the greatest
 index on the cut path of that walk, the outputs `o1` and `o2` at the target, capped at `M`, are `i1`
 and `m - i2`, the darts of the step are those of the parent arcs of the nodes of the chain that meet
-the local test on the outputs `r₂`, `r₃` and the flags, and they form a segment of the walk. -/
+the local test on the outputs `r₂`, `r₃` and the flags, and they form a segment of the walk. The walk
+visits a corner exactly when the piece of the copy of a node of the chain is its vertex. -/
 theorem levelNode_run (hE : ExactSsspBound) (K : ℕ) : ∃ C c : ℕ, ∀ n D : ℕ,
     ∃ (σ : Type) (A : Cslib.Congest.Algorithm (Fin n)
         (LevelIn n × (((Fin (n * (n * 21)) → ℕ∞) × (Fin (n * (n * 21)) → Bool × Bool × Bool)) ×
@@ -96,8 +97,12 @@ theorem levelNode_run (hE : ExactSsspBound) (K : ℕ) : ∃ C c : ℕ, ∀ n D :
           ∃ x, S.edgeTok hN ((Net.parOf R)^[l + 1] ((S.levelPad hN).ι (.inl (S.endV (At.1.2.κ1 At.2)))))
               ((Net.parOf R)^[l] ((S.levelPad hN).ι (.inl (S.endV (At.1.2.κ1 At.2))))) = some x ∧
             z = N.toRot.tokDart x.1) ∧
-        ∃ p₁ p₃, S.chainDarts hN R ((S.levelPad hN).ι (.inl (S.endV (At.1.2.κ1 At.2)))) 0 kk =
-          p₁ ++ (List.range St.n).map St.q ++ p₃ := by
+        (∃ p₁ p₃, S.chainDarts hN R ((S.levelPad hN).ι (.inl (S.endV (At.1.2.κ1 At.2)))) 0 kk =
+          p₁ ++ (List.range St.n).map St.q ++ p₃) ∧
+        ∀ c, At.1.2.Visits At.2 (S.chainDarts hN R ((S.levelPad hN).ι (.inl (S.endV (At.1.2.κ1 At.2)))) 0 kk) c ↔
+          ∃ y, (∃ i, (Net.parOf R)^[i] ((S.levelPad hN).ι (.inl (S.endV (At.1.2.κ1 At.2)))) = y) ∧
+            ∃ hy : (∃ x : S.Tok, S.IsEnd x.1 (S.copyAt hN y)),
+              S.vertexEquiv (S.pieceOf ⟨S.copyAt hN y, hy⟩) = S.dualSplit.tail c := by
   obtain ⟨C₁, c₁, hI⟩ := levelI12_roots_run hE K
   obtain ⟨C₂, c₂, hH⟩ := levelChain_local hE K
   refine ⟨C₁ + C₂, c₁ + c₂, fun n D => ?_⟩
@@ -158,10 +163,10 @@ theorem levelNode_run (hE : ExactSsspBound) (K : ℕ) : ∃ C c : ℕ, ∀ n D :
   simp only [hrun, Sum.elim_inr]
   refine ⟨hR', hRe, fun At hAt => ?_⟩
   have hAt' : (At.1, At.2) ∈ Q := by simpa using hAt
-  obtain ⟨kk, u, hu, i1, i2, hs, hρu, -, hpu, hsum, hsh, hl, hg', e1, e2⟩ := hO At hAt
+  obtain ⟨kk, u, hu, i1, i2, hs, hρu, -, hpu, hsum, hsh, hl, hg', e1, e2, hvc⟩ := hO At hAt
   obtain ⟨St, hSt, hsub⟩ := S.level_node_step hN r ℓ lam M cc hc1 hcr hlc hgc hΓ Q hQ hQu _ _ _ hR'
     (fun a => flg (hostOf a) a) hflg hr₂ hr₃ hAt' kk u hu hs hρu hpu hsum
-  exact ⟨kk, i1, i2, St, hsh, hl, hg', e1, e2, hSt, hsub⟩
+  exact ⟨kk, i1, i2, St, hsh, hl, hg', e1, e2, hSt, hsub, hvc⟩
 
 end RData
 

@@ -847,3 +847,4 @@ Expected output for each: `propext`, `Classical.choice`, `Quot.sound` (or a subs
 #print axioms SsspFlow.RotSystem.RData.level_node_data
 #print axioms SsspFlow.RotSystem.RData.level_node_step
 #print axioms SsspFlow.RotSystem.RData.levelNode_run
+#print axioms SsspFlow.RotSystem.RData.visits_iff_dualSplit
