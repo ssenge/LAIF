@@ -24,3 +24,10 @@ def margin_bound(E, m, z, y, xi, dX, dY, dd):
     """Theorem 1(a): both channels have noise margin xi."""
     dY1 = 2 * m * (dY + xi * 2 * z * dX)
     return sim_bound(E, m, z, y, xi, dX, 2 * m * dX, dY1) + dd * np.sqrt(2 * e_out(E, m, z, y) + 1)
+
+def dil_bound(E, m, z, y, a, dX, dY, dd):
+    """Theorem 3: both channels with sigma_min(Omega - X_i Omega X_i^T) >= a, ||X_i|| <= z (z >= 1), ||Y_i|| <= y."""
+    Z = 1 + z ** 2; K = Z / a
+    return (382 * Z ** 2 * K ** 2.5 * np.sqrt(m * (E + m * y / (2 * a) + 1) * dX)
+            + 0.7 * m * y / a ** 2 * (18 * y * K ** 3.5 * dX + dY)
+            + dd * np.sqrt(2 * e_out(E, m, z, y) + 1))

@@ -25,3 +25,7 @@ $ python queries.py
    m = 2, eps = 0.01: general 2.34e+39; noise margin 0.5: 6.73e+15
    m = 4, eps = 0.1: general 1.96e+31; noise margin 0.5: 3.55e+14
    m = 4, eps = 0.01: general 1.96e+41; noise margin 0.5: 3.55e+16
+$ python dilation.py
+dilation: symplectic, reproduces (X, Y), valid environment state on 600 channels; on 453 nearby pairs ||S1 - S2|| / (Z^3.5 K^4.5 ||X1 - X2||) <= 0.053 (bound 104)
+$ python dil_check.py
+Theorem 3 constants: sqrt6 + sqrt10 + 10 sqrt m <= 16 sqrt m, g <= 3.3 on [1, 2], 3.3 sqrt32 <= 18.7, 18.7 sqrt416 <= 382
