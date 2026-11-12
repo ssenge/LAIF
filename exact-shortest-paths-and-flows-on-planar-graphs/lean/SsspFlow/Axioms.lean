@@ -755,3 +755,11 @@ Expected output for each: `propext`, `Classical.choice`, `Quot.sound` (or a subs
 #print axioms SsspFlow.Nat.iInf_sub_isGreatest
 #print axioms SsspFlow.RotSystem.RData.level_least_greatest
 #print axioms SsspFlow.RotSystem.RData.levelI12_local
+#print axioms SsspFlow.RotSystem.RData.levelLen_real
+#print axioms SsspFlow.RotSystem.RData.dart_nbr_in
+#print axioms SsspFlow.RotSystem.RData.dart_nbr_out
+#print axioms SsspFlow.RotSystem.RData.chain_copy_node
+#print axioms SsspFlow.RotSystem.RData.marked_copy_iff
+#print axioms SsspFlow.ENat.toENNReal_iInf
+#print axioms SsspFlow.RotSystem.RData.level_i12_of_marked
+#print axioms SsspFlow.RotSystem.RData.levelI12_run
