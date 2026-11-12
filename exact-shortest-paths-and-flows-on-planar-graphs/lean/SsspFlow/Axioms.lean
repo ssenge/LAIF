@@ -718,3 +718,5 @@ Expected output for each: `propext`, `Classical.choice`, `Quot.sound` (or a subs
 #print axioms SsspFlow.RotSystem.LevelIn.withConst
 #print axioms SsspFlow.RotSystem.RData.levelIn_const
 #print axioms SsspFlow.RotSystem.RData.levelStep_local
+#print axioms SsspFlow.RotSystem.RData.levelSsspOff_sim
+#print axioms SsspFlow.RotSystem.RData.levelSsspOff_local
