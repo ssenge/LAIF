@@ -12,9 +12,9 @@ Previous best bounds: classically O(√n/ε² + log(n)/ε⁴) samples, which is 
 
 **Theorem 1.** For 2/√n ≤ ε ≤ 1 there is a quantum tester for monotonicity on [n] that uses the code
 
-O( n^{1/3}/ε^{4/3} + K^{3/2} log(K)/ε² )   times, with K = O(log(n)/ε²),
+O( n^{1/3}/ε^{4/3} + K polylog(K)/ε² )   times, with K = O(log(n)/ε²),
 
-that is Õ(n^{1/3}/ε^{4/3} + log^{3/2}(n)/ε⁵). The first term dominates for ε ≥ n^{−1/11} polylog(n), and the total is below the classical √n/ε² for ε ≥ n^{−1/6} polylog(n). The tester is computationally efficient.
+that is Õ(n^{1/3}/ε^{4/3} + log(n)/ε⁴), where Õ hides factors polylogarithmic in log(n)/ε. This is at most the classical O(√n/ε² + log(n)/ε⁴) of [1] in every regime up to these factors, and the first term dominates for ε ≥ n^{−1/8} log^{3/8}(n). The tester is computationally efficient.
 
 **Theorem 2.** Every quantum tester for monotonicity with ε ≤ 0.4 uses the code Ω(n^{1/3}) times for even n ≥ 4000, and Ω(1/ε) times for every n ≥ 2.
 
@@ -30,7 +30,7 @@ Let m = ⌈200/ε²⌉ + 1 and partition [n] into consecutive buckets B_0, B_1, 
 
 This gives K ≤ m(ln n + 3) = O(log(n)/ε²) buckets; if m ≥ n, all buckets are singletons. Let w_j = p(B_j).
 
-1. *Learn.* For every j, estimate w_j by amplitude estimation [4] with M = ⌈8000√K/ε²⌉ uses of the code, taking the median of O(log K) runs, which gives w̃_j. Set the upper estimate ŵ_j = w̃_j + 4π√(w̃_j)/M + 6π²/M².
+1. *Learn.* Let η = ε²/(300K). Estimate all K bucket masses at once to additive error η with the algorithm for multiple expectation values of [4, Theorem 37], which gives z_j, and set the upper estimate ŵ_j = z_j + η.
 2. *Hypothesis.* Form the shifted flattening ŝ. A singleton keeps its value, ŝ_i = ŵ_j for B_j = {i}. Every element of a bucket B_j of length at least 2 gets the average of the previous bucket, ŝ_i = ŵ_{j−1}/ℓ_{j−1}. Let Z = Σ_i ŝ_i and q = ŝ/Z.
 3. *Check the hypothesis.* Compute the total variation distance from q to the monotone distributions by a linear program over the K bucket values. A monotone distribution that is closest to a bucket-constant q can be taken bucket-constant, since averaging over the buckets keeps it monotone and does not increase the distance. If this distance exceeds ε/4, reject.
 4. *Test.* Apply the kernel F_q below to the code for p′ = (p + u_n)/2. Then run the uniformity tester of [3, Theorem 4.1] on [6n] with θ = ε²/17 and B = 2, and output its answer.
@@ -57,9 +57,7 @@ With a = p_1 + … + p_m, the last singleton and the first transition together c
 
 With upper estimates, each excess ŵ_j − w_j enters Z once with weight 1 and once with weight ℓ_{j+1}/ℓ_j ≤ 2, which gives the bound on Z. Since p_i ≤ ŝ_i, Σ_i p_i²/ŝ_i ≤ Σ_i p_i = 1. Hence χ²(p ‖ q) = Z Σ_i p_i²/ŝ_i − 1 ≤ Z − 1, and p_i/q_i = Z p_i/ŝ_i ≤ Z. ∎
 
-**Lemma 4 (upper estimates).** Amplitude estimation with M steps returns w̃ with |w̃ − w| ≤ 2π√w/M + π²/M² with probability at least 8/π² [4, Theorem 12], so the median of O(log K) runs does so for all K buckets with probability at least 0.97.
-
-On this event, E = |w̃ − w| satisfies E ≤ 4π√w̃/M + 6π²/M². To see this, insert √w ≤ √w̃ + √E and solve the resulting quadratic inequality in √E. So ŵ_j ≥ w_j, and ŵ_j − w_j ≤ 8π√(w̃_j)/M + 12π²/M². Also Σ_j w̃_j ≤ 1 + 2π√K/M + π²K/M² ≤ 2, so Σ_j √(w̃_j) ≤ √(2K). Hence Δ ≤ 8π√(2K)/M + 12π²K/M² ≤ ε²/150 for M = ⌈8000√K/ε²⌉. ∎
+**Lemma 4 (upper estimates).** Apply [4, Theorem 37] to the state ρ = Σ_j w_j |j⟩⟨j| on the bucket register, whose purification is prepared by one use of the code followed by the classical map from an element to its bucket, with E_j = |j⟩⟨j|, ε_j = η and failure probability 0.03. Since the E_j are orthogonal projectors, ‖Σ_j E_j²/η²‖ = 1/η², so σ = (2 ln(67K))^{1/2}/η and the algorithm makes O(K polylog(K)/ε²) uses of the code and its inverse. With probability at least 0.97, |z_j − w_j| ≤ η for all j, hence ŵ_j ≥ w_j and Δ = Σ_j (ŵ_j − w_j) ≤ 2Kη = ε²/150. ∎
 
 *Proof of Theorem 1.*
 
@@ -67,7 +65,7 @@ On this event, E = |w̃ − w| satisfies E ≤ 4π√w̃/M + 6π²/M². To see t
 
 *Soundness.* Let p be ε-far from monotone. If step 3 does not reject, q is ε/4-close to a monotone distribution, so d_TV(p, q) ≥ 3ε/4. This needs nothing from step 1. Then d_TV(F_q(p′), u_{6n}) ≥ ε/4, and the distance d_H² = Σ_i (√a_i − √b_i)² used in [3] is at least d_TV² ≥ ε²/16 > θ. So [3, Theorem 4.1] rejects with probability at least 0.99.
 
-*Cost.* Step 1 uses O(K M log K) = O(K^{3/2} log(K)/ε²) codes, and step 4 uses O((6n)^{1/3}/θ^{2/3}) = O(n^{1/3}/ε^{4/3}). ∎
+*Cost.* Step 1 uses O(K polylog(K)/ε²) codes, and step 4 uses O((6n)^{1/3}/θ^{2/3}) = O(n^{1/3}/ε^{4/3}). ∎
 
 *Proof of Theorem 2.*
 
@@ -86,7 +84,6 @@ A tester with ε = 0.4 and success probability 2/3 therefore solves the collisio
 - For partitions with n up to 10⁶ and m ∈ {5, 20, 100}, and for five families of monotone distributions (sorted exponentials, power laws, steps with sharp drops, uniform prefixes, point masses with tails), the bucket count is at most m(ln n + 3), p ≤ s, and Σ s − 1 ≤ 4/(m − 1). The largest observed value is 1.81/(m − 1).
 - With random upper estimates, the bounds on Z, χ² and p/q hold.
 - On random instances with n ≤ 40, F_q(q′) is uniform, and the TV, maximum-value and χ² properties of F_q hold.
-- The upper-estimate inequality of Lemma 4 holds on 20000 cases.
 - The matching bound lies below the exact linear-program distance to monotonicity for random half sets with n ≤ 120. At n = 4000 the matching bound is never below 0.4 in 1000 samples.
 - The linear program over bucket values equals the full one for bucket-constant q.
 
@@ -94,8 +91,8 @@ Output is in `sim/out.txt`.
 
 ## Scope
 
-- Written proofs with numerical checks. The uniformity tester [3, Theorem 4.1] (with its constant B = 2), amplitude estimation [4] and the collision lower bound [5, 6] are used as stated.
-- The ε-dependence of the learning term, log^{3/2}(n)/ε⁵, is above the classical log(n)/ε⁴ of [1]. The bound is better than the classical one when ε is at least about n^{−1/6} log^{1/2}(n).
+- Written proofs with numerical checks. The uniformity tester [3, Theorem 4.1] (with its constant B = 2), the estimation of multiple expectation values [4, Theorem 37] (which uses controlled versions of the code) and the collision lower bound [5, 6] are used as stated.
+- The learning term log(n)/ε⁴ matches the classical one of [1] up to polylogarithmic factors; the gain is in the term that depends on n.
 - Only non-increasing distributions on [n] are treated, and the range ε ≥ 2/√n.
 
 ## References
@@ -106,7 +103,7 @@ Output is in `sim/out.txt`.
 
 [3] C. L. Canonne, R. Kothari, R. O'Donnell. Uniformity testing when you have the source code. arXiv:2411.04972.
 
-[4] G. Brassard, P. Høyer, M. Mosca, A. Tapp. Quantum amplitude amplification and estimation. arXiv:quant-ph/0005055.
+[4] J. van Apeldoorn, A. Cornelissen, A. Gilyén, G. Nannicini. Quantum tomography using state-preparation unitaries. arXiv:2207.08800.
 
 [5] S. Aaronson, Y. Shi. Quantum lower bounds for the collision and the element distinctness problems. Journal of the ACM 51(4) (2004).
 

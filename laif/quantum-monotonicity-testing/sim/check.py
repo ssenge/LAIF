@@ -6,7 +6,6 @@
     chi^2(p || s_hat/Z) <= Z - 1;
 (3) the kernel F_q: F_q((q+u)/2) = uniform on [6n], TV contraction >= 1/3 after mixing, sup-norm <= max ratio / (6n),
     chi^2 data processing;
-(4) the amplitude-estimation upper estimate: E <= 2 pi sqrt(w)/M + pi^2/M^2 implies E <= 4 pi sqrt(w_tilde)/M + 6 pi^2/M^2;
 (5) hard instances: uniform on a random half is at least 0.4-far from monotone (matching bound, exact LP for small n),
     and the bucket-level LP gives the exact distance to monotone for a bucket-constant q."""
 import numpy as np
@@ -152,13 +151,6 @@ def main():
             chi_F = np.sum(Fp ** 2 * 6 * n) - 1; chi_pq = np.sum(p ** 2 / q) - 1
             assert chi_F <= chi_pq / 2 + 1e-9
     print("kernel: F_q(q) uniform on [6n], TV >= TV(p, q)/3, sup norm <= max ratio/(6n), chi^2 <= chi^2(p||q)/2")
-    # (4) amplitude-estimation upper estimate
-    for _ in range(20000):
-        M = rng.integers(1, 10 ** 4); w = rng.uniform(0, 1) ** rng.uniform(1, 8)
-        E = rng.uniform(0, 1) * (2 * np.pi * np.sqrt(w) / M + np.pi ** 2 / M ** 2)
-        wt = max(0.0, w + rng.choice([-1, 1]) * E)
-        assert abs(wt - w) <= 4 * np.pi * np.sqrt(wt) / M + 6 * np.pi ** 2 / M ** 2 + 1e-15
-    print("upper estimate: |w~ - w| <= 4 pi sqrt(w~)/M + 6 pi^2/M^2 on 20000 cases")
     # (5) hard instances and bucket LP
     for n in [20, 60, 120]:
         for _ in range(5):
