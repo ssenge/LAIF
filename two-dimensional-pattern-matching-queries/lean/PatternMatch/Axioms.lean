@@ -13,3 +13,10 @@ import PatternMatch
 #print axioms PatternMatch.side_cover
 #print axioms PatternMatch.occ_undominated
 #print axioms PatternMatch.duel
+#print axioms PatternMatch.closure_small
+#print axioms PatternMatch.period_lift
+#print axioms PatternMatch.periodGroup_eq
+#print axioms PatternMatch.occ_iff_phase
+#print axioms PatternMatch.occ_valid
+#print axioms PatternMatch.phase_unique
+#print axioms PatternMatch.sample_pass
