@@ -86,6 +86,7 @@
 
 | Problem | Result | Posted | Details |
 |---|---|---|---|
+| LocalMaxCut (at least 2 of 3 neighbours on the other side) on 3-regular graphs of large girth, one-round local algorithms | expected satisfied fraction 0.82137 ± 0.00002 (at least 0.8212 at confidence 1 − 10⁻⁹) by a classical rule of radius 1, against 0.819292 for QAOA at depth 1 [114] | 2026-11-12 | [local-max-cut-local-algorithms](local-max-cut-local-algorithms/) |
 | Quantum property testing of concatenations of two even palindromes (u u^r v v^r), and of cyclic shifts of strings over any alphabet | O(log n / ε²) queries, against O(n^{1/3} log n / ε) for the palindromes | 2026-11-12 | [two-palindromes-property-testing](two-palindromes-property-testing/) |
 | Two-dimensional pattern matching with quantum queries, n × n text, m × m pattern | O(n √m log⁴ n), against O(nm) by nested search; O(m² + n log³ m), so O(n log³ n) for m ≤ √n, for patterns without periods shorter than m/8 in their central square; Ω(n) for every m | 2026-11-11 | [two-dimensional-pattern-matching-queries](two-dimensional-pattern-matching-queries/) |
 | Domination problems on n vertices, quantum, polynomial space, no quantum random access memory | Dominating Set O(1.2235^n) (quantum O(2^{n/2}) stated before), Independent Dominating Set O(1.1583^n), Edge Dominating Set and Minimum Maximal Matching O(1.1501^n): square roots of the classical branching algorithms by a quantum walk on their search trees | 2026-11-07 | [quantum-dominating-set](quantum-dominating-set/) |
@@ -243,6 +244,7 @@ The folders `exact-planar-bipartite-matching`, `exact-shortest-paths-and-flows-o
 111. Y. Yu, H. Chen, J. Wu, W. Xie, X. Li. Purest quantum state identification. arXiv:2502.14334.
 112. A. Anshu, Z. Landau, Y. Liu. Distributed quantum inner product estimation. arXiv:2111.03273.
 113. W. Gong, J. Haferkamp, Q. Ye, Z. Zhang. On the sample complexity of purity and inner product estimation. arXiv:2410.12712.
+114. C. Carlson, Z. Jorquera, A. Kolla, S. Kordonowy. A quantum advantage over classical for local max cut. arXiv:2304.08420, 2023.
 
 ## License
 
