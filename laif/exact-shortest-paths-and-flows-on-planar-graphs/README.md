@@ -841,6 +841,11 @@ standard axioms (`propext`, `Classical.choice`, `Quot.sound`). There is no `sorr
   parent step (`Net.ExactSpec.rank_iter`), so a node has one position along the valid steps from a node
   (`Net.ExactSpec.parSteps_inj`). For targets whose valid chains do not meet, one more run with length $1$ on the
   arcs to the parents gives every node of a chain its number of steps from its target (`Net.ExactSpec.dsrcTop_pos`).
+- `lean/SsspFlow/OracleChainCount.lean`: counting along the parent chains of the oracle. For targets whose valid
+  chains do not meet, one more run with length $f(a)$ on the arc from each node $a$ to its parent gives every node of a
+  chain the sum of $f$ over the nodes below it (`Net.ExactSpec.dsrcTop_sum`). For the indicator of a flag this sum is
+  $0$ exactly when no node below is flagged (`Net.ExactSpec.dsrcTop_flag_eq_zero`), so the first flagged node of
+  each chain knows that it is the first.
 - `lean/SsspFlow/GHatLevelDarts.lean`: the darts of a walk of a level, in order. A kept rim dart of the repaired graph
   is an E_C arc between the copies of its token and of the partner (`RData.att_rimTok`), and each middle edge of the
   network of a level carries the token of its E_C arc (`RData.edgeTok_dart`, `RData.edgeTok_inl_left`,

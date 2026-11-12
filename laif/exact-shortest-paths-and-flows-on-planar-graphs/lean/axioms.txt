@@ -801,3 +801,5 @@
 'SsspFlow.RotSystem.RData.hdTok_ends' depends on axioms: [propext, Classical.choice, Quot.sound]
 'SsspFlow.RotSystem.RData.edgeTok_ends' depends on axioms: [propext, Classical.choice, Quot.sound]
 'SsspFlow.RotSystem.RData.chain_step_flags' depends on axioms: [propext, Classical.choice, Quot.sound]
+'SsspFlow.Congest.Net.ExactSpec.dsrcTop_sum' depends on axioms: [propext, Classical.choice, Quot.sound]
+'SsspFlow.Congest.Net.ExactSpec.dsrcTop_flag_eq_zero' depends on axioms: [propext, Classical.choice, Quot.sound]

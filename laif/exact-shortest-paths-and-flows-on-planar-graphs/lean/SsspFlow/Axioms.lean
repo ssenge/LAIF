@@ -806,3 +806,5 @@ Expected output for each: `propext`, `Classical.choice`, `Quot.sound` (or a subs
 #print axioms SsspFlow.RotSystem.RData.hdTok_ends
 #print axioms SsspFlow.RotSystem.RData.edgeTok_ends
 #print axioms SsspFlow.RotSystem.RData.chain_step_flags
+#print axioms SsspFlow.Congest.Net.ExactSpec.dsrcTop_sum
+#print axioms SsspFlow.Congest.Net.ExactSpec.dsrcTop_flag_eq_zero
