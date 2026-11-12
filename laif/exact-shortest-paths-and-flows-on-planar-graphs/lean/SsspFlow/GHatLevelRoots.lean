@@ -15,6 +15,9 @@ conditions of `RData.level_i12_of_marked` hold for every annulus at once.
   least `M`.
 * `RData.annulus_eq`: copies of two annuli of a level that are joined by E_R and E_C edges belong
   to the same annulus.
+* `RData.tgt_dist_le`: below `M`, the distance at the target of each annulus is at most `λ_t`.
+* `RData.tgt_same`: an annulus whose component reaches the target of another by E_R and E_C edges
+  is that annulus, with the same index.
 * `RData.level_i12_roots`: for the sources and targets of a list of annuli of a level, each with
   one index and `λ_t < M`, the least values over the marked copies at each target are the least
   and `m` minus the greatest index on the cut path of one shortest walk of its annulus.
@@ -137,6 +140,68 @@ noncomputable def tgtFlag (Q : List ((Σ Γ' : Finset (N.G.Dart × Bool), C.Live
     (z : Fin (n * (n * 21))) : Bool :=
   decide (∃ q ∈ Q, z = (S.levelPad hN).ι (.inl (S.endV (q.1.2.κ1 q.2))))
 
+/-- **The distance at a target.** For an output of the oracle on the network of a level from the
+sources of a list `Q` of annuli of a level with one index each and `λ_t < M`, the distance at the
+target of each annulus of `Q` is at most `λ_t`. -/
+theorem tgt_dist_le (lam : S.Tok → ℕ) (M : ℕ) (c : N.G.Dart → ℕ)
+    (hcr : ∀ d, c (N.toRot.rev d) = c d) (hlam : ∀ x, lam x = c x.1.1) (hgc : ∀ d, g d = c d)
+    (hΓ : S.Γ = Γ₀ ∪ r.steps ℓ) (Q : List ((Σ Γ' : Finset (N.G.Dart × Bool), C.Live g Γ') × ℕ))
+    (hQ : ∀ q ∈ Q, q.1 ∈ r.nodes ℓ ∧ q.1.2.xa ≤ q.2 ∧ q.1.2.ya ≤ q.2 ∧ q.2 ≤ q.1.2.xb ∧
+      q.2 ≤ q.1.2.yb ∧ C.lamD g q.2 < M)
+    (R : Fin (n * (n * 21)) → ℕ∞ × Option (Fin (n * (n * 21))))
+    (hr : (S.levelNet hN).ExactSpec (S.levelLen hN lam M) (S.srcOff hN Q) R) :
+    ∀ q ∈ Q, ((R ((S.levelPad hN).ι (.inl (S.endV (q.1.2.κ1 q.2))))).1 : ℝ≥0∞) ≤ C.lamD g q.2 := by
+  classical
+  have hsub : ∀ {B : Σ Γ' : Finset (N.G.Dart × Bool), C.Live g Γ'}, B ∈ r.nodes ℓ → B.1 ⊆ S.Γ :=
+    fun hB => hΓ ▸ r.subset_level ℓ hB
+  have hunr : ∀ {B : Σ Γ' : Finset (N.G.Dart × Bool), C.Live g Γ'}, B ∈ r.nodes ℓ → ∀ {t' : ℕ},
+      B.2.xa ≤ t' → t' ≤ B.2.xb → ∀ w ∈ S.Γ, w ∉ B.1 → ∀ p, ¬ (N.toRot.dual.double.split B.1).IsWalk
+        ((N.toRot.dual.double.split B.1).tail (B.2.κ0 t')) p ((N.toRot.dual.double.split B.1).tail w) :=
+    fun hB _ h1 h3 w hw hwB p => r.unreach_level ℓ hB (hΓ ▸ hw) hwB h1 h3 p
+  have hlamR : (fun x => (lam x : ℝ)) = fun x => ((c x.1.1 : ℕ) : ℝ) := funext fun x => by rw [hlam]
+  intro q hq
+  obtain ⟨hB, h1, h2, h3, h4, hM⟩ := hQ q hq
+  have hψ : ∀ z, (∀ u, z ≠ (S.levelPad hN).ι (.inl u)) → S.srcOff hN Q z = ⊤ := fun z hz => by
+    unfold srcOff
+    refine ite_eq_right_of_eq_false _ _ (eq_false ?_)
+    rintro ⟨q', -, rfl⟩
+    exact hz _ rfl
+  rw [hr.dist_eq, S.dsrcTop_copies hN lam M _ hψ]
+  refine iInf_le_of_le (S.endV (q.1.2.κ0 q.2)) ?_
+  have h0 : S.srcOff hN Q ((S.levelPad hN).ι (.inl (S.endV (q.1.2.κ0 q.2)))) = 0 := by
+    unfold srcOff
+    exact ite_eq_left_of_eq_true _ _ (eq_true ⟨q, hq, rfl⟩)
+  rw [h0, ENat.toENNReal_zero, zero_add]
+  have hne : C.lamD g q.2 ≠ ⊤ := ne_top_of_lt hM
+  have hMe : (C.lamD g q.2 : EReal) < ((M : ℝ) : EReal) := by
+    rw [← EReal.coe_ennreal_toReal hne, EReal.coe_lt_coe_iff]
+    have := (ENNReal.toReal_lt_toReal hne (ENNReal.natCast_ne_top M)).2 hM
+    simpa using this
+  have hgd := (S.gdist_live (fun d => (c d : ℝ)) (fun _ => Nat.cast_nonneg _)
+    (fun d => by simp only [hcr]) (fun d => by rw [hgc, ENNReal.ofReal_natCast]) q.1.2 (hsub hB)
+    (hunr hB h1 h3) h1 h2 h3 h4 (M := (M : ℝ)) (Nat.cast_nonneg _)
+    ⟨_, S.endV_end (q.1.2.κ0 q.2)⟩ ⟨_, S.endV_end (q.1.2.κ1 q.2)⟩ (S.pieceOf_endV _)
+    (S.pieceOf_endV _)).1 hMe
+  exact S.arcDist_le_of_gdist lam M hne (by rw [hlamR]; exact hgd)
+
+/-- **One target per component.** Two annuli of a list `Q` of annuli of a level with one index each,
+such that a corner of the component of the first is joined by E_R and E_C edges to the target of the
+second, are equal, with the same index. -/
+theorem tgt_same (M : ℕ) (hΓ : S.Γ = Γ₀ ∪ r.steps ℓ)
+    (Q : List ((Σ Γ' : Finset (N.G.Dart × Bool), C.Live g Γ') × ℕ))
+    (hQ : ∀ q ∈ Q, q.1 ∈ r.nodes ℓ ∧ q.1.2.xa ≤ q.2 ∧ q.1.2.ya ≤ q.2 ∧ q.2 ≤ q.1.2.xb ∧
+      q.2 ≤ q.1.2.yb ∧ C.lamD g q.2 < M)
+    (hQu : ∀ q ∈ Q, ∀ q' ∈ Q, q.1 = q'.1 → q.2 = q'.2) :
+    ∀ q ∈ Q, ∀ q' ∈ Q, ∀ (z : N.G.Dart × Bool),
+      (N.toRot.dual.double.split q.1.1).toHypermap.gcomp (q.1.2.κ0 q.1.2.xa) z →
+      Relation.ReflTransGen S.ERC (S.vcopy (S.endV z)) (S.vcopy (S.endV (q'.1.2.κ1 q'.2))) → q = q' := by
+  intro q hq q' hq' z hz he
+  obtain ⟨hB, -⟩ := hQ q hq
+  obtain ⟨hA, -, h2, -, h4, -⟩ := hQ q' hq'
+  have e := S.annulus_eq r ℓ hΓ hB hA ⟨_, S.endV_end z⟩ ⟨_, S.endV_end (q'.1.2.κ1 q'.2)⟩
+    (S.pieceOf_endV z) (S.pieceOf_endV _) hz (q'.1.2.gcomp_κ1 h2 h4) he
+  exact Prod.ext e (hQu q hq q' hq' e)
+
 /-- **The conditions of a level hold for its annuli.** Let the token lengths be the costs `c` of
 their darts, with `g = c`, and let `Q` list annuli of a level with one index `t` each in their
 ranges and `λ_t < M`. For an output of the oracle on the network of the level from the sources of
@@ -177,44 +242,11 @@ theorem level_i12_roots (lam : S.Tok → ℕ) (M : ℕ) (c : N.G.Dart → ℕ)
       B.2.xa ≤ t' → t' ≤ B.2.xb → ∀ w ∈ S.Γ, w ∉ B.1 → ∀ p, ¬ (N.toRot.dual.double.split B.1).IsWalk
         ((N.toRot.dual.double.split B.1).tail (B.2.κ0 t')) p ((N.toRot.dual.double.split B.1).tail w) :=
     fun hB _ h1 h3 w hw hwB p => r.unreach_level ℓ hB (hΓ ▸ hw) hwB h1 h3 p
-  have hlamR : (fun x => (lam x : ℝ)) = fun x => ((c x.1.1 : ℕ) : ℝ) := funext fun x => by rw [hlam]
-  -- the distance at the target of an annulus of `Q` is at most `λ_t`
-  have upper : ∀ q ∈ Q, ((R ((S.levelPad hN).ι (.inl (S.endV (q.1.2.κ1 q.2))))).1 : ℝ≥0∞) ≤
-      C.lamD g q.2 := by
-    intro q hq
-    obtain ⟨hB, h1, h2, h3, h4, hM⟩ := hQ q hq
-    have hψ : ∀ z, (∀ u, z ≠ (S.levelPad hN).ι (.inl u)) → S.srcOff hN Q z = ⊤ := fun z hz => by
-      unfold srcOff
-      refine ite_eq_right_of_eq_false _ _ (eq_false ?_)
-      rintro ⟨q', -, rfl⟩
-      exact hz _ rfl
-    rw [hr.dist_eq, S.dsrcTop_copies hN lam M _ hψ]
-    refine iInf_le_of_le (S.endV (q.1.2.κ0 q.2)) ?_
-    have h0 : S.srcOff hN Q ((S.levelPad hN).ι (.inl (S.endV (q.1.2.κ0 q.2)))) = 0 := by
-      unfold srcOff
-      exact ite_eq_left_of_eq_true _ _ (eq_true ⟨q, hq, rfl⟩)
-    rw [h0, ENat.toENNReal_zero, zero_add]
-    have hne : C.lamD g q.2 ≠ ⊤ := ne_top_of_lt hM
-    have hMe : (C.lamD g q.2 : EReal) < ((M : ℝ) : EReal) := by
-      rw [← EReal.coe_ennreal_toReal hne, EReal.coe_lt_coe_iff]
-      have := (ENNReal.toReal_lt_toReal hne (ENNReal.natCast_ne_top M)).2 hM
-      simpa using this
-    have hgd := (S.gdist_live (fun d => (c d : ℝ)) (fun _ => Nat.cast_nonneg _)
-      (fun d => by simp only [hcr]) (fun d => by rw [hgc, ENNReal.ofReal_natCast]) q.1.2 (hsub hB)
-      (hunr hB h1 h3) h1 h2 h3 h4 (M := (M : ℝ)) (Nat.cast_nonneg _)
-      ⟨_, S.endV_end (q.1.2.κ0 q.2)⟩ ⟨_, S.endV_end (q.1.2.κ1 q.2)⟩ (S.pieceOf_endV _)
-      (S.pieceOf_endV _)).1 hMe
-    exact S.arcDist_le_of_gdist lam M hne (by rw [hlamR]; exact hgd)
-  -- two annuli of `Q` with copies joined by E_R and E_C edges are equal, with the same index
+  have upper := S.tgt_dist_le hN r ℓ lam M c hcr hlam hgc hΓ Q hQ R hr
   have same : ∀ q ∈ Q, ∀ (z : N.G.Dart × Bool),
       (N.toRot.dual.double.split q.1.1).toHypermap.gcomp (q.1.2.κ0 q.1.2.xa) z →
-      Relation.ReflTransGen S.ERC (S.vcopy (S.endV z)) (S.vcopy (S.endV (A.2.κ1 t))) → q = (A, t) := by
-    intro q hq z hz he
-    obtain ⟨hB, -⟩ := hQ q hq
-    obtain ⟨hA, -, h2, -, h4, -⟩ := hQ (A, t) hAt
-    have e := S.annulus_eq r ℓ hΓ hB hA ⟨_, S.endV_end z⟩ ⟨_, S.endV_end (A.2.κ1 t)⟩
-      (S.pieceOf_endV z) (S.pieceOf_endV _) hz (A.2.gcomp_κ1 h2 h4) he
-    exact Prod.ext e (hQu q hq (A, t) hAt e)
+      Relation.ReflTransGen S.ERC (S.vcopy (S.endV z)) (S.vcopy (S.endV (A.2.κ1 t))) → q = (A, t) :=
+    fun q hq z hz he => S.tgt_same r ℓ M hΓ Q hQ hQu q hq (A, t) hAt z hz he
   obtain ⟨hA, h1, h2, h3, h4, -⟩ := hQ (A, t) hAt
   have hup : ((R ((S.levelPad hN).ι (.inl (S.endV (A.2.κ1 t))))).1 : ℝ≥0∞) ≤ C.lamD g t := upper (A, t) hAt
   refine S.level_i12_of_marked hN lam M c hcr hlam hgc A.2 (hsub hA) (hunr hA h1 h3) h1 h2 h3 h4

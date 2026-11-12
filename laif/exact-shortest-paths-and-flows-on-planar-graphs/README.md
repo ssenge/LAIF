@@ -873,6 +873,11 @@ standard axioms (`propext`, `Classical.choice`, `Quot.sound`). There is no `sorr
   it is the first node flagged for $0$, and a node up to it has flag $1$ and distance $0$ in the run down the chains
   exactly when it is the last such node flagged for $1$; the darts between them are those of a step
   (`RData.chain_step_out`).
+- `lean/SsspFlow/GHatChainTargets.lean`: the chains of the targets of a level do not meet. Every node of the chain of a
+  target of distance below $M$ has its copy in the component of $\hat G_\ell[E_R \cup E_C]$ of the target, so targets in
+  different components have chains that do not meet (`RData.chains_eq_of_meet`). For the targets of a list of annuli
+  of a level of a run, one per annulus with $\lambda_t < M$, this is the condition on the targets of
+  `RData.chain_step_out` (`RData.tgtFlag_chains`, from `RData.tgt_dist_le` and `RData.tgt_same`).
 - `lean/SsspFlow/GHatLevelDarts.lean`: the darts of a walk of a level, in order. A kept rim dart of the repaired graph
   is an E_C arc between the copies of its token and of the partner (`RData.att_rimTok`), and each middle edge of the
   network of a level carries the token of its E_C arc (`RData.edgeTok_dart`, `RData.edgeTok_inl_left`,
