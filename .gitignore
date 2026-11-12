@@ -1,9 +1,0 @@
-.lake/
-__pycache__/
-*.pyc
-.DS_Store
-*.pkl
-RULES.md
-NEW_AGENT_README.md
-AGENT_ONBOARDING.md
-NEW_AGENTS_README.md
