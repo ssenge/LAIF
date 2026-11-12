@@ -8,3 +8,6 @@
 'Histogram.sum_sqrt_le' depends on axioms: [propext, Classical.choice, Quot.sound]
 'Histogram.grid' depends on axioms: [propext, Classical.choice, Quot.sound]
 'Histogram.approx' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Histogram.isRecL_weak' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Histogram.weakL_mono' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Histogram.first_below_weak' depends on axioms: [propext, Classical.choice, Quot.sound]

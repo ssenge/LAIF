@@ -1,5 +1,6 @@
 import Histogram.Basic
 import Histogram.Approx
+import Histogram.Weak
 
 #print axioms Histogram.cover
 #print axioms Histogram.exists_recL
@@ -11,3 +12,6 @@ import Histogram.Approx
 #print axioms Histogram.sum_sqrt_le
 #print axioms Histogram.grid
 #print axioms Histogram.approx
+#print axioms Histogram.isRecL_weak
+#print axioms Histogram.weakL_mono
+#print axioms Histogram.first_below_weak

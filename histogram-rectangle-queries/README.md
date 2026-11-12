@@ -12,7 +12,7 @@ together with an interval that attains it. Classically this takes Θ(n) queries 
 |---|---|---|---|---|
 | Thm 1 | OPT exactly, H distinct heights | O(n) queries | O(√(nH) log n) queries | Claim; Lean for the combinatorial lemmas |
 | Cor 2 | OPT exactly, heights in a known set of H values | O(n) queries | O(√(nH)) queries | Claim |
-| Thm 3 | OPT exactly, V valleys | O(n) queries | O(√(nV) log n + √n log² n) queries | Claim |
+| Thm 3 | OPT exactly, V valleys | O(n) queries | O(√(nV) log n + √n log² n) queries | Claim; Lean for the weak records |
 | Thm 4 | OPT within a factor 1 + ε | O(n) queries | O(√(n log n / ε)) queries | Claim; Lean for the threshold grid |
 | | Lower bound, any factor, H = 2 | | Ω(√n) queries | Claim |
 
@@ -81,11 +81,12 @@ The library `Histogram` in `lean/` (Lean 4, Mathlib at the revision pinned in `l
 - `min_is_record`, with `exists_recL` and `exists_recR`: Lemma 1(a).
 - `first_below_isRecL`: Lemma 1(b) on the left; the right side is its mirror image.
 - `recL_strict`, `card_recL_le`: the heights of the left records strictly increase towards p, so in every finite set of positions the left records number at most the distinct heights; the right side is the mirror image.
+- `isRecL_weak`, `weakL_mono`, `first_below_weak`: every left record is a weak left record, the heights of weak left records do not increase going away from p, and the first position left of p below v ≤ h_p is a weak left record with all weak left records between it and p at height at least v. These are the facts behind the binary search of Theorem 3.
 - `cover`: Lemma 2.
 - `sum_sqrt_le`: R searches with distances of sum S cost Σ √g_i ≤ √(RS).
 - `grid`, `approx`: the threshold step of Theorem 4. For m/(1 + ε)^B ≤ v ≤ m, some b ≤ B has m/(1 + ε)^b ≤ v ≤ (1 + ε) · m/(1 + ε)^b, and then a rectangle of height v and width W ≤ L(t_b) has area at most (1 + ε) t_b L(t_b).
 
-Not formalized: the quantum subroutines and their error reduction, the computation of the best rectangle in a window from the records, Lemma 3, and the counting of queries in Theorems 1, 3 and 4 and Corollary 2.
+Not formalized: the quantum subroutines and their error reduction, the computation of the best rectangle in a window from the records, the count of runs in Lemma 3, and the counting of queries in Theorems 1, 3 and 4 and Corollary 2.
 
 ## Scripts
 
