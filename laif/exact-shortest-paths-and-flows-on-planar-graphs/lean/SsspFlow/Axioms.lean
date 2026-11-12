@@ -808,3 +808,12 @@ Expected output for each: `propext`, `Classical.choice`, `Quot.sound` (or a subs
 #print axioms SsspFlow.RotSystem.RData.chain_step_flags
 #print axioms SsspFlow.Congest.Net.ExactSpec.dsrcTop_sum
 #print axioms SsspFlow.Congest.Net.ExactSpec.dsrcTop_flag_eq_zero
+#print axioms SsspFlow.Congest.Net.walk_downW
+#print axioms SsspFlow.Congest.Net.ExactSpec.walk_down
+#print axioms SsspFlow.Congest.Net.ExactSpec.dsrcTop_downW
+#print axioms SsspFlow.Congest.Net.ExactSpec.dsrcTop_down_sum
+#print axioms SsspFlow.Congest.Net.ExactSpec.dsrcTop_down_flag_eq_zero
+#print axioms SsspFlow.Congest.Net.parSteps_add
+#print axioms SsspFlow.Congest.Net.ExactSpec.first_iff
+#print axioms SsspFlow.Congest.Net.ExactSpec.down_none_iff
+#print axioms SsspFlow.Congest.Net.ExactSpec.last_iff

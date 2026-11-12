@@ -846,6 +846,12 @@ standard axioms (`propext`, `Classical.choice`, `Quot.sound`). There is no `sorr
   chain the sum of $f$ over the nodes below it (`Net.ExactSpec.dsrcTop_sum`). For the indicator of a flag this sum is
   $0$ exactly when no node below is flagged (`Net.ExactSpec.dsrcTop_flag_eq_zero`), so the first flagged node of
   each chain knows that it is the first.
+- `lean/SsspFlow/OracleChainDown.lean`: runs down the parent chains of the oracle. With length $g(a)$ on the arc from
+  each node $a$ to its children, a walk of finite length goes down the chains (`Net.walk_downW`), and the distance
+  from a set of sources is the least sum of $g$ over the nodes above a node up to a source (`Net.ExactSpec.dsrcTop_downW`,
+  `Net.ExactSpec.dsrcTop_down_sum`). After a counting run for a flag $F_0$, the first node of a chain flagged by $F_0$
+  knows that it is the first (`Net.ExactSpec.first_iff`), and a run down from these nodes lets the last node below it
+  flagged by a second flag $F_1$ know that it is the last (`Net.ExactSpec.down_none_iff`, `Net.ExactSpec.last_iff`).
 - `lean/SsspFlow/GHatLevelDarts.lean`: the darts of a walk of a level, in order. A kept rim dart of the repaired graph
   is an E_C arc between the copies of its token and of the partner (`RData.att_rimTok`), and each middle edge of the
   network of a level carries the token of its E_C arc (`RData.edgeTok_dart`, `RData.edgeTok_inl_left`,
