@@ -86,6 +86,7 @@
 | Quantum machine learning | Testing whether a pure state of n qudits of dimension d is fully product or at trace distance ε from it, single-copy local measurements; O(n√d ε⁻²) asked in [117] | O(n log n √d ε⁻²), non-adaptive [117]; for qubits with non-local single-copy measurements, O(n ε⁻²) adaptive (implied by [119]) | O(d(n ε⁻² + log d)) copies with two rounds of local measurements (local tomography, then a product check), so O(n ε⁻²) for constant d | Claim, checked by simulation | 2026-11-12 | [multipartite-product-testing-local](multipartite-product-testing-local/) |
 | Quantum machine learning | Testing whether an n-qubit unitary is Clifford or ε-far, single-copy queries without ancilla, adaptive | Ω(n^{1/4}) queries [120]; upper bound Õ(n/ε³) [120] | Ω(√n) queries, more precisely at least √(2n) − O(1), from uniform bounds on the inverse Gram matrix of the Clifford commutant and a sharper count in the proof of [120, Theorem 6.24]; the same order as single-copy stabilizer testing | Claim; counting steps of Lemmas 1 and 2 in Lean; checked by computation for t ≤ 5 | 2026-11-12 | [clifford-testing-single-copy](clifford-testing-single-copy/) |
 | Quantum machine learning | T gates needed for an informationally complete single-setting measurement of n qubits (stabilizer ancillas, Clifford circuit with t T gates, stabilizer readout), conjectured 2n in [123] | t ≥ 2n/log₂3 ≈ 1.26n necessary, t = 2n sufficient [123] | t ≥ (3 − log₂3)n ≈ 1.415n necessary, from a sharp count of Z-free Pauli strings in a coset of a subspace | Claim, for any number of stabilizer ancillas; Lemma 2 and the final count in Lean; lemma checked exhaustively for t ≤ 4 | 2026-11-12 | [t-gates-informationally-complete-measurement](t-gates-informationally-complete-measurement/) |
+| Quantum machine learning | Entropy of a d-dimensional state near I/d (operator-norm ball of radius r ≤ 1/(4d)) from n outcomes of a fixed projective 2-design measurement, mean squared error | minimax rate d³r²/n + d⁴/n² for r ≲ max{(dn)^{−1/3}, (d³n)^{−1/4}} [125] | minimax rate d³r²/n + d⁴/n² on the whole ball for n ≳ d³ log d, by a power-series estimator of logarithmic degree from products of batch means of shadows [127], with a chain bound for products of centred shadows that is sharp in d (compare [126]) | Claim, checked numerically | 2026-11-12 | [entropy-estimation-projective-design](entropy-estimation-projective-design/) |
 
 ## Minor results
 
@@ -262,6 +263,9 @@ The folders `exact-planar-bipartite-matching`, `exact-shortest-paths-and-flows-o
 122. S. Chen, J. Cotler, H.-Y. Huang, J. Li. Exponential separations between learning with and without quantum memory. FOCS 2021. arXiv:2111.05881.
 123. G. Lo Monaco, S. Lorenzo, A. Ferraro, M. Paternostro, G. M. Palma, L. Innocenti. The non-stabilizerness cost of quantum state estimation. arXiv:2510.00157.
 124. K. Khadiev, D. Kravchenko. On the complexity of solving subtraction games. arXiv:1808.03494, 2018.
+125. X. Song. Local and Global Risk Bounds for Quantum Entropy Estimation under Projective-Design Measurements. arXiv:2609.29485.
+126. X. Song. Batched and Complete U-Statistics for Trace-Polynomial Estimation from Classical Shadows. arXiv:2608.22962.
+127. A. Rath, V. Vitale, S. Murciano, M. Votto, J. Dubail, R. Kueng, C. Branciard, P. Calabrese, B. Vermersch. Entanglement barrier and its symmetry resolution: theory and experiment. arXiv:2209.04393.
 
 ## License
 
