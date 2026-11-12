@@ -127,6 +127,7 @@ import SsspFlow.GHatChainCopy
 import SsspFlow.GHatLevelI12Spec
 import SsspFlow.AnnuliSep
 import SsspFlow.GHatLevelRoots
+import SsspFlow.OracleChainSum
 import SsspFlow.ListRot
 import SsspFlow.GHatSplit
 import SsspFlow.Annuli

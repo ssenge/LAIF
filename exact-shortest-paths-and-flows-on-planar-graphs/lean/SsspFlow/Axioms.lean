@@ -775,3 +775,7 @@ Expected output for each: `propext`, `Classical.choice`, `Quot.sound` (or a subs
 #print axioms SsspFlow.RotSystem.RData.annulus_eq
 #print axioms SsspFlow.RotSystem.RData.level_i12_roots
 #print axioms SsspFlow.RotSystem.RData.levelI12_roots_run
+#print axioms SsspFlow.Congest.Net.walk_markW
+#print axioms SsspFlow.Congest.Net.ExactSpec.adj_par
+#print axioms SsspFlow.Congest.Net.ExactSpec.walk_parW
+#print axioms SsspFlow.Congest.Net.ExactSpec.dsrcTop_markW

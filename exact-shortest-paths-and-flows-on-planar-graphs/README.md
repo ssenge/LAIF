@@ -822,6 +822,10 @@ standard axioms (`propext`, `Classical.choice`, `Quot.sound`). There is no `sorr
   parents and offset 0 at the nodes whose flag is set. Assuming the Exact SSSP bound, after $2C\log^c n \cdot D + 1$
   rounds both runs meet the specification of the oracle (`markAlg_spec`), and the second distance is 0 exactly on
   the parent chains of the flagged nodes (`Net.ExactSpec.dsrcTop_markB`).
+- `lean/SsspFlow/OracleChainSum.lean`: sums along the parent chains of the oracle. With length $f(a)$ on the arc from
+  a node $a$ to its parent and $\top$ elsewhere, a walk of finite length follows the parents (`Net.walk_markW`), so
+  one more run from a set of targets gives at each node the least sum of $f$ along the parent steps from a target
+  (`Net.ExactSpec.dsrcTop_markW`, with `Net.ExactSpec.walk_parW`).
 - `lean/SsspFlow/GHatLevelMark.lean`: the marking on the network of a level from local inputs. Each node knows the
   offsets and flags of the identifiers it hosts. Assuming the Exact SSSP bound, one algorithm of the message model,
   fixed before the network, runs `markAlg` on the network of the level within $2C\log^c n' \cdot (12D + 16) + 2$
