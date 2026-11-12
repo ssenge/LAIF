@@ -825,3 +825,4 @@ Expected output for each: `propext`, `Classical.choice`, `Quot.sound` (or a subs
 #print axioms SsspFlow.Congest.countIn_eq
 #print axioms SsspFlow.Congest.downIn_eq
 #print axioms SsspFlow.Congest.chainAlg_spec
+#print axioms SsspFlow.RotSystem.RData.levelChain_local

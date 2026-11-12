@@ -863,6 +863,11 @@ standard axioms (`propext`, `Classical.choice`, `Quot.sound`). There is no `sorr
   run up the chains for $f_0$ and the run down the chains for $f_1$ from the nodes flagged by $f_0$ with count $0$
   (`countIn_eq`, `downIn_eq`). Assuming the Exact SSSP bound, after $3 C \log^c n \cdot D + 1$ rounds the outputs of
   the three runs meet the specification of the oracle (`chainAlg_spec`).
+- `lean/SsspFlow/GHatLevelChainRuns.lean`: the two runs along the chains of a level from local inputs. Assuming the
+  Exact SSSP bound, one algorithm of the message model, fixed before the network, starts from the inputs `levelIn`
+  and, at each node, the offsets and the three flags of the identifiers it hosts. After
+  $T \le 3 C \log^c n' \cdot (12 D + 16) + 2$ rounds its outputs at the identifiers meet the specification of the
+  oracle for the three runs of `chainAlg` on the network of the level (`RData.levelChain_local`).
 - `lean/SsspFlow/GHatLevelDarts.lean`: the darts of a walk of a level, in order. A kept rim dart of the repaired graph
   is an E_C arc between the copies of its token and of the partner (`RData.att_rimTok`), and each middle edge of the
   network of a level carries the token of its E_C arc (`RData.edgeTok_dart`, `RData.edgeTok_inl_left`,
