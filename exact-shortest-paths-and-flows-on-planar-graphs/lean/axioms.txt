@@ -729,3 +729,6 @@
 'SsspFlow.RotSystem.RData.walk_project' depends on axioms: [propext, Classical.choice, Quot.sound]
 'SsspFlow.RotSystem.RData.awt_eq_wt' depends on axioms: [propext, Classical.choice, Quot.sound]
 'SsspFlow.RotSystem.RData.level_split_walk' depends on axioms: [propext, Classical.choice, Quot.sound]
+'SsspFlow.RotSystem.RData.ofReal_sum_map' depends on axioms: [propext, Classical.choice, Quot.sound]
+'SsspFlow.RotSystem.RData.shortest_live' depends on axioms: [propext, Classical.choice, Quot.sound]
+'SsspFlow.RotSystem.RData.level_shortest' depends on axioms: [propext, Classical.choice, Quot.sound]

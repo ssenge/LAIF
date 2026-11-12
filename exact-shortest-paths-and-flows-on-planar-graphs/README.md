@@ -842,6 +842,12 @@ standard axioms (`propext`, `Classical.choice`, `Quot.sound`). There is no `sorr
   $\hat G_\ell$ is its real weight (`RData.awt_eq_wt`). For token lengths that are the costs of their darts, equal on
   both darts of an edge, a walk of the network of a level between copies on E_R edges, shorter than $M$, gives a
   walk of the split between their pieces whose sum of costs is its length (`RData.level_split_walk`).
+- `lean/SsspFlow/GHatLevelShortest.lean`: short walks of a level are shortest walks of the annulus. Let the
+  corners of the data hold those of a live annulus, the others out of its reach. A walk of the split between the
+  pieces at $\kappa_0(t)$ and $\kappa_1(t)$ of cost at most $\lambda_t$ is a shortest walk of the annulus
+  (`RData.shortest_live`). So a walk of the network of a level between copies on E_R edges of these pieces, of
+  length below $M$ and at most $\lambda_t$, gives a shortest walk of the annulus of the same length
+  (`RData.level_shortest`).
 - `lean/SsspFlow/GHatPhase.lean`: the combinatorics of property (6). Two copies on E_R edges are joined by E_R edges
   exactly when they lie on the path of one piece (`RData.er_comp_iff`), and by E_R and E_C edges exactly when their
   pieces are joined in the token graph (`RData.erc_comp_iff`), whose components are those of the split
