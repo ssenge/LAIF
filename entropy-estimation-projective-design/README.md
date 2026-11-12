@@ -74,13 +74,26 @@ since Σ_{j≥0} x^j/(j + 1) = −log(1 − x)/x ≤ 1.245 at x = (2/15)^{1/2}. 
 
 Output in `sim/entropy_series_out.txt`.
 
+## Lean
+
+The folder [lean/](lean/) checks the scalar steps of the proofs of Theorem 1 and Corollary 2 in Lean 4 with Mathlib, with no `sorry` and only the standard axioms. Build it with `lake build`. Running `lake env lean EntropyScalars/Axioms.lean` prints the axioms of each theorem (output in `lean/axioms.txt`).
+
+**Checked** (`EntropyScalars/Basic.lean`):
+
+- **Remainder** (`remainder_le`): for 0 ≤ a ≤ 1/4 and K ≥ 1, the terms of Σ_k a^k/(k(k − 1)) with k > K add up to at most (4/3) a^{K+1}/(K(K + 1)).
+- **Block sizes** (`block_le`): for n ≥ 30k and d ≥ 2, (5/4)(1 + 1/d)/⌊n/k⌋ ≤ 2k/n.
+- **Variance coefficient** (`coef_le`, with `term_eq`): for k ≥ 2, 2kd³/n ≤ 1/15 and dr ≤ 1/4, (d^{k−1}/(k(k − 1)))² Σ_{c=1}^{k} C(k, c)(2k/n)^c d^c r^{2(k−c)} ≤ 16 (2/15)^{k−2} (k − 1)^{−2} (d³r²/n + d⁴/n²).
+- **Sum over degrees** (`series_le`): Σ_{j<N} 4x^j/(j + 1) ≤ 5 for 0 ≤ x and x² ≤ 2/15.
+- **Squaring and the final constant** (`sq_le`, `tail_le`, `risk_le`): (5s + R)² ≤ 50s² + 2R²; (dr)^{2(K+1)} ≤ d³r²/n if 16^K ≥ n/d and dr ≤ 1/4; and 50Q + (32/9)X/(K(K + 1))² ≤ 51Q for 0 ≤ X ≤ Q and K ≥ 2.
+
+**Not formalized:** Lemmas 3 and 4, the expansion of the entropy and the orthogonality of the terms t_J in the proof of Theorem 1, and the condition n ≥ 130 d³ ln d of Corollary 2, which is checked by computation.
+
 ## Scope
 
-- Written proofs. The numerical checks cover the identities and the chain bound for small stabilizer designs and the risk for a few states.
+- Written proofs, with the scalar steps checked in Lean. The numerical checks cover the identities and the chain bound for small stabilizer designs and the risk for a few states.
 - Exact projective 2-designs. The frame-ε designs of [1] are not covered, since Lemma 3 uses the exact second moment.
 - Corollary 2 needs n ≥ 130 d³ ln d. For Cd² ≤ n ≤ 130 d³ ln d, the range of [1, Corollary 3.2] is the known one.
 - The global question of [1, Section 6], an upper bound over all states, stays open.
-- **Not formalized:** the results have no Lean proof.
 
 ## References
 

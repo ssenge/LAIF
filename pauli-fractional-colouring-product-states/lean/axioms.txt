@@ -1,0 +1,6 @@
+'PauliColouring.q_nonneg' depends on axioms: [propext, Classical.choice, Quot.sound]
+'PauliColouring.q_sum' depends on axioms: [propext, Classical.choice, Quot.sound]
+'PauliColouring.q_ge' depends on axioms: [propext, Classical.choice, Quot.sound]
+'PauliColouring.compat_commute' depends on axioms: [propext]
+'PauliColouring.total_weight' depends on axioms: [propext, Classical.choice, Quot.sound]
+'PauliColouring.cover_ge' depends on axioms: [propext, Classical.choice, Quot.sound]

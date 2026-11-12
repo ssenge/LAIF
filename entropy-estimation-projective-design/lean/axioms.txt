@@ -1,0 +1,8 @@
+'EntropyScalars.remainder_le' depends on axioms: [propext, Classical.choice, Quot.sound]
+'EntropyScalars.block_le' depends on axioms: [propext, Classical.choice, Quot.sound]
+'EntropyScalars.term_eq' depends on axioms: [propext, Classical.choice, Quot.sound]
+'EntropyScalars.coef_le' depends on axioms: [propext, Classical.choice, Quot.sound]
+'EntropyScalars.series_le' depends on axioms: [propext, Classical.choice, Quot.sound]
+'EntropyScalars.sq_le' depends on axioms: [propext, Classical.choice, Quot.sound]
+'EntropyScalars.tail_le' depends on axioms: [propext, Classical.choice, Quot.sound]
+'EntropyScalars.risk_le' depends on axioms: [propext, Classical.choice, Quot.sound]

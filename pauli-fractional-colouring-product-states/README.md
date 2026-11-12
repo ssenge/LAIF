@@ -38,12 +38,24 @@ For the constant, take n = 1 with v = (1/√2, 0, 1/√2) and ε = 1/√2. Then 
 
 Output in `sim/fraccolour_out.txt`.
 
+## Lean
+
+The folder [lean/](lean/) checks the counting steps of the proof of Proposition 1 in Lean 4 with Mathlib, with no `sorry` and only the standard axioms. Build it with `lake build`. Running `lake env lean PauliColouring/Axioms.lean` prints the axioms of each theorem (output in `lean/axioms.txt`). A Pauli string is a map from the qubits to `Option (Fin 3)`, with `none` the identity, and a basis choice is a map to `Fin 3`.
+
+**Checked** (`PauliColouring/Basic.lean`):
+
+- **Basis probabilities** (`q_nonneg`, `q_sum`, `q_ge`): q_i is a probability vector on the three bases, and q_i(σ) ≥ ⟨σ⟩_i² whenever |v_i| ≤ 1.
+- **Commuting sets** (`compat_commute`): two strings in the set I_s of the same basis choice s agree wherever both are not the identity.
+- **Total weight** (`total_weight`): Σ_s Π_i q_i(s_i) = 1, so the colouring has total weight ε⁻².
+- **Coverage** (`cover_ge`): the probability that P lies in I_s is at least Π_{i : P_i ≠ I} ⟨P_i⟩_i², which is tr(ρP)² for a product state.
+
+**Not formalized:** the identity tr(ρP) = Π_i ⟨P_i⟩_i, commutation of strings that agree on their common support, the Clifford images, and the value χ_f = 2 of the example.
+
 ## Scope
 
-- Written proofs, with the numerical checks for n ≤ 3.
+- Written proof, with the counting steps checked in Lean and numerical checks for n ≤ 3.
 - Proposition 1 covers products of single-qubit states and their Clifford images. For these states the large-expectation strings factor qubit by qubit; for general states [2, Question 8] stays open.
 - The colouring of Proposition 1 depends on the single-qubit expectation vectors of ρ, and for a Clifford image also on the Clifford unitary.
-- **Not formalized:** the results have no Lean proof.
 
 ## References
 
