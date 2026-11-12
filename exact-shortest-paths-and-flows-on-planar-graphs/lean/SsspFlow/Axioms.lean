@@ -706,3 +706,12 @@ Expected output for each: `propext`, `Classical.choice`, `Quot.sound` (or a subs
 #print axioms SsspFlow.RotSystem.RData.labOff_raw
 #print axioms SsspFlow.RotSystem.RData.vinC_recv
 #print axioms SsspFlow.RotSystem.RData.levelConn_local
+#print axioms SsspFlow.RotSystem.RData.endAt
+#print axioms SsspFlow.RotSystem.RData.att_eq_endAt
+#print axioms SsspFlow.RotSystem.RData.owner_endAt
+#print axioms SsspFlow.RotSystem.RData.isEnd_endAt
+#print axioms SsspFlow.RotSystem.RData.parent_fst
+#print axioms SsspFlow.RotSystem.RData.ruleEnd
+#print axioms SsspFlow.RotSystem.RData.owner_ruleEnd
+#print axioms SsspFlow.RotSystem.RData.ruleM_comp
+#print axioms SsspFlow.RotSystem.RData.ruleM_lab

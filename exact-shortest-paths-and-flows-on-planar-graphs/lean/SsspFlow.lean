@@ -107,6 +107,7 @@ import SsspFlow.GHatLevelRaw
 import SsspFlow.GHatLevelLen
 import SsspFlow.GHatLevelSsspLocal
 import SsspFlow.GHatLevelConnLocal
+import SsspFlow.GHatRuleM
 import SsspFlow.ListRot
 import SsspFlow.GHatSplit
 import SsspFlow.Annuli
