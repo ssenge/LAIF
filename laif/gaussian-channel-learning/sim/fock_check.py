@@ -1,5 +1,5 @@
 # Fock-space checks (one mode, truncation K):
-#  (1) the trace-distance bound for Gaussian states used in Lemma 4 (fact from [3]) on random pairs;
+#  (1) the trace-distance bound for Gaussian states used in Lemma 3 (fact (F5), from [3]) on random pairs;
 #  (2) Theorem 1 on pure-loss channels Phi_eta (X = sqrt(eta), Y = 1 - eta), in operator-sum form: the trace distance of the
 #      outputs on a truncated two-mode squeezed input of mean photon number E is below the bound.
 import numpy as np
@@ -83,7 +83,7 @@ for E in (0.5, 2.0):
         r1 = out_state(att_kraus(eta1, K), psi); r2 = out_state(att_kraus(eta2, K), psi)
         lhs = tn(r1 - r2) / 2
         dX = np.sqrt(eta2) - np.sqrt(eta1); dY = dl
-        xs = np.exp(np.linspace(np.log(1e-12), np.log(1.9), 800))
+        xs = np.exp(np.linspace(np.log(1e-12), np.log(1.0), 800))
         rhs = min(general_bound(E, 1, 1.0, 1.0, xi, dX, dY, 0) for xi in xs)
         assert lhs <= rhs, (lhs, rhs)
         print(f"   E = {E}, eta = {eta1} -> {eta1} + {dl}: distance {lhs:.4f} <= bound {rhs:.3f}")

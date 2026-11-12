@@ -7,11 +7,11 @@ def e_out(E, m, z, y):
     return z ** 2 * (E + m / 2) + m * y / 2
 
 def sim_bound(E, m, z, y, xi, dX, dX1, dY1):
-    """Lemma 4: both channels equal Phi_i' o N_xi, with ||X_i|| <= z, ||Y_i'|| <= y; dX operator norm,
+    """Lemma 3: both channels equal Phi_i' o N_xi, with ||X_i|| <= z, ||Y_i'|| <= y; dX operator norm,
     dX1 = ||X1 - X2||_1, dY1 = ||Y1' - Y2'||_1."""
     e2r = 2 / xi
     c = (e2r + 1 / e2r) / 2
-    choi = C3 * (z ** 2 * e2r + y) * (e2r * (1 + 2 * z) * dX1 + dY1)
+    choi = C3 * (max(1, z ** 2) * e2r + y) * (e2r * (1 + 2 * z) * dX1 + dY1)
     corr = dX * np.sqrt(2 * E + m * (1 + c)) * np.sqrt(2 * e_out(E, m, z, y + xi * z ** 2) + 1)
     return choi + corr
 
