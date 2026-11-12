@@ -13,6 +13,10 @@ its segment, and erases the loops of the joined walk; a leaf answers with a give
   inside its interval, when every leaf path is one.
 * `Decomp.repeat_sep` (Lemma C) and `Decomp.visits` (Lemma B): a vertex that repeats in the walk of a request lies on
   the separator, and a vertex of the separator has at most two visits in it.
+* `Decomp.gen_disjoint` (Lemma A on the tree): the requests generated top down from `(s, t)` at the root have pairwise
+  disjoint intervals in each bag, when every bag has at most one parent; `Decomp.gen_paths_disjoint` gives disjoint paths.
+* `Decomp.walkPath_spec`: the loop erasure of a walk inside a bag is a simple path in the interval, so it serves as the
+  leaf path, and `Decomp.pathLemma` collects the combinatorial part of the Path Lemma.
 -/
 
 namespace PlanarMatching
@@ -187,5 +191,130 @@ theorem Decomp.visits
     (D.walkOf leafPath Y u v).count x ≤ 2 := by
   obtain ⟨hP, hmin⟩ := D.hops_spec r hint
   exact lemmaB hP hmin (D.segment_spec hleaf r hint) (Or.inr (Or.inr hx))
+
+/-- The requests generated top down from the request `(s, t)` of the bag `r`. -/
+inductive Decomp.Gen (D : Decomp V B) (r : B) (s t : V) : B → V → V → Prop
+  | root : Decomp.Gen D r s t r s t
+  | seg {Y : B} {u v : V} {i : ℕ} : Decomp.Gen D r s t Y u v → (∃ c, D.child c Y) → i < D.hops Y u v →
+      Decomp.Gen D r s t (D.lblOf Y u v i) (D.seq Y u v i) (D.seq Y u v (i + 1))
+
+theorem Decomp.gen_valid {r : B} {s t : V} (hs : D.verts r s) (hst : D.Reach r s t) {Y : B} {u v : V}
+    (h : D.Gen r s t Y u v) : D.verts Y u ∧ D.Reach Y u v := by
+  induction h with
+  | root => exact ⟨hs, hst⟩
+  | seg _ hint hi ih =>
+    obtain ⟨-, hv, hr⟩ := D.lbl_spec (D.hops_spec ih.2 hint).1 hi
+    exact ⟨hv, hr⟩
+
+theorem Decomp.toJR {Y c : B} {a d x : V} (hc : D.child c Y) (ha : D.verts c a)
+    (hx : x ∈ Interval (D.Reach c) a d) : x ∈ Interval (D.JR Y c) a d :=
+  ⟨⟨hc, ha, hx.1⟩, ⟨hc, D.reach_mem ha hx.1, hx.2⟩⟩
+
+/-- **Lemma A** on the tree of bags: two generated requests of one bag whose intervals meet are equal. -/
+theorem Decomp.gen_disjoint {r : B} {s t : V} (hs : D.verts r s) (hst : D.Reach r s t)
+    (hroot : ∀ Y, ¬ D.child r Y) (par : ∀ c Y Y', D.child c Y → D.child c Y' → Y = Y') :
+    ∀ {Y u v}, D.Gen r s t Y u v → ∀ {Y' u' v'}, D.Gen r s t Y' u' v' → Y = Y' → ∀ x,
+      x ∈ Interval (D.Reach Y) u v → x ∈ Interval (D.Reach Y) u' v' → u = u' ∧ v = v' := by
+  intro Y u v h1
+  induction h1 with
+  | root =>
+    intro Y' u' v' h2 e x _ _
+    cases h2 with
+    | root => exact ⟨rfl, rfl⟩
+    | seg hg hint hi =>
+      have hl := D.lbl_spec (D.hops_spec (D.gen_valid hs hst hg).2 hint).1 hi
+      rw [← e] at hl
+      exact absurd hl.1 (hroot _)
+  | @seg Y₁ u₁ v₁ i₁ hg hint hi ih =>
+    intro Y' u' v' h2 e x hx hx'
+    obtain ⟨hP₁, hmin₁⟩ := D.hops_spec (D.gen_valid hs hst hg).2 hint
+    have hl₁ := D.lbl_spec hP₁ hi
+    cases h2 with
+    | root =>
+      rw [e] at hl₁
+      exact absurd hl₁.1 (hroot _)
+    | @seg Y₂ u₂ v₂ i₂ hg' hint' hi' =>
+      obtain ⟨hP₂, -⟩ := D.hops_spec (D.gen_valid hs hst hg').2 hint'
+      have hl₂ := D.lbl_spec hP₂ hi'
+      have hY : Y₁ = Y₂ := par _ _ _ hl₁.1 (by rw [e]; exact hl₂.1)
+      subst hY
+      have mono : ∀ c a d, D.JR Y₁ c a d → D.Reach Y₁ a d := fun _ _ _ h => D.reach_mono h.1 h.2.2
+      have refl : ∀ a, D.Reach Y₁ a a := fun _ => ReflTransGen.refl
+      have trY : ∀ a b d, D.Reach Y₁ a b → D.Reach Y₁ b d → D.Reach Y₁ a d :=
+        fun _ _ _ h1 h2 => ReflTransGen.trans h1 h2
+      have trJ : ∀ c a b d, D.JR Y₁ c a b → D.JR Y₁ c b d → D.JR Y₁ c a d :=
+        fun _ _ _ _ h1 h2 => ⟨h1.1, h1.2.1, ReflTransGen.trans h1.2.2 h2.2.2⟩
+      have x1 := D.toJR hl₁.1 hl₁.2.1 hx
+      rw [e] at hx'
+      have x2 := D.toJR hl₂.1 hl₂.2.1 hx'
+      obtain ⟨a1, b1⟩ := path_reach hP₁ mono refl trY
+      obtain ⟨a2, b2⟩ := path_reach hP₂ mono refl trY
+      have s1 := segment_sub_request mono trY (a1 i₁ (by omega)) (b1 (i₁ + 1) (by omega)) _ x1
+      have s2 := segment_sub_request mono trY (a2 i₂ (by omega)) (b2 (i₂ + 1) (by omega)) _ x2
+      obtain ⟨rfl, rfl⟩ := ih hg' rfl x s1 s2
+      rw [← e] at x2
+      rcases lt_trichotomy i₁ i₂ with h | h | h
+      · exact (segments_disjoint trJ (noShortcut_of_least hP₁ hmin₁) h hi' _ x x1 x2).elim
+      · subst h; exact ⟨rfl, rfl⟩
+      · exact (segments_disjoint trJ (noShortcut_of_least hP₁ hmin₁) h hi _ x x2 x1).elim
+
+/-- Distinct generated requests of one bag get disjoint paths. -/
+theorem Decomp.gen_paths_disjoint
+    (hleaf : ∀ Y u v, (¬ ∃ c, D.child c Y) → D.verts Y u → D.Reach Y u v →
+      SPath E (Interval (D.Reach Y) u v) u v (leafPath Y u v))
+    {r : B} {s t : V} (hs : D.verts r s) (hst : D.Reach r s t)
+    (hroot : ∀ Y, ¬ D.child r Y) (par : ∀ c Y Y', D.child c Y → D.child c Y' → Y = Y')
+    {Y : B} {u v u' v' : V} (h1 : D.Gen r s t Y u v) (h2 : D.Gen r s t Y u' v') (hne : (u, v) ≠ (u', v')) :
+    ∀ x ∈ D.pathOf leafPath Y u v, x ∉ D.pathOf leafPath Y u' v' := by
+  intro x hx hx'
+  have g1 := D.gen_valid hs hst h1
+  have g2 := D.gen_valid hs hst h2
+  obtain ⟨rfl, rfl⟩ := D.gen_disjoint hs hst hroot par h1 h2 rfl x
+    ((D.pathOf_spec hleaf _ _ _ g1.1 g1.2).sub x hx) ((D.pathOf_spec hleaf _ _ _ g2.1 g2.2).sub x hx')
+  exact hne rfl
+
+/-- The loop erasure of a sequence of steps is a simple path in the interval of its ends. -/
+theorem seq_path {R : V → V → Prop} (hE : ∀ a d, R a d → E a d) {u v : V} {k : ℕ} {y : ℕ → V}
+    (h0 : y 0 = u) (hk : y k = v) (hs : ∀ i < k, R (y i) (y (i + 1))) :
+    SPath E (Interval (ReflTransGen R) u v) u v (loopErase ((List.range (k + 1)).map y)) := by
+  have hP : JPath Set.univ (fun (_ : Unit) => R) u v k y := ⟨h0, hk, fun _ _ => trivial, fun i hi => ⟨(), hs i hi⟩⟩
+  obtain ⟨ru, rv⟩ := path_reach hP (fun _ _ _ h => ReflTransGen.single h) (fun _ => ReflTransGen.refl)
+    (fun _ _ _ h1 h2 => ReflTransGen.trans h1 h2)
+  refine ⟨isChain_loopErase ?_, nodup_loopErase _, ?_, ?_, fun x hx => ?_⟩
+  · rw [List.isChain_map]
+    exact (List.isChain_range_succ _ k).mpr fun m hm => hE _ _ (hs m hm)
+  · rw [head?_loopErase]; simp only [List.head?_map, Option.map_eq_some_iff]
+    exact ⟨0, by rw [List.range_succ_eq_map]; rfl, h0⟩
+  · rw [getLast?_loopErase]; simp only [List.getLast?_map, Option.map_eq_some_iff]
+    exact ⟨k, by rw [List.range_succ]; simp, hk⟩
+  · obtain ⟨i, hi, rfl⟩ := List.mem_map.mp (mem_of_mem_loopErase hx)
+    have := List.mem_range.mp hi
+    exact ⟨ru i (by omega), rv i (by omega)⟩
+
+open Classical in
+/-- A leaf path: the loop erasure of some walk inside the bag. -/
+noncomputable def Decomp.walkPath (Y : B) (u v : V) : List V :=
+  if h : ∃ (k : ℕ) (y : ℕ → V), y 0 = u ∧ y k = v ∧ ∀ i < k, D.arc Y (y i) (y (i + 1)) then
+    loopErase ((List.range (Classical.choose h + 1)).map (Classical.choose (Classical.choose_spec h)))
+  else [u]
+
+theorem Decomp.walkPath_spec (hE : ∀ b a d, D.arc b a d → E a d) {Y : B} {u v : V} (r : D.Reach Y u v) :
+    SPath E (Interval (D.Reach Y) u v) u v (D.walkPath Y u v) := by
+  have hex : ∃ (k : ℕ) (y : ℕ → V), y 0 = u ∧ y k = v ∧ ∀ i < k, D.arc Y (y i) (y (i + 1)) := exists_seq r
+  obtain ⟨h0, hk, hs⟩ := Classical.choose_spec (Classical.choose_spec hex)
+  rw [Decomp.walkPath, dite_eq_left hex]
+  exact seq_path (hE Y) h0 hk hs
+
+/-- The combinatorial part of the Path Lemma: the request `(s, t)` of the root gets a simple directed `s`-`t` path,
+and distinct generated requests of one bag get disjoint paths. -/
+theorem Decomp.pathLemma (hE : ∀ b a d, D.arc b a d → E a d) {r : B} {s t : V} (hs : D.verts r s)
+    (hst : D.Reach r s t) (hroot : ∀ Y, ¬ D.child r Y) (par : ∀ c Y Y', D.child c Y → D.child c Y' → Y = Y') :
+    SPath E (Interval (D.Reach r) s t) s t (D.pathOf D.walkPath r s t) ∧
+      ∀ Y u v u' v', D.Gen r s t Y u v → D.Gen r s t Y u' v' → (u, v) ≠ (u', v') →
+        ∀ x ∈ D.pathOf D.walkPath Y u v, x ∉ D.pathOf D.walkPath Y u' v' := by
+  have hleaf : ∀ Y u v, (¬ ∃ c, D.child c Y) → D.verts Y u → D.Reach Y u v →
+      SPath E (Interval (D.Reach Y) u v) u v (D.walkPath Y u v) := fun _ _ _ _ _ r => D.walkPath_spec hE r
+  exact ⟨D.pathOf_spec hleaf r s t hs hst,
+    fun Y u v u' v' h1 h2 hne => D.gen_paths_disjoint hleaf hs hst hroot par h1 h2 hne⟩
 
 end PlanarMatching

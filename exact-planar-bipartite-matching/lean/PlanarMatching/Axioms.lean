@@ -151,3 +151,9 @@ import PlanarMatching
 #print axioms PlanarMatching.Decomp.segment_spec
 #print axioms PlanarMatching.Decomp.repeat_sep
 #print axioms PlanarMatching.Decomp.visits
+#print axioms PlanarMatching.Decomp.gen_valid
+#print axioms PlanarMatching.Decomp.gen_disjoint
+#print axioms PlanarMatching.Decomp.gen_paths_disjoint
+#print axioms PlanarMatching.seq_path
+#print axioms PlanarMatching.Decomp.walkPath_spec
+#print axioms PlanarMatching.Decomp.pathLemma
