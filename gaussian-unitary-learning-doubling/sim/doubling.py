@@ -2,9 +2,9 @@
 # Moments are propagated exactly (a Gaussian unitary acts affinely on the mean and by congruence on the covariance),
 # and each empirical mean of N heterodyne samples is drawn from its exact law N(mean, (V + 1)/(2N)).
 #  (1) coarse stage: symmetric coherent probes and the symplectic rounding S~ = S^ Q^-1, Q = sqrt(-Omega S^T Omega S^);
-#  (2) doubling stages k = 1, 2, 4, ...: every input fed to G has mean photon number <= nin, the invariants
+#  (2) doubling stages k = 1, 2, 4, ...: every input fed to G has mean photon number <= 0.92 min(nin, 32 t^2), the invariants
 #      k ||log W|| <= gamma and ||b|| <= eta / (4 k e^gamma) hold, and the final bound
-#      sqrt(72 m (n+1) ||W - 1||) + sqrt(2 (n' + 1)) ||r~ - r|| <= eps holds;
+#      g(||W||) sqrt(18 m (n+1) ||W - 1||) + sqrt(2 (n' + 1)) ||r~ - r|| <= eps holds, g(x) = sqrt(pi/(x+1)) + sqrt(2x);
 #  (3) the rotation example: 1/2 ||U_theta - id||_{diamond, n} >= sqrt(n theta / pi);
 #  (4) a single-mode squeezer with ||S|| = z maps the vacuum to (z^2 + z^-2 - 2)/4 > 0 photons, below z^2 (0 + 1/2) - 1/2.
 # python -I doubling.py
@@ -33,7 +33,6 @@ def random_symplectic(m, z):
         O[0::2, 0::2] = U.real; O[0::2, 1::2] = -U.imag; O[1::2, 0::2] = U.imag; O[1::2, 1::2] = U.real
         return O
     s = rng.uniform(0, math.log(z), size=m)
-    Z = np.diag(np.repeat(np.exp(s), 2) * np.tile([1, -1], m).astype(float) ** 0)
     Z = np.diag(np.ravel([[math.exp(t), math.exp(-t)] for t in s]))
     S = passive() @ Z @ passive()
     assert np.allclose(S.T @ Om @ S, Om) and np.linalg.norm(S, 2) <= z + 1e-9
@@ -48,22 +47,24 @@ def opnorm(A):
     return np.linalg.norm(A, 2)
 
 
-def gauss_norm_tail(n, delta):
-    return math.sqrt(2 * math.log(1 / delta))
-
-
 def run(m, z, nbar, nin, eps, delta):
     Om = omega(m); I = np.eye(2 * m)
     S = random_symplectic(m, z)
     r = rng.normal(size=2 * m) * 3.0                       # the displacement is not bounded in the problem
-    eta = math.sqrt(nin / 2)
-    gamma = min(0.25, nin / (5 * m))
     nprime = z * z * (nbar + m / 2)
-    kA = 64 * m * (nbar + 1) * gamma / eps ** 2
-    kB = z * eta * math.sqrt(nprime + 1) / (2 * math.sqrt(2) * eps)
-    L = max(0, math.ceil(math.log2(max(kA, kB, 1))))
-    dp = delta / (2 * L + 3)                                 # coarse stage and two events per doubling stage
-    tail = 2 * math.sqrt(2 * m) + math.sqrt(2 * math.log(1 / dp))
+    L = 0
+    while True:                                              # least L with 2^L >= max(kA, kB, 1); t depends on L
+        dp = delta / (2 * L + 3)                             # coarse stage and two events per doubling stage
+        tail = 2 * math.sqrt(2 * m) + math.sqrt(2 * math.log(1 / dp))
+        ntil = min(nin, 32 * tail ** 2)
+        eta = math.sqrt(ntil / 2)
+        gamma = min(0.25, ntil / (5 * m))
+        kA = 112 * m * (nbar + 1) * gamma / eps ** 2
+        kB = z * eta * math.sqrt(nprime + 1) / (2 * math.sqrt(2) * eps)
+        if 2 ** L >= max(kA, kB, 1):
+            break
+        L += 1
+    assert eta * gamma <= tail
     queries = 0
     maxph = 0.0
 
@@ -71,7 +72,7 @@ def run(m, z, nbar, nin, eps, delta):
         nonlocal queries, maxph
         ph = photons(mean, V)
         maxph = max(maxph, ph)
-        assert ph <= nin * (1 + 1e-12), (ph, nin)
+        assert ph <= 0.92 * ntil * (1 + 1e-12) and ntil <= nin, (ph, nin)
         queries += 1
         return S @ mean + r, S @ V @ S.T
 
@@ -110,7 +111,7 @@ def run(m, z, nbar, nin, eps, delta):
                 np.linalg.solve(Wc - I, Wj - I)
             ph = photons(Wj @ x + Mj @ bc, Wj @ Wj.T)
             maxph = max(maxph, ph)
-            assert ph <= nin * (1 + 1e-12), (ph, nin)
+            assert ph <= 0.92 * ntil * (1 + 1e-12), (ph, nin)
         Wk = np.linalg.matrix_power(Wc, k)
         Mk = sum((np.linalg.matrix_power(Wc, i) for i in range(k)), np.zeros_like(Wc)) if k <= 64 else \
             np.linalg.solve(Wc - I, Wk - I)
@@ -148,8 +149,11 @@ def run(m, z, nbar, nin, eps, delta):
         tau = opnorm(A - Wk)
         assert tau <= gamma / 8
         Khat = proj_sp(np.real(logm(A)), Om) / k
+        assert tau <= 0.0814 * gamma
         assert opnorm(Khat - K) <= 1.44 * tau / k
-        assert np.linalg.norm(vsum / (2 * m) - sum(np.linalg.matrix_power(W, j) for j in range(k)) @ b) <= 0.0145 * eta if k <= 64 else True
+        Mk = sum((np.linalg.matrix_power(W, j) for j in range(k)), np.zeros_like(W)) if k <= 64 else \
+            np.linalg.solve(W - I, Wk - I)
+        assert np.linalg.norm(vsum / (2 * m) - Mk @ b) <= 0.0145 * eta
         vhat = vsum / (2 * m)
         bnew = b - vhat / k
         E = expm(Khat)
@@ -166,7 +170,10 @@ def run(m, z, nbar, nin, eps, delta):
     W = Tinv @ S
     rt = T @ chat
     theta = opnorm(W - I)
-    bound = math.sqrt(72 * m * (nbar + 1) * theta) + math.sqrt(2 * (nprime + 1)) * np.linalg.norm(rt - r)
+    wn = opnorm(W)
+    g = math.sqrt(math.pi / (wn + 1)) + math.sqrt(2 * wn)
+    assert 1 - 1e-9 <= wn <= 1.06 and g <= 2.71
+    bound = g * math.sqrt(18 * m * (nbar + 1) * theta) + math.sqrt(2 * (nprime + 1)) * np.linalg.norm(rt - r)
     assert bound <= eps, bound
     total_formula = 4 * m * Nc + sum(4 * m * N * 2 ** t for t in range(L + 1))
     assert queries == total_formula
@@ -174,7 +181,7 @@ def run(m, z, nbar, nin, eps, delta):
 
 
 print(" m   z   nbar  nin    eps      queries     coarse  doubling*eps^2   bound/eps  max input photons/nin")
-for m, z, nbar, nin in ((1, 1.5, 1.0, 2.0), (1, 2.0, 10.0, 4.0), (2, 1.5, 2.0, 4.0), (2, 2.0, 2.0, 1.0)):
+for m, z, nbar, nin in ((1, 1.5, 1.0, 2.0), (1, 2.0, 10.0, 4.0), (2, 1.5, 2.0, 4.0), (2, 2.0, 2.0, 1.0), (1, 1.5, 1.0, 1e4)):
     prev = None
     for eps in (0.2, 0.1, 0.05, 0.025, 0.0125):
         q, qc, bnd, mp, th, kL = run(m, z, nbar, nin, eps, 0.1)
