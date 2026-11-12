@@ -39,9 +39,9 @@ code, .mono { font-family: "JetBrains Mono", ui-monospace, monospace; font-size:
 .wrap { max-width: 1320px; margin: 0 auto; padding: 0 16px; }
 
 header.hero { padding: 40px 0 20px; display: flex; gap: 24px; align-items: center; }
-.hero img.logo { width: 108px; height: 108px; border-radius: 22px; object-fit: cover; box-shadow: var(--shadow); border: 1px solid var(--line); flex: none; }
-.hero h1 { margin: 0; font-size: clamp(28px, 4.4vw, 46px); line-height: 1.05; font-weight: 800; letter-spacing: -.02em;
-  background: linear-gradient(92deg, var(--accent), var(--accent2) 55%, var(--accent3)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.hero img.logo { width: 112px; height: 112px; flex: none; clip-path: circle(47.5% at 50% 50%); }
+.hero h1 { margin: 0; font-size: clamp(28px, 4.4vw, 46px); line-height: 1.08; font-weight: 700; letter-spacing: -.02em; color: var(--text); }
+.hero h1 .c { color: #f0883e; font-weight: 800; } .hero h1 .ai { color: #79a6ff; font-weight: 800; }
 .hero p { margin: 8px 0 0; color: var(--muted); max-width: 720px; }
 .hero .links { margin-top: 12px; display: flex; gap: 10px; flex-wrap: wrap; }
 .btn { display: inline-flex; align-items: center; gap: 6px; padding: 7px 13px; border-radius: 999px; border: 1px solid var(--line);
@@ -75,6 +75,8 @@ select, input[type=date] { padding: 10px 12px; border-radius: 12px; border: 1px 
 .legend div { display: flex; flex-direction: column; gap: 2px; }
 .legend dt { flex: none; font-weight: 700; color: var(--c); }
 .legend dd { margin: 0; }
+.legnote { margin: 10px 0 0; font-size: 12.5px; color: var(--muted); }
+.stxt { font-size: 12px; color: var(--muted); margin-top: 2px; }
 .meta { color: var(--faint); font-size: 13px; margin-top: 8px; display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
 .linkish { background: none; border: 0; color: var(--accent); cursor: pointer; font: inherit; padding: 0; }
 
@@ -113,7 +115,7 @@ footer { color: var(--faint); font-size: 13px; padding: 10px 0 40px; border-top:
 col.c-date { width: 104px; } col.c-cat { width: 150px; } col.c-st { width: 170px; } col.c-dir { width: 46px; }
 @media (max-width: 860px) {
   header.hero { flex-direction: column; align-items: flex-start; padding-top: 24px; }
-  .hero img.logo { width: 76px; height: 76px; }
+  .hero img.logo { width: 112px; height: 112px; flex: none; clip-path: circle(47.5% at 50% 50%); }
   .stat.spark { grid-column: 1 / -1; }
   table, thead, tbody, tr, td { display: block; width: 100%; }
   colgroup, thead { display: none; }
@@ -130,7 +132,7 @@ col.c-date { width: 104px; } col.c-cat { width: 150px; } col.c-st { width: 170px
   <header class="hero">
     <img class="logo" src="https://raw.githubusercontent.com/ssenge/LAIF/main/assets/logo.gif" alt="Pixel-art computer nerd at a home computer">
     <div>
-      <h1>Low hAngIng Fruits</h1>
+      <h1><span class="c">L</span>ow h<span class="ai">A</span>ng<span class="ai">I</span>ng <span class="c">F</span>ruits (<span class="c">L</span><span class="ai">AI</span><span class="c">F</span>)</h1>
       <p>New bounds and faster algorithms for open problems in algorithms and complexity. Search, filter and sort every result of the repository.</p>
       <div class="links">
         <a class="btn" href="https://github.com/ssenge/LAIF"><svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>Details in the GitHub Repository</a>
@@ -147,8 +149,9 @@ col.c-date { width: 104px; } col.c-cat { width: 150px; } col.c-st { width: 170px
       <div><dt style="--c:var(--assume)">Assuming</dt><dd>The Lean statement takes a classical, widely accepted theorem as an explicit hypothesis, named in the folder.</dd></div>
       <div><dt style="--c:var(--claim)">Claim</dt><dd>A written proof in the folder that is not fully formalized.</dd></div>
       <div><dt style="--c:var(--num)">Numerical</dt><dd>Backed by computation: simulations, numerical certificates or sampled instances, with their range stated in the folder.</dd></div>
-      <div><dt style="--c:var(--accent)">Main / Minor</dt><dd>Main results are the headline results of a folder, minor results are smaller findings. A row can carry several tags, for example a Lean lower bound with a written upper bound.</dd></div>
+      <div><dt style="--c:var(--accent)">Main / Minor</dt><dd>Main results are the headline results of a folder, minor results are smaller findings.</dd></div>
     </dl>
+    <p class="legnote">Several tags on one row refer to different parts of the result. Example: "Lean for the lower bound, assuming a classical theorem; Claim for the upper bound" gets Lean, Assuming and Claim. The status text under the tags says which part is which.</p>
   </section>
 
   <section class="controls" aria-label="Filters">
@@ -307,7 +310,7 @@ function render() {
       <td data-l="Problem"><div class="clamp">${inline(d.problem)}</div></td>
       <td data-l="Previous best"><div class="clamp">${inline(d.before) || '<span style="color:var(--faint)">see folder</span>'}</div></td>
       <td data-l="Result"><div class="clamp after">${inline(d.after)}</div></td>
-      <td data-l="Status">${d.tags.map(t => `<span class="tag" style="--c:${TAGS.find(x => x[0] === t)[2]}">${t}</span>`).join("") || '<span style="color:var(--faint)">see folder</span>'}</td>
+      <td data-l="Status">${d.tags.map(t => `<span class="tag" style="--c:${TAGS.find(x => x[0] === t)[2]}">${t}</span>`).join("")}${d.status ? `<div class="stxt clamp">${inline(d.status)}</div>` : '<span style="color:var(--faint)">see folder</span>'}</td>
       <td>${d.folder ? `<a href="${TREE + d.folder}" target="_blank" rel="noopener" title="Open folder" aria-label="Open folder" onclick="event.stopPropagation()">↗</a>` : ""}</td>
     </tr>`).join("") : `<tr><td colspan="7" class="empty">No result matches these filters.</td></tr>`;
   $("#rows").querySelectorAll("tr.r").forEach(tr => {
