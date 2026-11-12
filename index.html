@@ -1,0 +1,367 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LAIF Results</title>
+<meta name="description" content="Searchable, sortable list of the LAIF results: new bounds and faster algorithms for open problems in algorithms and complexity.">
+<link rel="icon" href="https://raw.githubusercontent.com/ssenge/LAIF/main/assets/logo.gif">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #f6f5fb; --bg2: #ecebf6; --panel: rgba(255,255,255,.78); --panel-solid: #fff;
+  --text: #1c1830; --muted: #5d5878; --faint: #8e89a8; --line: rgba(60,50,110,.12);
+  --accent: #7c3aed; --accent2: #db2777; --accent3: #0891b2; --glow: rgba(124,58,237,.18);
+  --lean: #7c3aed; --assume: #0891b2; --claim: #d97706; --num: #059669; --cited: #64748b; --minor: #db2777;
+  --shadow: 0 1px 2px rgba(20,10,60,.06), 0 8px 30px rgba(20,10,60,.07);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0d0b17; --bg2: #151227; --panel: rgba(28,24,48,.72); --panel-solid: #1a1630;
+    --text: #ece9fb; --muted: #aaa4c8; --faint: #77729a; --line: rgba(190,180,255,.12);
+    --accent: #a78bfa; --accent2: #f472b6; --accent3: #22d3ee; --glow: rgba(167,139,250,.22);
+    --lean: #a78bfa; --assume: #22d3ee; --claim: #fbbf24; --num: #34d399; --cited: #94a3b8; --minor: #f472b6;
+    --shadow: 0 1px 2px rgba(0,0,0,.4), 0 10px 40px rgba(0,0,0,.35);
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0d0b17; --bg2: #151227; --panel: rgba(28,24,48,.72); --panel-solid: #1a1630;
+  --text: #ece9fb; --muted: #aaa4c8; --faint: #77729a; --line: rgba(190,180,255,.12);
+  --accent: #a78bfa; --accent2: #f472b6; --accent3: #22d3ee; --glow: rgba(167,139,250,.22);
+  --lean: #a78bfa; --assume: #22d3ee; --claim: #fbbf24; --num: #34d399; --cited: #94a3b8; --minor: #f472b6;
+  --shadow: 0 1px 2px rgba(0,0,0,.4), 0 10px 40px rgba(0,0,0,.35);
+}
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0; font: 15px/1.55 Inter, system-ui, sans-serif; color: var(--text); background: var(--bg);
+  background-image:
+    radial-gradient(900px 500px at 10% -10%, var(--glow), transparent 60%),
+    radial-gradient(800px 500px at 100% 0%, color-mix(in srgb, var(--accent2) 14%, transparent), transparent 60%);
+  background-attachment: fixed; min-height: 100vh;
+}
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+code, .mono { font-family: "JetBrains Mono", ui-monospace, monospace; font-size: .86em; }
+.wrap { max-width: 1320px; margin: 0 auto; padding: 0 16px; }
+
+header.hero { padding: 40px 0 20px; display: flex; gap: 24px; align-items: center; }
+.hero img.logo { width: 108px; height: 108px; border-radius: 22px; object-fit: cover; box-shadow: var(--shadow); border: 1px solid var(--line); flex: none; }
+.hero h1 { margin: 0; font-size: clamp(28px, 4.4vw, 46px); line-height: 1.05; font-weight: 800; letter-spacing: -.02em;
+  background: linear-gradient(92deg, var(--accent), var(--accent2) 55%, var(--accent3)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.hero p { margin: 8px 0 0; color: var(--muted); max-width: 720px; }
+.hero .links { margin-top: 12px; display: flex; gap: 10px; flex-wrap: wrap; }
+.btn { display: inline-flex; align-items: center; gap: 6px; padding: 7px 13px; border-radius: 999px; border: 1px solid var(--line);
+  background: var(--panel); color: var(--text); font-weight: 500; font-size: 13.5px; cursor: pointer; backdrop-filter: blur(8px); }
+.btn:hover { border-color: var(--accent); text-decoration: none; }
+
+.stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin: 14px 0 22px; }
+.stat { background: var(--panel); border: 1px solid var(--line); border-radius: 16px; padding: 14px 16px; box-shadow: var(--shadow); backdrop-filter: blur(10px); }
+.stat b { display: block; font-size: 28px; font-weight: 800; letter-spacing: -.02em; }
+.stat span { color: var(--muted); font-size: 13px; }
+.stat.spark { grid-column: span 2; display: flex; flex-direction: column; }
+.stat.spark svg { width: 100%; height: 46px; margin-top: 6px; }
+
+.controls { position: sticky; top: 0; z-index: 5; padding: 12px 0; background: color-mix(in srgb, var(--bg) 82%, transparent); backdrop-filter: blur(14px); border-bottom: 1px solid var(--line); }
+.row1 { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+.search { flex: 1 1 280px; position: relative; }
+.search input { width: 100%; padding: 11px 14px 11px 38px; border-radius: 12px; border: 1px solid var(--line); background: var(--panel-solid); color: var(--text); font: inherit; outline: none; }
+.search input:focus { border-color: var(--accent); box-shadow: 0 0 0 4px var(--glow); }
+.search svg { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); width: 17px; height: 17px; color: var(--faint); }
+select, input[type=date] { padding: 10px 12px; border-radius: 12px; border: 1px solid var(--line); background: var(--panel-solid); color: var(--text); font: inherit; font-size: 14px; }
+.chips { display: flex; gap: 7px; flex-wrap: wrap; margin-top: 10px; }
+.chip { padding: 5px 11px; border-radius: 999px; border: 1px solid var(--line); background: var(--panel-solid); color: var(--muted); font-size: 12.5px; font-weight: 500; cursor: pointer; user-select: none; display: inline-flex; gap: 6px; align-items: center; }
+.chip .n { color: var(--faint); font-size: 11.5px; }
+.chip[aria-pressed="true"] { color: #fff; background: var(--c, var(--accent)); border-color: transparent; }
+.chip[aria-pressed="true"] .n { color: rgba(255,255,255,.8); }
+.chip .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--c, var(--accent)); }
+.chip[aria-pressed="true"] .dot { background: #fff; }
+.meta { color: var(--faint); font-size: 13px; margin-top: 8px; display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
+.linkish { background: none; border: 0; color: var(--accent); cursor: pointer; font: inherit; padding: 0; }
+
+table { width: 100%; border-collapse: separate; border-spacing: 0 8px; margin: 6px 0 40px; table-layout: fixed; }
+thead th { text-align: left; font-size: 12px; text-transform: uppercase; letter-spacing: .06em; color: var(--faint); font-weight: 600; padding: 4px 12px; cursor: pointer; user-select: none; white-space: nowrap; }
+thead th:hover { color: var(--text); }
+thead th .arr { opacity: .35; margin-left: 4px; }
+thead th.sorted .arr { opacity: 1; color: var(--accent); }
+tbody tr.r { background: var(--panel); box-shadow: var(--shadow); cursor: pointer; transition: transform .12s ease; }
+tbody tr.r:hover { transform: translateY(-1px); }
+tbody tr.r td { padding: 13px 12px; vertical-align: top; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+tbody tr.r td:first-child { border-left: 1px solid var(--line); border-radius: 14px 0 0 14px; }
+tbody tr.r td:last-child { border-right: 1px solid var(--line); border-radius: 0 14px 14px 0; }
+tbody tr.r.open td { border-bottom-color: transparent; }
+tbody tr.r.open td:first-child { border-bottom-left-radius: 0; } tbody tr.r.open td:last-child { border-bottom-right-radius: 0; }
+.clamp { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+tr.open .clamp { -webkit-line-clamp: unset; }
+.cat { font-size: 12px; font-weight: 600; color: var(--muted); }
+.kind { display: inline-block; margin-top: 4px; font-size: 10.5px; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; padding: 1px 7px; border-radius: 6px; }
+.kind.main { color: var(--accent); background: color-mix(in srgb, var(--accent) 14%, transparent); }
+.kind.minor { color: var(--minor); background: color-mix(in srgb, var(--minor) 14%, transparent); }
+.tag { display: inline-block; font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px; margin: 0 4px 4px 0; color: var(--c); background: color-mix(in srgb, var(--c) 15%, transparent); border: 1px solid color-mix(in srgb, var(--c) 30%, transparent); }
+.date { font-family: "JetBrains Mono", monospace; font-size: 12.5px; color: var(--muted); white-space: nowrap; }
+.after { font-weight: 500; }
+tr.detail td { background: var(--panel); padding: 0 16px 16px; border: 1px solid var(--line); border-top: 0; border-radius: 0 0 14px 14px; }
+.dgrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; padding-top: 4px; }
+.dgrid h4 { margin: 0 0 4px; font-size: 11.5px; text-transform: uppercase; letter-spacing: .06em; color: var(--faint); }
+.dgrid div { font-size: 14px; }
+.ref { color: var(--accent3); cursor: help; border-bottom: 1px dotted currentColor; }
+.empty { text-align: center; color: var(--muted); padding: 60px 0; }
+#tip { position: fixed; z-index: 20; max-width: 420px; padding: 10px 12px; border-radius: 10px; background: var(--panel-solid); border: 1px solid var(--line); box-shadow: var(--shadow); font-size: 13px; color: var(--text); pointer-events: none; opacity: 0; transition: opacity .1s; }
+footer { color: var(--faint); font-size: 13px; padding: 10px 0 40px; border-top: 1px solid var(--line); }
+.skel { height: 64px; border-radius: 14px; background: linear-gradient(90deg, var(--panel), var(--bg2), var(--panel)); background-size: 200% 100%; animation: sh 1.2s infinite; margin: 8px 0; }
+@keyframes sh { to { background-position: -200% 0; } }
+
+col.c-date { width: 104px; } col.c-cat { width: 150px; } col.c-st { width: 170px; } col.c-dir { width: 46px; }
+@media (max-width: 860px) {
+  header.hero { flex-direction: column; align-items: flex-start; padding-top: 24px; }
+  .hero img.logo { width: 76px; height: 76px; }
+  .stat.spark { grid-column: 1 / -1; }
+  table, thead, tbody, tr, td { display: block; width: 100%; }
+  colgroup, thead { display: none; }
+  tbody tr.r { border-radius: 14px; margin-bottom: 10px; padding: 4px 0; }
+  tbody tr.r td, tbody tr.r td:first-child, tbody tr.r td:last-child { border: 0; border-radius: 0; padding: 6px 14px; }
+  tbody tr.r { border: 1px solid var(--line); }
+  tbody tr.r td[data-l]::before { content: attr(data-l); display: block; font-size: 10.5px; text-transform: uppercase; letter-spacing: .06em; color: var(--faint); }
+  tr.detail { margin: -12px 0 10px; } tr.detail td { border-radius: 0 0 14px 14px; }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="hero">
+    <img class="logo" src="https://raw.githubusercontent.com/ssenge/LAIF/main/assets/logo.gif" alt="Pixel-art computer nerd at a home computer">
+    <div>
+      <h1>Low hAngIng Fruits</h1>
+      <p>New bounds and faster algorithms for open problems in algorithms and complexity. Search, filter and sort every result of the repository.</p>
+      <div class="links">
+        <a class="btn" href="https://github.com/ssenge/LAIF">Repository</a>
+        <a class="btn" href="https://github.com/ssenge/LAIF#readme">README and references</a>
+        <button class="btn" id="theme" type="button" aria-label="Toggle colour theme">Theme</button>
+      </div>
+    </div>
+  </header>
+
+  <section class="stats" id="stats" aria-label="Summary"></section>
+
+  <section class="controls" aria-label="Filters">
+    <div class="row1">
+      <label class="search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+        <input id="q" type="search" placeholder="Search problems, bounds, references…" aria-label="Search"></label>
+      <select id="cat" aria-label="Category"><option value="">All categories</option></select>
+      <input type="date" id="from" aria-label="Posted from">
+      <input type="date" id="to" aria-label="Posted until">
+    </div>
+    <div class="chips" id="kinds"></div>
+    <div class="chips" id="tags"></div>
+    <div class="meta"><span id="count"></span><button class="linkish" id="reset" type="button">Reset filters</button></div>
+  </section>
+
+  <table aria-label="Results">
+    <colgroup><col class="c-date"><col class="c-cat"><col><col><col><col class="c-st"><col class="c-dir"></colgroup>
+    <thead><tr>
+      <th data-k="posted">Posted<span class="arr">↕</span></th>
+      <th data-k="category">Category<span class="arr">↕</span></th>
+      <th data-k="problem">Problem<span class="arr">↕</span></th>
+      <th data-k="before">Previous best<span class="arr">↕</span></th>
+      <th data-k="after">Result<span class="arr">↕</span></th>
+      <th data-k="status">Status<span class="arr">↕</span></th>
+      <th></th>
+    </tr></thead>
+    <tbody id="rows"><tr><td colspan="7"><div class="skel"></div><div class="skel"></div><div class="skel"></div></td></tr></tbody>
+  </table>
+
+  <footer>Data is read live from the repository README. "Lean": machine-checked in Lean 4 with Mathlib, standard axioms only. "Assuming": a classical theorem taken as an explicit hypothesis. "Claim": a written proof that is not fully formalized. Copyright 2026 Sebastian Senge. All rights reserved.</footer>
+</div>
+<div id="tip" role="tooltip"></div>
+
+<script>
+const RAW = "https://raw.githubusercontent.com/ssenge/LAIF/main/README.md";
+const TREE = "https://github.com/ssenge/LAIF/tree/main/";
+const BLOB = "https://github.com/ssenge/LAIF/blob/main/";
+const TAGS = [
+  ["Lean", /\bLean\b/, "var(--lean)"],
+  ["Assuming", /\bassum/i, "var(--assume)"],
+  ["Claim", /\bClaim\b|on paper/i, "var(--claim)"],
+  ["Numerical", /numeric|simulat|certificate|sampled/i, "var(--num)"],
+  ["Cited", /\bcited\b/i, "var(--cited)"],
+];
+const $ = s => document.querySelector(s);
+const esc = s => s.replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+let refs = {}, data = [], st = { q: "", cat: "", from: "", to: "", kinds: new Set(), tags: new Set(), sort: "posted", dir: -1 };
+
+function cells(line) {
+  return line.trim().replace(/^\||\|$/g, "").split(/(?<!\\)\s\|\s/).map(c => c.replace(/\\\|/g, "|").trim());
+}
+function tables(md, heading) {
+  const lines = md.split("\n"), i = lines.findIndex(l => l.trim() === heading);
+  if (i < 0) return [];
+  const out = []; let hdr = null;
+  for (let j = i + 1; j < lines.length && !/^## /.test(lines[j]); j++) {
+    const l = lines[j];
+    if (!l.startsWith("|")) { hdr = null; continue; }
+    if (/^\|\s*-/.test(l)) continue;
+    const c = cells(l);
+    if (!hdr) { hdr = c.map(h => h.toLowerCase()); continue; }
+    const o = {}; hdr.forEach((h, k) => o[h] = c[k] || ""); out.push(o);
+  }
+  return out;
+}
+function inline(s) {
+  let h = esc(s);
+  h = h.replace(/`([^`]+)`/g, "<code>$1</code>");
+  h = h.replace(/\^\{([^{}]{1,40})\}/g, "<sup>$1</sup>").replace(/_\{([^{}]{1,40})\}/g, "<sub>$1</sub>");
+  h = h.replace(/\[([^\]]+)\]\(([^)\s]+)\)/g, (_, t, u) => {
+    if (!/^https?:/.test(u)) u = (/\/$/.test(u) || !/\.\w+$/.test(u) ? TREE : BLOB) + u.replace(/^\.\//, "");
+    return `<a href="${u}" target="_blank" rel="noopener">${t}</a>`;
+  });
+  h = h.replace(/\*\*([^*]+)\*\*/g, "<b>$1</b>").replace(/(^|[^*\w])\*([^*\s][^*]*)\*/g, "$1<i>$2</i>");
+  h = h.replace(/\[(\d+(?:\s*,\s*\d+)*)((?:,\s*[^\]<]*)?)\](?!\()/g, (m, ns, rest) => {
+    const first = ns.split(",")[0].trim();
+    return refs[first] ? `<span class="ref" data-r="${ns.replace(/\s/g, "")}">[${ns}${rest}]</span>` : m;
+  });
+  return h;
+}
+const plain = s => s.replace(/\[([^\]]+)\]\([^)]+\)/g, "$1").replace(/[`*]/g, "");
+function tagsOf(s) { return TAGS.filter(([, re]) => re.test(s)).map(([n]) => n); }
+function folderOf(s) { const m = s.match(/\]\((laif\/[^)]+)\)/); return m ? m[1] : ""; }
+
+function load(md) {
+  const r = md.slice(md.indexOf("## References"));
+  r.replace(/^(\d+)\.\s+(.+)$/gm, (_, n, t) => refs[n] = t);
+  const main = tables(md, "## Results").map(o => ({
+    kind: "Main", category: o.category || "", problem: o.problem || "", before: o.before || "",
+    after: o.after || "", status: o.status || "", posted: o.posted || "", details: o.details || "" }));
+  const minor = tables(md, "## Minor results").map(o => ({
+    kind: "Minor", category: o.category || "Minor result", problem: o.problem || "", before: o.before || "",
+    after: o.result || o.after || "", status: o.status || "", posted: o.posted || "", details: o.details || "" }));
+  let last = null;
+  data = [...main, ...minor].map(d => {
+    if (/^as above$/i.test(d.status) && last) d.status = last.status;
+    last = d;
+    d.posted = (d.posted.match(/\d{4}-\d\d-\d\d/) || [""])[0];
+    d.tags = tagsOf(d.status);
+    d.folder = folderOf(d.details);
+    d.text = plain([d.category, d.problem, d.before, d.after, d.status, d.details].join(" ")).toLowerCase();
+    return d;
+  }).filter(d => d.problem);
+  build();
+}
+
+function chip(label, n, color, set, key) {
+  const b = document.createElement("button");
+  b.className = "chip"; b.type = "button"; b.style.setProperty("--c", color);
+  b.setAttribute("aria-pressed", set.has(key)); b.innerHTML = `<span class="dot"></span>${esc(label)} <span class="n">${n}</span>`;
+  b.onclick = () => { set.has(key) ? set.delete(key) : set.add(key); b.setAttribute("aria-pressed", set.has(key)); render(); };
+  return b;
+}
+function build() {
+  const cats = [...new Set(data.map(d => d.category))].sort();
+  $("#cat").innerHTML = '<option value="">All categories</option>' + cats.map(c => `<option>${esc(c)}</option>`).join("");
+  const K = $("#kinds"); K.innerHTML = "";
+  [["Main", "var(--accent)"], ["Minor", "var(--minor)"]].forEach(([k, c]) => K.append(chip(k === "Main" ? "Main results" : "Minor results", data.filter(d => d.kind === k).length, c, st.kinds, k)));
+  const T = $("#tags"); T.innerHTML = "";
+  TAGS.forEach(([n, , c]) => { const k = data.filter(d => d.tags.includes(n)).length; if (k) T.append(chip(n, k, c, st.tags, n)); });
+  stats(); render();
+}
+function stats() {
+  const dates = data.map(d => d.posted).filter(Boolean).sort();
+  const days = {}; dates.forEach(x => days[x] = (days[x] || 0) + 1);
+  const keys = Object.keys(days).sort(), max = Math.max(...Object.values(days));
+  const w = 300, h = 46, bw = w / Math.max(keys.length, 1);
+  const bars = keys.map((k, i) => `<rect x="${i * bw + 1}" y="${h - days[k] / max * (h - 4)}" width="${Math.max(bw - 2, 1)}" height="${days[k] / max * (h - 4)}" rx="2" fill="url(#g)"><title>${k}: ${days[k]}</title></rect>`).join("");
+  const lean = data.filter(d => d.tags.includes("Lean")).length;
+  $("#stats").innerHTML = `
+    <div class="stat"><b>${data.length}</b><span>results</span></div>
+    <div class="stat"><b>${new Set(data.map(d => d.category)).size}</b><span>categories</span></div>
+    <div class="stat"><b>${lean}</b><span>with Lean proofs</span></div>
+    <div class="stat spark"><span>Posted per day, ${keys[0] || ""} to ${keys.at(-1) || ""}</span>
+      <svg viewBox="0 0 ${w} ${h}" preserveAspectRatio="none"><defs><linearGradient id="g" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="var(--accent2)"/><stop offset="1" stop-color="var(--accent)"/></linearGradient></defs>${bars}</svg></div>`;
+}
+
+function render() {
+  const q = st.q.toLowerCase().split(/\s+/).filter(Boolean);
+  let rows = data.filter(d =>
+    q.every(w => d.text.includes(w)) && (!st.cat || d.category === st.cat) &&
+    (!st.from || d.posted >= st.from) && (!st.to || d.posted <= st.to) &&
+    (!st.kinds.size || st.kinds.has(d.kind)) && (!st.tags.size || d.tags.some(t => st.tags.has(t))));
+  const k = st.sort;
+  rows.sort((a, b) => st.dir * plain(a[k]).localeCompare(plain(b[k]), "en", { numeric: true }) || b.posted.localeCompare(a.posted));
+  document.querySelectorAll("thead th[data-k]").forEach(th => {
+    const on = th.dataset.k === k; th.classList.toggle("sorted", on);
+    th.querySelector(".arr").textContent = on ? (st.dir > 0 ? "↑" : "↓") : "↕";
+    th.setAttribute("aria-sort", on ? (st.dir > 0 ? "ascending" : "descending") : "none");
+  });
+  $("#count").textContent = `${rows.length} of ${data.length} results`;
+  $("#rows").innerHTML = rows.length ? rows.map((d, i) => `
+    <tr class="r" data-i="${i}" tabindex="0" aria-expanded="false">
+      <td data-l="Posted"><span class="date">${esc(d.posted)}</span></td>
+      <td data-l="Category"><div class="cat">${esc(d.category)}</div><span class="kind ${d.kind.toLowerCase()}">${d.kind}</span></td>
+      <td data-l="Problem"><div class="clamp">${inline(d.problem)}</div></td>
+      <td data-l="Previous best"><div class="clamp">${inline(d.before) || '<span style="color:var(--faint)">see folder</span>'}</div></td>
+      <td data-l="Result"><div class="clamp after">${inline(d.after)}</div></td>
+      <td data-l="Status">${d.tags.map(t => `<span class="tag" style="--c:${TAGS.find(x => x[0] === t)[2]}">${t}</span>`).join("") || '<span style="color:var(--faint)">see folder</span>'}</td>
+      <td>${d.folder ? `<a href="${TREE + d.folder}" target="_blank" rel="noopener" title="Open folder" aria-label="Open folder" onclick="event.stopPropagation()">↗</a>` : ""}</td>
+    </tr>`).join("") : `<tr><td colspan="7" class="empty">No result matches these filters.</td></tr>`;
+  $("#rows").querySelectorAll("tr.r").forEach(tr => {
+    const d = rows[tr.dataset.i];
+    const toggle = () => {
+      const nx = tr.nextElementSibling;
+      if (nx && nx.classList.contains("detail")) { nx.remove(); tr.classList.remove("open"); tr.setAttribute("aria-expanded", "false"); return; }
+      tr.classList.add("open"); tr.setAttribute("aria-expanded", "true");
+      tr.insertAdjacentHTML("afterend", `<tr class="detail"><td colspan="7"><div class="dgrid">
+        ${d.status ? `<div><h4>Status</h4>${inline(d.status)}</div>` : ""}
+        <div><h4>Folder</h4>${inline(d.details)}</div></div></td></tr>`);
+    };
+    tr.onclick = e => { if (!e.target.closest("a")) toggle(); };
+    tr.onkeydown = e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); toggle(); } };
+  });
+  const p = new URLSearchParams();
+  if (st.q) p.set("q", st.q); if (st.cat) p.set("cat", st.cat);
+  if (st.from) p.set("from", st.from); if (st.to) p.set("to", st.to);
+  if (st.kinds.size) p.set("kind", [...st.kinds]); if (st.tags.size) p.set("tag", [...st.tags]);
+  if (st.sort !== "posted" || st.dir !== -1) p.set("sort", (st.dir > 0 ? "" : "-") + st.sort);
+  history.replaceState(null, "", p.toString() ? "?" + p : location.pathname);
+}
+
+function initState() {
+  const p = new URLSearchParams(location.search);
+  st.q = p.get("q") || ""; st.cat = p.get("cat") || ""; st.from = p.get("from") || ""; st.to = p.get("to") || "";
+  (p.get("kind") || "").split(",").filter(Boolean).forEach(k => st.kinds.add(k));
+  (p.get("tag") || "").split(",").filter(Boolean).forEach(k => st.tags.add(k));
+  const s = p.get("sort"); if (s) { st.dir = s.startsWith("-") ? -1 : 1; st.sort = s.replace(/^-/, ""); }
+  $("#q").value = st.q; $("#from").value = st.from; $("#to").value = st.to;
+}
+let t;
+$("#q").oninput = e => { clearTimeout(t); t = setTimeout(() => { st.q = e.target.value; render(); }, 120); };
+$("#cat").onchange = e => { st.cat = e.target.value; render(); };
+$("#from").onchange = e => { st.from = e.target.value; render(); };
+$("#to").onchange = e => { st.to = e.target.value; render(); };
+document.querySelectorAll("thead th[data-k]").forEach(th => th.onclick = () => {
+  st.dir = st.sort === th.dataset.k ? -st.dir : (th.dataset.k === "posted" ? -1 : 1); st.sort = th.dataset.k; render(); });
+$("#reset").onclick = () => { st.q = st.cat = st.from = st.to = ""; st.kinds.clear(); st.tags.clear(); st.sort = "posted"; st.dir = -1;
+  $("#q").value = $("#from").value = $("#to").value = ""; build(); };
+
+const tip = $("#tip");
+document.addEventListener("mouseover", e => {
+  const r = e.target.closest(".ref"); if (!r) { tip.style.opacity = 0; return; }
+  tip.innerHTML = r.dataset.r.split(",").map(n => refs[n] ? `<div><b>[${n}]</b> ${inline(refs[n])}</div>` : "").join("");
+  const b = r.getBoundingClientRect();
+  tip.style.left = Math.min(b.left, innerWidth - 440) + "px"; tip.style.top = (b.bottom + 6) + "px"; tip.style.opacity = 1;
+});
+const root = document.documentElement;
+try { const th = localStorage.getItem("laif-theme"); if (th) root.dataset.theme = th; } catch (e) {}
+$("#theme").onclick = () => {
+  const dark = root.dataset.theme ? root.dataset.theme === "dark" : matchMedia("(prefers-color-scheme: dark)").matches;
+  root.dataset.theme = dark ? "light" : "dark";
+  try { localStorage.setItem("laif-theme", root.dataset.theme); } catch (e) {}
+};
+
+initState();
+fetch(RAW, { cache: "no-cache" }).then(r => { if (!r.ok) throw new Error(r.status); return r.text(); })
+  .then(md => { load(md); $("#cat").value = st.cat; })
+  .catch(err => { $("#rows").innerHTML = `<tr><td colspan="7" class="empty">Could not load the results (${esc(String(err))}). See the <a href="https://github.com/ssenge/LAIF#results">README</a>.</td></tr>`; });
+</script>
+</body>
+</html>
