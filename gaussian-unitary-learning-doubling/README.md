@@ -14,6 +14,8 @@ queries for n̄_in ≥ (2m)^{4/3}, with coherent and squeezed probes, heterodyne
 
 ## Results
 
+The algorithm below uses sequential, adaptive queries: chains of queries with known operations in between, chosen from earlier outcomes. The previous best bound above is for independent, parallel queries. The two bounds are therefore for different access models, and the comparison below is not between algorithms of the same kind.
+
 **Theorem 1.** Let m ≥ 1, z ≥ 1, n̄ ≥ 0, n̄_in > 0 and ε, δ ∈ (0, 1). There is an algorithm with sequential queries that uses only coherent probes, known Gaussian unitaries and displacements between queries, and heterodyne detection, feeds G only states with mean photon number at most n̄_in, and solves the task above with
 
 N_tot = O( (m + log(L/δ)) · [ m² (n̄ + 1) / (n̄_in γ ε²) + m z² (n̄ + m)^{1/2} / (n̄_in^{1/2} γ² ε) + m z⁸ / (n̄_in γ²) ] )
