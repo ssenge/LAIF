@@ -715,3 +715,6 @@ Expected output for each: `propext`, `Classical.choice`, `Quot.sound` (or a subs
 #print axioms SsspFlow.RotSystem.RData.owner_ruleEnd
 #print axioms SsspFlow.RotSystem.RData.ruleM_comp
 #print axioms SsspFlow.RotSystem.RData.ruleM_lab
+#print axioms SsspFlow.RotSystem.LevelIn.withConst
+#print axioms SsspFlow.RotSystem.RData.levelIn_const
+#print axioms SsspFlow.RotSystem.RData.levelStep_local
