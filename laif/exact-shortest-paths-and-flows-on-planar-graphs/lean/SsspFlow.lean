@@ -110,6 +110,7 @@ import SsspFlow.GHatLevelConnLocal
 import SsspFlow.GHatRuleM
 import SsspFlow.GHatLevelStep
 import SsspFlow.GHatLevelOff
+import SsspFlow.OracleChoice
 import SsspFlow.OracleTree
 import SsspFlow.OracleMark
 import SsspFlow.GHatLevelMark

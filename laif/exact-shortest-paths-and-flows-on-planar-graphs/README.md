@@ -819,6 +819,10 @@ standard axioms (`propext`, `Classical.choice`, `Quot.sound`). There is no `sorr
   Assuming the Exact SSSP bound, one algorithm of the message model, fixed before the network, starts from the local
   inputs of a level and these offsets and after $C \log^c n' \cdot (12D + 16) + 1$ rounds holds at every copy the
   least offset plus distance in $\hat G_\ell$ (`RData.levelSsspOff_local`).
+- `lean/SsspFlow/OracleChoice.lean`: one oracle of the Exact SSSP bound. One fixed choice of the algorithm of the
+  bound and its output (`ExactSsspBound.alg`, `ExactSsspBound.out`, `ExactSsspBound.alg_spec`) is used by every
+  algorithm built on the oracle, so two runs on the same network with the same inputs have the same outputs, parents
+  included (`ExactSsspBound.oracleRun`).
 - `lean/SsspFlow/OracleTree.lean`: the parent pointers of an exact shortest-path oracle. From a node of finite
   distance the parents lead to a root, whose offset plus the lengths along the chain is the distance of the node
   (`Net.ExactSpec.chain`), so the chain is a shortest walk from the virtual source. With length 0 on the arc from each
@@ -827,7 +831,8 @@ standard axioms (`propext`, `Classical.choice`, `Quot.sound`). There is no `sorr
 - `lean/SsspFlow/OracleMark.lean`: marking with three calls on a planar network. The algorithm `markAlg` runs the
   oracle, then one round in which every node tells its parent, then the oracle again with length 0 on the arcs to the
   parents and offset 0 at the nodes whose flag is set. Assuming the Exact SSSP bound, after $2C\log^c n \cdot D + 1$
-  rounds both runs meet the specification of the oracle (`markAlg_spec`), and the second distance is 0 exactly on
+  rounds both runs meet the specification of the oracle, and the first run gives the outputs of the chosen oracle
+  (`markAlg_spec`), and the second distance is 0 exactly on
   the parent chains of the flagged nodes (`Net.ExactSpec.dsrcTop_markB`).
 - `lean/SsspFlow/OracleChainSum.lean`: sums along the parent chains of the oracle. With length $f(a)$ on the arc from
   a node $a$ to its parent and $\top$ elsewhere, a walk of finite length follows the parents (`Net.walk_markW`), so
@@ -863,12 +868,14 @@ standard axioms (`propext`, `Classical.choice`, `Quot.sound`). There is no `sorr
   tells every neighbour whether it is its child, with its two flags in the same message of 3 bits, then the counting
   run up the chains for $f_0$ and the run down the chains for $f_1$ from the nodes flagged by $f_0$ with count $0$
   (`countIn_eq`, `downIn_eq`). Assuming the Exact SSSP bound, after $3 C \log^c n \cdot D + 1$ rounds the outputs of
-  the three runs meet the specification of the oracle (`chainAlg_spec`).
+  the three runs meet the specification of the oracle, and the first run gives the outputs of the chosen oracle
+  (`chainAlg_spec`).
 - `lean/SsspFlow/GHatLevelChainRuns.lean`: the two runs along the chains of a level from local inputs. Assuming the
   Exact SSSP bound, one algorithm of the message model, fixed before the network, starts from the inputs `levelIn`
   and, at each node, the offsets and the three flags of the identifiers it hosts. After
   $T \le 3 C \log^c n' \cdot (12 D + 16) + 2$ rounds its outputs at the identifiers meet the specification of the
-  oracle for the three runs of `chainAlg` on the network of the level (`RData.levelChain_local`).
+  oracle for the three runs of `chainAlg` on the network of the level, the first run with the outputs of the chosen
+  oracle (`RData.levelChain_local`).
 - `lean/SsspFlow/GHatChainOut.lean`: the ends of the step read from the outputs of the runs. With the target flag and
   the flags of `RData.nodeFlag` as the input bits, a node of the chain of a target has flag $0$ and count $0$ exactly when
   it is the first node flagged for $0$, and a node up to it has flag $1$ and distance $0$ in the run down the chains
@@ -930,8 +937,8 @@ standard axioms (`propext`, `Classical.choice`, `Quot.sound`). There is no `sorr
 - `lean/SsspFlow/GHatLevelMark.lean`: the marking on the network of a level from local inputs. Each node knows the
   offsets and flags of the identifiers it hosts. Assuming the Exact SSSP bound, one algorithm of the message model,
   fixed before the network, runs `markAlg` on the network of the level within $2C\log^c n' \cdot (12D + 16) + 2$
-  rounds, and its outputs at the identifiers meet the specification of the oracle for both runs
-  (`RData.levelMark_local`).
+  rounds, and its outputs at the identifiers meet the specification of the oracle for both runs, the first run with
+  the outputs of the chosen oracle (`RData.levelMark_local`).
 - `lean/SsspFlow/GHatLevelMin.lean`: least offsets in the components of a level. For token lengths 0 or at least
   $M$, the least offset plus distance, capped at $M$, is the least offset of the copies joined by zero arcs, capped
   at $M$ (`RData.zmin_cap`). Assuming the Exact SSSP bound, one algorithm of the message model, fixed before the
@@ -986,7 +993,7 @@ standard axioms (`propext`, `Classical.choice`, `Quot.sound`). There is no `sorr
   Exact SSSP bound, one algorithm of the message model, fixed before the network, runs the marking algorithm of a
   level and then two runs of least offsets with token lengths $0$, with offsets the values `ix` and `jx` at the
   identifiers that the marking run marked. After at most $2C\log^c n' \cdot (12D+16) + 4$ rounds its first outputs
-  meet the specification of the oracle, and every copy holds, capped at $M$, the least `ix` and the least `jx` over
+  are those of the chosen oracle and meet its specification, and every copy holds, capped at $M$, the least `ix` and the least `jx` over
   the marked copies of its component of $\hat G_\ell[E_R \cup E_C]$ (`RData.levelI12_local`). The values `ix`,
   `jx`, the offsets and the targets are inputs at the identifiers of each node.
 - `lean/SsspFlow/GHatChainCopy.lean`: copies on the parent chains of a level. An edge of finite length joins two real
@@ -1014,7 +1021,8 @@ standard axioms (`propext`, `Classical.choice`, `Quot.sound`). There is no `sorr
   Assuming the Exact SSSP bound, the algorithm of `RData.levelI12_local` started from the sources and targets of the
   annuli of a level holds, capped at $M$, the least index and $m$ minus the greatest index at the target of every
   annulus of the level, for the shortest walk of the annulus that the darts of the chain of the target form
-  (`RData.levelI12_roots_run`, with `RData.chain_data`).
+  (`RData.levelI12_roots_run`, with `RData.chain_data`). Its chains are those of the chosen oracle, the same as in
+  the runs along the chains of `RData.levelChain_local` from the same offsets.
 - `lean/SsspFlow/GHatPhase.lean`: the combinatorics of property (6). Two copies on E_R edges are joined by E_R edges
   exactly when they lie on the path of one piece (`RData.er_comp_iff`), and by E_R and E_C edges exactly when their
   pieces are joined in the token graph (`RData.erc_comp_iff`), whose components are those of the split

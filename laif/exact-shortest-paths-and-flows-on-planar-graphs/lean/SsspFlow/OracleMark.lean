@@ -1,4 +1,5 @@
 import SsspFlow.OracleTree
+import SsspFlow.OracleChoice
 import SsspFlow.GHatLevelLen
 
 /-!
@@ -110,21 +111,25 @@ theorem markIn_eq (N : Net V) (ℓ : V → V → ℕ∞) (φ : V → ℕ∞) (is
     · simp [h]
 
 /-- **Marking with three calls.** Assuming the Exact SSSP bound, after `2 C log^c n · D + 1` rounds the
-outputs of the first run and of the marking run meet the specification of the oracle. -/
-theorem markAlg_spec (hE : ExactSsspBound) (K : ℕ) : ∃ C c : ℕ, ∀ n D : ℕ, 1 ≤ D →
-    ∃ (σ : Type) (A : Algorithm (Fin n) (OracleIn (Fin n)) σ (C * logN n ^ c))
-      (out : Fin n → σ → ℕ∞ × Option (Fin n)),
-      ∀ (N : Net (Fin n)) (ℓ : Fin n → Fin n → ℕ∞) (φ : Fin n → ℕ∞) (isT : Fin n → Bool),
-        N.toRot.Planar → N.DiamLE D → OracleValid N 0 ((n + 2) ^ K) ℓ φ →
-        let st := (markAlg A out (C * logN n ^ c * D)).run N.G (fun v => (N.oracleIn ℓ φ v, isT v))
-          (C * logN n ^ c * D + (1 + C * logN n ^ c * D))
-        N.ExactSpec ℓ φ (fun v => markFirst out v (st v)) ∧
-          N.ExactSpec (Net.markLen fun v => markFirst out v (st v)) (Net.markOffB isT)
-            (fun v => markSecond out v (st v)) := by
-  obtain ⟨C, c, hC⟩ := hE K
-  refine ⟨C, c, fun n D hD => ?_⟩
-  obtain ⟨σ, A, out, hA⟩ := hC n D hD
-  refine ⟨σ, A, out, fun N ℓ φ isT hP hDi hval => ?_⟩
+outputs of the first run and of the marking run meet the specification of the oracle, for the chosen
+oracle of the bound. The first run gives the outputs of that oracle. -/
+theorem markAlg_spec (hE : ExactSsspBound) (K n D : ℕ) (hD : 1 ≤ D)
+    (N : Net (Fin n)) (ℓ : Fin n → Fin n → ℕ∞) (φ : Fin n → ℕ∞) (isT : Fin n → Bool)
+    (hP : N.toRot.Planar) (hDi : N.DiamLE D) (hval : OracleValid N 0 ((n + 2) ^ K) ℓ φ) :
+    let st := (markAlg (hE.alg K n D hD) (hE.out K n D hD) (hE.cC K * logN n ^ hE.cc K * D)).run N.G
+      (fun v => (N.oracleIn ℓ φ v, isT v)) (hE.cC K * logN n ^ hE.cc K * D + (1 + hE.cC K * logN n ^ hE.cc K * D))
+    N.ExactSpec ℓ φ (fun v => markFirst (hE.out K n D hD) v (st v)) ∧
+      N.ExactSpec (Net.markLen fun v => markFirst (hE.out K n D hD) v (st v)) (Net.markOffB isT)
+        (fun v => markSecond (hE.out K n D hD) v (st v)) ∧
+      (fun v => markFirst (hE.out K n D hD) v (st v)) = hE.oracleRun K D hD N ℓ φ := by
+  set C := hE.cC K
+  set c := hE.cc K
+  set A := hE.alg K n D hD
+  set out := hE.out K n D hD
+  have hA : ∀ (N : Net (Fin n)) (ℓ : Fin n → Fin n → ℕ∞) (φ : Fin n → ℕ∞),
+      N.toRot.Planar → N.DiamLE D → OracleValid N 0 ((n + 2) ^ K) ℓ φ →
+      N.ExactSpec ℓ φ (fun v => out v (A.run N.G (N.oracleIn ℓ φ) (C * logN n ^ c * D) v)) :=
+    fun N ℓ φ hP hDi hval => hE.alg_spec K n D hD N ℓ φ hP hDi hval
   set T := C * logN n ^ c * D
   set r : Fin n → ℕ∞ × Option (Fin n) := fun v => out v (A.run N.G (N.oracleIn ℓ φ) T v) with hr
   have hmsg : ∀ u w, childMsg (r u).2 w < 2 ^ (C * logN n ^ c + 1) := fun u w => by
@@ -141,7 +146,7 @@ theorem markAlg_spec (hE : ExactSsspBound) (K : ℕ) : ∃ C c : ℕ, ∀ n D : 
     unfold markAlg
     rw [run_seq, run_seq]
     simp only [run_keep, run_widen]
-    have hex : ∀ w, (exchTo (Fin n) (C * logN n ^ c + 1)).run N.G
+    have hex : ∀ w, (exchTo (Fin n) (hE.cC K * logN n ^ hE.cc K + 1)).run N.G
         (fun w => childMsg (out w (A.run N.G (fun v => (N.oracleIn ℓ φ v, isT v).1) T w)).2) 1 w =
         (fun b => childMsg (r w).2 b, fun u => if N.G.Adj u w then some (childMsg (r u).2 w) else none) :=
       fun w => run_exchTo N.G _ hmsg w
@@ -152,7 +157,7 @@ theorem markAlg_spec (hE : ExactSsspBound) (K : ℕ) : ∃ C c : ℕ, ∀ n D : 
     exact markIn_eq N ℓ φ isT r w
   simp only [hrun, markFirst, markSecond]
   have h1 := hA N ℓ φ hP hDi hval
-  refine ⟨h1, hA N (Net.markLen r) (Net.markOffB isT) hP hDi ⟨fun u v _ => ?_, fun z => ?_⟩⟩
+  refine ⟨h1, hA N (Net.markLen r) (Net.markOffB isT) hP hDi ⟨fun u v _ => ?_, fun z => ?_⟩, rfl⟩
   · unfold Net.markLen
     split_ifs
     · exact .inr ⟨le_rfl, zero_le⟩

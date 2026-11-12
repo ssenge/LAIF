@@ -36,7 +36,8 @@ inputs `levelIn` of a level and, at each node, offsets, targets and values `ix`,
 `ψ`, `isT`, `ixI`, `jxI` at the identifiers it hosts. After `T` rounds its outputs `rr` meet the
 specification of the oracle for the lengths of the level with offsets `ψ`, and at every copy the
 outputs `o1` and `o2`, capped at `M`, are the least `ixI` and the least `jxI` over the copies of its
-component of `Ĝ_ℓ[E_R ∪ E_C]` whose identifiers lie on the parent chain of a target. -/
+component of `Ĝ_ℓ[E_R ∪ E_C]` whose identifiers lie on the parent chain of a target. The outputs `rr`
+are those of the chosen oracle of the bound on the network of the level. -/
 theorem levelI12_local (hE : ExactSsspBound) (K : ℕ) : ∃ C c : ℕ, ∀ n D : ℕ,
     ∃ (σ : Type) (A : Cslib.Congest.Algorithm (Fin n)
         (LevelIn n × (((Fin (n * (n * 21)) → ℕ∞) × (Fin (n * (n * 21)) → Bool)) ×
@@ -60,6 +61,7 @@ theorem levelI12_local (hE : ExactSsspBound) (K : ℕ) : ∃ C c : ℕ, ∀ n D 
       let st := A.run N.G (fun w => (S.levelIn hN lam M u₀ w, ((off w, flg w), (ixL w, jxL w)))) T
       let R := fun a => rr a (st (hostOf a))
       (S.levelNet hN).ExactSpec (S.levelLen hN lam M) ψ R ∧
+      R = hE.oracleRun K (12 * D + 16) (by omega) (S.levelNet hN) (S.levelLen hN lam M) ψ ∧
       ∀ v : S.hRot.Vertex,
         min (o1 ((S.levelPad hN).ι (.inl v)) (st (hostOf ((S.levelPad hN).ι (.inl v)))) : ℝ≥0∞) M =
           min (⨅ u, ⨅ (_ : Relation.ReflTransGen S.ERC (S.vcopy u) (S.vcopy v)),
@@ -136,7 +138,7 @@ theorem levelI12_local (hE : ExactSsspBound) (K : ℕ) : ∃ C c : ℕ, ∀ n D 
         A₂.run N.G (fun w => (S.levelIn hN (fun _ => 0) M u₀ w, offM (jxL w) (s₁ w))) T₂
           (hostOf ((S.levelPad hN).ι (.inl v))))) := fun v => by
     simp only [st, hrun]
-  obtain ⟨hX1, hX2⟩ := hA₁ N S hN lam M u₀ ψ isT off flg hP hc hS hcut hD hlam hM hψW hoff hflg
+  obtain ⟨hX1, hX2, hX3⟩ := hA₁ N S hN lam M u₀ ψ isT off flg hP hc hS hcut hD hlam hM hψW hoff hflg
   have hm : ∀ a, (out₂ a (s₁ (hostOf a))).1 = 0 ↔
       ∃ t i, isT t = true ∧ (Net.parOf fun a => out₁ a (s₁ (hostOf a)))^[i] t = a := by
     intro a
@@ -182,7 +184,7 @@ theorem levelI12_local (hE : ExactSsspBound) (K : ℕ) : ∃ C c : ℕ, ∀ n D 
     · rw [if_pos h, if_pos ((hm _).2 h)]
     · rw [if_neg h, if_neg (fun h' => h ((hm _).1 h')), ENat.toENNReal_top]
   rw [hR]
-  refine ⟨hX1, fun v => ⟨?_, ?_⟩⟩
+  refine ⟨hX1, hX3, fun v => ⟨?_, ?_⟩⟩
   · rw [hst v]
     exact key ixI ixL (fun z hz => (hixT z hz).1) (fun z => (hixW z).1) hixL v
   · rw [hst v]

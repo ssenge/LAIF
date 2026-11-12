@@ -728,6 +728,8 @@ Expected output for each: `propext`, `Classical.choice`, `Quot.sound` (or a subs
 #print axioms SsspFlow.Congest.Net.ExactSpec.dsrcTop_mark
 #print axioms SsspFlow.Congest.Net.ExactSpec.dsrcTop_markB
 #print axioms SsspFlow.Congest.markIn_eq
+#print axioms SsspFlow.Congest.ExactSsspBound.spec_cc
+#print axioms SsspFlow.Congest.ExactSsspBound.alg_spec
 #print axioms SsspFlow.Congest.markAlg_spec
 #print axioms SsspFlow.RotSystem.RData.levelMark_local
 #print axioms SsspFlow.RotSystem.RData.zmin_cap

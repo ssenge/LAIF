@@ -34,7 +34,8 @@ it hosts. After `T` rounds its outputs `rr` meet the specification of the oracle
 annulus of `Q` the chain of its target reaches a root at the piece at `κ0(t)` in `k` valid parent
 steps, with sum of lengths the distance at the target, the darts of the chain form a shortest walk of
 the annulus, and the outputs `o1` and `o2` at the target, capped at `M`, are its least index and `m`
-minus its greatest index on the cut path. -/
+minus its greatest index on the cut path. The outputs `rr` are those of the chosen oracle of the bound
+on the network of the level. -/
 theorem levelI12_roots_run (hE : ExactSsspBound) (K : ℕ) : ∃ C c : ℕ, ∀ n D : ℕ,
     ∃ (σ : Type) (A : Cslib.Congest.Algorithm (Fin n)
         (LevelIn n × (((Fin (n * (n * 21)) → ℕ∞) × (Fin (n * (n * 21)) → Bool)) ×
@@ -70,6 +71,7 @@ theorem levelI12_roots_run (hE : ExactSsspBound) (K : ℕ) : ∃ C c : ℕ, ∀ 
       let st := A.run N.G (fun w => (S.levelIn hN lam M u₀ w, ((off w, flg w), (ixL w, jxL w)))) T
       let R := fun a => rr a (st (hostOf a))
       (S.levelNet hN).ExactSpec (S.levelLen hN lam M) (S.srcOff hN Q) R ∧
+      R = hE.oracleRun K (12 * D + 16) (by omega) (S.levelNet hN) (S.levelLen hN lam M) (S.srcOff hN Q) ∧
       ∀ At ∈ Q, ∃ (kk : ℕ) (u : S.hRot.Vertex) (hu : ∃ x : S.Tok, S.IsEnd x.1 (S.vcopy u)) (i1 i2 : ℕ),
         Net.ParSteps R ((S.levelPad hN).ι (.inl (S.endV (At.1.2.κ1 At.2)))) kk ∧
         (Net.parOf R)^[kk] ((S.levelPad hN).ι (.inl (S.endV (At.1.2.κ1 At.2)))) = (S.levelPad hN).ι (.inl u) ∧
@@ -100,9 +102,9 @@ theorem levelI12_roots_run (hE : ExactSsspBound) (K : ℕ) : ∃ C c : ℕ, ∀ 
     split_ifs
     · exact .inr zero_le
     · exact .inl rfl
-  obtain ⟨hR', hO⟩ := hA N S hN lam M u₀ (S.srcOff hN Q) (S.tgtFlag hN Q) ixI jxI off flg ixL jxL hP hc hS
+  obtain ⟨hR', hRe, hO⟩ := hA N S hN lam M u₀ (S.srcOff hN Q) (S.tgtFlag hN Q) ixI jxI off flg ixL jxL hP hc hS
     hcut hD hlam hM hψW hix0 hixW hoff hflg hixL hjxL
-  refine ⟨hR', fun At hAt => ?_⟩
+  refine ⟨hR', hRe, fun At hAt => ?_⟩
   have hAt' : (At.1, At.2) ∈ Q := by simpa using hAt
   obtain ⟨ps, i1, i2, -, -, hl, hg, e1, e2, hidx⟩ := S.level_i12_roots hN r ℓ lam M cc hcr hlc hgc hΓ Q hQ
     hQu _ hR' ixI jxI hix hjx (A := At.1) (t := At.2) hAt' _ _ (hO (S.endV (At.1.2.κ1 At.2))).1

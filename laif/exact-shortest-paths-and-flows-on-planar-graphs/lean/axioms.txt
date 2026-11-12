@@ -723,6 +723,8 @@
 'SsspFlow.Congest.Net.ExactSpec.dsrcTop_mark' depends on axioms: [propext, Classical.choice, Quot.sound]
 'SsspFlow.Congest.Net.ExactSpec.dsrcTop_markB' depends on axioms: [propext, Classical.choice, Quot.sound]
 'SsspFlow.Congest.markIn_eq' depends on axioms: [propext, Classical.choice, Quot.sound]
+'SsspFlow.Congest.ExactSsspBound.spec_cc' depends on axioms: [propext, Classical.choice, Quot.sound]
+'SsspFlow.Congest.ExactSsspBound.alg_spec' depends on axioms: [propext, Classical.choice, Quot.sound]
 'SsspFlow.Congest.markAlg_spec' depends on axioms: [propext, Classical.choice, Quot.sound]
 'SsspFlow.RotSystem.RData.levelMark_local' depends on axioms: [propext, Classical.choice, Quot.sound]
 'SsspFlow.RotSystem.RData.zmin_cap' depends on axioms: [propext, Classical.choice, Quot.sound]

@@ -175,7 +175,7 @@ theorem levelI12_run (hE : ExactSsspBound) (K : ℕ) : ∃ C c : ℕ, ∀ n D : 
   refine ⟨σ, A, T, rr, o1, o2, hT, ?_⟩
   intro N S hN lam M u₀ ψ isT ixI jxI off flg ixL jxL hP hc hS hcut hD hlam hM hψW hix0 hixW hoff hflg
     hixL hjxL
-  obtain ⟨hR, hO⟩ := hA N S hN lam M u₀ ψ isT ixI jxI off flg ixL jxL hP hc hS hcut hD hlam hM hψW hix0
+  obtain ⟨hR, -, hO⟩ := hA N S hN lam M u₀ ψ isT ixI jxI off flg ixL jxL hP hc hS hcut hD hlam hM hψW hix0
     hixW hoff hflg hixL hjxL
   refine ⟨hR, fun cc hcr hcl Cp g Γ hgc L hΓ t hz h1 h2 h3 h4 v hv hpv hroot hle hTt hTv hix hjx => ?_⟩
   obtain ⟨ps, i1, i2, a1, a2, a3, a4, a5, a6, -⟩ := S.level_i12_of_marked hN lam M cc hcr hcl hgc L hΓ hz

@@ -32,7 +32,8 @@ of the message model on `N`, fixed before the network, starts from the inputs `l
 node, offsets and flags that agree with `ψ` and `fl` at the identifiers it hosts. After `T` rounds its
 outputs at the identifiers meet the specification of the oracle for the lengths of the level with
 offsets `ψ`, for the counting run up the parent chains for `f0` from the targets, and for the run down
-the chains for `f1` from the nodes flagged by `f0` with count `0`. -/
+the chains for `f1` from the nodes flagged by `f0` with count `0`. The first run gives the outputs of
+the chosen oracle of the bound on the network of the level. -/
 theorem levelChain_local (hE : ExactSsspBound) (K : ℕ) : ∃ C c : ℕ, ∀ n D : ℕ,
     ∃ (σ : Type) (A : Cslib.Congest.Algorithm (Fin n)
         (LevelIn n × ((Fin (n * (n * 21)) → ℕ∞) × (Fin (n * (n * 21)) → Bool × Bool × Bool))) σ
@@ -52,10 +53,15 @@ theorem levelChain_local (hE : ExactSsspBound) (K : ℕ) : ∃ C c : ℕ, ∀ n 
         (S.levelNet hN).ExactSpec (Net.markLenW (fun a => (st a).1) fun a => ((fl a).2.1.toNat : ℕ∞))
           (Net.markOffB fun a => (fl a).1) (fun a => (st a).2.1) ∧
         (S.levelNet hN).ExactSpec (Net.downLenW (fun a => (st a).1) fun a => ((fl a).2.2.toNat : ℕ∞))
-          (Net.markOffB fun a => (fl a).2.1 && decide ((st a).2.1.1 = 0)) (fun a => (st a).2.2) := by
-  obtain ⟨C, c, hC⟩ := chainAlg_spec hE K
-  refine ⟨C, c, fun n D => ?_⟩
-  obtain ⟨σ, A, out, hA⟩ := hC (n * (n * 21)) (12 * D + 16) (by omega)
+          (Net.markOffB fun a => (fl a).2.1 && decide ((st a).2.1.1 = 0)) (fun a => (st a).2.2) ∧
+        (fun a => (st a).1) = hE.oracleRun K (12 * D + 16) (by omega) (S.levelNet hN) (S.levelLen hN lam M) ψ := by
+  refine ⟨hE.cC K, hE.cc K, fun n D => ?_⟩
+  have hD' : 1 ≤ 12 * D + 16 := by omega
+  set C := hE.cC K
+  set c := hE.cc K
+  set A := hE.alg K (n * (n * 21)) (12 * D + 16) hD'
+  set out := hE.out K (n * (n * 21)) (12 * D + 16) hD'
+  have hA := chainAlg_spec hE K (n * (n * 21)) (12 * D + 16) hD'
   set b := K * logN (n * (n * 21)) + 1
   set Bw := 4 * (C * logN (n * (n * 21)) ^ c + 3) + (3 * b + 5)
   set T' := C * logN (n * (n * 21)) ^ c * (12 * D + 16)
@@ -112,8 +118,9 @@ theorem levelChain_local (hE : ExactSsspBound) (K : ℕ) : ∃ C c : ℕ, ∀ n 
     ⟨(S.oracleValid_level hN lam M hlam hM u₀).1, hψW⟩
   have key := hA (S.levelNet hN) (S.levelLen hN lam M) ψ fl (S.levelNet_planar hN hP hc hS hcut hD)
     (S.levelNet_diam hN hcut hD) hval
+  obtain ⟨k1, k2, k3, k4⟩ := key
   simp only [hst, hsim]
-  exact key
+  exact ⟨k1, k2, k3, k4⟩
 
 end RData
 
