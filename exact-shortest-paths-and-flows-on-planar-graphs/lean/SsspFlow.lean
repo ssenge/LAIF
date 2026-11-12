@@ -121,6 +121,7 @@ import SsspFlow.GHatSupport
 import SsspFlow.GHatLevelIdx
 import SsspFlow.OracleWalk
 import SsspFlow.GHatLevelChain
+import SsspFlow.GHatLevelMinIdx
 import SsspFlow.ListRot
 import SsspFlow.GHatSplit
 import SsspFlow.Annuli

@@ -867,6 +867,14 @@ standard axioms (`propext`, `Classical.choice`, `Quot.sound`). There is no `sorr
   distance at least $M$ from a target copy at the piece at $\kappa_1(t)$, with distance of the target below $M$
   and at most $\lambda_t$, there is a shortest walk of the annulus of that length whose indices on the cut path
   are read at the copies of the nodes of the parent chain of the target (`RData.level_chain_idx`).
+- `lean/SsspFlow/GHatLevelMinIdx.lean`: the least index of the cut path on the walk of an annulus. A walk of
+  $\hat G_\ell$ of length below $M$ runs in one component of $\hat G_\ell[E_R \cup E_C]$ (`RData.erc_of_walk`,
+  `RData.erc_symm`), so the copies of the parent chain of a target of distance below $M$ lie in the component of
+  the target (`RData.chain_erc`). Let a copy be flagged when a node of the parent chain of a target has it as its
+  copy, and let it carry the least index of the cut path at the vertex of its piece (`RData.cutIdx`). When each
+  target is the only target of its component, the least such index over the flagged copies of the component of a
+  target is the least index on the cut path of the shortest walk of the annulus from its chain
+  (`RData.level_min_idx`).
 - `lean/SsspFlow/GHatPhase.lean`: the combinatorics of property (6). Two copies on E_R edges are joined by E_R edges
   exactly when they lie on the path of one piece (`RData.er_comp_iff`), and by E_R and E_C edges exactly when their
   pieces are joined in the token graph (`RData.erc_comp_iff`), whose components are those of the split
