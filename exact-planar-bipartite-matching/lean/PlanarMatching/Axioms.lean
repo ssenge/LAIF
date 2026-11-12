@@ -168,3 +168,7 @@ import PlanarMatching
 #print axioms PlanarMatching.end_inl
 #print axioms PlanarMatching.end_inr
 #print axioms PlanarMatching.insertion_path
+#print axioms PlanarMatching.rlen_nonneg
+#print axioms PlanarMatching.chain_le_last
+#print axioms PlanarMatching.chain_and
+#print axioms PlanarMatching.insertion_dist

@@ -17,3 +17,4 @@ import PlanarMatching.PathAssembly
 import PlanarMatching.PathDecomp
 import PlanarMatching.EraseKeys
 import PlanarMatching.ResidualPath
+import PlanarMatching.ResidualDist

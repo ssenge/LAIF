@@ -291,9 +291,13 @@ Section 4, gives Z in Õ(D) rounds.
 - `Hungarian`: weak duality, the dual update, the flip along a simple alternating path, and their combination `insertion`.
 - `ResidualPath`: a simple path of the residual digraph from the new vertex gives the list of matched pairs that `flip`
   needs, and `insertion_path` is the insertion along such a path.
+- `ResidualDist`: the update from distances. Distances that satisfy every arc inequality and attain their value by an in-arc
+  off `h`, capped at C ≥ δ, satisfy the hypotheses of the update; along a simple path of shortest arcs every vertex has
+  d ≤ δ and every arc off the matching becomes tight; so `insertion_dist` goes from such distances and such a path to a
+  matching of largest weight.
 
 Not in Lean: planarity, the facts taken from [2], anything about rounds or knowledge, the growth by at most 1 in one insertion, and that
-distances satisfy the stated inequalities.
+the computed distances satisfy the arc inequalities and are attained, which `insertion_dist` takes as hypotheses.
 
 ## 9. Remarks and limits
 

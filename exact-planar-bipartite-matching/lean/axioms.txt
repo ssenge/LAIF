@@ -166,3 +166,7 @@
 'PlanarMatching.end_inl' depends on axioms: [propext, Classical.choice, Quot.sound]
 'PlanarMatching.end_inr' depends on axioms: [propext, Classical.choice, Quot.sound]
 'PlanarMatching.insertion_path' depends on axioms: [propext, Classical.choice, Quot.sound]
+'PlanarMatching.rlen_nonneg' depends on axioms: [propext, Classical.choice, Quot.sound]
+'PlanarMatching.chain_le_last' depends on axioms: [propext]
+'PlanarMatching.chain_and' depends on axioms: [propext]
+'PlanarMatching.insertion_dist' depends on axioms: [propext, Classical.choice, Quot.sound]
