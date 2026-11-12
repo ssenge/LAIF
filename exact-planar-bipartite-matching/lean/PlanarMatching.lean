@@ -16,3 +16,4 @@ import PlanarMatching.Kernel
 import PlanarMatching.PathAssembly
 import PlanarMatching.PathDecomp
 import PlanarMatching.EraseKeys
+import PlanarMatching.ResidualPath

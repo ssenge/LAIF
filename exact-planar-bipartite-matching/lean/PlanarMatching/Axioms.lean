@@ -162,3 +162,9 @@ import PlanarMatching
 #print axioms PlanarMatching.fromRep_spec
 #print axioms PlanarMatching.loopErase_fromRep
 #print axioms PlanarMatching.Decomp.pathOf_fromRep
+#print axioms PlanarMatching.pairsOf_nodup
+#print axioms PlanarMatching.pairsOf_spec
+#print axioms PlanarMatching.lastA_eq
+#print axioms PlanarMatching.end_inl
+#print axioms PlanarMatching.end_inr
+#print axioms PlanarMatching.insertion_path

@@ -289,9 +289,11 @@ Section 4, gives Z in Õ(D) rounds.
 - `Decomp`: from (B2), (B3), (B4) and the inclusion of a child in its parent, Fact 1, Fact 2 and the core of the Multi-Source Lemma (`descent`, `multiSource`), the
   J path (`jpath`), and the claims on X° (`chain_comparable`, `arc_in_chain`, `no_cross`).
 - `Hungarian`: weak duality, the dual update, the flip along a simple alternating path, and their combination `insertion`.
+- `ResidualPath`: a simple path of the residual digraph from the new vertex gives the list of matched pairs that `flip`
+  needs, and `insertion_path` is the insertion along such a path.
 
-Not in Lean: planarity, the facts taken from [2], anything about rounds or knowledge, the growth by at most 1 in one insertion, that
-distances satisfy the stated inequalities, and the correspondence from a simple path in the residual digraph to the list `L` of `flip`.
+Not in Lean: planarity, the facts taken from [2], anything about rounds or knowledge, the growth by at most 1 in one insertion, and that
+distances satisfy the stated inequalities.
 
 ## 9. Remarks and limits
 
