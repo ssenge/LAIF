@@ -1,0 +1,10 @@
+name = "PracticalQuantumAlgos"
+defaultTargets = ["MeanEstimation"]
+
+[[require]]
+name = "mathlib"
+scope = "leanprover-community"
+rev = "master"
+
+[[lean_lib]]
+name = "MeanEstimation"
