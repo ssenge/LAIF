@@ -742,3 +742,6 @@ Expected output for each: `propext`, `Classical.choice`, `Quot.sound` (or a subs
 #print axioms SsspFlow.RotSystem.RData.walk_project_supp
 #print axioms SsspFlow.RotSystem.RData.cut_tail_of_split
 #print axioms SsspFlow.RotSystem.RData.level_shortest_idx
+#print axioms SsspFlow.Congest.Net.parOf_iterate_root
+#print axioms SsspFlow.Congest.Net.ExactSpec.chain_walk
+#print axioms SsspFlow.RotSystem.RData.level_chain_idx
