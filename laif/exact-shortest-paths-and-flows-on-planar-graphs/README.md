@@ -1021,6 +1021,8 @@ standard axioms (`propext`, `Classical.choice`, `Quot.sound`). There is no `sorr
 - `lean/SsspFlow/GHatChainRun.lean`: the least and the greatest index of all annuli of a level, on the chains.
 - `lean/SsspFlow/GHatLevelNode.lean`: for every annulus of a level, the shortest walk at its middle index, the least and the greatest index of the cut path on it, and a step whose darts form a segment of the walk, all from one output of the oracle and the runs along the chains.
 - `lean/SsspFlow/GHatLevelNodeRun.lean`: one algorithm of the message model that computes these data for all annuli of a level from local inputs, in at most `6 + 3 C log^c n (12 D + 16)` rounds: the least and the greatest index of the cut path, followed by the runs along the chains with the same chosen oracle.
+- `lean/SsspFlow/SideCorners.lean`: the corners of the two sides of an annulus lie on its boundary, and a walk of an annulus of a level of a run visits no corner of a side of another annulus of the same level.
+- `lean/SsspFlow/GHatChainCorners.lean`: local flags of the nodes for chosen corners of the sides; on the chain of a target they detect exactly the corners of its annulus, and after a counting run the root of the chain knows whether a node of the chain is flagged.
   Assuming the Exact SSSP bound, the algorithm of `RData.levelI12_local` started from the sources and targets of the
   annuli of a level holds, capped at $M$, the least index and $m$ minus the greatest index at the target of every
   annulus of the level, for the shortest walk of the annulus that the darts of the chain of the target form

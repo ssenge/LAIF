@@ -848,3 +848,8 @@ Expected output for each: `propext`, `Classical.choice`, `Quot.sound` (or a subs
 #print axioms SsspFlow.RotSystem.RData.level_node_step
 #print axioms SsspFlow.RotSystem.RData.levelNode_run
 #print axioms SsspFlow.RotSystem.RData.visits_iff_dualSplit
+#print axioms SsspFlow.RotSystem.CutPath.Live.corner_mem
+#print axioms SsspFlow.RotSystem.CutPath.Live.gcomp_of_visits
+#print axioms SsspFlow.RotSystem.CutPath.Run.corner_eq
+#print axioms SsspFlow.Congest.Net.ExactSpec.chain_any
+#print axioms SsspFlow.RotSystem.RData.chain_corner
