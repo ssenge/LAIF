@@ -2,8 +2,8 @@
 #  (1) product states of single qubits (random mixed or pure, n <= 3): chi_f(G(B_eps)) <= eps^-2 (Proposition 1),
 #      computed exactly by linear programming over all maximal commuting sets, and the product-basis colouring of the
 #      proof covers every P in B_eps with weight at least 1;
-#  (2) the bound chi_f(G(B_eps)) eps^2 <= sum_P y_P tr(rho P)^2 <= beta_f for an optimal dual solution y, which has
-#      weight at most 1 on every commuting set (Proposition 2), for random pure states on 2 and 3 qubits;
+#  (2) for comparison, chi_f eps^2 for random pure states on 2 and 3 qubits, with the linear programming duality bound
+#      chi_f eps^2 <= sum_P y_P tr(rho P)^2 for an optimal dual solution y (weight at most 1 on every commuting set);
 #  (3) the constant 1 of Proposition 1 is attained: one qubit with <X> = <Z> = 1/sqrt2 at eps = 1/sqrt2.
 # python -I fraccolour.py
 import itertools
@@ -96,11 +96,11 @@ for n in (1, 2, 3):
                     if all(a == 0 or a == b for a, b in zip(w, bases)):
                         cover[i] += pr
             assert np.all(cover * eps ** -2 >= 1 - 1e-9)
-            # Proposition 2: chi_f eps^2 = eps^2 sum y <= sum y <P>^2, and y is feasible (every commuting set has weight <= 1)
+            # duality: chi_f eps^2 = eps^2 sum y <= sum y <P>^2, and y is feasible (every commuting set has weight <= 1)
             assert cf * eps ** 2 <= (y * ex ** 2).sum() + 1e-7
 print(f"product states, n <= 3: chi_f eps^2 <= 1 in all cases (largest {worst:.4f})")
 
-# Proposition 2 certificate value against other states, and (3) entangled states for comparison
+# (2) entangled states for comparison
 for n in (2, 3):
     vals = []
     for trial in range(6):
