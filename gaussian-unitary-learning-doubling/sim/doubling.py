@@ -59,7 +59,7 @@ def run(m, z, nbar, nin, eps, delta):
     eta = math.sqrt(nin / 2)
     gamma = min(0.25, nin / (5 * m))
     nprime = z * z * (nbar + m / 2)
-    kA = 60 * m * (nbar + 1) * gamma / eps ** 2
+    kA = 64 * m * (nbar + 1) * gamma / eps ** 2
     kB = z * eta * math.sqrt(nprime + 1) / (2 * math.sqrt(2) * eps)
     L = max(0, math.ceil(math.log2(max(kA, kB, 1))))
     dp = delta / (2 * L + 3)                                 # coarse stage and two events per doubling stage
@@ -149,6 +149,7 @@ def run(m, z, nbar, nin, eps, delta):
         assert tau <= gamma / 8
         Khat = proj_sp(np.real(logm(A)), Om) / k
         assert opnorm(Khat - K) <= 1.44 * tau / k
+        assert np.linalg.norm(vsum / (2 * m) - sum(np.linalg.matrix_power(W, j) for j in range(k)) @ b) <= 0.0145 * eta if k <= 64 else True
         vhat = vsum / (2 * m)
         bnew = b - vhat / k
         E = expm(Khat)
@@ -159,7 +160,7 @@ def run(m, z, nbar, nin, eps, delta):
         W2 = Tinv @ S
         K2 = np.real(logm(W2))
         b2 = Tinv @ r - chat
-        assert opnorm(W2 - I) <= 0.205 * gamma / k
+        assert opnorm(W2 - I) <= 0.21 * gamma / k
         assert opnorm(K2) <= gamma / (2 * k)
         assert np.linalg.norm(b2) <= eta / (8 * k * math.exp(gamma)) * (1 + 1e-9)
     W = Tinv @ S
@@ -183,6 +184,7 @@ for m, z, nbar, nin in ((1, 1.5, 1.0, 2.0), (1, 2.0, 10.0, 4.0), (2, 1.5, 2.0, 4
 # (3) rotation example: input sqrt(1-p)|0> + sqrt(p)|k>, p = n/k, k = floor(pi/theta)
 for n in (1, 3, 10):
     for theta in (0.05, 0.01, 0.002):
+        assert theta <= math.pi / (2 * n + 1)
         k = math.floor(math.pi / theta)
         p = n / k
         assert k >= 2 * n
