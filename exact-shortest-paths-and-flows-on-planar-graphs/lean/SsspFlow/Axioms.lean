@@ -720,3 +720,7 @@ Expected output for each: `propext`, `Classical.choice`, `Quot.sound` (or a subs
 #print axioms SsspFlow.RotSystem.RData.levelStep_local
 #print axioms SsspFlow.RotSystem.RData.levelSsspOff_sim
 #print axioms SsspFlow.RotSystem.RData.levelSsspOff_local
+#print axioms SsspFlow.Congest.Net.ExactSpec.chain
+#print axioms SsspFlow.Congest.Net.ExactSpec.walk_par
+#print axioms SsspFlow.Congest.Net.mark_closed
+#print axioms SsspFlow.Congest.Net.ExactSpec.dsrcTop_mark

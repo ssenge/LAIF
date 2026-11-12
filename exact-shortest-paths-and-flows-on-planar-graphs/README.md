@@ -812,6 +812,11 @@ standard axioms (`propext`, `Classical.choice`, `Quot.sound`). There is no `sorr
   Assuming the Exact SSSP bound, one algorithm of the message model, fixed before the network, starts from the local
   inputs of a level and these offsets and after $C \log^c n' \cdot (12D + 16) + 1$ rounds holds at every copy the
   least offset plus distance in $\hat G_\ell$ (`RData.levelSsspOff_local`).
+- `lean/SsspFlow/OracleTree.lean`: the parent pointers of an exact shortest-path oracle. From a node of finite
+  distance the parents lead to a root, whose offset plus the lengths along the chain is the distance of the node
+  (`Net.ExactSpec.chain`), so the chain is a shortest walk from the virtual source. With length 0 on the arc from each
+  node to its parent and offset 0 at one node `t`, one more run gives distance 0 exactly on the chain of `t`
+  (`Net.ExactSpec.dsrcTop_mark`): the nodes of one shortest walk are marked.
 - `lean/SsspFlow/GHatPhase.lean`: the combinatorics of property (6). Two copies on E_R edges are joined by E_R edges
   exactly when they lie on the path of one piece (`RData.er_comp_iff`), and by E_R and E_C edges exactly when their
   pieces are joined in the token graph (`RData.erc_comp_iff`), whose components are those of the split
