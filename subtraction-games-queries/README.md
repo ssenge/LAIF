@@ -6,8 +6,8 @@ Written 12 Nov 2026.
 
 | | Problem | Previous best bound | This folder | Status |
 |---|---|---|---|---|
-| Thm 1 | Win(Γ) for subtraction games with n stones | O(n^{3/2} log n) quantum queries [1, 3]; classically Θ(n²) [1] | Ω(n^{3/2}) quantum queries, so Θ̃(n^{3/2}) | Claim; checked by script |
-| Cor 2 | Is the last vertex in the lexicographically first maximal independent set? Adjacency matrix of a graph on n + 1 vertices | | Θ̃(n^{3/2}) quantum queries | Claim |
+| Thm 1 | Win(Γ) for subtraction games with n stones | O(n^{3/2} log n) quantum queries [1, 3]; classically Θ(n²) [1] | Ω(n^{3/2}) quantum queries, so Θ̃(n^{3/2}) | Lean (the embedding and the adversary counts); assuming the adversary bound [2] |
+| Cor 2 | Is the last vertex in the lexicographically first maximal independent set? Adjacency matrix of a graph on n + 1 vertices | | Θ̃(n^{3/2}) quantum queries | Lean (as Thm 1, and the identity with the losing positions) |
 
 The upper bound of [1] computes the positions in increasing order, each with a search for a losing position among its moves. Theorem 1 shows that this is optimal up to the factor log n.
 
@@ -35,6 +35,18 @@ so with w = Win(u_t), g = Win(b_t) and h = NAND(w, g), Win(u_{t+1}) = NAND(NAND(
 **Corollary 2.** Let G be a graph on the vertices 0, …, n, given by its adjacency matrix, and let L be its lexicographically first maximal independent set: vertex j belongs to L iff no neighbour i < j does. Deciding whether n ∈ L takes Θ̃(n^{3/2}) quantum queries.
 
 *Proof.* For the game with Γ_{j,i} = 1 iff {i, j} is an edge, the losing positions are exactly L: position j loses iff no move leads to a losing position, that is, iff no neighbour i < j lies in L. So n ∈ L iff Win(Γ) = 0, and both bounds carry over. ∎
+
+## Lean
+
+The library `GameLB` in `lean/` (Lean 4, Mathlib at the revision pinned in `lean/lakefile.toml`) proves, with only the standard axioms (`lean/axioms.txt`):
+
+- `win_iff`, `win_two`: the recursion for the value of a position, and that a position with exactly two moves is the NAND of their values.
+- `emb_lt`, `win_top`: Lemma 1. Every move of the game of Lemma 1 goes down, and its position s + 5t wins iff an odd number of the first t rows contain a 1.
+- `inL_eq`: the greedy set of Corollary 2 is the set of losing positions.
+- `win_weight`, with `row_toMat` and `par_toMat`: on the inputs with at most one 1 per row, read as a matrix, the top position of the game of Lemma 1 wins iff the number of nonempty rows is odd, which is the function used in Theorem 1.
+- `weight_add`, `card_adds`, `card_removes`, `bit_add`, `add_inj`, `add_remove`, `remove_inj`: the counts of the relation in the proof of Theorem 1. Adding a 1 to an empty row raises the number of nonempty rows by one; an input with w nonempty rows has (k − w)s related inputs and arises from w inputs; and a related input differs exactly in the added entry (`bit_add`), and distinct related inputs add distinct entries (`add_inj`, and `add_remove`, `remove_inj` for the other side), so for each entry at most one related input differs there.
+
+Not formalized: the adversary bound [2], which is used as stated, the simulation of a query to Γ_x by a query to x, the step from k and s to n in Theorem 1, and the upper bound of [1].
 
 ## Scripts
 
