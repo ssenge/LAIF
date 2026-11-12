@@ -20,10 +20,11 @@ def main():
             print(f"N = {N:6d}: Pr(N|<u|psi>|^2 >= {1 - k:.1f}) = {p:.3f}  (limit e^-{1 - k:.1f} = {np.exp(-(1 - k)):.3f})")
         # 'no' weight f1^2 r_1 vs 'yes' weight f1^2 r_1 + f2^2 r_2 with f1 = 1, f2 = 1/4, as in the random-state test
         r1, r2 = r, overlaps(N, 20000)
-        q = np.quantile(r1 + r2 / 16, 0.5)    # any threshold that accepts half of the 'yes' runs
-        fp = np.mean(r1 > q)
-        assert fp > 0.3
-        print(f"          a threshold accepting half of the 'yes' runs accepts {fp:.2f} of the 'no' runs")
+        for f2, lo in [(1 / 16, 0.4), (1.0, 0.15)]:
+            q = np.quantile(r1 + f2 * r2, 0.5)    # a threshold that accepts half of the 'yes' runs
+            fp = np.mean(r1 > q)
+            assert fp > lo
+            print(f"          f(sigma_2)^2 = {f2:.4f}: a threshold accepting half of the 'yes' runs accepts {fp:.2f} of the 'no' runs")
     print("overlap: all asserts passed")
 
 

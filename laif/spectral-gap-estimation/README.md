@@ -27,7 +27,7 @@ applications of U_A and U_A†, with no condition on N and no random input state
 
 O( √N log N log(log(2/(εγ))/p_f) / (ε√γ) )
 
-uses.
+uses, with probability at least 1 − p_f.
 
 **Theorem 4 (lower bound).** For every N ≥ 4 even, L(1 + ε) ≤ 1/2 and ε ∈ (0, 1], every algorithm for thresholding with failure probability at most 1/3 uses at least
 
@@ -37,7 +37,7 @@ queries, already for symmetric doubly stochastic walks (for which the transition
 
 So both tasks cost Θ(√N/(ε√γ)) up to the factors log N and log(1/p_f), for every relative error. Against the previous bounds, the upper bound gains a factor 1/√L for every ε, and the lower bound combines the factors √N, 1/ε and 1/√L.
 
-**Remark (random input states).** The thresholding test of [1] applies the filter to a random state ψ from a unitary 2-design and compares the weight Σ_i f(σ_i)²|⟨u_i|ψ⟩|² with a fixed threshold. For a uniformly random ψ, N|⟨u|ψ⟩|² converges in law to an exponential variable with mean 1, so Pr(N|⟨u|ψ⟩|² ≥ 1 − k) tends to e^{−(1−k)} < 1. This hints at a possible gap in Remark 34 of [1], which states that this probability exceeds any p < 1 for large N, and in the step of Theorem 43 that relies on it: a "no" instance, whose weight is f(1)²|⟨u_1|ψ⟩|² + O(α²), exceeds a threshold that half of the "yes" runs exceed with probability about 0.47 per trial. Theorem 2 uses the purified maximally mixed input instead, for which the weight is the deterministic value Σ_i f(σ_i)²/N.
+**Remark (random input states).** The thresholding test of [1] applies the filter to a random state ψ from a unitary 2-design and compares the weight Σ_i f(σ_i)²|⟨u_i|ψ⟩|² with a fixed threshold. For a uniformly random ψ, N|⟨u|ψ⟩|² converges in law to an exponential variable with mean 1, so Pr(N|⟨u|ψ⟩|² ≥ 1 − k) tends to e^{−(1−k)} < 1. This hints at a possible gap in Remark 34 of [1], which states that this probability exceeds any p < 1 for large N, and in the step of Theorem 43 that relies on it: a "no" instance, whose weight is f(1)²|⟨u_1|ψ⟩|² + O(α²), exceeds a threshold that half of the "yes" runs exceed with probability about 0.47 per trial when f(σ_2) = 1/4, the value the filters of [1] guarantee at the pass edge, and about 0.19 for f(σ_2) = 1. Theorem 2 uses the purified maximally mixed input instead, for which the weight is the deterministic value Σ_i f(σ_i)²/N.
 
 ## Proofs
 
@@ -61,7 +61,7 @@ W = ‖(f(√(A†A)) ⊗ 1)|Φ⟩‖² = Σ_i f(σ_i)²/N.
 
 The value f_1 = f(1) ∈ [3/4, 1] is computable from the coefficients. If σ_2 ≤ 1 − L(1 + ε), then W ≤ (f_1² + (N − 1)α²)/N ≤ (f_1² + 1/64)/N =: W_0. If σ_2 ≥ 1 − L(1 − ε), then W ≥ (f_1² + (1 − α)²)/N ≥ (f_1² + 9/16)/N =: W_1. Amplitude estimation with M uses of the flag circuit returns W̃ with |W̃ − W| ≤ 2π√(W(1 − W))/M + π²/M² with probability at least 8/π² [3, Theorem 12]. For M = ⌈34√N⌉ and W ≤ 2/N this error is at most (2π√2/34 + π²/34²)/N < (W_1 − W_0)/2 = 35/(128N); for W ≥ W_1 the lower deviation W − 2π√W/M − π²/M² is increasing in W, so W̃ > (W_0 + W_1)/2 still holds. Output 1 if W̃ > (W_0 + W_1)/2. The median of O(log(1/p_f)) runs fails with probability at most p_f. Total uses: O(D√N log(1/p_f)) = O(√N log N log(1/p_f)/(ε√L)). ∎
 
-*Theorem 3.* Write Test(L, ε) for Theorem 2: output 1 implies γ ≤ L(1 + ε), output 0 implies γ ≥ L(1 − ε). Phase 1: for k = 1, 2, … run Test(2^{−k}, 1/2) until the first output 0. Then γ ≥ 2^{−k−1}, and γ ≤ min{1, 3 · 2^{−k}} from the output at k − 1 (or from γ ≤ 1 for k = 1). This ends after k ≤ log_2(2/γ) + 1 rounds and costs O(√N log N/√γ) in total, since the costs grow geometrically. Phase 2: keep an interval [a, b] ∋ γ with b ≤ 1, set h = (b − a)/2, L = a + h, ε′ = h/(2L), and run Test(L, ε′). Output 1 gives γ ≤ L + h/2 and output 0 gives γ ≥ L − h/2, so the interval shrinks to length 3h/2 = 3(b − a)/4. Stop when b − a ≤ 2εa and output γ̂ = (a + b)/2, for which |γ̂ − γ| ≤ εa ≤ εγ̂. Each test costs O(√N log N √L/h · log(1/p′)), and h shrinks geometrically to Θ(εa) with a ≥ γ/6, so phase 2 costs O(√N log N/(ε√γ) · log(1/p′)) over O(log(1/ε)) tests. With p′ = p_f/(log_2(2/γ) + 1 + O(log(1/ε))) and a union bound, the total failure probability is at most p_f. All tests satisfy L(1 + ε′) ≤ b ≤ 1 and ε′ ≤ 1. ∎
+*Theorem 3.* Write Test(L, ε) for Theorem 2: output 1 implies γ ≤ L(1 + ε), output 0 implies γ ≥ L(1 − ε). Phase 1: for k = 1, 2, … run Test(2^{−k}, 1/2) until the first output 0. Then γ ≥ 2^{−k−1}, and γ ≤ min{1, 3 · 2^{−k}} from the output at k − 1 (or from γ ≤ 1 for k = 1). This ends after k ≤ log_2(2/γ) + 1 rounds and costs O(√N log N/√γ) in total, since the costs grow geometrically. Phase 2: keep an interval [a, b] ∋ γ with b ≤ 1, set h = (b − a)/2, L = a + h, ε′ = h/(2L), and run Test(L, ε′). Output 1 gives γ ≤ L + h/2 and output 0 gives γ ≥ L − h/2, so the interval shrinks to length 3h/2 = 3(b − a)/4. Stop when b − a ≤ 2εa and output γ̂ = (a + b)/2, for which |γ̂ − γ| ≤ εa ≤ εγ̂. Each test costs O(√N log N √L/h · log(1/p′)), and h shrinks geometrically to Θ(εa) with a ≥ γ/6, so phase 2 costs O(√N log N/(ε√γ) · log(1/p′)) over O(log(1/ε)) tests. Round k of phase 1 runs its test with failure probability p_f/(4k²), and the r = O(log(1/ε)) tests of phase 2, whose number is fixed by the interval at the end of phase 1, each with p_f/(2r). By a union bound the total failure probability is at most p_f π²/24 + p_f/2 < p_f, and on the success event the rounds and costs are as stated, with log(1/p′) = O(log(log(2/(εγ))/p_f)). All tests satisfy L(1 + ε′) ≤ b ≤ 1 and ε′ ≤ 1. ∎
 
 *Theorem 4.* Pair the states as {2i, 2i + 1}, let S swap the two states of each pair and J be the all-ones matrix. For c = 1 − 2L(1 + ε) ≥ 0 let
 
@@ -85,7 +85,7 @@ An algorithm with failure probability at most 1/3 needs ‖ψ_T^j − ψ_T^0‖ 
 
 - `sim/filter.py` builds the polynomial of Lemma 1 from its coefficients for Δ from 10⁻¹ to 10⁻⁴, t from 0.9 to 0.03 and α ∈ {10⁻², 10⁻⁴}, evaluates it on a grid of at least 16 points per degree in θ and at the band edges, and asserts the three conditions and the degree bound. The degree times t√Δ/ln(4/α) lies between 2.25 and 2.74, against the proven 2√2 ≈ 2.83.
 - `sim/lower.py` builds the instances of Theorem 4 for N up to 64 and asserts symmetry, nonnegativity, double stochasticity, the second singular values, the frame identity, unitarity of the block-encoding and ‖U(P_j) − U(P_0)‖ ≤ 2√2 ε√L. It also evaluates the weights W of Theorem 2 on these instances: "no" below W_0 and "yes" above W_1.
-- `sim/overlap.py` samples random states for N = 2⁶, 2¹⁰, 2¹⁴ and asserts that Pr(N|⟨u|ψ⟩|² ≥ 1 − k) is close to e^{−(1−k)}, not close to 1, and that a threshold accepting half of the "yes" runs accepts about 0.47 of the "no" runs.
+- `sim/overlap.py` samples random states for N = 2⁶, 2¹⁰, 2¹⁴ and asserts that Pr(N|⟨u|ψ⟩|² ≥ 1 − k) is close to e^{−(1−k)}, not close to 1, and that a threshold accepting half of the "yes" runs accepts about 0.47 of the "no" runs for f(σ_2) = 1/4 and about 0.19 for f(σ_2) = 1.
 
 Output in `sim/out.txt`.
 
