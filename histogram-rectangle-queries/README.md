@@ -12,10 +12,11 @@ together with an interval that attains it. Classically this takes Θ(n) queries 
 |---|---|---|---|---|
 | Thm 1 | OPT exactly, H distinct heights | O(n) queries | O(√(nH) log n) queries | Claim; Lean for the combinatorial lemmas |
 | Cor 2 | OPT exactly, heights in a known set of H values | O(n) queries | O(√(nH)) queries | Claim |
-| Thm 3 | OPT within a factor 1 + ε | O(n) queries | O(√(n log n / ε)) queries | Claim; Lean for the threshold grid |
+| Thm 3 | OPT exactly, V valleys | O(n) queries | O(√(nV) log n + √n log² n) queries | Claim |
+| Thm 4 | OPT within a factor 1 + ε | O(n) queries | O(√(n log n / ε)) queries | Claim; Lean for the threshold grid |
 | | Lower bound, any factor, H = 2 | | Ω(√n) queries | Claim |
 
-So a constant number of distinct heights, or a constant approximation factor, gives Θ̃(√n).
+So a constant number of distinct heights, a constant number of valleys (for example sorted heights), or a constant approximation factor gives Θ̃(√n). A *valley* is a maximal run of equal heights whose two neighbours are both higher, where a missing neighbour counts as higher.
 
 ## 1. Records
 
@@ -39,7 +40,7 @@ So the best rectangle through p within a window [lo, hi] ∋ p follows from the 
 
 *Proof.* For each scale w = 2^a ≤ n and each multiple p of w, let f(p, w) be the best rectangle through p within the window of Lemma 2, clipped to [0, n − 1]. By Lemma 2, OPT is the largest f(p, w) over all scales and multiples.
 
-The records of p in the window are found one after the other, each as the first position beyond the last record whose height is below it. A search for the first such position at distance g costs O(√g) queries [2, Theorem 6], and the composition theorem for algorithms with input-dependent query complexity [2, Theorem 4] bounds the whole sequence by O(Σ √g_i) with bounded error. With R searches on a side whose distances sum to at most 2w, the Cauchy-Schwarz inequality gives Σ √g_i ≤ √(2Rw). Then f(p, w) follows from the records without further queries (Section 1).
+The records of p in the window are found one after the other, each as the first position beyond the last record whose height is below it. A search for the first such position at distance g costs O(√g) queries [2, Theorem 6], and the composition theorem for algorithms with input-dependent query complexity [2, Theorem 3] bounds the whole sequence by O(Σ √g_i) with bounded error. With R searches on a side whose distances sum to at most 2w, the Cauchy-Schwarz inequality gives Σ √g_i ≤ √(2Rw). Then f(p, w) follows from the records without further queries (Section 1).
 
 Since H is unknown, it is guessed as H' = 1, 2, 4, …. With guess H', each staircase stops after H' + 1 records, p included, and raises a flag if it got that far, so f(p, w) costs O(√(H'w)). For each scale, maximum finding over the n/w multiples with a bounded-error evaluation [4] costs O(√(n/w) · √(H'w)) = O(√(nH')), and a search for a raised flag with a bounded-error oracle [6] costs the same. If a flag is raised at some scale, the guess doubles and all scales run again. Every side has at most H records, so no flag is raised once H' ≥ H, and the guesses stop below 2H. Over the log n scales and the geometric sum of the guesses this is O(√(nH) log n). The maximum findings and flag searches run one after the other, and each depends only on the outputs of the earlier ones. Each computes a function of the histogram with bounded error, so it has a solution of the filtered γ₂ program of the same cost, and these solutions add up by the sequential composition of [2, Theorems 4 and 5] (used in the same way in Theorem 5 of [1]), with no loss for error reduction. ∎
 
@@ -47,9 +48,23 @@ Since H is unknown, it is guessed as H' = 1, 2, 4, …. With guess H', each stai
 
 *Proof.* OPT = max over the H values t of t · L(t), where L(t) is the longest run of heights at least t. This is the longest empty segment of the bit string [h_i < t], which takes O(√n) queries [1]. Maximum finding over the H values with a bounded-error evaluation [4] gives the bound. ∎
 
-## 3. Approximation
+## 3. Few valleys
 
-**Theorem 3.** For 0 < ε ≤ 1, a value in [OPT/(1 + ε), OPT] can be computed with O(√(n log n / ε)) quantum queries and bounded error.
+A *weak left record* of p is a position j ≤ p with h_j ≤ h_i for all i in (j, p], and weak right records are defined in the same way. Every left record is a weak left record. Write V for the number of valleys.
+
+**Lemma 3.** In a window [lo, p], the weak left records of p form at most V′ + 2 maximal runs of consecutive positions, where V′ is the number of valleys of the histogram restricted to the window. On each run the heights do not increase going away from p.
+
+*Proof.* If j and j − 1 are both weak left records, then h_{j−1} ≤ h_j, which is the second claim. Let x > lo be the outer end of a run, so that x − 1 is not a weak left record and h_{x−1} > h_x, and let [x, e] be the maximal run of heights equal to h_x. If e < p, then h_{e+1} ≥ h_x because x is a weak left record, so h_{e+1} > h_x, and [x, e] is a valley of the window. Distinct runs have distinct outer ends, so at most V′ runs end in this way, one run may end at lo, and one may end with e = p. ∎
+
+**Theorem 3.** OPT, and an interval that attains it, can be computed with O(√(nV) log n + √n log² n) quantum queries and bounded error.
+
+*Proof.* As in Theorem 1, it suffices to compute f(p, w) for every scale w and multiple p of w, within the window of Lemma 2. On each side of p, the runs of Lemma 3 are found one after the other: the first position of a run is the first position beyond the previous run whose height is at most the last height seen, and its end is the first position j beyond it, going outward, where the height goes up. Each search costs O(√g) queries for its distance g [2, Theorem 6], and with R ≤ V + 2 runs on a side the distances sum to at most twice the window side, so the Cauchy-Schwarz inequality bounds the cost by O(√(Vw)). The runs give an index of all weak records on each side, in order.
+
+By Lemma 1(a), the height of every interval through p is the height of a weak record. For a candidate height v, the run of heights at least v through p ends, on each side, just before the first weak record with height below v, since that position is a record by Lemma 1(b) and all weak records closer to p have height at least v. By Lemma 3 the heights of the weak records do not increase going outward, so a binary search finds that position with O(log w) queries. Maximum finding over the at most 4w weak records [4] then gives f(p, w) with O(√w log w) queries. With the guess V′ = 1, 2, 4, … and the flag of Theorem 1 raised after V′ + 3 runs, f(p, w) costs O(√(V′w) + √w log w), and maximum finding over the n/w multiples costs O(√(nV′) + √n log w) per scale. Over the scales and the guesses, with the sequential composition as in Theorem 1, this gives the bound. ∎
+
+## 4. Approximation
+
+**Theorem 4.** For 0 < ε ≤ 1, a value in [OPT/(1 + ε), OPT] can be computed with O(√(n log n / ε)) quantum queries and bounded error.
 
 *Proof.* Find the largest height m with O(√n) queries [3]. If m = 0, then OPT = 0. Otherwise let t_b = m/(1 + ε)^b for b = 0, …, B, with B = ⌈log_{1+ε} n⌉, and output the largest t_b · L(t_b), with L as in Corollary 2.
 
@@ -68,13 +83,15 @@ The library `Histogram` in `lean/` (Lean 4, Mathlib at the revision pinned in `l
 - `recL_strict`, `card_recL_le`: the heights of the left records strictly increase towards p, so in every finite set of positions the left records number at most the distinct heights; the right side is the mirror image.
 - `cover`: Lemma 2.
 - `sum_sqrt_le`: R searches with distances of sum S cost Σ √g_i ≤ √(RS).
-- `grid`, `approx`: the threshold step of Theorem 3. For m/(1 + ε)^B ≤ v ≤ m, some b ≤ B has m/(1 + ε)^b ≤ v ≤ (1 + ε) · m/(1 + ε)^b, and then a rectangle of height v and width W ≤ L(t_b) has area at most (1 + ε) t_b L(t_b).
+- `grid`, `approx`: the threshold step of Theorem 4. For m/(1 + ε)^B ≤ v ≤ m, some b ≤ B has m/(1 + ε)^b ≤ v ≤ (1 + ε) · m/(1 + ε)^b, and then a rectangle of height v and width W ≤ L(t_b) has area at most (1 + ε) t_b L(t_b).
 
-Not formalized: the quantum subroutines and their error reduction, the computation of the best rectangle in a window from the records, and the counting of queries in Theorems 1 and 3 and Corollary 2.
+Not formalized: the quantum subroutines and their error reduction, the computation of the best rectangle in a window from the records, Lemma 3, and the counting of queries in Theorems 1, 3 and 4 and Corollary 2.
 
 ## Scripts
 
-`sim/check_histogram.py` computes OPT with a stack and compares it with the exact algorithm of Theorem 1, run classically: the records of every multiple of every scale, the rectangle through p from the records, and the largest value over all windows. It also checks that each side has at most min(H, 2w) records and that the searches cost at most √(2Rw), and it checks the algorithm of Theorem 3 and its factor 1 + ε for ε ∈ {1, 0.5, 0.25, 0.1, 0.01}. It passes on 3000 random histograms of up to 60 bars: few distinct heights, random heights, sorted staircases and noisy pyramids.
+`sim/check_valleys.py` checks Lemma 3 and Theorem 3 against brute force: the number of runs of weak records on each side is at most the number of valleys of the window plus 2, the searches cost at most √(2R · 2s) for R runs and a window of s positions, the best rectangle through p from the weak records and the binary searches equals the brute-force value, and the largest value over all scales and multiples equals OPT. It passes on 2500 random histograms of up to 50 bars, including sorted ones and ones with few monotone pieces and plateaus.
+
+`sim/check_histogram.py` computes OPT with a stack and compares it with the exact algorithm of Theorem 1, run classically: the records of every multiple of every scale, the rectangle through p from the records, and the largest value over all windows. It also checks that each side has at most min(H, 2w) records and that the searches cost at most √(2Rw), and it checks the algorithm of Theorem 4 and its factor 1 + ε for ε ∈ {1, 0.5, 0.25, 0.1, 0.01}. It passes on 3000 random histograms of up to 60 bars: few distinct heights, random heights, sorted staircases and noisy pyramids.
 
 ## Use of AI
 

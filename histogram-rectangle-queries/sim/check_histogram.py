@@ -4,7 +4,7 @@ interval with length in [w, 2w) contains a lattice point and lies in its window.
 from p (positions of new strict minima moving outward, inside the window) determine the best interval through p in
 the window. Records number at most min(H, 2w), H = number of distinct heights, and the gaps between consecutive records
 sum to at most 2w, so the first-finding searches cost sum sqrt(gap) <= sqrt(R * 2w) per side.
-(B) Approximation (Theorem 3): thresholds t_b = m / (1+eps)^b for b = 0..B, B = ceil(log_{1+eps} n), m the largest
+(B) Approximation (Theorem 4): thresholds t_b = m / (1+eps)^b for b = 0..B, B = ceil(log_{1+eps} n), m the largest
 height; output max_b t_b * L(t_b) with L(t) the longest run of heights >= t. It lies in [OPT / (1+eps), OPT].
 Checks against the stack algorithm."""
 import math, random
