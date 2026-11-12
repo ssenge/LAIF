@@ -1,0 +1,4 @@
+{"variant": "gdf", "cutoff": 0.001, "err": 0.015426739161444835, "lambda": 558.2855508058103, "num_eig": 18241, "toffoli": 34180910848, "file": "data/r3m_111_cc.npz"}
+{"variant": "gdf+shift", "cutoff": 0.0009, "err": 0.013741399677308155, "lambda": 500.6743972614489, "num_eig": 18587, "toffoli": 30776052032, "file": "data/r3m_111_cc.npz"}
+{"variant": "gauge", "cutoff": 0.0009, "err": 0.015068276965597985, "lambda": 452.0445890282838, "num_eig": 17263, "toffoli": 27364338040, "file": "data/r3m_111_cc.npz"}
+{"variant": "gauge+shift", "cutoff": 0.0009, "err": 0.01505000696541542, "lambda": 407.74262132346826, "num_eig": 17332, "toffoli": 24702174409, "file": "data/r3m_111_cc.npz"}
