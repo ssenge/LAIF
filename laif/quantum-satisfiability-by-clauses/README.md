@@ -57,15 +57,15 @@ The variables are fixed one at a time. For a variable x, set x = 1 and simplify:
 
 ## Lean
 
-[`lean/`](lean/) is a Lean 4 library `SatTrees` (Lean v4.36.0-rc1, Mathlib commit d875a8de5222f62cf1c2fafc7984588adadc990a) with 14 theorems, no `sorry`, and only the standard axioms (propext, Classical.choice, Quot.sound), as printed by `lean/SatTreesAxioms.lean` into [`lean/axioms.txt`](lean/axioms.txt). Build with `lake exe cache get` and then `lake build` in `lean/`.
+[`lean/`](lean/) is a Lean 4 library `SatTrees` (Lean v4.36.0-rc1, Mathlib commit d875a8de5222f62cf1c2fafc7984588adadc990a) with 15 theorems, no `sorry`, and only the standard axioms (propext, Classical.choice, Quot.sound), as printed by `lean/SatTreesAxioms.lean` into [`lean/axioms.txt`](lean/axioms.txt). Build with `lake exe cache get` and then `lake build` in `lean/`.
 
 - `Tree.size_le_of_pays`: a potential Φ with 1 + Σ Φ(child) ≤ Φ at every node bounds the number of nodes by Φ(root).
 - `Tree.size_le_of_branches` and `branch_step`: if Σ c^{μ(child)} ≤ c^μ at every node, which holds when c is at least the branching number of the node's branching vector, and a height h drops by one to each child, then the tree has at most (h(root) + 1) c^{μ(root)} nodes.
-- `Tree.size_le_of_branchesAt`: the same count with attachment nodes, whose subtrees come from another algorithm (the set cover algorithm in Theorem 2, the constraint satisfaction algorithm in Theorem 3) and have at most p c^μ nodes. The bound is (h(root) + 1) p c^{μ(root)}.
+- `Tree.size_le_of_branchesAt`: the same count with attachment nodes, whose subtrees come from another algorithm (the set cover algorithm in Theorem 2, the enumeration of sparse variables for X3SAT in [quantum-exact-satisfiability](../quantum-exact-satisfiability/)) and have at most p c^μ nodes. The bound is (h(root) + 1) p c^{μ(root)}.
 - `sat_tree_size` and `amortized_inequalities`: the amortized count of [2, Theorem 1]. A tree whose nodes branch in the patterns of [2, Lemmas 6 and 7], with children reduced as in [2, Lemma 5], has at most 2 · 1.2226^m − 1 nodes on a good formula and (2/0.9136) · 1.2226^m − 1 on a bad one.
 - `exists_step` and `greedy_optimal`: fixing the variables in order, each to a value that keeps the optimum of a function f over the completions, ends with an assignment that maximizes f.
 - `sat_root`, `maxsat_cert` and `satl_root`: √1.2226 ≤ 1.1058; the branching number of (6, 6, 5, 5) and the set cover base 1.2576 are at most 1.2886, and √1.2886 ≤ 1.1352; √(2^{0.0926}) ≤ 1.0327.
-- `xsat_root`, `x3sat_vectors` and `x3sat_sparse_root`: the bounds of [quantum-exact-satisfiability](../quantum-exact-satisfiability/).
+- `xsat_root`, `x3sat_vectors`, `x3sat_sparse_root` and `x3satm_cert`: the bounds of [quantum-exact-satisfiability](../quantum-exact-satisfiability/).
 
 Not formalized: the case analyses of [2], [4], [5], [6], [7] and [8], which enter the amortized count as hypotheses and the other theorems as cited bounds; the walk of [1] and the embedding of a backtracking tree in it; and the fact that simplifying a formula after fixing a variable preserves the optimum over the completions.
 

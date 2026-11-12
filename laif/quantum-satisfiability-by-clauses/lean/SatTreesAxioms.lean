@@ -14,3 +14,4 @@ open SatTrees
 #print axioms Tree.size_le_of_branchesAt
 #print axioms exists_step
 #print axioms greedy_optimal
+#print axioms x3satm_cert

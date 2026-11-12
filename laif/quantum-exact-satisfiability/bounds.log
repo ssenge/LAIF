@@ -1,3 +1,4 @@
 tau(12,4) = 1.100276 = 2^0.137866; sparse enumeration 2^(2/15) = 1.096825
 XSAT, DPLL with a nonstandard measure: sqrt(1.167400) = 1.080463 <= 1.0805; crossover M'/n = 0.7766
 X3SAT, branch and reduce with sparse enumeration: sqrt(1.100276) = 1.048941 <= 1.049; crossover M'/n = 0.8620
+X3SAT in clauses: tau(7,3) = 1.158552 <= 1.1586 <= 1.0764^2 = 1.158637; below the bound in n when m < 0.6498 n

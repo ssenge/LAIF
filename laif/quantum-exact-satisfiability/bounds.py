@@ -22,3 +22,12 @@ for name, b in (("XSAT, DPLL with a nonstandard measure", 1.1674),
     assert math.sqrt(b) <= q
     # crossover with the bound 2^((n - M')/2) of the subspace search: equal when M' = (1 - 2 log2 q) n
     print(f"{name}: sqrt({b:.6f}) = {math.sqrt(b):.6f} <= {q}; crossover M'/n = {1 - 2 * math.log2(q):.4f}")
+
+# X3SAT in terms of the number m of clauses: branching vectors (7, 3), (6, 4), (5, 5) of the clause algorithm
+xm = tau(7, 3)
+assert all(tau(*v) <= xm for v in ((6, 4), (5, 5))) and xm <= 1.1586 <= 1.0764 ** 2
+# crossover with the X3SAT bound in n: 1.0764^m < 1.0490^n iff m < (ln 1.0490 / ln 1.0764) n
+r = math.log(1.0490) / math.log(1.0764)
+assert r >= 0.6497
+print(f"X3SAT in clauses: tau(7,3) = {xm:.6f} <= 1.1586 <= 1.0764^2 = {1.0764 ** 2:.6f}; "
+      f"below the bound in n when m < {r:.4f} n")

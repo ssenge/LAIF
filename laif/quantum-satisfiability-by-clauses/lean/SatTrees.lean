@@ -141,6 +141,14 @@ theorem x3sat_vectors :
 theorem x3sat_sparse_root : (2 : ℝ) ^ 2 ≤ (11003 / 10000) ^ 15 ∧
     (11003 / 10000 : ℝ) ≤ (10490 / 10000) ^ 2 := by norm_num
 
+/-- X3SAT in terms of clauses: `1.1586` is at least the branching numbers of `(7, 3)`, `(6, 4)` and
+`(5, 5)`, and `√1.1586 ≤ 1.0764`. -/
+theorem x3satm_cert :
+    (10000 / 11586 : ℝ) ^ 7 + (10000 / 11586) ^ 3 ≤ 1 ∧
+    (10000 / 11586 : ℝ) ^ 6 + (10000 / 11586) ^ 4 ≤ 1 ∧
+    (10000 / 11586 : ℝ) ^ 5 + (10000 / 11586) ^ 5 ≤ 1 ∧
+    (11586 / 10000 : ℝ) ≤ (10764 / 10000) ^ 2 := by norm_num
+
 /-- MaxSAT: `1.2886` is at least the branching number of `(6, 6, 5, 5)` and the set cover base
 `1.2576`, and `√1.2886 ≤ 1.1352`. -/
 theorem maxsat_cert :
