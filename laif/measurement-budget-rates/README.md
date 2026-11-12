@@ -4,7 +4,7 @@ Written 7 Nov 2026.
 
 ## Problem
 
-[1] studies binary classifiers on d-dimensional states with score p_M(ρ) = Tr(Mρ), where M ranges over the class H of all operators 0 ≤ M ≤ I. A learning experiment has a budget of B = nS measurements: n labelled training states, each measured S times. The loss ℓ: [0,1] × {0,1} → [0,1] is L-Lipschitz in p. For M chosen independently of the shot outcomes, [1, Theorem 3.1] shows that with probability 1 − δ
+[1] studies binary classifiers on d-dimensional states with score p_M(ρ) = Tr(Mρ), where M ranges over the class H of all operators 0 ≤ M ≤ I. A learning experiment has a budget of B = nS measurements: n labelled training states, each measured S times. The loss ℓ: [0,1] × {0,1} → [0,1] has slope at most L in p, |ℓ(p, y) − ℓ(p′, y)| ≤ L|p − p′|. For M chosen independently of the shot outcomes, [1, Theorem 3.1] shows that with probability 1 − δ
 
 R(M) ≤ R̂_{n,S}(M) + 2L√(d/n) + L√(log(4n/δ)/(2S)) + √(log(2/δ)/(2n)),
 
@@ -34,7 +34,7 @@ R(M) ≤ R̂_{n,S}(M) + √(d/n) + √(log(2/δ)/(2n)) + √(log(2/δ)/(2B)),
 
 with the ordinary shot average R̂_{n,S}. It decreases in n at fixed B, so the best split is S = 1 and n = B: every measurement goes to a fresh training state. For the squared loss (p − y)² (r = 2, Δ = 1, L = 2) the best split is S = 2, n = B/2.
 
-**Theorem 5 (Lipschitz losses, no log n).** For every L-Lipschitz loss the shot term L√(log(4n/δ)/(2S)) of [1, Theorem 3.1] can be replaced by L/(2√S) + L√(log(2/δ)/(2B)). With the sample term L√(d/n) of Theorem 1, the surrogate split is n* = 2√(dB), S* = B/n* (for B ≥ 4d), and the gap at this split is √2 L (d/B)^{1/4} plus terms of order √(log(1/δ)/n*), with no factor log B.
+**Theorem 5 (losses with slope at most L, no log n).** For every loss with slope at most L the shot term L√(log(4n/δ)/(2S)) of [1, Theorem 3.1] can be replaced by L/(2√S) + L√(log(2/δ)/(2B)). With the sample term L√(d/n) of Theorem 1, the surrogate split is n* = 2√(dB), S* = B/n* (for B ≥ 4d), and the gap at this split is √2 L (d/B)^{1/4} plus terms of order √(log(1/δ)/n*), with no factor log B.
 
 | Gap terms, d = 16, δ = 0.05, L = 1 | B = 10⁴ | B = 10⁶ | B = 10⁸ |
 |---|---|---|---|
@@ -48,14 +48,14 @@ with the ordinary shot average R̂_{n,S}. It decreases in n at fixed B, so the b
 
 **Theorem 2.** Fix an orthonormal basis e_1, …, e_d and ε = (1/8)√(d/n) ≤ 1/8. For τ ∈ {±1}^d let the state be e_j with j uniform, and let y = 1 with probability 1/2 + ετ_j. A predictor with values p_j at e_j has risk (1/d)Σ_j (1/2 + ετ_j − 2ετ_j p_j), the best M in H (the projector onto the e_j with τ_j = 1) has risk 1/2 − ε, and the excess is (2ε/d) Σ_j err_j with err_j = 1 − p_j if τ_j = 1 and p_j otherwise. For each j, flipping τ_j changes the law of the data only at the examples at e_j, of which there are n/d on average, so the relative entropy is (n/d)·2ε log((1 + 2ε)/(1 − 2ε)) ≤ 0.128 for n ≥ d, and the total variation is at most √(0.128/2) ≤ 0.253. Since err_j ∈ [0, 1], its average over the two values of τ_j is at least (1 − 0.253)/2. Averaging over a uniform τ (the hypercube argument) gives an excess risk of at least ε(1 − 0.253) ≥ 0.093√(d/n) for some τ. The states are known basis vectors, so extra copies carry no information. In the model of [1] each example used costs at least one measurement, so n ≤ B. The script also runs the plug-in learner that votes at each basis state; its excess is about 0.10√(d/n), close to the bound.
 
-**Theorem 4.** Every polynomial q of degree r has a unique expansion q(p) = Σ_j β_j C(r, j)p^j(1 − p)^{r−j}. For r independent shots with mean p the count K has P(K = j) = C(r, j)p^j(1 − p)^{r−j}, so E β_K = q(p), and averaging over r-subsets of S ≥ r shots keeps this. Each estimate lies in [β_min, β_max]. The states are independent of each other, so the additive tail bound over the n states gives the deviation Δ√(log(2/δ)/(2n)) from the exact training risk R̂_n(M). Changing one of the B shots changes the average over r-subsets of its state by at most Δr/S, hence the training risk by Δr/(nS), and the bounded-difference inequality gives Δr√(log(2/δ)/(2B)) instead. For the population risk, the standard uniform bound with the Lipschitz contraction gives R(M) ≤ R̂_n(M) + 2L·(1/2)√(d/n) + √(log(2/δ)/(2n)) for all M simultaneously, by Theorem 1. A union of the two events gives the claim. For |p − y| the estimate with S shots is the plain shot average of |b − y| over the B shot outcomes b, so the shot deviation is √(log(2/δ)/(2B)).
+**Theorem 4.** Every polynomial q of degree r has a unique expansion q(p) = Σ_j β_j C(r, j)p^j(1 − p)^{r−j}. For r independent shots with mean p the count K has P(K = j) = C(r, j)p^j(1 − p)^{r−j}, so E β_K = q(p), and averaging over r-subsets of S ≥ r shots keeps this. Each estimate lies in [β_min, β_max]. The states are independent of each other, so the additive tail bound over the n states gives the deviation Δ√(log(2/δ)/(2n)) from the exact training risk R̂_n(M). Changing one of the B shots changes the average over r-subsets of its state by at most Δr/S, hence the training risk by Δr/(nS), and the bounded-difference inequality gives Δr√(log(2/δ)/(2B)) instead. For the population risk, the standard uniform bound with the contraction inequality for losses of slope at most L gives R(M) ≤ R̂_n(M) + 2L·(1/2)√(d/n) + √(log(2/δ)/(2n)) for all M simultaneously, by Theorem 1. A union of the two events gives the claim. For |p − y| the estimate with S shots is the plain shot average of |b − y| over the B shot outcomes b, so the shot deviation is √(log(2/δ)/(2B)).
 
 **Theorem 5.** R̂_n(M) − R̂_{n,S}(M) ≤ (L/n)Σ_i |p̂_i − p_i|. Its mean is at most L·max_p √(p(1 − p)/S) = L/(2√S), and one shot changes it by at most L/(nS), so the bounded-difference inequality gives the deviation L√(log(2/δ)/(2B)). The split minimises L√(d/n) + L√(n/B)/2.
 
 ## Scope
 
 - Theorems 4 and 5, like [1, Theorem 3.1], assume that M is chosen independently of the shots used for the training risk, for example a fixed trained M evaluated with fresh shots. Fully adaptive shot-noisy training is not covered.
-- For Lipschitz losses that are not polynomial, such as a hinge loss whose kink lies inside (0, 1), the rate (d/B)^{1/4} of Theorem 5 is a property of this route. Whether the rate 1/√B extends to all Lipschitz losses is not settled here.
+- For losses of bounded slope that are not polynomial, such as a hinge loss whose kink lies inside (0, 1), the rate (d/B)^{1/4} of Theorem 5 is a property of this route. Whether the rate 1/√B extends to all losses of bounded slope is not settled here.
 - The lower bound of Theorem 2 is for the full class H, as is the upper bound of [1]; subclasses given by small circuits can have smaller complexity.
 
 ## Check

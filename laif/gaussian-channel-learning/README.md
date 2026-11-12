@@ -122,7 +122,7 @@ N ≥ max{ 144(2z + 1)²σ²(2m + √(2 log(3/δ_f)))²/(n̄_in δ_*²),  2(48σ
 
 Bounds, with σ_min(A) ≥ a, ‖X‖ ≤ z: ‖A‖ ≤ Z, ‖M‖ ≤ Z^{1/2}, ‖M^{−1}‖ ≤ a^{−1/2}, ‖B‖ ≤ 1 + z²/a ≤ 2K, σ_min(B) = 1/‖Ω − XᵀΩX‖ ≥ 1/Z, ‖C‖ ≤ Z^{1/2}, ‖D‖ ≤ Z/a^{1/2}, so ‖S‖ ≤ z + 2Z^{1/2} + Z/a^{1/2} ≤ 4Z/a^{1/2}, and ‖V_E‖ ≤ y/a, so γ has at most my/(2a) photons.
 
-*Lemma 6 (Lipschitz dilations).* Let X_1, X_2 satisfy the bounds of Lemma 5 with Δ = ‖X_1 − X_2‖ ≤ 1/(10Z³K⁴), and let S_1 be the dilation of X_1 for some choices O_1, O_{B,1}. Then there is a dilation S_2 of X_2 with ‖S_1 − S_2‖ ≤ 104 Z^{7/2}K^{9/2} Δ.
+*Lemma 6 (close dilations).* Let X_1, X_2 satisfy the bounds of Lemma 5 with Δ = ‖X_1 − X_2‖ ≤ 1/(10Z³K⁴), and let S_1 be the dilation of X_1 for some choices O_1, O_{B,1}. Then there is a dilation S_2 of X_2 with ‖S_1 − S_2‖ ≤ 104 Z^{7/2}K^{9/2} Δ.
 
 *Proof.* For orthogonal antisymmetric J_1, J_2 with ‖J_1 − J_2‖ < 2, T = (1 − J_2J_1)/2 satisfies J_2T = TJ_1 and ‖T − 1‖ = ‖(J_1 − J_2)J_1‖/2 =: t. Its polar factor P = T|T|^{−1} is orthogonal with PJ_1 = J_2P, since TᵀT commutes with J_1, and ‖P − 1‖ ≤ ‖1 − |T|‖ + t ≤ ‖1 − TᵀT‖ + t ≤ 3t + t² ≤ 8t for t ≤ 1/2. So O_2 = PO_1 satisfies O_2ΩO_2ᵀ = J_2. The steps, using ‖√P − √Q‖ ≤ ‖P − Q‖/(σ_min(√P) + σ_min(√Q)) for positive P, Q, and ‖P^{−1} − Q^{−1}‖ ≤ ‖P^{−1}‖‖Q^{−1}‖‖P − Q‖:
 

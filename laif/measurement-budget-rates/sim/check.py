@@ -139,7 +139,7 @@ def check_certificates():
         nl = min(grid, key=lipschitz)
         linear = math.sqrt(d / B) + 2 * math.sqrt(math.log(2 / delta) / (2 * B))  # n = B, S = 1
         print(f"   B=1e{int(math.log10(B))}: [1] {theirs(nt):.4f} (n={nt}), "
-              f"Lipschitz here {lipschitz(nl):.4f} (n={nl}), linear loss here {linear:.4f} (n=B, S=1)")
+              f"slope-L loss here {lipschitz(nl):.4f} (n={nl}), linear loss here {linear:.4f} (n=B, S=1)")
         assert lipschitz(nl) < theirs(nt) and linear < lipschitz(nl)
 
 

@@ -22,7 +22,7 @@
    vote learner d=16 n=1600: excess / sqrt(d/n) = 0.1012
    vote learner d=16 n=16000: excess / sqrt(d/n) = 0.1003
 5. gap terms at d = 16, delta = 0.05, L = 1 (lower is better):
-   B=1e4: [1] 0.9229 (n=376), Lipschitz here 0.3409 (n=1073), linear loss here 0.0672 (n=B, S=1)
-   B=1e6: [1] 0.3063 (n=3462), Lipschitz here 0.1049 (n=10715), linear loss here 0.0067 (n=B, S=1)
-   B=1e8: [1] 0.1009 (n=32294), Lipschitz here 0.0329 (n=106968), linear loss here 0.0007 (n=B, S=1)
+   B=1e4: [1] 0.9229 (n=376), slope-L loss here 0.3409 (n=1073), linear loss here 0.0672 (n=B, S=1)
+   B=1e6: [1] 0.3063 (n=3462), slope-L loss here 0.1049 (n=10715), linear loss here 0.0067 (n=B, S=1)
+   B=1e8: [1] 0.1009 (n=32294), slope-L loss here 0.0329 (n=106968), linear loss here 0.0007 (n=B, S=1)
 all checks passed
