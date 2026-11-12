@@ -1,0 +1,7 @@
+Sioux Falls x0.5, incident: DSO bound planned day 9.4286, scenario day 9.527 min
+  UE routes (static): planned 28.53 min = 3.026, scenario 31.35 min = 3.291
+  SO routes (static BPR): planned 13.80 min = 1.464, scenario 15.46 min = 1.622
+  DUE (central, planned day): planned 24.09 min = 2.555, scenario 25.99 min = 2.728
+  price-based APDV, cold start: planned 11.25 min = 1.193, scenario 11.92 min = 1.252
+  price-based APDV, learned on the planned day: planned 10.12 min = 1.074, scenario 10.60 min = 1.113
+  capacity plan (static LP): planned 9.54 min = 1.012, scenario 11.61 min = 1.219

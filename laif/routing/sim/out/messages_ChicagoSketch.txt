@@ -1,0 +1,6 @@
+ChicagoSketch x1.0: |D| 387, m 2950, periodic 1141650 msg/period
+  eps 0.0: trip/ref 1.217, links re-adv/period 690.5, DV msg/period mean 750350 max 950929 (0.657 of periodic), link-state ~2036837
+  eps 0.01: trip/ref 1.218, links re-adv/period 261.6, DV msg/period mean 346394 max 934104 (0.303 of periodic), link-state ~771740
+  eps 0.05: trip/ref 1.218, links re-adv/period 211.6, DV msg/period mean 319424 max 932319 (0.280 of periodic), link-state ~624231
+  eps 0.2: trip/ref 1.218, links re-adv/period 167.8, DV msg/period mean 295260 max 930353 (0.259 of periodic), link-state ~494876
+  eps 0.5: trip/ref 1.227, links re-adv/period 131.0, DV msg/period mean 261904 max 868205 (0.229 of periodic), link-state ~386417

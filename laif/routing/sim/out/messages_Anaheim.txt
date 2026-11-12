@@ -1,0 +1,12 @@
+Anaheim x0.8: |D| 38, m 914, periodic 34732 msg/period
+  eps 0.0: trip/ref 1.239, links re-adv/period 137.0, DV msg/period mean 22456 max 30676 (0.647 of periodic), link-state ~125226
+  eps 0.01: trip/ref 1.239, links re-adv/period 65.8, DV msg/period mean 15167 max 30544 (0.437 of periodic), link-state ~60176
+  eps 0.05: trip/ref 1.238, links re-adv/period 55.0, DV msg/period mean 14428 max 30525 (0.415 of periodic), link-state ~50310
+  eps 0.2: trip/ref 1.238, links re-adv/period 43.3, DV msg/period mean 12334 max 30549 (0.355 of periodic), link-state ~39575
+  eps 0.5: trip/ref 1.243, links re-adv/period 36.2, DV msg/period mean 10978 max 30430 (0.316 of periodic), link-state ~33104
+Anaheim x1.0: |D| 38, m 914, periodic 34732 msg/period
+  eps 0.0: trip/ref 1.547, links re-adv/period 183.9, DV msg/period mean 23957 max 30574 (0.690 of periodic), link-state ~168041
+  eps 0.01: trip/ref 1.546, links re-adv/period 100.6, DV msg/period mean 18541 max 30546 (0.534 of periodic), link-state ~91916
+  eps 0.05: trip/ref 1.547, links re-adv/period 85.8, DV msg/period mean 17796 max 30536 (0.512 of periodic), link-state ~78459
+  eps 0.2: trip/ref 1.548, links re-adv/period 66.6, DV msg/period mean 15632 max 30551 (0.450 of periodic), link-state ~60910
+  eps 0.5: trip/ref 1.547, links re-adv/period 46.5, DV msg/period mean 12653 max 30427 (0.364 of periodic), link-state ~42470

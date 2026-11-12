@@ -1,0 +1,12 @@
+ChicagoSketch x0.75: free-flow lower bound 14.59 min, capacity plan infeasible
+  UE routes (static): 18.01 min = 1.234 x free flow, left 8.5e-07
+  SO routes (static BPR): 15.71 min = 1.077 x free flow, left 9.6e-07
+  APDV on travel times: 20.33 min = 1.393 x free flow, left 9.8e-07
+  price-based APDV, learned: 15.60 min = 1.069 x free flow, left 9.7e-07
+  DUE (central, predictive): 16.84 min = 1.154 x free flow, gap 2.3e-02
+ChicagoSketch x1.0: free-flow lower bound 14.59 min, capacity plan infeasible
+  UE routes (static): 25.28 min = 1.732 x free flow, left 9.2e-07
+  SO routes (static BPR): 18.94 min = 1.298 x free flow, left 9.1e-07
+  APDV on travel times: 37.62 min = 2.578 x free flow, left 9.7e-07
+  price-based APDV, learned: 17.77 min = 1.217 x free flow, left 9.7e-07
+  DUE (central, predictive): 23.09 min = 1.582 x free flow, gap 5.5e-02
