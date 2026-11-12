@@ -47,10 +47,22 @@ The sum of the three is at most 2^{−n} + 2w. ∎
 
 Output in `sim/commutant_out.txt`.
 
+## Lean
+
+The folder [lean/](lean/) checks the counting steps of Lemmas 1 and 2 in Lean 4 with Mathlib, with no `sorry` and only the standard axioms. Build it with `lake build`. Running `lake env lean CliffordCount/Axioms.lean` prints the axioms of each theorem (output in `lean/axioms.txt`).
+
+**Checked** (`CliffordCount/Basic.lean`):
+
+- **Intersections in Lemma 1** (`inter_card_le`): distinct subspaces of the same dimension t of a finite vector space over F₂ meet in at most 2^{t−1} vectors. So the normalized Gram matrix is 2^{−nt} G = I + E with |E_{T,T′}| ≤ 2^{−n}.
+- **Entry bound of Lemma 1** (`inv_entry_bound`): if (I + E) W = I for a real N × N matrix E with entries of absolute value at most ε and Nε < 1, then every entry of W − I has absolute value at most ε/(1 − Nε).
+- **The three sums of Lemma 2** (`three_sums_le`): with q = 2^{−n}, w = Nq ≤ 1/2 and a = q/(1 − w), the bounds a/2, (N − 1)a/2 and q(N − 1)(1 + a + (N − 1)a)/2 total at most q + 2w.
+
+**Not formalized:** the invertibility of G, the facts from [1] used in Lemma 2, and the proof of Theorem 1.
+
 ## Scope
 
 - **Assuming:** the description of the commutant [1, Theorem 2.19 and Fact 2.20], from [2]; the partial-transpose bounds [1, Theorem 6.8 and Corollary 6.11], the first from [4]; the reduction [1, Lemma 6.3 and Fact 6.4]; and the bound for uniformly random unitaries [1, Theorem 6.5], from [3].
-- **Not formalized:** the results have no Lean proof.
+- Written proofs, with the counting steps of Lemmas 1 and 2 checked in Lean.
 - The bound is for auxiliary-free single-copy testers, as in [1]. The constant C is not made explicit, since the constants of [1, Theorem 6.5 and Lemma 6.3] are not.
 
 ## References

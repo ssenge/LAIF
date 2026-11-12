@@ -1,0 +1,3 @@
+'CliffordCount.inter_card_le' depends on axioms: [propext, Classical.choice, Quot.sound]
+'CliffordCount.inv_entry_bound' depends on axioms: [propext, Classical.choice, Quot.sound]
+'CliffordCount.three_sums_le' depends on axioms: [propext, Classical.choice, Quot.sound]

@@ -1,0 +1,2 @@
+'ZFreeCount.zfree_count_le' depends on axioms: [propext, Classical.choice, Quot.sound]
+'ZFreeCount.zfree_tcount' depends on axioms: [propext, Classical.choice, Quot.sound]
