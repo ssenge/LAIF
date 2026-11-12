@@ -8,7 +8,7 @@ The routing protocol is APDV (anchored periodic distance vector). Each destinati
 
 ## Results
 
-All results are numerical. Traffic is modelled by a destination-based cell transmission model [2] with a non-FIFO node model, on the Sioux Falls, Anaheim and Chicago Sketch networks [1]. The demand is the network's origin-destination table times a factor, released at a constant rate over 60 minutes. The tables give the mean trip time divided by a lower bound.
+All results are numerical. Traffic is modelled by a destination-based cell transmission model [2] with a non-FIFO node model, on the Sioux Falls, Anaheim and Chicago Sketch networks [1], and on Sioux Falls also with a strict FIFO node model. The demand is the network's origin-destination table times a factor, released at a constant rate over 60 minutes. The tables give the mean trip time divided by a lower bound.
 
 ### Sioux Falls, against the dynamic system optimum
 
@@ -23,6 +23,19 @@ The lower bound is the system optimum of the same cell model, solved as a linear
 | **Price-based APDV, learned, with origin holding** | **1.023** | **1.035** | **1.074** | **1.252** | **1.487** |
 
 At 0.52 of the demand, the network stops having a static routing that keeps every link below capacity. Above that point, queues cannot be avoided, and the optimum holds vehicles at their origins. The learned price scheme holds vehicles at their origins too, with local information only. At ×0.6 it needs 1.25 times the optimum, where DUE needs 4.2 times.
+
+### Sioux Falls with a strict FIFO node model
+
+In a strict FIFO node model [5], vehicles leave a link in the order they entered it. If any part of a link's outflow heads for a full link, the whole link stops. A logit split gives every next link that leads closer to the destination a positive share, however small, so a single full link can hold back all traffic on the links that feed it. The FIFO-aware price scheme therefore drops split shares below 0.05 at each node and renormalizes the rest. It also holds vehicles at their origins for the full estimated queue delay instead of half of it. Everything else is as in the learned version.
+
+| Strategy | ×0.3 | ×0.4 | ×0.5 | ×0.6 | ×0.7 |
+|---|---|---|---|---|---|
+| UE routes, static | 2.667 | 3.125 | 5.600 | 29.3 (54% unfinished) | 31.1 (73% unfinished) |
+| SO routes, static BPR | 1.007 | 1.402 | 2.787 | 31.0 (58% unfinished) | 27.5 (64% unfinished) |
+| Capacity-feasible plan, static LP, central | **1.001** | **1.005** | **1.012** | none | none |
+| **Price-based APDV, learned, FIFO-aware** | 1.022 | 1.038 | 1.166 | **1.542** | **2.209** |
+
+The bound is the same linear program as above. It does not enforce FIFO, so it bounds the FIFO runs too. Unfinished trips count with their time up to 600 minutes. Above the limit of 0.52 no capacity-feasible static plan exists, and the static routings leave more than half of the trips unfinished after 600 minutes. The FIFO-aware price scheme completes every trip, at 1.54 and 2.21 times the bound. Below the limit the central plan builds no queue, so FIFO does not affect it, and it stays ahead by 2 to 15 points. The threshold matters little: between 0.02 and 0.2 the results move by at most 0.03 up to ×0.6, and at ×0.7 they lie between 1.92 and 2.24. In the non-FIFO model the FIFO-aware scheme gives 1.020, 1.035, 1.108, 1.217 and 1.310.
 
 ### Sioux Falls, days that differ from the plan
 
@@ -84,7 +97,7 @@ Once per period (1 minute), at every link a = (v, u) and node v:
 3. **Splits.** Node v splits its traffic for destination d by logit (θ = 1 per minute on Sioux Falls, 3 on the larger networks) over the next links whose head is closer to d. Distances strictly decrease along every split, so the routing has no loops at any time.
 4. **Origin holding.** Each link runs a second virtual queue at full capacity, an estimate of the real queue its traffic will cause. APDV carries the distances with and without those delays. An origin holds each vehicle until it has waited half of the difference for its destination.
 
-The cold start uses only steps 1 to 3, with g = 3 and no profile. The learned version uses g = 0.3 on top of the profile, and origin holding.
+The cold start uses only steps 1 to 3, with g = 3 and no profile. The learned version uses g = 0.3 on top of the profile, and origin holding. The FIFO-aware version is the learned one, with split shares below 0.05 dropped in step 3 and holding for the full difference in step 4.
 
 All quantities are local to a link or a node. The only information exchanged is the APDV advertisement: per destination, the distance on the priced link costs and the distances with and without the estimated queue delays.
 
@@ -92,9 +105,9 @@ All quantities are local to a link or a node. The only information exchanged is 
 
 The results are numerical. No part is formalized in Lean.
 
-- **Scope:** three networks; demand released at a constant rate over 60 minutes; the cell model with a non-FIFO node model, in which a blocked turn holds back only its own traffic, which waits in the last cell of the link and takes up its capacity; on Anaheim and Chicago Sketch only the free-flow bound; the per-vehicle check on Sioux Falls only, without learning or origin holding; message counts are counted, not sent through a simulated network with delays or losses.
+- **Scope:** three networks; demand released at a constant rate over 60 minutes; the cell model with a non-FIFO node model, in which a blocked turn holds back only its own traffic, which waits in the last cell of the link and takes up its capacity, and on Sioux Falls also with the strict FIFO node model of [5]; on Anaheim and Chicago Sketch only the free-flow bound; the per-vehicle check on Sioux Falls only, without learning or origin holding; message counts are counted, not sent through a simulated network with delays or losses.
 - **Lower bound:** `dnl.check_dso` checks that at light load the linear program gives exactly the free-flow run, and that a capacity drop raises it while the simulated run stays above it. The bounds are solved with the first-order solver of HiGHS [10], with nothing left in the network at the horizon.
-- **Cell model:** `dnl.check` tests the node model on merges and diverges, and at light load the mean trip equals the free-flow mean; without congestion the prices stay at zero, learned or not; with ε = 0 the triggered run equals the exact one.
+- **Cell model:** `dnl.check` tests the node model on merges and diverges, and at light load the mean trip equals the free-flow mean; without congestion the prices stay at zero, learned or not; with ε = 0 the triggered run equals the exact one; after pruning, every split share is 0 or at least the threshold, and the shares at each node sum to 1.
 - **Per-vehicle simulator:** `vehicles.check` gives a light-load mean trip of 8.550 minutes against a free-flow mean of 8.530 minutes. UXsim drops the last partial platoon of each origin-destination pair (under 1% of the trips), and means are over the generated trips.
 - **DUE:** averaging of time-dependent shortest-path split rates with self-regulated steps [7]; relative gaps 1 to 6% on the larger networks after 20 to 30 iterations.
 
@@ -104,8 +117,8 @@ The results are numerical. No part is formalized in Lean.
 
 - `dnl.py`: the cell model, APDV on travel times, price-based APDV (`Price`), DUE, the system-optimum LP (`dso`) and the day-to-day learning (`learn`);
 - `static.py`: static UE and SO by conjugate Frank-Wolfe [6]; `logit.py`: the logit split [9]; `net.py`: the network loader; `vehicles.py`: the per-vehicle runs in UXsim;
-- `common.py`: the configuration of the price scheme used in every table;
-- `sioux_falls.py`, `scenarios.py`, `large.py`, `messages.py`, `per_vehicle.py`: one script per table, with the outputs `out/sioux_falls.txt`, `out/scen_*.txt`, `out/large_*.txt`, `out/messages_*.txt`, `out/per_vehicle.txt`; `out/dso_SiouxFalls_*.md` from `python dnl.py dso SiouxFalls 1 F` (the bound and the first three rows of the first table).
+- `common.py`: the configuration of the price scheme used in every table (`fifo_aware` for the FIFO table);
+- `sioux_falls.py`, `fifo.py`, `scenarios.py`, `large.py`, `messages.py`, `per_vehicle.py`: one script per table, with the outputs `out/sioux_falls.txt`, `out/fifo.txt`, `out/scen_*.txt`, `out/large_*.txt`, `out/messages_*.txt`, `out/per_vehicle.txt`; `out/dso_SiouxFalls_*.md` from `python dnl.py dso SiouxFalls 1 F` (the bound and the first three rows of the first table).
 
 To run them, place the networks of [1] in `sim/data/tntp/` (for example `git clone https://github.com/bstabler/TransportationNetworks sim/data/tntp`) and install numpy, scipy, numba, highspy and uxsim.
 

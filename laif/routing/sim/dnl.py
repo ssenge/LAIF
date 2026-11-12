@@ -437,12 +437,13 @@ class Price:
     (APDV can carry both distances). lmax: price cap (min), applied to the virtual queue too (anti-windup). eps (min): triggered updates; a link re-advertises its base
     time, price and queue delay only when one moved by more than eps since its last advertisement, and routing uses
     the advertised values. Then self.msg holds per period (links re-advertised, distance-vector messages: every node
-    whose distance to a destination changed relays it to each predecessor)."""
+    whose distance to a destination changed relays it to each predecessor). tmin: split shares below tmin are dropped
+    and the rest renormalised (strict FIFO node model: any share toward a full link blocks the whole in-link)."""
 
     def __init__(self, a0, base="fft", g=1.0, rho=0.95, p=0.1, U=1, lam0=None, soft=None, sig="dem", dyn=False,
-                 prof=None, down=False, hold=None, lmax=None, eps=None):
+                 prof=None, down=False, hold=None, lmax=None, eps=None, tmin=None):
         self.a0, self.base, self.g, self.rho, self.p, self.U, self.lam0, self.lmax = a0, base, g, rho, p, U, lam0, lmax
-        self.eps, self.msg = eps, []
+        self.eps, self.msg, self.tmin = eps, [], tmin
         self.soft, self.sig, self.dyn, self.prof, self.down, self.hold = soft, sig, dyn, prof, down, hold
         self.meter = self.release if hold is not None else None
 
@@ -491,6 +492,12 @@ class Price:
             sf, ar = self.soft, np.zeros_like(self.alpha)
             dist, order = sf.dag(c + lam) if self.dyn else (sf.dist, sf.order)
             _soft_alpha(sf.indptr, sf.head, sf.lid, order, dist, c + lam, sf.theta, ar)
+        if self.tmin:  # strict FIFO: a small share toward a full link blocks the whole in-link, so drop shares < tmin
+            ar = np.where(ar < self.tmin, 0.0, ar)
+            tot = np.zeros((ar.shape[0], sim.G.N))
+            np.add.at(tot, (slice(None), sim.G.tail), ar)
+            tot = tot[:, sim.G.tail]
+            ar = ar / np.where(tot > 0, tot, 1.0)
         self.alpha = (1 - self.p) * self.alpha + self.p * ar
         if self.hold is not None:
             G = sim.G
@@ -661,7 +668,13 @@ def check():
     assert sim.run(p0)["vh"] == a and p0.msg[0] == (G.m, len(G.dest) * G.m)  # eps 0: exact; period 0 advertises all
     sim.run(pb)
     assert all(x == (0, 0) for x in pb.msg[1:])  # nothing re-advertised, nothing relayed
-    print(f"check ok: node model; light-load mean trip {mean:.3f} min vs free-flow {ff:.3f} min; no price; triggered updates")
+    pt = Price(pol.a0, "exit", 3.0, 0.95, 1.0, soft=logit.Soft(G, Q, 0.3, G.g.fft.copy()), dyn=True, tmin=0.1)
+    sim.run(pt)
+    tot = np.zeros((len(G.dest), G.N))
+    np.add.at(tot, (slice(None), G.tail), pt.alpha)
+    assert np.all((pt.alpha == 0) | (pt.alpha >= 0.1)) and np.allclose(tot[tot > 0], 1)  # pruned, renormalised
+    assert np.any((pt.alpha > 0) & (pt.alpha < 1))  # some node still splits
+    print(f"check ok: node model; light-load mean trip {mean:.3f} min vs free-flow {ff:.3f} min; no price; triggered updates; pruning")
 
 
 def setup(name, factor):
