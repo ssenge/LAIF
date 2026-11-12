@@ -883,6 +883,10 @@ standard axioms (`propext`, `Classical.choice`, `Quot.sound`). There is no `sorr
   exactly when it lies $l$ valid steps above a target, below the first node $i_a$ flagged by $F_0$, with no node
   $l + 1, \dots, i_a$ flagged by $F_1$ (`Net.ExactSpec.step_iff`). So each node decides from its own outputs whether
   the arc to its parent belongs to the step.
+- `lean/SsspFlow/GHatChainStepLocal.lean`: the darts of the step, decided at the nodes. Under the conditions of
+  `RData.chain_step_out`, there is a step whose darts are exactly the darts of the tokens of the arcs from the nodes of
+  the chain of the target to their parents, for the nodes with count $0$, not flagged for $0$, and with distance $0$ in
+  the run down the chains (`RData.chain_step_local`).
 - `lean/SsspFlow/GHatLevelDarts.lean`: the darts of a walk of a level, in order. A kept rim dart of the repaired graph
   is an E_C arc between the copies of its token and of the partner (`RData.att_rimTok`), and each middle edge of the
   network of a level carries the token of its E_C arc (`RData.edgeTok_dart`, `RData.edgeTok_inl_left`,
