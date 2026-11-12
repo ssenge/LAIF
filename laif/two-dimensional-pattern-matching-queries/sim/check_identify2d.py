@@ -27,14 +27,16 @@ def decide(T, P, B, n1, n2, m1, m2, b1, b2):
     return False
 
 random.seed(5)
-blocks = tested = found = 0
-while tested < 3000:
-    m1, m2 = random.randint(1, 7), random.randint(1, 7); sig = random.choice([2, 3])
-    b1, b2 = max(1, m1 // 4 + random.randint(0, 1)), max(1, m2 // 4 + random.randint(0, 1))
-    b1, b2 = min(b1, m1), min(b2, m2)
+blocks = tested = found = big = 0
+while tested < 10000:
+    m1, m2 = random.randint(1, 10), random.randint(1, 10); sig = random.choice([2, 3, 4])
     P = [[random.randrange(sig) for _ in range(m2)] for _ in range(m1)]
-    if not star(P, m1, m2, b1, b2):
-        continue
+    ok = [(b1, b2) for b1 in range(1, (m1 + 1) // 2 + 1) for b2 in range(1, (m2 + 1) // 2 + 1) if star(P, m1, m2, b1, b2)]
+    if random.random() < 0.7:                                # the largest b with (★) ...
+        b1, b2 = max(ok, key=lambda t: (t[0] * t[1], t))
+    else:                                                    # ... or any b with (★)
+        b1, b2 = random.choice(ok)
+    big += b1 * b2 >= 4
     tested += 1
     n1, n2 = random.randint(m1, 3 * m1 + 4), random.randint(m2, 3 * m2 + 4)
     T = [[random.randrange(sig) for _ in range(n2)] for _ in range(n1)]
@@ -52,4 +54,4 @@ while tested < 3000:
                        if B0 + a <= n1 - m1 and B1 + c <= n2 - m2)
             assert got == want
             blocks += 1; found += want
-print("patterns with (★):", tested, "blocks:", blocks, "blocks with an occurrence:", found)
+print("patterns with (★):", tested, "with b1 * b2 >= 4:", big, "blocks:", blocks, "blocks with an occurrence:", found)
