@@ -1,0 +1,10 @@
+x0.3 learned, non-FIFO: days 1, 10, 20, 30: 1.063 1.038 1.024 1.023; days 31 to 60: 1.023 to 1.024
+x0.3 FIFO-aware, FIFO: days 1, 10, 20, 30: 1.114 1.059 1.039 1.028; days 31 to 60: 1.021 to 1.028
+x0.4 learned, non-FIFO: days 1, 10, 20, 30: 1.132 1.078 1.043 1.035; days 31 to 60: 1.034 to 1.038
+x0.4 FIFO-aware, FIFO: days 1, 10, 20, 30: 1.429 1.156 1.113 1.109; days 31 to 60: 1.033 to 1.116
+x0.5 learned, non-FIFO: days 1, 10, 20, 30: 1.248 1.142 1.088 1.075; days 31 to 60: 1.073 to 1.084
+x0.5 FIFO-aware, FIFO: days 1, 10, 20, 30: 2.121 1.766 1.637 1.457; days 31 to 60: 1.340 to 1.562
+x0.6 learned, non-FIFO: days 1, 10, 20, 30: 1.427 1.278 1.237 1.246; days 31 to 60: 1.250 to 1.318
+x0.6 FIFO-aware, FIFO: days 1, 10, 20, 30: 2.939 2.413 2.272 2.279; days 31 to 60: 2.221 to 2.713
+x0.7 learned, non-FIFO: days 1, 10, 20, 30: 1.540 1.401 1.397 1.433; days 31 to 60: 1.435 to 1.564
+x0.7 FIFO-aware, FIFO: days 1, 10, 20, 30: 3.286 3.023 2.646 2.509; days 31 to 60: 2.533 to 3.056

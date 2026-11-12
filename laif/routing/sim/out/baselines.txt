@@ -1,0 +1,12 @@
+x0.3 UE routes (static): 11.31 min = 1.269 x DSO bound 8.9193, left 5.6e-08
+x0.3 APDV on travel times: 10.54 min = 1.182 x DSO bound 8.9193, left 9.6e-18
+x0.3 DUE (central, predictive, gap 3.9e-03): 10.03 min = 1.125 x DSO bound 8.9193, left 9.1e-07
+x0.4 UE routes (static): 16.60 min = 1.823 x DSO bound 9.1068, left 9.0e-20
+x0.4 APDV on travel times: 14.92 min = 1.638 x DSO bound 9.1068, left 1.1e-14
+x0.4 DUE (central, predictive, gap 1.4e-02): 13.03 min = 1.431 x DSO bound 9.1068, left 1.5e-07
+x0.5 UE routes (static): 23.57 min = 2.500 x DSO bound 9.4286, left 1.2e-17
+x0.5 APDV on travel times: 25.69 min = 2.725 x DSO bound 9.4286, left 8.3e-16
+x0.5 DUE (central, predictive, gap 2.0e-02): 22.14 min = 2.348 x DSO bound 9.4286, left 9.5e-07
+x0.6 UE routes (static): 32.82 min = 3.033 x DSO bound 10.82, left 1.8e-17
+x0.6 APDV on travel times: 43.06 min = 3.979 x DSO bound 10.82, left 2.4e-07
+x0.6 DUE (central, predictive, gap 2.7e-02): 35.11 min = 3.245 x DSO bound 10.82, left 5.0e-07

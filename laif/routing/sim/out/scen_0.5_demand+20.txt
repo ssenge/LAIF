@@ -1,7 +1,7 @@
 Sioux Falls x0.5, demand+20: DSO bound planned day 9.4286, scenario day 10.82 min
-  UE routes (static): planned 28.53 min = 3.026, scenario 71.51 min = 6.609
-  SO routes (static BPR): planned 13.80 min = 1.464, scenario 37.88 min = 3.501
-  DUE (central, planned day): planned 24.09 min = 2.555, scenario 45.69 min = 4.223
-  price-based APDV, cold start: planned 11.25 min = 1.193, scenario 23.33 min = 2.157
+  UE routes (static): planned 23.57 min = 2.500, scenario 43.61 min = 4.030
+  SO routes (static BPR): planned 12.93 min = 1.372, scenario 23.94 min = 2.213
+  DUE (central, planned day): planned 22.21 min = 2.355, scenario 33.51 min = 3.097
+  price-based APDV, cold start: planned 11.23 min = 1.191, scenario 20.29 min = 1.875
   price-based APDV, learned on the planned day: planned 10.12 min = 1.074, scenario 13.72 min = 1.268
-  capacity plan (static LP): planned 9.54 min = 1.012, scenario 29.88 min = 2.761
+  capacity plan (static LP): planned 9.54 min = 1.012, scenario 23.92 min = 2.210

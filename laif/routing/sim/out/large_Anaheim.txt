@@ -1,18 +1,18 @@
 Anaheim x0.8: free-flow lower bound 11.88 min, capacity plan infeasible
   UE routes (static): 17.79 min = 1.498 x free flow, left 4.2e-07
   SO routes (static BPR): 15.11 min = 1.272 x free flow, left 9.5e-09
-  APDV on travel times: 15.31 min = 1.289 x free flow, left 1.1e-17
-  price-based APDV, learned: 14.72 min = 1.239 x free flow, left 7.6e-07
+  APDV on travel times: 15.34 min = 1.291 x free flow, left 1.4e-17
+  price-based APDV, learned: 14.76 min = 1.243 x free flow, left 9.4e-07
   DUE (central, predictive): 14.53 min = 1.223 x free flow, gap 1.2e-02
 Anaheim x1.0: free-flow lower bound 11.88 min, capacity plan infeasible
   UE routes (static): 26.03 min = 2.192 x free flow, left 7.6e-07
   SO routes (static BPR): 19.41 min = 1.634 x free flow, left 4.2e-09
-  APDV on travel times: 20.52 min = 1.728 x free flow, left 4.7e-18
-  price-based APDV, learned: 18.37 min = 1.547 x free flow, left 9.6e-07
+  APDV on travel times: 20.43 min = 1.720 x free flow, left 1.3e-17
+  price-based APDV, learned: 18.50 min = 1.557 x free flow, left 1.0e-06
   DUE (central, predictive): 18.82 min = 1.585 x free flow, gap 2.4e-02
 Anaheim x1.2: free-flow lower bound 11.88 min, capacity plan infeasible
-  UE routes (static): 32.11 min = 2.704 x free flow, left 9.0e-07
-  SO routes (static BPR): 25.14 min = 2.117 x free flow, left 1.8e-11
-  APDV on travel times: 26.38 min = 2.222 x free flow, left 5.6e-17
-  price-based APDV, learned: 22.81 min = 1.921 x free flow, left 1.2e-07
+  UE routes (static): 32.11 min = 2.704 x free flow, left 8.2e-07
+  SO routes (static BPR): 25.15 min = 2.118 x free flow, left 1.8e-11
+  APDV on travel times: 26.25 min = 2.210 x free flow, left 6.9e-07
+  price-based APDV, learned: 23.02 min = 1.938 x free flow, left 2.3e-07
   DUE (central, predictive): 24.63 min = 2.074 x free flow, gap 3.9e-02

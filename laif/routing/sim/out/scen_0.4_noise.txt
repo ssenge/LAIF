@@ -1,7 +1,7 @@
 Sioux Falls x0.4, noise: DSO bound planned day 9.1068, scenario day 9.054 min
-  UE routes (static): planned 17.65 min = 1.938, scenario 20.98 min = 2.317
+  UE routes (static): planned 16.60 min = 1.823, scenario 19.62 min = 2.167
   SO routes (static BPR): planned 10.17 min = 1.117, scenario 10.47 min = 1.157
-  DUE (central, planned day): planned 13.12 min = 1.441, scenario 14.59 min = 1.611
+  DUE (central, planned day): planned 13.04 min = 1.431, scenario 14.64 min = 1.617
   price-based APDV, cold start: planned 9.52 min = 1.046, scenario 9.53 min = 1.052
   price-based APDV, learned on the planned day: planned 9.42 min = 1.035, scenario 9.54 min = 1.053
   capacity plan (static LP): planned 9.15 min = 1.005, scenario 10.16 min = 1.122

@@ -1,12 +1,12 @@
 Anaheim x0.8: |D| 38, m 914, periodic 34732 msg/period
-  eps 0.0: trip/ref 1.239, links re-adv/period 137.0, DV msg/period mean 22456 max 30676 (0.647 of periodic), link-state ~125226
-  eps 0.01: trip/ref 1.239, links re-adv/period 65.8, DV msg/period mean 15167 max 30544 (0.437 of periodic), link-state ~60176
-  eps 0.05: trip/ref 1.238, links re-adv/period 55.0, DV msg/period mean 14428 max 30525 (0.415 of periodic), link-state ~50310
-  eps 0.2: trip/ref 1.238, links re-adv/period 43.3, DV msg/period mean 12334 max 30549 (0.355 of periodic), link-state ~39575
-  eps 0.5: trip/ref 1.243, links re-adv/period 36.2, DV msg/period mean 10978 max 30430 (0.316 of periodic), link-state ~33104
+  eps 0.0: trip/ref 1.243, links re-adv/period 134.5, DV msg/period mean 22357 max 30676 (0.644 of periodic), link-state ~122890
+  eps 0.01: trip/ref 1.243, links re-adv/period 67.0, DV msg/period mean 15527 max 30544 (0.447 of periodic), link-state ~61269
+  eps 0.05: trip/ref 1.243, links re-adv/period 57.5, DV msg/period mean 14891 max 30525 (0.429 of periodic), link-state ~52516
+  eps 0.2: trip/ref 1.245, links re-adv/period 42.7, DV msg/period mean 12667 max 30549 (0.365 of periodic), link-state ~39015
+  eps 0.5: trip/ref 1.248, links re-adv/period 35.1, DV msg/period mean 11078 max 30430 (0.319 of periodic), link-state ~32068
 Anaheim x1.0: |D| 38, m 914, periodic 34732 msg/period
-  eps 0.0: trip/ref 1.547, links re-adv/period 183.9, DV msg/period mean 23957 max 30574 (0.690 of periodic), link-state ~168041
-  eps 0.01: trip/ref 1.546, links re-adv/period 100.6, DV msg/period mean 18541 max 30546 (0.534 of periodic), link-state ~91916
-  eps 0.05: trip/ref 1.547, links re-adv/period 85.8, DV msg/period mean 17796 max 30536 (0.512 of periodic), link-state ~78459
-  eps 0.2: trip/ref 1.548, links re-adv/period 66.6, DV msg/period mean 15632 max 30551 (0.450 of periodic), link-state ~60910
-  eps 0.5: trip/ref 1.547, links re-adv/period 46.5, DV msg/period mean 12653 max 30427 (0.364 of periodic), link-state ~42470
+  eps 0.0: trip/ref 1.557, links re-adv/period 189.6, DV msg/period mean 24832 max 30574 (0.715 of periodic), link-state ~173258
+  eps 0.01: trip/ref 1.558, links re-adv/period 103.3, DV msg/period mean 18837 max 30546 (0.542 of periodic), link-state ~94414
+  eps 0.05: trip/ref 1.558, links re-adv/period 87.6, DV msg/period mean 18081 max 30536 (0.521 of periodic), link-state ~80030
+  eps 0.2: trip/ref 1.553, links re-adv/period 67.6, DV msg/period mean 15958 max 30551 (0.459 of periodic), link-state ~61792
+  eps 0.5: trip/ref 1.555, links re-adv/period 52.0, DV msg/period mean 13827 max 30427 (0.398 of periodic), link-state ~47501

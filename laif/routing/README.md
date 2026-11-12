@@ -16,13 +16,15 @@ The lower bound is the system optimum of the same cell model, solved as a linear
 
 | Strategy | ×0.3 | ×0.4 | ×0.5 | ×0.6 | ×0.7 |
 |---|---|---|---|---|---|
-| UE routes, static | 1.28 | 1.94 | 3.03 | 4.64 | |
-| APDV on travel times | 1.18 | 1.66 | 3.32 | 6.64 | |
-| DUE, central, perfect foresight | 1.12 | 1.44 | 2.56 | 4.21 | |
-| Price-based APDV, cold start | 1.033 | 1.046 | 1.193 | 2.157 | 3.976 |
-| **Price-based APDV, learned, with origin holding** | **1.023** | **1.035** | **1.074** | **1.252** | **1.487** |
+| UE routes, static | 1.27 | 1.82 | 2.50 | 3.03 | |
+| APDV on travel times | 1.18 | 1.64 | 2.72 | 3.98 | |
+| DUE, central, perfect foresight | 1.12 | 1.43 | 2.35 | 3.24 | |
+| Price-based APDV, cold start | 1.033 | 1.046 | 1.191 | 1.875 | 2.397 |
+| **Price-based APDV, learned, with origin holding** | **1.023** | **1.035** | **1.074** | **1.250** | **1.435** |
 
-At 0.52 of the demand, the network stops having a static routing that keeps every link below capacity. Above that point, queues cannot be avoided, and the optimum holds vehicles at their origins. The learned price scheme holds vehicles at their origins too, with local information only. At ×0.6 it needs 1.25 times the optimum, where DUE needs 4.2 times.
+At 0.52 of the demand, the network stops having a static routing that keeps every link below capacity. Above that point, queues cannot be avoided, and the optimum holds vehicles at their origins. The learned price scheme holds vehicles at their origins too, with local information only. At ×0.6 it needs 1.25 times the optimum, where static UE routes need 3.0 times and DUE 3.2 times.
+
+The learned rows are the runs with the profile after 30 days of learning. Up to ×0.5 the scheme has settled by then: over days 31 to 60 the results move by at most 0.01. At ×0.6 and ×0.7 the profile keeps moving, and over days 31 to 60 the results lie between 1.250 and 1.318 and between 1.435 and 1.564.
 
 ### Sioux Falls with a strict FIFO node model
 
@@ -30,12 +32,12 @@ In a strict FIFO node model [5], vehicles leave a link in the order they entered
 
 | Strategy | ×0.3 | ×0.4 | ×0.5 | ×0.6 | ×0.7 |
 |---|---|---|---|---|---|
-| UE routes, static | 2.667 | 3.125 | 5.600 | 29.3 (54% unfinished) | 31.1 (73% unfinished) |
-| SO routes, static BPR | 1.007 | 1.402 | 2.787 | 31.0 (58% unfinished) | 27.5 (64% unfinished) |
+| UE routes, static | 2.653 | 2.700 | 4.292 | 20.9 (37% unfinished) | 24.5 (57% unfinished) |
+| SO routes, static BPR | 1.007 | 1.419 | 2.474 | 25.1 (47% unfinished) | 23.0 (53% unfinished) |
 | Capacity-feasible plan, static LP, central | **1.001** | **1.005** | **1.012** | none | none |
-| **Price-based APDV, learned, FIFO-aware** | 1.022 | 1.038 | 1.166 | **1.542** | **2.209** |
+| **Price-based APDV, learned, FIFO-aware** | 1.028 | 1.095 | 1.562 | **2.279** | **2.588** |
 
-The bound is the same linear program as above. It does not enforce FIFO, so it bounds the FIFO runs too. Unfinished trips count with their time up to 600 minutes. Above the limit of 0.52 no capacity-feasible static plan exists, and the static routings leave more than half of the trips unfinished after 600 minutes. The FIFO-aware price scheme completes every trip, at 1.54 and 2.21 times the bound. Below the limit the central plan builds no queue, so FIFO does not affect it, and it stays ahead by 2 to 15 points. The threshold matters little: between 0.02 and 0.2 the results move by at most 0.03 up to ×0.6, and at ×0.7 they lie between 1.92 and 2.24. In the non-FIFO model the FIFO-aware scheme gives 1.020, 1.035, 1.108, 1.217 and 1.310.
+The bound is the same linear program as above. It does not enforce FIFO, so it bounds the FIFO runs too. Unfinished trips count with their time up to 600 minutes. Above the limit of 0.52 no capacity-feasible static plan exists, and the static routings leave 37 to 57% of the trips unfinished after 600 minutes. The FIFO-aware price scheme completes every trip, at 2.28 and 2.59 times the bound. Below the limit the central plan builds no queue, so FIFO does not affect it, and it stays ahead, by 3 points at ×0.3 and by 55 points at ×0.5. The FIFO-aware scheme completes every trip for every threshold from 0.02 to 0.2, with results between 1.43 and 1.66 at ×0.5, 2.16 and 2.51 at ×0.6, and 2.43 and 2.88 at ×0.7. Its learned profile settles less than in the non-FIFO model: over days 31 to 60 the results lie between 1.03 and 1.12 at ×0.4, 1.34 and 1.56 at ×0.5, 2.22 and 2.71 at ×0.6, and 2.53 and 3.06 at ×0.7. In the non-FIFO model the FIFO-aware scheme gives 1.020, 1.035, 1.108, 1.216 and 1.306.
 
 ### Sioux Falls, days that differ from the plan
 
@@ -43,12 +45,12 @@ Every strategy is prepared for the planned day: the static plans and DUE are com
 
 | Strategy | ×0.4 planned day | ×0.4 worst day | ×0.5 planned day | ×0.5 worst day |
 |---|---|---|---|---|
-| Capacity-feasible plan, static LP, central | **1.005** | 1.790 (+20%) | **1.012** | 2.761 (+20%) |
-| SO routes, static BPR | 1.117 | 1.783 (+20%) | 1.464 | 3.501 (+20%) |
-| DUE, central, planned day | 1.441 | 2.454 (+20%) | 2.555 | 4.223 (+20%) |
+| Capacity-feasible plan, static LP, central | **1.005** | 1.684 (+20%) | **1.012** | 2.210 (+20%) |
+| SO routes, static BPR | 1.117 | 1.635 (+20%) | 1.372 | 2.213 (+20%) |
+| DUE, central, planned day | 1.431 | 2.266 (+20%) | 2.355 | 3.097 (+20%) |
 | **Price-based APDV, learned** | 1.035 | **1.134** (+20%) | 1.074 | **1.268** (+20%) |
 
-A central plan is best on its own day, by 3 to 6 points. Over the four other days the price scheme has the smallest worst case: 1.134 against 1.783 at ×0.4, and 1.268 against 2.761 at ×0.5. At ×0.5 the day with 20% more demand lies above the limit of 0.52, where queues cannot be avoided.
+A central plan is best on its own day, by 3 to 6 points. Over the four other days the price scheme has the smallest worst case: 1.134 against 1.635 at ×0.4, and 1.268 against 2.210 at ×0.5. At ×0.5 the day with 20% more demand lies above the limit of 0.52, where queues cannot be avoided.
 
 ### Anaheim and Chicago Sketch, above capacity
 
@@ -57,12 +59,12 @@ On these networks the system optimum is too large to solve. The bound is the mea
 | Strategy | Anaheim ×0.8 | Anaheim ×1.0 | Anaheim ×1.2 | Chicago ×0.75 | Chicago ×1.0 |
 |---|---|---|---|---|---|
 | UE routes, static | 1.498 | 2.192 | 2.704 | 1.234 | 1.732 |
-| SO routes, static BPR | 1.272 | 1.634 | 2.117 | 1.077 | 1.298 |
-| APDV on travel times | 1.289 | 1.728 | 2.222 | 1.393 | 2.578 |
+| SO routes, static BPR | 1.272 | 1.634 | 2.118 | 1.077 | 1.298 |
+| APDV on travel times | 1.291 | 1.720 | 2.210 | 1.393 | 2.581 |
 | DUE, central, perfect foresight | **1.223** | 1.585 | 2.074 | 1.154 | 1.582 |
-| **Price-based APDV, learned, with origin holding** | 1.239 | **1.547** | **1.921** | **1.069** | **1.217** |
+| **Price-based APDV, learned, with origin holding** | 1.243 | **1.557** | **1.938** | **1.069** | **1.217** |
 
-The price scheme has the shortest mean trip in four of the five settings. On Anaheim at ×0.8, DUE stays ahead, by 1.6 points.
+The price scheme has the shortest mean trip in four of the five settings. On Anaheim at ×0.8, DUE stays ahead, by 2.0 points.
 
 ### Message cost
 
@@ -70,11 +72,11 @@ Prices change every minute, so APDV advertises every destination every period: a
 
 | Network, demand | ε = 0 | ε = 0.2 min | ε = 0.5 min | Mean trip change at ε = 0.2 |
 |---|---|---|---|---|
-| Sioux Falls ×0.4 / ×0.5 / ×0.6 | 0.61 / 0.75 / 0.84 | **0.26 / 0.46 / 0.64** | 0.17 / 0.35 / 0.54 | at most 0.1 points |
-| Anaheim ×0.8 / ×1.0 | 0.65 / 0.69 | **0.36 / 0.45** | 0.32 / 0.36 | at most 0.1 points |
+| Sioux Falls ×0.4 / ×0.5 / ×0.6 | 0.61 / 0.76 / 0.84 | **0.26 / 0.47 / 0.63** | 0.17 / 0.35 / 0.54 | at most 0.1 points |
+| Anaheim ×0.8 / ×1.0 | 0.64 / 0.71 | **0.36 / 0.46** | 0.32 / 0.40 | at most 0.4 points |
 | Chicago Sketch ×1.0 | 0.66 | **0.26** | 0.23 | 0.1 points |
 
-The entries are mean messages per period as a share of the periodic count (1824, 34 732 and 1 141 650). A threshold of 0.2 minutes saves 36 to 74% of the messages at no measurable cost in travel time. Flooding every link update to all links, as link-state routing does, sends 1.1 to 3.9 times as many messages as the triggered distance vector at ε = 0.2. On the two larger networks, the busiest period stays at 0.76 to 0.88 of the periodic count, so the saving is in volume, not in peak load.
+The entries are mean messages per period as a share of the periodic count (1824, 34 732 and 1 141 650). A threshold of 0.2 minutes saves 37 to 74% of the messages and changes the mean trip by at most 0.4 points. Flooding every link update to all links, as link-state routing does, sends 1.1 to 3.9 times as many messages as the triggered distance vector at ε = 0.2. On the two larger networks, the busiest period stays at 0.76 to 0.88 of the periodic count, so the saving is in volume, not in peak load.
 
 ### Per-vehicle check, Sioux Falls
 
@@ -86,7 +88,7 @@ The same policies run in UXsim [8], a per-vehicle simulator with FIFO lanes, pla
 | UXsim's own reactive routing (DUO, 10-minute updates) | 17.44 | 30.41 | 50.58 | 101.47 |
 | **Price-based APDV, cold start** | **9.42** | **12.56** | **36.09** | **75.70** |
 
-The price scheme is the fastest of these policies at every demand level, as in the cell model. At ×0.3 its mean trip is within 6% of the cell model's system optimum (8.92 minutes). Per vehicle, all mean trips are longer than in the non-FIFO cell model, and the difference grows with the demand (price scheme at ×0.5: 36.1 against 11.3 minutes).
+The price scheme is the fastest of these policies at every demand level, as in the cell model. At ×0.3 its mean trip is within 6% of the cell model's system optimum (8.92 minutes). Per vehicle, all mean trips are longer than in the non-FIFO cell model, and the difference grows with the demand (price scheme at ×0.5: 36.1 against 11.2 minutes).
 
 ## The algorithm
 
@@ -105,7 +107,7 @@ All quantities are local to a link or a node. The only information exchanged is 
 
 The results are numerical. No part is formalized in Lean.
 
-- **Scope:** three networks; demand released at a constant rate over 60 minutes; the cell model with a non-FIFO node model, in which a blocked turn holds back only its own traffic, which waits in the last cell of the link and takes up its capacity, and on Sioux Falls also with the strict FIFO node model of [5]; on Anaheim and Chicago Sketch only the free-flow bound; the per-vehicle check on Sioux Falls only, without learning or origin holding; message counts are counted, not sent through a simulated network with delays or losses.
+- **Scope:** three networks; demand released at a constant rate over 60 minutes; the cell model with origins that release at most the capacity of their out-links per step, with a non-FIFO node model, in which a blocked turn holds back only its own traffic, which waits in the last cell of the link and takes up its capacity, and on Sioux Falls also with the strict FIFO node model of [5]; on Anaheim and Chicago Sketch only the free-flow bound; the per-vehicle check on Sioux Falls only, without learning or origin holding; message counts are counted, not sent through a simulated network with delays or losses.
 - **Lower bound:** `dnl.check_dso` checks that at light load the linear program gives exactly the free-flow run, and that a capacity drop raises it while the simulated run stays above it. The bounds are solved with the first-order solver of HiGHS [10], with nothing left in the network at the horizon.
 - **Cell model:** `dnl.check` tests the node model on merges and diverges, and at light load the mean trip equals the free-flow mean; without congestion the prices stay at zero, learned or not; with ε = 0 the triggered run equals the exact one; after pruning, every split share is 0 or at least the threshold, and the shares at each node sum to 1.
 - **Per-vehicle simulator:** `vehicles.check` gives a light-load mean trip of 8.550 minutes against a free-flow mean of 8.530 minutes. UXsim drops the last partial platoon of each origin-destination pair (under 1% of the trips), and means are over the generated trips.
@@ -118,7 +120,7 @@ The results are numerical. No part is formalized in Lean.
 - `dnl.py`: the cell model, APDV on travel times, price-based APDV (`Price`), DUE, the system-optimum LP (`dso`) and the day-to-day learning (`learn`);
 - `static.py`: static UE and SO by conjugate Frank-Wolfe [6]; `logit.py`: the logit split [9]; `net.py`: the network loader; `vehicles.py`: the per-vehicle runs in UXsim;
 - `common.py`: the configuration of the price scheme used in every table (`fifo_aware` for the FIFO table);
-- `sioux_falls.py`, `fifo.py`, `scenarios.py`, `large.py`, `messages.py`, `per_vehicle.py`: one script per table, with the outputs `out/sioux_falls.txt`, `out/fifo.txt`, `out/scen_*.txt`, `out/large_*.txt`, `out/messages_*.txt`, `out/per_vehicle.txt`; `out/dso_SiouxFalls_*.md` from `python dnl.py dso SiouxFalls 1 F` (the bound and the first three rows of the first table).
+- `sioux_falls.py`, `baselines.py`, `drift.py`, `fifo.py`, `scenarios.py`, `large.py`, `messages.py`, `per_vehicle.py`: one script per table, with the outputs `out/sioux_falls.txt`, `out/baselines.txt`, `out/drift.txt`, `out/fifo.txt`, `out/scen_*.txt`, `out/large_*.txt`, `out/messages_*.txt`, `out/per_vehicle.txt`; `out/dso_SiouxFalls_*.md` from `python dnl.py dso SiouxFalls 1 F` (the bound).
 
 To run them, place the networks of [1] in `sim/data/tntp/` (for example `git clone https://github.com/bstabler/TransportationNetworks sim/data/tntp`) and install numpy, scipy, numba, highspy and uxsim.
 

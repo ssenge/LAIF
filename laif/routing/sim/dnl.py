@@ -6,7 +6,7 @@ vf / (KAPPA - 1). Cells hold per-destination occupancies; a cell's outflow has i
 Nodes, default non-FIFO per turn: each out-link's supply is shared in proportion to the turn demands; vehicles
 facing a blocked turn wait in the in-link's last cell and take its capacity (a partial-FIFO coupling). fifo=True:
 the generic node model of [5], capacity priorities, strict FIFO per in-link.
-Vertical origin queues, sinks. Routing = destination-based split rates alpha[d, link] (share of d-flow at tail(link) sent on link):
+Vertical origin queues (release capped at the out-links' capacity), sinks. Routing = destination-based split rates alpha[d, link] (share of d-flow at tail(link) sent on link):
   - static: from per-destination static UE flows on the UE shortest-path DAG, or free-flow shortest paths;
   - APDV on travel times (Reactive): every U steps, shortest paths on the current link times;
   - price-based APDV (Price): see its docstring;
@@ -76,7 +76,7 @@ def _turn_ratio(Sd, beta, R):
 
 @njit(cache=True)
 def _step(n, ntot, first, ncell, cq, cj, in_ptr, in_lnk, out_ptr, out_lnk, didx, oidx, oq, alpha, inbuf, cu, cd,
-          arr, kap, fifo, dm):
+          arr, kap, fifo, dm, ocap):
     """One step; cu, cd, dm accumulate per link: inflow, outflow, offered inflow (turn demands toward the link; an
     origin queue offers at most what its out-links can take per step)."""
     C, D = n.shape
@@ -114,6 +114,8 @@ def _step(n, ntot, first, ncell, cq, cj, in_ptr, in_lnk, out_ptr, out_lnk, didx,
         oc = 0.0
         for j in range(nj):
             oc += cq[first[out_lnk[o0 + j]]]
+        if ocap and src >= 0:  # the origin sends at most what its out-links take per step, priority = that capacity
+            Sd[ni - 1], ci[ni - 1] = min(Sd[ni - 1], oc), oc
         for i in range(ni):
             so = Sd[i] if i < nl else min(Sd[i], oc)
             for j in range(nj):
@@ -336,11 +338,12 @@ def cap_alpha(G, q, prices=False):
 
 
 class Ctm:
-    def __init__(self, G, Q, dt, factor=1.0, t_load=60.0, horizon=360.0, B=1, kappa=KAPPA, fifo=False, inc=()):
+    def __init__(self, G, Q, dt, factor=1.0, t_load=60.0, horizon=360.0, B=1, kappa=KAPPA, fifo=False, inc=(), ocap=True):
         """inc: incidents (link, t0, t1, factor): from t0 to t1 (min) the link's middle cell has factor x capacity
-        (jam occupancy unchanged)."""
+        (jam occupancy unchanged). ocap: an origin sends at most the capacity of its out-links per step, and merges with
+        that capacity as its priority (False: with its whole queue, which starves through traffic)."""
         g = G.g
-        self.G, self.dt, self.kappa, self.B, self.fifo = G, dt, kappa, B, fifo
+        self.G, self.dt, self.kappa, self.B, self.fifo, self.ocap = G, dt, kappa, B, fifo, ocap
         self.ncell = np.maximum(1, np.rint(g.fft / dt)).astype(np.int64)
         self.first = np.r_[0, np.cumsum(self.ncell)[:-1]].astype(np.int64)
         self.cq = np.repeat(g.cap * dt / 60, self.ncell)
@@ -386,7 +389,7 @@ class Ctm:
             self.cqk = self.cq_at(k)
             _step(n, self.ntot, self.first, self.ncell, self.cqk, self.kappa * self.cq, self.in_ptr, self.in_lnk,
                   self.out_ptr, self.out_lnk, self.didx, self.oidx, oq, policy(self, k), inbuf, cu, cd, arr,
-                  self.kappa, self.fifo, dm)
+                  self.kappa, self.fifo, dm, self.ocap)
             self.Hup[k + 1], self.Hdn[k + 1], self.Hdm[k + 1] = cu, cd, dm
             left = self.ntot.sum() + oq.sum() + self.hold.sum()
             vh, peak = vh + left * self.dt / 60, max(peak, left)

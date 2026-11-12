@@ -5,14 +5,14 @@ SiouxFalls x0.4: |D| 24, m 76, periodic 1824 msg/period
   eps 0.2: trip/ref 1.035, links re-adv/period 7.0, DV msg/period mean 481 max 990 (0.264 of periodic), link-state ~530
   eps 0.5: trip/ref 1.034, links re-adv/period 4.5, DV msg/period mean 316 max 808 (0.173 of periodic), link-state ~342
 SiouxFalls x0.5: |D| 24, m 76, periodic 1824 msg/period
-  eps 0.0: trip/ref 1.074, links re-adv/period 41.4, DV msg/period mean 1374 max 1649 (0.753 of periodic), link-state ~3148
-  eps 0.01: trip/ref 1.074, links re-adv/period 30.7, DV msg/period mean 1091 max 1585 (0.598 of periodic), link-state ~2335
-  eps 0.05: trip/ref 1.074, links re-adv/period 25.3, DV msg/period mean 1014 max 1511 (0.556 of periodic), link-state ~1921
-  eps 0.2: trip/ref 1.074, links re-adv/period 18.8, DV msg/period mean 843 max 1398 (0.462 of periodic), link-state ~1427
-  eps 0.5: trip/ref 1.082, links re-adv/period 12.8, DV msg/period mean 643 max 1286 (0.353 of periodic), link-state ~970
+  eps 0.0: trip/ref 1.074, links re-adv/period 41.6, DV msg/period mean 1388 max 1654 (0.761 of periodic), link-state ~3161
+  eps 0.01: trip/ref 1.074, links re-adv/period 30.6, DV msg/period mean 1095 max 1577 (0.600 of periodic), link-state ~2325
+  eps 0.05: trip/ref 1.074, links re-adv/period 25.4, DV msg/period mean 1021 max 1505 (0.560 of periodic), link-state ~1934
+  eps 0.2: trip/ref 1.074, links re-adv/period 18.8, DV msg/period mean 852 max 1398 (0.467 of periodic), link-state ~1431
+  eps 0.5: trip/ref 1.081, links re-adv/period 12.5, DV msg/period mean 628 max 1246 (0.345 of periodic), link-state ~953
 SiouxFalls x0.6: |D| 24, m 76, periodic 1824 msg/period
-  eps 0.0: trip/ref 1.252, links re-adv/period 50.1, DV msg/period mean 1527 max 1714 (0.837 of periodic), link-state ~3809
-  eps 0.01: trip/ref 1.252, links re-adv/period 40.2, DV msg/period mean 1269 max 1682 (0.696 of periodic), link-state ~3055
-  eps 0.05: trip/ref 1.252, links re-adv/period 36.7, DV msg/period mean 1225 max 1632 (0.671 of periodic), link-state ~2792
-  eps 0.2: trip/ref 1.253, links re-adv/period 31.5, DV msg/period mean 1164 max 1557 (0.638 of periodic), link-state ~2394
-  eps 0.5: trip/ref 1.265, links re-adv/period 24.2, DV msg/period mean 983 max 1492 (0.539 of periodic), link-state ~1837
+  eps 0.0: trip/ref 1.250, links re-adv/period 49.2, DV msg/period mean 1528 max 1713 (0.837 of periodic), link-state ~3736
+  eps 0.01: trip/ref 1.250, links re-adv/period 40.0, DV msg/period mean 1261 max 1679 (0.691 of periodic), link-state ~3043
+  eps 0.05: trip/ref 1.250, links re-adv/period 36.6, DV msg/period mean 1225 max 1634 (0.671 of periodic), link-state ~2778
+  eps 0.2: trip/ref 1.251, links re-adv/period 31.2, DV msg/period mean 1149 max 1558 (0.630 of periodic), link-state ~2368
+  eps 0.5: trip/ref 1.266, links re-adv/period 24.2, DV msg/period mean 985 max 1504 (0.540 of periodic), link-state ~1843
