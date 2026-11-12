@@ -5,33 +5,24 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>LAIF Results</title>
 <meta name="description" content="Searchable, sortable list of the LAIF results: new bounds and faster algorithms for open problems in algorithms and complexity.">
+<link rel="canonical" href="https://ssenge.github.io/LAIF/">
+<meta property="og:title" content="LAIF Results">
+<meta property="og:description" content="New bounds and faster algorithms for open problems in algorithms and complexity, with Lean proofs.">
+<meta property="og:url" content="https://ssenge.github.io/LAIF/">
+<meta property="og:image" content="https://raw.githubusercontent.com/ssenge/LAIF/main/assets/logo.gif">
+<meta name="theme-color" content="#0d0b17">
 <link rel="icon" href="https://raw.githubusercontent.com/ssenge/LAIF/main/assets/logo.gif">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
 <style>
 :root {
-  --bg: #f6f5fb; --bg2: #ecebf6; --panel: rgba(255,255,255,.78); --panel-solid: #fff;
-  --text: #1c1830; --muted: #5d5878; --faint: #8e89a8; --line: rgba(60,50,110,.12);
-  --accent: #7c3aed; --accent2: #db2777; --accent3: #0891b2; --glow: rgba(124,58,237,.18);
-  --lean: #7c3aed; --assume: #0891b2; --claim: #d97706; --num: #059669; --cited: #64748b; --minor: #db2777;
-  --shadow: 0 1px 2px rgba(20,10,60,.06), 0 8px 30px rgba(20,10,60,.07);
-}
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
-    --bg: #0d0b17; --bg2: #151227; --panel: rgba(28,24,48,.72); --panel-solid: #1a1630;
-    --text: #ece9fb; --muted: #aaa4c8; --faint: #77729a; --line: rgba(190,180,255,.12);
-    --accent: #a78bfa; --accent2: #f472b6; --accent3: #22d3ee; --glow: rgba(167,139,250,.22);
-    --lean: #a78bfa; --assume: #22d3ee; --claim: #fbbf24; --num: #34d399; --cited: #94a3b8; --minor: #f472b6;
-    --shadow: 0 1px 2px rgba(0,0,0,.4), 0 10px 40px rgba(0,0,0,.35);
-  }
-}
-:root[data-theme="dark"] {
   --bg: #0d0b17; --bg2: #151227; --panel: rgba(28,24,48,.72); --panel-solid: #1a1630;
   --text: #ece9fb; --muted: #aaa4c8; --faint: #77729a; --line: rgba(190,180,255,.12);
   --accent: #a78bfa; --accent2: #f472b6; --accent3: #22d3ee; --glow: rgba(167,139,250,.22);
-  --lean: #a78bfa; --assume: #22d3ee; --claim: #fbbf24; --num: #34d399; --cited: #94a3b8; --minor: #f472b6;
+  --lean: #a78bfa; --assume: #22d3ee; --claim: #fbbf24; --num: #34d399; --minor: #f472b6;
   --shadow: 0 1px 2px rgba(0,0,0,.4), 0 10px 40px rgba(0,0,0,.35);
+  color-scheme: dark;
 }
 * { box-sizing: border-box; }
 html { -webkit-text-size-adjust: 100%; }
@@ -78,6 +69,12 @@ select, input[type=date] { padding: 10px 12px; border-radius: 12px; border: 1px 
 .chip[aria-pressed="true"] .n { color: rgba(255,255,255,.8); }
 .chip .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--c, var(--accent)); }
 .chip[aria-pressed="true"] .dot { background: #fff; }
+.legendbox { background: var(--panel); border: 1px solid var(--line); border-radius: 16px; padding: 14px 18px 16px; margin: 0 0 18px; box-shadow: var(--shadow); }
+.legendbox h2 { margin: 0 0 8px; font-size: 12px; text-transform: uppercase; letter-spacing: .06em; color: var(--faint); font-weight: 600; }
+.legend { margin: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 6px 18px; font-size: 12.5px; color: var(--muted); }
+.legend div { display: flex; flex-direction: column; gap: 2px; }
+.legend dt { flex: none; font-weight: 700; color: var(--c); }
+.legend dd { margin: 0; }
 .meta { color: var(--faint); font-size: 13px; margin-top: 8px; display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
 .linkish { background: none; border: 0; color: var(--accent); cursor: pointer; font: inherit; padding: 0; }
 
@@ -136,14 +133,23 @@ col.c-date { width: 104px; } col.c-cat { width: 150px; } col.c-st { width: 170px
       <h1>Low hAngIng Fruits</h1>
       <p>New bounds and faster algorithms for open problems in algorithms and complexity. Search, filter and sort every result of the repository.</p>
       <div class="links">
-        <a class="btn" href="https://github.com/ssenge/LAIF">Repository</a>
-        <a class="btn" href="https://github.com/ssenge/LAIF#readme">README and references</a>
-        <button class="btn" id="theme" type="button" aria-label="Toggle colour theme">Theme</button>
+        <a class="btn" href="https://github.com/ssenge/LAIF"><svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>Details in the GitHub Repository</a>
       </div>
     </div>
   </header>
 
   <section class="stats" id="stats" aria-label="Summary"></section>
+
+  <section class="legendbox" aria-label="Status tags">
+    <h2>What the tags mean</h2>
+    <dl class="legend">
+      <div><dt style="--c:var(--lean)">Lean</dt><dd>The theorem is machine-checked in Lean 4 with Mathlib, using only the standard axioms.</dd></div>
+      <div><dt style="--c:var(--assume)">Assuming</dt><dd>The Lean statement takes a classical, widely accepted theorem as an explicit hypothesis, named in the folder.</dd></div>
+      <div><dt style="--c:var(--claim)">Claim</dt><dd>A written proof in the folder that is not fully formalized.</dd></div>
+      <div><dt style="--c:var(--num)">Numerical</dt><dd>Backed by computation: simulations, numerical certificates or sampled instances, with their range stated in the folder.</dd></div>
+      <div><dt style="--c:var(--accent)">Main / Minor</dt><dd>Main results are the headline results of a folder, minor results are smaller findings. A row can carry several tags, for example a Lean lower bound with a written upper bound.</dd></div>
+    </dl>
+  </section>
 
   <section class="controls" aria-label="Filters">
     <div class="row1">
@@ -158,6 +164,7 @@ col.c-date { width: 104px; } col.c-cat { width: 150px; } col.c-st { width: 170px
     <div class="meta"><span id="count"></span><button class="linkish" id="reset" type="button">Reset filters</button></div>
   </section>
 
+  <noscript><p>This page needs JavaScript. All results are listed in the <a href="https://github.com/ssenge/LAIF#results">repository README</a>.</p></noscript>
   <table aria-label="Results">
     <colgroup><col class="c-date"><col class="c-cat"><col><col><col><col class="c-st"><col class="c-dir"></colgroup>
     <thead><tr>
@@ -172,7 +179,7 @@ col.c-date { width: 104px; } col.c-cat { width: 150px; } col.c-st { width: 170px
     <tbody id="rows"><tr><td colspan="7"><div class="skel"></div><div class="skel"></div><div class="skel"></div></td></tr></tbody>
   </table>
 
-  <footer>Data is read live from the repository README. "Lean": machine-checked in Lean 4 with Mathlib, standard axioms only. "Assuming": a classical theorem taken as an explicit hypothesis. "Claim": a written proof that is not fully formalized. Copyright 2026 Sebastian Senge. All rights reserved.</footer>
+  <footer>Data is read live from the repository README. Copyright 2026 Sebastian Senge. All rights reserved.</footer>
 </div>
 <div id="tip" role="tooltip"></div>
 
@@ -185,7 +192,6 @@ const TAGS = [
   ["Assuming", /\bassum/i, "var(--assume)"],
   ["Claim", /\bClaim\b|on paper/i, "var(--claim)"],
   ["Numerical", /numeric|simulat|certificate|sampled/i, "var(--num)"],
-  ["Cited", /\bcited\b/i, "var(--cited)"],
 ];
 const $ = s => document.querySelector(s);
 const esc = s => s.replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
@@ -350,13 +356,6 @@ document.addEventListener("mouseover", e => {
   const b = r.getBoundingClientRect();
   tip.style.left = Math.min(b.left, innerWidth - 440) + "px"; tip.style.top = (b.bottom + 6) + "px"; tip.style.opacity = 1;
 });
-const root = document.documentElement;
-try { const th = localStorage.getItem("laif-theme"); if (th) root.dataset.theme = th; } catch (e) {}
-$("#theme").onclick = () => {
-  const dark = root.dataset.theme ? root.dataset.theme === "dark" : matchMedia("(prefers-color-scheme: dark)").matches;
-  root.dataset.theme = dark ? "light" : "dark";
-  try { localStorage.setItem("laif-theme", root.dataset.theme); } catch (e) {}
-};
 
 initState();
 fetch(RAW, { cache: "no-cache" }).then(r => { if (!r.ok) throw new Error(r.status); return r.text(); })
