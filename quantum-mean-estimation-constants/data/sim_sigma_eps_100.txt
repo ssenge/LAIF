@@ -1,0 +1,4 @@
+two-point: var 1.000, fail 0.0000, max err/eps 0.272, calls max 1535.1/eps mean 1255.1/eps (design bound 4643.5/eps with table cA)
+spike just above b: var 1.000, fail 0.0000, max err/eps 0.626, calls max 1673.7/eps mean 1433.8/eps (design bound 4643.5/eps with table cA)
+spike at 3T: var 1.000, fail 0.0000, max err/eps 0.358, calls max 1284.2/eps mean 1156.6/eps (design bound 4643.5/eps with table cA)
+gaussian grid: var 1.000, fail 0.0000, max err/eps 0.340, calls max 1842.2/eps mean 1438.9/eps (design bound 4643.5/eps with table cA)
