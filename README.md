@@ -156,6 +156,7 @@ All results below can be searched, filtered and sorted in the [results explorer]
 | Partition function Z(∞) of an energy function H: χ → {0, …, n} to relative error ε from reflections about thermal qsamples, q = log(\|χ\|/Z(∞)); a lower bound growing with \|χ\| asked for in [140] | Ω(√q/ε) reflections and qsamples for algorithms built from reflections, qsamples and energy-controlled unitaries (k + 2T ≥ n/(35ε) with q ≈ n²/2); Ω(1/ε) is known for a different class of algorithms [140]; the square root of the classical Ω(q/ε²) implied by [141], by the hybrid argument on the instances of [141] | 2026-11-12 | [partition-function-lower-bound](laif/partition-function-lower-bound/) |
 | Matching a known pattern of length m with k wildcards in a text of length n, with queries to the text; Õ(√(nk)) implied by deciding matching with k mismatches [145] | O(√((k + 1) m (1 + (n − m)/ℓ))) for the longest run ℓ of fixed letters, with no logarithmic factors: Θ(√n) for every constant k, and O(√(n (k + 1))) when a run of fixed letters has length Ω(m) | 2026-11-12 | [known-pattern-wildcards-queries](laif/known-pattern-wildcards-queries/) |
 | Scalar parameter of a state family ρ_λ on ℂ^d estimated from copies privatized by an ε-locally private quantum channel; O(d/(αε²)) copies for qudits, with the dependence on d not known to be tight [146] | Private quantum Fisher information between (e^ε−1)²/(e^ε+1)²·‖∂ρ‖₁² and (e^ε−1)²/(2(e^ε+1))·‖∂ρ‖₁² in every dimension, attained by a two-outcome measurement with randomized response: Θ(1/(αε²‖∂ρ‖₁²)) copies for ε ≤ 1 with no factor d; for pure families within a factor 2.62 of the quantum Fisher information for every ε | 2026-11-12 | [private-parameter-estimation](laif/private-parameter-estimation/) |
+| Testing whether a distribution p on [n] is monotone or ε-far in total variation, with quantum access to the code that samples p; classically Θ(√n/ε²) samples for ε > n^{−1/4}(log n)^{1/2} [150] | Õ(n^{1/3}/ε^{4/3} + log^{3/2}(n)/ε⁵) uses of the code, from a hypothesis that dominates every monotone p and the uniformity tester of [151]; Ω(n^{1/3}) for constant ε, so the dependence on n is tight | 2026-11-12 | [quantum-monotonicity-testing](laif/quantum-monotonicity-testing/) |
 
 ## Former repositories
 
@@ -308,6 +309,8 @@ The folders `exact-planar-bipartite-matching`, `exact-shortest-paths-and-flows-o
 147. S. Caroppo, J. Vihrovs, D. Zajakina, A. Zajakins. Quantum time-space tradeoffs for exponential dynamic programming. arXiv:2604.02233.
 148. X. Bai, Y. Shang, H. Lin. Quantum divide-and-conquer for the traveling salesman problem: surpassing the 2^n barrier. arXiv:2606.07322.
 149. N. C. Rubin, D. W. Berry, F. D. Malone, A. F. White, T. Khattar, A. E. DePrince III, S. Sicolo, M. Kühn, M. Kaicher, J. Lee, R. Babbush. Fault-tolerant quantum simulation of materials using Bloch orbitals. PRX Quantum 4, 040303 (2023). arXiv:2302.05531.
+150. J. Acharya, C. Daskalakis, G. Kamath. Optimal testing for properties of distributions. NeurIPS 2015. arXiv:1507.05952.
+151. C. L. Canonne, R. Kothari, R. O'Donnell. Uniformity testing when you have the source code. arXiv:2411.04972.
 
 ## Copyright
 

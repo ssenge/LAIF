@@ -1,0 +1,6 @@
+partition: max (sum s - 1)(m - 1) = 1.807 <= 4; domination, Z and chi^2 bounds hold
+kernel: F_q(q) uniform on [6n], TV >= TV(p, q)/3, sup norm <= max ratio/(6n), chi^2 <= chi^2(p||q)/2
+upper estimate: |w~ - w| <= 4 pi sqrt(w~)/M + 6 pi^2/M^2 on 20000 cases
+random half sets: TV to monotone >= matching bound (LP, n <= 120); n = 4000: matching bound < 0.4 in 0/1000
+bucket-level LP equals the full LP for bucket-constant q
+check: all asserts passed
