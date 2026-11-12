@@ -12,6 +12,7 @@ Written 11 Nov 2026.
 | Thm 4 | Same, n × n text, m × m pattern periodic along a lattice that covers side ⌊m/2⌋ (condition (L) of Section 7) | O(nm), and O(n √m log⁴ n) by Theorem 1; O(n log² n) for constant patterns, by the largest empty square of [largest-empty-rectangle-queries](../largest-empty-rectangle-queries/) | O(m² + n log² m), so O(n log² n) for m ≤ √n; Ω(n) by Theorem 2 | Claim; checked by script; lemmas in Lean |
 | Thm 5 | Same, n × n text, m × m pattern with condition (★) of Section 6 for some b ≤ (m + 1)/2 | O(nm) [4]; O(m² + n log³ m + nm/b) by Theorem 3 | O(m² + nm/b), so O(m² + n) for b ≥ m/8; O(nm/b) and O(n) if the pattern is known in advance | Claim; checked by script |
 | Prop 6 | Same, any sizes, every pattern that does not use some letter of Σ | | Ω(√(n₁n₂)), so Theorem 5 is optimal for every known pattern that satisfies (★) with b ≥ m/8 and does not use some letter; such patterns exist for |Σ| ≥ 3 | Claim |
+| Thm 7 | Same, any sizes, pattern known in advance | O(√(n₁n₂m₁m₂)) by search with an inner search for a mismatch [4]; O(n √m log⁴ n) by Theorem 1 for n × n and m × m | O(√(n₁n₂ min(m₁, m₂))), so O(n √m) for n × n and m × m, and Θ(√(n₁n₂)) for patterns with a constant number of rows or columns; O(m₁m₂ + √(n₁n₂ min(m₁, m₂))) if the pattern is given by queries | Claim; checked by script; Lemmas 1 and 2 of [known-pattern-matching-queries](../known-pattern-matching-queries/) in Lean |
 
 In one dimension the problem takes Õ(√n + √m) queries [1], by deterministic sampling [2]. In two dimensions, quantum algorithms that are fast on average are given in [3]; to our knowledge, no worst-case bound below O(nm) was known for an n × n text and an m × m pattern. Classically, Θ(n²) queries are needed in the worst case, by the same family as in Theorem 2.
 
@@ -133,6 +134,22 @@ Theorem 5 needs neither the sample nor the tournament of Theorem 3, and it appli
 
 *Proof.* Fill T with #, and place a ⌊(n₁ + 1)/(m₁ + 1)⌋ × ⌊(n₂ + 1)/(m₂ + 1)⌋ grid of m₁ × m₂ blocks, separated by single rows and columns of #. Each cell of a block holds either the letter of P at that cell or #. An occurrence contains no #, so it lies inside one block and equals it. So P occurs iff some block has no #, the OR of a ≥ n₁n₂/(4m₁m₂) ANDs of m₁m₂ bits each, which needs Ω(√(a m₁m₂)) = Ω(√(n₁n₂)) queries [6]. ∎
 
+## 9. Rows as letters
+
+The rows of a two-dimensional pattern can be read as letters of a one-dimensional pattern, as in [9, 10]. With the one-dimensional algorithm of [known-pattern-matching-queries](../known-pattern-matching-queries/), whose block decision only needs searches over cells, this gives a bound for every known pattern.
+
+**Theorem 7.** For every known m₁ × m₂ pattern P and every n₁ × n₂ text, two-dimensional pattern matching takes O(√(n₁n₂ min(m₁, m₂))) quantum queries. If P is given by queries, O(m₁m₂ + √(n₁n₂ min(m₁, m₂))) queries suffice.
+
+*Proof.* By symmetry let the bound be O(√(n₁n₂m₂)). Fix a column offset c ∈ [0, n₂ − m₂]. The rows x_r = T[r][c, c + m₂) of the strip form a string x of length n₁ over the alphabet Σ^{m₂}, and the rows of P form a string y of length m₁. P occurs at (r, c) iff y occurs in x at r. Theorem 1 of [known-pattern-matching-queries](../known-pattern-matching-queries/) splits the starts r into K ≤ 7(n₁ − m₁)/m₁ + 1 ≤ 8n₁/m₁ blocks of w = max(1, ⌊m₁/4⌋) starts and decides each block by Lemmas 1 and 2 there, which hold over every alphabet. Its steps, read on cells:
+
+1. The identification of the common part M, which has L = m₁ − w + 1 rows, among at most w windows. Encode a cell by the bits [T[z] = a] for the letters a of P. Then the windows are at most w strings of N′ ≥ L ≥ w bits, and the identification takes O(√w) queries [8, Proposition 2].
+2. The check of the identified window, and the verification of a start: searches for a mismatch over at most m₁m₂ cells, with O(√(m₁m₂)) queries [4].
+3. The breaks: λ is the largest row j ∈ [s − m₁, s) with x_j ≠ x_{j+q}, that is, the largest first coordinate among the pairs (j, k) ∈ [s − m₁, s) × [0, m₂) with T[j][c + k] ≠ T[j + q][c + k]. Maximum finding over these m₁m₂ pairs, with tests of two queries, takes O(√(m₁m₂)) queries [5]. The same holds for ρ.
+
+So a block of a strip is decided with O(√(m₁m₂)) queries and bounded error. Search with a bounded-error test [7] over the at most (n₂ − m₂ + 1) · 8n₁/m₁ pairs of a strip and a block takes O(√(n₁n₂/m₁)) evaluations, so O(√(n₁n₂/m₁) · √(m₁m₂)) = O(√(n₁n₂m₂)) queries. Reading an unknown pattern costs m₁m₂ more. ∎
+
+For n × n texts and m × m patterns this is O(n √m) for every known pattern, against Ω(n) by Theorem 2. For patterns with a constant number of rows or columns it is Θ(√(n₁n₂)), again by Theorem 2.
+
 ## Lean
 
 `lean/PatternMatch/Blocks.lean`, built against Mathlib, standard axioms only (`lean/axioms.txt`):
@@ -148,7 +165,7 @@ Theorem 5 needs neither the sample nor the tournament of Theorem 3, and it appli
 - Lemma 7: a subgroup that covers side s is generated by its elements of max-norm at most s (`closure_small`), a period of P of max-norm at most m − s is a period of Q (`period_lift`), and so the periods of Q are generated by the periods of P of max-norm at most s when 2s ≤ m (`periodGroup_eq`).
 - Lemma 8: occurrences are valid (`occ_valid`), a valid start is an occurrence iff its phase matches Q (`occ_iff_phase`), two phases differ by a period of Q (`phase_unique`), and the sample is passed exactly by the class of the phase (`sample_pass`).
 
-**Not formalized:** search [4], minimum finding [5], search with bounded-error inputs [7], the lower bound for composed functions [6], the oracle identification [8], the reductions in the proofs of Theorem 2 and Proposition 6, the front learner (Lemma 3 of [largest-empty-rectangle-queries](../largest-empty-rectangle-queries/)), the random choice of values in Lemma 2, the step of Lemma 4 from the run to the set X, the sufficient condition for (L) by a basis, the use of the window test for the defects in Theorem 4 (the window test itself is in the Lean files of [largest-empty-rectangle-queries](../largest-empty-rectangle-queries/)), and the counting of queries and errors in Theorems 1, 3, 4 and 5.
+**Not formalized:** search [4], minimum finding [5], search with bounded-error inputs [7], the lower bound for composed functions [6], the oracle identification [8], the maximum finding over pairs in Theorem 7, the reductions in the proofs of Theorem 2 and Proposition 6, the front learner (Lemma 3 of [largest-empty-rectangle-queries](../largest-empty-rectangle-queries/)), the random choice of values in Lemma 2, the step of Lemma 4 from the run to the set X, the sufficient condition for (L) by a basis, the use of the window test for the defects in Theorem 4 (the window test itself is in the Lean files of [largest-empty-rectangle-queries](../largest-empty-rectangle-queries/)), and the counting of queries and errors in Theorems 1, 3, 4, 5 and 7. The step of Theorem 7 from rows to letters is checked by script only; Lemmas 1 and 2 of [known-pattern-matching-queries](../known-pattern-matching-queries/), which it uses, are in Lean for every alphabet.
 
 ## Scripts
 
@@ -159,6 +176,8 @@ Theorem 5 needs neither the sample nor the tournament of Theorem 3, and it appli
 `sim/check_blocks2d.py` checks Section 6 against brute force: condition (★), the sample of Lemma 5 and its size, that every occurrence of a block is on the front of its passing starts (learned by the front learner of `largest-empty-rectangle-queries/sim/check_window.py`, with its cost per depth), and that the tournament and the final check return exactly the occurrences of the block. It covers 400 random and sparse patterns with random texts and planted copies, and 300 texts with passing starts planted on chains and antichains of a block, so that fronts reach the largest possible length b′.
 
 `sim/check_identify2d.py` checks the block decision of Theorem 5 against brute force: that the text on B + C matches at most one window, and that verifying that window's start decides the block. It covers random patterns of up to 10 × 10 cells over alphabets of size 2 to 4 that satisfy (★) for every b₁ ≤ (m₁ + 1)/2 and b₂ ≤ (m₂ + 1)/2, the largest such b for most of them, and random texts with planted copies, some with one cell changed: 10 000 patterns, 6850 of them with b₁b₂ ≥ 4, and about 166 000 blocks.
+
+`sim/check_rows.py` checks Theorem 7 against brute force: for every column offset it runs the block decision of the one-dimensional algorithm on the string of rows and compares it with the occurrences of P in each block. It covers 20 000 random patterns of up to 16 × 4 cells over alphabets of size 2 and 3, half of them with periodic rows, some with one row changed, and texts with long periodic runs of rows and planted copies, about 930 000 blocks of all four kinds (no window, one window, a break, the periodic case).
 
 ## Use of AI
 
@@ -174,3 +193,5 @@ Claude Opus 5.5 (Anthropic) was used throughout this research: to explore approa
 6. B. W. Reichardt. Reflections for quantum query algorithms. SODA 2011. arXiv:1005.1601.
 7. P. Høyer, M. Mosca, R. de Wolf. Quantum search on bounded-error inputs. ICALP 2003. arXiv:quant-ph/0304052.
 8. R. Kothari. An optimal quantum algorithm for the oracle identification problem. STACS 2014. arXiv:1311.7685.
+9. R. S. Bird. Two dimensional pattern matching. Information Processing Letters 6, 1977.
+10. T. P. Baker. A technique for extending rapid exact-match string matching to arrays of more than one dimension. SIAM J. Comput. 7, 1978.
