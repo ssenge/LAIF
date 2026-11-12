@@ -145,6 +145,7 @@
 | Retained information of measurements that mix K random orthonormal bases of a d-level system (worst pure state and direction); [86] proves a d-free fraction for K ≥ 5, positivity almost surely when K(d − 1) > 4d, and asks whether three or four bases suffice | Three do not: for d = 3 and every d ≥ 5, every choice of three bases loses all information at some state, since the probability map would immerse the complex projective space in too few dimensions; in d = 4 random triples do so with positive probability (exact computer-assisted proof). Four random bases keep a positive fraction almost surely in every dimension d ≥ 2 | 2026-11-11 | [random-basis-measurements](laif/random-basis-measurements/) |
 | Matrix product verification AB = C with quantum queries | Ω(n^{5/3}), so Θ(n^{5/3}). Previous proof by Kintali. Our contribution: a Lean proof over F₂ and a short written proof | 2026-11-04 | [matrix-product-verification-queries](laif/matrix-product-verification-queries/) |
 | Non-adaptive simulation of adaptive entanglement-assisted messages (d values) within total-variation error ε; [89] proves M_ε ≤ 1 + ln(1/ε)/ln(d/(d − 1)) for every protocol and asks whether this scaling is tight | Tight up to a constant factor: Θ(d log(1/ε)) in the worst case for every d ≥ 3, with Bob having no input. The exclusion task of [89] works with three uniformly random bases in dimension 80M instead of M² + 1, which makes the classical error e^{−O(M)}; a label on Alice's input supplies the factor d | 2026-11-11 | [adaptive-simulation-cost](laif/adaptive-simulation-cost/) |
+| Spectral gap γ of a reversible random walk or doubly stochastic walk on N states, from a block-encoding, to relative error ε | Θ̃(√N/(ε√γ)) uses for every ε: O(√N log N log(1/δ)/(ε√L)) for thresholding at 1 − L by an even filter of degree O(log(1/α)/(ε√L)), answering the question of [138] for a filter with the 1/√L scaling at every relative error, against O(√N log N/(εL)) for every ε and O(√(N/L) log N) above a critical relative error [138]; lower bound √N/(12√2 ε√L), already for symmetric doubly stochastic walks | 2026-11-12 | [spectral-gap-estimation](laif/spectral-gap-estimation/) |
 
 ## Former repositories
 
@@ -285,6 +286,7 @@ The folders `exact-planar-bipartite-matching`, `exact-shortest-paths-and-flows-o
 135. F. A. Mele. Advances in quantum learning theory with bosonic systems. Il Nuovo Cimento C 49, 137 (2026). arXiv:2605.08082.
 136. H. Thomas, U. Chabaud, P.-E. Emeriau. Shedding light on classical shadows: learning photonic quantum states. arXiv:2510.07240.
 137. S. Chakrabarti, R. Krishnakumar, G. Mazzola, N. Stamatopoulos, S. Woerner, W. J. Zeng. A threshold for quantum advantage in derivative pricing. Quantum 5, 463 (2021). arXiv:2012.03819.
+138. A. Connolly, S. Herbert, J. Sorci. Quasi-optimal quantum Markov chain spectral gap estimation. arXiv:2601.07601.
 
 ## Copyright
 
