@@ -1,10 +1,10 @@
-"""Checks for the lower-bound instances (energy x = number of excited levels, Gibbs weight c_x e^{beta x}
-in the convention of the classical construction; the Hamiltonian is E = n - x).
+"""Checks for the lower-bound instances (energy x = number of excited levels, thermal weight c_x e^{beta x}
+in the convention of the classical construction; the energy is E = n - x).
 Base counts: coefficients of g(t) = prod_{k<n} (e^k + t); alternates c^±_x = e^{±nu x} c_x, nu = 10 eps / n.
 Asserts, in log space:
   (1) ||sqrt(mu^±_beta) - sqrt(mu_beta)|| <= nu for beta on a grid in [0, 4n] and at beta = infinity;
   (2) |log Q^±(inf) - log Q(inf)| > 2.02 eps, Q(inf) = c_n / Z(0) (ground-state fraction);
-  (3) q = log(Z(0)/c_n) lies in [n(n-1)/2, n(n-1)/2 + 2];
+  (3) q = log(Z(0)/c_n) lies in [n(n-1)/2, n(n-1)/2 + 2] for the base and both tilted count vectors;
   (4) the integer realization (counts scaled by K = ceil(10 n / eps), rounded, totals equalized)
       moves each qsample by at most 0.07 nu and log Q by at most 0.07 nu;
   (5) ||R_a - R_b|| <= 2 ||a - b|| for reflections about unit vectors a, b (random tests)."""
@@ -39,7 +39,7 @@ def logQinf(lc):
 
 
 def realize(lc, lZ0, K):
-    """integer counts round(K * c_x * Z0 / Z), with the largest count adjusted so that all totals equal K * Z0.
+    """integer counts round(K * c_x * Z0 / Z), with the largest count adjusted so that all totals equal N = ceil(K * Z0).
     Returns the log of the relative perturbation bound max_x |c'_x / c_x - 1| (computed exactly for the small
     counts; the large counts change by at most 1/2 + n, relative to at least K e^{-1})."""
     l = lc - logsumexp(lc) + lZ0 + np.log(K)          # log of K * normalized count
@@ -66,6 +66,8 @@ def main():
                 for beta in list(np.linspace(0, 4 * n, 801)) + [np.inf]:
                     d = np.linalg.norm(sqrt_mu(la, beta) - sqrt_mu(lc, beta))
                     dmax = max(dmax, d / nu)
+                qa = logsumexp(la) - la[-1]
+                assert n * (n - 1) / 2 <= qa <= n * (n - 1) / 2 + 2, (n, eps, s, qa)
                 diff = abs(logQinf(la) - logQinf(lc))
                 assert diff > 2.02 * eps, (n, eps, diff / eps)
             assert dmax <= 1 + 1e-9, dmax
