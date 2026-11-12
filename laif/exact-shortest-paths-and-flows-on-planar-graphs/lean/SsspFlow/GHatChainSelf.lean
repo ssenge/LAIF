@@ -76,9 +76,10 @@ theorem chain_step_self {C : N.toRot.dual.CutPath} {Γ : Finset (N.G.Dart × Boo
           (Net.markOffB fun a => decide (S.nodeFlag hN C 0 a ∧ (S.levelNet hN).dsrcTop
             (Net.markLenW r fun a => if S.nodeFlag hN C 0 a then 1 else 0) (Net.markOffB isT) a = 0))
           ((Net.parOf r)^[i] ((S.levelPad hN).ι (.inl v))) = 0) ↔ i = iy) ∧
-      ∃ St : L.Step, ∀ z, z ∈ (List.range St.n).map St.q ↔ ∃ l, iy ≤ l ∧ l < ia ∧ ∃ x,
+      ∃ St : L.Step, (∀ z, z ∈ (List.range St.n).map St.q ↔ ∃ l, iy ≤ l ∧ l < ia ∧ ∃ x,
         S.edgeTok hN ((Net.parOf r)^[l + 1] ((S.levelPad hN).ι (.inl v)))
-          ((Net.parOf r)^[l] ((S.levelPad hN).ι (.inl v))) = some x ∧ z = N.toRot.tokDart x.1 := by
+          ((Net.parOf r)^[l] ((S.levelPad hN).ι (.inl v))) = some x ∧ z = N.toRot.tokDart x.1) ∧
+        (List.range St.n).map St.q = S.chainDarts hN r ((S.levelPad hN).ι (.inl v)) iy (ia - iy) := by
   obtain ⟨ia, iy, hya, hak, hA0, hmin, hA1, hmax, St, hSt⟩ := S.chain_step_flags hN lam M hR hC c hc1
     hcr hlam L hS hz h1 h2 h3 h4 ψ r hr hs hroot hu hv hpu hpv hlt hle
   have hia : Net.ParSteps r ((S.levelPad hN).ι (.inl v)) ia := fun l hl => hs l (by omega)

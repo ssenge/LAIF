@@ -836,7 +836,8 @@ standard axioms (`propext`, `Classical.choice`, `Quot.sound`). There is no `sorr
 - `lean/SsspFlow/OracleChainSeg.lean`: segments of the parent chains of the oracle. Along valid parent steps from a
   node, two nodes of the chain are joined by a walk down the chain whose edges are exactly the parent steps between
   them (`Walk.AllEdges`, `Walk.HasEdge`, `Walk.AllEdges.append`, `Walk.AllEdges.mono`) and whose length is the sum of
-  their lengths (`Net.ExactSpec.chain_seg`).
+  their lengths (`Net.ExactSpec.chain_seg`); lists read off its edges are those of the parent steps, from the top
+  down (`Walk.edgeFlat`).
 - `lean/SsspFlow/OracleChainPos.lean`: positions on the parent chains of the oracle. The rank drops at every valid
   parent step (`Net.ExactSpec.rank_iter`), so a node has one position along the valid steps from a node
   (`Net.ExactSpec.parSteps_inj`). For targets whose valid chains do not meet, one more run with length $1$ on the
@@ -886,7 +887,7 @@ standard axioms (`propext`, `Classical.choice`, `Quot.sound`). There is no `sorr
 - `lean/SsspFlow/GHatChainStepLocal.lean`: the darts of the step, decided at the nodes. Under the conditions of
   `RData.chain_step_out`, there is a step whose darts are exactly the darts of the tokens of the arcs from the nodes of
   the chain of the target to their parents, for the nodes with count $0$, not flagged for $0$, and with distance $0$ in
-  the run down the chains (`RData.chain_step_local`).
+  the run down the chains, in the order of the chain (`RData.chain_step_local`).
 - `lean/SsspFlow/GHatLevelDarts.lean`: the darts of a walk of a level, in order. A kept rim dart of the repaired graph
   is an E_C arc between the copies of its token and of the partner (`RData.att_rimTok`), and each middle edge of the
   network of a level carries the token of its E_C arc (`RData.edgeTok_dart`, `RData.edgeTok_inl_left`,
@@ -906,7 +907,9 @@ standard axioms (`propext`, `Classical.choice`, `Quot.sound`). There is no `sorr
   and at most $\lambda_t$, and let the copies of two of its nodes hold tokens at a copy $p_x^0$ (upper node) and a copy
   $p_y^1$ (lower node). If no dart of a chain edge below the upper node ends at a copy $p_r^0$ and no dart of a chain
   edge between the nodes starts at a copy $p_r^1$, the darts of the tokens of the chain edges between the two nodes
-  are exactly the darts of a step (`RData.chain_step`).
+  are exactly the darts of a step (`RData.chain_step`), in the order of the chain from the upper node down: the darts
+  of a walk are read off its edges (`RData.levelDarts_eq_edgeFlat`), and those of the parent steps of a chain split at
+  any node (`RData.chainDarts`, `RData.chainDarts_add`).
 - `lean/SsspFlow/GHatChainFlags.lean`: the step on a parent chain from flags at the nodes. A piece lies at a copy
   $p_t^\sigma$ when a dart at its vertex lies, in the cut, at the vertex of a corner $p_t^\sigma$ (`RData.CopyPiece`,
   the $\sigma$ part of `RData.cutIdx`). The tail of the dart of a token lies at a copy $p_t^\sigma$ exactly when its

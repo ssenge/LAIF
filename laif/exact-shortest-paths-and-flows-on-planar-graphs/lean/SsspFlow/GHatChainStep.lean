@@ -13,7 +13,10 @@ the chain edges between the two nodes are the darts of a step of the annulus.
 
 * `RData.levelDarts_sub`: a dart of a walk of a level is the dart of the token of one of its edges.
 * `RData.levelDarts_of_hasEdge`: the dart of the token of an edge of a walk is a dart of the walk.
-* `RData.chain_step`: the darts of the chain edges between two such nodes are the darts of a step.
+* `RData.levelDarts_eq_edgeFlat`, `RData.chainDarts`, `RData.chainDarts_add`: the darts of a walk
+  read off its edges; the darts of the parent steps of a chain, from the top down, and their split.
+* `RData.chain_step`: the darts of the chain edges between two such nodes are the darts of a step, in
+  order.
 -/
 
 set_option autoImplicit false
@@ -57,6 +60,32 @@ theorem levelDarts_of_hasEdge {y y' : Fin (n * (n * 21))} {x : S.Tok} (he : S.ed
       simp
     · exact List.mem_append_right _ (levelDarts_of_hasEdge he p h)
 
+/-- The darts of a walk of a level are read off its edges. -/
+theorem levelDarts_eq_edgeFlat : ∀ {a b : Fin (n * (n * 21))} (q : SsspFlow.Walk (S.levelNet hN).G.Adj a b),
+    S.levelDarts hN q = q.edgeFlat fun y y' => ((S.edgeTok hN y y').map fun x => N.toRot.tokDart x.1).toList
+  | _, _, .nil _ => rfl
+  | _, _, .cons _ p => by rw [levelDarts_cons, levelDarts_eq_edgeFlat p]; rfl
+
+/-- The darts of the tokens of the parent steps `j + d - 1, …, j` above `v`, from the top down. -/
+noncomputable def chainDarts (r : Fin (n * (n * 21)) → ℕ∞ × Option (Fin (n * (n * 21))))
+    (v : Fin (n * (n * 21))) (j d : ℕ) : List (N.G.Dart × Bool) :=
+  ((List.range d).reverse.map fun l => ((S.edgeTok hN ((Net.parOf r)^[j + l + 1] v)
+    ((Net.parOf r)^[j + l] v)).map fun x => N.toRot.tokDart x.1).toList).flatten
+
+/-- The darts of `a + b` parent steps from `j` are those of the upper `a` steps, then those of the
+lower `b` steps. -/
+theorem chainDarts_add (r : Fin (n * (n * 21)) → ℕ∞ × Option (Fin (n * (n * 21))))
+    (v : Fin (n * (n * 21))) (j a b : ℕ) :
+    S.chainDarts hN r v j (b + a) = S.chainDarts hN r v (j + b) a ++ S.chainDarts hN r v j b := by
+  unfold chainDarts
+  rw [List.range_add, List.reverse_append, List.map_append, List.flatten_append, List.map_reverse,
+    List.map_map, List.map_reverse]
+  congr 2
+  rw [← List.map_reverse]
+  congr 1
+  funext l
+  simp only [Function.comp_apply, Nat.add_assoc]
+
 /-- **The step on the parent chain of a target.** For positive costs `c` of the darts, equal on the two
 darts of an edge, token lengths that are these costs, and corners of `S` that hold those of a live
 annulus, the others out of its reach: let an output `r` of the oracle on the network of a level meet
@@ -96,18 +125,19 @@ theorem chain_step {C : N.toRot.dual.CutPath} {Γ : Finset (N.G.Dart × Bool)}
     (hF1 : ∀ l, iy ≤ l → l < ia → ∀ x, S.edgeTok hN ((Net.parOf r)^[l + 1] ((S.levelPad hN).ι (.inl v)))
       ((Net.parOf r)^[l] ((S.levelPad hN).ι (.inl v))) = some x →
       ¬ C.atCopy Γ 1 ((N.toRot.dual.double.split Γ).tail (N.toRot.tokDart x.1))) :
-    ∃ St : L.Step, ∀ z, z ∈ (List.range St.n).map St.q ↔ ∃ l, iy ≤ l ∧ l < ia ∧ ∃ x,
+    ∃ St : L.Step, (∀ z, z ∈ (List.range St.n).map St.q ↔ ∃ l, iy ≤ l ∧ l < ia ∧ ∃ x,
       S.edgeTok hN ((Net.parOf r)^[l + 1] ((S.levelPad hN).ι (.inl v)))
-        ((Net.parOf r)^[l] ((S.levelPad hN).ι (.inl v))) = some x ∧ z = N.toRot.tokDart x.1 := by
+        ((Net.parOf r)^[l] ((S.levelPad hN).ι (.inl v))) = some x ∧ z = N.toRot.tokDart x.1) ∧
+      (List.range St.n).map St.q = S.chainDarts hN r ((S.levelPad hN).ι (.inl v)) iy (ia - iy) := by
   have H3 := hr.chain_seg ((S.levelPad hN).ι (.inl v)) hs iy 0 (by omega)
   rw [Nat.zero_add] at H3
   have H2 := hr.chain_seg ((S.levelPad hN).ι (.inl v)) hs (ia - iy) iy (by omega)
   rw [Nat.add_sub_of_le hya] at H2
   have H1 := hr.chain_seg ((S.levelPad hN).ι (.inl v)) hs (k - ia) ia (by omega)
   rw [Nat.add_sub_of_le hak, hroot] at H1
-  obtain ⟨q₃, a₃, -, w₃⟩ := H3
-  obtain ⟨q₂, a₂, e₂, w₂⟩ := H2
-  obtain ⟨q₁, -, -, w₁⟩ := H1
+  obtain ⟨q₃, a₃, -, w₃, -⟩ := H3
+  obtain ⟨q₂, a₂, e₂, w₂, f₂⟩ := H2
+  obtain ⟨q₁, -, -, w₁, -⟩ := H1
   have hW : (q₁.append (q₂.append q₃)).wt (lenTop (S.levelLen hN lam M)) =
       ((∑ l ∈ Finset.range k, S.levelLen hN lam M ((Net.parOf r)^[l + 1] ((S.levelPad hN).ι (.inl v)))
         ((Net.parOf r)^[l] ((S.levelPad hN).ι (.inl v))) : ℕ∞) : ℝ≥0∞) := by
@@ -125,7 +155,7 @@ theorem chain_step {C : N.toRot.dual.CutPath} {Γ : Finset (N.G.Dart × Bool)}
     (fun z hz => by
       obtain ⟨y, y', x, ⟨l, hl1, hl2, rfl, rfl⟩, he, rfl⟩ := S.levelDarts_sub hN q₂ a₂ z hz
       exact hF1 l hl1 hl2 x he)
-  refine ⟨St, fun z => ?_⟩
+  refine ⟨St, fun z => ?_, by rw [hSt, S.levelDarts_eq_edgeFlat, f₂]; rfl⟩
   rw [hSt]
   constructor
   · intro hz

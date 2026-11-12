@@ -800,6 +800,8 @@ Expected output for each: `propext`, `Classical.choice`, `Quot.sound` (or a subs
 #print axioms SsspFlow.Congest.Net.ExactSpec.chain_seg
 #print axioms SsspFlow.RotSystem.RData.levelDarts_sub
 #print axioms SsspFlow.RotSystem.RData.levelDarts_of_hasEdge
+#print axioms SsspFlow.RotSystem.RData.levelDarts_eq_edgeFlat
+#print axioms SsspFlow.RotSystem.RData.chainDarts_add
 #print axioms SsspFlow.RotSystem.RData.chain_step
 #print axioms SsspFlow.RotSystem.RData.atCopy_tokDart_iff
 #print axioms SsspFlow.RotSystem.RData.atCopy_head_tokDart_iff

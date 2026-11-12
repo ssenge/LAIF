@@ -71,9 +71,10 @@ theorem chain_step_out {C : N.toRot.dual.CutPath} {Γ : Finset (N.G.Dart × Bool
           decide ((r₂ ((Net.parOf r)^[m] ((S.levelPad hN).ι (.inl v)))).1 = 0)) = true ↔ m = ia)) ∧
       (∀ i ≤ ia, ((fl ((Net.parOf r)^[i] ((S.levelPad hN).ι (.inl v)))).2.2 = true ∧
         (r₃ ((Net.parOf r)^[i] ((S.levelPad hN).ι (.inl v)))).1 = 0) ↔ i = iy) ∧
-      ∃ St : L.Step, ∀ z, z ∈ (List.range St.n).map St.q ↔ ∃ l, iy ≤ l ∧ l < ia ∧ ∃ x,
+      ∃ St : L.Step, (∀ z, z ∈ (List.range St.n).map St.q ↔ ∃ l, iy ≤ l ∧ l < ia ∧ ∃ x,
         S.edgeTok hN ((Net.parOf r)^[l + 1] ((S.levelPad hN).ι (.inl v)))
-          ((Net.parOf r)^[l] ((S.levelPad hN).ι (.inl v))) = some x ∧ z = N.toRot.tokDart x.1 := by
+          ((Net.parOf r)^[l] ((S.levelPad hN).ι (.inl v))) = some x ∧ z = N.toRot.tokDart x.1) ∧
+        (List.range St.n).map St.q = S.chainDarts hN r ((S.levelPad hN).ι (.inl v)) iy (ia - iy) := by
   have e₂ : (Net.markLenW r fun a => ((fl a).2.1.toNat : ℕ∞)) =
       Net.markLenW r fun a => if S.nodeFlag hN C 0 a then 1 else 0 := by
     congr 1

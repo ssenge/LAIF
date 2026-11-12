@@ -154,9 +154,10 @@ theorem chain_step_flags {C : N.toRot.dual.CutPath} {Γ : Finset (N.G.Dart × Bo
       ((Net.parOf r)^[l] ((S.levelPad hN).ι (.inl v))) : ℕ∞) : ℝ≥0∞) ≤ C.lamD (Nat.cast ∘ c) t) :
     ∃ ia iy : ℕ, iy ≤ ia ∧ ia ≤ k ∧ S.chainFlag hN C r v 0 ia ∧ (∀ l < ia, ¬ S.chainFlag hN C r v 0 l) ∧
       S.chainFlag hN C r v 1 iy ∧ (∀ l, iy < l → l ≤ ia → ¬ S.chainFlag hN C r v 1 l) ∧
-      ∃ St : L.Step, ∀ z, z ∈ (List.range St.n).map St.q ↔ ∃ l, iy ≤ l ∧ l < ia ∧ ∃ x,
+      ∃ St : L.Step, (∀ z, z ∈ (List.range St.n).map St.q ↔ ∃ l, iy ≤ l ∧ l < ia ∧ ∃ x,
         S.edgeTok hN ((Net.parOf r)^[l + 1] ((S.levelPad hN).ι (.inl v)))
-          ((Net.parOf r)^[l] ((S.levelPad hN).ι (.inl v))) = some x ∧ z = N.toRot.tokDart x.1 := by
+          ((Net.parOf r)^[l] ((S.levelPad hN).ι (.inl v))) = some x ∧ z = N.toRot.tokDart x.1) ∧
+        (List.range St.n).map St.q = S.chainDarts hN r ((S.levelPad hN).ι (.inl v)) iy (ia - iy) := by
   classical
   have hCS : C.Γ ⊆ S.Γ := L.sub.trans hS
   have hfin : ∀ l < k, S.levelLen hN lam M ((Net.parOf r)^[l + 1] ((S.levelPad hN).ι (.inl v)))

@@ -31,7 +31,8 @@ open Classical in
 /-- **The darts of the step, decided at the nodes.** Under the conditions of `RData.chain_step_out`,
 there is a step whose darts are exactly the darts of the tokens of the arcs from the nodes of the
 chain of `v` to their parents, for the nodes with count `0`, not flagged for `0`, and with distance
-`0` in the run down the chains. -/
+`0` in the run down the chains. In order, they are the darts of the parent steps from `ia - 1` down
+to `iy`. -/
 theorem chain_step_local {C : N.toRot.dual.CutPath} {Γ : Finset (N.G.Dart × Bool)}
     (hR : N.toRot.dual.Planar) (hC : N.toRot.dual.Connected) (c : N.G.Dart → ℕ) (hc1 : ∀ d, 1 ≤ c d)
     (hcr : ∀ d, c (N.toRot.rev d) = c d) (hlam : ∀ x, lam x = c x.1.1)
@@ -62,13 +63,14 @@ theorem chain_step_local {C : N.toRot.dual.CutPath} {Γ : Finset (N.G.Dart × Bo
     (hT : ∀ t t' i i', isT t = true → isT t' = true → Net.ParSteps r t i → Net.ParSteps r t' i' →
       (Net.parOf r)^[i] t = (Net.parOf r)^[i'] t' → t = t')
     (hvT : isT ((S.levelPad hN).ι (.inl v)) = true) :
-    ∃ St : L.Step, ∀ z, z ∈ (List.range St.n).map St.q ↔ ∃ l,
+    ∃ ia iy : ℕ, iy ≤ ia ∧ ia ≤ k ∧ ∃ St : L.Step, (∀ z, z ∈ (List.range St.n).map St.q ↔ ∃ l,
       Net.ParSteps r ((S.levelPad hN).ι (.inl v)) (l + 1) ∧
       (r₂ ((Net.parOf r)^[l] ((S.levelPad hN).ι (.inl v)))).1 = 0 ∧
       (fl ((Net.parOf r)^[l] ((S.levelPad hN).ι (.inl v)))).2.1 = false ∧
       (r₃ ((Net.parOf r)^[l] ((S.levelPad hN).ι (.inl v)))).1 = 0 ∧ ∃ x,
         S.edgeTok hN ((Net.parOf r)^[l + 1] ((S.levelPad hN).ι (.inl v)))
-          ((Net.parOf r)^[l] ((S.levelPad hN).ι (.inl v))) = some x ∧ z = N.toRot.tokDart x.1 := by
+          ((Net.parOf r)^[l] ((S.levelPad hN).ι (.inl v))) = some x ∧ z = N.toRot.tokDart x.1) ∧
+      (List.range St.n).map St.q = S.chainDarts hN r ((S.levelPad hN).ι (.inl v)) iy (ia - iy) := by
   have e₂ : (Net.markLenW r fun a => ((fl a).2.1.toNat : ℕ∞)) =
       Net.markLenW r fun a => if S.nodeFlag hN C 0 a then 1 else 0 := by
     congr 1
@@ -133,7 +135,7 @@ theorem chain_step_local {C : N.toRot.dual.CutPath} {Γ : Finset (N.G.Dart × Bo
       exact h1' iy (by omega) hya hA1'
     · rintro ⟨h1l, h2l⟩
       exact ⟨_, l, ia, hvT, hia, h2l, hA0', hmin', fun m hm1 hm2 => hmax' m (by omega) hm2, rfl⟩
-  refine ⟨St, fun z => (hSt z).trans ⟨?_, ?_⟩⟩
+  refine ⟨ia, iy, hya, hak, St, fun z => (hSt.1 z).trans ⟨?_, ?_⟩, hSt.2⟩
   · rintro ⟨l, h1l, h2l, x, he, rfl⟩
     have hl1 : Net.ParSteps r ((S.levelPad hN).ι (.inl v)) (l + 1) := fun m hm => hs m (by omega)
     obtain ⟨c1, c2, c3⟩ := (key l fun m hm => hs m (by omega)).2 ⟨h1l, h2l⟩

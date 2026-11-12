@@ -795,6 +795,8 @@
 'SsspFlow.Congest.Net.ExactSpec.chain_seg' depends on axioms: [propext, Classical.choice, Quot.sound]
 'SsspFlow.RotSystem.RData.levelDarts_sub' depends on axioms: [propext, Classical.choice, Quot.sound]
 'SsspFlow.RotSystem.RData.levelDarts_of_hasEdge' depends on axioms: [propext, Classical.choice, Quot.sound]
+'SsspFlow.RotSystem.RData.levelDarts_eq_edgeFlat' depends on axioms: [propext, Classical.choice, Quot.sound]
+'SsspFlow.RotSystem.RData.chainDarts_add' depends on axioms: [propext, Classical.choice, Quot.sound]
 'SsspFlow.RotSystem.RData.chain_step' depends on axioms: [propext, Classical.choice, Quot.sound]
 'SsspFlow.RotSystem.RData.atCopy_tokDart_iff' depends on axioms: [propext, Classical.choice, Quot.sound]
 'SsspFlow.RotSystem.RData.atCopy_head_tokDart_iff' depends on axioms: [propext, Classical.choice, Quot.sound]
