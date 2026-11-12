@@ -50,7 +50,7 @@ For channels with a noise margin ξ this is O(poly(m, z, y, E, 1/ξ)(1 + 1/n̄_i
 
 Many channels without a noise margin, such as pure loss, quantum-limited amplifiers and phase-conjugating channels, have a non-degenerate matrix A = Ω − XΩXᵀ. For them the distance has the square-root form of the unitary case. Write Z = 1 + z² and, for a > 0, K = Z/a.
 
-**Theorem 3 (square-root continuity).** Let Φ_i = Φ_{X_i, Y_i, d_i}, i = 1, 2, with ‖X_i‖ ≤ z, ‖Y_i‖ ≤ y and smallest singular value σ_min(Ω − X_iΩX_iᵀ) ≥ a > 0. Then
+**Theorem 3 (square-root continuity).** Let Φ_i = Φ_{X_i, Y_i, d_i}, i = 1, 2, with ‖X_i‖ ≤ z, ‖Y_i‖ ≤ y and smallest singular value σ_min(Ω − X_iΩX_iᵀ) ≥ a > 0. In the last term, z and y only need to bound ‖X_2‖ and ‖Y_2‖. Then
 
 d_E(Φ_1, Φ_2) ≤ 382 Z² K^{5/2} (m(E + my/(2a) + 1)‖X_1 − X_2‖)^{1/2} + 0.7 m y a^{−2} (18 y K^{7/2} ‖X_1 − X_2‖ + ‖Y_1 − Y_2‖) + |d_1 − d_2| √(2z²E + z²m + my + 1).
 
