@@ -1,0 +1,16 @@
+t = 1: all subspaces and cosets checked, maximum equals the bound for every D
+t = 2: all subspaces and cosets checked, maximum equals the bound for every D
+t = 3: all subspaces and cosets checked, maximum equals the bound for every D
+t = 4: 3000 random cosets within the bound
+t = 5: 3000 random cosets within the bound
+t = 6: 3000 random cosets within the bound
+t = 7: 3000 random cosets within the bound
+t = 8: 3000 random cosets within the bound
+n = 1: t >= 2 (previous 2, upper 2)
+n = 2: t >= 3 (previous 3, upper 4)
+n = 3: t >= 5 (previous 4, upper 6)
+n = 5: t >= 8 (previous 7, upper 10)
+n = 10: t >= 15 (previous 13, upper 20)
+n = 100: t >= 142 (previous 127, upper 200)
+n = 1000: t >= 1416 (previous 1262, upper 2000)
+Z-free checks: ok
