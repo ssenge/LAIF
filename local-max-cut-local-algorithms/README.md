@@ -19,7 +19,7 @@ For 3-regular graphs of large girth, [1] computes the value of QAOA at depth 1 a
 
 The entries are expected fractions of satisfied vertices. Previous best bound: for d = 3, 0.819292 by QAOA at depth 1 and below 0.8 for the one-round flip algorithms of [1]. For d ≥ 4, to our knowledge, no value is stated before. The QAOA values for d ≥ 4 are computed here, exactly on the d-regular tree and maximized over the two angles. The classical values hold on every d-regular graph of girth at least 5.
 
-So at depth 1 the classical rule satisfies more vertices than QAOA at every degree from 3 to 8. The difference is 0.002 at d = 3, between 0.011 and 0.028 at the odd degrees 5 and 7, and between 0.029 and 0.048 at the even degrees 4, 6 and 8.
+So at depth 1 the classical rule satisfies more vertices than QAOA at every degree from 3 to 8. The difference is 0.002 at d = 3, between 0.011 and 0.028 at the odd degrees 5 and 7, and between 0.029 and 0.048 at the even degrees 4, 6 and 8. This differs from the trend expected in [1], where the advantage of the QAOA grows with the degree.
 
 The rule has radius 1: each vertex reads only its own seed and the seeds of its neighbours. At depth 1, the output bit of QAOA for this objective depends on the neighbourhood of radius 2, since each phase term covers a closed neighbourhood. So the classical rule uses the smaller light cone and still satisfies more vertices.
 
