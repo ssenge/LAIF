@@ -1,5 +1,7 @@
 import PlanarMatching.LoopErase
 import PlanarMatching.Requests
+import Mathlib.Algebra.BigOperators.Group.Finset.Piecewise
+import Mathlib.Algebra.Order.BigOperators.Group.Finset
 
 /-!
 # Realization of requests, bottom up
@@ -14,7 +16,10 @@ request.
   separator, and `realize_eraseAt` concludes that reports from the separator give the same erasure.
 * `realize_tree`: by induction over the tree of bags, every request has a simple path inside its interval,
   when each request is either answered directly (a leaf) or split into requests of children.
-* `SPath.disjoint`: requests with disjoint intervals get disjoint paths.
+* `SPath.disjoint`, `walk_sub`: the walk lies in the interval of the request, so requests with disjoint intervals get
+  disjoint walks and paths.
+* `lemmaB`: on a path of least hops, a node of `J` has at most two visits in the walk. With `walk_sub` and Lemma A, a
+  vertex of the separator lies on the walk of at most one request of the bag.
 -/
 
 namespace PlanarMatching
@@ -95,23 +100,33 @@ theorem walk_chain (h0 : y 0 = u) {i : ℕ} (hπ : ∀ j < i, SPath E (Sg j) (y 
     subst hx
     exact (List.isChain_cons.mp hc).1 z hz
 
+/-- The walk lies in the interval of the request, when the reachability of each child used is contained in that of
+the bag. -/
+theorem walk_sub {C : Type*} {R : C → V → V → Prop} {RY : V → V → Prop} {k : ℕ} {lbl : ℕ → C}
+    (mono : ∀ i < k, ∀ a d, R (lbl i) a d → RY a d) (reflY : ∀ a, RY a a)
+    (transY : ∀ a b d, RY a b → RY b d → RY a d) (h0 : y 0 = u) (hk : y k = v)
+    (hπ : ∀ i < k, SPath E (Interval (R (lbl i)) (y i) (y (i + 1))) (y i) (y (i + 1)) (π i)) :
+    ∀ x ∈ walk u π k, x ∈ Interval RY u v := by
+  have hP : JPath Set.univ (fun j a d => j < k ∧ R (lbl j) a d) u v k y :=
+    ⟨h0, hk, fun _ _ => trivial, fun i hi => ⟨i, hi, ((hπ i hi).sub _ (hπ i hi).head_mem).2⟩⟩
+  obtain ⟨reachU, reachV⟩ := path_reach hP (fun j a d h => mono j h.1 a d h.2) reflY transY
+  intro x hx
+  rcases walk_mem hx with rfl | ⟨j, hj, hm⟩
+  · exact ⟨reflY _, by simpa [h0] using reachV 0 (Nat.zero_le _)⟩
+  · have hxj := (hπ j hj).sub x hm
+    exact ⟨transY _ _ _ (reachU j (by omega)) (mono j hj _ _ hxj.1),
+      transY _ _ _ (mono j hj _ _ hxj.2) (reachV (j + 1) (by omega))⟩
+
 /-- The erasure of the walk is a simple directed `u`-`v` path inside the interval of the request, when the
 reachability of each child used is contained in that of the bag. -/
 theorem realize [DecidableEq V] {C : Type*} {R : C → V → V → Prop} {RY : V → V → Prop} {k : ℕ} {lbl : ℕ → C}
     (mono : ∀ i < k, ∀ a d, R (lbl i) a d → RY a d) (reflY : ∀ a, RY a a)
     (transY : ∀ a b d, RY a b → RY b d → RY a d) (h0 : y 0 = u) (hk : y k = v)
     (hπ : ∀ i < k, SPath E (Interval (R (lbl i)) (y i) (y (i + 1))) (y i) (y (i + 1)) (π i)) :
-    SPath E (Interval RY u v) u v (loopErase (walk u π k)) := by
-  have hP : JPath Set.univ (fun j a d => j < k ∧ R (lbl j) a d) u v k y :=
-    ⟨h0, hk, fun _ _ => trivial, fun i hi => ⟨i, hi, ((hπ i hi).sub _ (hπ i hi).head_mem).2⟩⟩
-  obtain ⟨reachU, reachV⟩ := path_reach hP (fun j a d h => mono j h.1 a d h.2) reflY transY
-  refine ⟨isChain_loopErase (walk_chain h0 hπ), nodup_loopErase _, by rw [head?_loopErase, walk_head],
-    by rw [getLast?_loopErase, walk_last h0 hπ, hk], fun x hx => ?_⟩
-  rcases walk_mem (mem_of_mem_loopErase hx) with rfl | ⟨j, hj, hm⟩
-  · exact ⟨reflY _, by simpa [h0] using reachV 0 (Nat.zero_le _)⟩
-  · have hxj := (hπ j hj).sub x hm
-    exact ⟨transY _ _ _ (reachU j (by omega)) (mono j hj _ _ hxj.1),
-      transY _ _ _ (mono j hj _ _ hxj.2) (reachV (j + 1) (by omega))⟩
+    SPath E (Interval RY u v) u v (loopErase (walk u π k)) :=
+  ⟨isChain_loopErase (walk_chain h0 hπ), nodup_loopErase _, by rw [head?_loopErase, walk_head],
+    by rw [getLast?_loopErase, walk_last h0 hπ, hk],
+    fun x hx => walk_sub mono reflY transY h0 hk hπ x (mem_of_mem_loopErase hx)⟩
 
 /-- Lemma C on the walk: on a path without shortcut, a vertex that repeats in the walk lies on the
 separator. -/
@@ -181,6 +196,116 @@ theorem realize_tree {B : Type*} {child : B → B → Prop} (wf : WellFounded ch
   choose π hπ using hex
   classical
   exact ⟨_, realize (fun i hi a d h => mono (lbl i) b (hs i hi).1 a d h) (refl b) (trans b) h0 hk hπ⟩
+
+/-- The visits of `x` in the walk: one for the start, and one for each segment path whose tail holds `x`. -/
+theorem count_walk [DecidableEq V] (x : V) (i : ℕ) :
+    (walk u π i).count x = [u].count x + ∑ j ∈ Finset.range i, ((π j).tail).count x := by
+  induction i with
+  | zero => simp [walk]
+  | succ i ih => rw [walk, List.count_append, ih, Finset.sum_range_succ, add_assoc]
+
+/-- On a path of least hops, a node of `J` on two segments lies on consecutive ones: otherwise it would shorten the
+path to two hops across. -/
+theorem window {C : Type*} {N : Set V} {R : C → V → V → Prop} {k : ℕ} {lbl : ℕ → C}
+    (hP : JPath N R u v k y) (hmin : ∀ k' y', JPath N R u v k' y' → k ≤ k') {x : V} (hx : x ∈ N)
+    {a b : ℕ} (hab : a < b) (hb : b < k)
+    (h1 : x ∈ Interval (R (lbl a)) (y a) (y (a + 1))) (h2 : x ∈ Interval (R (lbl b)) (y b) (y (b + 1))) :
+    b = a + 1 := by
+  by_contra hne
+  let y' : ℕ → V := fun i => if i ≤ a then y i else if i = a + 1 then x else y (i + (b - a - 1))
+  have hP' : JPath N R u v (k - (b - a - 1)) y' := by
+    refine ⟨?_, ?_, ?_, ?_⟩
+    · simp [y', hP.start]
+    · have h3 : ¬ (k - (b - a - 1) ≤ a) := by omega
+      have h4 : ¬ (k - (b - a - 1) = a + 1) := by omega
+      simp only [y', h3, h4, ite_false]
+      rw [show k - (b - a - 1) + (b - a - 1) = k by omega, hP.stop]
+    · intro i hi
+      by_cases h : i ≤ a
+      · simp only [y', h, ite_true]; exact hP.mem i (by omega)
+      · by_cases h' : i = a + 1
+        · subst h'; simp only [y', show ¬ (a + 1 ≤ a) by omega, ite_false, ite_true]; exact hx
+        · simp only [y', h, h', ite_false]; exact hP.mem _ (by omega)
+    · intro i hi
+      by_cases h : i < a
+      · have e1 : i ≤ a := by omega
+        have e2 : i + 1 ≤ a := by omega
+        simp only [y', e1, e2, ite_true]
+        exact hP.arc i (by omega)
+      · by_cases h' : i = a
+        · subst h'
+          simp only [y', le_refl, ite_true, show ¬ (i + 1 ≤ i) by omega, ite_false]
+          exact ⟨lbl i, h1.1⟩
+        · by_cases h'' : i = a + 1
+          · subst h''
+            simp only [y', show ¬ (a + 1 ≤ a) by omega, show ¬ (a + 1 + 1 ≤ a) by omega,
+              show ¬ (a + 1 + 1 = a + 1) by omega, ite_false, ite_true]
+            rw [show a + 1 + 1 + (b - a - 1) = b + 1 by omega]
+            exact ⟨lbl b, h2.2⟩
+          · simp only [y', show ¬ (i ≤ a) by omega, show ¬ (i + 1 ≤ a) by omega, h'',
+              show ¬ (i + 1 = a + 1) by omega, ite_false]
+            rw [show i + 1 + (b - a - 1) = i + (b - a - 1) + 1 by omega]
+            exact hP.arc _ (by omega)
+  have := hmin _ _ hP'
+  omega
+
+/-- **Lemma B.** On a path of least hops in `J`, a node of `J` has at most two visits in the walk of the
+request. -/
+theorem lemmaB [DecidableEq V] {C : Type*} {N : Set V} {R : C → V → V → Prop} {k : ℕ} {lbl : ℕ → C}
+    (hP : JPath N R u v k y) (hmin : ∀ k' y', JPath N R u v k' y' → k ≤ k')
+    (hπ : ∀ i < k, SPath E (Interval (R (lbl i)) (y i) (y (i + 1))) (y i) (y (i + 1)) (π i))
+    {x : V} (hx : x ∈ N) : (walk u π k).count x ≤ 2 := by
+  classical
+  have tail_ne : ∀ j < k, x ∈ (π j).tail → x ≠ y j := fun j hj ht e => by
+    have hnd := (hπ j hj).nodup
+    rw [(hπ j hj).cons, List.nodup_cons] at hnd
+    exact hnd.1 (e ▸ ht)
+  have inI : ∀ j < k, x ∈ π j → x ∈ Interval (R (lbl j)) (y j) (y (j + 1)) := fun j hj h => (hπ j hj).sub x h
+  set F := (Finset.range k).filter fun j => x ∈ (π j).tail with hF
+  have hsum : ∑ j ∈ Finset.range k, ((π j).tail).count x ≤ F.card := by
+    rw [hF, Finset.card_filter]
+    refine Finset.sum_le_sum fun j hj => ?_
+    have hj' := Finset.mem_range.mp hj
+    split_ifs with h
+    · have hnd := (hπ j hj').nodup
+      rw [(hπ j hj').cons, List.nodup_cons] at hnd
+      exact List.nodup_iff_count_le_one.mp hnd.2 x
+    · exact (List.count_eq_zero_of_not_mem h).le
+  have memF : ∀ j ∈ F, j < k ∧ x ∈ π j := fun j hj => by
+    rw [hF, Finset.mem_filter, Finset.mem_range] at hj
+    exact ⟨hj.1, List.mem_of_mem_tail hj.2⟩
+  rw [count_walk]
+  by_cases hxu : x = u
+  · -- the start is visited once more only on the segment `1`
+    have h0 : x = y 0 := by rw [hxu, hP.start]
+    have hF1 : F ⊆ {1} := fun j hj => by
+      obtain ⟨hjk, hjm⟩ := memF j hj
+      have ht : x ∈ (π j).tail := by rw [hF, Finset.mem_filter] at hj; exact hj.2
+      have hj0 : 0 < j := Nat.pos_of_ne_zero fun e => tail_ne j hjk ht (by rw [e]; exact h0)
+      have hk0 : 0 < k := by omega
+      have h0m : x ∈ π 0 := h0 ▸ (hπ 0 hk0).head_mem
+      have := window hP hmin hx hj0 hjk (inI 0 hk0 h0m) (inI j hjk hjm)
+      simp [this]
+    have h1 := Finset.card_le_card hF1
+    rw [Finset.card_singleton] at h1
+    have hu1 : [u].count x = 1 := by subst hxu; simp
+    omega
+  · have hF2 : F.card ≤ 2 := by
+      rcases F.eq_empty_or_nonempty with h | hne
+      · simp [h]
+      · have hex : ∃ j, j ∈ F := hne
+        let a := Nat.find hex
+        have hsub : F ⊆ {a, a + 1} := fun j hj => by
+          have ha : a ≤ j := Nat.find_min' hex hj
+          rcases Nat.lt_or_ge a j with hlt | hle
+          · obtain ⟨hjk, hjm⟩ := memF j hj
+            obtain ⟨hak, ham⟩ := memF a (Nat.find_spec hex)
+            have := window hP hmin hx hlt hjk (inI a hak ham) (inI j hjk hjm)
+            simp [this]
+          · simp [show j = a by omega]
+        exact (Finset.card_le_card hsub).trans Finset.card_le_two
+    have hu0 : [u].count x = 0 := List.count_eq_zero_of_not_mem (by simpa using hxu)
+    omega
 
 end
 

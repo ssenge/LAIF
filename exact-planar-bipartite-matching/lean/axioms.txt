@@ -139,3 +139,6 @@
 'PlanarMatching.walk_repeat' depends on axioms: [propext, Classical.choice, Quot.sound]
 'PlanarMatching.realize_eraseAt' depends on axioms: [propext, Classical.choice, Quot.sound]
 'PlanarMatching.realize_tree' depends on axioms: [propext, Classical.choice, Quot.sound]
+'PlanarMatching.walk_sub' depends on axioms: [propext, Quot.sound]
+'PlanarMatching.window' depends on axioms: [propext, Quot.sound]
+'PlanarMatching.lemmaB' depends on axioms: [propext, Classical.choice, Quot.sound]

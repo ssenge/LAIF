@@ -141,3 +141,6 @@ import PlanarMatching
 #print axioms PlanarMatching.walk_repeat
 #print axioms PlanarMatching.realize_eraseAt
 #print axioms PlanarMatching.realize_tree
+#print axioms PlanarMatching.walk_sub
+#print axioms PlanarMatching.window
+#print axioms PlanarMatching.lemmaB

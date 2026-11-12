@@ -276,7 +276,8 @@ Section 4, gives Z in Õ(D) rounds.
 - `Requests`: least hops gives no shortcut, Lemma A, Lemma C.
 - `PathAssembly`: the realization bottom up. The loop erasure of the joined segment paths is a simple directed path inside the
   interval of the request, a repeated vertex of the joined walk lies on the separator so reports from it give the same erasure,
-  and by induction over the tree every request has such a path.
+  and by induction over the tree every request has such a path. Lemma B: on a path of least hops a node of J has at most two
+  visits in the walk, and the walk lies in the interval of its request.
 - `Decomp`: from (B2), (B3), (B4) and the inclusion of a child in its parent, Fact 1, Fact 2 and the core of the Multi-Source Lemma (`descent`, `multiSource`), the
   J path (`jpath`), and the claims on X° (`chain_comparable`, `arc_in_chain`, `no_cross`).
 - `Hungarian`: weak duality, the dual update, the flip along a simple alternating path, and their combination `insertion`.
