@@ -831,3 +831,5 @@ Expected output for each: `propext`, `Classical.choice`, `Quot.sound` (or a subs
 #print axioms SsspFlow.RotSystem.RData.tgt_same
 #print axioms SsspFlow.RotSystem.RData.chains_eq_of_meet
 #print axioms SsspFlow.RotSystem.RData.tgtFlag_chains
+#print axioms SsspFlow.Congest.ENat.one_le_toENNReal
+#print axioms SsspFlow.Congest.Net.ExactSpec.step_iff

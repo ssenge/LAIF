@@ -878,6 +878,11 @@ standard axioms (`propext`, `Classical.choice`, `Quot.sound`). There is no `sorr
   different components have chains that do not meet (`RData.chains_eq_of_meet`). For the targets of a list of annuli
   of a level of a run, one per annulus with $\lambda_t < M$, this is the condition on the targets of
   `RData.chain_step_out` (`RData.tgtFlag_chains`, from `RData.tgt_dist_le` and `RData.tgt_same`).
+- `lean/SsspFlow/OracleChainStep.lean`: the nodes between the two ends, read locally. For targets whose valid chains do
+  not meet, a node has count $0$ for $F_0$, is not flagged by $F_0$, and has distance $0$ in the run down the chains
+  exactly when it lies $l$ valid steps above a target, below the first node $i_a$ flagged by $F_0$, with no node
+  $l + 1, \dots, i_a$ flagged by $F_1$ (`Net.ExactSpec.step_iff`). So each node decides from its own outputs whether
+  the arc to its parent belongs to the step.
 - `lean/SsspFlow/GHatLevelDarts.lean`: the darts of a walk of a level, in order. A kept rim dart of the repaired graph
   is an E_C arc between the copies of its token and of the partner (`RData.att_rimTok`), and each middle edge of the
   network of a level carries the token of its E_C arc (`RData.edgeTok_dart`, `RData.edgeTok_inl_left`,
