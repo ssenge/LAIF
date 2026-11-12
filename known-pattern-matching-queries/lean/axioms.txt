@@ -1,0 +1,7 @@
+'KnownPattern.HasPeriod.mono' does not depend on any axioms
+'KnownPattern.period_sub' depends on axioms: [propext, Quot.sound]
+'KnownPattern.period_gcd' depends on axioms: [propext, Quot.sound]
+'KnownPattern.windows_period' depends on axioms: [propext, Classical.choice, Quot.sound]
+'KnownPattern.left_break' depends on axioms: [propext, Quot.sound]
+'KnownPattern.run_copied' depends on axioms: [propext, Quot.sound]
+'KnownPattern.periodic_occ' depends on axioms: [propext, Quot.sound]
