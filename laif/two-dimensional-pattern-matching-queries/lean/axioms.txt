@@ -18,3 +18,7 @@
 'PatternMatch.occ_valid' depends on axioms: [propext, Quot.sound]
 'PatternMatch.phase_unique' depends on axioms: [propext, Quot.sound]
 'PatternMatch.sample_pass' depends on axioms: [propext, Quot.sound]
+'PatternMatch.Rows.occ_window' depends on axioms: [propext, Quot.sound]
+'PatternMatch.Rows.star_mono' depends on axioms: [propext, Quot.sound]
+'PatternMatch.Rows.occ_unique' depends on axioms: [propext, Quot.sound]
+'PatternMatch.Rows.occ_iff_rows' depends on axioms: [Quot.sound]

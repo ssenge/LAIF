@@ -6,15 +6,15 @@ Written 11 Nov 2026.
 
 | | Problem | Previous best bound | This folder | Status |
 |---|---|---|---|---|
-| Thm 1 | Two-dimensional pattern matching, n × n text, m × m pattern | O(nm), by search over the positions with an inner search for a mismatch [4] | O(n √m log⁴ n) | Claim; checked by script; lemmas in Lean |
+| Thm 1 | Two-dimensional pattern matching, n × n text, m × m pattern | O(nm), by search over the positions with an inner search for a mismatch [4]; Õ(n √m), implied by [1] with rows as letters [9, 10] | O(n √m log⁴ n) | Claim; checked by script; lemmas in Lean |
 | Thm 2 | Same, any n₁, n₂, m₁, m₂ | | Ω(√(n₁n₂)) for every pattern size | Claim |
 | Thm 3 | Same, n × n text, m × m pattern without short periods (condition (★) of Section 6 with b ≥ m/8) | O(nm), and O(n √m log⁴ n) by Theorem 1 | O(m² + n log³ m), so O(n log³ n) for m ≤ √n | Claim; checked by script; lemmas in Lean |
 | Thm 4 | Same, n × n text, m × m pattern periodic along a lattice that covers side ⌊m/2⌋ (condition (L) of Section 7) | O(nm), and O(n √m log⁴ n) by Theorem 1; O(n log² n) for constant patterns, by the largest empty square of [largest-empty-rectangle-queries](../largest-empty-rectangle-queries/) | O(m² + n log² m), so O(n log² n) for m ≤ √n; Ω(n) by Theorem 2 | Claim; checked by script; lemmas in Lean |
-| Thm 5 | Same, n × n text, m × m pattern with condition (★) of Section 6 for some b ≤ (m + 1)/2 | O(nm) [4]; O(m² + n log³ m + nm/b) by Theorem 3 | O(m² + nm/b), so O(m² + n) for b ≥ m/8; O(nm/b) and O(n) if the pattern is known in advance | Claim; checked by script |
+| Thm 5 | Same, n × n text, m × m pattern with condition (★) of Section 6 for some b ≤ (m + 1)/2 | O(nm) [4]; O(m² + n log³ m + nm/b) by Theorem 3 | O(m² + nm/b), so O(m² + n) for b ≥ m/8; O(nm/b) and O(n) if the pattern is known in advance | Claim; checked by script; uniqueness of the candidate in Lean |
 | Prop 6 | Same, any sizes, every pattern that does not use some letter of Σ | | Ω(√(n₁n₂)), so Theorem 5 is optimal for every known pattern that satisfies (★) with b ≥ m/8 and does not use some letter; such patterns exist for |Σ| ≥ 3 | Claim |
-| Thm 7 | Same, any sizes, pattern known in advance | O(√(n₁n₂m₁m₂)) by search with an inner search for a mismatch [4]; O(n √m log⁴ n) by Theorem 1 for n × n and m × m | O(√(n₁n₂ min(m₁, m₂))), so O(n √m) for n × n and m × m, and Θ(√(n₁n₂)) for patterns with a constant number of rows or columns; O(m₁m₂ + √(n₁n₂ min(m₁, m₂))) if the pattern is given by queries | Claim; checked by script; Lemmas 1 and 2 of [known-pattern-matching-queries](../known-pattern-matching-queries/) in Lean |
+| Thm 7 | Same, any sizes, pattern known in advance | O(√(n₁n₂m₁m₂)) by search with an inner search for a mismatch [4]; Õ(√(n₁n₂ min(m₁, m₂))), implied by [1] with rows as letters [9, 10]; O(n √m log⁴ n) by Theorem 1 for n × n and m × m | O(√(n₁n₂ min(m₁, m₂))), so O(n √m) for n × n and m × m, and Θ(√(n₁n₂)) in the worst case over patterns with a constant number of rows or columns; O(m₁m₂ + √(n₁n₂ min(m₁, m₂))) if the pattern is given by queries | Claim; checked by script; the step to rows and Lemmas 1 and 2 of [known-pattern-matching-queries](../known-pattern-matching-queries/) in Lean |
 
-In one dimension the problem takes Õ(√n + √m) queries [1], by deterministic sampling [2]. In two dimensions, quantum algorithms that are fast on average are given in [3]; to our knowledge, no worst-case bound below O(nm) was known for an n × n text and an m × m pattern. Classically, Θ(n²) queries are needed in the worst case, by the same family as in Theorem 2.
+In one dimension the problem takes Õ(√n + √m) queries [1], by deterministic sampling [2]. In two dimensions, quantum algorithms that are fast on average are given in [3]; in the worst case, reading the rows of the pattern as letters [9, 10] in the algorithm of [1] gives Õ(n √m) for an n × n text and an m × m pattern, with polylogarithmic factors from the bounded-error comparisons of rows. Classically, Θ(n²) queries are needed in the worst case, by the same family as in Theorem 2.
 
 ## 1. Strips and column strings
 
@@ -136,7 +136,7 @@ Theorem 5 needs neither the sample nor the tournament of Theorem 3, and it appli
 
 ## 9. Rows as letters
 
-The rows of a two-dimensional pattern can be read as letters of a one-dimensional pattern, as in [9, 10]. With the one-dimensional algorithm of [known-pattern-matching-queries](../known-pattern-matching-queries/), whose block decision only needs searches over cells, this gives a bound for every known pattern.
+The rows of a two-dimensional pattern can be read as letters of a one-dimensional pattern, as in [9, 10]. With the one-dimensional algorithm of [known-pattern-matching-queries](../known-pattern-matching-queries/), whose block decision only needs searches over cells, this gives a bound for every known pattern, without the polylogarithmic factors of the same reading with [1].
 
 **Theorem 7.** For every known m₁ × m₂ pattern P and every n₁ × n₂ text, two-dimensional pattern matching takes O(√(n₁n₂ min(m₁, m₂))) quantum queries. If P is given by queries, O(m₁m₂ + √(n₁n₂ min(m₁, m₂))) queries suffice.
 
@@ -144,11 +144,11 @@ The rows of a two-dimensional pattern can be read as letters of a one-dimensiona
 
 1. The identification of the common part M, which has L = m₁ − w + 1 rows, among at most w windows. Encode a cell by the bits [T[z] = a] for the letters a of P. Then the windows are at most w strings of N′ ≥ L ≥ w bits, and the identification takes O(√w) queries [8, Proposition 2].
 2. The check of the identified window, and the verification of a start: searches for a mismatch over at most m₁m₂ cells, with O(√(m₁m₂)) queries [4].
-3. The breaks: λ is the largest row j ∈ [s − m₁, s) with x_j ≠ x_{j+q}, that is, the largest first coordinate among the pairs (j, k) ∈ [s − m₁, s) × [0, m₂) with T[j][c + k] ≠ T[j + q][c + k]. Maximum finding over these m₁m₂ pairs, with tests of two queries, takes O(√(m₁m₂)) queries [5]. The same holds for ρ.
+3. The breaks: λ is the largest row j ∈ [max(0, s − m₁), s) with x_j ≠ x_{j+q}, if there is one, that is, the largest first coordinate among the pairs (j, k) ∈ [max(0, s − m₁), s) × [0, m₂) with T[j][c + k] ≠ T[j + q][c + k]. Maximum finding over these m₁m₂ pairs, with tests of two queries, takes O(√(m₁m₂)) queries [5]. The same holds for ρ.
 
 So a block of a strip is decided with O(√(m₁m₂)) queries and bounded error. Search with a bounded-error test [7] over the at most (n₂ − m₂ + 1) · 8n₁/m₁ pairs of a strip and a block takes O(√(n₁n₂/m₁)) evaluations, so O(√(n₁n₂/m₁) · √(m₁m₂)) = O(√(n₁n₂m₂)) queries. Reading an unknown pattern costs m₁m₂ more. ∎
 
-For n × n texts and m × m patterns this is O(n √m) for every known pattern, against Ω(n) by Theorem 2. For patterns with a constant number of rows or columns it is Θ(√(n₁n₂)), again by Theorem 2.
+For n × n texts and m × m patterns this is O(n √m) for every known pattern, against Ω(n) by Theorem 2. For patterns with a constant number of rows or columns it is Θ(√(n₁n₂)) in the worst case over such patterns, by Theorem 2, and for each such pattern that does not use some letter, by Proposition 6.
 
 ## Lean
 
@@ -165,7 +165,12 @@ For n × n texts and m × m patterns this is O(n √m) for every known pattern, 
 - Lemma 7: a subgroup that covers side s is generated by its elements of max-norm at most s (`closure_small`), a period of P of max-norm at most m − s is a period of Q (`period_lift`), and so the periods of Q are generated by the periods of P of max-norm at most s when 2s ≤ m (`periodGroup_eq`).
 - Lemma 8: occurrences are valid (`occ_valid`), a valid start is an occurrence iff its phase matches Q (`occ_iff_phase`), two phases differ by a period of Q (`phase_unique`), and the sample is passed exactly by the class of the phase (`sample_pass`).
 
-**Not formalized:** search [4], minimum finding [5], search with bounded-error inputs [7], the lower bound for composed functions [6], the oracle identification [8], the maximum finding over pairs in Theorem 7, the reductions in the proofs of Theorem 2 and Proposition 6, the front learner (Lemma 3 of [largest-empty-rectangle-queries](../largest-empty-rectangle-queries/)), the random choice of values in Lemma 2, the step of Lemma 4 from the run to the set X, the sufficient condition for (L) by a basis, the use of the window test for the defects in Theorem 4 (the window test itself is in the Lean files of [largest-empty-rectangle-queries](../largest-empty-rectangle-queries/)), and the counting of queries and errors in Theorems 1, 3, 4, 5 and 7. The step of Theorem 7 from rows to letters is checked by script only; Lemmas 1 and 2 of [known-pattern-matching-queries](../known-pattern-matching-queries/), which it uses, are in Lean for every alphabet.
+`lean/PatternMatch/Rows.lean`, for Sections 8 and 9:
+
+- Section 8: an occurrence at B + s makes the text on B + C equal to the window of s (`occ_window`), condition (★) for (b₁, b₂) gives it for every smaller pair (`star_mono`), and under (★) a block has at most one start that is an occurrence (`occ_unique`).
+- Section 9: P occurs at (r, c) iff the string of its rows occurs at r in the string of the rows of the strip (`occ_iff_rows`), so Lemmas 1 and 2 of [known-pattern-matching-queries](../known-pattern-matching-queries/), which are stated in Lean for every alphabet, apply with rows as letters.
+
+**Not formalized:** search [4], minimum finding [5], search with bounded-error inputs [7], the lower bound for composed functions [6], the oracle identification [8], the maximum finding over pairs in Theorem 7, the reductions in the proofs of Theorem 2 and Proposition 6, the front learner (Lemma 3 of [largest-empty-rectangle-queries](../largest-empty-rectangle-queries/)), the random choice of values in Lemma 2, the step of Lemma 4 from the run to the set X, the sufficient condition for (L) by a basis, the use of the window test for the defects in Theorem 4 (the window test itself is in the Lean files of [largest-empty-rectangle-queries](../largest-empty-rectangle-queries/)), and the counting of queries and errors in Theorems 1, 3, 4, 5 and 7.
 
 ## Scripts
 

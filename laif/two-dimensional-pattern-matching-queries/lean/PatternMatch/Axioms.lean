@@ -20,3 +20,7 @@ import PatternMatch
 #print axioms PatternMatch.occ_valid
 #print axioms PatternMatch.phase_unique
 #print axioms PatternMatch.sample_pass
+#print axioms PatternMatch.Rows.occ_window
+#print axioms PatternMatch.Rows.star_mono
+#print axioms PatternMatch.Rows.occ_unique
+#print axioms PatternMatch.Rows.occ_iff_rows
