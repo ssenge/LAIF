@@ -818,3 +818,10 @@ Expected output for each: `propext`, `Classical.choice`, `Quot.sound` (or a subs
 #print axioms SsspFlow.Congest.Net.ExactSpec.down_none_iff
 #print axioms SsspFlow.Congest.Net.ExactSpec.last_iff
 #print axioms SsspFlow.RotSystem.RData.chain_step_self
+#print axioms SsspFlow.Congest.chainMsg_lt
+#print axioms SsspFlow.Congest.chainMsg_bit0
+#print axioms SsspFlow.Congest.chainMsg_bit1
+#print axioms SsspFlow.Congest.chainMsg_bit2
+#print axioms SsspFlow.Congest.countIn_eq
+#print axioms SsspFlow.Congest.downIn_eq
+#print axioms SsspFlow.Congest.chainAlg_spec

@@ -138,6 +138,7 @@ import SsspFlow.GHatChainFlags
 import SsspFlow.OracleChainCount
 import SsspFlow.OracleChainDown
 import SsspFlow.GHatChainSelf
+import SsspFlow.OracleChainAlg
 import SsspFlow.ListRot
 import SsspFlow.GHatSplit
 import SsspFlow.Annuli

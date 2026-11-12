@@ -857,6 +857,12 @@ standard axioms (`propext`, `Classical.choice`, `Quot.sound`). There is no `sorr
   (`RData.nodeFlag`). For targets whose valid chains do not meet, a counting run up the chains for the flag $0$ and a
   run down from the marked nodes for the flag $1$ mark exactly the two nodes that bound the step of
   `RData.chain_step_flags` (`RData.chain_step_self`).
+- `lean/SsspFlow/OracleChainAlg.lean`: the two runs along the parent chains in the message model. Each node has three
+  flags as input: target, $f_0$ and $f_1$. The algorithm `chainAlg` runs the oracle, then one round in which each node
+  tells every neighbour whether it is its child, with its two flags in the same message of 3 bits, then the counting
+  run up the chains for $f_0$ and the run down the chains for $f_1$ from the nodes flagged by $f_0$ with count $0$
+  (`countIn_eq`, `downIn_eq`). Assuming the Exact SSSP bound, after $3 C \log^c n \cdot D + 1$ rounds the outputs of
+  the three runs meet the specification of the oracle (`chainAlg_spec`).
 - `lean/SsspFlow/GHatLevelDarts.lean`: the darts of a walk of a level, in order. A kept rim dart of the repaired graph
   is an E_C arc between the copies of its token and of the partner (`RData.att_rimTok`), and each middle edge of the
   network of a level carries the token of its E_C arc (`RData.edgeTok_dart`, `RData.edgeTok_inl_left`,
