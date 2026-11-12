@@ -852,6 +852,11 @@ standard axioms (`propext`, `Classical.choice`, `Quot.sound`). There is no `sorr
   `Net.ExactSpec.dsrcTop_down_sum`). After a counting run for a flag $F_0$, the first node of a chain flagged by $F_0$
   knows that it is the first (`Net.ExactSpec.first_iff`), and a run down from these nodes lets the last node below it
   flagged by a second flag $F_1$ know that it is the last (`Net.ExactSpec.down_none_iff`, `Net.ExactSpec.last_iff`).
+- `lean/SsspFlow/GHatChainSelf.lean`: the ends of the step on a parent chain know themselves. A node of the network
+  of a level is flagged for $\sigma$ when its copy holds a token whose piece lies at a copy $p_t^\sigma$
+  (`RData.nodeFlag`). For targets whose valid chains do not meet, a counting run up the chains for the flag $0$ and a
+  run down from the marked nodes for the flag $1$ mark exactly the two nodes that bound the step of
+  `RData.chain_step_flags` (`RData.chain_step_self`).
 - `lean/SsspFlow/GHatLevelDarts.lean`: the darts of a walk of a level, in order. A kept rim dart of the repaired graph
   is an E_C arc between the copies of its token and of the partner (`RData.att_rimTok`), and each middle edge of the
   network of a level carries the token of its E_C arc (`RData.edgeTok_dart`, `RData.edgeTok_inl_left`,
