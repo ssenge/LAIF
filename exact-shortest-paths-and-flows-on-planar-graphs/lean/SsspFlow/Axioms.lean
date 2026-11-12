@@ -763,3 +763,15 @@ Expected output for each: `propext`, `Classical.choice`, `Quot.sound` (or a subs
 #print axioms SsspFlow.ENat.toENNReal_iInf
 #print axioms SsspFlow.RotSystem.RData.level_i12_of_marked
 #print axioms SsspFlow.RotSystem.RData.levelI12_run
+#print axioms SsspFlow.RotSystem.CutPath.Run.sep
+#print axioms SsspFlow.RotSystem.CutPath.SideA.sep
+#print axioms SsspFlow.RotSystem.CutPath.SideB.sep
+#print axioms SsspFlow.RotSystem.RData.exists_awt_of_gdist
+#print axioms SsspFlow.RotSystem.RData.arcDist_le_of_gdist
+#print axioms SsspFlow.RotSystem.RData.le_arcDist_of_not_erc
+#print axioms SsspFlow.RotSystem.RData.vcopy_endV
+#print axioms SsspFlow.RotSystem.RData.endV_end
+#print axioms SsspFlow.RotSystem.RData.pieceOf_endV
+#print axioms SsspFlow.RotSystem.RData.annulus_eq
+#print axioms SsspFlow.RotSystem.RData.level_i12_roots
+#print axioms SsspFlow.RotSystem.RData.levelI12_roots_run
