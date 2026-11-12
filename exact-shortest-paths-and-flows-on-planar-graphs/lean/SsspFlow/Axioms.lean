@@ -732,3 +732,5 @@ Expected output for each: `propext`, `Classical.choice`, `Quot.sound` (or a subs
 #print axioms SsspFlow.RotSystem.RData.levelMin_local
 #print axioms SsspFlow.RotSystem.RData.levelStep_cases
 #print axioms SsspFlow.RotSystem.RData.walk_project
+#print axioms SsspFlow.RotSystem.RData.awt_eq_wt
+#print axioms SsspFlow.RotSystem.RData.level_split_walk

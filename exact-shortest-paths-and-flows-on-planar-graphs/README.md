@@ -838,6 +838,10 @@ standard axioms (`propext`, `Classical.choice`, `Quot.sound`). There is no `sorr
   length stays at one copy with length 0 or is an arc of $\hat G_\ell$ of the same length (`RData.levelStep_cases`),
   so a walk of finite length gives a walk of $\hat G_\ell$ between the copies of its ends, of the same length, through
   copies of its nodes only (`RData.walk_project`).
+- `lean/SsspFlow/GHatLevelSplit.lean`: walks of a level as walks of the split dual. The natural length of a walk of
+  $\hat G_\ell$ is its real weight (`RData.awt_eq_wt`). For token lengths that are the costs of their darts, equal on
+  both darts of an edge, a walk of the network of a level between copies on E_R edges, shorter than $M$, gives a
+  walk of the split between their pieces whose sum of costs is its length (`RData.level_split_walk`).
 - `lean/SsspFlow/GHatPhase.lean`: the combinatorics of property (6). Two copies on E_R edges are joined by E_R edges
   exactly when they lie on the path of one piece (`RData.er_comp_iff`), and by E_R and E_C edges exactly when their
   pieces are joined in the token graph (`RData.erc_comp_iff`), whose components are those of the split
