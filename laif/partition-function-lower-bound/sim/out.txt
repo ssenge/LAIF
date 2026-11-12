@@ -1,0 +1,20 @@
+n =   7, eps = 1e-02: q =      22.2, max ||sqrt mu^± - sqrt mu|| / nu = 0.4857, |log Q^± - log Q| / eps >= 8.618, rounding 3 eta / nu = 5.4e-03
+n =   7, eps = 1e-03: q =      22.2, max ||sqrt mu^± - sqrt mu|| / nu = 0.4857, |log Q^± - log Q| / eps >= 8.624, rounding 3 eta / nu = 8.7e-03
+n =   7, eps = 1e-05: q =      22.2, max ||sqrt mu^± - sqrt mu|| / nu = 0.4857, |log Q^± - log Q| / eps >= 8.625, rounding 3 eta / nu = 8.9e-03
+n =  12, eps = 1e-02: q =      67.2, max ||sqrt mu^± - sqrt mu|| / nu = 0.4988, |log Q^± - log Q| / eps >= 9.194, rounding 3 eta / nu = 1.3e-02
+n =  12, eps = 1e-03: q =      67.2, max ||sqrt mu^± - sqrt mu|| / nu = 0.4988, |log Q^± - log Q| / eps >= 9.196, rounding 3 eta / nu = 1.4e-02
+n =  12, eps = 1e-05: q =      67.2, max ||sqrt mu^± - sqrt mu|| / nu = 0.4988, |log Q^± - log Q| / eps >= 9.197, rounding 3 eta / nu = 1.4e-02
+n =  25, eps = 1e-02: q =     301.2, max ||sqrt mu^± - sqrt mu|| / nu = 0.5000, |log Q^± - log Q| / eps >= 9.614, rounding 3 eta / nu = 7.6e-03
+n =  25, eps = 1e-03: q =     301.2, max ||sqrt mu^± - sqrt mu|| / nu = 0.5000, |log Q^± - log Q| / eps >= 9.614, rounding 3 eta / nu = 4.8e-03
+n =  25, eps = 1e-05: q =     301.2, max ||sqrt mu^± - sqrt mu|| / nu = 0.5000, |log Q^± - log Q| / eps >= 9.614, rounding 3 eta / nu = 1.4e-02
+n =  50, eps = 1e-02: q =    1226.2, max ||sqrt mu^± - sqrt mu|| / nu = 0.5000, |log Q^± - log Q| / eps >= 9.807, rounding 3 eta / nu = 4.6e-03
+n =  50, eps = 1e-03: q =    1226.2, max ||sqrt mu^± - sqrt mu|| / nu = 0.5000, |log Q^± - log Q| / eps >= 9.807, rounding 3 eta / nu = 1.1e-02
+n =  50, eps = 1e-05: q =    1226.2, max ||sqrt mu^± - sqrt mu|| / nu = 0.5000, |log Q^± - log Q| / eps >= 9.807, rounding 3 eta / nu = 1.0e-02
+n = 100, eps = 1e-02: q =    4951.2, max ||sqrt mu^± - sqrt mu|| / nu = 0.5000, |log Q^± - log Q| / eps >= 9.904, rounding 3 eta / nu = 1.2e-02
+n = 100, eps = 1e-03: q =    4951.2, max ||sqrt mu^± - sqrt mu|| / nu = 0.5000, |log Q^± - log Q| / eps >= 9.904, rounding 3 eta / nu = 8.9e-03
+n = 100, eps = 1e-05: q =    4951.2, max ||sqrt mu^± - sqrt mu|| / nu = 0.5000, |log Q^± - log Q| / eps >= 9.904, rounding 3 eta / nu = 2.8e-03
+n = 200, eps = 1e-02: q =   19901.2, max ||sqrt mu^± - sqrt mu|| / nu = 0.5000, |log Q^± - log Q| / eps >= 9.952, rounding 3 eta / nu = 9.9e-03
+n = 200, eps = 1e-03: q =   19901.2, max ||sqrt mu^± - sqrt mu|| / nu = 0.5000, |log Q^± - log Q| / eps >= 9.952, rounding 3 eta / nu = 3.8e-03
+n = 200, eps = 1e-05: q =   19901.2, max ||sqrt mu^± - sqrt mu|| / nu = 0.5000, |log Q^± - log Q| / eps >= 9.952, rounding 3 eta / nu = 1.3e-02
+reflections: ||R_a - R_b|| <= 2||a - b|| on 2000 pairs
+check: all asserts passed

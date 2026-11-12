@@ -149,6 +149,7 @@ All results below can be searched, filtered and sorted in the [results explorer]
 | Non-adaptive simulation of adaptive entanglement-assisted messages (d values) within total-variation error ε; [89] proves M_ε ≤ 1 + ln(1/ε)/ln(d/(d − 1)) for every protocol and asks whether this scaling is tight | Tight up to a constant factor: Θ(d log(1/ε)) in the worst case for every d ≥ 3, with Bob having no input. The exclusion task of [89] works with three uniformly random bases in dimension 80M instead of M² + 1, which makes the classical error e^{−O(M)}; a label on Alice's input supplies the factor d | 2026-11-11 | [adaptive-simulation-cost](laif/adaptive-simulation-cost/) |
 | Spectral gap γ of a reversible random walk or doubly stochastic walk on N states, from a block-encoding, to relative error ε | Θ̃(√N/(ε√γ)) uses for every ε: O(√N log N log(1/δ)/(ε√L)) for thresholding at 1 − L by an even filter of degree O(log(1/α)/(ε√L)), answering the question of [138] for a filter with the 1/√L scaling at every relative error, against O(√N log N/(εL)) for ε ≤ min{L, 1 − L} and O(√(N/L) log N) above a critical relative error [138]; lower bound √N/(12√2 ε√L), already for symmetric doubly stochastic walks | 2026-11-12 | [spectral-gap-estimation](laif/spectral-gap-estimation/) |
 | Agnostic process tomography of unitary classes: error α·opt + ε in the average distance d_avg (finite classes, circuits of G gates) and in the normalized 2-norm distance d_F of channel states (from agnostic state tomography); 1-agnostic asked for in [139] | d_avg ≤ min{√2·opt, opt^{1/4}} + ε with O(log(\|C\|/δ)/ε⁴) queries, and opt + ε for one qubit, against opt^{1/4} + ε [139]; d_F ≤ opt + ε (1-agnostic) at the same cost, against 2^{1/4}opt^{1/2} + ε [139]; both from ‖φ − σ‖₂² = 1 − 2⟨φ\|σ\|φ⟩ + tr σ² ∈ [d_tr², 2d_tr²] for pure φ | 2026-11-12 | [agnostic-process-tomography](laif/agnostic-process-tomography/) |
+| Partition function Z(∞) of an energy function H: χ → {0, …, n} to relative error ε from reflections about thermal qsamples, q = log(\|χ\|/Z(∞)); a lower bound growing with \|χ\| asked for in [140] | Ω(√q/ε) reflections and qsamples for algorithms built from reflections, qsamples and energy-controlled unitaries (k + 2T ≥ n/(35ε) with q ≈ n²/2), against Ω(1/ε) [140]; the square root of the classical Ω(q/ε²) [141], by the hybrid argument on the instances of [141] | 2026-11-12 | [partition-function-lower-bound](laif/partition-function-lower-bound/) |
 
 ## Former repositories
 
@@ -291,6 +292,8 @@ The folders `exact-planar-bipartite-matching`, `exact-shortest-paths-and-flows-o
 137. S. Chakrabarti, R. Krishnakumar, G. Mazzola, N. Stamatopoulos, S. Woerner, W. J. Zeng. A threshold for quantum advantage in derivative pricing. Quantum 5, 463 (2021). arXiv:2012.03819.
 138. A. Connolly, S. Herbert, J. Sorci. Quasi-optimal quantum Markov chain spectral gap estimation. arXiv:2601.07601.
 139. C. Wadhwa, L. Lewis, E. Kashefi, M. Doosti. Agnostic process tomography. arXiv:2410.11957.
+140. Z. Chen, G. Nannicini. A simple lower bound for the complexity of estimating partition functions on a quantum computer. arXiv:2404.02414.
+141. D. G. Harris, V. Kolmogorov. Parameter estimation for Gibbs distributions. ACM Transactions on Algorithms 21(1), Article 3 (2024). arXiv:2007.10824.
 
 ## Copyright
 
