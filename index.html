@@ -56,13 +56,30 @@ header.hero { padding: 40px 0 20px; display: flex; gap: 24px; align-items: cente
 .stat.spark svg { width: 100%; height: 46px; margin-top: 6px; }
 
 .controls { position: sticky; top: 0; z-index: 5; padding: 12px 0; background: color-mix(in srgb, var(--bg) 82%, transparent); backdrop-filter: blur(14px); border-bottom: 1px solid var(--line); }
-.row1 { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
-.search { flex: 1 1 280px; position: relative; }
+.filters { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; }
+.filters summary { list-style: none; cursor: pointer; display: flex; align-items: center; gap: 10px; padding: 11px 14px; font-weight: 600; font-size: 14px; user-select: none; }
+.filters summary::-webkit-details-marker { display: none; }
+.sum-l { display: inline-flex; gap: 8px; align-items: center; } .sum-l svg { width: 17px; height: 17px; color: var(--accent); }
+.active { font-size: 12px; font-weight: 600; color: #fff; background: var(--accent); border-radius: 999px; padding: 1px 8px; }
+.active:empty { display: none; }
+.chev { margin-left: auto; color: var(--faint); transition: transform .15s; }
+.filters[open] .chev { transform: rotate(180deg); }
+.fbody { padding: 0 14px 14px; display: flex; flex-direction: column; gap: 12px; }
+.row2 { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 10px; }
+.field { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.field span { font-size: 11.5px; text-transform: uppercase; letter-spacing: .06em; color: var(--faint); font-weight: 600; }
+.field select, .field input { width: 100%; }
+select { appearance: none; -webkit-appearance: none; padding-right: 34px; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%23aaa4c8' stroke-width='1.6'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; }
+input[type=date]::-webkit-calendar-picker-indicator { filter: invert(.8); cursor: pointer; }
+.chips .grp { display: contents; }
+.chips .sep { width: 1px; align-self: stretch; background: var(--line); margin: 2px 4px; }
+@media (max-width: 640px) { .row2 { grid-template-columns: 1fr 1fr; } .row2 .cat { grid-column: 1 / -1; } }
+.search { position: relative; display: block; }
 .search input { width: 100%; padding: 11px 14px 11px 38px; border-radius: 12px; border: 1px solid var(--line); background: var(--panel-solid); color: var(--text); font: inherit; outline: none; }
 .search input:focus { border-color: var(--accent); box-shadow: 0 0 0 4px var(--glow); }
 .search svg { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); width: 17px; height: 17px; color: var(--faint); }
 select, input[type=date] { padding: 10px 12px; border-radius: 12px; border: 1px solid var(--line); background: var(--panel-solid); color: var(--text); font: inherit; font-size: 14px; }
-.chips { display: flex; gap: 7px; flex-wrap: wrap; margin-top: 10px; }
+.chips { display: flex; gap: 7px; flex-wrap: wrap; }
 .chip { padding: 5px 11px; border-radius: 999px; border: 1px solid var(--line); background: var(--panel-solid); color: var(--muted); font-size: 12.5px; font-weight: 500; cursor: pointer; user-select: none; display: inline-flex; gap: 6px; align-items: center; }
 .chip .n { color: var(--faint); font-size: 11.5px; }
 .chip[aria-pressed="true"] { color: #fff; background: var(--c, var(--accent)); border-color: transparent; }
@@ -155,15 +172,19 @@ col.c-date { width: 104px; } col.c-cat { width: 150px; } col.c-st { width: 170px
   </section>
 
   <section class="controls" aria-label="Filters">
-    <div class="row1">
-      <label class="search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
-        <input id="q" type="search" placeholder="Search problems, bounds, references…" aria-label="Search"></label>
-      <select id="cat" aria-label="Category"><option value="">All categories</option></select>
-      <input type="date" id="from" aria-label="Posted from">
-      <input type="date" id="to" aria-label="Posted until">
-    </div>
-    <div class="chips" id="kinds"></div>
-    <div class="chips" id="tags"></div>
+    <details class="filters" id="fbox">
+      <summary><span class="sum-l"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M3 5h18M6 12h12M10 19h4"/></svg>Search and filter</span><span class="active" id="active"></span><span class="chev" aria-hidden="true">▾</span></summary>
+      <div class="fbody">
+        <label class="search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+          <input id="q" type="search" placeholder="Search problems, bounds, references…" aria-label="Search"></label>
+        <div class="row2">
+          <label class="field cat"><span>Category</span><select id="cat"><option value="">All categories</option></select></label>
+          <label class="field"><span>Posted from</span><input type="date" id="from"></label>
+          <label class="field"><span>Posted until</span><input type="date" id="to"></label>
+        </div>
+        <div class="chips"><span id="kinds" class="grp"></span><span class="sep" aria-hidden="true"></span><span id="tags" class="grp"></span></div>
+      </div>
+    </details>
     <div class="meta"><span id="count"></span><button class="linkish" id="reset" type="button">Reset filters</button></div>
   </section>
 
@@ -302,6 +323,8 @@ function render() {
     th.querySelector(".arr").textContent = on ? (st.dir > 0 ? "↑" : "↓") : "↕";
     th.setAttribute("aria-sort", on ? (st.dir > 0 ? "ascending" : "descending") : "none");
   });
+  const act = (st.q ? 1 : 0) + (st.cat ? 1 : 0) + (st.from ? 1 : 0) + (st.to ? 1 : 0) + st.kinds.size + st.tags.size;
+  $("#active").textContent = act ? act + " active" : "";
   $("#count").textContent = `${rows.length} of ${data.length} results`;
   $("#rows").innerHTML = rows.length ? rows.map((d, i) => `
     <tr class="r" data-i="${i}" tabindex="0" aria-expanded="false">
@@ -341,6 +364,7 @@ function initState() {
   (p.get("tag") || "").split(",").filter(Boolean).forEach(k => st.tags.add(k));
   const s = p.get("sort"); if (s) { st.dir = s.startsWith("-") ? -1 : 1; st.sort = s.replace(/^-/, ""); }
   $("#q").value = st.q; $("#from").value = st.from; $("#to").value = st.to;
+  if ([...p.keys()].some(k => k !== "sort")) $("#fbox").open = true;
 }
 let t;
 $("#q").oninput = e => { clearTimeout(t); t = setTimeout(() => { st.q = e.target.value; render(); }, 120); };
