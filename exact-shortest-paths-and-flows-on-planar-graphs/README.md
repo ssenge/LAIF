@@ -834,6 +834,10 @@ standard axioms (`propext`, `Classical.choice`, `Quot.sound`). There is no `sorr
   in $C \log^c n' \cdot (12D + 16) + 1$ rounds (`RData.levelMin_local`). With the index on the cut path as offset at
   the marked copies, this gives the least index on the marked walk of each annulus, and with the index subtracted
   from a bound, the greatest.
+- `lean/SsspFlow/GHatLevelWalk.lean`: walks of the network of a level are walks of $\hat G_\ell$. An edge of finite
+  length stays at one copy with length 0 or is an arc of $\hat G_\ell$ of the same length (`RData.levelStep_cases`),
+  so a walk of finite length gives a walk of $\hat G_\ell$ between the copies of its ends, of the same length, through
+  copies of its nodes only (`RData.walk_project`).
 - `lean/SsspFlow/GHatPhase.lean`: the combinatorics of property (6). Two copies on E_R edges are joined by E_R edges
   exactly when they lie on the path of one piece (`RData.er_comp_iff`), and by E_R and E_C edges exactly when their
   pieces are joined in the token graph (`RData.erc_comp_iff`), whose components are those of the split

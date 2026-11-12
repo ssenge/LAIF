@@ -114,6 +114,7 @@ import SsspFlow.OracleTree
 import SsspFlow.OracleMark
 import SsspFlow.GHatLevelMark
 import SsspFlow.GHatLevelMin
+import SsspFlow.GHatLevelWalk
 import SsspFlow.ListRot
 import SsspFlow.GHatSplit
 import SsspFlow.Annuli

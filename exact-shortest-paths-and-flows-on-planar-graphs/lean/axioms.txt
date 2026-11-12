@@ -725,3 +725,5 @@
 'SsspFlow.RotSystem.RData.levelMark_local' depends on axioms: [propext, Classical.choice, Quot.sound]
 'SsspFlow.RotSystem.RData.zmin_cap' depends on axioms: [propext, Classical.choice, Quot.sound]
 'SsspFlow.RotSystem.RData.levelMin_local' depends on axioms: [propext, Classical.choice, Quot.sound]
+'SsspFlow.RotSystem.RData.levelStep_cases' depends on axioms: [propext, Classical.choice, Quot.sound]
+'SsspFlow.RotSystem.RData.walk_project' depends on axioms: [propext, Classical.choice, Quot.sound]
