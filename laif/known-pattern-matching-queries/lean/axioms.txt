@@ -6,3 +6,12 @@
 'KnownPattern.run_copied' depends on axioms: [propext, Quot.sound]
 'KnownPattern.periodic_occ' depends on axioms: [propext, Quot.sound]
 'KnownPattern.occ_of_parts' depends on axioms: [propext, Quot.sound]
+'KnownPattern.same_class' depends on axioms: [propext, Classical.choice, Quot.sound]
+'KnownPattern.left_fixed_unique' depends on axioms: [propext, Quot.sound]
+'KnownPattern.left_exposed_card' depends on axioms: [propext, Classical.choice, Quot.sound]
+'KnownPattern.occ_iff_outside' does not depend on any axioms
+'KnownPattern.window_lt_of_diff' depends on axioms: [propext, Quot.sound]
+'KnownPattern.window_eq_of_agree' depends on axioms: [Quot.sound]
+'KnownPattern.step_along_run' depends on axioms: [propext, Quot.sound]
+'KnownPattern.min_at_ends' depends on axioms: [propext, Quot.sound]
+'KnownPattern.exclusion_rule' depends on axioms: [propext, Classical.choice, Quot.sound]

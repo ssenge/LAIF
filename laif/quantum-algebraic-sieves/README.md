@@ -9,7 +9,7 @@ The algebraic sieves of [1] and [2] repeat a randomized run until it succeeds. A
 | Problem | Previous best bound | This folder |
 |---|---|---|
 | Hamiltonicity, undirected, n vertices | O*((4(√2 − 1))^n) = O*(1.6569^n) [1] | O*((8/3)^{n/2}) = O*(1.6330^n) |
-| TSP, undirected, positive integer weights of total w | O*(w 1.6569^n) [1]; O*(1.728^n) quantum for any weights, with QRAM [4] | O*(w 1.6330^n) |
+| TSP, undirected, positive integer weights of total w | O*(w 1.6569^n) [1]; O*(1.728^n) quantum for any weights, with QRAM [4], rederived in [5]; a possible gap in the counting of [4] is discussed in [6], which gives O*(1.866^n) | O*(w 1.6330^n) |
 | k-path, undirected | O*(1.6569^k) [2] | O*(1.6330^k) |
 | p-packing of 3-sets | O*(3.3432^p) [2] | O*(2.804^p) |
 | p-packing of 4-sets, 5-sets, 6-sets | O*(7.2562^p), O*(15.072^p), O*(30.82^p) [2] | O*(5.976^p), O*(12.316^p), O*(25.08^p) |
@@ -64,6 +64,10 @@ The packing baselines are the values of [2, Section 4.7], and 30.82 is 1.7707^6 
 [3] M. Boyer, G. Brassard, P. Høyer, A. Tapp. Tight bounds on quantum searching. Fortschr. Phys. 46, 1998. arXiv:quant-ph/9605034.
 
 [4] A. Ambainis, K. Balodis, J. Iraids, M. Kokainis, K. Prūsis, J. Vihrovs. Quantum speedups for exponential-time dynamic programming algorithms. SODA 2019. arXiv:1807.05209.
+
+[5] S. Caroppo, J. Vihrovs, D. Zajakina, A. Zajakins. Quantum time-space tradeoffs for exponential dynamic programming. arXiv:2604.02233.
+
+[6] X. Bai, Y. Shang, H. Lin. Quantum divide-and-conquer for the traveling salesman problem: surpassing the 2^n barrier. arXiv:2606.07322.
 
 ## Use of AI
 
