@@ -1,0 +1,8 @@
+ChicagoSketch x1.0 size 15 hops 1: cells 71, cold 1.410 x ff, msgs 0.268 of flat, state per node mean 109 max 132 (flat 387)
+ChicagoSketch x1.0 size 15 hops 2: cells 71, cold 1.388 x ff, msgs 0.413 of flat, state per node mean 167 max 218 (flat 387)
+ChicagoSketch x1.0 size 30 hops 1: cells 38, cold 1.408 x ff, msgs 0.267 of flat, state per node mean 110 max 147 (flat 387)
+ChicagoSketch x1.0 size 30 hops 2: cells 38, cold 1.391 x ff, msgs 0.504 of flat, state per node mean 203 max 249 (flat 387)
+ChicagoSketch x1.0 size 60 hops 1: cells 21, cold 1.397 x ff, msgs 0.344 of flat, state per node mean 140 max 205 (flat 387)
+ChicagoSketch x1.0 size 60 hops 2: cells 21, cold 1.381 x ff, msgs 0.670 of flat, state per node mean 264 max 356 (flat 387)
+ChicagoSketch x1.0 size 120 hops 1: cells 10, cold 1.369 x ff, msgs 0.586 of flat, state per node mean 233 max 350 (flat 387)
+ChicagoSketch x1.0 size 120 hops 2: cells 10, cold 1.380 x ff, msgs 0.985 of flat, state per node mean 382 max 397 (flat 387)

@@ -1,0 +1,3 @@
+cells 38 sizes 1 74 messages hier/flat (np.int64(304878), 1141650)
+flat cold mean 20.344 left 8.788195611010615e-07 27s
+hier cold mean 20.55 left 9.67092416774478e-07 26s

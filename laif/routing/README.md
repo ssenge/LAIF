@@ -66,6 +66,24 @@ On these networks the system optimum is too large to solve. The bound is the mea
 
 The price scheme has the shortest mean trip in four of the five settings. On Anaheim at ×0.8, DUE stays ahead, by 2.0 points.
 
+### Chicago Sketch, two-level routing
+
+In flat APDV every node keeps a distance to every destination: 387 table entries per node on Chicago Sketch. The two-level version groups the nodes into cells by recursive bisection of the road graph, with at most s nodes per cell. A destination is advertised exactly only inside its zone: the cells from which the destination's cell can be reached within h cell crossings, using distances inside that zone. Every node also keeps one distance per cell, to the nearest destination in it. A node splits the traffic for a destination by logit on its exact distance if it has one, and otherwise on the distance to the destination's cell. Along a split the cell distance strictly decreases, and a node with an exact distance sends only to nodes with a smaller one, so the routing stays loop-free. Prices are as in the flat version.
+
+| Cell size s, zone h | Cells | Mean trip / free flow | Messages per period / flat | Table entries per node (mean) |
+|---|---|---|---|---|
+| flat | | 1.394 | 1 | 387 |
+| 15, 1 | 71 | 1.410 | 0.268 | 109 |
+| **30, 1** | 38 | 1.408 | **0.267** | **110** |
+| 60, 1 | 21 | 1.397 | 0.344 | 140 |
+| 120, 1 | 10 | 1.369 | 0.586 | 233 |
+| 15, 2 | 71 | 1.388 | 0.413 | 167 |
+| 30, 2 | 38 | 1.391 | 0.504 | 203 |
+| 60, 2 | 21 | 1.381 | 0.670 | 264 |
+| 120, 2 | 10 | 1.380 | 0.985 | 382 |
+
+All rows are the cold start (g = 3, no profile, no holding) at ×1.0 of the demand. With cells of at most 30 nodes and a zone of one cell crossing, a node keeps 110 entries instead of 387, and the messages per period fall to 0.27 of flat APDV, at a mean trip 1% above flat. Over all settings the mean trip lies between 1.8% below and 1.1% above flat. A message here is one advertisement over one link: a destination over each link inside its zone, plus each cell over every link.
+
 ### Message cost
 
 Prices change every minute, so APDV advertises every destination every period: at most |D| · m messages per period for |D| destinations and m links. With triggered updates, a link re-advertises only when its travel time, price or queue delay moved by more than a threshold ε since its last advertisement, and a node relays a destination only when its distance changed.
@@ -107,7 +125,7 @@ All quantities are local to a link or a node. The only information exchanged is 
 
 The results are numerical. No part is formalized in Lean.
 
-- **Scope:** three networks; demand released at a constant rate over 60 minutes; the cell model with origins that release at most the capacity of their out-links per step, with a non-FIFO node model, in which a blocked turn holds back only its own traffic, which waits in the last cell of the link and takes up its capacity, and on Sioux Falls also with the strict FIFO node model of [5]; on Anaheim and Chicago Sketch only the free-flow bound; the per-vehicle check on Sioux Falls only, without learning or origin holding; message counts are counted, not sent through a simulated network with delays or losses.
+- **Scope:** three networks; demand released at a constant rate over 60 minutes; the cell model with origins that release at most the capacity of their out-links per step, with a non-FIFO node model, in which a blocked turn holds back only its own traffic, which waits in the last cell of the link and takes up its capacity, and on Sioux Falls also with the strict FIFO node model of [5]; on Anaheim and Chicago Sketch only the free-flow bound; the two-level routing on Chicago Sketch at ×1.0 from a cold start only; the per-vehicle check on Sioux Falls only, without learning or origin holding; message counts are counted, not sent through a simulated network with delays or losses.
 - **Lower bound:** `dnl.check_dso` checks that at light load the linear program gives exactly the free-flow run, and that a capacity drop raises it while the simulated run stays above it. The bounds are solved with the first-order solver of HiGHS [10], with nothing left in the network at the horizon.
 - **Cell model:** `dnl.check` tests the node model on merges and diverges, and at light load the mean trip equals the free-flow mean; without congestion the prices stay at zero, learned or not; with ε = 0 the triggered run equals the exact one; after pruning, every split share is 0 or at least the threshold, and the shares at each node sum to 1.
 - **Per-vehicle simulator:** `vehicles.check` gives a light-load mean trip of 8.550 minutes against a free-flow mean of 8.530 minutes. UXsim drops the last partial platoon of each origin-destination pair (under 1% of the trips), and means are over the generated trips.
@@ -117,10 +135,10 @@ The results are numerical. No part is formalized in Lean.
 
 `sim/` holds the code and the raw output (`sim/out/`):
 
-- `dnl.py`: the cell model, APDV on travel times, price-based APDV (`Price`), DUE, the system-optimum LP (`dso`) and the day-to-day learning (`learn`);
+- `dnl.py`: the cell model, APDV on travel times, price-based APDV (`Price`), its two-level version (`cells`, `Hier`), DUE, the system-optimum LP (`dso`) and the day-to-day learning (`learn`);
 - `static.py`: static UE and SO by conjugate Frank-Wolfe [6]; `logit.py`: the logit split [9]; `net.py`: the network loader; `vehicles.py`: the per-vehicle runs in UXsim;
 - `common.py`: the configuration of the price scheme used in every table (`fifo_aware` for the FIFO table);
-- `sioux_falls.py`, `baselines.py`, `drift.py`, `fifo.py`, `scenarios.py`, `large.py`, `messages.py`, `per_vehicle.py`: one script per table, with the outputs `out/sioux_falls.txt`, `out/baselines.txt`, `out/drift.txt`, `out/fifo.txt`, `out/scen_*.txt`, `out/large_*.txt`, `out/messages_*.txt`, `out/per_vehicle.txt`; `out/dso_SiouxFalls_*.md` from `python dnl.py dso SiouxFalls 1 F` (the bound).
+- `sioux_falls.py`, `baselines.py`, `drift.py`, `fifo.py`, `scenarios.py`, `large.py`, `hierarchy.py`, `hierarchy_flat.py`, `messages.py`, `per_vehicle.py`: one script per table, with the outputs `out/sioux_falls.txt`, `out/baselines.txt`, `out/drift.txt`, `out/fifo.txt`, `out/scen_*.txt`, `out/large_*.txt`, `out/hierarchy*_ChicagoSketch.txt`, `out/messages_*.txt`, `out/per_vehicle.txt`; `out/dso_SiouxFalls_*.md` from `python dnl.py dso SiouxFalls 1 F` (the bound).
 
 To run them, place the networks of [1] in `sim/data/tntp/` (for example `git clone https://github.com/bstabler/TransportationNetworks sim/data/tntp`) and install numpy, scipy, numba, highspy and uxsim.
 

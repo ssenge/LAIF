@@ -275,7 +275,7 @@ def _soft_alpha(indptr, head, lid, order, dff, t, theta, alpha):
             v = order[b, r]
             if v < 0:
                 break
-            if r == 0:
+            if df[v] == 0.0:  # the destination, or every sink of a multi-sink field
                 V[v] = 0.0
                 continue
             m = np.inf
@@ -440,13 +440,14 @@ class Price:
     (APDV can carry both distances). lmax: price cap (min), applied to the virtual queue too (anti-windup). eps (min): triggered updates; a link re-advertises its base
     time, price and queue delay only when one moved by more than eps since its last advertisement, and routing uses
     the advertised values. Then self.msg holds per period (links re-advertised, distance-vector messages: every node
-    whose distance to a destination changed relays it to each predecessor). tmin: split shares below tmin are dropped
+    whose distance to a destination changed relays it to each predecessor). hier (a Hier): two-level routing, see
+    Hier; the hold then uses the cell distances. tmin: split shares below tmin are dropped
     and the rest renormalised (strict FIFO node model: any share toward a full link blocks the whole in-link)."""
 
     def __init__(self, a0, base="fft", g=1.0, rho=0.95, p=0.1, U=1, lam0=None, soft=None, sig="dem", dyn=False,
-                 prof=None, down=False, hold=None, lmax=None, eps=None, tmin=None):
+                 prof=None, down=False, hold=None, lmax=None, eps=None, tmin=None, hier=None):
         self.a0, self.base, self.g, self.rho, self.p, self.U, self.lam0, self.lmax = a0, base, g, rho, p, U, lam0, lmax
-        self.eps, self.msg, self.tmin = eps, [], tmin
+        self.eps, self.msg, self.tmin, self.hier = eps, [], tmin, hier
         self.soft, self.sig, self.dyn, self.prof, self.down, self.hold = soft, sig, dyn, prof, down, hold
         self.meter = self.release if hold is not None else None
 
@@ -489,7 +490,9 @@ class Price:
                 nl = nl | up
             c, lam, d1 = self.adv
             nl = int(np.sum(nl)) if k else sim.G.m
-        if self.soft is None:  # with p < 1, averaging successive SP trees can close cycles (flow circulates, isn't lost)
+        if self.hier is not None:
+            ar = self.hier.alpha(c + lam, self.soft.theta)
+        elif self.soft is None:  # with p < 1, averaging successive SP trees can close cycles (flow circulates, isn't lost)
             ar = sp_alpha(sim.G, c + lam)
         else:
             sf, ar = self.soft, np.zeros_like(self.alpha)
@@ -504,7 +507,8 @@ class Price:
         self.alpha = (1 - self.p) * self.alpha + self.p * ar
         if self.hold is not None:
             G = sim.G
-            d0, dq = G.shortest(c, G.dest)[0], G.shortest(c + d1, G.dest)[0]
+            sh = self.hier.dist if self.hier is not None else (lambda x: G.shortest(x, G.dest)[0])
+            d0, dq = sh(c), sh(c + d1)
             with np.errstate(invalid="ignore"):  # unreachable pairs: inf - inf, masked
                 self.P = self.hold * np.where(np.isfinite(d0), dq - d0, 0.0)[:, G.orig].T
         if self.eps is not None:  # one ADV carries all distances of (node, destination)
@@ -514,6 +518,102 @@ class Price:
             self.dists = ds
             self.msg.append((nl, int((ch * self.indeg[None, :]).sum())))
         return self.alpha
+
+
+def cells(G, size):
+    """Cell id per node: recursive bisection of the through graph (double sweep, median split of d_a - d_b, as
+    undirected), at most size nodes per cell; centroids join the cell of a neighbour."""
+    import scipy.sparse as sp
+    import scipy.sparse.csgraph as csg
+    g, N = G.g, G.N
+    out = np.bincount(G.tail, minlength=N) > 0
+    thr = (G.tail < g.n) & out[g.head]  # links between through nodes (not from origin copies, not into sinks)
+    U = sp.csr_matrix((g.fft[thr], (G.tail[thr], g.head[thr])), shape=(N, N))
+    U = (U + U.T).tocsr()
+    lab, k, todo = np.full(N, -1), 0, [np.unique(np.r_[G.tail[thr], g.head[thr]])]
+    while todo:
+        nodes = todo.pop()
+        sub = U[nodes][:, nodes]
+        nc, comp = csg.connected_components(sub, directed=False)
+        if nc > 1:
+            todo += [nodes[comp == c] for c in range(nc)]
+        elif len(nodes) <= size:
+            lab[nodes], k = k, k + 1
+        else:
+            fa = csg.dijkstra(sub, directed=False, indices=0)
+            da = csg.dijkstra(sub, directed=False, indices=int(np.argmax(fa)))
+            db = csg.dijkstra(sub, directed=False, indices=int(np.argmax(da)))
+            o = np.argsort(da - db, kind="stable")
+            todo += [nodes[o[:len(o) // 2]], nodes[o[len(o) // 2:]]]
+    while (lab < 0).any():  # centroids (and through nodes off the main graph): take a labelled neighbour's cell
+        a, b, n0 = G.tail, g.head, (lab < 0).sum()
+        for x, y in ((a, b), (b, a)):
+            m = (lab[x] < 0) & (lab[y] >= 0)
+            lab[x[m]] = lab[y[m]]
+        assert (lab < 0).sum() < n0, "nodes without a labelled neighbour"
+    return lab
+
+
+class Hier:
+    """Two-level price-based APDV. Nodes are grouped into cells (cells()). A destination d in cell k is advertised
+    exactly only inside its zone, the cells from which k is reached within `hops` cell crossings (distances within
+    the zone); every node also keeps one distance per cell, to the nearest destination in it. A node splits traffic
+    for d by logit on the exact distance when it has one, else on the distance to d's cell. Loop-free: along a split
+    the cell distance strictly decreases, and a node with an exact distance only sends to nodes with a smaller one.
+    State per node: the zone destinations plus one entry per cell."""
+
+    def __init__(self, G, soft, size, hops=1):
+        import scipy.sparse as sp
+        self.G, self.sf, self.lab = G, soft, cells(G, size)
+        K = self.K = self.lab.max() + 1
+        a, b = self.lab[G.tail], self.lab[G.g.head]
+        C = sp.csr_matrix((np.ones(G.m), (a, b)), shape=(K, K))  # cell graph, with self loops
+        C.data[:] = 1
+        R = sp.identity(K, format="csr")
+        for _ in range(hops):
+            R = R + R @ C.T  # cells reaching k within one more crossing
+            R.data[:] = 1
+        zone = [R[k].indices for k in range(K)]
+        nz = np.array([np.isin(self.lab, zone[k]) for k in range(K)])  # [k, node]: node lies in zone k
+        self.state = (np.bincount(self.lab[G.dest], minlength=K) @ nz) + K  # table entries per node
+        self.dk = self.lab[G.dest]  # destination -> cell
+        self.inz = [np.isin(a, zone[k]) & np.isin(b, zone[k]) for k in range(K)]  # links inside zone k
+        self.sinks = [G.dest[self.dk == k] for k in range(K)]
+
+    def _fields(self, t):
+        """Distances (D x N): exact within the zone where finite, else BIG; and per cell (K x N)."""
+        G, D = self.G, len(self.G.dest)
+        F = np.empty((self.K, G.N))
+        Z = np.full((D, G.N), np.inf)
+        for k in range(self.K):
+            if len(self.sinks[k]):
+                F[k] = G.shortest(t, self.sinks[k])[0].min(axis=0)
+                js = np.flatnonzero(self.dk == k)
+                Z[js] = G.shortest(np.where(self.inz[k], t, np.inf), G.dest[js])[0]
+            else:
+                F[k] = np.inf
+        return Z, F
+
+    def dist(self, t):
+        """Distance of every node to every destination's cell (D x N), for the hold."""
+        return self._fields(t)[1][self.dk]
+
+    def alpha(self, t, theta):
+        sf, G = self.sf, self.G
+        Z, F = self._fields(t)
+        order = lambda d: np.where(np.isfinite(np.take_along_axis(d, o := np.argsort(d, axis=1, kind="stable"), 1)), o, -1)
+        az, ac = np.zeros((len(G.dest), G.m)), np.zeros((self.K, G.m))
+        _soft_alpha(sf.indptr, sf.head, sf.lid, order(Z), Z, t, theta, az)
+        _soft_alpha(sf.indptr, sf.head, sf.lid, order(F), F, t, theta, ac)
+        exact = np.isfinite(Z)[:, G.tail]  # [d, link]: the link's tail has an exact distance to d
+        self.last = Z, F
+        return np.where(exact, az, ac[self.dk])
+
+    def messages(self):
+        """ADVs per period: zone destinations over the links inside their zone, plus every cell over all links;
+        flat APDV: |D| x m."""
+        zone = sum(int((self.dk == k).sum()) * int(self.inz[k].sum()) for k in range(self.K))
+        return zone + self.K * self.G.m, len(self.G.dest) * self.G.m
 
 
 def due(sim, a0, iters, log=None, b0=10.0, up=2.0, down=0.5):
