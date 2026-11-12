@@ -10,9 +10,9 @@ together with an interval that attains it. Classically this takes Θ(n) queries 
 
 | | Problem | Previous best bound | This folder | Status |
 |---|---|---|---|---|
-| Thm 1 | OPT exactly, H distinct heights | O(n) queries | O(√(nH) log n log log n) queries | Claim |
+| Thm 1 | OPT exactly, H distinct heights | O(n) queries | O(√(nH) log n log log n) queries | Claim; Lean for the combinatorial lemmas |
 | Cor 2 | OPT exactly, heights in a known set of H values | O(n) queries | O(√(nH) log log n) queries | Claim |
-| Thm 3 | OPT within a factor 1 + ε | O(n) queries | O(√(n log n / ε) · log log n) queries | Claim |
+| Thm 3 | OPT within a factor 1 + ε | O(n) queries | O(√(n log n / ε) · log log n) queries | Claim; Lean for the threshold grid |
 | | Lower bound, any factor, H = 2 | | Ω(√n) queries | Claim |
 
 So a constant number of distinct heights, or a constant approximation factor, gives Θ̃(√n).
@@ -58,6 +58,19 @@ Each t_b · L(t_b) is the area of a rectangle, so it is at most OPT. Conversely,
 There are B + 1 = O(log n / ε) values, and maximum finding over them with a bounded-error evaluation [4], each L(t_b) from [1], gives the bound. The search for m and this maximum finding each run with error at most 1/6. ∎
 
 **Lower bound.** With heights in {0, 1}, OPT = 0 iff all heights are 0. Every approximation within any factor decides this OR of n bits, which needs Ω(√n) quantum queries [5].
+
+## Lean
+
+The library `Histogram` in `lean/` (Lean 4, Mathlib at the revision pinned in `lean/lakefile.toml`) proves, with only the standard axioms (`lean/axioms.txt`), for heights h : ℤ → ℝ:
+
+- `min_is_record`, with `exists_recL` and `exists_recR`: Lemma 1(a).
+- `first_below_isRecL`: Lemma 1(b) on the left; the right side is its mirror image.
+- `recL_strict`, `card_recL_le`: the heights of the left records strictly increase towards p, so in every finite set of positions the left records number at most the distinct heights; the right side is the mirror image.
+- `cover`: Lemma 2.
+- `sum_sqrt_le`: R searches with distances of sum S cost Σ √g_i ≤ √(RS).
+- `grid`, `approx`: the threshold step of Theorem 3. For m/(1 + ε)^B ≤ v ≤ m, some b ≤ B has m/(1 + ε)^b ≤ v ≤ (1 + ε) · m/(1 + ε)^b, and then a rectangle of height v and width W ≤ L(t_b) has area at most (1 + ε) t_b L(t_b).
+
+Not formalized: the quantum subroutines and their error reduction, the computation of the best rectangle in a window from the records, and the counting of queries in Theorems 1 and 3 and Corollary 2.
 
 ## Scripts
 
