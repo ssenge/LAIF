@@ -183,6 +183,7 @@ import SsspFlow.GHatPieceAll
 import SsspFlow.GHatLevelMasks
 import SsspFlow.GHatLevelFlags
 import SsspFlow.GHatLevelPrep
+import SsspFlow.GHatLevelNodeLocal
 import SsspFlow.ListRot
 import SsspFlow.GHatSplit
 import SsspFlow.Annuli
