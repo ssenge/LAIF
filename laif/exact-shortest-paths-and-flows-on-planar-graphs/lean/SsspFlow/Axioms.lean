@@ -853,3 +853,5 @@ Expected output for each: `propext`, `Classical.choice`, `Quot.sound` (or a subs
 #print axioms SsspFlow.RotSystem.CutPath.Run.corner_eq
 #print axioms SsspFlow.Congest.Net.ExactSpec.chain_any
 #print axioms SsspFlow.RotSystem.RData.chain_corner
+#print axioms SsspFlow.RotSystem.RData.bcast_eq
+#print axioms SsspFlow.RotSystem.RData.levelBcast_local
