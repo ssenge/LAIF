@@ -1024,6 +1024,8 @@ standard axioms (`propext`, `Classical.choice`, `Quot.sound`). There is no `sorr
 - `lean/SsspFlow/SideCorners.lean`: the corners of the two sides of an annulus lie on its boundary, and a walk of an annulus of a level of a run visits no corner of a side of another annulus of the same level.
 - `lean/SsspFlow/GHatChainCorners.lean`: local flags of the nodes for chosen corners of the sides; on the chain of a target they detect exactly the corners of its annulus, and after a counting run the root of the chain knows whether a node of the chain is flagged.
 - `lean/SsspFlow/GHatBroadcast.lean`: one algorithm of the message model, a run of the oracle with token lengths `0`, that gives every copy the offset of the only source in its component of E_R and E_C edges.
+- `lean/SsspFlow/GHatLevelNext.lean`: the input of a node for the next level, from its input for the current level and one bit per neighbour for the new incised darts; the cut corners, modes and hosts stay, and the token lengths follow from the costs of the darts.
+- `lean/SsspFlow/GHatStepBit.lean`: the test that decides the darts of a step is a bit of a single copy, read from its own outputs and the arc to its parent; every copy with this bit lies on the chain of a target, and its dart ends at the host of the copy and at the neighbour in its name.
   Assuming the Exact SSSP bound, the algorithm of `RData.levelI12_local` started from the sources and targets of the
   annuli of a level holds, capped at $M$, the least index and $m$ minus the greatest index at the target of every
   annulus of the level, for the shortest walk of the annulus that the darts of the chain of the target form

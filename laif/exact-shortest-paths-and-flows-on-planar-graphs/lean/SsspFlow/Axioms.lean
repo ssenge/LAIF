@@ -855,3 +855,9 @@ Expected output for each: `propext`, `Classical.choice`, `Quot.sound` (or a subs
 #print axioms SsspFlow.RotSystem.RData.chain_corner
 #print axioms SsspFlow.RotSystem.RData.bcast_eq
 #print axioms SsspFlow.RotSystem.RData.levelBcast_local
+#print axioms SsspFlow.RotSystem.RData.lamAt_cc
+#print axioms SsspFlow.RotSystem.RData.levelIn_next
+#print axioms SsspFlow.Congest.Net.ExactSpec.chain_of_markW
+#print axioms SsspFlow.RotSystem.RData.edgeTok_host
+#print axioms SsspFlow.RotSystem.RData.crit_iff
+#print axioms SsspFlow.RotSystem.RData.stepBit_chain

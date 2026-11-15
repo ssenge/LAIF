@@ -153,6 +153,8 @@ import SsspFlow.GHatLevelNodeRun
 import SsspFlow.SideCorners
 import SsspFlow.GHatChainCorners
 import SsspFlow.GHatBroadcast
+import SsspFlow.GHatLevelNext
+import SsspFlow.GHatStepBit
 import SsspFlow.ListRot
 import SsspFlow.GHatSplit
 import SsspFlow.Annuli
