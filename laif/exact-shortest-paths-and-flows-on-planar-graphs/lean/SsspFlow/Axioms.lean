@@ -996,3 +996,6 @@ Expected output for each: `propext`, `Classical.choice`, `Quot.sound` (or a subs
 #print axioms SsspFlow.RotSystem.CutPath.pickF_top_leaf
 #print axioms SsspFlow.RotSystem.RData.lv_steps_succ
 #print axioms SsspFlow.RotSystem.RData.next_range
+#print axioms SsspFlow.RotSystem.RData.qEnd_eq
+#print axioms SsspFlow.RotSystem.RData.lv_mid_succ
+#print axioms SsspFlow.RotSystem.RData.lvCSt_succ
