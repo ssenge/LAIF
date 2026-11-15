@@ -1016,3 +1016,11 @@ Expected output for each: `propext`, `Classical.choice`, `Quot.sound` (or a subs
 #print axioms SsspFlow.RotSystem.RData.cpId_spec
 #print axioms SsspFlow.RotSystem.RData.ixOf_spec
 #print axioms SsspFlow.RotSystem.RData.pieceFlag_iff
+#print axioms SsspFlow.RotSystem.RData.locTest_eq
+#print axioms SsspFlow.RotSystem.RData.srcOff_eq
+#print axioms SsspFlow.RotSystem.RData.tgtFlag_eq
+#print axioms SsspFlow.RotSystem.RData.nodeFlag_iff
+#print axioms SsspFlow.RotSystem.RData.cornerFlag_iff
+#print axioms SsspFlow.RotSystem.RData.cpId_host
+#print axioms SsspFlow.RotSystem.RData.iterData_prep
+#print axioms SsspFlow.RotSystem.RData.levelPrep_local
