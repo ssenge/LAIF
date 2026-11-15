@@ -1008,3 +1008,5 @@ Expected output for each: `propext`, `Classical.choice`, `Quot.sound` (or a subs
 #print axioms Cslib.Congest.Algorithm.run_minFlood
 #print axioms SsspFlow.RotSystem.RData.onCopies_flag0
 #print axioms SsspFlow.RotSystem.RData.run_u0
+#print axioms SsspFlow.RotSystem.RData.u0Test_eq
+#print axioms SsspFlow.RotSystem.RData.levelU0_local
