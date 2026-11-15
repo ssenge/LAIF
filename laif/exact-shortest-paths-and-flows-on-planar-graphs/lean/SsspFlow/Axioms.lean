@@ -942,3 +942,10 @@ Expected output for each: `propext`, `Classical.choice`, `Quot.sound` (or a subs
 #print axioms SsspFlow.RotSystem.RData.lv_kids
 #print axioms SsspFlow.RotSystem.RData.mid_inside
 #print axioms SsspFlow.RotSystem.RData.next_mid_iff
+#print axioms SsspFlow.RotSystem.RData.hostOf_endV
+#print axioms SsspFlow.RotSystem.RData.copyVal0_lstR
+#print axioms SsspFlow.RotSystem.RData.copyVal0_star
+#print axioms SsspFlow.RotSystem.RData.tokVal_nameD0
+#print axioms SsspFlow.RotSystem.RData.locCopy_eq0
+#print axioms SsspFlow.RotSystem.RData.copyVal0_flag
+#print axioms SsspFlow.RotSystem.RData.onCopies_endFlag

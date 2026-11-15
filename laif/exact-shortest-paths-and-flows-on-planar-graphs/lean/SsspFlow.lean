@@ -166,7 +166,9 @@ import SsspFlow.RunKappa
 import SsspFlow.GHatRegion
 import SsspFlow.GHatLevelBcast
 import SsspFlow.RunKids
-import SsspFlow.GHatLevelRoot import SsspFlow.GHatLevelKids
+import SsspFlow.GHatLevelRoot
+import SsspFlow.GHatLevelKids
+import SsspFlow.GHatCornerLocal
 import SsspFlow.ListRot
 import SsspFlow.GHatSplit
 import SsspFlow.Annuli
