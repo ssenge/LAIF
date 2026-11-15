@@ -909,3 +909,13 @@ Expected output for each: `propext`, `Classical.choice`, `Quot.sound` (or a subs
 #print axioms SsspFlow.RotSystem.RData.levelPieceVal_local
 #print axioms SsspFlow.RotSystem.RData.copyPiece_iff
 #print axioms SsspFlow.RotSystem.RData.cutIdx_top_or_lt
+#print axioms SsspFlow.RotSystem.CutPath.Live.below_refl
+#print axioms SsspFlow.RotSystem.CutPath.Live.Below.trans
+#print axioms SsspFlow.RotSystem.CutPath.Live.below_lo
+#print axioms SsspFlow.RotSystem.CutPath.Live.below_hi
+#print axioms SsspFlow.RotSystem.CutPath.Run.below_nodes
+#print axioms SsspFlow.RotSystem.CutPath.Run.mid_corners
+#print axioms SsspFlow.RotSystem.exists_walk_of_gcomp
+#print axioms SsspFlow.RotSystem.RData.region_walk
+#print axioms SsspFlow.RotSystem.RData.region_erc
+#print axioms SsspFlow.RotSystem.RData.region_erc_mid

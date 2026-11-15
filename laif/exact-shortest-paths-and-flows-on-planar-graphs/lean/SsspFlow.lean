@@ -162,6 +162,8 @@ import SsspFlow.GHatLevelPick
 import SsspFlow.GHatPieceMin
 import SsspFlow.GHatPieceLocal
 import SsspFlow.GHatPieceRun
+import SsspFlow.RunKappa
+import SsspFlow.GHatRegion
 import SsspFlow.ListRot
 import SsspFlow.GHatSplit
 import SsspFlow.Annuli
