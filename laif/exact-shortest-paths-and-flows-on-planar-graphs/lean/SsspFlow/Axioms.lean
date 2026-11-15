@@ -1025,3 +1025,7 @@ Expected output for each: `propext`, `Classical.choice`, `Quot.sound` (or a subs
 #print axioms SsspFlow.RotSystem.RData.iterData_prep
 #print axioms SsspFlow.RotSystem.RData.levelPrep_local
 #print axioms SsspFlow.RotSystem.RData.levelNode_local
+#print axioms SsspFlow.RotSystem.RData.cornerName_eq
+#print axioms SsspFlow.RotSystem.RData.onCopies_endPay
+#print axioms SsspFlow.RotSystem.RData.endVal_map
+#print axioms SsspFlow.RotSystem.RData.levelPay_local

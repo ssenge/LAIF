@@ -28,13 +28,15 @@ open Classical Cslib.Congest.Algorithm in
 /-- **The data of the nodes of a level from local values, as one algorithm.** The statement of
 `RData.levelNode_run`, with the inputs of the level computed by the algorithm of
 `RData.levelPrep_local` from the values at the corners, numbered `0` to `7` as there. The flags of the
-targets, of the nodes and of the corners of the sides are those of the list `Q`. -/
+targets, of the nodes and of the corners of the sides are those of the list `Q`, and the algorithm
+also gives them, with the offsets of the sources, at the host of each identifier. -/
 theorem levelNode_local (hE : ExactSsspBound) (K : ℕ) : ∃ C c : ℕ, ∀ n D : ℕ,
     ∃ (σ : Type) (A : Cslib.Congest.Algorithm (Fin n)
         (LevelIn n × (ℕ → (Fin n → Bool → ℕ∞) × (Fin n → Bool → ℕ∞))) σ
         (4 * (C * logN (n * (n * 21)) ^ c + 3) + (3 * (K * logN (n * (n * 21)) + 1) + 5)))
       (T : ℕ) (rr r₂ r₃ rA rB : Fin (n * (n * 21)) → σ → ℕ∞ × Option (Fin (n * (n * 21))))
-      (o1 o2 : Fin (n * (n * 21)) → σ → ℕ∞),
+      (o1 o2 : Fin (n * (n * 21)) → σ → ℕ∞) (offO : Fin (n * (n * 21)) → σ → ℕ∞)
+      (flgO : Fin (n * (n * 21)) → σ → Bool × Bool × Bool) (cflO : Fin (n * (n * 21)) → σ → Bool × Bool),
     T ≤ 23 + 15 * (C * logN (n * (n * 21)) ^ c * (12 * D + 16)) ∧
     ∀ (N : Net (Fin n)) (S : N.toRot.RData) (hN : ∀ u, ∃ w, N.G.Adj u w)
       {Cp : N.toRot.dual.CutPath} {g : N.G.Dart → ℝ≥0∞} {hR : N.toRot.dual.Planar}
@@ -66,6 +68,8 @@ theorem levelNode_local (hE : ExactSsspBound) (K : ℕ) : ∃ C c : ℕ, ∀ n D
         (decide (S.cornerFlag hN Q (fun A c => A.2.CornerA c) a), decide (S.cornerFlag hN Q (fun A c => A.2.CornerB c) a))
       let st := A.run N.G (fun w => (S.levelIn hN lam M u₀ w, vals w)) T
       let R := fun a => rr a (st (hostOf a))
+      (∀ a, offO a (st (hostOf a)) = S.srcOff hN Q a ∧ flgO a (st (hostOf a)) = flg (hostOf a) a ∧
+        cflO a (st (hostOf a)) = cfl (hostOf a) a) ∧
       (S.levelNet hN).ExactSpec (S.levelLen hN lam M) (S.srcOff hN Q) R ∧
       R = hE.oracleRun K (12 * D + 16) (by omega) (S.levelNet hN) (S.levelLen hN lam M) (S.srcOff hN Q) ∧
       (S.levelNet hN).ExactSpec (Net.markLenW R fun a => (((flg (hostOf a) a).2.1).toNat : ℕ∞))
@@ -128,12 +132,18 @@ theorem levelNode_local (hE : ExactSsspBound) (K : ℕ) : ∃ C c : ℕ, ∀ n D
   let f : Fin n → J × σ₁ → LevelIn n × ((((Fin (n * (n * 21)) → ℕ∞) × (Fin (n * (n * 21)) → Bool × Bool × Bool)) ×
       ((Fin (n * (n * 21)) → ℕ∞) × (Fin (n * (n * 21)) → ℕ∞))) × (Fin (n * (n * 21)) → Bool × Bool)) :=
     fun w p => (p.1.1, (((off₁ w p.2, flg₁ w p.2), (ixL₁ w p.2, jxL₁ w p.2)), cfl₁ w p.2))
-  let A := ((A₁.widen hw₁).keep (fun _ (i : J) => i)).seq T₁ f (A₂.widen hw₂)
-  let fin : ∀ {β : Type}, β → (σ₂ → β) → ((ℕ × (J × σ₁)) ⊕ σ₂) → β := fun d F => Sum.elim (fun _ => d) F
+  let J₂ := LevelIn n × ((((Fin (n * (n * 21)) → ℕ∞) × (Fin (n * (n * 21)) → Bool × Bool × Bool)) ×
+      ((Fin (n * (n * 21)) → ℕ∞) × (Fin (n * (n * 21)) → ℕ∞))) × (Fin (n * (n * 21)) → Bool × Bool))
+  let A := ((A₁.widen hw₁).keep (fun _ (i : J) => i)).seq T₁ f ((A₂.widen hw₂).keep (fun _ (i : J₂) => i))
+  let fin : ∀ {β : Type}, β → (J₂ × σ₂ → β) → ((ℕ × (J × σ₁)) ⊕ (J₂ × σ₂)) → β :=
+    fun d F => Sum.elim (fun _ => d) F
   refine ⟨_, A, T₁ + T₂,
-    fun a => fin (⊤, none) (rr a), fun a => fin (⊤, none) (r₂ a), fun a => fin (⊤, none) (r₃ a),
-    fun a => fin (⊤, none) (rA a), fun a => fin (⊤, none) (rB a),
-    fun a => fin 0 (o1 a), fun a => fin 0 (o2 a), ?_, ?_⟩
+    fun a => fin (⊤, none) (fun q => rr a q.2), fun a => fin (⊤, none) (fun q => r₂ a q.2),
+    fun a => fin (⊤, none) (fun q => r₃ a q.2), fun a => fin (⊤, none) (fun q => rA a q.2),
+    fun a => fin (⊤, none) (fun q => rB a q.2), fun a => fin 0 (fun q => o1 a q.2),
+    fun a => fin 0 (fun q => o2 a q.2), fun a => fin ⊤ (fun q => q.1.2.1.1.1 a),
+    fun a => fin (false, false, false) (fun q => q.1.2.1.1.2 a), fun a => fin (false, false) (fun q => q.1.2.2 a),
+    ?_, ?_⟩
   · have h : Cq * logN (n * (n * 21)) ^ cq * (12 * D + 16) ≤
         (Cq + Cn) * logN (n * (n * 21)) ^ (cq + cn) * (12 * D + 16) := Nat.mul_le_mul_right _ hm₁
     have h' : Cn * logN (n * (n * 21)) ^ cn * (12 * D + 16) ≤
@@ -155,13 +165,15 @@ theorem levelNode_local (hE : ExactSsspBound) (K : ℕ) : ∃ C c : ℕ, ∀ n D
         decide (S.cornerFlag hN Q (fun A c => A.2.CornerB c) a)) := hcfl
   simp only [hflg', hcfl'] at hnode
   have hrun : A.run N.G (fun w => (S.levelIn hN lam M u₀ w, vals w)) (T₁ + T₂) =
-      fun w => .inr (A₂.run N.G (fun w => (S.levelIn hN lam M u₀ w, (((off₁ w (stP w), flg₁ w (stP w)),
-        (ixL₁ w (stP w), jxL₁ w (stP w))), cfl₁ w (stP w)))) T₂ w) := by
+      fun w => .inr ((S.levelIn hN lam M u₀ w, (((off₁ w (stP w), flg₁ w (stP w)),
+        (ixL₁ w (stP w), jxL₁ w (stP w))), cfl₁ w (stP w))), A₂.run N.G (fun w => (S.levelIn hN lam M u₀ w,
+          (((off₁ w (stP w), flg₁ w (stP w)), (ixL₁ w (stP w), jxL₁ w (stP w))), cfl₁ w (stP w)))) T₂ w) := by
     funext w
     simp only [A, run_seq, run_keep, run_widen]
     rfl
+  have hoff' : ∀ a, off₁ (hostOf a) (stP (hostOf a)) a = S.srcOff hN Q a := hoff
   rw [hrun]
-  exact hnode
+  exact ⟨fun a => ⟨hoff' a, hflg' a, hcfl' a⟩, hnode⟩
 
 end RData
 
