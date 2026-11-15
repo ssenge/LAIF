@@ -61,8 +61,6 @@ structure CSt where
   src : Bool
   /-- It is the target corner of an annulus of the list. -/
   tgt : Bool
-  /-- The range of that annulus, at a target corner. -/
-  rng : ℕ × ℕ
 
 variable {n : ℕ} {N : Net (Fin n)} (hN : ∀ u, ∃ w, N.G.Adj u w) {Cp : N.toRot.dual.CutPath}
   {cc : N.G.Dart → ℕ} {hR : N.toRot.dual.Planar} {hC : N.toRot.dual.Connected}
@@ -77,14 +75,27 @@ noncomputable def lvCSt (r : CutPath.Run hR hC hgc Γ₀ L₀ j k) (ℓ : ℕ) (
   cB := decide (∃ q ∈ r.levelQ ℓ, q.1.2.CornerB z)
   src := decide (∃ t ∈ (r.levelQ ℓ).map Prod.snd, z = L₀.κ0 t)
   tgt := decide (∃ t ∈ (r.levelQ ℓ).map Prod.snd, z = L₀.κ1 t)
-  rng := if h : ∃ s ∈ r.subs ℓ, s.2.1.1 + 2 ≤ s.2.1.2 ∧ z = L₀.κ1 ((s.2.1.1 + s.2.1.2) / 2)
-    then h.choose.2.1 else (0, 0)
+
+open Classical in
+/-- The range of the annulus of level `ℓ` with middle `t`. -/
+noncomputable def lvRng (r : CutPath.Run hR hC hgc Γ₀ L₀ j k) (ℓ t : ℕ) : ℕ × ℕ :=
+  if h : ∃ s ∈ r.subs ℓ, s.2.1.1 + 2 ≤ s.2.1.2 ∧ (s.2.1.1 + s.2.1.2) / 2 = t then h.choose.2.1 else (0, 0)
 
 /-- The test of an index at a corner from its two values. -/
 def midTest (M' : ℕ) (vT vS : ℕ∞) (t : ℕ) : Bool :=
   decide (vT < M') && decide (vS < M') &&
     kidMid (decT vT.toNat).1 (decT vT.toNat).2.1 (decT vT.toNat).2.2.1 (decT vT.toNat).2.2.2
       (decS vS.toNat).1 (decS vS.toNat).2 t
+
+/-- The bit of a dart of a step for the new corners of the side of `κ0(x_a)`, from the two values at
+it: the child on the side of `κ0(x_b)` exists. -/
+def gateOfA (vT vS : ℕ∞) : Bool :=
+  !(decS vS.toNat).2 && decide ((decT vT.toNat).2.2.2 + 2 ≤ (decT vT.toNat).2.1)
+
+/-- The bit of a dart of a step for the new corners of the side of `κ0(x_b)`: the child on the side of
+`κ0(x_a)` exists. -/
+def gateOfB (vT vS : ℕ∞) : Bool :=
+  !(decS vS.toNat).1 && decide ((decT vT.toNat).1 + 2 ≤ (decT vT.toNat).2.2.1)
 
 variable (modeL hostT : N.G.Dart → Bool) (hhost : ∀ d, hostT (N.toRot.rev d) = !hostT d)
   (hE : ExactSsspBound) (K D M : ℕ)
@@ -111,15 +122,14 @@ variable (r₀ : CutPath.Run hR hC hgc Γ₀ L₀ j k) (ℓ : ℕ)
       payT (s.1, (s.2.1.1 + s.2.1.2) / 2) < M' ∧ payS (s.1, (s.2.1.1 + s.2.1.2) / 2) < M')
 include hpick h_in h_guard h_pay
 
-/-- The middles of the next level from the values at the corners `κ0(t)` (`τ = 0`) or `κ1(t)`
-(`τ = 1`) of the top annulus. -/
-theorem lv_mid_succ (τ : Fin 2) (t : ℕ) :
-    t ∈ ((lvSeq hN modeL hostT hhost hE K D M r₀ (ℓ + 1)).levelQ (ℓ + 1)).map Prod.snd ↔
-      midTest M' (outT (if τ = 0 then L₀.κ0 t else L₀.κ1 t))
-        (outS (if τ = 0 then L₀.κ0 t else L₀.κ1 t)) t = true := by
-  have key := next_mid_iff hN modeL hostT hhost hE K D M r₀ ℓ hpick payT payS
-    (fun t => outT (if τ = 0 then L₀.κ0 t else L₀.κ1 t)) (fun t => outS (if τ = 0 then L₀.κ0 t else L₀.κ1 t))
-    M' decT decS (fun s hs hjk t x1 x2 x3 x4 => h_in s hs hjk _ (by
+omit hpick h_guard h_pay in
+/-- The values at the corners `κ0(t)` (`τ = 0`) or `κ1(t)` (`τ = 1`) of the top annulus, for `t`
+strictly inside the ranges of an annulus of the list, are those of the annulus. -/
+theorem in_idx (τ : Fin 2) : ∀ s ∈ (lvSeq hN modeL hostT hhost hE K D M r₀ ℓ).subs ℓ,
+    s.2.1.1 + 2 ≤ s.2.1.2 → ∀ t, s.1.2.xa < t → t < s.1.2.xb → s.1.2.ya < t → t < s.1.2.yb →
+      outT (if τ = 0 then L₀.κ0 t else L₀.κ1 t) = payT (s.1, (s.2.1.1 + s.2.1.2) / 2) ∧
+        outS (if τ = 0 then L₀.κ0 t else L₀.κ1 t) = payS (s.1, (s.2.1.1 + s.2.1.2) / 2) :=
+  fun s hs hjk t x1 x2 x3 x4 => h_in s hs hjk _ (by
       have hA : s.1 ∈ (lvSeq hN modeL hostT hhost hE K D M r₀ ℓ).nodes ℓ := by
         rw [CutPath.Run.nodes_eq_subs]
         exact List.mem_map_of_mem hs
@@ -128,7 +138,69 @@ theorem lv_mid_succ (τ : Fin 2) (t : ℕ) :
       · rw [← e0 t x1 x2]
         exact s.1.2.gcomp_κ0 x1.le x2.le
       · rw [← e1 t x3 x4]
-        exact s.1.2.gcomp_κ1 x3.le x4.le))
+        exact s.1.2.gcomp_κ1 x3.le x4.le)
+
+omit hpick h_guard in
+/-- **The bits of the darts of the steps from the values at them.** -/
+theorem gateA_spec : ∀ s ∈ (lvSeq hN modeL hostT hhost hE K D M r₀ ℓ).subs ℓ, s.2.1.1 + 2 ≤ s.2.1.2 →
+    ∀ kk i1 i2, lvDat hN modeL hostT hhost hE K D M (lvSeq hN modeL hostT hhost hE K D M r₀ ℓ) ℓ s kk i1 i2 →
+    ∀ z, (N.toRot.dual.double.split s.1.1).toHypermap.gcomp (s.1.2.κ0 s.1.2.xa) z →
+      (gateOfA (outT z) (outS z) = true ↔
+        (lvBits hN modeL hostT hhost hE K D M (lvSeq hN modeL hostT hhost hE K D M r₀ ℓ) ℓ s kk).2 = false ∧
+          i2 + 2 ≤ s.2.1.2) := by
+  intro s hs hjk kk i1 i2 hd z hz
+  obtain ⟨e1, e2⟩ := h_in s hs hjk z hz
+  obtain ⟨d1, d2, -, -⟩ := h_pay s hs hjk kk i1 i2 hd
+  simp [gateOfA, e1, e2, ENat.toNat_natCast, d1, d2]
+
+omit hpick h_guard in
+theorem gateB_spec : ∀ s ∈ (lvSeq hN modeL hostT hhost hE K D M r₀ ℓ).subs ℓ, s.2.1.1 + 2 ≤ s.2.1.2 →
+    ∀ kk i1 i2, lvDat hN modeL hostT hhost hE K D M (lvSeq hN modeL hostT hhost hE K D M r₀ ℓ) ℓ s kk i1 i2 →
+    ∀ z, (N.toRot.dual.double.split s.1.1).toHypermap.gcomp (s.1.2.κ0 s.1.2.xa) z →
+      (gateOfB (outT z) (outS z) = true ↔
+        (lvBits hN modeL hostT hhost hE K D M (lvSeq hN modeL hostT hhost hE K D M r₀ ℓ) ℓ s kk).1 = false ∧
+          s.2.1.1 + 2 ≤ i1) := by
+  intro s hs hjk kk i1 i2 hd z hz
+  obtain ⟨e1, e2⟩ := h_in s hs hjk z hz
+  obtain ⟨d1, d2, -, -⟩ := h_pay s hs hjk kk i1 i2 hd
+  simp [gateOfB, e1, e2, ENat.toNat_natCast, d1, d2]
+
+omit h_guard in
+/-- **The range of an annulus of the next level** from the values at the corner `κ0(t)` or `κ1(t)` of
+its middle `t`. -/
+theorem lvRng_succ (τ : Fin 2) {t : ℕ}
+    (ht : t ∈ ((lvSeq hN modeL hostT hhost hE K D M r₀ (ℓ + 1)).levelQ (ℓ + 1)).map Prod.snd) :
+    lvRng (lvSeq hN modeL hostT hhost hE K D M r₀ (ℓ + 1)) (ℓ + 1) t =
+      kidRange (decT (outT (if τ = 0 then L₀.κ0 t else L₀.κ1 t)).toNat).1
+        (decT (outT (if τ = 0 then L₀.κ0 t else L₀.κ1 t)).toNat).2.1
+        (decT (outT (if τ = 0 then L₀.κ0 t else L₀.κ1 t)).toNat).2.2.1
+        (decT (outT (if τ = 0 then L₀.κ0 t else L₀.κ1 t)).toNat).2.2.2
+        (decS (outS (if τ = 0 then L₀.κ0 t else L₀.κ1 t)).toNat).1 t := by
+  classical
+  have hex : ∃ s ∈ (lvSeq hN modeL hostT hhost hE K D M r₀ (ℓ + 1)).subs (ℓ + 1),
+      s.2.1.1 + 2 ≤ s.2.1.2 ∧ (s.2.1.1 + s.2.1.2) / 2 = t := by
+    obtain ⟨q, hq, rfl⟩ := List.mem_map.1 ht
+    obtain ⟨s, hs, hjk, rfl⟩ := ((lvSeq hN modeL hostT hhost hE K D M r₀ (ℓ + 1)).mem_levelQ (ℓ + 1)).1 hq
+    exact ⟨s, hs, hjk, rfl⟩
+  unfold lvRng
+  rw [dite_eq_left hex]
+  obtain ⟨hs, hjk, hm⟩ := hex.choose_spec
+  have e := next_range hN modeL hostT hhost hE K D M r₀ ℓ hpick payT payS
+    (fun t => outT (if τ = 0 then L₀.κ0 t else L₀.κ1 t)) (fun t => outS (if τ = 0 then L₀.κ0 t else L₀.κ1 t))
+    decT decS (in_idx hN modeL hostT hhost hE K D M r₀ ℓ payT payS outT outS h_in τ)
+    (fun s hs hjk kk i1 i2 hd => ⟨(h_pay s hs hjk kk i1 i2 hd).1, (h_pay s hs hjk kk i1 i2 hd).2.1⟩) hs hjk
+  rw [hm] at e
+  exact e.symm
+
+/-- The middles of the next level from the values at the corners `κ0(t)` (`τ = 0`) or `κ1(t)`
+(`τ = 1`) of the top annulus. -/
+theorem lv_mid_succ (τ : Fin 2) (t : ℕ) :
+    t ∈ ((lvSeq hN modeL hostT hhost hE K D M r₀ (ℓ + 1)).levelQ (ℓ + 1)).map Prod.snd ↔
+      midTest M' (outT (if τ = 0 then L₀.κ0 t else L₀.κ1 t))
+        (outS (if τ = 0 then L₀.κ0 t else L₀.κ1 t)) t = true := by
+  have key := next_mid_iff hN modeL hostT hhost hE K D M r₀ ℓ hpick payT payS
+    (fun t => outT (if τ = 0 then L₀.κ0 t else L₀.κ1 t)) (fun t => outS (if τ = 0 then L₀.κ0 t else L₀.κ1 t))
+    M' decT decS (in_idx hN modeL hostT hhost hE K D M r₀ ℓ payT payS outT outS h_in τ)
     (fun t h1 h2 => by
       obtain ⟨s, hs, hjk, -, e1, e2⟩ := h_guard _ h1 h2
       exact ⟨s, hs, hjk, e1, e2⟩)
@@ -136,28 +208,13 @@ theorem lv_mid_succ (τ : Fin 2) (t : ℕ) :
   rw [key]
   simp only [midTest, Bool.and_eq_true, decide_eq_true_eq, and_assoc]
 
-variable
-  (gateA gateB : N.G.Dart × Bool → Bool)
-  (h_gateA : ∀ s ∈ (lvSeq hN modeL hostT hhost hE K D M r₀ ℓ).subs ℓ, s.2.1.1 + 2 ≤ s.2.1.2 →
-    ∀ kk i1 i2, lvDat hN modeL hostT hhost hE K D M (lvSeq hN modeL hostT hhost hE K D M r₀ ℓ) ℓ s kk i1 i2 →
-    ∀ z, (N.toRot.dual.double.split s.1.1).toHypermap.gcomp (s.1.2.κ0 s.1.2.xa) z →
-      (gateA z = true ↔
-        (lvBits hN modeL hostT hhost hE K D M (lvSeq hN modeL hostT hhost hE K D M r₀ ℓ) ℓ s kk).2 = false ∧
-          i2 + 2 ≤ s.2.1.2))
-  (h_gateB : ∀ s ∈ (lvSeq hN modeL hostT hhost hE K D M r₀ ℓ).subs ℓ, s.2.1.1 + 2 ≤ s.2.1.2 →
-    ∀ kk i1 i2, lvDat hN modeL hostT hhost hE K D M (lvSeq hN modeL hostT hhost hE K D M r₀ ℓ) ℓ s kk i1 i2 →
-    ∀ z, (N.toRot.dual.double.split s.1.1).toHypermap.gcomp (s.1.2.κ0 s.1.2.xa) z →
-      (gateB z = true ↔
-        (lvBits hN modeL hostT hhost hE K D M (lvSeq hN modeL hostT hhost hE K D M r₀ ℓ) ℓ s kk).1 = false ∧
-          s.2.1.1 + 2 ≤ i1))
-include h_gateA h_gateB
 
 open Classical in
 /-- **The state of the next level at a corner.** Let `outT`, `outS` be the values of the broadcast
-runs at the corners, `gateA`, `gateB` the bits at the darts of the steps, `newA' = lvNewA`,
-`newB' = lvNewB` and `newΓ` whether the corner is a digon corner of a dart of a step. Then the state of
-level `ℓ + 1` at a corner `z` is computed from its state of level `ℓ`, the two values and three bits at
-`z`. -/
+runs at the corners. The bits of the darts of the steps are read from these values (`gateOfA`,
+`gateOfB`), and the tests `lvNewA`, `lvNewB` use them. Then the state of level `ℓ + 1` at a corner `z`
+is computed from its state of level `ℓ`, the two values at `z`, the two tests at `z` and whether `z` is
+a digon corner of a dart of a step.-/
 theorem lvCSt_succ (z : N.G.Dart × Bool) :
     (lvCSt (lvSeq hN modeL hostT hhost hE K D M r₀ (ℓ + 1)) (ℓ + 1) z).inΓ =
         ((lvCSt (lvSeq hN modeL hostT hhost hE K D M r₀ ℓ) ℓ z).inΓ ||
@@ -168,12 +225,12 @@ theorem lvCSt_succ (z : N.G.Dart × Bool) :
           kidA (decT (outT z).toNat).1 (decT (outT z).toNat).2.1 (decT (outT z).toNat).2.2.1
             (decT (outT z).toNat).2.2.2 (decS (outS z).toNat).1 (decS (outS z).toNat).2
             (lvCSt (lvSeq hN modeL hostT hhost hE K D M r₀ ℓ) ℓ z).cA
-            (decide (lvNewA hN modeL hostT hhost hE K D M r₀ ℓ gateA z))) ∧
+            (decide (lvNewA hN modeL hostT hhost hE K D M r₀ ℓ (fun y => gateOfA (outT y) (outS y)) z))) ∧
       (lvCSt (lvSeq hN modeL hostT hhost hE K D M r₀ (ℓ + 1)) (ℓ + 1) z).cB =
         (decide (outT z < M') && decide (outS z < M') &&
           kidB (decT (outT z).toNat).1 (decT (outT z).toNat).2.1 (decT (outT z).toNat).2.2.1
             (decT (outT z).toNat).2.2.2 (decS (outS z).toNat).1 (decS (outS z).toNat).2
-            (decide (lvNewB hN modeL hostT hhost hE K D M r₀ ℓ gateB z))
+            (decide (lvNewB hN modeL hostT hhost hE K D M r₀ ℓ (fun y => gateOfB (outT y) (outS y)) z))
             (lvCSt (lvSeq hN modeL hostT hhost hE K D M r₀ ℓ) ℓ z).cB) ∧
       ((lvCSt (lvSeq hN modeL hostT hhost hE K D M r₀ (ℓ + 1)) (ℓ + 1) z).src = true ↔
         ∃ t, z = L₀.κ0 t ∧ midTest M' (outT z) (outS z) t = true) ∧
@@ -189,21 +246,21 @@ theorem lvCSt_succ (z : N.G.Dart × Bool) :
     simp only [lvCSt, decide_eq_true_eq, Bool.and_eq_true]
     rw [next_cornerA_iff hN modeL hostT hhost hE K D M r₀ ℓ hpick payT payS outT outS M' decT decS
       h_in h_guard h_pay (fun c => decide (∃ q ∈ (lvSeq hN modeL hostT hhost hE K D M r₀ ℓ).levelQ ℓ,
-        q.1.2.CornerA c)) (fun c => decide (lvNewA hN modeL hostT hhost hE K D M r₀ ℓ gateA c))
+        q.1.2.CornerA c)) (fun c => decide (lvNewA hN modeL hostT hhost hE K D M r₀ ℓ (fun y => gateOfA (outT y) (outS y)) c))
       (fun c => decide_eq_true_iff)
       (fun s hs hjk kk i1 i2 S hd ht hb hi c hreg => by
         rw [decide_eq_true_iff]
-        exact lvNewA_iff hN modeL hostT hhost hE K D M r₀ ℓ hpick gateA h_gateA hs hjk hd ht hb hi hreg) z]
+        exact lvNewA_iff hN modeL hostT hhost hE K D M r₀ ℓ hpick _ (gateA_spec hN modeL hostT hhost hE K D M r₀ ℓ payT payS outT outS M' h_in h_pay) hs hjk hd ht hb hi hreg) z]
     simp only [and_assoc]
   · rw [Bool.eq_iff_iff]
     simp only [lvCSt, decide_eq_true_eq, Bool.and_eq_true]
     rw [next_cornerB_iff hN modeL hostT hhost hE K D M r₀ ℓ hpick payT payS outT outS M' decT decS
       h_in h_guard h_pay (fun c => decide (∃ q ∈ (lvSeq hN modeL hostT hhost hE K D M r₀ ℓ).levelQ ℓ,
-        q.1.2.CornerB c)) (fun c => decide (lvNewB hN modeL hostT hhost hE K D M r₀ ℓ gateB c))
+        q.1.2.CornerB c)) (fun c => decide (lvNewB hN modeL hostT hhost hE K D M r₀ ℓ (fun y => gateOfB (outT y) (outS y)) c))
       (fun c => decide_eq_true_iff)
       (fun s hs hjk kk i1 i2 S hd ht hb hi c hreg => by
         rw [decide_eq_true_iff]
-        exact lvNewB_iff hN modeL hostT hhost hE K D M r₀ ℓ hpick gateB h_gateB hs hjk hd ht hb hi hreg) z]
+        exact lvNewB_iff hN modeL hostT hhost hE K D M r₀ ℓ hpick _ (gateB_spec hN modeL hostT hhost hE K D M r₀ ℓ payT payS outT outS M' h_in h_pay) hs hjk hd ht hb hi hreg) z]
     simp only [and_assoc]
   · simp only [lvCSt, decide_eq_true_eq]
     constructor

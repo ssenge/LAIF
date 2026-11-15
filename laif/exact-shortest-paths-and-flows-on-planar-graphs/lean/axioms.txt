@@ -994,3 +994,7 @@
 'SsspFlow.RotSystem.RData.qEnd_eq' depends on axioms: [propext, Classical.choice, Quot.sound]
 'SsspFlow.RotSystem.RData.lv_mid_succ' depends on axioms: [propext, Classical.choice, Quot.sound]
 'SsspFlow.RotSystem.RData.lvCSt_succ' depends on axioms: [propext, Classical.choice, Quot.sound]
+'SsspFlow.RotSystem.RData.in_idx' depends on axioms: [propext, Classical.choice, Quot.sound]
+'SsspFlow.RotSystem.RData.gateA_spec' depends on axioms: [propext, Classical.choice, Quot.sound]
+'SsspFlow.RotSystem.RData.gateB_spec' depends on axioms: [propext, Classical.choice, Quot.sound]
+'SsspFlow.RotSystem.RData.lvRng_succ' depends on axioms: [propext, Classical.choice, Quot.sound]

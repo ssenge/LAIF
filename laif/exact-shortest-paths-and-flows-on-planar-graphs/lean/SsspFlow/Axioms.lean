@@ -999,3 +999,7 @@ Expected output for each: `propext`, `Classical.choice`, `Quot.sound` (or a subs
 #print axioms SsspFlow.RotSystem.RData.qEnd_eq
 #print axioms SsspFlow.RotSystem.RData.lv_mid_succ
 #print axioms SsspFlow.RotSystem.RData.lvCSt_succ
+#print axioms SsspFlow.RotSystem.RData.in_idx
+#print axioms SsspFlow.RotSystem.RData.gateA_spec
+#print axioms SsspFlow.RotSystem.RData.gateB_spec
+#print axioms SsspFlow.RotSystem.RData.lvRng_succ
