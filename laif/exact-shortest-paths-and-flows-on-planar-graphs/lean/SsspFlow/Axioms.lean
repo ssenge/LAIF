@@ -968,3 +968,8 @@ Expected output for each: `propext`, `Classical.choice`, `Quot.sound` (or a subs
 #print axioms SsspFlow.RotSystem.RData.lv_unique
 #print axioms SsspFlow.RotSystem.RData.cornerA_succ
 #print axioms SsspFlow.RotSystem.RData.cornerB_succ
+#print axioms SsspFlow.RotSystem.CutPath.Run.boundary_gcomp
+#print axioms SsspFlow.RotSystem.RData.corner_of_region
+#print axioms SsspFlow.RotSystem.RData.region_of_kidA
+#print axioms SsspFlow.RotSystem.RData.next_cornerA_iff
+#print axioms SsspFlow.RotSystem.RData.next_cornerB_iff

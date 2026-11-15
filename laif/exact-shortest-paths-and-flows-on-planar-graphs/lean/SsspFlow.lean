@@ -171,6 +171,7 @@ import SsspFlow.GHatLevelKids
 import SsspFlow.GHatCornerLocal
 import SsspFlow.RunCornerKids
 import SsspFlow.GHatLevelCorners
+import SsspFlow.GHatCornerNext
 import SsspFlow.ListRot
 import SsspFlow.GHatSplit
 import SsspFlow.Annuli
