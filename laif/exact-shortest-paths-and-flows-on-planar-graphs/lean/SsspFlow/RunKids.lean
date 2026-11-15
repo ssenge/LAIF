@@ -85,18 +85,21 @@ variable (P : (Σ Γ' : Finset (D × Bool), C.Live (Nat.cast ∘ g₀) Γ') → 
   List (D × Bool) → Prop)
 
 /-- **The ranges below a picked node.** If there are data whose walk and step darts satisfy `P`, the
-picking graft gives a node whose walk and step darts satisfy `P` and whose subruns have the ranges of
-the two sides for the walk. -/
+picking graft gives a node whose walk and step darts satisfy `P`, with a least and a greatest index
+of the cut path on the walk, and whose subruns have the ranges of the two sides for the walk. -/
 theorem pickF_kids {Γ : Finset (D × Bool)} {L : C.Live (Nat.cast ∘ g₀) Γ} {j k : ℕ}
     (r : Run hR hC hgc Γ L j k)
     (h : Nonempty {d : NodeData L j k // P ⟨Γ, L⟩ ((j + k) / 2) d.q d.S.darts}) :
     ∃ q sd, (pickF hR hC hgc P r).top = some (q, sd) ∧ P ⟨Γ, L⟩ ((j + k) / 2) q sd ∧
+      (∃ i1 i2, IsLeast (C.idx (L.κ0 ((j + k) / 2)) q) i1 ∧
+        IsGreatest (C.idx (L.κ0 ((j + k) / 2)) q) i2) ∧
       ∀ i1 i2, IsLeast (C.idx (L.κ0 ((j + k) / 2)) q) i1 →
         IsGreatest (C.idx (L.κ0 ((j + k) / 2)) q) i2 →
           ((pickF hR hC hgc P r).subs 1).map (fun s => s.2.1) = L.kids j k q i1 i2 := by
   unfold pickF
   rw [dif_pos h]
-  refine ⟨(Classical.choice h).1.q, _, rfl, (Classical.choice h).2, fun i1 i2 h1 h2 => ?_⟩
+  refine ⟨(Classical.choice h).1.q, _, rfl, (Classical.choice h).2,
+    ⟨_, _, (Classical.choice h).1.hI1, (Classical.choice h).1.hI2⟩, fun i1 i2 h1 h2 => ?_⟩
   obtain rfl := h1.unique (Classical.choice h).1.hI1
   obtain rfl := h2.unique (Classical.choice h).1.hI2
   exact L.pickNode_kids hR hC hgc _ _ _ _ _ _ _ _ _ _
