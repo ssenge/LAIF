@@ -985,3 +985,14 @@ Expected output for each: `propext`, `Classical.choice`, `Quot.sound` (or a subs
 #print axioms SsspFlow.RotSystem.RData.lv_darts
 #print axioms SsspFlow.RotSystem.RData.lvNewA_iff
 #print axioms SsspFlow.RotSystem.RData.lvNewB_iff
+#print axioms SsspFlow.RotSystem.RData.region_of_erc
+#print axioms SsspFlow.RotSystem.RData.bcast_region
+#print axioms SsspFlow.RotSystem.RData.levelBcast_region
+#print axioms SsspFlow.RotSystem.decT_encT
+#print axioms SsspFlow.RotSystem.decS_encS
+#print axioms SsspFlow.RotSystem.pair_lt_sq
+#print axioms SsspFlow.RotSystem.encT_lt
+#print axioms SsspFlow.RotSystem.encS_lt
+#print axioms SsspFlow.RotSystem.CutPath.pickF_top_leaf
+#print axioms SsspFlow.RotSystem.RData.lv_steps_succ
+#print axioms SsspFlow.RotSystem.RData.next_range
