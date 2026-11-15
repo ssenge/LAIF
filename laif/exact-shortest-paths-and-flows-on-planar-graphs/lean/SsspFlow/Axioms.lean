@@ -879,3 +879,12 @@ Expected output for each: `propext`, `Classical.choice`, `Quot.sound` (or a subs
 #print axioms SsspFlow.RotSystem.CutPath.Run.seq_keys
 #print axioms SsspFlow.RotSystem.CutPath.Run.seq_subs_succ
 #print axioms SsspFlow.RotSystem.CutPath.Run.seq_picked
+#print axioms SsspFlow.RotSystem.RData.stepBit_iff_D
+#print axioms SsspFlow.RotSystem.CutPath.Run.bounds
+#print axioms SsspFlow.RotSystem.CutPath.Run.nodes_nodup
+#print axioms SsspFlow.RotSystem.CutPath.Run.mem_levelQ
+#print axioms SsspFlow.RotSystem.CutPath.Run.subs_eq_of_fst
+#print axioms SsspFlow.RotSystem.CutPath.Run.levelQ_uniq
+#print axioms SsspFlow.RotSystem.CutPath.Run.levelQ_range
+#print axioms SsspFlow.RotSystem.RData.oracleValid_small
+#print axioms SsspFlow.RotSystem.RData.lvPick

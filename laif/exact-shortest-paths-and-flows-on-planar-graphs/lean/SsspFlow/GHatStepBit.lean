@@ -15,6 +15,7 @@ ends are hosted at the first end of its dart.
   neighbour in the name of the arc.
 * `RData.crit_iff`: the test at the node `l` of a chain is the step bit with `l` valid steps.
 * `RData.stepBit_chain`: a copy with the step bit lies on the chain of a target of `Q`.
+* `RData.stepBitD`, `RData.stepBit_iff_D`: the step bit is fixed by the distances of the two runs.
 -/
 
 set_option autoImplicit false
@@ -146,6 +147,44 @@ theorem stepBit_chain {ℓ : Fin (n * (n * 21)) → Fin (n * (n * 21)) → ℕ�
   rw [hfl, tgtFlag, decide_eq_true_iff] at ht
   obtain ⟨q, hq, rfl⟩ := ht
   exact ⟨q, hq, i, hs, hi⟩
+
+
+/-- The step bit read from distances: the counts of the two runs along the chains replaced by the
+distances that every output of these runs holds. -/
+def stepBitD (R : Fin (n * (n * 21)) → ℕ∞ × Option (Fin (n * (n * 21))))
+    (fl : Fin (n * (n * 21)) → Bool × Bool × Bool) (y : Fin (n * (n * 21))) : Prop :=
+  (R y).2 ≠ none ∧
+    (S.levelNet hN).dsrcTop (Net.markLenW R fun a => (((fl a).2.1).toNat : ℕ∞))
+      (Net.markOffB fun a => (fl a).1) y = 0 ∧ (fl y).2.1 = false ∧
+    (S.levelNet hN).dsrcTop (Net.downLenW R fun a => (((fl a).2.2).toNat : ℕ∞))
+      (Net.markOffB fun a => (fl a).2.1 && decide ((S.levelNet hN).dsrcTop
+        (Net.markLenW R fun a => (((fl a).2.1).toNat : ℕ∞)) (Net.markOffB fun a => (fl a).1) a = 0)) y = 0 ∧
+    S.edgeTok hN (Net.parOf R y) y ≠ none
+
+/-- **The step bit is fixed by the distances.** For any outputs of the two runs along the chains, the
+step bit is the step bit read from distances. -/
+theorem stepBit_iff_D (R r₂ r₃ : Fin (n * (n * 21)) → ℕ∞ × Option (Fin (n * (n * 21))))
+    (fl : Fin (n * (n * 21)) → Bool × Bool × Bool)
+    (h₂ : (S.levelNet hN).ExactSpec (Net.markLenW R fun a => (((fl a).2.1).toNat : ℕ∞))
+      (Net.markOffB fun a => (fl a).1) r₂)
+    (h₃ : (S.levelNet hN).ExactSpec (Net.downLenW R fun a => (((fl a).2.2).toNat : ℕ∞))
+      (Net.markOffB fun a => (fl a).2.1 && decide ((r₂ a).1 = 0)) r₃) (y : Fin (n * (n * 21))) :
+    S.stepBit hN R r₂ r₃ fl y ↔ S.stepBitD hN R fl y := by
+  have e2 : ∀ a, (r₂ a).1 = 0 ↔ (S.levelNet hN).dsrcTop (Net.markLenW R fun a => (((fl a).2.1).toNat : ℕ∞))
+      (Net.markOffB fun a => (fl a).1) a = 0 := fun a => by
+    rw [← h₂.dist_eq a, ENat.toENNReal_eq_zero]
+  have hoff : (fun a => (fl a).2.1 && decide ((r₂ a).1 = 0)) = fun a => (fl a).2.1 && decide
+      ((S.levelNet hN).dsrcTop (Net.markLenW R fun a => (((fl a).2.1).toNat : ℕ∞))
+        (Net.markOffB fun a => (fl a).1) a = 0) := by
+    funext a
+    rw [decide_eq_decide.2 (e2 a)]
+  rw [hoff] at h₃
+  have e3 : (r₃ y).1 = 0 ↔ (S.levelNet hN).dsrcTop (Net.downLenW R fun a => (((fl a).2.2).toNat : ℕ∞))
+      (Net.markOffB fun a => (fl a).2.1 && decide ((S.levelNet hN).dsrcTop
+        (Net.markLenW R fun a => (((fl a).2.1).toNat : ℕ∞)) (Net.markOffB fun a => (fl a).1) a = 0)) y = 0 := by
+    rw [← h₃.dist_eq y, ENat.toENNReal_eq_zero]
+  unfold stepBit stepBitD
+  rw [e2 y, e3]
 
 end RData
 

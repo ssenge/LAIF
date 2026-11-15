@@ -82,6 +82,11 @@ theorem levelNode_run (hE : ExactSsspBound) (K : ℕ) : ∃ C c : ℕ, ∀ n D :
       let R := fun a => rr a (st (hostOf a))
       (S.levelNet hN).ExactSpec (S.levelLen hN lam M) (S.srcOff hN Q) R ∧
       R = hE.oracleRun K (12 * D + 16) (by omega) (S.levelNet hN) (S.levelLen hN lam M) (S.srcOff hN Q) ∧
+      (S.levelNet hN).ExactSpec (Net.markLenW R fun a => (((flg (hostOf a) a).2.1).toNat : ℕ∞))
+        (Net.markOffB fun a => (flg (hostOf a) a).1) (fun a => r₂ a (st (hostOf a))) ∧
+      (S.levelNet hN).ExactSpec (Net.downLenW R fun a => (((flg (hostOf a) a).2.2).toNat : ℕ∞))
+        (Net.markOffB fun a => (flg (hostOf a) a).2.1 && decide ((r₂ a (st (hostOf a))).1 = 0))
+        (fun a => r₃ a (st (hostOf a))) ∧
       ∀ At ∈ Q, ∃ (kk i1 i2 : ℕ) (St : At.1.2.Step),
         At.1.2.Shortest At.2 (S.chainDarts hN R ((S.levelPad hN).ι (.inl (S.endV (At.1.2.κ1 At.2)))) 0 kk) ∧
         IsLeast (Cp.idx (At.1.2.κ0 At.2)
@@ -206,7 +211,7 @@ theorem levelNode_run (hE : ExactSsspBound) (K : ℕ) : ∃ C c : ℕ, ∀ n D :
       q.2 ≤ q.1.2.yb := fun q hq =>
     ⟨(hQ q hq).1, (hQ q hq).2.1, (hQ q hq).2.2.1, (hQ q hq).2.2.2.1, (hQ q hq).2.2.2.2.1⟩
   simp only [hrun, fin, Sum.elim_inr]
-  refine ⟨hR', hRe, fun At hAt => ?_⟩
+  refine ⟨hR', hRe, hr₂, hr₃, fun At hAt => ?_⟩
   have hAt' : (At.1, At.2) ∈ Q := by simpa using hAt
   obtain ⟨kk, u, hu, i1, i2, hs, hρu, hnone, hpu, hsum, hsh, hl, hg', e1, e2, hvc⟩ := hO At hAt
   obtain ⟨-, -, -, -, -, -, -, -, -, hTv⟩ := S.level_roots_cond hN r ℓ lam M cc hcr hlc hgc hΓ Q hQ hQu _ hR' hAt'
