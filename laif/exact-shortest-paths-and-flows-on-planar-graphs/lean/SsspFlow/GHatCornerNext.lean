@@ -142,8 +142,8 @@ open Classical in
 in whose component `c` lies, and that are below `M'` only for such a corner. Let `decT` and `decS` read
 the range, the two indices and the two overlap bits from these values. Let the bit `oldA c` tell whether
 `c` is a corner of the side of `κ0(x_a)` of an annulus of level `ℓ`, and let `newA' c` tell, for `c` in
-the component of an annulus of level `ℓ`, whether it is a new corner of the step of its node. Then `c` is
-a corner of the side of `κ0(x_a)` of an annulus of level `ℓ + 1` exactly when both values are below `M'`
+the component of an annulus of level `ℓ` whose child on the side of `κ0(x_b)` exists, whether it is a
+new corner of the step of its node. Then `c` is a corner of the side of `κ0(x_a)` of an annulus of level `ℓ + 1` exactly when both values are below `M'`
 and the read data and the two bits pass the test. -/
 theorem next_cornerA_iff (oldA newA' : N.G.Dart × Bool → Bool)
     (h_old : ∀ c, oldA c = true ↔ ∃ q ∈ (lvSeq hN modeL hostT hhost hE K D M r₀ ℓ).levelQ ℓ, q.1.2.CornerA c)
@@ -154,6 +154,8 @@ theorem next_cornerA_iff (oldA newA' : N.G.Dart × Bool → Bool)
           (lvSeq hN modeL hostT hhost hE K D M r₀ ℓ)) s.2.2).top =
             some (lvWalk hN modeL hostT hhost hE K D M (lvSeq hN modeL hostT hhost hE K D M r₀ ℓ) ℓ s kk,
               S.darts) →
+        (lvBits hN modeL hostT hhost hE K D M (lvSeq hN modeL hostT hhost hE K D M r₀ ℓ) ℓ s kk).2 = false →
+        i2 + 2 ≤ s.2.1.2 →
         ∀ c, (N.toRot.dual.double.split s.1.1).toHypermap.gcomp (s.1.2.κ0 s.1.2.xa) c →
           (newA' c = true ↔ s.1.2.newA S c))
     (c : N.G.Dart × Bool) :
@@ -179,14 +181,16 @@ theorem next_cornerA_iff (oldA newA' : N.G.Dart × Bool → Bool)
     obtain ⟨e1, e2⟩ := h_in s hs hjk c hreg
     obtain ⟨d1, d2, l1, l2⟩ := h_pay s hs hjk kk i1 i2 hd
     rw [e1, e2, ENat.toNat_coe, ENat.toNat_coe, d1, d2, hb s hs hjk hreg,
-      Bool.eq_iff_iff.2 ((h_new s hs hjk kk i1 i2 S hd ht c hreg).trans decide_eq_true_iff.symm)]
+      kidA_congr (fun h1 h2 => Bool.eq_iff_iff.2
+        ((h_new s hs hjk kk i1 i2 S hd ht h1 h2 c hreg).trans decide_eq_true_iff.symm))]
     exact ⟨by exact_mod_cast l1, by exact_mod_cast l2, hk⟩
   · rintro ⟨h1, h2, hk⟩
     obtain ⟨s, hs, hjk, hreg, e1, e2⟩ := h_guard c h1 h2
     obtain ⟨kk, i1, i2, S, hd, ht, -⟩ := lv_corners hN modeL hostT hhost hE K D M r₀ ℓ hpick hs hjk
     obtain ⟨d1, d2, -, -⟩ := h_pay s hs hjk kk i1 i2 hd
     rw [e1, e2, ENat.toNat_coe, ENat.toNat_coe, d1, d2, hb s hs hjk hreg,
-      Bool.eq_iff_iff.2 ((h_new s hs hjk kk i1 i2 S hd ht c hreg).trans decide_eq_true_iff.symm)] at hk
+      kidA_congr (fun h1 h2 => Bool.eq_iff_iff.2
+        ((h_new s hs hjk kk i1 i2 S hd ht h1 h2 c hreg).trans decide_eq_true_iff.symm))] at hk
     exact ⟨s, hs, hjk, kk, i1, i2, S, hd, ht, hk⟩
 
 open Classical in
@@ -201,6 +205,8 @@ theorem next_cornerB_iff (oldB newB' : N.G.Dart × Bool → Bool)
           (lvSeq hN modeL hostT hhost hE K D M r₀ ℓ)) s.2.2).top =
             some (lvWalk hN modeL hostT hhost hE K D M (lvSeq hN modeL hostT hhost hE K D M r₀ ℓ) ℓ s kk,
               S.darts) →
+        (lvBits hN modeL hostT hhost hE K D M (lvSeq hN modeL hostT hhost hE K D M r₀ ℓ) ℓ s kk).1 = false →
+        s.2.1.1 + 2 ≤ i1 →
         ∀ c, (N.toRot.dual.double.split s.1.1).toHypermap.gcomp (s.1.2.κ0 s.1.2.xa) c →
           (newB' c = true ↔ s.1.2.newB S c))
     (c : N.G.Dart × Bool) :
@@ -226,14 +232,16 @@ theorem next_cornerB_iff (oldB newB' : N.G.Dart × Bool → Bool)
     obtain ⟨e1, e2⟩ := h_in s hs hjk c hreg
     obtain ⟨d1, d2, l1, l2⟩ := h_pay s hs hjk kk i1 i2 hd
     rw [e1, e2, ENat.toNat_coe, ENat.toNat_coe, d1, d2, hb s hs hjk hreg,
-      Bool.eq_iff_iff.2 ((h_new s hs hjk kk i1 i2 S hd ht c hreg).trans decide_eq_true_iff.symm)]
+      kidB_congr (fun h1 h2 => Bool.eq_iff_iff.2
+        ((h_new s hs hjk kk i1 i2 S hd ht h1 h2 c hreg).trans decide_eq_true_iff.symm))]
     exact ⟨by exact_mod_cast l1, by exact_mod_cast l2, hk⟩
   · rintro ⟨h1, h2, hk⟩
     obtain ⟨s, hs, hjk, hreg, e1, e2⟩ := h_guard c h1 h2
     obtain ⟨kk, i1, i2, S, hd, ht, -⟩ := lv_corners hN modeL hostT hhost hE K D M r₀ ℓ hpick hs hjk
     obtain ⟨d1, d2, -, -⟩ := h_pay s hs hjk kk i1 i2 hd
     rw [e1, e2, ENat.toNat_coe, ENat.toNat_coe, d1, d2, hb s hs hjk hreg,
-      Bool.eq_iff_iff.2 ((h_new s hs hjk kk i1 i2 S hd ht c hreg).trans decide_eq_true_iff.symm)] at hk
+      kidB_congr (fun h1 h2 => Bool.eq_iff_iff.2
+        ((h_new s hs hjk kk i1 i2 S hd ht h1 h2 c hreg).trans decide_eq_true_iff.symm))] at hk
     exact ⟨s, hs, hjk, kk, i1, i2, S, hd, ht, hk⟩
 
 end RData

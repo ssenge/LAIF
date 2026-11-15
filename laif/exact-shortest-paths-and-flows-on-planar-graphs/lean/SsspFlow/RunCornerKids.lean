@@ -41,6 +41,22 @@ def kidA (j k i1 i2 : ℕ) (bA bB oldA newA : Bool) : Bool :=
 def kidB (j k i1 i2 : ℕ) (bA bB newB oldB : Bool) : Bool :=
   (!bA && decide (j + 2 ≤ i1) && newB) || (!bB && decide (i2 + 2 ≤ k) && oldB)
 
+/-- The bit of a new corner matters for the test of the side of `κ0(x_a)` only when the child on the
+side of `κ0(x_b)` exists. -/
+theorem kidA_congr {j k i1 i2 : ℕ} {bA bB oldA newA newA' : Bool}
+    (h : bB = false → i2 + 2 ≤ k → newA = newA') :
+    kidA j k i1 i2 bA bB oldA newA = kidA j k i1 i2 bA bB oldA newA' := by
+  unfold kidA
+  cases bB <;> by_cases hk : i2 + 2 ≤ k <;> simp_all [decide_eq_false (Nat.not_le.2 _)]
+
+/-- The bit of a new corner matters for the test of the side of `κ0(x_b)` only when the child on the
+side of `κ0(x_a)` exists. -/
+theorem kidB_congr {j k i1 i2 : ℕ} {bA bB newB newB' oldB : Bool}
+    (h : bA = false → j + 2 ≤ i1 → newB = newB') :
+    kidB j k i1 i2 bA bB newB oldB = kidB j k i1 i2 bA bB newB' oldB := by
+  unfold kidB
+  cases bA <;> by_cases hj : j + 2 ≤ i1 <;> simp_all [decide_eq_false (Nat.not_le.2 _)]
+
 variable {D : Type u} [Fintype D] [DecidableEq D] {R : RotSystem D}
 
 namespace WalkCut

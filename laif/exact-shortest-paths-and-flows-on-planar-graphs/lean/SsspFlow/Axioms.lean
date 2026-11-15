@@ -672,7 +672,6 @@ Expected output for each: `propext`, `Classical.choice`, `Quot.sound` (or a subs
 #print axioms SsspFlow.Congest.PadMap.length_order
 #print axioms SsspFlow.Congest.Net.relist_connected
 #print axioms SsspFlow.RotSystem.connected_of_inst
-#print axioms List.isRotated_of_formPerm
 #print axioms List.isRotated_of_map
 #print axioms SsspFlow.RotSystem.RData.vList_rot
 #print axioms SsspFlow.RotSystem.RData.starDarts_rot
@@ -973,3 +972,16 @@ Expected output for each: `propext`, `Classical.choice`, `Quot.sound` (or a subs
 #print axioms SsspFlow.RotSystem.RData.region_of_kidA
 #print axioms SsspFlow.RotSystem.RData.next_cornerA_iff
 #print axioms SsspFlow.RotSystem.RData.next_cornerB_iff
+#print axioms SsspFlow.RotSystem.kidA_congr
+#print axioms SsspFlow.RotSystem.kidB_congr
+#print axioms SsspFlow.RotSystem.CutPath.Live.Step.first_of_cut
+#print axioms SsspFlow.RotSystem.CutPath.Live.Step.last_of_cut
+#print axioms SsspFlow.RotSystem.CutPath.Live.Step.cut_first
+#print axioms SsspFlow.RotSystem.CutPath.Live.Step.cut_last
+#print axioms SsspFlow.RotSystem.CutPath.Live.Step.gcomp_q
+#print axioms SsspFlow.RotSystem.CutPath.Run.fconnect_level_iff
+#print axioms SsspFlow.RotSystem.CutPath.Run.mem_of_level
+#print axioms SsspFlow.RotSystem.RData.lv_same
+#print axioms SsspFlow.RotSystem.RData.lv_darts
+#print axioms SsspFlow.RotSystem.RData.lvNewA_iff
+#print axioms SsspFlow.RotSystem.RData.lvNewB_iff
