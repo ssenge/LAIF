@@ -60,14 +60,19 @@ noncomputable def lvR (r : CutPath.Run hR hC hgc Γ₀ L₀ j k) (ℓ : ℕ) :
     ((lvS modeL hostT hhost r ℓ).levelLen hN (lvLam cc _) M)
     ((lvS modeL hostT hhost r ℓ).srcOff hN (r.levelQ ℓ))
 
-/-- **The rule of a level.** The walk is the list of the darts of `kk` parent steps of the chain of
-the target, and the darts of the step are those of the arcs to the parents of the copies on the chain
+/-- **The rule of a level.** The walk is the list of the darts of `kk` valid parent steps of the chain
+of the target to a root, and the darts of the step are those of the arcs to the parents of the copies on the chain
 with the step bit read from distances. -/
 def lvPof (ℓ : ℕ) (r : CutPath.Run hR hC hgc Γ₀ L₀ j k)
     (A : Σ Γ' : Finset (N.G.Dart × Bool), Cp.Live (Nat.cast ∘ cc) Γ') (t : ℕ)
     (q sd : List (N.G.Dart × Bool)) : Prop :=
   ∃ kk, q = (lvS modeL hostT hhost r ℓ).chainDarts hN (lvR hN modeL hostT hhost hE K D M r ℓ)
       ((lvS modeL hostT hhost r ℓ).levelPad hN |>.ι (.inl ((lvS modeL hostT hhost r ℓ).endV (A.2.κ1 t)))) 0 kk ∧
+    Net.ParSteps (lvR hN modeL hostT hhost hE K D M r ℓ)
+      ((lvS modeL hostT hhost r ℓ).levelPad hN |>.ι (.inl ((lvS modeL hostT hhost r ℓ).endV (A.2.κ1 t)))) kk ∧
+    ((lvR hN modeL hostT hhost hE K D M r ℓ) ((Net.parOf (lvR hN modeL hostT hhost hE K D M r ℓ))^[kk]
+      ((lvS modeL hostT hhost r ℓ).levelPad hN |>.ι (.inl ((lvS modeL hostT hhost r ℓ).endV (A.2.κ1 t)))))).2 =
+        none ∧
     ∀ z, z ∈ sd ↔ ∃ l,
       Net.ParSteps (lvR hN modeL hostT hhost hE K D M r ℓ)
         ((lvS modeL hostT hhost r ℓ).levelPad hN |>.ι (.inl ((lvS modeL hostT hhost r ℓ).endV (A.2.κ1 t)))) l ∧
@@ -184,9 +189,9 @@ theorem lvPick (r : CutPath.Run hR hC hgc Γ₀ L₀ j k) (ℓ : ℕ)
       (le_iInf fun u' => le_iInf fun h => le_iInf fun hu' => by
         obtain rfl := Sum.inl_injective ((S.levelPad hN).ι_injective h)
         exact le_rfl)
-  obtain ⟨kk, i1, i2, St, hsh, hl, hg', -, -, hSt, hsub⟩ := S.level_node_data hN r ℓ (lvLam cc S) M cc
+  obtain ⟨kk, i1, i2, St, hsh, hl, hg', -, -, hSt, hsub, hps, hnone⟩ := S.level_node_data hN r ℓ (lvLam cc S) M cc
     hc1 hcr (fun _ => rfl) (fun _ => rfl) hΓ Q hQ hQu R r₂ r₃ hr fl hfl h₂ h₃ ixI jxI hix hjx hAt _ _ rfl rfl
-  refine ⟨⟨⟨hjk, _, hsh, i1, i2, hl, hg', St, hsub⟩, kk, rfl, fun z => ?_⟩⟩
+  refine ⟨⟨⟨hjk, _, hsh, i1, i2, hl, hg', St, hsub⟩, kk, rfl, hps, hnone, fun z => ?_⟩⟩
   show z ∈ (List.range St.n).map St.q ↔ _
   rw [hSt z]
   exact exists_congr fun l => (S.crit_iff hN R r₂ r₃ fl _ l z).trans

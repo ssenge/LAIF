@@ -919,3 +919,16 @@ Expected output for each: `propext`, `Classical.choice`, `Quot.sound` (or a subs
 #print axioms SsspFlow.RotSystem.RData.region_walk
 #print axioms SsspFlow.RotSystem.RData.region_erc
 #print axioms SsspFlow.RotSystem.RData.region_erc_mid
+#print axioms SsspFlow.RotSystem.RData.tgtVal_ne_top
+#print axioms SsspFlow.RotSystem.RData.tgtVal_other
+#print axioms SsspFlow.RotSystem.RData.levelQ_tgt_eq
+#print axioms SsspFlow.RotSystem.RData.tgtVal_tgt
+#print axioms SsspFlow.RotSystem.RData.bcast_conds
+#print axioms SsspFlow.RotSystem.RData.levelBcast_annulus
+#print axioms SsspFlow.RotSystem.CutPath.Live.pickNode_kids
+#print axioms SsspFlow.RotSystem.CutPath.pickF_kids
+#print axioms SsspFlow.RotSystem.CutPath.pickF_kids_leaf
+#print axioms SsspFlow.RotSystem.CutPath.Run.seq_kids
+#print axioms SsspFlow.Congest.Net.ExactSpec.parSteps_ne_top
+#print axioms SsspFlow.Congest.Net.parSteps_root_unique
+#print axioms SsspFlow.RotSystem.RData.root_eq_src

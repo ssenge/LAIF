@@ -106,9 +106,9 @@ network of the level from the sources of `Q`, and `r₂`, `r₃` the outputs of 
 chains and of the run down them, for the targets of `Q` and the flags of the nodes for `0` and `1`.
 For an annulus of `Q` and values `x1`, `x2` as in `RData.level_i12_roots`, the darts of the chain of
 its target form a shortest walk `p` of the annulus, whose least and greatest index on the cut path
-`i1` and `i2` agree, capped at `M`, with `x1` and `m - x2`; and there is a step whose darts are those
+`i1` and `i2` agree, capped at `M`, with `x1` and `m - x2`; there is a step whose darts are those
 of the parent arcs of the nodes of the chain that meet the local test, and they form a segment of
-`p`. -/
+`p`; and the chain takes valid parent steps to a root. -/
 theorem level_node_data (lam : S.Tok → ℕ) (M : ℕ) (c : N.G.Dart → ℕ) (hc1 : ∀ d, 1 ≤ c d)
     (hcr : ∀ d, c (N.toRot.rev d) = c d) (hlam : ∀ x, lam x = c x.1.1) (hgc : ∀ d, g d = c d)
     (hΓ : S.Γ = Γ₀ ∪ r.steps ℓ) (Q : List ((Σ Γ' : Finset (N.G.Dart × Bool), C.Live g Γ') × ℕ))
@@ -150,19 +150,21 @@ theorem level_node_data (lam : S.Tok → ℕ) (M : ℕ) (c : N.G.Dart → ℕ) (
           S.edgeTok hN ((Net.parOf R)^[l + 1] ((S.levelPad hN).ι (.inl (S.endV (A.2.κ1 t)))))
             ((Net.parOf R)^[l] ((S.levelPad hN).ι (.inl (S.endV (A.2.κ1 t))))) = some x ∧
           z = N.toRot.tokDart x.1) ∧
-      ∃ p₁ p₃, S.chainDarts hN R ((S.levelPad hN).ι (.inl (S.endV (A.2.κ1 t)))) 0 kk =
-        p₁ ++ (List.range St.n).map St.q ++ p₃ := by
+      (∃ p₁ p₃, S.chainDarts hN R ((S.levelPad hN).ι (.inl (S.endV (A.2.κ1 t)))) 0 kk =
+        p₁ ++ (List.range St.n).map St.q ++ p₃) ∧
+      Net.ParSteps R ((S.levelPad hN).ι (.inl (S.endV (A.2.κ1 t)))) kk ∧
+      (R ((Net.parOf R)^[kk] ((S.levelPad hN).ι (.inl (S.endV (A.2.κ1 t)))))).2 = none := by
   obtain ⟨ps, i1, i2, -, -, hl, hg', e1, e2, hidx⟩ := S.level_i12_roots hN r ℓ lam M c hcr hlam hgc hΓ Q hQ
     hQu R hr ixI jxI hix hjx hAt x1 x2 hx1 hx2
   obtain ⟨hA, hun, h1, h2, h3, h4, hroot, hup, hT, hTv⟩ :=
     S.level_roots_cond hN r ℓ lam M c hcr hlam hgc hΓ Q hQ hQu R hr hAt
-  obtain ⟨kk, u, hu, hs, hρu, -, hpu, hsum, hsh, hidx', -⟩ := S.chain_data hN lam M c hcr hlam hgc A.2 hA
+  obtain ⟨kk, u, hu, hs, hρu, hnone, hpu, hsum, hsh, hidx', -⟩ := S.chain_data hN lam M c hcr hlam hgc A.2 hA
     hun h1 h2 h3 h4 _ _ hr (S.endV_end _) (S.pieceOf_endV _) hroot (hT _ hTv).1 hup
   have hE : C.idx (A.2.κ0 t) (S.chainDarts hN R ((S.levelPad hN).ι (.inl (S.endV (A.2.κ1 t)))) 0 kk) =
       C.idx (A.2.κ0 t) ps := Set.ext fun r' => (hidx' r').trans (hidx r').symm
   obtain ⟨St, hSt, hsub⟩ := S.level_node_step hN r ℓ lam M c hc1 hcr hlam hgc hΓ Q hQ hQu R r₂ r₃ hr fl hfl
     hr₂ hr₃ hAt kk u hu hs hρu hpu hsum
-  exact ⟨kk, i1, i2, St, hsh, hE ▸ hl, hE ▸ hg', e1, e2, hSt, hsub⟩
+  exact ⟨kk, i1, i2, St, hsh, hE ▸ hl, hE ▸ hg', e1, e2, hSt, hsub, hs, by rw [hρu]; exact hnone⟩
 
 end Level
 
