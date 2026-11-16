@@ -213,6 +213,8 @@ import SsspFlow.RunLoc
 import SsspFlow.GHatCover
 import SsspFlow.GHatLevelValOv
 import SsspFlow.GHatLevelLoop
+import SsspFlow.GHatLevelEnds
+import SsspFlow.GHatTheoremD
 import SsspFlow.ListRot
 import SsspFlow.GHatSplit
 import SsspFlow.Annuli
