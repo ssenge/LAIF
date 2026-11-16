@@ -1072,6 +1072,8 @@ standard axioms (`propext`, `Classical.choice`, `Quot.sound`). There is no `sorr
 - `lean/SsspFlow/GHatValRun.lean`: one run of the oracle from local source and target flags, after which every node holds the least `λ_t` over the targets it hosts (`levelQRun_local`).
 - `lean/SsspFlow/GHatValSel.lean`: the lists of annuli selected by a rule from the values of the annulus, with their local characterization at the corners (`selQ_corner_iff`) and the conditions for a run of the oracle (`selQ_range`, `selQ_uniq`).
 - `lean/SsspFlow/GHatValLevel.lean`: the lengths of the cut at one level as one algorithm. After the tests, three runs of the oracle for the middle index, `i1` and `i2` give every node the least `λ_t` over the targets it hosts (`levelVals_local`).
+- `lean/SsspFlow/GHatFaceData.lean`: the data of a level with no incised dart and no cut corner. Their pieces are the faces: two corners lie at one piece exactly when their darts lie at one vertex of the dual (`faceData_pieceAt_iff`).
+- `lean/SsspFlow/GHatFacePair.lean`: the least value over a face as one algorithm. The inputs of the data with no incision are computed at each node from the inputs of any level (`toFace_levelIn`). One round of exchange and the run on their pieces give the head of every dart the least value over the corners at the face of each of its corners, capped at `M` (`facePair_local`).
   Assuming the Exact SSSP bound, the algorithm of `RData.levelI12_local` started from the sources and targets of the
   annuli of a level holds, capped at $M$, the least index and $m$ minus the greatest index at the target of every
   annulus of the level, for the shortest walk of the annulus that the darts of the chain of the target form

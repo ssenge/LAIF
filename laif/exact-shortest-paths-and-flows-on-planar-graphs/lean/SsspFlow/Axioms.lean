@@ -1087,3 +1087,15 @@ Expected output for each: `propext`, `Classical.choice`, `Quot.sound` (or a subs
 #print axioms SsspFlow.RotSystem.RData.selQ_uniq
 #print axioms SsspFlow.RotSystem.RData.selQ_corner_iff
 #print axioms SsspFlow.RotSystem.RData.levelVals_local
+#print axioms SsspFlow.RotSystem.split_empty_tail_eq_iff
+#print axioms SsspFlow.RotSystem.double_tail_eq_iff
+#print axioms SsspFlow.RotSystem.RData.faceData_Γ
+#print axioms SsspFlow.RotSystem.RData.faceData_noConflict
+#print axioms SsspFlow.RotSystem.RData.faceData_cut_card
+#print axioms SsspFlow.RotSystem.RData.faceData_pieceAt_iff
+#print axioms SsspFlow.RotSystem.pairDec_code
+#print axioms SsspFlow.RotSystem.pairCode_lt
+#print axioms SsspFlow.RotSystem.decV_encV_eq
+#print axioms SsspFlow.RotSystem.min_iInf_cap
+#print axioms SsspFlow.RotSystem.RData.toFace_levelIn
+#print axioms SsspFlow.RotSystem.RData.facePair_local
