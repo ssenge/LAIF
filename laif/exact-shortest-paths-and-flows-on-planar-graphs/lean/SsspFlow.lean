@@ -196,6 +196,11 @@ import SsspFlow.GHatLevelUpd
 import SsspFlow.GHatLevelPT
 import SsspFlow.GHatLevelAdvance
 import SsspFlow.GHatLevelIter
+import SsspFlow.RunComp
+import SsspFlow.GHatValLow
+import SsspFlow.GHatValRun
+import SsspFlow.GHatValSel
+import SsspFlow.GHatValLevel
 import SsspFlow.ListRot
 import SsspFlow.GHatSplit
 import SsspFlow.Annuli
