@@ -1,3 +1,4 @@
+/private/tmp/claude-502/-Users-sebastian-senge-Documents-src-Science-Algos-Distributed-Graph-Algos/5c9ffac5-eb4b-481a-8d6b-9b9da4ff0151/scratchpad/memcap.sh:4: nice(5) failed: operation not permitted
 'SsspFlow.Hierarchy.lemmaV' depends on axioms: [propext, Classical.choice, Quot.sound]
 'SsspFlow.RHierarchy.lemmaV' depends on axioms: [propext, Classical.choice, Quot.sound]
 'SsspFlow.RHierarchy.lemmaV_chain' depends on axioms: [propext, Classical.choice, Quot.sound]
@@ -1094,3 +1095,5 @@
 'SsspFlow.RotSystem.min_iInf_cap' depends on axioms: [propext, Classical.choice, Quot.sound]
 'SsspFlow.RotSystem.RData.toFace_levelIn' depends on axioms: [propext, Classical.choice, Quot.sound]
 'SsspFlow.RotSystem.RData.facePair_local' depends on axioms: [propext, Classical.choice, Quot.sound]
+'SsspFlow.RotSystem.CutPath.Live.ov_sum_a' depends on axioms: [propext, Classical.choice, Quot.sound]
+'SsspFlow.RotSystem.CutPath.Live.ov_sum_b' depends on axioms: [propext, Classical.choice, Quot.sound]

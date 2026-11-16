@@ -1099,3 +1099,5 @@ Expected output for each: `propext`, `Classical.choice`, `Quot.sound` (or a subs
 #print axioms SsspFlow.RotSystem.min_iInf_cap
 #print axioms SsspFlow.RotSystem.RData.toFace_levelIn
 #print axioms SsspFlow.RotSystem.RData.facePair_local
+#print axioms SsspFlow.RotSystem.CutPath.Live.ov_sum_a
+#print axioms SsspFlow.RotSystem.CutPath.Live.ov_sum_b
