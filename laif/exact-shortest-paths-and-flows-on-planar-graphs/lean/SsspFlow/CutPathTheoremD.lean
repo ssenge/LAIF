@@ -1,5 +1,6 @@
 import SsspFlow.CutPathData
 import SsspFlow.CutPathGs
+import SsspFlow.SmoothRun
 
 /-!
 # Theorem D from the network
@@ -12,6 +13,8 @@ length (`Congest.cpAlg_spec`), the base values (`RData.gsAlg_spec`), and the lev
 * `CutPath.lamD_le_card`: `λ_t` is at most the weight of `2 |D|` darts.
 * `RData.mkX`, `scaleIn`: the local data of level `0`, and the costs `K₀ c + 1`.
 * `RData.theoremD_net`: the algorithm and its output.
+* `RData.theoremD_net_of_cited`: the same from the realization of metrics, the distance labels and the
+  names of the faces.
 -/
 
 set_option autoImplicit false
@@ -257,6 +260,23 @@ theorem theoremD_net (hE : ExactSsspBound) (K : ℕ) : ∃ C c : ℕ, ∀ n D : 
   have e2 : t' = N.toRot.tail Cp.ct := N.vnode_injective (by rw [ht', hct, Net.vnode_tail]; rfl)
   rw [hrun, e1, e2]
   exact hA
+
+open Classical in
+/-- **Theorem D from the network and the cited results.** The same algorithm, with the Exact SSSP bound
+from the realization of metrics, the distance labels and the names of the faces. -/
+theorem theoremD_net_of_cited {Cr Cl cl : ℕ} (hCr : RealizationBox Cr) (hL : DistanceLabelBox Cl cl)
+    (hF : FaceIdBox) (K : ℕ) : ∃ C c : ℕ, ∀ n D : ℕ,
+    ∃ (σ : Type) (B : ℕ) (A : Cslib.Congest.Algorithm (Fin n) (DualHostIn (Fin n)) σ B) (T : ℕ)
+      (out : Fin n → σ → ℕ),
+    B ≤ C * logN (n * (n * 21)) ^ c ∧ T ≤ C * logN (n * (n * 21)) ^ c * (D + 1) ∧
+    ∀ (N : Net (Fin n)) (c₀ : Fin n → Fin n → ℕ) (s t : Fin n),
+      N.toRot.Planar → N.toRot.Connected → N.DiamLE D → CutDuality N.G.Dart →
+      (∀ v, ∃ u, N.G.Adj v u) → s ≠ t → (∀ u v, c₀ u v = c₀ v u) →
+      (∀ u v, (n * n + 1) * c₀ u v + 1 ≤ (n * (n * 5) + 2) ^ K) →
+      ∀ (s' t' : N.toRot.Vertex), N.vnode s' = s → N.vnode t' = t → ∀ w,
+        IsLeast (N.toRot.cutVals (fun d => c₀ d.fst d.snd) s' t')
+          (out w (A.run N.G (dualHostOf N c₀ s t) T w)) :=
+  theoremD_net (exactSssp_of_cited hCr hL hF) K
 
 end RData
 

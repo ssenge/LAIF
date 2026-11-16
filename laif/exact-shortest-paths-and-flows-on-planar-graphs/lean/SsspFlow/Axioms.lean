@@ -1177,6 +1177,7 @@ Expected output for each: `propext`, `Classical.choice`, `Quot.sound` (or a subs
 #print axioms SsspFlow.RotSystem.RData.gsAlg_spec
 #print axioms SsspFlow.RotSystem.CutPath.lamD_le_card
 #print axioms SsspFlow.RotSystem.RData.theoremD_net
+#print axioms SsspFlow.RotSystem.RData.theoremD_net_of_cited
 #print axioms SsspFlow.RotSystem.RData.locOf_eq
 #print axioms SsspFlow.RotSystem.RData.gsBase_eq_cut
 #print axioms SsspFlow.RotSystem.RData.pieceAt_eq_iff
