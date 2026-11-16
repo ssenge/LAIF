@@ -1170,6 +1170,11 @@ Expected output for each: `propext`, `Classical.choice`, `Quot.sound` (or a subs
 #print axioms SsspFlow.Congest.fsOf_iff
 #print axioms SsspFlow.Congest.ftOf_iff
 #print axioms SsspFlow.Congest.cpAlg_spec
+#print axioms SsspFlow.RotSystem.cap_of_min
+#print axioms SsspFlow.RotSystem.gs_iterData
+#print axioms SsspFlow.RotSystem.RData.gsRep_new
+#print axioms SsspFlow.RotSystem.RData.locIdx_top_or_le
+#print axioms SsspFlow.RotSystem.RData.gsAlg_spec
 #print axioms SsspFlow.RotSystem.RData.locOf_eq
 #print axioms SsspFlow.RotSystem.RData.gsBase_eq_cut
 #print axioms SsspFlow.RotSystem.RData.pieceAt_eq_iff

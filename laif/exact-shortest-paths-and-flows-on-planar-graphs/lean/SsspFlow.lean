@@ -223,6 +223,7 @@ import SsspFlow.CutPathAlg
 import SsspFlow.CutPathKap
 import SsspFlow.CutPathPiece
 import SsspFlow.CutPathData
+import SsspFlow.CutPathGs
 import SsspFlow.ListRot
 import SsspFlow.GHatSplit
 import SsspFlow.Annuli
