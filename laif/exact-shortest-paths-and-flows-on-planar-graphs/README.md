@@ -61,10 +61,12 @@ Please read this before relying on anything here.
     `negFlow_of_cited` gives $\tilde O(D)$ rounds with high probability for negative weights and for maximum flow, from
     four cited results: realization, distance labels, face identifiers and the decomposition.
   - The cited results stay hypotheses of these theorems.
-- **Correctness.** Theorems A, B, C and C′ give correct outputs given Lemma 14′, our
-  replacement for [1, Lemma 14], and the black boxes listed below. Lemma 14′ is
-  proved in `notes/LEMMA15.md` §3.
-- **Round counts: repaired.** [1, Lemma 9 (6)] states that at
+- **Correctness.** Theorems A, B and C are proved in Lean from the cited results above, with labels
+  built from disks cut along a breadth-first tree (`notes/DISKS.md`). This proof does not use
+  Lemma 14′ or the decomposition of [8]. Theorem C′ uses Theorem A and is proved in the notes. The
+  written route of `notes/LEMMA15.md`, with Lemma 14′, our replacement for [1, Lemma 14], is a
+  second proof of the labels; Lemma 14′ is proved there in §3.
+- **Round counts in the route of `notes/LEMMA15.md`: repaired.** [1, Lemma 9 (6)] states that at
   every depth of the decomposition each edge lies in at most two induced subgraphs G[X]. As we
   read it, this does not hold on $K_{2,m}$ plus one edge, for every
   decomposition with the other properties (`notes/LEMMA15.md`, (S9)). [1] runs all bags of
@@ -84,8 +86,11 @@ Please read this before relying on anything here.
   nodes that it needs. As we read it, the recursion of [18] can miss the minimum cut (11 vertices:
   minimum 15, computed 37). Lemma S repairs this with two more shortest-path calls per level,
   and the side lemma it needs (Lemma O) is proved. The naming of sides and the cut extraction
-  are in `notes/RECURSION.md`.
-- **Determinism.** With Lemma B5 the decomposition is deterministic, and so is Theorem A,
+  are in `notes/RECURSION.md`. The value of the minimum cut in $\tilde O(D)$ rounds is proved in Lean,
+  as one algorithm of the message model, from the three cited results of Theorem A and the classical
+  cut duality (`RData.theoremD_net_of_cited`).
+- **Determinism.** The labels from disks are built deterministically, and so is the decomposition of
+  the route of `notes/LEMMA15.md` with Lemma B5. So Theorem A is deterministic,
   given a deterministic planar embedding and deterministic face identifiers (G6). Both are
   claimed elsewhere, not proved here: [17] and [18] use the embedding algorithm of [15] as
   deterministic (the full text of [15] was not accessible to us), and the face identification
@@ -93,8 +98,7 @@ Please read this before relying on anything here.
   while [18, Lemma 3.17] states a deterministic version, given deterministic part-wise
   aggregation such as [20, Thm 1.5]. Theorems C′ and D are
   deterministic in the same sense: their other steps are local, use face identifiers computed
-  deterministically in [18, Lemma 3.17], or are the deterministic algorithm of [18]. Theorems
-  B and C use [6] and hold with high probability.
+  deterministically in [18, Lemma 3.17], or are the deterministic algorithm of [18]. Theorems B and C use the decomposition of [6] and hold with high probability.
 - Some steps use published results as black boxes; see [What is assumed](#what-is-assumed).
 
 ## Background
