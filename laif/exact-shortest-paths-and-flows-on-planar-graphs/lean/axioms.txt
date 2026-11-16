@@ -1170,6 +1170,8 @@
 'SsspFlow.RotSystem.RData.gsRep_new' depends on axioms: [propext, Classical.choice, Quot.sound]
 'SsspFlow.RotSystem.RData.locIdx_top_or_le' depends on axioms: [propext, Classical.choice, Quot.sound]
 'SsspFlow.RotSystem.RData.gsAlg_spec' depends on axioms: [propext, Classical.choice, Quot.sound]
+'SsspFlow.RotSystem.CutPath.lamD_le_card' depends on axioms: [propext, Classical.choice, Quot.sound]
+'SsspFlow.RotSystem.RData.theoremD_net' depends on axioms: [propext, Classical.choice, Quot.sound]
 'SsspFlow.RotSystem.RData.locOf_eq' depends on axioms: [propext, Classical.choice, Quot.sound]
 'SsspFlow.RotSystem.RData.gsBase_eq_cut' depends on axioms: [propext, Classical.choice, Quot.sound]
 'SsspFlow.RotSystem.RData.pieceAt_eq_iff' depends on axioms: [propext, Classical.choice, Quot.sound]
