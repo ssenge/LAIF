@@ -207,6 +207,7 @@ import SsspFlow.OverlapSum
 import SsspFlow.GHatOvDist
 import SsspFlow.GHatOvMark
 import SsspFlow.GHatOvVal
+import SsspFlow.GHatOvSide
 import SsspFlow.ListRot
 import SsspFlow.GHatSplit
 import SsspFlow.Annuli
