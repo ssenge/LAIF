@@ -1124,3 +1124,5 @@
 'SsspFlow.RotSystem.RData.lv_rng_le' depends on axioms: [propext, Classical.choice, Quot.sound]
 'SsspFlow.RotSystem.RData.lv_sel_le' depends on axioms: [propext, Classical.choice, Quot.sound]
 'SsspFlow.RotSystem.RData.lv_ov_le' depends on axioms: [propext, Classical.choice, Quot.sound]
+'SsspFlow.RotSystem.RData.levelValOv_local' depends on axioms: [propext, Classical.choice, Quot.sound]
+'SsspFlow.RotSystem.RData.levelLoop_local' depends on axioms: [propext, Classical.choice, Quot.sound]
