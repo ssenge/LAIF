@@ -149,7 +149,7 @@ theorem levelAdvance_local (hE : ExactSsspBound) (K : ℕ) : ∃ C c : ℕ, ∀ 
     ∃ (σ : Type) (A : Cslib.Congest.Algorithm (Fin n) (LvX n) σ
         (4 * (C * logN (n * (n * 21)) ^ c + 3) + (3 * (K * logN (n * (n * 21)) + 1) + 5)))
       (T : ℕ) (xN : Fin n → σ → LvX n),
-    T ≤ 32 + 19 * (C * logN (n * (n * 21)) ^ c * (12 * D + 16)) ∧
+    0 < T ∧ T ≤ 32 + 19 * (C * logN (n * (n * 21)) ^ c * (12 * D + 16)) ∧
     ∀ (N : Net (Fin n)) (hN : ∀ u, ∃ w, N.G.Adj u w) {Cp : N.toRot.dual.CutPath} {cc : N.G.Dart → ℕ}
       {hR : N.toRot.dual.Planar} {hC : N.toRot.dual.Connected}
       {hgc : ∀ x, (Nat.cast ∘ cc : N.G.Dart → ℝ≥0∞) (N.toRot.dual.rev x) = (Nat.cast ∘ cc) x}
@@ -189,7 +189,7 @@ theorem levelAdvance_local (hE : ExactSsspBound) (K : ℕ) : ∃ C c : ℕ, ∀ 
   let B₂ := (exchTo (Fin n) (4 * (C * logN (n * (n * 21)) ^ c + 3) + (3 * (K * logN (n * (n * 21)) + 1) + 5))).keep (fun _ (x : J) => msgOf x)
   refine ⟨_, A₁.seq T₁ pre B₂, T₁ + 1, fun w s => Sum.elim (fun p => xO w p.2)
     (fun q => (q.1.1, q.1.2.1, q.1.2.2.1, q.1.2.2.2.1, (fun u b => cstDec (if b then (Nat.unpair ((q.2.2 u).getD 0)).2
-      else (Nat.unpair ((q.2.2 u).getD 0)).1), q.1.2.2.2.2.2))) s, by omega, ?_⟩
+      else (Nat.unpair ((q.2.2 u).getD 0)).1), q.1.2.2.2.2.2))) s, by omega, by omega, ?_⟩
   intro N hN Cp cc hR hC hgc Γ₀ L₀ j k modeL hostT hhost M r₀ ℓ X w₀ hpick hP hc hS hcut hD hc1 hcr hcb hM hQM hM8
     hX1 hX2 hXb hXc hXk
   have hPT' := hA₁ N hN modeL hostT hhost M r₀ ℓ X ((lvS modeL hostT hhost (lvSeq hN modeL hostT hhost hE K D M r₀ ℓ) ℓ).starV hN w₀) hpick hP hc hS hcut hD hc1 hcr hcb hM hQM hM8

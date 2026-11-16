@@ -1059,3 +1059,5 @@
 'SsspFlow.RotSystem.RData.lv_inc_iff' depends on axioms: [propext, Classical.choice, Quot.sound]
 'SsspFlow.RotSystem.RData.lv_inc_succ' depends on axioms: [propext, Classical.choice, Quot.sound]
 'SsspFlow.RotSystem.RData.levelAdvance_local' depends on axioms: [propext, Classical.choice, Quot.sound]
+'SsspFlow.RotSystem.RData.LvInv' depends on axioms: [propext, Classical.choice, Quot.sound]
+'SsspFlow.RotSystem.RData.levelIter_local' depends on axioms: [propext, Classical.choice, Quot.sound]
