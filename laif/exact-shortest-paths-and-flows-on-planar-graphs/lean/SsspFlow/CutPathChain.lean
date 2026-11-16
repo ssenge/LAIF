@@ -190,7 +190,7 @@ the oracle on the dual network with offset `0` at the corner of `cs`. The darts 
 `m1` on the parent chain of the corner of `ct` form a cut path from `cs` to `ct` that is shortest for
 the costs. With the flags of the nodes of kind `m1` as lengths on the arcs to the parents, and the
 corner of `ct` as target, the dart `e t` is the dart whose node of kind `m1` has distance `m - 1 - t`,
-and the corner of `cs` has distance `m`. -/
+the darts past the end are `cs`, and the corner of `cs` has distance `m`. -/
 theorem chain_cutPath (hg : ∀ d : N.G.Dart, 1 ≤ g d.fst d.snd) {cs ct : N.G.Dart}
     (hf : ¬ fconnect N.toRot.dual.facePerm cs ct)
     (hw : ∃ q, N.toRot.dual.IsWalk (N.toRot.dual.tail cs) q (N.toRot.dual.tail ct))
@@ -201,6 +201,7 @@ theorem chain_cutPath (hg : ∀ d : N.G.Dart, 1 ≤ g d.fst d.snd) {cs ct : N.G.
       (∀ (x : N.G.Dart) (t : ℕ), t < C.m → (C.e t = x ↔
         (dualNet N e).dsrcTop (Net.markLenW r (m1Flag N e))
           (Net.markOffB fun a => decide (a = idx N e corner ct)) (idx N e m1 x) = ((C.m - 1 - t : ℕ) : ℝ≥0∞))) ∧
+      (∀ t, C.m ≤ t → C.e t = C.cs) ∧
       (dualNet N e).dsrcTop (Net.markLenW r (m1Flag N e))
         (Net.markOffB fun a => decide (a = idx N e corner ct)) (idx N e corner cs) = (C.m : ℝ≥0∞) := by
   set v := idx N e corner ct with hvdef
@@ -276,7 +277,7 @@ theorem chain_cutPath (hg : ∀ d : N.G.Dart, 1 ≤ g d.fst d.snd) {cs ct : N.G.
     simp only [hisT, decide_eq_true_eq] at ht
     subst ht
     exact absurd hx (hno i (hparle i hs))
-  refine ⟨fun x t ht => ?_, ?_⟩
+  refine ⟨fun x t ht => ?_, fun t ht => List.getD_eq_default _ _ ht, ?_⟩
   · simp only [RotSystem.CutPath.ofSimple_m, RotSystem.CutPath.ofSimple_e] at ht ⊢
     constructor
     · intro hx

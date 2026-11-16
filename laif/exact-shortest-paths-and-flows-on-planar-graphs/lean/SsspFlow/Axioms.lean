@@ -1137,6 +1137,7 @@ Expected output for each: `propext`, `Classical.choice`, `Quot.sound` (or a subs
 #print axioms SsspFlow.RotSystem.RData.inΓ_iff
 #print axioms SsspFlow.RotSystem.RData.levelQ_zero
 #print axioms SsspFlow.RotSystem.RData.cst0_eq
+#print axioms SsspFlow.RotSystem.RData.lvIn_of_local
 #print axioms SsspFlow.RotSystem.RData.lvInv0_of_local
 #print axioms SsspFlow.RotSystem.RData.theoremD_from_local
 #print axioms SsspFlow.RotSystem.walkV_tail
@@ -1161,3 +1162,9 @@ Expected output for each: `propext`, `Classical.choice`, `Quot.sound` (or a subs
 #print axioms SsspFlow.Congest.run_chainHost
 #print axioms SsspFlow.Congest.chainHost_spec
 #print axioms SsspFlow.Congest.chainHost_cutPath
+#print axioms SsspFlow.Congest.decC_encC
+#print axioms SsspFlow.Congest.kapOf_spec
+#print axioms SsspFlow.RotSystem.RData.locOf_eq
+#print axioms SsspFlow.RotSystem.RData.gsBase_eq_cut
+#print axioms SsspFlow.RotSystem.RData.pieceAt_eq_iff
+#print axioms SsspFlow.RotSystem.RData.gsBase_eq_piece

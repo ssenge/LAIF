@@ -220,6 +220,8 @@ import SsspFlow.CutPathExists
 import SsspFlow.DualDist
 import SsspFlow.CutPathChain
 import SsspFlow.CutPathAlg
+import SsspFlow.CutPathKap
+import SsspFlow.CutPathPiece
 import SsspFlow.ListRot
 import SsspFlow.GHatSplit
 import SsspFlow.Annuli

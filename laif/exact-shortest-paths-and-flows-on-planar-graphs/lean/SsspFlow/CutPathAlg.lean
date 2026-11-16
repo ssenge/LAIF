@@ -211,7 +211,7 @@ open Classical FourColor in
 /-- **The shortest cut path at the hosts.** For costs at least `1` and two nodes `s ≠ t`, the dual has
 a cut path from the first dart of `s` to the first dart of `t` that is shortest for the costs, and the
 hosts hold its data after the two runs: the identifier of kind `m1` of the dart `e τ` holds the count
-`m - 1 - τ`, and the corner of the first dart of `s` holds `m`. -/
+`m - 1 - τ`, the darts past the end are `cs`, and the corner of the first dart of `s` holds `m`. -/
 theorem chainHost_cutPath (N : Net (Fin n)) (g : Fin n → Fin n → ℕ) {s t : Fin n}
     (hs : N.G.Adj s ((N.rotList s).headD s)) (ht : N.G.Adj t ((N.rotList t).headD t)) (hst : s ≠ t)
     (hP : N.toRot.Planar) (hN : ∀ v, ∃ u, N.G.Adj v u) (hDi : N.DiamLE D) (hc : N.toRot.Connected)
@@ -224,6 +224,7 @@ theorem chainHost_cutPath (N : Net (Fin n)) (g : Fin n → Fin n → ℕ) {s t :
       (∀ q, N.toRot.dual.IsWalk (C.v 0) q (C.v C.m) →
         C.pos (fun x => g x.fst x.snd) C.m ≤ (q.map fun x => g x.fst x.snd).sum) ∧
       (∀ (x : N.G.Dart) (τ : ℕ), τ < C.m → (C.e τ = x ↔ (st (idx N e m1 x)).2.1.1 = ((C.m - 1 - τ : ℕ) : ℕ∞))) ∧
+      (∀ τ, C.m ≤ τ → C.e τ = C.cs) ∧
       (st (idx N e corner (firstDart N hs))).2.1.1 = (C.m : ℕ∞) := by
   intro out T₁ st
   obtain ⟨h1, h2⟩ := chainHost_spec e hE K D N g hs ht hP hN hDi hc hgK
@@ -238,10 +239,10 @@ theorem chainHost_cutPath (N : Net (Fin n)) (g : Fin n → Fin n → ℕ) {s t :
   have hw : ∃ q, N.toRot.dual.IsWalk (N.toRot.dual.tail (firstDart N hs)) q
       (N.toRot.dual.tail (firstDart N ht)) :=
     ((N.toRot.dual.connected_iff).1 (N.toRot.connected_dual.2 hc)).2 _ _
-  obtain ⟨C, hcs, hct, hmin, hidx, hroot⟩ := chain_cutPath g hg1 hf hw h1
+  obtain ⟨C, hcs, hct, hmin, hidx, hpast, hroot⟩ := chain_cutPath g hg1 hf hw h1
   have hd : ∀ a, ((st a).2.1.1 : ℝ≥0∞) = (dualNet N e).dsrcTop (Net.markLenW (fun a => (st a).1) (m1Flag N e))
       (Net.markOffB fun a => decide (a = idx N e corner (firstDart N ht))) a := h2.dist_eq
-  refine ⟨C, hcs, hct, hmin, fun x τ hτ => ?_, ?_⟩
+  refine ⟨C, hcs, hct, hmin, fun x τ hτ => ?_, hpast, ?_⟩
   · rw [hidx x τ hτ, ← hd, ← ENat.toENNReal_coe, ENat.toENNReal_inj]
   · have := hroot
     rw [← hd, ← ENat.toENNReal_coe, ENat.toENNReal_inj] at this

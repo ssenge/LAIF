@@ -12,6 +12,7 @@ token lengths of its darts, and the state of each corner for the top annulus, wi
 
 * `X0In`: the local data of a node.
 * `X0In.x0`: its stored state of level `0`.
+* `RData.lvIn_of_local`: the input of level `0` from the local data, without the base values.
 * `RData.lvInv0_of_local`: this is the stored state of level `0` of every run on the cut.
 * `RData.theoremD_from_local`: Theorem D as one algorithm of the message model from the local data.
 -/
@@ -150,20 +151,19 @@ theorem cst0_eq (r : CutPath.Run hR hC hgc Cp.Γ (Cp.liveOne (Nat.cast ∘ cc)) 
 variable (hN : ∀ u, ∃ w, N.G.Adj u w) (modeL hostT : N.G.Dart → Bool)
   (hhost : ∀ d, hostT (N.toRot.rev d) = !hostT d) (hE : ExactSsspBound) (K D M : ℕ)
 
-/-- **The stored state of level `0` from local data.** If every node holds its local data, then the
-stored states it computes are the stored state of level `0` of every run on the cut. -/
-theorem lvInv0_of_local (r₀ : CutPath.Run hR hC hgc Cp.Γ (Cp.liveOne (Nat.cast ∘ cc)) 0 Cp.m) (w₀ : Fin n)
+/-- **The input of level `0` from local data.** If every node holds its local data, then the input of
+level `0` that it computes is the input of level `0` of every run on the cut. The base values are not
+used. -/
+theorem lvIn_of_local (r₀ : CutPath.Run hR hC hgc Cp.Γ (Cp.liveOne (Nat.cast ∘ cc)) 0 Cp.m) (w₀ : Fin n)
     (x : Fin n → X0In n) (hme : ∀ w, (x w).me = w) (hrot : ∀ w, (x w).rot = N.rotList w)
     (hcw : ∀ d : N.G.Dart, (x d.fst).cw d.snd = cc d) (hmL : ∀ d : N.G.Dart, (x d.fst).mL d.snd = modeL d)
     (hhT : ∀ d : N.G.Dart, (x d.fst).hT d.snd = hostT d) (hb : ∀ w, (x w).bnd = M)
     (hm : ∀ w, (x w).m = Cp.m) (hsrc : ∀ w, (x w).src = w₀)
-    (hgs : ∀ k, k ≤ 3 → ∀ (d : N.G.Dart) b, ((x d.fst).gs k).1 d.snd b = gsBase Cp k (d, b) ∧
-      ((x d.snd).gs k).2 d.fst b = gsBase Cp k (d, b))
-    (hkI : ∀ (d : N.G.Dart) b t, ((((x d.snd).kapI d.fst b).1 t = true ↔ (d, b) = Cp.k 0 t) ∧
-      (((x d.snd).kapI d.fst b).2 t = true ↔ (d, b) = Cp.k 1 t)))
     (hkO : ∀ (d : N.G.Dart) b t, ((((x d.fst).kapO d.snd b).1 t = true ↔ (d, b) = Cp.k 0 t) ∧
       (((x d.fst).kapO d.snd b).2 t = true ↔ (d, b) = Cp.k 1 t))) :
-    LvInv hN modeL hostT hhost hE K D M r₀ w₀ 0 (fun w => (x w).x0) := by
+    ∀ w, (x w).x0.1 = (lvS modeL hostT hhost (lvSeq hN modeL hostT hhost hE K D M r₀ 0) 0).levelIn hN
+      (lvLam cc (lvS modeL hostT hhost (lvSeq hN modeL hostT hhost hE K D M r₀ 0) 0)) M
+      ((lvS modeL hostT hhost (lvSeq hN modeL hostT hhost hE K D M r₀ 0) 0).starV hN w₀) w := by
   have hincS : ∀ d, d ∈ (lvS modeL hostT hhost (lvSeq hN modeL hostT hhost hE K D M r₀ 0) 0).inc ↔ (d, false) ∈ Cp.Γ := fun d => by
     simp [lvS, CutPath.Run.data, RData.ofCorners, CutPath.Run.steps_zero]
   have hcutS : ∀ c, c ∈ (lvS modeL hostT hhost (lvSeq hN modeL hostT hhost hE K D M r₀ 0) 0).cut ↔ (c, true) ∈ Cp.Γ := fun c => by
@@ -220,6 +220,23 @@ theorem lvInv0_of_local (r₀ : CutPath.Run hR hC hgc Cp.Γ (Cp.liveOne (Nat.cas
         simp
       · have hu : u ∉ (x w).rot := by rw [hrot]; exact fun hm => h ((N.mem_rotList _ _).1 hm)
         rw [ite_cond_eq_false _ _ (eq_false hu), dite_eq_right_of_eq_false (eq_false h)]
+  exact hL1
+
+/-- **The stored state of level `0` from local data.** If every node holds its local data, then the
+stored states it computes are the stored state of level `0` of every run on the cut. -/
+theorem lvInv0_of_local (r₀ : CutPath.Run hR hC hgc Cp.Γ (Cp.liveOne (Nat.cast ∘ cc)) 0 Cp.m) (w₀ : Fin n)
+    (x : Fin n → X0In n) (hme : ∀ w, (x w).me = w) (hrot : ∀ w, (x w).rot = N.rotList w)
+    (hcw : ∀ d : N.G.Dart, (x d.fst).cw d.snd = cc d) (hmL : ∀ d : N.G.Dart, (x d.fst).mL d.snd = modeL d)
+    (hhT : ∀ d : N.G.Dart, (x d.fst).hT d.snd = hostT d) (hb : ∀ w, (x w).bnd = M)
+    (hm : ∀ w, (x w).m = Cp.m) (hsrc : ∀ w, (x w).src = w₀)
+    (hgs : ∀ k, k ≤ 3 → ∀ (d : N.G.Dart) b, ((x d.fst).gs k).1 d.snd b = gsBase Cp k (d, b) ∧
+      ((x d.snd).gs k).2 d.fst b = gsBase Cp k (d, b))
+    (hkI : ∀ (d : N.G.Dart) b t, ((((x d.snd).kapI d.fst b).1 t = true ↔ (d, b) = Cp.k 0 t) ∧
+      (((x d.snd).kapI d.fst b).2 t = true ↔ (d, b) = Cp.k 1 t)))
+    (hkO : ∀ (d : N.G.Dart) b t, ((((x d.fst).kapO d.snd b).1 t = true ↔ (d, b) = Cp.k 0 t) ∧
+      (((x d.fst).kapO d.snd b).2 t = true ↔ (d, b) = Cp.k 1 t))) :
+    LvInv hN modeL hostT hhost hE K D M r₀ w₀ 0 (fun w => (x w).x0) := by
+  have hL1 := lvIn_of_local hN modeL hostT hhost hE K D M r₀ w₀ x hme hrot hcw hmL hhT hb hm hsrc hkO
   refine ⟨hL1, hm, fun k hk d b => hgs k hk d b, fun d b => ⟨?_, ?_⟩, fun d b t => hkI d b t⟩
   · show X0In.cst0 (x d.fst).m ((x d.fst).kapO d.snd b) = _
     rw [hm]
