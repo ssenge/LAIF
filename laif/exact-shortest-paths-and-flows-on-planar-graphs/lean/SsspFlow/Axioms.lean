@@ -1159,11 +1159,17 @@ Expected output for each: `propext`, `Classical.choice`, `Quot.sound` (or a subs
 #print axioms SsspFlow.Congest.chainDarts_mem
 #print axioms SsspFlow.Congest.chain_cutPath
 #print axioms SsspFlow.Congest.chainIn_eq
+#print axioms SsspFlow.Congest.chainHost_sim
 #print axioms SsspFlow.Congest.run_chainHost
 #print axioms SsspFlow.Congest.chainHost_spec
 #print axioms SsspFlow.Congest.chainHost_cutPath
 #print axioms SsspFlow.Congest.decC_encC
 #print axioms SsspFlow.Congest.kapOf_spec
+#print axioms SsspFlow.Congest.msg_dartMsg
+#print axioms SsspFlow.Congest.adj_headD
+#print axioms SsspFlow.Congest.fsOf_iff
+#print axioms SsspFlow.Congest.ftOf_iff
+#print axioms SsspFlow.Congest.cpAlg_spec
 #print axioms SsspFlow.RotSystem.RData.locOf_eq
 #print axioms SsspFlow.RotSystem.RData.gsBase_eq_cut
 #print axioms SsspFlow.RotSystem.RData.pieceAt_eq_iff

@@ -12,7 +12,7 @@ of the first dart of the source, the corner of the first dart of the target as t
 kind `m1` flagged.
 
 * `chainIn_eq`: the host computes the inputs of its identifiers.
-* `run_chainHost`: the hosts simulate `chainAlg` on the dual network.
+* `chainHost_sim`, `run_chainHost`: the hosts simulate `chainAlg` on the dual network.
 -/
 
 set_option autoImplicit false
@@ -115,14 +115,16 @@ noncomputable def chainHost {σ : Type} {B : ℕ} (A : Algorithm W (ChainI W) σ
   Algorithm.simulate A (fun a => (e.symm a).1)
     (fun v h b a => a ∈ vRot e v h.nbrs (e.symm b).2.1 (e.symm b).2.2) (crossId e) (vChainIn e)
 
-/-- **The hosts simulate the dual network.** -/
-theorem run_chainHost {σ : Type} {B : ℕ} (A : Algorithm W (ChainI W) σ B) {s t : V}
-    (hs : N.G.Adj s ((N.rotList s).headD s)) (ht : N.G.Adj t ((N.rotList t).headD t)) (T : ℕ) (a : W) :
-    ((chainHost e A).run N.G (dualHostOf N g s t) T (e.symm a).1).2 a =
-      A.run (dualNet N e).G (chainInp e N g hs ht) T a := by
-  refine (Algorithm.run_simulate A (fun a => (e.symm a).1)
+/-- **The hosts simulate the dual network.** Every host keeps its input, and holds the state of each
+of its identifiers in the run on the dual network. -/
+theorem chainHost_sim {σ : Type} {B : ℕ} (A : Algorithm W (ChainI W) σ B) {s t : V}
+    (hs : N.G.Adj s ((N.rotList s).headD s)) (ht : N.G.Adj t ((N.rotList t).headD t)) (T : ℕ) (v : V) :
+    ((chainHost e A).run N.G (dualHostOf N g s t) T v).1 = dualHostOf N g s t v ∧
+      ∀ a, (e.symm a).1 = v → ((chainHost e A).run N.G (dualHostOf N g s t) T v).2 a =
+        A.run (dualNet N e).G (chainInp e N g hs ht) T a := by
+  refine Algorithm.run_simulate A (fun a => (e.symm a).1)
     (fun v h b a => a ∈ vRot e v h.nbrs (e.symm b).2.1 (e.symm b).2.2) (crossId e) (vChainIn e) N.G
-    (dualNet N e).G (dualHostOf N g s t) (chainInp e N g hs ht) ?_ ?_ ?_ T _).2 a rfl
+    (dualNet N e).G (dualHostOf N g s t) (chainInp e N g hs ht) ?_ ?_ ?_ T v
   · intro a
     exact chainIn_eq hs ht rfl
   · intro b a hba
@@ -133,6 +135,12 @@ theorem run_chainHost {σ : Type} {B : ℕ} (A : Algorithm W (ChainI W) σ B) {s
     exact (dualNet N e).mem_rotList _ _
   · intro b a hba
     exact dual_adj_cross hba
+
+theorem run_chainHost {σ : Type} {B : ℕ} (A : Algorithm W (ChainI W) σ B) {s t : V}
+    (hs : N.G.Adj s ((N.rotList s).headD s)) (ht : N.G.Adj t ((N.rotList t).headD t)) (T : ℕ) (a : W) :
+    ((chainHost e A).run N.G (dualHostOf N g s t) T (e.symm a).1).2 a =
+      A.run (dualNet N e).G (chainInp e N g hs ht) T a :=
+  (chainHost_sim A hs ht T _).2 a rfl
 
 theorem m1Flag_eq (a : W) : m1Flag N e a = (((m1Dart N e a).isSome.toNat : ℕ) : ℕ∞) := by
   unfold m1Flag
