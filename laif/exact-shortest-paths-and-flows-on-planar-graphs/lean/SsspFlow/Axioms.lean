@@ -1144,9 +1144,16 @@ Expected output for each: `propext`, `Classical.choice`, `Quot.sound` (or a subs
 #print axioms SsspFlow.RotSystem.walkV_length
 #print axioms SsspFlow.RotSystem.exists_shortest_cutPath
 #print axioms SsspFlow.RotSystem.exists_shortest_cutPath_dual
+#print axioms SsspFlow.RotSystem.CutPath.ofSimple_pos
+#print axioms SsspFlow.RotSystem.CutPath.ofSimple_shortest
+#print axioms SsspFlow.RotSystem.IsWalk.simple_of_shortest
 #print axioms SsspFlow.Congest.arc_face
 #print axioms SsspFlow.Congest.walk_proj
 #print axioms SsspFlow.Congest.face_walk
 #print axioms SsspFlow.Congest.cross_walk
 #print axioms SsspFlow.Congest.walk_lift
 #print axioms SsspFlow.Congest.dist_corner
+#print axioms SsspFlow.Congest.step_arc
+#print axioms SsspFlow.Congest.chainDarts_walk
+#print axioms SsspFlow.Congest.chainDarts_mem
+#print axioms SsspFlow.Congest.chain_cutPath
