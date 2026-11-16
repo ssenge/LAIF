@@ -1116,3 +1116,16 @@ Expected output for each: `propext`, `Classical.choice`, `Quot.sound` (or a subs
 #print axioms SsspFlow.RotSystem.RData.levelQ_rng
 #print axioms SsspFlow.RotSystem.RData.levelOvSide_local
 #print axioms SsspFlow.RotSystem.RData.levelOv_local
+#print axioms SsspFlow.RotSystem.CutPath.Run.subs_len
+#print axioms SsspFlow.RotSystem.CutPath.SideA.subs_len
+#print axioms SsspFlow.RotSystem.CutPath.SideB.subs_len
+#print axioms SsspFlow.RotSystem.CutPath.Run.loc_eq_empty
+#print axioms SsspFlow.RotSystem.CutPath.Run.loc_deep
+#print axioms SsspFlow.RotSystem.CutPath.Live.loc_pickNode
+#print axioms SsspFlow.RotSystem.CutPath.loc_pickF
+#print axioms SsspFlow.RotSystem.CutPath.Run.seq_lkeys
+#print axioms SsspFlow.RotSystem.CutPath.Run.seq_loc
+#print axioms SsspFlow.RotSystem.RData.lv_cover
+#print axioms SsspFlow.RotSystem.RData.lv_rng_le
+#print axioms SsspFlow.RotSystem.RData.lv_sel_le
+#print axioms SsspFlow.RotSystem.RData.lv_ov_le
