@@ -231,7 +231,9 @@ theorem lvInv0_of_local (r₀ : CutPath.Run hR hC hgc Cp.Γ (Cp.liveOne (Nat.cas
 end RData
 
 open Classical Cslib.Congest.Algorithm in
-/-- **Theorem D as one algorithm of the message model, from local data.** Every node starts with its
+/-- **Theorem D as one algorithm of the message model, from local data.** Let the network be planar
+and connected with symmetric capacities `c₀`, `K₀` exceed the number of darts, and the cut path be
+shortest for the lengths `K₀ c₀ + 1`. Every node starts with its
 local data: its name, rotation list, the costs `K₀ c₀ + 1`, modes and hosts of its darts, the bound `M`,
 the number `m`, the name of a source node, and the indices and base values of the corners of its darts
 on a shortest cut path. After `T` rounds every node holds a number `v` with `v / K₀` the minimum
@@ -242,10 +244,7 @@ theorem RData.theoremD_from_local (hE : ExactSsspBound) (K : ℕ) : ∃ C c : �
       (T : ℕ) (out : Fin n → σ → ℕ),
     T ≤ (2 * logN n + 1) * (110 + 68 * (C * logN (n * (n * 21)) ^ c * (12 * D + 16))) + D ∧
     ∀ (N : Net (Fin n)) (hN : ∀ u, ∃ w, N.G.Adj u w) (Cp : N.toRot.dual.CutPath) (c₀ : N.G.Dart → ℕ)
-      (K₀ : ℕ) (hR : N.toRot.dual.Planar) (hC : N.toRot.dual.Connected)
-      (hgc : ∀ x, (Nat.cast ∘ (fun x => K₀ * c₀ x + 1) : N.G.Dart → ℝ≥0∞) (N.toRot.dual.rev x) =
-        (Nat.cast ∘ (fun x => K₀ * c₀ x + 1)) x)
-      (modeL hostT : N.G.Dart → Bool) (hhost : ∀ d, hostT (N.toRot.rev d) = !hostT d) (M : ℕ)
+      (K₀ : ℕ) (modeL hostT : N.G.Dart → Bool) (hhost : ∀ d, hostT (N.toRot.rev d) = !hostT d) (M : ℕ)
       (x : Fin n → X0In n) (w₀ : Fin n),
       N.toRot.Planar → N.toRot.Connected → N.DiamLE D → CutDuality N.G.Dart →
       (∀ d, c₀ (N.toRot.rev d) = c₀ d) → Fintype.card N.G.Dart < K₀ →
@@ -269,8 +268,13 @@ theorem RData.theoremD_from_local (hE : ExactSsspBound) (K : ℕ) : ∃ C c : �
   refine ⟨C, c, fun n D => ?_⟩
   obtain ⟨σ, A, T, out, hT, hA⟩ := h n D
   refine ⟨_, A.keep (fun _ (y : X0In n) => y.x0), T, fun w s => out w s.2, hT, ?_⟩
-  intro N hN Cp c₀ K₀ hR hC hgc modeL hostT hhost M x w₀ hP hc hD hDual hcr₀ hK hPath hcb hM hMl hM8
+  intro N hN Cp c₀ K₀ modeL hostT hhost M x w₀ hP hc hD hDual hcr₀ hK hPath hcb hM hMl hM8
     hme hrot hcw hmL hhT hb hm hsrc hgs hkI hkO w
+  have hR : N.toRot.dual.Planar := N.toRot.planar_dual.2 hP
+  have hC : N.toRot.dual.Connected := N.toRot.connected_dual.2 hc
+  have hgc : ∀ x, (Nat.cast ∘ (fun x => K₀ * c₀ x + 1) : N.G.Dart → ℝ≥0∞) (N.toRot.dual.rev x) =
+      (Nat.cast ∘ (fun x => K₀ * c₀ x + 1)) x := fun x => by
+    simp only [Function.comp_apply, dual_rev, hcr₀]
   have hg₀ : ∀ x, K₀ * c₀ (N.toRot.dual.rev x) + 1 = K₀ * c₀ x + 1 := fun x => by rw [dual_rev, hcr₀]
   have hpos : ∀ t, t < Cp.m → 1 ≤ K₀ * c₀ (Cp.e t) + 1 := fun _ _ => Nat.le_add_left 1 _
   obtain ⟨⟨r₀⟩, -⟩ := CutPath.recursion_cut (C := Cp) hR hC hgc hg₀ hpos hPath

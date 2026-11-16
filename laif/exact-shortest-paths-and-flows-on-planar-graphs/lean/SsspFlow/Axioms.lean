@@ -1139,3 +1139,8 @@ Expected output for each: `propext`, `Classical.choice`, `Quot.sound` (or a subs
 #print axioms SsspFlow.RotSystem.RData.cst0_eq
 #print axioms SsspFlow.RotSystem.RData.lvInv0_of_local
 #print axioms SsspFlow.RotSystem.RData.theoremD_from_local
+#print axioms SsspFlow.RotSystem.walkV_tail
+#print axioms SsspFlow.RotSystem.walkV_head
+#print axioms SsspFlow.RotSystem.walkV_length
+#print axioms SsspFlow.RotSystem.exists_shortest_cutPath
+#print axioms SsspFlow.RotSystem.exists_shortest_cutPath_dual

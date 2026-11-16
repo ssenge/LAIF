@@ -216,6 +216,7 @@ import SsspFlow.GHatLevelLoop
 import SsspFlow.GHatLevelEnds
 import SsspFlow.GHatTheoremD
 import SsspFlow.GHatLevelX0
+import SsspFlow.CutPathExists
 import SsspFlow.ListRot
 import SsspFlow.GHatSplit
 import SsspFlow.Annuli
