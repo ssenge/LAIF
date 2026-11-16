@@ -1157,3 +1157,7 @@ Expected output for each: `propext`, `Classical.choice`, `Quot.sound` (or a subs
 #print axioms SsspFlow.Congest.chainDarts_walk
 #print axioms SsspFlow.Congest.chainDarts_mem
 #print axioms SsspFlow.Congest.chain_cutPath
+#print axioms SsspFlow.Congest.chainIn_eq
+#print axioms SsspFlow.Congest.run_chainHost
+#print axioms SsspFlow.Congest.chainHost_spec
+#print axioms SsspFlow.Congest.chainHost_cutPath
