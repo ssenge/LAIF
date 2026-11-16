@@ -1101,3 +1101,12 @@ Expected output for each: `propext`, `Classical.choice`, `Quot.sound` (or a subs
 #print axioms SsspFlow.RotSystem.RData.facePair_local
 #print axioms SsspFlow.RotSystem.CutPath.Live.ov_sum_a
 #print axioms SsspFlow.RotSystem.CutPath.Live.ov_sum_b
+#print axioms SsspFlow.RotSystem.RData.arcDist_region
+#print axioms SsspFlow.RotSystem.RData.markDist_region
+#print axioms SsspFlow.RotSystem.RData.mark_onChain
+#print axioms SsspFlow.RotSystem.RData.mark_unique
+#print axioms SsspFlow.RotSystem.RData.mark_exists
+#print axioms SsspFlow.RotSystem.ovIn_bit
+#print axioms SsspFlow.RotSystem.ovIn_range
+#print axioms SsspFlow.RotSystem.CutPath.Live.ov_sum
+#print axioms SsspFlow.RotSystem.CutPath.ovTgt_eq

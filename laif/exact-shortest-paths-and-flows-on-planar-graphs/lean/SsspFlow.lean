@@ -204,6 +204,9 @@ import SsspFlow.GHatValLevel
 import SsspFlow.GHatFaceData
 import SsspFlow.GHatFacePair
 import SsspFlow.OverlapSum
+import SsspFlow.GHatOvDist
+import SsspFlow.GHatOvMark
+import SsspFlow.GHatOvVal
 import SsspFlow.ListRot
 import SsspFlow.GHatSplit
 import SsspFlow.Annuli
