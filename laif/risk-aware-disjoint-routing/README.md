@@ -34,7 +34,7 @@ is sufficient for every B ≥ 0 and every p ≥ 0: every minimizer is a feasible
 
 | Result | Scope | Status | Posted |
 |---|---|---|---|
-| Theorem 1, Corollary 2 | Every rational C ≥ 0; uses the NP-hardness of the min-min disjoint paths problem [3] | Claim | 2026-11-16 |
+| Theorem 1, Corollary 2 | Every rational C ≥ 0; uses the NP-hardness of the min-min disjoint paths problem [3], with the proof for undirected graphs in [4] (edge-disjoint paths; the vertex-disjoint version follows through the line graph) | Claim | 2026-11-16 |
 | Theorem 3 | Exact for all inputs; N can be exponential in n, as Theorem 1 allows | Claim | 2026-11-16 |
 | Theorem 4 | Uses the guarantee of [2] as stated there, for integer costs. The speedup is relative to classical branch-and-bound on the same tree, not a proven separation from every classical algorithm; it pays off only when T is large compared with the polynomial factors in n | Claim | 2026-11-16 |
 | Theorem 5 | Every B ≥ 0 and p ≥ 0; minimizers checked by exhaustive search on the network of [1] for three sources, two failure scenarios and six values of B | Claim | 2026-11-16 |
@@ -44,6 +44,7 @@ is sufficient for every B ≥ 0 and every p ≥ 0: every minimizer is a feasible
 1. M. Harb, N. Foroughi, M. Stehman, B. Lutz, N. Erez, E. Garcell. Quantum-based resilient routing in networks: minimizing latency under dual-link failures. IEEE Transactions on Quantum Engineering 7, 2026. doi:10.1109/TQE.2026.3702858.
 2. A. Montanaro. Quantum speedup of branch-and-bound algorithms. Physical Review Research 2, 013056, 2020. arXiv:1906.10375.
 3. D. Xu, Y. Chen, Y. Xiong, C. Qiao, X. He. On the complexity of and algorithms for finding the shortest path with a disjoint counterpart. IEEE/ACM Transactions on Networking 14(1):147–158, 2006.
+4. L. Guo, H. Shen. On finding min-min disjoint paths. Algorithmica 66(3):641–653, 2013.
 
 ## Use of AI
 
