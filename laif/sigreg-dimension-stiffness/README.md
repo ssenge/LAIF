@@ -55,6 +55,33 @@ For h = D with L = sup D'' = D''(0) ≈ 6.855, the constant in (ii) cannot be im
 | Theorem 3 | As stated, with μ > 0 and L > 0 in Lean (the other cases are immediate); for h = D, Lean uses the bound \|D\| ≤ 11, so h(1) − h_lo ≤ 11, while the sharp value 0 uses D ≥ 0 | Lean | 2026-11-17 |
 | Corollary 3 | Asymptotic in K at fixed N and μ₀; evenly spaced costs are a modelling assumption. For the expected minibatch loss L becomes about N · 6.86, so at the batch size N = 256 of [1], μ₀ ≈ 0.21 and costs with c₁ and Δ of order 1, the bound allows full rank up to K of the order of 10³ (the bound scales with c̄/(c₁Δ)); the corollary describes the dependence on K, not the values in Table 1d of [1] | Claim, from Theorem 3; numerical minimizers consistent with both exponents | 2026-11-17 |
 | Proposition 4 | Linear encoder, Gaussian views, no predictor | Claim, assuming the trace inequality tr(PC) ≥ Σ αᵢ↓γᵢ↑ for positive semidefinite P and C [4] | 2026-11-17 |
+| Theorem 5 | Laws on the sphere of radius √K with mean 0 and identity covariance; SIGReg with the t-integral over ℝ | Lean for laws with finitely many atoms: the energy bound for every profile with a cubic remainder and for the SIGReg profile with any law of u on [0, 1]; Claim for general isotropic laws, for the identity S(P) = √(2π) E H_K(ρ) + const and for the lower bound S*_K ≤ S(P); checked by Monte Carlo | 2026-11-17 |
+| Theorem 6 | As stated, t ≥ 0 | Lean for the energy form of (i) and of the upper bound in (iii), for laws with finitely many atoms; Claim for the steps through the logarithm, for (ii), from E e^{λa₁} ≤ e^{λ²/(2K)}, for general isotropic laws and for the lower bound in (iii); checked numerically | 2026-11-17 |
+
+### Clustered embeddings on the sphere
+
+For a law P on the sphere of radius √K write ρ = ⟨x, x'⟩/K for two independent draws x, x' ~ P. Integrating the statistic in t and using the rotation invariance of the direction law gives
+
+    S(P) = √(2π) E H_K(ρ) − 2√π H_K(3/4) + √(2π/3),   H_K(ρ) = E exp(−K(1 − ρ)u),
+
+with u = a₁² for a uniform direction a, so SIGReg on the sphere, with the t-integral over ℝ, is a kernel energy in ρ alone (a quadrature in t changes the profile H_K). H_K(ρ) = Σₙ βₙρⁿ with βₙ = E e^{−Ku}(Ku)ⁿ/n! ≥ 0 and Σβₙ = 1. Call P isotropic if it has mean 0 and identity covariance.
+
+**Theorem 5 (cluster blindness).** Let P be an isotropic law on the sphere, for example one with finitely many atoms. Then E ρ = 0 and E ρ² = 1/K, whatever the number and position of the atoms, and for every profile H with |H(ρ) − (H₀ + H₁ρ + c₂ρ²)| ≤ C|ρ|³ on [−1, 1],
+
+    |E H(ρ) − (H₀ + c₂/K)| ≤ C/K.
+
+For the SIGReg profile C = 1 − β₀ − β₁ − β₂ < 1 (0.134 for large K), and since E ρⁿ = ‖E x^{⊗n}‖²/Kⁿ ≥ 0 and βₙ ≥ 0,
+
+    S*_K ≤ S(P) ≤ S*_K + √(2π)(1 − β₀ − β₁ − β₂)/K,   S*_K = √(2π)(β₀ + β₂/K) − 2√π H_K(3/4) + √(2π/3).
+
+So any two isotropic laws on the sphere, the uniform law among them, differ in SIGReg by at most √(2π)(1 − β₀ − β₁ − β₂)/K ≈ 0.34/K, however their mass is clustered. For large K, an embedding law concentrated on the 2K vertices ±√K eᵢ of the cross-polytope has S ≈ 0.125/K, and one on two random signed orthonormal bases (4K points) has S ≈ 0.063/K, while the uniform law on the sphere has S ≈ 0.117/K² (`sim/atomic_sigreg.py`). The penalty for such a clustering is thus of the same order 1/K as the cost of the shape in Theorem 1, and small against a scale error such as D(1/2) ≈ 0.049.
+
+**Theorem 6 (uniformity term at inverse temperature t).** Let t ≥ 0 and R_t(P) = log E exp(−2t(1 − ρ)), the uniformity loss of [6] on normalized embeddings.
+(i) Every law on the sphere with m atoms, with any weights, has R_t(P) ≥ −log m, for every t.
+(ii) The uniform law has R_t ≤ −2t + 2t²/K, so a law with m atoms is separated from it by at least 2t − 2t²/K − log m.
+(iii) Every isotropic law on the sphere has 0 ≤ R_t(P) − log(e^{−2t}(1 + 2t²/K)) ≤ (e^{2t} − 1 − 2t − 2t²)/K.
+
+So the uniformity term is blind to isotropic clusters when e^{2t} is small against K, and it separates laws with m atoms when 2t exceeds log m + 2t²/K. At the usual t = 2 and K = 1024 the bound in (iii) is 0.041, and the bound in (ii) guarantees a positive margin only for laws with fewer than e^{4 − 8/K} ≈ 54 atoms, while an isotropic law needs at least K atoms. A regularizer S + γR_t keeps the Gaussian target of SIGReg and adds a guaranteed margin of γ(2t − 2t²/K − log m) against every law with m atoms, which is positive when log m < 2t − 2t²/K, for example for t between about log K and K/2 and m polynomial in K. The guaranteed margin from (ii) is largest at t = K/2, where it equals K/2 − log m. In [5] it is observed that smooth kernel discrepancies on the sphere favour clustered latent spaces while a density-based divergence separates instances; Theorems 5 and 6 give a quantitative form of this for the kernels above.
 
 The population value averages over all directions, so it does not depend on the number of slices; Table 1d of [1] also shows a smaller loss of accuracy with 4096 slices, which these results do not model.
 
@@ -69,10 +96,13 @@ The population value averages over all directions, so it does not depend on the 
 - `SigregDim/SliceD.lean`, the slice function D: its first and second derivatives, the bounds \|D\| ≤ 11, \|D'\| ≤ 3, \|D''\| ≤ 8 on [0, ∞), `descent_of_lip`, and `sliceFn_epD`, which shows that D satisfies `SliceFn` with L = 8 (the sharp constant 6.855 is checked by script).
 - `SigregDim/Witness.lean`: `sphereLike_witness`, the law (2/(K(K+2))) Σₖ δ(eₖ) + (K/(K+2)) δ(𝟙/√K) satisfies `SphereLike` for every K ≥ 1, so the hypotheses are consistent.
 - `SigregDim/Exists.lean`: `exists_minimizer` (h continuous and bounded below on [0, ∞), costs at least c₁ > 0), `epD'_one`, and `epD_minimizer`, which combines the above for h = D: a global minimizer exists, and every one satisfies the ordering, the gap bound with L = 8 and the rank bound.
+- `SigregDim/Atomic.lean`, Theorem 5: the structure `IsoAtoms` (finite law on the sphere with mean 0 and identity covariance), `energy_lin` and `energy_sq` (the moments of ρ), `energy_near` and `energy_diff` (the bound C/K and 2C/K), `remainder_le_of_series` (cubic remainder of a power series with nonnegative coefficients), and `energy_ge_inv_card` (energy at least 1/m for a profile H ≥ 0 with H(1) = 1).
+- `SigregDim/Kernel.lean`, Theorems 5 and 6: `exp_remainder`, `sigKernel_remainder`, `sigreg_energy_near` and `sigreg_energy_diff` for the SIGReg profile with any probability law of u on [0, 1] and C = 1, `sigKernel_remainder_tail` and `sigreg_energy_near_tail` with C = 1 − β₀ − β₁ − β₂, `unif_energy_near` for the energy form of Theorem 6 (iii), and `unif_energy_ge` for the energy form of Theorem 6 (i).
+- `SigregDim/CrossPolytope.lean`: `isoAtoms_cross`, the 2K vertices ±√K eᵢ with equal weights satisfy `IsoAtoms` for every K ≥ 1.
 
 **Assuming.** The moments and the rotation invariance of the uniform law on the sphere, which enter as the hypothesis `SphereLike` and through the reduction from Σ to its spectrum. The trace inequality [4], used on paper for Proposition 4.
 
-**Not formalized.** The closed form of D as an integral and D ≥ 0 (Gaussian integrals), Corollary 1, Lemma 2 and the minibatch slice function N D + B, Corollary 3, Proposition 4, and the steps from the bounds on h'' to the quadratic models of h, which are hypotheses in Lean and are proved for D.
+**Not formalized.** The closed form of D as an integral and D ≥ 0 (Gaussian integrals), Corollary 1, Lemma 2 and the minibatch slice function N D + B, Corollary 3, Proposition 4, the identity of Theorem 5 between SIGReg on the sphere and the kernel energy (Gaussian integrals and the rotation invariance of the direction law), Theorems 5 and 6 for isotropic laws that are not finite, the lower bounds in Theorems 5 and 6 (iii), Theorem 6 (ii), and the steps from the bounds on h'' to the quadratic models of h, which are hypotheses in Lean and are proved for D.
 
 ## Simulations
 
@@ -82,6 +112,8 @@ The population value averages over all directions, so it does not depend on the 
 - `stiffness_check.py`: S_D for collapse onto K/2 and K/8 directions and for halving the variance of every coordinate, against the second-order prediction, for K up to 1024.
 - `batch_detect.py`: Lemma 2 by Monte Carlo, and the minibatch statistic on isotropic and collapsed Gaussian batches.
 - `sharpness_check.py`: the ratio of the two sides of Theorem 2 (ii) for h = D, K = 2, as the costs approach μ|D'(0)|/K.
+- `atomic_sigreg.py`: SIGReg on the sphere for the uniform law, the cross-polytope and two signed random bases, for K from 8 to 1024, from the kernel form, with a Monte Carlo check of the step over directions at K = 4.
+- `cluster_bounds.py`: the moment identities, the bound of Theorem 5 for the SIGReg profile, Theorem 6 (i) and (iii) for t = 1, 2, 4, and the bound on E e^{λa₁}, for K up to 256, with the separation margins of Theorem 6 at K = 1024.
 - `linear_rank.py`, `linear_rank_mean.py`: local minimizers of F with 6000 sampled directions, checked against Theorems 2 and 3, for both normalizations. With fixed μ the rank stays between 3 and 6 for all K tested; with μ = 2K the fraction of active directions falls from 0.31 at K = 64 to 0.10 at K = 512.
 
 ## References
@@ -90,6 +122,8 @@ The population value averages over all directions, so it does not depend on the 
 2. E. Zimmermann, H. Wiltzer, J. Szeto, D. Alvarez-Melis, L. Mackey. KerJEPA: kernel discrepancies for Euclidean self-supervised learning. arXiv:2512.19605, 2025.
 3. T. W. Epps, L. B. Pulley. A test for normality based on the empirical characteristic function. Biometrika 70(3):723–726, 1983.
 4. A. W. Marshall, I. Olkin, B. C. Arnold. Inequalities: Theory of Majorization and Its Applications, 2nd edition. Springer, 2011.
+5. L. Nicollier, E. Meinhardt-Llopis, M. Dunitz, M. Pic, P. Musé, G. Facciolo. Expanding SPHERE-JEPA: a family of statistical regularizers for the hypersphere. arXiv:2606.17603, 2026.
+6. T. Wang, P. Isola. Understanding contrastive representation learning through alignment and uniformity on the hypersphere. ICML 2020, arXiv:2005.10242.
 
 ## Use of AI
 

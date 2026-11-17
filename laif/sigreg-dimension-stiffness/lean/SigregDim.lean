@@ -5,3 +5,7 @@ import SigregDim.Rank
 import SigregDim.SliceD
 import SigregDim.Witness
 import SigregDim.Exists
+import SigregDim.Atomic
+import SigregDim.Kernel
+import SigregDim.CrossPolytope
+import SigregDim.Axioms
