@@ -2,7 +2,7 @@
 
 Written 17 Nov 2026.
 
-LeJEPA [1] trains a joint-embedding predictive architecture with a regularizer, SIGReg, that pushes the embedding law towards the isotropic Gaussian. For embeddings z ∈ ℝ^K it draws random unit directions a, forms the slices aᵀz, and compares the empirical characteristic function of each slice with e^{−t²/2} by the statistic of [3] with weight e^{−t²/2}, multiplied by the batch size N. In [1] it is proved that the isotropic Gaussian is the unique zero, and in [2] the regularizer is written as a kernel discrepancy whose bandwidth grows with K. Table 1d of [1] reports that linear accuracy on ImageNet-1K falls as the projector dimension grows, from 75.3 at K = 64 to 73.65 at K = 1024.
+LeJEPA [1] trains a joint-embedding predictive architecture with a regularizer, SIGReg, that pushes the embedding law towards the isotropic Gaussian. For embeddings z ∈ ℝ^K it draws random unit directions a, forms the slices aᵀz, and compares the empirical characteristic function of each slice with e^{−t²/2} by an unstandardized form of the statistic of [3] with weight e^{−t²/2}, multiplied by the batch size N. In [1] it is proved that the isotropic Gaussian is the unique zero, and in [2] the regularizer is written as a kernel discrepancy whose bandwidth grows with K. Table 1d of [1] reports that linear accuracy on ImageNet-1K falls as the projector dimension grows, from 75.3 at K = 64 to 73.65 at K = 1024.
 
 The results below quantify how strongly SIGReg penalizes a non-isotropic covariance, as a function of K, and what this means for the minimizers of a linear model.
 
@@ -20,7 +20,7 @@ the value of the statistic between N(0, s) and N(0, 1). With a uniform on the sp
 (a) If h'' ≤ L on [0, ∞) (more generally, (L/2)x² − h is convex), then S_h(λ) ≤ h(m) + L v/(K+2).
 (b) If h'' ≥ ℓ on [min λ, max λ], then S_h(λ) ≥ h(m) + ℓ v/(K+2).
 
-For SIGReg this means that the scale m enters with the full weight D(m), independent of K, while the shape v enters only with weight Θ(1/K): near isotropy S_D ≈ D(m) + 0.2412 v/(K+2), and in general the cost of the shape lies between −0.0118 v/(K+2) and 6.86 v/(K+2). Collapsing the embedding onto K/2 of the K directions at fixed trace (v = 1) costs at most 6.86/(K+2), and 2.3 · 10⁻⁴ at K = 1024 by direct evaluation, while halving the variance of every coordinate costs D(1/2) ≈ 0.049 in every dimension.
+For SIGReg this means that the scale m enters with the full weight D(m), independent of K, while the shape v enters only with weight O(1/K): near isotropy S_D ≈ D(m) + 0.2412 v/(K+2), in general the cost of the shape lies between −0.0118 v/(K+2) and 6.86 v/(K+2), and it is Θ(v/K) for spectra inside [0, 2.4], where D'' > 0. Collapsing an isotropic embedding with m = 1 onto K/2 of the K directions at the same trace (v = 1) costs at most 6.86/(K+2), and about 2.36 · 10⁻⁴ at K = 1024, while halving the variance of every coordinate costs D(1/2) ≈ 0.049 in every dimension.
 
 **Corollary 1 (curvature at isotropy).** For smooth h and a symmetric direction Δ, the second derivative of ε ↦ S_h(I + εΔ) at ε = 0 is h''(1)((tr Δ)² + 2‖Δ‖_F²)/(K(K+2)). Per unit Frobenius norm, a traceless direction has curvature 2h''(1)/(K(K+2)) and the direction of the identity h''(1)/K, a ratio of 2/(K+2).
 
@@ -34,7 +34,7 @@ If h is continuous and bounded below on [0, ∞), F has a global minimizer λ*. 
 (i) if cᵢ < cⱼ, then λ*ᵢ ≥ λ*ⱼ;
 (ii) if cᵢ < cⱼ and λ*ⱼ > 0, then cⱼ − cᵢ ≤ 2Lμ(λ*ᵢ − λ*ⱼ)/(K(K+2)).
 
-The constant in (ii) cannot be improved: when the costs approach μ|h'(0)|/K from below, the ratio of the two sides tends to 1 (0.999 numerically at K = 2 with h = D).
+For h = D with L = sup D'' = D''(0) ≈ 6.855, the constant in (ii) cannot be improved: when the costs approach μ|D'(0)|/K from below, the ratio of the two sides tends to 1 (0.994 at K = 2 in `sim/sharpness_check.py`).
 
 **Theorem 3 (rank).** In the setting of Theorem 2, let the costs satisfy cₖ ≥ c₁ > 0 and c_l − c_k ≥ δ(l − k) for k < l, with δ > 0, and let h ≥ h_lo on [0, ∞). Every global minimizer has r = #{k : λ*ₖ > 0} active directions with
 
@@ -48,12 +48,12 @@ The constant in (ii) cannot be improved: when the costs approach μ|h'(0)|/K fro
 
 | Result | Scope | Status | Posted |
 |---|---|---|---|
-| Lemma 1, Theorem 1 | Any direction law with the second and fourth moments and the swap symmetry of the uniform law on the sphere; Gaussian embeddings. For a non-Gaussian embedding, S_h(Σ) is the value at the Gaussian with the same covariance | Lean, for the spectrum λ; the step from Σ to its spectrum uses the rotation invariance of the uniform law (classical) | 2026-11-17 |
+| Lemma 1, Theorem 1 | Any direction law supported on the unit sphere with the second and fourth moments and the swap symmetry of the uniform law on the sphere; Gaussian embeddings. For a non-Gaussian embedding, S_h(Σ) is the value at the Gaussian with the same covariance | Lean, for the spectrum λ, for h bounded on [0, ∞) and with the quadratic models of h (implied by the bounds on h'') as hypotheses; the step from Σ to its spectrum uses the rotation invariance of the uniform law (classical) | 2026-11-17 |
 | Corollary 1 | Smooth h | Claim | 2026-11-17 |
 | Lemma 2 | One slice, independent samples | Claim; checked by Monte Carlo | 2026-11-17 |
-| Theorem 2, existence of minimizers | As stated; global minimizers of the population objective, not the points reached by stochastic gradient descent | Lean | 2026-11-17 |
-| Theorem 3 | As stated; for h = D, Lean uses the bound \|D\| ≤ 11, so h(1) − h_lo ≤ 11, while the sharp value 0 uses D ≥ 0 | Lean | 2026-11-17 |
-| Corollary 3 | Asymptotic in K at fixed N and μ₀; evenly spaced costs are a modelling assumption. For the expected minibatch loss L becomes about N · 6.86, so at the batch size N = 256 of [1] and μ₀ ≈ 0.21 the bound allows full rank up to K of the order of 10³; the corollary describes the dependence on K, not the values in Table 1d of [1] | Claim, from Theorem 3; numerical minimizers consistent with both exponents | 2026-11-17 |
+| Theorem 2, existence of minimizers | As stated; global minimizers of the population objective, not the points reached by stochastic gradient descent | Lean, for h and h' bounded on [0, ∞) and the quadratic upper model of h as a hypothesis (proved for D) | 2026-11-17 |
+| Theorem 3 | As stated, with μ > 0 and L > 0 in Lean (the other cases are immediate); for h = D, Lean uses the bound \|D\| ≤ 11, so h(1) − h_lo ≤ 11, while the sharp value 0 uses D ≥ 0 | Lean | 2026-11-17 |
+| Corollary 3 | Asymptotic in K at fixed N and μ₀; evenly spaced costs are a modelling assumption. For the expected minibatch loss L becomes about N · 6.86, so at the batch size N = 256 of [1], μ₀ ≈ 0.21 and costs with c₁ and Δ of order 1, the bound allows full rank up to K of the order of 10³ (the bound scales with c̄/(c₁Δ)); the corollary describes the dependence on K, not the values in Table 1d of [1] | Claim, from Theorem 3; numerical minimizers consistent with both exponents | 2026-11-17 |
 | Proposition 4 | Linear encoder, Gaussian views, no predictor | Claim, assuming the trace inequality tr(PC) ≥ Σ αᵢ↓γᵢ↑ for positive semidefinite P and C [4] | 2026-11-17 |
 
 The population value averages over all directions, so it does not depend on the number of slices; Table 1d of [1] also shows a smaller loss of accuracy with 4096 slices, which these results do not model.
@@ -72,7 +72,7 @@ The population value averages over all directions, so it does not depend on the 
 
 **Assuming.** The moments and the rotation invariance of the uniform law on the sphere, which enter as the hypothesis `SphereLike` and through the reduction from Σ to its spectrum. The trace inequality [4], used on paper for Proposition 4.
 
-**Not formalized.** The closed form of D as an integral and D ≥ 0 (Gaussian integrals), Corollary 1, Lemma 2 and the minibatch slice function N D + B, Corollary 3, Proposition 4, and the step from the one-sided bound on h' to the quadratic upper model, which is an assumption of `SliceFn` and is proved for D.
+**Not formalized.** The closed form of D as an integral and D ≥ 0 (Gaussian integrals), Corollary 1, Lemma 2 and the minibatch slice function N D + B, Corollary 3, Proposition 4, and the steps from the bounds on h'' to the quadratic models of h, which are hypotheses in Lean and are proved for D.
 
 ## Simulations
 
@@ -81,6 +81,7 @@ The population value averages over all directions, so it does not depend on the 
 - `slice_function.py`: the closed forms of D, D', D'' and B against numerical integrals, the constants above, and the curvature of the two quadratures in use, t ∈ [−5, 5] with 17 points and t ∈ [0, 3] with 17 points doubled (D''(1) = 0.24121 and 0.24118).
 - `stiffness_check.py`: S_D for collapse onto K/2 and K/8 directions and for halving the variance of every coordinate, against the second-order prediction, for K up to 1024.
 - `batch_detect.py`: Lemma 2 by Monte Carlo, and the minibatch statistic on isotropic and collapsed Gaussian batches.
+- `sharpness_check.py`: the ratio of the two sides of Theorem 2 (ii) for h = D, K = 2, as the costs approach μ|D'(0)|/K.
 - `linear_rank.py`, `linear_rank_mean.py`: local minimizers of F with 6000 sampled directions, checked against Theorems 2 and 3, for both normalizations. With fixed μ the rank stays between 3 and 6 for all K tested; with μ = 2K the fraction of active directions falls from 0.31 at K = 64 to 0.10 at K = 512.
 
 ## References
