@@ -72,7 +72,8 @@ theorem infeasible_of_gap (hgap : ∀ x, pen x ≠ 0 → U < obj x + A * pen x)
 variable (neg : X → ℕ) (D : ℚ)
 
 /-- **Gap with the penalties of the reduced encoding.** If `obj ≥ -D · neg` and `neg ≤ pen`, then
-`A > U + D` gives `H > U` at every assignment of nonzero penalty. -/
+`A > U + D` gives `H > U` at every assignment of nonzero penalty. Here `neg x` is the total
+negative part of the link values, a natural number since the values are integers. -/
 theorem gap_of_neg (hU : 0 ≤ U) (hD : 0 ≤ D) (hlow : ∀ x, -(D * neg x) ≤ obj x)
     (hneg : ∀ x, neg x ≤ pen x) (hA : U + D < A) (x : X) (hx : pen x ≠ 0) :
     U < obj x + A * pen x := by
@@ -240,7 +241,8 @@ variable {L : Type*} [Fintype L] (c : L → ℚ) (p : L → L → ℚ) (B : ℚ)
 
 /-- **Lemma.** With link values at most 1 on both paths, the objective
 `Σ c x + Σ c y + B Σ p(e, f) x_e y_f` is at least
-`-(Σ_e x_e⁻ (c(e) + B Σ_f p(e, f)) + Σ_f y_f⁻ (c(f) + B Σ_e p(e, f)))`. -/
+`-(Σ_e x_e⁻ (c(e) + B Σ_f p(e, f)) + Σ_f y_f⁻ (c(f) + B Σ_e p(e, f)))`. The sums run over all
+pairs, so the objective of the paper, over pairs of distinct links, is the case `p(e, e) = 0`. -/
 theorem obj_lower (hc : ∀ e, 0 ≤ c e) (hp : ∀ e f, 0 ≤ p e f) (hB : 0 ≤ B) (x y : L → ℚ)
     (hx : ∀ e, x e ≤ 1) (hy : ∀ f, y f ≤ 1) :
     -(∑ e, max 0 (-x e) * (c e + B * ∑ f, p e f) + ∑ f, max 0 (-y f) * (c f + B * ∑ e, p e f)) ≤

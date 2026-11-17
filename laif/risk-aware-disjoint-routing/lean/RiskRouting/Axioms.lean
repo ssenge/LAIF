@@ -68,3 +68,14 @@ open RiskRouting
 #print axioms Combined.obj_lower
 #print axioms Combined.obj_ge_neg_D
 #print axioms Combined.link_weight_le_U
+#print axioms Decoding.dep_value_01
+#print axioms Decoding.term_sum_of_dep
+#print axioms Decoding.onehot_sum
+#print axioms Decoding.node_of_pen_zero
+#print axioms Decoding.decode_path
+#print axioms Decoding.decode_disjoint
+#print axioms Decoding.decode_pair
+#print axioms Decoding.complete_terminal
+#print axioms Decoding.complete_onehot
+#print axioms Decoding.complete_merge
+#print axioms Decoding.complete_prune

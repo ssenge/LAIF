@@ -332,32 +332,39 @@ theorem card_binarized {N : Type*} [DecidableEq N] (nodes good : Finset N) (par 
 
 /-- The guarantee of quantum branch-and-bound, as a stated hypothesis: on a tree with at most two
 children per node, depth at most `d`, a cost that is monotone along the tree and exact at the
-leaves, and at most `T` nodes of cost at most the optimum, the search finds a leaf of minimum
-cost, except with probability `ε`, with at most `K √T d^{3/2} log₂ c_max` queries. Here
-`queries T d c` is that number of queries and `K` hides the factors polylogarithmic in `d` and
-`1/ε`. A. Montanaro, Quantum speedup of branch-and-bound algorithms, Physical Review Research 2,
-013056 (2020), main theorem. -/
-def QBBGuarantee (queries : ℕ → ℕ → ℕ → ℝ) (K : ℝ) : Prop :=
-  ∀ T d c : ℕ, queries T d c ≤ K * Real.sqrt T * (d : ℝ) ^ (3 / 2 : ℝ) * Real.logb 2 c
+leaves, integer costs at most `c_max ≥ 2`, and at most `T` nodes of cost at most the optimum, the
+search finds a leaf of minimum cost, except with probability `ε`, with at most
+`K √T d^{3/2} log₂ c_max · pl(d, c_max)` queries. Here `queries T d c` is that number of queries,
+`K` is a constant, and `pl d c ≥ 0` collects the factors polylogarithmic in `d`, `log c_max` and
+`1/ε` (for a fixed `ε`), nondecreasing in `d`. A. Montanaro, Quantum speedup of branch-and-bound
+algorithms, Physical Review Research 2, 013056 (2020), main theorem. -/
+def QBBGuarantee (queries : ℕ → ℕ → ℕ → ℝ) (K : ℝ) (pl : ℕ → ℕ → ℝ) : Prop :=
+  ∀ T d c : ℕ, 2 ≤ c →
+    queries T d c ≤ K * Real.sqrt T * (d : ℝ) ^ (3 / 2 : ℝ) * Real.logb 2 c * pl d c
 
-/-- **Query bound.** With the guarantee, the binarized tree (at most `(1 + D) T` good nodes, depth at
-most `(n - 1) max(1, D)`, `T ≤ n N`) needs at most
-`K √((1 + D) n N) ((n - 1) max(1, D))^{3/2} log₂ c_max` queries, for `c_max ≥ 1`. -/
-theorem query_bound {queries : ℕ → ℕ → ℕ → ℝ} {K : ℝ} (hK : 0 ≤ K)
-    (hQ : QBBGuarantee queries K) {n N D T T' d' c : ℕ} (hc : 1 ≤ c)
+/-- **Query bound (arithmetic).** With the guarantee, the binarized tree (at most `(1 + D) T` good
+nodes, depth at most `(n - 1) max(1, D)`, `T ≤ n N`) needs at most
+`K √((1 + D) n N) ((n - 1) max(1, D))^{3/2} log₂ c_max · pl((n - 1) max(1, D), c_max)` queries, for
+`c_max ≥ 2`. -/
+theorem query_bound {queries : ℕ → ℕ → ℕ → ℝ} {K : ℝ} {pl : ℕ → ℕ → ℝ} (hK : 0 ≤ K)
+    (hpl0 : ∀ d c, 0 ≤ pl d c) (hplm : ∀ c, Monotone fun d => pl d c)
+    (hQ : QBBGuarantee queries K pl) {n N D T T' d' c : ℕ} (hc : 2 ≤ c)
     (hT : T ≤ n * N) (hT' : T' ≤ (1 + D) * T) (hd : d' ≤ (n - 1) * max 1 D) :
     queries T' d' c ≤ K * Real.sqrt ((1 + D) * (n * N)) * (((n - 1) * max 1 D : ℕ) : ℝ) ^ (3 / 2 : ℝ) *
-      Real.logb 2 c := by
-  refine (hQ T' d' c).trans ?_
-  have hlog : 0 ≤ Real.logb 2 c := Real.logb_nonneg (by norm_num) (by exact_mod_cast hc)
+      Real.logb 2 c * pl ((n - 1) * max 1 D) c := by
+  refine (hQ T' d' c hc).trans ?_
+  have hlog : 0 ≤ Real.logb 2 c := Real.logb_nonneg (by norm_num) (by exact_mod_cast (by omega : 1 ≤ c))
   have h1 : Real.sqrt T' ≤ Real.sqrt ((1 + D) * (n * N)) := by
     apply Real.sqrt_le_sqrt
     have : T' ≤ (1 + D) * (n * N) := hT'.trans (Nat.mul_le_mul_left _ hT)
     exact_mod_cast this
   have h2 : (d' : ℝ) ^ (3 / 2 : ℝ) ≤ (((n - 1) * max 1 D : ℕ) : ℝ) ^ (3 / 2 : ℝ) :=
     Real.rpow_le_rpow (by positivity) (by exact_mod_cast hd) (by norm_num)
-  have := mul_le_mul (mul_le_mul_of_nonneg_left h1 hK) h2 (by positivity)
+  have h3 : pl d' c ≤ pl ((n - 1) * max 1 D) c := hplm c hd
+  have h4 := mul_le_mul (mul_le_mul_of_nonneg_left h1 hK) h2 (by positivity)
     (mul_nonneg hK (Real.sqrt_nonneg _))
-  exact mul_le_mul_of_nonneg_right this hlog
+  have h5 := mul_le_mul_of_nonneg_right h4 hlog
+  exact mul_le_mul h5 h3 (hpl0 _ _) (mul_nonneg (mul_nonneg (mul_nonneg hK (Real.sqrt_nonneg _))
+    (by positivity)) hlog)
 
 end RiskRouting.BB

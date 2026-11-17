@@ -18,7 +18,7 @@ left out, and the terminals are `t` and `t*`.
 - `card_gadget`, `card_gadget_le`: the gadget has `n + 1 + n (M - 1)` vertices, at most
   `n + 1 + n (n + C + 2)²`.
 - `paper_inequalities`: the inequalities between `M`, `n`, `ℓ` and `C` that the proof uses.
-- `l3_unit_iff_minProd₂`: with unit latencies and a uniform joint failure probability `q`, the
+- `route_unit_iff_minProd₂`: with unit latencies and a uniform joint failure probability `q`, the
   routing objective is `Bq (|P₁| + C)(|P₂| + C) - C` with `C = 1 / (Bq)`.
 - `reduction_minProd`, `reduction_minProd₂`, `reduction_route`: the reductions as maps of
   instances, with the same answer and an explicit polynomial bound on the number of vertices.

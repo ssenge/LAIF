@@ -144,7 +144,7 @@ theorem obj_le_U {L : Type*} [Fintype L] [DecidableEq L] (c : L → ℚ) (p : L 
     (1 / 2) * ∑ ef ∈ (Finset.univ : Finset L).offDiag, p ef.1 ef.2 by linarith) hB
   linarith
 
-/-! ## Minimizers of the Hamiltonian -/
+/-! ## Minimizers of the penalized cost -/
 
 section Abstract
 
@@ -194,7 +194,7 @@ theorem qubo_minimizer_strict (hobj : ∀ x, 0 ≤ obj x) (hFpen : ∀ x, Feas x
   push_cast at this
   linarith
 
-/-- If no assignment has penalty zero, the Hamiltonian exceeds `U` everywhere. -/
+/-- If no assignment has penalty zero, the penalized cost `obj + A pen` exceeds `U` everywhere. -/
 theorem qubo_infeasible (hobj : ∀ x, 0 ≤ obj x) (hA : U < A) (hU : 0 ≤ U)
     (hnone : ∀ x, pen x ≠ 0) (x : X) : U < obj x + A * pen x := by
   have h1 : (1 : ℚ) ≤ pen x := by exact_mod_cast Nat.one_le_iff_ne_zero.mpr (hnone x)
