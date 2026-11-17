@@ -1,4 +1,4 @@
-# Risk-aware disjoint routing: hardness, exact classical and quantum algorithms, and a compact QUBO
+# Risk-aware disjoint routing: hardness, exact classical and quantum algorithms, and a QUBO with a proven penalty weight
 
 Written 16 Nov 2026.
 
@@ -24,11 +24,11 @@ calls of the branching and bounding procedures, each with at most n − 1 bound 
 
 This is a quantum advantage over the classical branch-and-bound search that it accelerates: that search explores the T nodes, and the quantum algorithm needs about √T of them, a quadratic speedup in the worst case up to factors polynomial in n.
 
-**Theorem 5 (compact QUBO).** The routing problem has a QUBO with one variable per link of G − t₂ for P₁, one per link of G − t₁ for P₂, and one slack variable per path at each inner vertex of degree at least 3. A slack at such vertices is necessary, since no quadratic penalty in the link variables alone vanishes exactly at degrees 0 and 2 there. Any penalty weight
+**Theorem 5 (QUBO with a proven penalty weight).** The routing problem has a QUBO with one variable per link of G − t₂ for P₁, one per link of G − t₁ for P₂, and one slack variable per path at each inner vertex of degree at least 3. A slack at such vertices is necessary, since no quadratic penalty in the link variables alone vanishes exactly at degrees 0 and 2 there. Any penalty weight
 
     A > c(E) + B · Σ_{e ≠ f, unordered} p(e, f)
 
-is sufficient for every B ≥ 0 and every p ≥ 0: every minimizer is a feasible pair of minimum cost, together with stray cycles of latency zero that can be dropped, and none if all latencies are positive. If no feasible pair exists, the minimum exceeds the bound on the right. On the network of [1] with 5 vertices and 7 links this gives 12 or 13 qubits, depending on the source, against 24 in the formulation of [1].
+is sufficient for every B ≥ 0 and every p ≥ 0: every minimizer is a feasible pair of minimum cost, together with stray cycles of latency zero that can be dropped, and none if all latencies are positive. If no feasible pair exists, the minimum exceeds the bound on the right. On the network of [1] with 5 vertices and 7 links this gives 12 or 13 qubits, depending on the source, against 24 in the formulation of [1]. A qubit-efficient reformulation was given in [7]: local rules, among them merging each inner vertex of degree 2 with its two links into one variable, reduce the instance run on hardware in [1] to 7 qubits, with a penalty weight chosen for that instance. Our contribution: a penalty weight proved sufficient for every B and every p, the proof that inner vertices of degree at least 3 need a slack, and the detection of infeasible instances.
 
 ## Scope and status
 
@@ -61,6 +61,7 @@ is sufficient for every B ≥ 0 and every p ≥ 0: every minimizer is a feasible
 4. L. Guo, H. Shen. On finding min-min disjoint paths. Algorithmica 66(3):641–653, 2013.
 5. J. Y. Yen. Finding the k shortest loopless paths in a network. Management Science 17(11):712–716, 1971.
 6. E. W. Dijkstra. A note on two problems in connexion with graphs. Numerische Mathematik 1:269–271, 1959.
+7. E. G. Dalla Torre, B.-E. Friedman, D. Porat. Encoding matters: a qubit-efficient reformulation for quantum resilient routing. arXiv:2610.13621, 2026.
 
 ## Use of AI
 

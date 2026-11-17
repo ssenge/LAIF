@@ -1,7 +1,7 @@
 import Mathlib
 
 /-!
-# A compact QUBO for risk-aware disjoint routing
+# A QUBO for risk-aware disjoint routing
 
 - `no_quadratic_parity`: at a vertex with at least three incident links, no quadratic function of
   the link variables vanishes on the sets of size 0 and 2 and is positive on the sets of size 1
