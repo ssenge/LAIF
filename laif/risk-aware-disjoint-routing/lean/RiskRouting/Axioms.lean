@@ -1,0 +1,52 @@
+import RiskRouting
+
+open RiskRouting
+
+#print axioms minMin_iff_minProd
+#print axioms minMin_iff_minProd₂
+#print axioms paper_inequalities
+#print axioms card_gadget
+#print axioms card_gadget_le
+#print axioms card_gadget_poly
+#print axioms route_unit_iff_minProd₂
+#print axioms reduction_minProd
+#print axioms reduction_minProd₂
+#print axioms reduction_route
+#print axioms QUBO.quad_eq_eval
+#print axioms QUBO.no_quadratic_parity
+#print axioms QUBO.slack_pen_zero_iff
+#print axioms QUBO.pair_pen_zero_iff
+#print axioms QUBO.end_pen_zero_iff
+#print axioms QUBO.disj_pen_zero_iff
+#print axioms QUBO.obj_le_U
+#print axioms QUBO.qubo_minimizer
+#print axioms QUBO.qubo_minimizer_strict
+#print axioms QUBO.qubo_infeasible
+#print axioms eMinMin_iff_minMin
+#print axioms card_lineV_le
+#print axioms reduction_line
+#print axioms reduction_minProd_e
+#print axioms reduction_minProd₂_e
+#print axioms reduction_route_e
+#print axioms AlgR.lower_bound
+#print axioms AlgR.run_best
+#print axioms AlgR.run_answer
+#print axioms AlgR.run_count
+#print axioms AlgR.algR_exact
+#print axioms BB.join
+#print axioms BB.cont_of_cand
+#print axioms BB.cont_child
+#print axioms BB.node_child
+#print axioms BB.bound_mono
+#print axioms BB.prune_ok
+#print axioms BB.bound_le_leaf
+#print axioms BB.extend_of_bound
+#print axioms BB.card_good_le
+#print axioms BB.cand_length
+#print axioms BB.bcost_zero
+#print axioms BB.block_succ
+#print axioms BB.bcost_mono
+#print axioms BB.parent_le_root
+#print axioms BB.card_good_blocks
+#print axioms BB.card_binarized
+#print axioms BB.query_bound
