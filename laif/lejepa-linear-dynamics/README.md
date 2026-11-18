@@ -45,7 +45,21 @@ so the noisy feature grows faster in the early phase. At every global minimizer 
 
 **Proposition 4 (general Σ and Δ, early phase).** Without the commuting assumption, Ẇ = 2W(κΣ − Δ) − 2μRWΣ with R = G − h'(0)I/K, and 0 ⪯ R ⪯ 3L₂ tr M/(K(K+2)) I by Lemma 2 (a) and (b). So while tr M is small the flow is a small perturbation of the linear flow Ẇ = 2W(κΣ − Δ), whose solution W(0)exp(2(κΣ − Δ)t) turns the row space of W towards the top eigenvectors of κΣ − Δ. The global minimizers instead have rows spanned by the generalized eigenvectors u with Δu = γΣu for the smallest γ, as many as their rank. In `sim/dynamics_check.py` (d = 8, K = 2, random Σ and Δ) the row space has overlap 0.955 with the top eigenvectors of κΣ − Δ when tr M first exceeds 10⁻³, and overlap 1.000 with the generalized eigenvectors at the end.
 
-**Normalization.** With two views, the invariance term averaged over the K coordinates as in the code of [1], and weight λ for the regularizer, the loss is (1 − λ) tr(WΔWᵀ)/(4K) + λ S_h, so μ = 4Kλ/(1 − λ) and κ = 4λ|h'(0)|/(1 − λ) does not depend on K. With the invariance term summed, κ falls like 1/K and fewer features lie below the threshold, in line with the rank bound of the minimizers. The statistic of [1] is multiplied by the batch size N; its expected value has the slice function N D + B_N with the null bias B_N(s) = √(2π)(1 − (2s+1)^{−1/2}) (Lemma 2 in [`sigreg-dimension-stiffness`](../sigreg-dimension-stiffness/)), with h'(0) = −(N|D'(0)| − √(2π)), and it satisfies (a) for N ≥ 2. Then κ grows like N: at λ = 0.05 and N = 256, κ ≈ 87, so every feature lies below the threshold (cᵢ ≤ 4), Theorem 1 is void, and the early rates 4σᵢ(κ − cᵢ) are nearly proportional to the variances σᵢ.
+**Normalization.** With two views, the invariance term averaged over the K coordinates as in the code of [1], and weight λ for the regularizer, the loss is (1 − λ) tr(WΔWᵀ)/(4K) + λ S_h, so μ = 4Kλ/(1 − λ) and κ = 4λ|h'(0)|/(1 − λ) does not depend on K. With the invariance term summed, κ falls like 1/K and fewer features lie below the threshold, in line with the rank bound of the minimizers. The statistic of [1] is multiplied by the batch size N; its expected value has the slice function N D + B with the null bias B(s) = √(2π)(1 − (2s+1)^{−1/2}) (Lemma 2 in [`sigreg-dimension-stiffness`](../sigreg-dimension-stiffness/)), with h'(0) = −(N|D'(0)| − √(2π)), and it satisfies (a) for N ≥ 2. Then κ grows like N: at λ = 0.05 and N = 256, κ ≈ 87, so every feature lies below the threshold (cᵢ ≤ 4), Theorem 1 is void, and the early rates 4σᵢ(κ − cᵢ) are nearly proportional to the variances σᵢ.
+
+## Minibatch statistic
+
+**Lemma 5 (expected minibatch statistic).** Let X₁, …, X_N be pairwise independent real random variables with common E cos(tXⱼ) = c(t) and E sin(tXⱼ) = s(t), let φ = c + is, and let φ_N(t) = (1/N) Σⱼ e^{itXⱼ}. Then for every t and every real a,
+
+    N E|φ_N(t) − a|² = N|φ(t) − a|² + 1 − |φ(t)|².
+
+For Xⱼ ~ N(0, v), the statistic of one slice in [1], N ∫ e^{−t²/2} |φ_N(t) − e^{−t²/2}|² dt, has the expected value N D(v) + B(v), with D(v) = ∫ e^{−t²/2}(e^{−vt²/2} − e^{−t²/2})² dt in the closed form above and the null bias B(v) = ∫ e^{−t²/2}(1 − e^{−vt²}) dt = √(2π)(1 − (2v+1)^{−1/2}) (Lemma 2 in [`sigreg-dimension-stiffness`](../sigreg-dimension-stiffness/)). The pointwise identity also gives the expected value for every quadrature in t, with D and B replaced by their quadrature versions; the constants below refer to the integral over ℝ. For the default quadrature of the code of [1] (the trapezoidal rule with 17 nodes on [0, 3], mirrored to [−3, 0]) the slopes at 0 are D'(0) ≈ −1.546 and B'(0) ≈ 2.432 instead of −1.620 and 2.507. Here N is the number of samples that enter the statistic, the global batch size when the statistic is computed across devices.
+
+**Theorem 6 (Theorems 1 and 2 at batch size N).** For N ≥ 2 the slice function h_N = N D + B satisfies (a), and (b) with L₂ = 8N. Hence Theorems 1 and 2 hold for every gradient flow of the expected minibatch loss L_N(W) = tr(WΔWᵀ) + μ E_a h_N(aᵀMa), with η = 24μNε/(K(K+2)) and the threshold
+
+    κ_N = −μ h_N'(0)/K = μ√(2π)(N(1 − 2^{−3/2}) − 1)/K.
+
+**Corollary 7 (batch size and weight).** L_N with weight μ is the population loss with slice function D and weight μN, plus μ E_a B(aᵀMa). With the normalization above, μN = 4KλN/(1 − λ): the minimizers, and the flow up to a rescaling of time, depend on the batch size and the weight λ only through λN/(1 − λ), apart from the bias term, whose slope at 0 is √(2π) against N|D'(0)| ≈ 1.62N for the term in D. At fixed λ the regularizer therefore grows in proportion to N. In `sim/batch_coupling.py` (K = 2, reduced objective, costs (0.2, 1) and (0.05, 0.6)) the minimizing spectrum moves by up to 0.16 from N = 128 to N = 1024 at λ = 0.05, and by at most 0.015 when λN/(1 − λ) is held fixed.
 
 ## Scope and status
 
@@ -57,6 +71,9 @@ so the noisy feature grows faster in the early phase. At every global minimizer 
 | Corollary 3 | Global minimizers λ* of the reduced objective F; the identification of λ* with the learned variances of a minimizer W (the equality case of the trace inequality) and the convergence of the flow to a global minimizer are not proved | Claim, from Theorem 2 and the ordering theorem; the non-monotone trajectory is numerical | 2026-11-18 |
 | Proposition 4 | General Σ, Δ, early phase; the closeness to the linear flow is not quantified | Claim; checked numerically | 2026-11-18 |
 | Normalization remarks | As stated | Claim | 2026-11-18 |
+| Lemma 5 | Pairwise independent samples on one slice; the Gaussian part for N(0, v) with the weight e^{−t²/2} and the integral over ℝ | Lean | 2026-11-18 |
+| Theorem 6 | Every gradient flow of the loss L_N as defined, for all times, N ≥ 2 | Lean | 2026-11-18 |
+| Corollary 7 | The identity of the two losses; the movement of the minimizer | Lean for the identity; the movement is numerical for K = 2 | 2026-11-18 |
 
 ## Formal verification
 
@@ -67,16 +84,19 @@ so the noisy feature grows faster in the early phase. At every global minimizer 
 - `LejepaDyn/Growth.lean`: `growth_le` and `growth_ge`, the exponential comparison for ṅ ≤ Rn and ṅ ≥ Rn on [0, T].
 - `LejepaDyn/Features.lean`, Theorems 1 and 2 from the feature equation: `never_learned` and `early_phase` for every h with (a) and (b), `epD'_ge` and `epD'_le_lin` for D, and `never_learned_D` and `early_phase_D`.
 - `LejepaDyn/Flow.lean`, Lemma 1 and Theorems 1 and 2 for the gradient flow: `hasDerivAt_reg` (differentiation under the integral, by dominated convergence), `hasDerivAt_loss` (the gradient formula), `flow_eq` (a gradient flow follows Ẇ = −∇L), `grad_col` and `feature_ode` (the feature equation), and `never_learned_flow`, `early_phase_flow`, `never_learned_flow_D`, `early_phase_flow_D`.
+- `LejepaDyn/Batch.lean`, Theorem 6 and Corollary 7: the null bias `epB`, `hN'_zero`, `hN'_ge` (condition (a) for N ≥ 2), `hN'_le_lin` (condition (b) with L₂ = 8N), `loss_hN`, `never_learned_flow_batch` and `early_phase_flow_batch`.
+- `LejepaDyn/NullBias.lean`, Lemma 5: `mean_sq_dev` (the mean of pairwise independent variables), `stat_pointwise`, `integral_cos_sin_gaussian` (from the characteristic function of the Gaussian law), `stat_pointwise_gaussian`, `integral_weight_D` and `integral_weight_B` (Gaussian integrals), and `expected_stat_gaussian` (the exchange of expectation and t-integral).
 
 **Assuming.** The second and fourth moments of the uniform law on the sphere (hypothesis `Iso4`), classical; Lean does not construct a law that satisfies it.
 
-**Not formalized.** The existence of the gradient flow for all times (for h = D the vector field is continuously differentiable and grows at most linearly in W, so it exists by the classical existence theorem for ordinary differential equations), Corollary 3, Proposition 4, the normalization remarks, and the convergence of the flow.
+**Not formalized.** The existence of the gradient flow for all times (for h = D the vector field is continuously differentiable and grows at most linearly in W, so it exists by the classical existence theorem for ordinary differential equations), Corollary 3, Proposition 4, the normalization remarks, the movement of the minimizer in Corollary 7, the step from LeJEPA's minibatch loss to L_N (Gaussian slices aᵀWxⱼ of independent Gaussian samples, the exchange of the expectations over the batch and over the directions, and the expected invariance term), and the convergence of the flow.
 
 ## Simulations
 
 [`sim/`](sim/) holds Python scripts with asserts (NumPy, SciPy):
 
 - `dynamics_check.py`: gradient descent on the loss with 20000 sampled directions, whitened so that their second moment is exactly I/K. In the commuting case it checks Theorem 1 along the whole trajectory, Theorem 2 while tr M ≤ 0.05 (with 1 % slack for the fourth moments of the sampled directions and the time step), the faster relative growth nᵢ(t)/nᵢ(0) of the noisy feature, and the ordering of the final spectrum by the costs. In a non-commuting case it checks the two subspace overlaps of Proposition 4.
+- `batch_coupling.py`: the minimizer of the reduced objective with h_N = N D + B for K = 2 (quadrature on the circle with 4000 nodes) at fixed λ and at fixed λN/(1 − λ), and κ_N at λ = 0.05, N = 256.
 - `slice_function.py`: the closed forms of D, D', D'' and the constants used above.
 
 ## References

@@ -1,4 +1,4 @@
-import LejepaDyn.Flow
+import LejepaDyn.NullBias
 
 #print axioms LejepaDyn.dot_sq_le
 #print axioms LejepaDyn.integrable_dot_sq
@@ -25,3 +25,16 @@ import LejepaDyn.Flow
 #print axioms LejepaDyn.early_phase_flow
 #print axioms LejepaDyn.never_learned_flow_D
 #print axioms LejepaDyn.early_phase_flow_D
+#print axioms LejepaDyn.loss_hN
+#print axioms LejepaDyn.hN'_zero
+#print axioms LejepaDyn.hN'_ge
+#print axioms LejepaDyn.hN'_le_lin
+#print axioms LejepaDyn.never_learned_flow_batch
+#print axioms LejepaDyn.early_phase_flow_batch
+#print axioms LejepaDyn.mean_sq_dev
+#print axioms LejepaDyn.stat_pointwise
+#print axioms LejepaDyn.integral_cos_sin_gaussian
+#print axioms LejepaDyn.stat_pointwise_gaussian
+#print axioms LejepaDyn.integral_weight_D
+#print axioms LejepaDyn.integral_weight_B
+#print axioms LejepaDyn.expected_stat_gaussian

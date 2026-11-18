@@ -50,7 +50,7 @@ For h = D with L = sup D'' = D''(0) ≈ 6.855, the constant in (ii) cannot be im
 |---|---|---|---|
 | Lemma 1, Theorem 1 | Any direction law supported on the unit sphere with the second and fourth moments and the swap symmetry of the uniform law on the sphere; Gaussian embeddings. For a non-Gaussian embedding, S_h(Σ) is the value at the Gaussian with the same covariance | Lean, for the spectrum λ, for h bounded on [0, ∞) and with the quadratic models of h (implied by the bounds on h'') as hypotheses; the step from Σ to its spectrum uses the rotation invariance of the uniform law (classical) | 2026-11-17 |
 | Corollary 1 | Smooth h | Claim | 2026-11-17 |
-| Lemma 2 | One slice, independent samples | Claim; checked by Monte Carlo | 2026-11-17 |
+| Lemma 2 | One slice, pairwise independent samples | Lean for the expected statistic, pointwise in t and for the integral over ℝ (folder [`lejepa-linear-dynamics`](../lejepa-linear-dynamics/), `NullBias.lean`); B''(1) = −2D''(1) and the curvature at isotropy: Claim, checked by script | 2026-11-17 |
 | Theorem 2, existence of minimizers | As stated; global minimizers of the population objective, not the points reached by stochastic gradient descent | Lean, for h and h' bounded on [0, ∞) and the quadratic upper model of h as a hypothesis (proved for D) | 2026-11-17 |
 | Theorem 3 | As stated, with μ > 0 and L > 0 in Lean (the other cases are immediate); for h = D, Lean uses the bound \|D\| ≤ 11, so h(1) − h_lo ≤ 11, while the sharp value 0 uses D ≥ 0 | Lean | 2026-11-17 |
 | Corollary 3 | Asymptotic in K at fixed N and μ₀; evenly spaced costs are a modelling assumption. For the expected minibatch loss L becomes about N · 6.86, so at the batch size N = 256 of [1], μ₀ ≈ 0.21 and costs with c₁ and Δ of order 1, the bound allows full rank up to K of the order of 10³ (the bound scales with c̄/(c₁Δ)); the corollary describes the dependence on K, not the values in Table 1d of [1] | Claim, from Theorem 3; numerical minimizers consistent with both exponents | 2026-11-17 |
@@ -102,7 +102,7 @@ The population value averages over all directions, so it does not depend on the 
 
 **Assuming.** The moments and the rotation invariance of the uniform law on the sphere, which enter as the hypothesis `SphereLike` and through the reduction from Σ to its spectrum. The trace inequality [4], used on paper for Proposition 4.
 
-**Not formalized.** The closed form of D as an integral and D ≥ 0 (Gaussian integrals), Corollary 1, Lemma 2 and the minibatch slice function N D + B, Corollary 3, Proposition 4, the identity of Theorem 5 between SIGReg on the sphere and the kernel energy (Gaussian integrals and the rotation invariance of the direction law), Theorems 5 and 6 for isotropic laws that are not finite, the lower bounds in Theorems 5 and 6 (iii), Theorem 6 (ii), and the steps from the bounds on h'' to the quadratic models of h, which are hypotheses in Lean and are proved for D.
+**Not formalized.** D ≥ 0, Corollary 1, the relation B''(1) = −2D''(1) of Lemma 2, Corollary 3, Proposition 4, the identity of Theorem 5 between SIGReg on the sphere and the kernel energy (Gaussian integrals and the rotation invariance of the direction law), Theorems 5 and 6 for isotropic laws that are not finite, the lower bounds in Theorems 5 and 6 (iii), Theorem 6 (ii), and the steps from the bounds on h'' to the quadratic models of h, which are hypotheses in Lean and are proved for D.
 
 ## Simulations
 
