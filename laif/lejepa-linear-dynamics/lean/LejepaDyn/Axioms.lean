@@ -1,4 +1,5 @@
 import LejepaDyn.NullBias
+import LejepaDyn.Ident
 
 #print axioms LejepaDyn.dot_sq_le
 #print axioms LejepaDyn.integrable_dot_sq
@@ -38,3 +39,9 @@ import LejepaDyn.NullBias
 #print axioms LejepaDyn.integral_weight_D
 #print axioms LejepaDyn.integral_weight_B
 #print axioms LejepaDyn.expected_stat_gaussian
+#print axioms LejepaDyn.crit_orth
+#print axioms LejepaDyn.crit_eigen
+#print axioms LejepaDyn.crit_card_le
+#print axioms LejepaDyn.crit_stat
+#print axioms LejepaDyn.invc_eq
+#print axioms LejepaDyn.M_eq

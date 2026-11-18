@@ -41,7 +41,7 @@ While the embedding is small, feature i therefore grows at the rate 4σᵢ(κ �
 
     (n_n(t)/n_n(0)) / (n_s(t)/n_s(0)) ≥ exp(4[σ_n(κ − c_n − η) − σ_s(κ − c_s)] t),
 
-so the noisy feature grows faster in the early phase. At every global minimizer λ* of the reduced objective F(λ) = Σ cᵢλᵢ + μS_h(λ) the spectrum is ordered by the costs ([`sigreg-dimension-stiffness`](../sigreg-dimension-stiffness/), Theorem 2 (i)), so λ*_s ≥ λ*_n, and with more than K features below the threshold λ*_n may be 0. In `sim/dynamics_check.py` (d = 6, K = 3, κ = 1) the feature with σ = 9 and ρ = 0.6 rises first to a peak of 0.092 and then falls to 0, outside the range of Theorem 2, while the feature with σ = 0.5 and ρ = 0.97 is learned last and ends with the largest variance, 0.97.
+so the noisy feature grows faster in the early phase. At every global minimizer λ* of the reduced objective F(λ) = Σ cᵢλᵢ + μS_h(λ) the spectrum is ordered by the costs ([`sigreg-dimension-stiffness`](../sigreg-dimension-stiffness/), Theorem 2 (i)), so λ*_s ≥ λ*_n, and with more than K features below the threshold λ*_n may be 0. By Corollary 9 the same order holds for the learned variances of every global minimizer W of L. In `sim/dynamics_check.py` (d = 6, K = 3, κ = 1) the feature with σ = 9 and ρ = 0.6 rises first to a peak of 0.092 and then falls to 0, outside the range of Theorem 2, while the feature with σ = 0.5 and ρ = 0.97 is learned last and ends with the largest variance, 0.97.
 
 **Proposition 4 (general Σ and Δ, early phase).** Without the commuting assumption, Ẇ = 2W(κΣ − Δ) − 2μRWΣ with R = G − h'(0)I/K, and 0 ⪯ R ⪯ 3L₂ tr M/(K(K+2)) I by Lemma 2 (a) and (b). So while tr M is small the flow is a small perturbation of the linear flow Ẇ = 2W(κΣ − Δ), whose solution W(0)exp(2(κΣ − Δ)t) turns the row space of W towards the top eigenvectors of κΣ − Δ. The global minimizers instead have rows spanned by the generalized eigenvectors u with Δu = γΣu for the smallest γ, as many as their rank. In `sim/dynamics_check.py` (d = 8, K = 2, random Σ and Δ) the row space has overlap 0.955 with the top eigenvectors of κΣ − Δ when tr M first exceeds 10⁻³, and overlap 1.000 with the generalized eigenvectors at the end.
 
@@ -61,6 +61,24 @@ For Xⱼ ~ N(0, v), the statistic of one slice in [1], N ∫ e^{−t²/2} |φ_N(
 
 **Corollary 7 (batch size and weight).** L_N with weight μ is the population loss with slice function D and weight μN, plus μ E_a B(aᵀMa). With the normalization above, μN = 4KλN/(1 − λ): the minimizers, and the flow up to a rescaling of time, depend on the batch size and the weight λ only through λN/(1 − λ), apart from the bias term, whose slope at 0 is √(2π) against N|D'(0)| ≈ 1.62N for the term in D. At fixed λ the regularizer therefore grows in proportion to N. In `sim/batch_coupling.py` (K = 2, reduced objective, costs (0.2, 1) and (0.05, 0.6)) the minimizing spectrum moves by up to 0.16 from N = 128 to N = 1024 at λ = 0.05, and by at most 0.015 when λN/(1 − λ) is held fixed.
 
+## Critical points
+
+**Theorem 8 (critical points).** Let the direction law be any finite measure on the unit sphere of ℝ^K (the uniform law, or a finite set of slices), let h be differentiable on [0, ∞) with h and h' bounded there and h' measurable, and let W be a critical point: the gradient formula 2WΔ + 2μGWΣ vanishes at W (for symmetric Δ and hp = h' it is ∇L(W) by Lemma 1). If e and e' are common eigenvectors of Δ and Σ with eigenvalues (δ, σ) and (δ', σ'), then
+
+    (i)  (δσ' − δ'σ) ⟨We, We'⟩ = 0,      (ii)  δ‖We‖² + μσ (We)ᵀ G (We) = 0.
+
+So features with different costs are mapped to orthogonal directions. If e₁, …, e_d is an orthonormal common eigenbasis with distinct costs cᵢ, then moreover (iii) every vⱼ = Weⱼ is an eigenvector of M with the eigenvalue nⱼ = σⱼ‖vⱼ‖², (iv) at most K of the vⱼ are nonzero, and (v) tr(WΔWᵀ) = Σⱼ δⱼ‖vⱼ‖² = Σⱼ cⱼnⱼ for every W, critical or not.
+
+The proof is short: column j of the critical-point equation reads δⱼvⱼ + μσⱼGvⱼ = 0, the matrix G is symmetric, so (δᵢσⱼ − δⱼσᵢ)⟨vᵢ, vⱼ⟩ = 0, as for eigenvectors of a symmetric matrix with different eigenvalues; then M = Σᵢ σᵢvᵢvᵢᵀ. This is the classical argument for the critical points of linear autoencoders [5], and related spectral descriptions of the critical points and minimizers of linear self-supervised losses are in [6, 7]. The instance here, with the slice integral of SIGReg and any finite direction law, is formalized in Lean. The same holds at every critical point, so also at local minimizers, at saddle points and at every limit of the gradient flow that is a critical point.
+
+**Corollary 9 (learned variances of the minimizers).** Commuting case, K ≤ d, distinct positive costs, μ ≥ 0, and h as in Theorem 8 and bounded below, as D is. Let F be the reduced objective with the K smallest costs in increasing order. Then L has a global minimizer, and at every global minimizer W:
+
+- every learned feature (nⱼ > 0) costs less than every feature that is not learned (this holds for every direction law and also at local minimizers);
+- for the uniform law, L(W) = Σⱼ cⱼnⱼ + μS_h(n) with S_h evaluated at the learned variances, so the learned variances of the K cheapest features form a global minimizer of F, and min L = min F;
+- for the uniform law, the learned variances are ordered by the costs: c_s < c_n implies n_s ≥ n_n, for all features.
+
+For the first point, moving the learned direction of a feature a onto an unlearned cheaper feature b, with v_b = √(n_a/σ_b) vₐ/‖vₐ‖ and vₐ = 0, keeps M and lowers the invariance term by (cₐ − c_b)nₐ. At a local minimizer, setting v_b = εvₐ changes M by ε²σ_b vₐvₐᵀ, and the first-order condition c_b‖vₐ‖² + μvₐᵀGvₐ ≥ 0 with (ii) gives c_b ≥ cₐ. The second point uses (iii), (iv), (v) and the rotation invariance of the uniform law, by which S_h depends only on the spectrum of M. The third follows by exchanging two learned variances, which leaves S_h unchanged ([`sigreg-dimension-stiffness`](../sigreg-dimension-stiffness/), Theorem 2 (i)). For general Σ and Δ, the substitution Y = WΣ^{1/2} gives the commuting case with Σ replaced by I and Δ by Σ^{−1/2}ΔΣ^{−1/2}, so Corollary 9 holds with the eigenvalues γᵢ of this matrix as the costs, its unit eigenvectors uᵢ as the features and nᵢ = ‖WΣ^{1/2}uᵢ‖² as their learned variances. For distinct positive γᵢ and h as in Theorem 8, this gives the reduction to F of Proposition 4 in [`sigreg-dimension-stiffness`](../sigreg-dimension-stiffness/) without the trace inequality.
+
 ## Scope and status
 
 | Result | Scope | Status | Posted |
@@ -68,9 +86,11 @@ For Xⱼ ~ N(0, v), the statistic of one slice in [1], N ∫ e^{−t²/2} |φ_N(
 | Lemma 1 | Commuting case; any finite direction law on the unit sphere; h differentiable on [0, ∞) with h and h' bounded there and h' measurable; Σ = SᵀS for some S | Lean: the directional derivatives of L are given by the gradient formula, and every gradient flow satisfies the feature equation | 2026-11-18 |
 | Lemma 2 | M = BBᵀ, h' measurable and bounded on [0, ∞) | Lean, assuming the second and fourth moments of the uniform law on the sphere; (a) and (b) for D in Lean with L₂ = 8 (the sharp 6.855 by script) | 2026-11-18 |
 | Theorems 1 and 2 | Every gradient flow of L defined for all times | Lean, also for h = D | 2026-11-18 |
-| Corollary 3 | Global minimizers λ* of the reduced objective F; the identification of λ* with the learned variances of a minimizer W (the equality case of the trace inequality) and the convergence of the flow to a global minimizer are not proved | Claim, from Theorem 2 and the ordering theorem; the non-monotone trajectory is numerical | 2026-11-18 |
+| Corollary 3 | Global minimizers of L, distinct positive costs; the convergence of the flow to a global minimizer is not proved | Claim, from Theorem 2, Corollary 9 and the ordering theorem; the non-monotone trajectory is numerical | 2026-11-18 |
 | Proposition 4 | General Σ, Δ, early phase; the closeness to the linear flow is not quantified | Claim; checked numerically | 2026-11-18 |
 | Normalization remarks | As stated | Claim | 2026-11-18 |
+| Theorem 8 | Any finite direction law on the unit sphere; h, h' bounded on [0, ∞), h' measurable; Σ = SᵀS | Lean | 2026-11-18 |
+| Corollary 9 | Commuting case or general Σ, Δ through the substitution; distinct positive costs; h as in Theorem 8 and bounded below | Claim, from Theorem 8, the rotation invariance of the uniform law and the existence of a minimizer | 2026-11-18 |
 | Lemma 5 | Pairwise independent samples on one slice; the Gaussian part for N(0, v) with the weight e^{−t²/2} and the integral over ℝ | Lean | 2026-11-18 |
 | Theorem 6 | Every gradient flow of the loss L_N as defined, for all times, N ≥ 2 | Lean | 2026-11-18 |
 | Corollary 7 | The identity of the two losses; the movement of the minimizer | Lean for the identity; the movement is numerical for K = 2 | 2026-11-18 |
@@ -84,18 +104,20 @@ For Xⱼ ~ N(0, v), the statistic of one slice in [1], N ∫ e^{−t²/2} |φ_N(
 - `LejepaDyn/Growth.lean`: `growth_le` and `growth_ge`, the exponential comparison for ṅ ≤ Rn and ṅ ≥ Rn on [0, T].
 - `LejepaDyn/Features.lean`, Theorems 1 and 2 from the feature equation: `never_learned` and `early_phase` for every h with (a) and (b), `epD'_ge` and `epD'_le_lin` for D, and `never_learned_D` and `early_phase_D`.
 - `LejepaDyn/Flow.lean`, Lemma 1 and Theorems 1 and 2 for the gradient flow: `hasDerivAt_reg` (differentiation under the integral, by dominated convergence), `hasDerivAt_loss` (the gradient formula), `flow_eq` (a gradient flow follows Ẇ = −∇L), `grad_col` and `feature_ode` (the feature equation), and `never_learned_flow`, `early_phase_flow`, `never_learned_flow_D`, `early_phase_flow_D`.
+- `LejepaDyn/Ident.lean`, Theorem 8: `crit_orth` (i), `crit_stat` (ii), `M_eq` and `crit_eigen` (iii), `crit_card_le` (iv), `invc_eq` (v).
 - `LejepaDyn/Batch.lean`, Theorem 6 and Corollary 7: the null bias `epB`, `hN'_zero`, `hN'_ge` (condition (a) for N ≥ 2), `hN'_le_lin` (condition (b) with L₂ = 8N), `loss_hN`, `never_learned_flow_batch` and `early_phase_flow_batch`.
 - `LejepaDyn/NullBias.lean`, Lemma 5: `mean_sq_dev` (the mean of pairwise independent variables), `stat_pointwise`, `integral_cos_sin_gaussian` (from the characteristic function of the Gaussian law), `stat_pointwise_gaussian`, `integral_weight_D` and `integral_weight_B` (Gaussian integrals), and `expected_stat_gaussian` (the exchange of expectation and t-integral).
 
 **Assuming.** The second and fourth moments of the uniform law on the sphere (hypothesis `Iso4`), classical; Lean does not construct a law that satisfies it.
 
-**Not formalized.** The existence of the gradient flow for all times (for h = D the vector field is continuously differentiable and grows at most linearly in W, so it exists by the classical existence theorem for ordinary differential equations), Corollary 3, Proposition 4, the normalization remarks, the movement of the minimizer in Corollary 7, the step from LeJEPA's minibatch loss to L_N (Gaussian slices aᵀWxⱼ of independent Gaussian samples, the exchange of the expectations over the batch and over the directions, and the expected invariance term), and the convergence of the flow.
+**Not formalized.** The existence of the gradient flow for all times (for h = D the vector field is continuously differentiable and grows at most linearly in W, so it exists by the classical existence theorem for ordinary differential equations), Corollary 3, Proposition 4, the normalization remarks, Corollary 9, the movement of the minimizer in Corollary 7, the step from LeJEPA's minibatch loss to L_N (Gaussian slices aᵀWxⱼ of independent Gaussian samples, the exchange of the expectations over the batch and over the directions, and the expected invariance term), and the convergence of the flow.
 
 ## Simulations
 
 [`sim/`](sim/) holds Python scripts with asserts (NumPy, SciPy):
 
 - `dynamics_check.py`: gradient descent on the loss with 20000 sampled directions, whitened so that their second moment is exactly I/K. In the commuting case it checks Theorem 1 along the whole trajectory, Theorem 2 while tr M ≤ 0.05 (with 1 % slack for the fourth moments of the sampled directions and the time step), the faster relative growth nᵢ(t)/nᵢ(0) of the noisy feature, and the ordering of the final spectrum by the costs. In a non-commuting case it checks the two subspace overlaps of Proposition 4.
+- `critical_points.py`: Theorem 8 at critical points found by a quasi-Newton method (d = 7, K = 3), for 20000 random directions and for 16 fixed slices, and at the same points the first point of Corollary 9 and, for the 20000 directions as a proxy of the uniform law, the third. The points are local minimizers found from random starts and are not certified to be global.
 - `batch_coupling.py`: the minimizer of the reduced objective with h_N = N D + B for K = 2 (quadrature on the circle with 4000 nodes) at fixed λ and at fixed λN/(1 − λ), and κ_N at λ = 0.05, N = 256.
 - `slice_function.py`: the closed forms of D, D', D'' and the constants used above.
 
@@ -105,6 +127,9 @@ For Xⱼ ~ N(0, v), the statistic of one slice in [1], N ∫ e^{−t²/2} |φ_N(
 2. E. Littwin, O. Saremi, M. Advani, V. Thilak, P. Nakkiran, C. Huang, J. Susskind. How JEPA avoids noisy features: the implicit bias of deep linear self distillation networks. arXiv:2407.03475, 2024.
 3. A. M. Saxe, J. L. McClelland, S. Ganguli. Exact solutions to the nonlinear dynamics of learning in deep linear neural networks. arXiv:1312.6120, 2013.
 4. M. S. Halvagal, A. Laborieux, F. Zenke. Implicit variance regularization in non-contrastive SSL. arXiv:2212.04858, 2022.
+5. P. Baldi, K. Hornik. Neural networks and principal component analysis: learning from examples without local minima. Neural Networks 2, 1989.
+6. L. Ziyin, E. S. Lubana, M. Ueda, H. Tanaka. What shapes the loss landscape of self-supervised learning? arXiv:2210.00638, 2022.
+7. R. Balestriero, Y. LeCun. Contrastive and non-contrastive self-supervised learning recover global and local spectral embedding methods. arXiv:2205.11508, 2022.
 
 Decoupled learning rates per eigenmode of linear networks go back to [3], and for non-contrastive objectives with a predictor the eigenvalues act as learning-rate multipliers [4].
 
