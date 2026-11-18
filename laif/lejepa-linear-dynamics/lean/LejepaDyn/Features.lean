@@ -8,7 +8,8 @@ import SigregDim.SliceD
 Commuting case: the data covariance `Σ` and the covariance `Δ` of the difference of two views share an eigenbasis,
 `Σ eᵢ = σ eᵢ` and `Δ eᵢ = δ eᵢ` for the feature `i` considered. Along the gradient flow
 `Ẇ = -2 W Δ - 2 μ G(M) W Σ`, the column `v = W eᵢ` and the learned variance `n = σ ‖v‖²` satisfy
-`ṅ = -4 δ n - 4 μ σ² vᵀ G v`; this identity is the hypothesis `hode` below. With `κ = μ |h'(0)| / K` and the
+`ṅ = -4 δ n - 4 μ σ² vᵀ G v`; this identity is the hypothesis `hode` below (proved in `LejepaDyn.Flow`).
+With `κ = -μ h'(0) / K` and the
 invariance cost `c = δ / σ`, the rate of feature `i` is `4 σ (κ - c)`:
 
 * `never_learned`: `n(t) ≤ n(0) e^{4 (σ κ - δ) t}` for all `t ≥ 0`, so features with `c ≥ κ` never grow.

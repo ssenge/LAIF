@@ -4,7 +4,7 @@ import LejepaDyn.Moments
 # Bounds on the SIGReg gradient matrix
 
 The embedding covariance is `M = Σᵣ bᵣ bᵣᵀ` with rows `bᵣ = B r ∈ ℝ^K` (for a linear encoder `W` and data
-covariance `Σ`, `B = (W Σ^{1/2})ᵀ` column by column), so `aᵀ M a = Σᵣ (bᵣᵀ a)²` and `tr M = Σᵣ ‖bᵣ‖²`.
+covariance `Σ = Sᵀ S`, `bᵣ = W sᵣ` for the rows `sᵣ` of `S`), so `aᵀ M a = Σᵣ (bᵣᵀ a)²` and `tr M = Σᵣ ‖bᵣ‖²`.
 The SIGReg gradient matrix is `G = E h'(aᵀ M a) a aᵀ`, and `gq h' B v = vᵀ G v`.
 -/
 

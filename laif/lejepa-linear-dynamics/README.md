@@ -18,6 +18,8 @@ In the **commuting case** Σ, Δ (equivalently Σ, C) share an eigenbasis e₁, 
 
     ṅᵢ = −4δᵢnᵢ − 4μσᵢ² vᵢᵀ G vᵢ.
 
+The gradient formula behind it holds for every finite direction law on the unit sphere in place of the uniform law, in particular for a fixed finite set of weighted slice directions.
+
 **Lemma 2 (the gradient matrix).** Let M ⪰ 0 and v ∈ ℝ^K.
 (a) If h'(x) ≥ h'(0) for x ≥ 0, then vᵀGv ≥ h'(0)‖v‖²/K.
 (b) If h'(x) ≤ h'(0) + L₂x for x ≥ 0, then vᵀGv ≤ h'(0)‖v‖²/K + 3L₂ tr M ‖v‖²/(K(K+2)).
@@ -49,25 +51,26 @@ so the noisy feature grows faster in the early phase. At every global minimizer 
 
 | Result | Scope | Status | Posted |
 |---|---|---|---|
-| Lemma 1 | Commuting case, population loss | Claim (differentiation under the integral); it enters the Lean theorems as the hypothesis on ṅᵢ | 2026-11-18 |
+| Lemma 1 | Commuting case; any finite direction law on the unit sphere; h differentiable on [0, ∞) with h and h' bounded there and h' measurable; Σ = SᵀS for some S | Lean: the directional derivatives of L are given by the gradient formula, and every gradient flow satisfies the feature equation | 2026-11-18 |
 | Lemma 2 | M = BBᵀ, h' measurable and bounded on [0, ∞) | Lean, assuming the second and fourth moments of the uniform law on the sphere; (a) and (b) for D in Lean with L₂ = 8 (the sharp 6.855 by script) | 2026-11-18 |
-| Theorems 1 and 2 | As stated, given the feature equation of Lemma 1 | Lean, also for h = D | 2026-11-18 |
+| Theorems 1 and 2 | Every gradient flow of L defined for all times | Lean, also for h = D | 2026-11-18 |
 | Corollary 3 | Global minimizers λ* of the reduced objective F; the identification of λ* with the learned variances of a minimizer W (the equality case of the trace inequality) and the convergence of the flow to a global minimizer are not proved | Claim, from Theorem 2 and the ordering theorem; the non-monotone trajectory is numerical | 2026-11-18 |
 | Proposition 4 | General Σ, Δ, early phase; the closeness to the linear flow is not quantified | Claim; checked numerically | 2026-11-18 |
 | Normalization remarks | As stated | Claim | 2026-11-18 |
 
 ## Formal verification
 
-[`lean/`](lean/) is a Lean 4 project with the library `LejepaDyn` and the four modules of `SigregDim` it uses (from [`sigreg-dimension-stiffness`](../sigreg-dimension-stiffness/), unchanged), with no `sorry` and only the standard axioms (propext, Classical.choice, Quot.sound), as listed by [`lean/LejepaDyn/Axioms.lean`](lean/LejepaDyn/Axioms.lean) with its output in [`lean/axioms.txt`](lean/axioms.txt). It uses Lean v4.36.0-rc1 and Mathlib at revision d875a8de5222f62cf1c2fafc7984588adadc990a. Build with `lake exe cache get` and then `lake build` in `lean/`. The embedding covariance is written as M = Σᵣ bᵣbᵣᵀ (for a linear encoder, bᵣ are the columns of WΣ^{1/2}), so that aᵀMa = Σᵣ(bᵣᵀa)² and tr M = Σᵣ‖bᵣ‖².
+[`lean/`](lean/) is a Lean 4 project with the library `LejepaDyn` and the four modules of `SigregDim` it uses (from [`sigreg-dimension-stiffness`](../sigreg-dimension-stiffness/), unchanged), with no `sorry` and only the standard axioms (propext, Classical.choice, Quot.sound), as listed by [`lean/LejepaDyn/Axioms.lean`](lean/LejepaDyn/Axioms.lean) with its output in [`lean/axioms.txt`](lean/axioms.txt). It uses Lean v4.36.0-rc1 and Mathlib at revision d875a8de5222f62cf1c2fafc7984588adadc990a. Build with `lake exe cache get` and then `lake build` in `lean/`. The data covariance is written as Σ = SᵀS and the embedding covariance as M = WΣWᵀ = Σᵣ bᵣbᵣᵀ with bᵣ = Wsᵣ for the rows sᵣ of S, so that aᵀMa = Σᵣ(bᵣᵀa)² and tr M = Σᵣ‖bᵣ‖². Matrices are functions on index pairs, and a gradient flow is a path W(t) whose velocity Ẇ satisfies d/ds L(W(t) + sH) = −⟨Ẇ(t), H⟩ at s = 0 for every direction H, in the Frobenius inner product.
 
 - `LejepaDyn/Moments.lean`: the hypothesis `Iso4` on the direction law (probability measure on the unit sphere with E(uᵀa)² = ‖u‖²/K and E(uᵀa)²(vᵀa)² = (‖u‖²‖v‖² + 2(uᵀv)²)/(K(K+2))), the inner-product inequality and integrability.
 - `LejepaDyn/Gram.lean`, Lemma 2: `gq_ge` and `gq_le`, with `integral_qf_mul` for E(aᵀMa)(vᵀa)².
 - `LejepaDyn/Growth.lean`: `growth_le` and `growth_ge`, the exponential comparison for ṅ ≤ Rn and ṅ ≥ Rn on [0, T].
-- `LejepaDyn/Features.lean`, Theorems 1 and 2: `never_learned` and `early_phase` for every h with (a) and (b), `epD'_ge` and `epD'_le_lin` for D, and `never_learned_D` and `early_phase_D`.
+- `LejepaDyn/Features.lean`, Theorems 1 and 2 from the feature equation: `never_learned` and `early_phase` for every h with (a) and (b), `epD'_ge` and `epD'_le_lin` for D, and `never_learned_D` and `early_phase_D`.
+- `LejepaDyn/Flow.lean`, Lemma 1 and Theorems 1 and 2 for the gradient flow: `hasDerivAt_reg` (differentiation under the integral, by dominated convergence), `hasDerivAt_loss` (the gradient formula), `flow_eq` (a gradient flow follows Ẇ = −∇L), `grad_col` and `feature_ode` (the feature equation), and `never_learned_flow`, `early_phase_flow`, `never_learned_flow_D`, `early_phase_flow_D`.
 
 **Assuming.** The second and fourth moments of the uniform law on the sphere (hypothesis `Iso4`), classical; Lean does not construct a law that satisfies it.
 
-**Not formalized.** The gradient formula and the feature equation of Lemma 1 (a hypothesis of the Lean theorems), Corollary 3, Proposition 4, the normalization remarks, and the convergence of the flow.
+**Not formalized.** The existence of the gradient flow for all times (for h = D the vector field is locally Lipschitz with linear growth in W, so it exists by the classical existence theorem for ordinary differential equations), Corollary 3, Proposition 4, the normalization remarks, and the convergence of the flow.
 
 ## Simulations
 
