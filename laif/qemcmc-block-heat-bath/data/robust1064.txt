@@ -1,0 +1,6 @@
+N=1064 seed=0 beta=0.5 gk: tau=0.0044715 per step (fit lags 0..524), 0.25 us per step, tau per second 1.755e+04, max frontier 4
+N=1064 seed=0 beta=0.5 bh: tau=0.078098 per step (fit lags 0..32), 141.91 us per step, tau per second 550.3, max frontier 4
+N=1064 seed=0 burn-in=0: bh/gk at fit cuts 0.05, 0.1, 0.2 = [17.72 17.47 17.64]
+N=1064 seed=0 beta=0.5 gk: tau=0.0047348 per step (fit lags 0..490), 0.28 us per step, tau per second 1.679e+04, max frontier 4
+N=1064 seed=0 beta=0.5 bh: tau=0.079495 per step (fit lags 0..31), 141.98 us per step, tau per second 559.9, max frontier 4
+N=1064 seed=0 burn-in=27000: bh/gk at fit cuts 0.05, 0.1, 0.2 = [15.68 15.83 15.8 ]
