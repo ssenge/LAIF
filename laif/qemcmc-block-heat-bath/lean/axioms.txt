@@ -1,0 +1,6 @@
+'BlockHeatBath.M_zero' depends on axioms: [propext, Classical.choice, Quot.sound]
+'BlockHeatBath.M_n' depends on axioms: [propext, Classical.choice, Quot.sound]
+'BlockHeatBath.M_split' depends on axioms: [propext, Classical.choice, Quot.sound]
+'BlockHeatBath.prod_telescope' depends on axioms: [propext, Classical.choice, Quot.sound]
+'BlockHeatBath.P_eq' depends on axioms: [propext, Classical.choice, Quot.sound]
+'BlockHeatBath.sum_P' depends on axioms: [propext, Classical.choice, Quot.sound]
