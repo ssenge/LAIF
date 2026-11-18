@@ -34,6 +34,8 @@ At T = 0.02, where [1] reports the runtime comparison, no sampler can exceed 50 
 
 For comparison with the parallel-tempering numbers of [1], a plain parallel tempering (14 replicas on a fixed geometric ladder from T = 0.02 to 1.5, single-spin Metropolis sweeps, neighbour swaps after each sweep, the states of all replicas counted) reaches ln Z within 10⁻⁴ at T = 0.02 after 3 × 50 000 states on four of the five instances (about 2 s) and after 30 × 50 000 on the fifth (about 10 s). [1] reports 1000 to 1500 × 50 000 with an adaptive ladder on its own instance.
 
+The same eliminator, applied to the public benchmark instances of [3], confirms the stated ground energies: −234 for both 156-variable HUBO instances on the Marrakesh coupling map (elimination width 6, 8 ms each) and −68.8282 for the 100-node weighted 3-regular Max-Cut instance (width 22, 58 ms). The instances are loaded from [3] at run time.
+
 ## Scope
 
 - **Instances.** Fresh draws on the same term structure and coefficient set, not the coefficients of [1, 2]. The elimination width depends only on the term structure, so the exact methods apply unchanged to the instance of [1, 2].
@@ -51,8 +53,10 @@ The sampler draws the variables in reverse elimination order, each from its cond
 - `sim/test_hubo.py`: the checks against enumeration.
 - `sim/exact156.py`: exact ln Z, ground energies and ln Z − ln Z̃ for 1000, 10 000 and 50 000 exact samples (`data/exact156.txt`).
 - `sim/pt156.py`: the parallel tempering and its ln Z̃ (`data/pt156.txt`).
+- `sim/kipu_benchmark.py`: exact ground energies of the instances of [3], fetched from that repository; instances of elimination width above 22 are skipped (`data/kipu_benchmark.txt`).
 
 ## References
 
 1. N. N. Hegade, N. L. Kortikar, B. A. Bhargava et al. Digitized counterdiabatic quantum sampling. arXiv:2510.26735.
 2. S. V. Romero, A. G. Cadavid, E. Solano, N. N. Hegade. Sequential quantum computing. arXiv:2506.20655.
+3. Kipu Quantum. Benchmark instances for optimization algorithms. https://github.com/Kipu-Quantum-GmbH/benchmark-instances.

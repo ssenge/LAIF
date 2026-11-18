@@ -1,0 +1,6 @@
+HUBO/hubo1_marrakesh.json: n = 156, 380 terms, elimination width 6, exact ground energy -234.0000 (8 ms)
+HUBO/hubo2_marrakesh.json: n = 156, 380 terms, elimination width 6, exact ground energy -234.0000 (8 ms)
+maxcut/maxcut_regular_3_100_nodes_weighted.json: n = 100, 201 terms, elimination width 22, exact ground energy -68.8282 (58 ms)
+maxcut/maxcut_regular_3_140_nodes_weighted.json: n = 140, elimination width 29 > 22, skipped
+maxcut/maxcut_regular_3_150_nodes_weighted.json: n = 150, elimination width 28 > 22, skipped
+maxcut/maxcut_regular_4_130_nodes_weighted.json: n = 130, elimination width 40 > 22, skipped

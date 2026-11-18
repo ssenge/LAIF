@@ -1,0 +1,4 @@
+R=2.555 SCI cutoff 0.001: E = -29.23428191 (10 s, 486 x 486 strings)
+R=2.555 SCI cutoff 0.0003: E = -29.23546796 (44 s, 1134 x 1134 strings)
+R=2.555 SCI cutoff 0.0001: E = -29.23558761 (145 s, 2285 x 2285 strings)
+R=2.555 SCI cutoff 4e-05: E = -29.23560263 (376 s, 3829 x 3829 strings)

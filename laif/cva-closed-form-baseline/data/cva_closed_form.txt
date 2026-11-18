@@ -1,0 +1,11 @@
+closed form CVA = 5.535521e-05; Monte Carlo (4e6 paths per date) 5.532830e-05; relative difference 4.9e-04
+  r = -0.0060, lambda = 0.001437: CVA = 4.972755e-05
+  r = -0.0060, lambda = 0.001596: CVA = 5.524993e-05
+  r = -0.0060, lambda = 0.001756: CVA = 6.077174e-05
+  r = -0.0045, lambda = 0.001437: CVA = 4.982230e-05
+  r = -0.0045, lambda = 0.001596: CVA = 5.535521e-05
+  r = -0.0045, lambda = 0.001756: CVA = 6.088754e-05
+  r = -0.0030, lambda = 0.001437: CVA = 4.991765e-05
+  r = -0.0030, lambda = 0.001596: CVA = 5.546115e-05
+  r = -0.0030, lambda = 0.001756: CVA = 6.100407e-05
+reference value of the source (Monte Carlo, 1e5 paths): 5.599e-5 +- 0.002e-5
