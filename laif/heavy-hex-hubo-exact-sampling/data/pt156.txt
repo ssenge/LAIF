@@ -1,0 +1,65 @@
+seed 0: E0 -191.7857, ladder [0.02, 0.028, 0.039, 0.054, 0.076, 0.105, 0.147, 0.204, 0.285, 0.397, 0.554, 0.772, 1.076, 1.5]
+  T=0.25: lnZ - lnZ~(exact sampler, 50000) = 0.0863
+  T=0.125: lnZ - lnZ~(exact sampler, 50000) = 0.0025
+  T=0.1: lnZ - lnZ~(exact sampler, 50000) = 0.0010
+  T=0.05: lnZ - lnZ~(exact sampler, 50000) = 0.0000
+  T=0.02: lnZ - lnZ~(exact sampler, 50000) = 0.0000
+  PT 1x50000 states (2 s, 34.83 us per state, min E -191.7857): T=0.25: lnZ - lnZ~ 0.8583; T=0.125: lnZ - lnZ~ 0.1941; T=0.1: lnZ - lnZ~ 0.1021; T=0.05: lnZ - lnZ~ 0.0047; T=0.02: lnZ - lnZ~ 0.0000
+  PT 3x50000 states (2 s, 15.44 us per state, min E -191.7857): T=0.25: lnZ - lnZ~ 0.2009; T=0.125: lnZ - lnZ~ 0.0065; T=0.1: lnZ - lnZ~ 0.0018; T=0.05: lnZ - lnZ~ 0.0000; T=0.02: lnZ - lnZ~ -0.0000
+  PT 10x50000 states (4 s, 8.96 us per state, min E -191.7857): T=0.25: lnZ - lnZ~ 0.0970; T=0.125: lnZ - lnZ~ 0.0010; T=0.1: lnZ - lnZ~ 0.0002; T=0.05: lnZ - lnZ~ 0.0000; T=0.02: lnZ - lnZ~ -0.0000
+  PT 30x50000 states (11 s, 7.66 us per state, min E -191.7857): T=0.25: lnZ - lnZ~ 0.0384; T=0.125: lnZ - lnZ~ 0.0000; T=0.1: lnZ - lnZ~ 0.0000; T=0.05: lnZ - lnZ~ 0.0000; T=0.02: lnZ - lnZ~ -0.0000
+  PT 100x50000 states (31 s, 6.24 us per state, min E -191.7857): T=0.25: lnZ - lnZ~ 0.0143; T=0.125: lnZ - lnZ~ 0.0000; T=0.1: lnZ - lnZ~ 0.0000; T=0.05: lnZ - lnZ~ 0.0000; T=0.02: lnZ - lnZ~ -0.0000
+  PT 300x50000 states (90 s, 5.98 us per state, min E -191.7857): T=0.25: lnZ - lnZ~ 0.0058; T=0.125: lnZ - lnZ~ 0.0000; T=0.1: lnZ - lnZ~ 0.0000; T=0.05: lnZ - lnZ~ 0.0000; T=0.02: lnZ - lnZ~ -0.0000
+  PT 1000x50000 states (305 s, 6.10 us per state, min E -191.7857): T=0.25: lnZ - lnZ~ 0.0020; T=0.125: lnZ - lnZ~ 0.0000; T=0.1: lnZ - lnZ~ 0.0000; T=0.05: lnZ - lnZ~ 0.0000; T=0.02: lnZ - lnZ~ -0.0000
+seed 1: E0 -188.0714, ladder [0.02, 0.028, 0.039, 0.054, 0.076, 0.105, 0.147, 0.204, 0.285, 0.397, 0.554, 0.772, 1.076, 1.5]
+  T=0.25: lnZ - lnZ~(exact sampler, 50000) = 0.5960
+  T=0.125: lnZ - lnZ~(exact sampler, 50000) = 0.0366
+  T=0.1: lnZ - lnZ~(exact sampler, 50000) = 0.0157
+  T=0.05: lnZ - lnZ~(exact sampler, 50000) = 0.0017
+  T=0.02: lnZ - lnZ~(exact sampler, 50000) = 0.0001
+  PT 1x50000 states (1 s, 23.88 us per state, min E -188.0714): T=0.25: lnZ - lnZ~ 3.7383; T=0.125: lnZ - lnZ~ 2.7927; T=0.1: lnZ - lnZ~ 2.6041; T=0.05: lnZ - lnZ~ 1.9799; T=0.02: lnZ - lnZ~ 1.4507
+  PT 3x50000 states (2 s, 12.06 us per state, min E -188.0714): T=0.25: lnZ - lnZ~ 2.1437; T=0.125: lnZ - lnZ~ 1.3405; T=0.1: lnZ - lnZ~ 1.3204; T=0.05: lnZ - lnZ~ 1.3991; T=0.02: lnZ - lnZ~ 1.3929
+  PT 10x50000 states (4 s, 7.95 us per state, min E -188.0714): T=0.25: lnZ - lnZ~ 1.1232; T=0.125: lnZ - lnZ~ 0.3961; T=0.1: lnZ - lnZ~ 0.3321; T=0.05: lnZ - lnZ~ 0.1758; T=0.02: lnZ - lnZ~ 0.0211
+  PT 30x50000 states (10 s, 6.89 us per state, min E -188.0714): T=0.25: lnZ - lnZ~ 0.6102; T=0.125: lnZ - lnZ~ 0.0599; T=0.1: lnZ - lnZ~ 0.0302; T=0.05: lnZ - lnZ~ 0.0028; T=0.02: lnZ - lnZ~ 0.0000
+  PT 100x50000 states (34 s, 6.86 us per state, min E -188.0714): T=0.25: lnZ - lnZ~ 0.3217; T=0.125: lnZ - lnZ~ 0.0114; T=0.1: lnZ - lnZ~ 0.0054; T=0.05: lnZ - lnZ~ 0.0005; T=0.02: lnZ - lnZ~ 0.0000
+  PT 300x50000 states (97 s, 6.45 us per state, min E -188.0714): T=0.25: lnZ - lnZ~ 0.1714; T=0.125: lnZ - lnZ~ 0.0006; T=0.1: lnZ - lnZ~ 0.0001; T=0.05: lnZ - lnZ~ 0.0000; T=0.02: lnZ - lnZ~ -0.0000
+  PT 1000x50000 states (287 s, 5.73 us per state, min E -188.0714): T=0.25: lnZ - lnZ~ 0.0885; T=0.125: lnZ - lnZ~ 0.0001; T=0.1: lnZ - lnZ~ 0.0000; T=0.05: lnZ - lnZ~ 0.0000; T=0.02: lnZ - lnZ~ -0.0000
+seed 2: E0 -195.7500, ladder [0.02, 0.028, 0.039, 0.054, 0.076, 0.105, 0.147, 0.204, 0.285, 0.397, 0.554, 0.772, 1.076, 1.5]
+  T=0.25: lnZ - lnZ~(exact sampler, 50000) = 0.1267
+  T=0.125: lnZ - lnZ~(exact sampler, 50000) = 0.0072
+  T=0.1: lnZ - lnZ~(exact sampler, 50000) = 0.0030
+  T=0.05: lnZ - lnZ~(exact sampler, 50000) = 0.0004
+  T=0.02: lnZ - lnZ~(exact sampler, 50000) = 0.0001
+  PT 1x50000 states (5 s, 95.63 us per state, min E -195.7500): T=0.25: lnZ - lnZ~ 1.1237; T=0.125: lnZ - lnZ~ 0.9271; T=0.1: lnZ - lnZ~ 0.8754; T=0.05: lnZ - lnZ~ 0.7402; T=0.02: lnZ - lnZ~ 0.6939
+  PT 3x50000 states (5 s, 34.22 us per state, min E -195.7500): T=0.25: lnZ - lnZ~ 0.1823; T=0.125: lnZ - lnZ~ 0.0023; T=0.1: lnZ - lnZ~ 0.0003; T=0.05: lnZ - lnZ~ 0.0000; T=0.02: lnZ - lnZ~ 0.0000
+  PT 10x50000 states (7 s, 13.09 us per state, min E -195.7500): T=0.25: lnZ - lnZ~ 0.0880; T=0.125: lnZ - lnZ~ 0.0003; T=0.1: lnZ - lnZ~ 0.0000; T=0.05: lnZ - lnZ~ 0.0000; T=0.02: lnZ - lnZ~ 0.0000
+  PT 30x50000 states (11 s, 7.58 us per state, min E -195.7500): T=0.25: lnZ - lnZ~ 0.0413; T=0.125: lnZ - lnZ~ 0.0000; T=0.1: lnZ - lnZ~ 0.0000; T=0.05: lnZ - lnZ~ 0.0000; T=0.02: lnZ - lnZ~ 0.0000
+  PT 100x50000 states (32 s, 6.37 us per state, min E -195.7500): T=0.25: lnZ - lnZ~ 0.0167; T=0.125: lnZ - lnZ~ 0.0000; T=0.1: lnZ - lnZ~ 0.0000; T=0.05: lnZ - lnZ~ 0.0000; T=0.02: lnZ - lnZ~ 0.0000
+  PT 300x50000 states (92 s, 6.14 us per state, min E -195.7500): T=0.25: lnZ - lnZ~ 0.0068; T=0.125: lnZ - lnZ~ 0.0000; T=0.1: lnZ - lnZ~ 0.0000; T=0.05: lnZ - lnZ~ 0.0000; T=0.02: lnZ - lnZ~ 0.0000
+  PT 1000x50000 states (287 s, 5.74 us per state, min E -195.7500): T=0.25: lnZ - lnZ~ 0.0024; T=0.125: lnZ - lnZ~ 0.0000; T=0.1: lnZ - lnZ~ 0.0000; T=0.05: lnZ - lnZ~ 0.0000; T=0.02: lnZ - lnZ~ 0.0000
+seed 3: E0 -193.5714, ladder [0.02, 0.028, 0.039, 0.054, 0.076, 0.105, 0.147, 0.204, 0.285, 0.397, 0.554, 0.772, 1.076, 1.5]
+  T=0.25: lnZ - lnZ~(exact sampler, 50000) = 0.0557
+  T=0.125: lnZ - lnZ~(exact sampler, 50000) = 0.0014
+  T=0.1: lnZ - lnZ~(exact sampler, 50000) = 0.0005
+  T=0.05: lnZ - lnZ~(exact sampler, 50000) = 0.0000
+  T=0.02: lnZ - lnZ~(exact sampler, 50000) = 0.0000
+  PT 1x50000 states (1 s, 22.57 us per state, min E -193.5714): T=0.25: lnZ - lnZ~ 0.6571; T=0.125: lnZ - lnZ~ 0.3053; T=0.1: lnZ - lnZ~ 0.2333; T=0.05: lnZ - lnZ~ 0.0573; T=0.02: lnZ - lnZ~ 0.0008
+  PT 3x50000 states (2 s, 11.58 us per state, min E -193.5714): T=0.25: lnZ - lnZ~ 0.1185; T=0.125: lnZ - lnZ~ 0.0014; T=0.1: lnZ - lnZ~ 0.0002; T=0.05: lnZ - lnZ~ 0.0000; T=0.02: lnZ - lnZ~ 0.0000
+  PT 10x50000 states (4 s, 7.63 us per state, min E -193.5714): T=0.25: lnZ - lnZ~ 0.0386; T=0.125: lnZ - lnZ~ 0.0000; T=0.1: lnZ - lnZ~ 0.0000; T=0.05: lnZ - lnZ~ 0.0000; T=0.02: lnZ - lnZ~ 0.0000
+  PT 30x50000 states (11 s, 7.19 us per state, min E -193.5714): T=0.25: lnZ - lnZ~ 0.0161; T=0.125: lnZ - lnZ~ 0.0000; T=0.1: lnZ - lnZ~ 0.0000; T=0.05: lnZ - lnZ~ 0.0000; T=0.02: lnZ - lnZ~ 0.0000
+  PT 100x50000 states (35 s, 6.91 us per state, min E -193.5714): T=0.25: lnZ - lnZ~ 0.0059; T=0.125: lnZ - lnZ~ 0.0000; T=0.1: lnZ - lnZ~ 0.0000; T=0.05: lnZ - lnZ~ 0.0000; T=0.02: lnZ - lnZ~ 0.0000
+  PT 300x50000 states (104 s, 6.93 us per state, min E -193.5714): T=0.25: lnZ - lnZ~ 0.0022; T=0.125: lnZ - lnZ~ 0.0000; T=0.1: lnZ - lnZ~ 0.0000; T=0.05: lnZ - lnZ~ 0.0000; T=0.02: lnZ - lnZ~ 0.0000
+  PT 1000x50000 states (318 s, 6.36 us per state, min E -193.5714): T=0.25: lnZ - lnZ~ 0.0008; T=0.125: lnZ - lnZ~ 0.0000; T=0.1: lnZ - lnZ~ 0.0000; T=0.05: lnZ - lnZ~ 0.0000; T=0.02: lnZ - lnZ~ 0.0000
+seed 4: E0 -209.8214, ladder [0.02, 0.028, 0.039, 0.054, 0.076, 0.105, 0.147, 0.204, 0.285, 0.397, 0.554, 0.772, 1.076, 1.5]
+  T=0.25: lnZ - lnZ~(exact sampler, 50000) = 0.0199
+  T=0.125: lnZ - lnZ~(exact sampler, 50000) = 0.0008
+  T=0.1: lnZ - lnZ~(exact sampler, 50000) = 0.0004
+  T=0.05: lnZ - lnZ~(exact sampler, 50000) = 0.0000
+  T=0.02: lnZ - lnZ~(exact sampler, 50000) = 0.0000
+  PT 1x50000 states (1 s, 19.41 us per state, min E -209.8214): T=0.25: lnZ - lnZ~ 0.1539; T=0.125: lnZ - lnZ~ 0.0070; T=0.1: lnZ - lnZ~ 0.0015; T=0.05: lnZ - lnZ~ 0.0000; T=0.02: lnZ - lnZ~ 0.0000
+  PT 3x50000 states (2 s, 10.94 us per state, min E -209.8214): T=0.25: lnZ - lnZ~ 0.0134; T=0.125: lnZ - lnZ~ 0.0000; T=0.1: lnZ - lnZ~ 0.0000; T=0.05: lnZ - lnZ~ 0.0000; T=0.02: lnZ - lnZ~ 0.0000
+  PT 10x50000 states (4 s, 7.30 us per state, min E -209.8214): T=0.25: lnZ - lnZ~ 0.0048; T=0.125: lnZ - lnZ~ 0.0000; T=0.1: lnZ - lnZ~ 0.0000; T=0.05: lnZ - lnZ~ 0.0000; T=0.02: lnZ - lnZ~ 0.0000
+  PT 30x50000 states (10 s, 6.45 us per state, min E -209.8214): T=0.25: lnZ - lnZ~ 0.0013; T=0.125: lnZ - lnZ~ 0.0000; T=0.1: lnZ - lnZ~ 0.0000; T=0.05: lnZ - lnZ~ 0.0000; T=0.02: lnZ - lnZ~ 0.0000
+  PT 100x50000 states (31 s, 6.18 us per state, min E -209.8214): T=0.25: lnZ - lnZ~ 0.0004; T=0.125: lnZ - lnZ~ 0.0000; T=0.1: lnZ - lnZ~ 0.0000; T=0.05: lnZ - lnZ~ 0.0000; T=0.02: lnZ - lnZ~ 0.0000
+  PT 300x50000 states (139 s, 9.26 us per state, min E -209.8214): T=0.25: lnZ - lnZ~ 0.0001; T=0.125: lnZ - lnZ~ 0.0000; T=0.1: lnZ - lnZ~ 0.0000; T=0.05: lnZ - lnZ~ 0.0000; T=0.02: lnZ - lnZ~ 0.0000
+  PT 1000x50000 states (248 s, 4.96 us per state, min E -209.8214): T=0.25: lnZ - lnZ~ 0.0001; T=0.125: lnZ - lnZ~ 0.0000; T=0.1: lnZ - lnZ~ 0.0000; T=0.05: lnZ - lnZ~ 0.0000; T=0.02: lnZ - lnZ~ 0.0000
