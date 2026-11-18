@@ -21,6 +21,14 @@ Each entry is the mean over five draws of the couplings. The run uses the settin
 
 The heat bath is exact because the blocks are thin. A transfer-matrix pass over a vertex order of the block, with a frontier of at most 4 vertices and the number of ones so far, gives the conditional weights of all block configurations of the required weight. A backward pass then draws one configuration from them. The move is accepted with probability 1, and it keeps π_K invariant as a Gibbs update of one block.
 
+Lean (`lean/BlockHeatBath/Basic.lean`, standard axioms only, `lean/axioms.txt`) proves the exactness of the sampling step for any nonnegative weight f on {0, 1}^n with positive total Z. Let M(t, z) be the total weight of the configurations that agree with z on the first t coordinates, and draw the coordinates one after the other with probabilities M(t + 1, z)/M(t, z):
+
+- `M_split`: the two continuations of a prefix sum to it, so every step is a probability distribution.
+- `P_eq`: the configuration z is drawn with probability f(z)/Z.
+- `sum_P`: these probabilities sum to 1.
+
+The heat bath applies this with f the Boltzmann weight of the block configurations of the required weight, conditioned on the outside, and the coordinates in reverse order. The transfer-matrix pass computes the sums M from frontier states. That compression is not formalized; it is checked against enumeration by `sim/test_mcmc.py`.
+
 To our knowledge, quantum-enhanced Markov chain Monte Carlo with block proposals has not been compared with an exact heat bath on the same blocks before.
 
 ## Scope
@@ -37,6 +45,7 @@ To our knowledge, quantum-enhanced Markov chain Monte Carlo with block proposals
 - `sim/mcmc.py`: global and local Kawasaki dynamics, a two-vertex heat bath, the exact block heat bath, the replica-pair autocorrelation and the fit.
 - `sim/test_mcmc.py`: a chi-square test of the block heat bath against exact enumeration on a 12-vertex block (200 000 draws), and checks that the weight and the outside of the block are kept.
 - `sim/robust.py`: the fit-window and burn-in check.
+- `lean/`: the Lean files. Build with `lake exe cache get` and then `lake build`; `lake env lean Axioms.lean` prints the axioms.
 - `data/`: the outputs (`n144.txt`, `n1064.txt`, `robust144.txt`, `robust1064.txt`).
 
 ## References
