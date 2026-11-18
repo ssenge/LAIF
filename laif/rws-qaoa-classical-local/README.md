@@ -14,6 +14,13 @@ A depth-p QAOA is a local algorithm: the expected value on an edge depends only 
 
 **Lemma (frozen qubits).** If pᵢ ∈ {0, 1}, qubit i starts in a computational basis state, its mixer term is ±Zᵢ, and the cost is diagonal. Every layer therefore maps (basis state of i) ⊗ (rest) to the same basis state of i times a new rest. Hence the expected cut of the warm-started QAOA at any depth is at most the maximum cut with these spins fixed to their warm-start values.
 
+Lean (`lean/FrozenQubit/Basic.lean`, standard axioms only, `lean/axioms.txt`) proves the lemma for amplitude vectors on the computational basis of n qubits. The layers may be diagonal matrices, single-qubit matrices on unpolarized qubits, and diagonal single-qubit matrices. From a product state in which every qubit of a set F is a basis state, any product of such layers gives:
+
+- `frozen`: a state that vanishes on every basis state disagreeing with the warm start on F;
+- `expected_le_ceiling`: if the state is normalized, an expected objective at most any bound on the objective over the basis states that agree with the warm start on F.
+
+The identification of the circuit with these layers is not formalized: the cost unitary is diagonal, and the mixer of a polarized qubit is exp(∓iβZ).
+
 The maximum cut with the polarized spins fixed is computed exactly by variable elimination on the free spins; the elimination width is 3 to 5 here. The classical rule rounds the warm start, sᵢ = sign(1 − 2pᵢ). It then applies three rounds of parallel improving flips. In each round, every vertex whose flip increases the cut, and whose random priority is the largest among such vertices within distance 1, flips. One round reads the radius-2 neighbourhood, so three rounds have radius 6.
 
 The warm start is computed by coordinate ascent to a fixed point (L is concave in each pᵢ), best of 100 random starts. About 65% of the spins end fully polarized. Cut fractions, averaged over random 3-regular graphs:
@@ -49,6 +56,7 @@ At N = 100 000, [1, Fig. 3C] gives about 5 s for the estimated fault-tolerant ru
 - `sim/rws_local.py`: the graphs, the warm start by coordinate ascent, the cut and the flip rule.
 - `sim/frozen_ceiling.py`: the exact maximum cut with polarized spins fixed. It uses `hubo.py` of [heavy-hex-hubo-exact-sampling](../heavy-hex-hubo-exact-sampling/).
 - `sim/test_frozen.py`: a statevector check of the lemma on 20 random cases (12 qubits, depths 1 to 6, random angles): polarized qubits never flip, and the expected cut stays below the ceiling.
+- `lean/`: the Lean files. Build with `lake exe cache get` and then `lake build`; `lake env lean Axioms.lean` prints the axioms.
 - `sim/rws_main.py`: the table (`data/rws_2000.jsonl`, `data/rws_10000.jsonl`).
 - `sim/ttt.py`: the times to the target and the N = 100 000 values (`data/ttt.jsonl`).
 
