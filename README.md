@@ -109,6 +109,7 @@ All results below can be searched, filtered and sorted in the [results explorer]
 
 | Problem | Result | Posted | Details |
 |---|---|---|---|
+| Multi-objective weighted Max-Cut, 42-node heavy-hex benchmark of [161] with m = 3 and 4 objectives and N(0, 1) weights; best-found fronts by QAOA, MIP-based methods on rounded weights and annealing, the 30 419-point front of [162] believed optimal | complete Pareto sets for the real weights in 0.1 s and 2.3 s on one core: 2 067 and 30 419 points, HV 43 471.7037 and 1 266 143.3494, so the front of [162] is complete; exact sets on 156-qubit heavy-hex patches for m ≤ 3 (up to 1.9 · 10⁵ points, ≤ 4 min), to 96 qubits for m = 4 and 56 for m = 5; exact mean-variance and mean-CVaR fronts for a regenerated 100-asset portfolio instance of [163] in about 1 s; Pareto pruning proved in Lean, the encodings checked against brute force; dynamic programming over tree decompositions for Pareto sets from [164] | 2026-11-18 | [multi-objective-max-cut-exact-fronts](laif/multi-objective-max-cut-exact-fronts/) |
 | Fractional colouring of the anticommutation graph of the Pauli strings P with \|tr(ρP)\| ≥ ε; conjectured O(ε⁻²) for all states [129], refuted in general, with κ such that O(ε^{−κ}) holds left open [130] | χ_f ≤ ε⁻² for products of single-qubit states, pure or mixed, and their Clifford images, with constant 1 attained; so the conjecture of [129] holds for these states, and the question of [130] has κ = 2 for them | 2026-11-12 | [pauli-fractional-colouring-product-states](laif/pauli-fractional-colouring-product-states/) |
 | Shadow norm of one-body observables dΓ(h) = Σ h_ij a_i†a_j for photonic classical shadows (random passive linear optics, photon counting, n photons in m modes); ‖O₀‖²_P ≤ (m² − 1)(m + 1)‖O₀‖²_∞ from [136] | n(m + 1)/(m + 2)(‖h₀‖₂² + 2‖h₀‖²) + n(n − 1)‖h₀‖² ≤ ‖O₀‖²_P ≤ n²(m + 1)/(m + 2)(‖h₀‖₂² + 2‖h₀‖²), so ‖O₀‖²_P ≤ (m + 1)‖O₀‖²_∞, and ≤ 4‖O₀‖²_∞ for hopping and occupation terms in every m | 2026-11-12 | [photonic-shadow-norm-one-body](laif/photonic-shadow-norm-one-body/) |
 | Monte Carlo pricing of a basket autocallable (3 underlyings, 20 dates, knock-in put) by amplitude estimation against randomized quasi-Monte Carlo at matched accuracy | break-even logical T rate about 6 GHz at normalized error 2 · 10⁻³ and 1 GHz at 10⁻⁴, against about 10 MHz stated for a 5 to 10 s classical run [137]; RQMC error exponents 0.54 to 0.64 on discontinuous payoffs | 2026-11-12 | [monte-carlo-pricing-break-even](laif/monte-carlo-pricing-break-even/) |
@@ -328,6 +329,10 @@ The folders `exact-planar-bipartite-matching`, `exact-shortest-paths-and-flows-o
 158. L. Nicollier, E. Meinhardt-Llopis, M. Dunitz, M. Pic, P. Musé, G. Facciolo. Expanding SPHERE-JEPA: a family of statistical regularizers for the hypersphere. arXiv:2606.17603, 2026.
 159. T. Wang, P. Isola. Understanding contrastive representation learning through alignment and uniformity on the hypersphere. ICML 2020, arXiv:2005.10242.
 160. E. Littwin, O. Saremi, M. Advani, V. Thilak, P. Nakkiran, C. Huang, J. Susskind. How JEPA avoids noisy features: the implicit bias of deep linear self distillation networks. arXiv:2407.03475, 2024.
+161. A. Kotil, E. Pelofske, S. Riedmüller, D. J. Egger, S. Eidenbenz, T. Koch, S. Woerner. Quantum approximate multi-objective optimization. Nature Computational Science (2025). arXiv:2503.22797.
+162. A. D. King. Multi-objective optimization by quantum annealing. arXiv:2511.01762.
+163. A. Ruiz, S. Ghosh, S. Woerner. Binary optimization with complex constraints via quantum approximate multi-objective optimization. arXiv:2609.13790.
+164. J. Könen, H. Röglin, T. Stuck. Parameterized algorithms for computing Pareto sets. arXiv:2509.06124.
 
 ## Copyright
 

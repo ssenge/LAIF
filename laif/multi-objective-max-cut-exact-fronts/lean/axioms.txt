@@ -1,0 +1,3 @@
+'ParetoDP.pruned_eq_nondom_exact' depends on axioms: [propext, Classical.choice, Quot.sound]
+'ParetoDP.final_eq' depends on axioms: [propext, Classical.choice, Quot.sound]
+'ParetoDP.nondom_eq_of_cover' depends on axioms: [propext, Classical.choice, Quot.sound]
