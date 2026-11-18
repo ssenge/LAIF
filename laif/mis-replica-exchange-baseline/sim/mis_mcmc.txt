@@ -1,0 +1,4 @@
+mammalia-kangaroo-interactions.gph: n=17 edges=91 MIS=4 runs=1000 iterations to optimum: median=12 p95=24 max=41; cost evaluations (5 per iteration): median=60 p95=120; wall time per run 0.009 ms
+insecta-ant-trophallaxis-colony2.edges: n=39 edges=245 MIS=12 runs=1000 iterations to optimum: median=127 p95=272 max=448; cost evaluations (5 per iteration): median=635 p95=1360; wall time per run 0.054 ms
+aves-sparrow-social.gph: n=52 edges=454 MIS=13 runs=1000 iterations to optimum: median=115 p95=198 max=354; cost evaluations (5 per iteration): median=575 p95=990; wall time per run 0.039 ms
+aves-songbird-social.edges: n=117 edges=1027 MIS=49 runs=1000 iterations to optimum: median=429 p95=601 max=1020; cost evaluations (5 per iteration): median=2145 p95=3005; wall time per run 0.141 ms
