@@ -1,0 +1,4 @@
+'NegCombination.eq_of_weak_dom' depends on axioms: [propext, Classical.choice, Quot.sound]
+'NegCombination.sum_neg_comb' depends on axioms: [propext, Classical.choice, Quot.sound]
+'NegCombination.no_domination' depends on axioms: [propext, Classical.choice, Quot.sound]
+'NegCombination.no_domination_half_five' depends on axioms: [propext, Classical.choice, Quot.sound]
