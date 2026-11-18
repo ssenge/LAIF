@@ -70,7 +70,7 @@ so the noisy feature grows faster in the early phase. At every global minimizer 
 
 **Assuming.** The second and fourth moments of the uniform law on the sphere (hypothesis `Iso4`), classical; Lean does not construct a law that satisfies it.
 
-**Not formalized.** The existence of the gradient flow for all times (for h = D the vector field is locally Lipschitz with linear growth in W, so it exists by the classical existence theorem for ordinary differential equations), Corollary 3, Proposition 4, the normalization remarks, and the convergence of the flow.
+**Not formalized.** The existence of the gradient flow for all times (for h = D the vector field is continuously differentiable and grows at most linearly in W, so it exists by the classical existence theorem for ordinary differential equations), Corollary 3, Proposition 4, the normalization remarks, and the convergence of the flow.
 
 ## Simulations
 
