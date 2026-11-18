@@ -10,7 +10,7 @@ from slice_function import D, D1, L
 
 K, mu = 2, 1.0
 u, w = np.polynomial.legendre.leggauss(400)
-u = (u + 1) * np.pi / 2; w = w * np.pi / 2 / np.pi          # Gauss nodes for the uniform law on [0, pi]
+u = (u + 1) * np.pi / 2; w = w * np.pi / 2 / np.pi          # quadrature nodes for the uniform law on [0, pi]
 C2, S2 = np.cos(u) ** 2, np.sin(u) ** 2
 c = mu * abs(D1(0.0)) / K
 

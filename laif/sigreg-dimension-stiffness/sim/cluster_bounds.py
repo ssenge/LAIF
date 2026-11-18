@@ -23,7 +23,7 @@ def rho_matrix(X):
 
 def sig_profile(K, nodes=120):
     """H(rho) = E exp(-K (1 - rho) u) and b_n = E e^{-Ku} (Ku)^n / n! for u ~ Beta(1/2, (K-1)/2), by
-    Gauss-Jacobi quadrature in u = (1 + x)/2; H is checked against the confluent hypergeometric form."""
+    quadrature with the weight (1 - x)^((K-3)/2) (1 + x)^(-1/2) in u = (1 + x)/2; H is checked against the confluent hypergeometric form."""
     x, w = roots_jacobi(nodes, (K - 3) / 2, -0.5)
     u, w = (1 + x) / 2, w / w.sum()
     H = lambda r: np.exp(-K * (1 - np.asarray(r))[..., None] * u) @ w

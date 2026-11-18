@@ -109,7 +109,7 @@ lemma abs_epD'_le {s : ℝ} (hs : 0 ≤ s) : |epD' s| ≤ 3 := by
       ≤ 2.51 * 1 := mul_le_mul sqrt_two_pi_le hin (abs_nonneg _) (by norm_num)
     _ ≤ 3 := by norm_num
 
-/-- `D'` is 8-Lipschitz on `[0, ∞)`. -/
+/-- `|D'(x) - D'(y)| ≤ 8 |x - y|` on `[0, ∞)`. -/
 lemma epD'_lip {x y : ℝ} (hx : 0 ≤ x) (hy : 0 ≤ y) : |epD' x - epD' y| ≤ 8 * |x - y| := by
   have := (convex_Ici (0 : ℝ)).norm_image_sub_le_of_norm_hasDerivWithin_le
     (f := epD') (f' := epD'') (C := 8)
@@ -117,7 +117,7 @@ lemma epD'_lip {x y : ℝ} (hx : 0 ≤ x) (hy : 0 ≤ y) : |epD' x - epD' y| ≤
     (fun t ht => by simpa [Real.norm_eq_abs] using abs_epD''_le ht) hy hx
   simpa [Real.norm_eq_abs] using this
 
-/-- Descent inequality from a Lipschitz derivative, on `[0, ∞)`. -/
+/-- Descent inequality from a derivative of bounded slope, on `[0, ∞)`. -/
 lemma descent_of_lip {h h' : ℝ → ℝ} {L : ℝ} (hd : ∀ x, 0 ≤ x → HasDerivAt h (h' x) x)
     (hlip : ∀ x y, 0 ≤ x → 0 ≤ y → |h' x - h' y| ≤ L * |x - y|) {x y : ℝ} (hx : 0 ≤ x)
     (hy : 0 ≤ y) : h y ≤ h x + h' x * (y - x) + L / 2 * (y - x) ^ 2 := by

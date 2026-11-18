@@ -1,0 +1,13 @@
+name = "LejepaDyn"
+defaultTargets = ["LejepaDyn"]
+
+[[require]]
+name = "mathlib"
+scope = "leanprover-community"
+rev = "d875a8de5222f62cf1c2fafc7984588adadc990a"
+
+[[lean_lib]]
+name = "SigregDim"
+
+[[lean_lib]]
+name = "LejepaDyn"

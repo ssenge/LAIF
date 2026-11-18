@@ -7,7 +7,7 @@ A finite law with atoms `xⱼ` on the sphere of radius `√K` and weights `pⱼ`
 `ρⱼₖ = ⟨xⱼ, xₖ⟩ / K ∈ [-1, 1]`. A rotation-invariant kernel discrepancy evaluates the energy
 `∑ⱼ ∑ₖ pⱼ pₖ H(ρⱼₖ)`. If the law has mean zero and identity covariance, then `∑ pⱼ pₖ ρⱼₖ = 0` and
 `∑ pⱼ pₖ ρⱼₖ² = 1/K`, whatever the number and position of the atoms. Hence every kernel profile `H` with a
-cubic Taylor remainder `C |ρ|³` on `[-1, 1]` gives an energy within `C/K` of `H(0) + H''(0)/(2K)`:
+cubic remainder `C |ρ|³` on `[-1, 1]` gives an energy within `C/K` of `H(0) + H''(0)/(2K)`:
 isotropic laws concentrated on few atoms are separated from each other by `O(1/K)` only.
 
 A sharp profile escapes this: if `H ≥ 0` and `H(1) = 1`, the energy of a law with `m` atoms is at least `1/m`.
@@ -37,7 +37,7 @@ noncomputable def energy (K : ℕ) (x : Fin m → Fin K → ℝ) (p : Fin m → 
 lemma sum_pp {p : Fin m → ℝ} (h : ∑ j, p j = 1) : ∑ j, ∑ k, p j * p k = 1 := by
   rw [← Finset.sum_mul_sum, h, one_mul]
 
-/-- Cauchy–Schwarz on the sphere: `|ρ| ≤ 1`. -/
+/-- On the sphere, `|ρ| ≤ 1` (inner-product inequality). -/
 lemma abs_nip_le_one (hK : 0 < K) {x y : Fin K → ℝ} (hx : ∑ i, x i ^ 2 = K)
     (hy : ∑ i, y i ^ 2 = K) : |nip K x y| ≤ 1 := by
   have hKr : (0 : ℝ) < K := by exact_mod_cast hK
