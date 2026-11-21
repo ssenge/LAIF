@@ -45,12 +45,12 @@ theorem cross_of_reachable {F : SimpleGraph V} {S : Finset V} {u v : V}
   obtain ⟨d, -, h1, h2⟩ := w.exists_boundary_dart (S : Set V) (by simpa using hu) (by simpa using hv)
   exact ⟨(d.fst, d.snd), mem_cross.2 ⟨by simpa using h1, by simpa using h2, d.adj⟩⟩
 
-/-- **Certificate.** If the `F i` are edge-disjoint and every edge of `G` outside `F 0, …, F (i - 1)` joins two
-vertices connected in `F i`, then the union of `F 0, …, F (k - 1)` has at least `min k c` edges across `S`, where
+/-- **Certificate.** If the `F i` are edge-disjoint and, for `i < k`, every edge of `G` outside `F 0, …, F (i - 1)`
+joins two vertices connected in `F i`, then the union of `F 0, …, F (k - 1)` has at least `min k c` edges across `S`, where
 `c` is the number of edges of `G` across `S`. -/
 theorem certificate (G : SimpleGraph V) (F : ℕ → SimpleGraph V) (k : ℕ)
     (hdisj : ∀ i j, i ≠ j → ∀ u v, (F i).Adj u v → ¬ (F j).Adj u v)
-    (hmax : ∀ i u v, G.Adj u v → (∀ j < i, ¬ (F j).Adj u v) → (F i).Reachable u v)
+    (hmax : ∀ i < k, ∀ u v, G.Adj u v → (∀ j < i, ¬ (F j).Adj u v) → (F i).Reachable u v)
     (S : Finset V) :
     min k (cross G.Adj S).card ≤ (cross (fun u v => ∃ i < k, (F i).Adj u v) S).card := by
   by_cases hall : ∀ i < k, ∃ p ∈ cross G.Adj S, ∀ j < i, ¬ (F j).Adj p.1 p.2
@@ -58,7 +58,7 @@ theorem certificate (G : SimpleGraph V) (F : ℕ → SimpleGraph V) (k : ℕ)
       intro i hi
       obtain ⟨p, hp, hnot⟩ := hall i hi
       rw [mem_cross] at hp
-      exact cross_of_reachable (hmax i p.1 p.2 hp.2.2 hnot) hp.1 hp.2.1
+      exact cross_of_reachable (hmax i hi p.1 p.2 hp.2.2 hnot) hp.1 hp.2.1
     rcases Nat.eq_zero_or_pos k with rfl | hk0
     · simp
     have : Nonempty (V × V) := ⟨(hq 0 hk0).choose⟩
@@ -91,7 +91,7 @@ theorem certificate (G : SimpleGraph V) (F : ℕ → SimpleGraph V) (k : ℕ)
 `F 0, …, F (k - 1)` has fewer than `k` edges across `S`, then `G` has the same number of edges across `S`. -/
 theorem certificate_eq (G : SimpleGraph V) (F : ℕ → SimpleGraph V) (k : ℕ) (hle : ∀ i, F i ≤ G)
     (hdisj : ∀ i j, i ≠ j → ∀ u v, (F i).Adj u v → ¬ (F j).Adj u v)
-    (hmax : ∀ i u v, G.Adj u v → (∀ j < i, ¬ (F j).Adj u v) → (F i).Reachable u v)
+    (hmax : ∀ i < k, ∀ u v, G.Adj u v → (∀ j < i, ¬ (F j).Adj u v) → (F i).Reachable u v)
     (S : Finset V) (hsmall : (cross (fun u v => ∃ i < k, (F i).Adj u v) S).card < k) :
     (cross G.Adj S).card = (cross (fun u v => ∃ i < k, (F i).Adj u v) S).card := by
   have h1 := certificate G F k hdisj hmax S
