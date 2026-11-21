@@ -14,7 +14,7 @@ Written 11 Nov 2026.
 | Prop 6 | Same, any sizes, every pattern that does not use some letter of Σ | | Ω(√(n₁n₂)), so Theorem 5 is optimal for every known pattern that satisfies (★) with b ≥ m/8 and does not use some letter; such patterns exist for |Σ| ≥ 3 | Claim |
 | Thm 7 | Same, any sizes, pattern known in advance | O(√(n₁n₂m₁m₂)) by search with an inner search for a mismatch [4]; Õ(√(n₁n₂ min(m₁, m₂))), implied by [1] with rows as letters [9, 10]; O(n √m log⁴ n) by Theorem 1 for n × n and m × m | O(√(n₁n₂ min(m₁, m₂))), so O(n √m) for n × n and m × m, and Θ(√(n₁n₂)) in the worst case over patterns with a constant number of rows or columns; O(m₁m₂ + √(n₁n₂ min(m₁, m₂))) if the pattern is given by queries | Claim; checked by script; the step to rows and Lemmas 1 and 2 of [known-pattern-matching-queries](../known-pattern-matching-queries/) in Lean |
 
-In one dimension the problem takes Õ(√n + √m) queries [1], by deterministic sampling [2]. In two dimensions, quantum algorithms that are fast on average are given in [3]; in the worst case, reading the rows of the pattern as letters [9, 10] in the algorithm of [1] gives Õ(n √m) for an n × n text and an m × m pattern, with polylogarithmic factors from the bounded-error comparisons of rows. Classically, Θ(n²) queries are needed in the worst case, by the same family as in Theorem 2.
+In one dimension the problem takes Õ(√n + √m) queries [1], by deterministic sampling [2]. In two dimensions, quantum algorithms that are fast on average are given in [3]; in the worst case, reading the rows of the pattern as letters [9, 10] in the algorithm of [1] gives Õ(n √m) for an n × n text and an m × m pattern, with polylogarithmic factors from the bounded-error comparisons of rows. For every pattern, Õ(√(n₁n₂)) queries are given in [11], with a witness table of the pattern computed in advance; this matches Theorem 2 up to polylogarithmic factors and is below the bounds of Theorems 1 and 7. Theorem 7 and [11] were both posted on 12 Nov 2026. Classically, Θ(n²) queries are needed in the worst case, by the same family as in Theorem 2.
 
 ## 1. Strips and column strings
 
@@ -200,3 +200,4 @@ Claude Opus 5.5 (Anthropic) was used throughout this research: to explore approa
 8. R. Kothari. An optimal quantum algorithm for the oracle identification problem. STACS 2014. arXiv:1311.7685.
 9. R. S. Bird. Two dimensional pattern matching. Information Processing Letters 6, 1977.
 10. T. P. Baker. A technique for extending rapid exact-match string matching to arrays of more than one dimension. SIAM J. Comput. 7, 1978.
+11. R. Gala, R. Shah. Quantum algorithm with quadratic speedup for 2D pattern matching. arXiv:2611.17541.
