@@ -6,7 +6,7 @@ Posted 2026-11-21.
 
 | Problem | Previous best bound | Our bound | Status |
 |---|---|---|---|
-| Price of stability of undirected Shapley network design games with 3 players | 1769/1126 ≈ 1.57105 ≤ PoS(3) ≤ 286/175 ≈ 1.63429 [1, 2] | PoS(3) ≥ 1451/922 ≈ 1.57375 | Claim, computer-assisted, exact rational arithmetic |
+| Price of stability of undirected Shapley network design games with 3 players | 1769/1126 ≈ 1.57105 ≤ PoS(3) ≤ 286/175 ≈ 1.63429 [1, 2] | PoS(3) ≥ 1451/922 ≈ 1.57375 | Integer instance with PoS 7253141/4610000 > 1769/1126: Lean. Limit 1451/922: Claim, computer-assisted, exact rational arithmetic |
 
 ## Model
 
@@ -52,7 +52,14 @@ so the remaining gap concerns equilibria that do not minimize the potential.
   cost 1126.
 - `sim/cert_1451_922.py`: the asserts for the theorem above, for the four values of ε and the integer instance.
   Run with `python cert_1451_922.py` (Python 3, numpy).
-- **Not formalized:** the enumeration is not in Lean.
+- **Lean** (`lean/`, Lean v4.36.0-rc1, core library only, only the standard axioms, output in `lean/axioms.txt`):
+  `ShapleyCert/Basic.lean` defines the game with the integer costs above, the simple paths of each player by a
+  depth-first search, all profiles, the cost shares and the Nash condition against every simple path, all in natural
+  numbers with every cost multiplied by 6. Proved by `decide +kernel`: `ne_unique`, the game has exactly one Nash
+  equilibrium, of cost 14506282; `opt_eq`, the minimum cost of a profile is 9220000; `pos_gt`, 14506282/9220000 >
+  1769/1126.
+- **Not formalized:** the family of costs w₀ + ε·d for ε → 0, which is checked in exact arithmetic for the four values
+  of ε above.
 
 ## References
 

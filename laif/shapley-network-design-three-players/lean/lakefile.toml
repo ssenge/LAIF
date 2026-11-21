@@ -1,0 +1,5 @@
+name = "ShapleyCert"
+defaultTargets = ["ShapleyCert"]
+
+[[lean_lib]]
+name = "ShapleyCert"
