@@ -1,4 +1,4 @@
-"""Brute-force checks of the classical steps behind the O(n^{3/2} log^2 n + k^2) vertex cover algorithm.
+"""Brute-force checks of the classical steps behind the O(sqrt(k) n + k^2) vertex cover algorithm.
 
 For random graphs with at most 10 vertices: the bipartite double cover H, a maximum matching of H,
 the alternating-path cover C of H (size |M|), the half-integral point x_v = (|C ∩ {v_L, v_R}|)/2,
@@ -65,3 +65,35 @@ for _ in range(400):
         assert (t <= k) == yes_kernel, (n, E, k)
     trials += 1
 print(f"double cover LP, alternating cover and kernel equivalence checked on {trials} random graphs, n <= 10")
+
+# Two-phase alternating search of step 4: same Z as the full search, cost <= p sqrt(n) + sqrt(2) p^{3/2}.
+random.seed(7)
+for _ in range(600):
+    n = random.randint(1, 40); pr = random.choice([0.02, 0.05, 0.1, 0.3, 0.6])
+    E = [e for e in itertools.combinations(range(n), 2) if random.random() < pr]
+    L = [("L", v) for v in range(n)]; R = [("R", v) for v in range(n)]
+    H = nx.Graph(); H.add_nodes_from(L + R)
+    for a, b in E:
+        H.add_edge(("L", a), ("R", b)); H.add_edge(("L", b), ("R", a))
+    M = nx.bipartite.hopcroft_karp_matching(H, top_nodes=L); p = len(M) // 2
+    U = {u for u in L if u not in M}; RM = [w for w in R if w in M]
+    Z = set(U); q = list(U)
+    while q:
+        u = q.pop()
+        for w in H[u]:
+            if w not in Z:
+                Z.add(w); Z.add(M[w]); q.append(M[w])
+    cost = 0.0; Z2 = set(U); q = []
+    for w in RM:
+        cost += math.sqrt(max(len(U), 1))
+        if any(u in U for u in H[w]):
+            Z2.add(w); Z2.add(M[w]); q.append(M[w])
+    while q:
+        u = q.pop(); dom = [w for w in RM if w not in Z2]
+        new = [w for w in dom if H.has_edge(u, w)]
+        cost += math.sqrt(len(dom) * (len(new) + 1))
+        for w in new:
+            Z2.add(w); Z2.add(M[w]); q.append(M[w])
+    assert Z == Z2
+    assert cost <= p * math.sqrt(n) + math.sqrt(2) * p ** 1.5 + 1e-9
+print("two-phase alternating search: same Z and cost <= p sqrt(n) + sqrt(2) p^{3/2} on 600 random graphs, n <= 40")
