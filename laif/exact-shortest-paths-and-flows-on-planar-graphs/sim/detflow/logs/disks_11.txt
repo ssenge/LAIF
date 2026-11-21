@@ -1,0 +1,1 @@
+11 {'maxH': 9, 'maxHrel': 0.42105263157894735, 'vals': 62311512, 'root': 1495932, 'inst': 42413, 'maxS': 40} {'delaunay_sparse': 7013, 'tri': 7150, 'tree_plus': 6442, 'wheel': 7258, 'outer': 7256, 'grid': 7294}

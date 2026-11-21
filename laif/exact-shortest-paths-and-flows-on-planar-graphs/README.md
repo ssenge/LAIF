@@ -24,6 +24,8 @@ A newer claim, after the paper and not part of it: exact maximum st-flow in dire
 $\tilde O(D)$ rounds, by scaling over the faces next to one BFS path. It needs one extension of the labels, a prescribed root cycle. See
 [`notes/MAXFLOW.md`](notes/MAXFLOW.md). **Written on 2 Nov 2026. On parallel arcs of one direction the flow value can exceed $nU$, with $U$ the largest capacity, and a number of scaling steps chosen from $nU$ gives an infeasible flow, so the note chooses it from $mU$, with $m$ the number of arcs. It rests on the construction in `notes/LEMMA15.md`, not only on the Label Hypothesis; treat it as a claim.**
 
+**New claim, 21 Nov 2026:** [`notes/DETFLOW.md`](notes/DETFLOW.md). Exact maximum st-flow in directed planar networks, with the integer flow on every edge, in $\tilde O(D)$ rounds deterministically, given the embedding, from the three cited results of the Label Theorem. The deterministic bound was $\tilde O(D^2)$, from [9] with the deterministic separator of [17]. The extension of the labels that `notes/MAXFLOW.md` needs, a prescribed root cycle, follows from the labels from disks with the first cut prescribed along a facial cycle (Root Cut Lemma), at the cost of one level. The Root Cut Lemma is not formalized. Simulation in `sim/detflow/`.
+
 A newer and simpler claim, after the paper and not part of it: exact SSSP with negative weights, and exact maximum st-flow in directed planar networks with the flow on every edge, in
 $\tilde O(D)$ rounds with high probability, from the Label Hypothesis alone, with no extension of the labels. Perfect matching of planar bipartite networks follows in the same bound. It replaces the reduction of [6] in Theorems B and C by a published reduction with polylogarithmic overhead (SOSA 2025, arXiv:2410.20959). **The open question in the paper on the factor $n^{o(1)}$ was already answered by that reduction, which the paper missed. The statements of Theorems B and C below are correct, but they are weaker than what follows.** See [`notes/NEGATIVE.md`](notes/NEGATIVE.md). **Written on 3 Nov 2026. One property it takes from arXiv:2303.00811 rests on a corollary there whose proof may have a small gap; the note repairs it in one line. The round bounds for negative weights and for maximum flow are proved in Lean from four cited results, see [Status](#status); the rest is a claim.**
 
@@ -141,7 +143,7 @@ non-negative weights)".
 | Category | Problem | Before | After | Scope | Status |
 |---|---|---|---|---|---|
 | Distributed algorithms, CONGEST | Exact single-source shortest paths on directed planar networks, nonnegative weights | Õ(D²) [8] | Õ(D); the Label Hypothesis stated in this folder, modelled on the labels of [1], is proved in Lean from cited results; this folder also completes the proof of [1], with a repair of one lemma | Directed planar networks, polynomial integer weights, rotation lists as input; deterministic relative to the cited results | Lean, assuming three cited results: realization, distance labels, face identifiers; paper arXiv:2611.02256 |
-| Distributed algorithms, CONGEST | Exact maximum st-flow on directed planar networks, with the flow on every edge | Õ(D²) [9] | min{Õ(D²), D·n^{o(1)}}; Õ(D) when s and t lie on a common face; Õ(D) with high probability in a later note | Directed planar networks, rotation lists as input | Claim; in Lean the bound of Õ(D) rounds with high probability, assuming the three cited results and a low-diameter decomposition |
+| Distributed algorithms, CONGEST | Exact maximum st-flow on directed planar networks, with the flow on every edge | Õ(D²) [9] | min{Õ(D²), D·n^{o(1)}}; Õ(D) when s and t lie on a common face; Õ(D) with high probability in a later note; Õ(D) deterministically, given the embedding, in a later note | Directed planar networks, rotation lists as input | Claim; in Lean the bound of Õ(D) rounds with high probability, assuming the three cited results and a low-diameter decomposition |
 | Distributed algorithms, CONGEST | Exact minimum st-cut and minimum cut value on undirected planar networks | (1 − o(1))-approximation in Õ(D) [18]; exact in Õ(D²) [9] | Õ(D), through the Exact SSSP Theorem, with two repairs of [18]: its auxiliary graph at the terminals, and its recursion, which as we read it can miss the minimum cut | Undirected planar networks | Claim; in Lean the recursion argument, and the interval form on the cut map |
 | Distributed algorithms, CONGEST | Negative weights, minimum arborescences and replacement paths on planar digraphs | D·n^{o(1)} for negative weights through a general reduction; no bound in D alone known to us for the others | Õ(D) with high probability for negative weights and for arborescences; replacement paths exactly in Õ(D·min(h, D)) and within 1 + ε in Õ(D/ε) | Planar digraphs; the claims use the Label Hypothesis, proved in Lean from cited results | Negative weights in Lean, assuming four cited results; the others claims in notes, cores in Lean |
 | Distributed algorithms, CONGEST | Diameter and all eccentricities of unweighted undirected planar networks | Õ(D³) [arXiv:2608.07187](https://arxiv.org/abs/2608.07187) | Õ(D²), with no hypothesis; within 1 + ε in Õ(D + 1/ε⁴) | Unweighted undirected planar networks | Claim |
@@ -1555,15 +1557,14 @@ line numbers in plain-text extractions of [1] (arXiv v2), [9] and [18].
   polylogarithmically many exact SSSP calls, Theorem A may improve it; we have not checked.
 - Is the component bound of Lemma B1(e) really $\Theta(\log^2 n)$? All runs stayed at
   depth + 1.
-- Theorems A, C′ and D are deterministic given an embedding. Are Theorems B and C? That
-  needs a deterministic version of [6].
+- Theorems A, C′ and D are deterministic given an embedding. Is Theorem B? That
+  needs a deterministic version of [6]. For maximum flow, `notes/DETFLOW.md` gives a deterministic
+  route.
 - Can the realization step run in polynomial local time, with a prescribed cyclic order of the
   terminals? [1, Thm 1] claims a polynomial-time construction but promises no order.
-- A deterministic maximum st-flow assignment in undirected planar networks in $\tilde O(D)$ from the
-  Label Hypothesis alone. Theorem D gives the value and a minimum cut. An undirected network is a
-  directed one with two opposite arcs per edge, so `notes/NEGATIVE.md` gives the flow on every edge
-  with high probability, and `notes/MAXFLOW.md` gives it deterministically with one extension of the
-  labels; [18] asks for the assignment as well.
+- A deterministic maximum st-flow assignment in undirected planar networks in $\tilde O(D)$ is
+  claimed in `notes/DETFLOW.md`, which [18] asks for: an undirected network is a directed one with
+  two opposite arcs per edge. A machine-checked round bound for it is open.
 
 ## Use of AI
 

@@ -1,0 +1,1 @@
+12 {'unbal0': 6519, 'maxH': 8, 'maxHrel': 0.375, 'vals': 13817786, 'root': 253994, 'caught': 72684, 'inst': 9417, 'maxS': 40} {'delaunay_sparse': 1534, 'outer': 1590, 'tree_plus': 1462, 'wheel': 1659, 'tri': 1597, 'grid': 1575}

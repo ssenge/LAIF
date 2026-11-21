@@ -1,0 +1,2 @@
+22 {'maxH': 14, 'chk.N5': 524833, 'chk.B': 524833, 'chk.fill_keeps_portals': 53635, 'chk.J_bound': 8342, 'chk.J_le_lambda': 8342, 'chk.residual_nonneg': 1380084, 'iters': 8342, 'runs_p_positive': 333, 'chk.gap': 1121, 'max_log_scale': 51, 'chk.reduced_nonneg': 164936, 'runs': 1121, 'chk.value': 1121, 'chk.feasible': 1121, 'chk.antisym': 1121, 'chk.conservation': 1121, 'max_S': 104}
+FAILS {}
