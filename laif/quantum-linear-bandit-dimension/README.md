@@ -26,6 +26,8 @@ E[Regret(T)] ≥ 3.6 · 10⁻⁶ · D^{3/2} · ln( min(T, t₁) / t₀ ).
 
 Here D = m − 2. So the worst-case regret is Ω(m^{3/2} log(T/(1000 m^{3/2}))) for T ≤ e^{c m}, and Ω(m^{5/2}) for larger T. The exponent 3/2 of the dimension in the bound implied by [3] cannot be lowered for general action sets. Previous best lower bound: Ω(m log(1 + T/m)) [1].
 
+The lower bound Ω(m^{3/2} log(1 + T/m^{3/2})), for every T and an action set on the unit sphere, was proved independently in [8, Theorem 3.1] with a Fisher information argument.
+
 The bound covers learners with full quantum memory, adaptive classical choice of actions, and any use of the oracle and its inverse. Each query reveals information about one linear functional ⟨x, θ⟩ only. Coherent use of many queries gives the usual quadratic gain in the precision of that functional, but it cannot spread this gain over d − 1 directions at once.
 
 **Theorem 2.** On the same action set, for every θ' = (1, θ)/√2 with |θ| ≤ 1 and any reward oracles of the model, the phase algorithm below has, for all T ≥ 2,
@@ -150,6 +152,7 @@ Since ⟨x_j⁺ − x_j⁻, θ⟩ = 2 sin s ⟨u_j, θ⟩, this gives E|θ̂_new
 [5] F. Furrer, M. Berta, M. Tomamichel, V. B. Scholz, M. Christandl. Position-momentum uncertainty relations in the presence of quantum memory. J. Math. Phys. 55 (2014) 122205, arXiv:1308.4527.
 [6] G. Brassard, P. Høyer, M. Mosca, A. Tapp. Quantum amplitude amplification and estimation. Contemp. Math. 305 (2002), arXiv:quant-ph/0005055.
 [7] M. J. W. Hall, H. M. Wiseman. Does nonlinear metrology offer improved resolution? Answers from quantum information theory. Phys. Rev. X 2 (2012) 041006, arXiv:1205.2405.
+[8] M. Liu, Z. Li, J. C. S. Lui. Regret Bounds for Quantum Linear Bandits. arXiv:2611.15237.
 
 ## Use of AI
 

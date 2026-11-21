@@ -24,6 +24,8 @@ E[Regret(T)] = O(d log T · log(dT) · √(min(log(KT), d))).
 
 Previous best bound: the smaller of the two bounds of [1] above. Corollary 1 improves on [1, Theorem 5.4] by the factor √(log(KT)) · log log(dT) for every K, and on [1, Corollary 5.7] by the factor √(d / log(KT)) whenever log(KT) < d.
 
+Corollary 1 was also obtained independently in [3, Theorem 4.5]. There, [3, Theorem 4.4] gives the bound O(d log T · √(log(KT) · log(dT))), which is smaller than Theorem 1 by the factor √(log(dT)).
+
 ## Algorithm
 
 The algorithm keeps the phase structure of [1]. Phase ℓ has target accuracy ε = 2^{−ℓ} and an active set A_ℓ of rank r. It computes the small-support design of [1, Lemma 5.1]: support S with |S| ≤ c_s r, weights π, and prediction weights α_a(x) with x = Σ_a α_a(x) a and Σ_a α_a(x)²/π(a) ≤ C_G r. It estimates the mean of each support action a, sets μ̃(x) = Σ_a α_a(x) Y_a, and drops every x with μ̃(x) < max μ̃ − 2ε.
@@ -78,6 +80,7 @@ So with probability at least 1 − δ/(L+1), |μ̃(x) − μ(x)| ≤ ε/8 + ε/1
 
 [1] M. Liu, Z. Li, J. C. S. Lui. Quantum Multi-Armed Bandits and Linear Bandits: Lower Bounds and Algorithms. arXiv:2608.14319.
 [2] J. van Apeldoorn, A. Cornelissen, A. Gilyén, G. Nannicini. Quantum tomography using state-preparation unitaries. SODA 2023, arXiv:2207.08800.
+[3] M. Liu, Z. Li, J. C. S. Lui. Regret Bounds for Quantum Linear Bandits. arXiv:2611.15237.
 
 ## Use of AI
 
