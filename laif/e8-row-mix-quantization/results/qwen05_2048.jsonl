@@ -1,0 +1,10 @@
+{"model": "qwen05", "spec": "none", "sink": [3.0, 0.0], "bpw": 16.0, "model_mb": 988.065536, "ppl": 13.06869559630341, "nwin": null, "evlen": 2048}
+{"model": "qwen05", "spec": "gptq:b=2,g=128,act=1,clip=1,had=1", "sink": [3.0, 0.0], "bpw": 2.2530391483516485, "model_mb": 373.187072, "ppl": 34.11766509910292, "nwin": null, "evlen": 2048}
+{"model": "qwen05", "spec": "gptq:b=2,g=64,act=1,clip=1,had=1", "sink": [3.0, 0.0], "bpw": 2.5037259615384615, "model_mb": 384.399872, "ppl": 27.04151343035133, "nwin": null, "evlen": 2048}
+{"model": "qwen05", "spec": "autoround:b=2,g=128,iters=200,ns=128,sl=2048,dev=mps", "bpw": 2.25, "ppl": 29.711260008737632, "nwin": null, "evlen": 2048}
+{"model": "qwen05", "spec": "autoround:b=2,g=64,iters=200,ns=128,sl=2048,dev=mps", "bpw": 2.5, "ppl": 24.941251338160843, "nwin": null, "evlen": 2048}
+{"model": "qwen05", "spec": "quip:ro=0,rows=1", "sink": [3.0, 0.0], "bpw": 2.0135989010989013, "model_mb": 362.477312, "ppl": 30.101349375260636, "nwin": null, "evlen": 2048}
+{"model": "qwen05", "spec": "gmix:lam=2.2e-05,refit=1,alt=8,nu=1", "sink": [3.0, 0.0], "bpw": 2.4716925652472526, "model_mb": 382.967072, "ppl": 19.525220010774618, "nwin": null, "evlen": 2048}
+{"model": "qwen05", "spec": "gmix:lam=1e-4,refit=1,e8=1", "sink": [3.0, 0.0], "bpw": 2.040782305259844, "model_mb": 363.69318, "ppl": 26.227492060971358, "nwin": null, "evlen": 2048}
+{"model": "qwen05", "spec": "gmix:lam=2.291e-05,refit=1,e8=1", "sink": [3.0, 0.0], "bpw": 2.173156246422848, "model_mb": 369.614044, "ppl": 20.30843927935877, "nwin": null, "evlen": 2048}
+{"model": "qwen05", "spec": "gmix:lam=1.249e-05,refit=1,e8=1", "sink": [3.0, 0.0], "bpw": 2.3620069343091803, "model_mb": 378.061018, "ppl": 18.155105139618186, "nwin": null, "evlen": 2048}
