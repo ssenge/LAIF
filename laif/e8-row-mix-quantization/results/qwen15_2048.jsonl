@@ -5,3 +5,4 @@
 {"model": "qwen15", "spec": "gmix:lam=1e-4,refit=1,e8=1", "sink": [3.0, 0.0], "seq": true, "bpw": 2.013843171545962, "model_mb": 796.85327, "ppl": 15.670588634599389, "nwin": null, "evlen": 2048}
 {"model": "qwen15", "spec": "gmix:lam=4.038e-06,refit=1,e8=1", "sink": [3.0, 0.0], "seq": true, "bpw": 2.227233239487201, "model_mb": 831.801114, "ppl": 12.907204469025736, "nwin": null, "evlen": 2048}
 {"model": "qwen15", "spec": "gmix:lam=2.468e-06,refit=1,e8=1", "sink": [3.0, 0.0], "seq": true, "bpw": 2.458519797078988, "model_mb": 869.679946, "ppl": 11.934341677301294, "nwin": null, "evlen": 2048}
+{"model": "qwen15", "spec": "autoround:b=2,g=64,iters=200,ns=128,sl=2048,dev=mps", "bpw": 2.5, "ppl": 15.452489017889869, "nwin": null, "evlen": 2048}

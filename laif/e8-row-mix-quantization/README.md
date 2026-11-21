@@ -30,12 +30,13 @@ On Qwen2.5-1.5B, with the same protocol and sequential calibration (the H of eac
 | 16-bit weights | 16 | 9.26 |
 | GPTQ, 2 bits, groups of 128 [1] | 2.252 | 18.98 |
 | GPTQ, 2 bits, groups of 64 [1] | 2.503 | 16.41 |
+| AutoRound, 2 bits, groups of 64 [3] | 2.500 | 15.45 |
 | Same slope, scalar options only (2 to 4 bits) | 2.466 | 13.84 |
 | **Mix of E8P and scalar rows** | **2.014** | **15.67** |
 | **Mix of E8P and scalar rows** | **2.227** | **12.91** |
 | **Mix of E8P and scalar rows** | **2.459** | **11.93** |
 
-At 2.23 bits per weight the mix is 32% below GPTQ at 2.25, and at 2.46 it is 27% below GPTQ at 2.50 and 14% below the scalar-only allocation at 2.47.
+At 2.23 bits per weight the mix is 32% below GPTQ at 2.25, and at 2.46 it is 27% below GPTQ at 2.50, 23% below AutoRound at 2.50 and 14% below the scalar-only allocation at 2.47.
 
 ## Method
 
@@ -52,7 +53,7 @@ Calibration: 32 windows of 512 tokens from the WikiText-2 training split for H a
 
 Scope:
 
-- Two models, Qwen2.5-0.5B and Qwen2.5-1.5B; perplexity on WikiText-2 only. AutoRound is run on Qwen2.5-0.5B.
+- Two models, Qwen2.5-0.5B and Qwen2.5-1.5B; perplexity on WikiText-2 only. AutoRound is run with groups of 128 and 64 on Qwen2.5-0.5B and with groups of 64 on Qwen2.5-1.5B.
 - Without fine-tuning. Methods that fine-tune after quantization, such as the full pipeline of [2], are not part of the comparison.
 - λ is set from a sample of 5 decoder layers, so the reached bits per weight lie somewhat below the targets 2.25 and 2.5.
 
