@@ -1,0 +1,8 @@
+'SmallCut.mem_cross' depends on axioms: [propext, Classical.choice, Quot.sound]
+'SmallCut.cross_mono' depends on axioms: [propext, Classical.choice, Quot.sound]
+'SmallCut.cross_of_reachable' depends on axioms: [propext, Classical.choice, Quot.sound]
+'SmallCut.certificate' depends on axioms: [propext, Classical.choice, Quot.sound]
+'SmallCut.certificate_eq' depends on axioms: [propext, Classical.choice, Quot.sound]
+'SmallCut.star_bound_end' depends on axioms: [propext, Classical.choice, Quot.sound]
+'SmallCut.star_bound_merge' depends on axioms: [propext, Classical.choice, Quot.sound]
+'SmallCut.sum_sqrt_le' depends on axioms: [propext, Classical.choice, Quot.sound]
