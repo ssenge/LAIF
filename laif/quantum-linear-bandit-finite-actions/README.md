@@ -24,7 +24,7 @@ E[Regret(T)] = O(d log T · log(dT) · √(min(log(KT), d))).
 
 Previous best bound: the smaller of the two bounds of [1] above. Corollary 1 improves on [1, Theorem 5.4] by the factor √(log(KT)) · log log(dT) for every K, and on [1, Corollary 5.7] by the factor √(d / log(KT)) whenever log(KT) < d.
 
-Corollary 1 was also obtained independently in [3, Theorem 4.5]. There, [3, Theorem 4.4] gives the bound O(d log T · √(log(KT) · log(dT))), which is smaller than Theorem 1 by the factor √(log(dT)).
+Corollary 1 was also obtained independently in [3, Theorem 4.5]. A sharper rate is known: [3, Theorem 4.4] gives O(d log T · √(log(KT) · log(dT))), smaller than Theorem 1 by the factor √(log(dT)).
 
 ## Algorithm
 
