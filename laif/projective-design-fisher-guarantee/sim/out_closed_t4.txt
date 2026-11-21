@@ -1,0 +1,5 @@
+primal: exact moments of a 4-design, weights > 0, value V = 0.3825684105665030716220429287882609550245
+dual: E_Haar[q] = V exactly
+R1 > 0 on [-1, 1]: 42 intervals
+case split of [-1, 1] (s = 0, s = 1, discriminant): [9, 4, 11]
+h >= 0 on [-1, 1] x [0, 1]; eta_des(2, 4) = (119 + 4 sqrt6 - (11 + 5 sqrt6) sqrt(4 - sqrt6))/261 = 0.3825684105665030716220429287882609550245
