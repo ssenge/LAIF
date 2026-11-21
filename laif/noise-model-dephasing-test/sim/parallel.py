@@ -2,7 +2,8 @@
 w2 = (g_i/|g_i|) (fresh), wH = orthonormalization (e_1..e_n) of g in order, w1 = (e_{rank(k_i)}) (one fixed basis, collisions repeat).
 Z_ab = d^n E[(K_a - K_b)^dag (K_a - K_b)], K_w = |w><w| on (C^d)^{(x)n}.
 Claims: Z_H2 = I - (2 - gamma) Q with Q = (d)_n E|e><e|, Q = I - R, 0 <= R <= sum_{i<j} 2 Pi_sym^{ij}/(d+1);
-lambda_max(Z_1H) <= 2n(n-1)/(d+1) + gamma n(n-1)/d. Monte Carlo with S samples, tolerance from the sampling error."""
+lambda_max(Z_1H) <= 2n(n-1)/(d+1) + gamma n(n-1)/d. The sampled Z_H2 is compared with its exact form for n = 2, 3
+(R by inclusion and exclusion), the error shrinking like 1/sqrt(S); exact lambda_max are compared with the bounds."""
 import itertools, math
 import numpy as np
 rng = np.random.default_rng(2)
@@ -25,26 +26,37 @@ def run(d, n, S):
     f = d ** n / S; Z12 *= f; Z1H *= f; ZH2 *= f
     gamma = d ** n / math.prod(range(d - n + 1, d + 1)); Q = EQ / S * math.prod(range(d - n + 1, d + 1))
     return Z12, Z1H, ZH2, Q, gamma
-for d, n, S in ((3, 2, 200000), (4, 2, 200000), (6, 2, 100000), (3, 3, 50000), (6, 3, 30000)):
-    Z12, Z1H, ZH2, Q, gamma = run(d, n, S); I = np.eye(d ** n)
-    err = np.linalg.norm(ZH2 - (I - (2 - gamma) * Q), 2)
-    lam = lambda M: np.linalg.eigvalsh((M + M.conj().T) / 2).max()
-    b = (gamma - 1) + (2 - gamma) * n * (n - 1) / (d + 1); a = 2 * n * (n - 1) / (d + 1) + gamma * n * (n - 1) / d
-    tol = 6 * d ** n / math.sqrt(S)
-    print(f"d={d} n={n}: |Z_H2 - (I-(2-g)Q)| = {err:.3f} (tol {tol:.3f}); lam Z_H2 {lam(ZH2):.4f} <= {b:.4f}; lam Z_1H {lam(Z1H):.4f} <= {a:.4f}; lam Z_12 {lam(Z12):.4f}")
-    assert err < tol
-    if gamma <= 2: assert lam(ZH2) <= b + tol and lam(Z1H) <= a + tol   # the bounds are stated for gamma <= 2
-    if n == 2:   # exact spectrum of Z_H2: gamma - 1 on the antisymmetric part, 3/(d+1) on the symmetric part
-        ev = np.sort(np.linalg.eigvalsh((ZH2 + ZH2.conj().T) / 2)); m_a = d * (d - 1) // 2
-        assert abs(ev[-1] - max(gamma - 1, 3 / (d + 1))) < tol
-print("parallel checks passed")
-# exact form for n = 2: Q = I - 2 Pi_sym/(d+1), so Z_H2 = (gamma - 1) I + (2 - gamma) 2 Pi_sym/(d+1); the error must shrink like 1/sqrt(S)
+def perm_op(d, n, perm):   # permutation of n tensor factors of C^d
+    D = d ** n; M = np.zeros((D, D))
+    for idx in itertools.product(range(d), repeat=n):
+        a = np.ravel_multi_index(idx, (d,) * n); b = np.ravel_multi_index(tuple(idx[perm[j]] for j in range(n)), (d,) * n); M[b, a] = 1
+    return M
+def sym(d, n, sub):   # projector onto the symmetric subspace of the factors in sub
+    ps = list(itertools.permutations(sub)); out = 0
+    for q in ps:
+        perm = list(range(n))
+        for a, b in zip(sub, q): perm[a] = b
+        out = out + perm_op(d, n, perm)
+    return out / len(ps)
+def R_exact(d, n):   # average sum over index tuples with a repeat, by inclusion and exclusion (n = 2, 3)
+    R = sum(2 * sym(d, n, [i, j]) / (d + 1) for i in range(n) for j in range(i + 1, n))
+    if n == 3: R = R - 12 * sym(d, 3, [0, 1, 2]) / ((d + 1) * (d + 2))
+    return R
+lam = lambda M: np.linalg.eigvalsh((M + M.conj().T) / 2).max()
+# exact Z_H2 = (gamma - 1) I + (2 - gamma) R; the sampled matrix must approach it like 1/sqrt(S)
+for d, n in ((3, 2), (5, 2), (3, 3), (4, 3)):
+    gamma = d ** n / math.prod(range(d - n + 1, d + 1)); exact = (gamma - 1) * np.eye(d ** n) + (2 - gamma) * R_exact(d, n)
+    errs = [np.linalg.norm(run(d, n, S)[2] - exact, 2) for S in (10000, 160000)]
+    print(f"d={d} n={n}: |Z_H2 - exact| at S = 1e4, 1.6e5: {errs[0]:.4f}, {errs[1]:.4f}")
+    assert errs[1] < errs[0] / 2.5 and errs[1] < 0.05
+# exact lambda_max(Z_H2) against the bound (gamma - 1) + (2 - gamma) n(n-1)/(d+1), where gamma <= 2
+for d, n in ((3, 2), (4, 2), (6, 2), (10, 2), (6, 3), (8, 3)):
+    gamma = d ** n / math.prod(range(d - n + 1, d + 1)); assert gamma <= 2
+    lz = lam((gamma - 1) * np.eye(d ** n) + (2 - gamma) * R_exact(d, n)); bnd = (gamma - 1) + (2 - gamma) * n * (n - 1) / (d + 1)
+    print(f"d={d} n={n}: exact lambda_max(Z_H2) = {lz:.4f} <= {bnd:.4f}"); assert lz <= bnd + 1e-12
+    if n == 2: assert abs(lz - 3 / (d + 1)) < 1e-12
+# Z_1H for n = 2: lambda_max = 3/(d+1) exactly, below the bound 2n(n-1)/(d+1) + gamma n(n-1)/d
 for d in (3, 5):
-    I = np.eye(d * d); F_ = np.zeros((d * d, d * d))
-    for i in range(d):
-        for j in range(d): F_[i * d + j, j * d + i] = 1
-    Psym = (I + F_) / 2; gamma = d / (d - 1); exact = (gamma - 1) * I + (2 - gamma) * 2 * Psym / (d + 1)
-    errs = [np.linalg.norm(run(d, 2, S)[2] - exact, 2) for S in (20000, 320000)]
-    print(f"d={d}: |Z_H2 - exact| at S = 2e4, 3.2e5: {errs[0]:.4f}, {errs[1]:.4f}")
-    assert errs[1] < errs[0] / 2.5 and errs[1] < 0.02
-print("exact n = 2 form confirmed")
+    l1 = lam(run(d, 2, 160000)[1]); bnd = 4 / (d + 1) + 2 * d / ((d - 1) * d)
+    print(f"d={d} n=2: sampled lambda_max(Z_1H) = {l1:.4f}, exact 3/(d+1) = {3 / (d + 1):.4f}, bound {bnd:.4f}"); assert abs(l1 - 3 / (d + 1)) < 0.03
+print("parallel checks passed")

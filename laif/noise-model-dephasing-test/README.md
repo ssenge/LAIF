@@ -73,7 +73,7 @@ For every unitary the sum of |u_{a_1} ⋯ u_{a_s}⟩⟨u_{a_1} ⋯ u_{a_s}| over
 
 ## Check
 
-`sim/check.py` checks the block formulas against direct composition, the identity for ‖σ_E − σ_M‖₂², the exact moments E X and E X² against Monte Carlo sampling, the constant (E X)²/(4 E X²) for 2 ≤ d ≤ 2000 in exact rational arithmetic, and the gap ‖σ_E − σ_M‖₂ ≥ √X/2 on random instances with q in [0, 1] and q′ ≤ 1/2. `sim/parallel.py` checks the identity for Z_{H2} and the bounds on λ_max(Z_{1H}) and λ_max(Z_{H2}) by sampling the three couplings for d ≤ 6 and s ≤ 3, and the exact form of Z_{H2} for s = 2, with the error shrinking as the sample size grows. `sim/pz_all_d.py` proves E X² ≤ 2 (E X)² for all d ≥ 2: in t = d − 2 the numerator and the denominator of 2 (E X)² − E X² have nonnegative coefficients.
+`sim/check.py` checks the block formulas against direct composition, the identity for ‖σ_E − σ_M‖₂², the exact moments E X and E X² against Monte Carlo sampling, the constant (E X)²/(4 E X²) for 2 ≤ d ≤ 2000 in exact rational arithmetic, and the gap ‖σ_E − σ_M‖₂ ≥ √X/2 on random instances with q in [0, 1] and q′ ≤ 1/2. `sim/parallel.py` samples the three couplings and compares Z_{H2} with its exact form for s = 2 and s = 3, where R follows by inclusion and exclusion; the error shrinks as the sample size grows. It then checks the bound on λ_max(Z_{H2}) against the exact spectrum for d ≤ 10, which is attained for s = 2, and the sampled λ_max(Z_{1H}) against its exact value 3/(d + 1) for s = 2. `sim/pz_all_d.py` proves E X² ≤ 2 (E X)² for all d ≥ 2: in t = d − 2 the numerator and the denominator of 2 (E X)² − E X² have nonnegative coefficients.
 
 ## Scope
 
