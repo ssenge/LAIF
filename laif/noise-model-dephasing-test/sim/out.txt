@@ -1,0 +1,10 @@
+min PZ constant over 2 <= d <= 2000: 0.1388888888888889
+d=2: fraction of psi with X < E X/2: 0.415
+d=4: fraction of psi with X < E X/2: 0.245
+d=16: fraction of psi with X < E X/2: 0.075
+d=64: fraction of psi with X < E X/2: 0.000
+all checks passed
+EX = (d - 1)/(d*(d + 1))  EX2 = (d - 1)*(d**2 + 7*d - 6)/(d**2*(d + 1)*(d + 2)*(d + 3))
+numerator coeffs in t: [1, 10, 40, 74, 55, 12] 
+denominator coeffs in t: [1, 22, 204, 1034, 3095, 5472, 5292, 2160]
+E X^2 <= 2 (E X)^2 for all d >= 2
