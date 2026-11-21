@@ -4,11 +4,10 @@
    chord rows of sum over runs (u/m)^r: computed independently through the random-window identity
    S_r = E beta_1(G_[min T, max T]) over r uniform times, by brute force over all m^r tuples.
 2. A decoy row (exactly one zero in each of s consecutive blocks) has run sum at most (4/s)^(r-1).
-3. Adv+- of the inner function (all ones -> 1, one zero per block -> 0) is at least sqrt(min block).
+3. The relation of Theorem 1 has the degrees used in the proof (brute force on tiny instances).
 """
 import itertools, random
 from fractions import Fraction
-import numpy as np, cvxpy as cp
 
 def blocks(m, s):
     q, rem = divmod(m, s)
@@ -68,22 +67,58 @@ for m in range(2, 61):
                 worst = max(worst, float(v / bound))
 print("decoy run sum <= (4/s)^(r-1) on all tested decoys, largest ratio", round(worst, 4))
 
-def adv(f, n):
-    D = list(f); N = len(D); A = np.array(D); F = np.array([f[x] for x in D])
-    diff = F[:, None] != F[None, :]
-    X = [cp.Variable((N, N), PSD=True) for _ in range(n)]; s = cp.Variable()
-    S = sum(cp.multiply((A[:, None, j] != A[None, :, j]).astype(float), X[j]) for j in range(n))
-    cp.Problem(cp.Minimize(s), [sum(cp.diag(X[j]) for j in range(n)) <= s, S[diff] == 1]).solve(solver='CLARABEL')
-    return s.value
-
-for m, s in [(4, 2), (6, 2), (6, 3), (7, 2), (8, 2), (8, 4)]:
-    B = blocks(m, s)
-    f = {tuple([1] * m): 1}
-    for zs in itertools.product(*B):
+# 3. Relation degrees of Theorem 1 by brute force on tiny instances: x has a full rows (others decoy),
+#    y has b = a + d full rows; x ~ y if y fills every zero of exactly d decoy rows of x.
+from math import comb, prod
+def decoys(m, s):
+    out = []
+    for zs in itertools.product(*blocks(m, s)):
         row = [1] * m
         for z in zs: row[z] = 0
-        f[tuple(row)] = 0
-    a = adv(f, m); L = min(len(b) for b in B)
-    print(f"m={m} s={s}: Adv(g)={a:.4f} sqrt(min block)={L ** 0.5:.4f}")
-    assert a >= L ** 0.5 * (1 - 1e-6)
-print("inner adversary bound checked")
+        out.append(tuple(row))
+    return out
+for (N, m, s, a, d) in [(3, 4, 2, 1, 1), (4, 4, 2, 1, 2), (4, 6, 3, 2, 1), (5, 4, 2, 1, 2)]:
+    full = tuple([1] * m); D = decoys(m, s); b = a + d
+    def inputs(k):
+        res = []
+        for F in itertools.combinations(range(N), k):
+            for pats in itertools.product(D, repeat=N - k):
+                it = iter(pats); res.append(tuple(full if e in F else next(it) for e in range(N)))
+        return res
+    X, Y = inputs(a), inputs(b)
+    def related(x, y):
+        ch = [e for e in range(N) if x[e] != y[e]]
+        return len(ch) == d and all(y[e] == full for e in ch)
+    x0 = X[0]; mx = sum(related(x0, y) for y in Y)
+    y0 = Y[0]; my = sum(related(x, y0) for x in X)
+    assert mx == comb(N - a, d) and my == comb(b, d) * prod(len(B) for B in blocks(m, s)) ** d
+    # a position i that is a zero of a decoy row of x0
+    e = next(e for e in range(N) if x0[e] != full); i = x0[e].index(0)
+    lx = sum(related(x0, y) and y[e][i] != x0[e][i] for y in Y)
+    ey = next(e for e in range(N) if y0[e] == full); jblk = [B for B in blocks(m, s) if 0 in B][0]
+    ly = sum(related(x, y0) and x[ey][0] != y0[ey][0] for x in X)
+    ratio = mx * my / (lx * ly)
+    assert abs(ratio - (N - a) * b * len(jblk) / d ** 2) < 1e-9, (ratio, (N - a) * b * len(jblk) / d ** 2)
+print("relation degrees of Theorem 1 checked")
+
+# 4. Constants of Theorem 1 on a grid, exact arithmetic where it matters.
+from math import ceil, floor, sqrt
+cases = 0
+for n in (4100, 5000, 20000, 10**5, 10**6):
+    N = (n - 1) * (n - 2) // 2
+    for eps in (Fraction(1, n), Fraction(1, 100), Fraction(1, 8)):
+        for K in sorted({256 * n, 1000 * n, N // 64, N // 8}):
+            if not 256 * n <= K <= Fraction(N, 8): continue
+            for r in (2, 3, 4, 7):
+                Y = (2 * N / K) ** (1 / (r - 1)); s = ceil(4 * Y)
+                lam = Fraction(4, s) ** (r - 1)
+                b = K // 2; d = floor(4 * eps * n) + 1; a = b - d
+                assert a >= 0 and N * lam <= Fraction(K, 2)                  # choice of s
+                assert b + (N - b) * lam <= K                                # promise on Y (and on X)
+                assert d * (1 - lam) > 2 * eps * n                           # related pairs separate
+                assert s <= 5 * Y and d <= 5 * eps * n and N >= Fraction(n * n, 4)
+                m = ceil(10 * Y); L = m // s
+                assert L >= m / (10 * Y) - 1e-9
+                assert sqrt((N - a) * b * L) / d >= sqrt(K * L) / (29 * float(eps)) * (1 - 1e-12)
+                cases += 1
+print("constants of Theorem 1 checked on", cases, "parameter cases")
