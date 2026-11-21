@@ -6,7 +6,7 @@ Written 22 Nov 2026.
 
 | | Problem | Previous best bound | This folder | Status |
 |---|---|---|---|---|
-| Thm 1 | Q(C_n), lower bound | Ω(n) [1]; upper bound O(n log n) by binary search in every column [1] | Ω(n log n), so Q(C_n) = Θ(n log n) | Claim; checked by script |
+| Thm 1 | Q(C_n), lower bound | Ω(n) [1]; upper bound O(n log n) by binary search in every column [1] | Ω(n log n), so Q(C_n) = Θ(n log n) | Claim; checked by script for n ≤ 7 |
 
 Theorem 1 confirms the conjecture Q(C_n) = Θ(n log n) of [1]. For half graphs with both rows and columns permuted, the bound Ω(n log n) follows from the lower bound for sorting [2], as noted in [1]. Theorem 1 gives the same order when the rows are fixed.
 
@@ -18,7 +18,7 @@ Q_ε(C_n) ≥ (1 − 2√(ε(1 − ε)))/2 · (n H_{n−1} − n + 1)/π,
 
 where H_{n−1} = 1 + 1/2 + ⋯ + 1/(n − 1). In particular Q(C_n) = Ω(n log n).
 
-*Proof.* We use the spectral adversary bound [3, 4]: for a nonnegative symmetric matrix Γ on the inputs with Γ[x, y] = 0 whenever x and y have the same output, Q_ε ≥ (1 − 2√(ε(1 − ε)))/2 · ‖Γ‖/max_q ‖Γ_q‖, where Γ_q keeps the entries Γ[x, y] with x_q ≠ y_q and sets the others to 0.
+*Proof.* We use the spectral adversary bound [3], with the constant of [4, Thm. 2]: for a nonnegative symmetric matrix Γ on the inputs with Γ[x, y] = 0 whenever x and y have the same output, Q_ε ≥ (1 − 2√(ε(1 − ε)))/2 · ‖Γ‖/max_q ‖Γ_q‖, where Γ_q keeps the entries Γ[x, y] with x_q ≠ y_q and sets the others to 0.
 
 The inputs are the permutations π. For two columns j ≠ j′, let π′ = π ∘ (j j′) be π with the values of the columns j and j′ exchanged, and set Γ[π, π′] = 1/|π(j) − π(j′)|. All other entries are 0. Then Γ is symmetric, and every row contains one entry 1/|a − b| for each pair of values a < b, so every row sum equals
 
@@ -26,17 +26,17 @@ R = Σ_{1 ≤ a < b ≤ n} 1/(b − a) = Σ_{d=1}^{n−1} (n − d)/d = n H_{n�
 
 A nonnegative symmetric matrix with constant row sums R has norm R, with the all-ones vector as eigenvector, so ‖Γ‖ = R.
 
-Fix a query q = (i, j). An exchange of two columns other than j leaves M[i, j] unchanged. An exchange of j with j′ changes M[i, j] exactly when i separates the two values, that is, min(π(j), π(j′)) ≤ i < max(π(j), π(j′)). Group the permutations by the value a = π(j). For a ≠ b, the block of Γ_q from the group a to the group b maps π to the unique π′ with π′(j) = b, namely the exchange of j with the column π^{−1}(b). So this block is m_{ab} times a permutation matrix, with m_{ab} = 1/|a − b| if i separates a and b and m_{ab} = 0 otherwise. For every vector x = (x_a) split into the groups,
+Fix a query q = (i, j). An exchange of two columns other than j leaves M[i, j] unchanged. An exchange of j with j′ changes M[i, j] exactly when i separates the two values, that is, min(π(j), π(j′)) ≤ i < max(π(j), π(j′)). Group the permutations by the value a = π(j). For a ≠ b, the block of Γ_q from the group a to the group b maps π to the unique π′ with π′(j) = b, namely the exchange of j with the column π^{−1}(b), and this map is a bijection between the two groups of (n − 1)! permutations, since the same exchange maps π′ back to π. So this block is m_{ab} times a permutation matrix, with m_{ab} = 1/|a − b| if i separates a and b and m_{ab} = 0 otherwise. For every vector x = (x_a) split into the groups,
 
 ‖Γ_q x‖² = Σ_a ‖Σ_b B_{ab} x_b‖² ≤ Σ_a (Σ_b m_{ab} ‖x_b‖)² ≤ ‖m‖² Σ_b ‖x_b‖²,
 
-so ‖Γ_q‖ ≤ ‖m‖. The matrix m consists of the block K_i[a, b] = 1/(b − a) with a ≤ i < b and its transpose, so ‖m‖ = ‖K_i‖. With a′ = i + 1 − a and b′ = b − i, the entries become 1/(a′ + b′ − 1), a submatrix of the infinite Hilbert matrix, whose norm is at most π by Hilbert's inequality [5]. Hence max_q ‖Γ_q‖ ≤ π, and the spectral adversary bound gives the claim. ∎
+so ‖Γ_q‖ ≤ ‖m‖. The matrix m consists of the block K_i[a, b] = 1/(b − a) with a ≤ i < b and its transpose, so ‖m‖ = ‖K_i‖. With a′ = i + 1 − a and b′ = b − i, the entries become 1/(a′ + b′ − 1), a submatrix of the infinite matrix (1/(s + t − 1))_{s,t ≥ 1}, whose norm is at most π by the inequality Σ_{s,t} x_s y_t/(s + t − 1) ≤ π‖x‖‖y‖ [5], also used in [2, Section 3.1]. Hence max_q ‖Γ_q‖ ≤ π, and the spectral adversary bound gives the claim. ∎
 
-The same weights 1/|a − b| give the Ω(log n) lower bound for ordered search in [2]. Here they are applied to exchanges of two columns, so that a single query separates only the exchanges that involve its own column.
+The same weights 1/|a − b| give the Ω(log n) lower bound for ordered search in [2]. The sorting bound of [2] puts the weight 1/d on cyclic shifts of d + 1 ranks, which change d + 1 columns at once. Here the weights sit on exchanges of two columns, so that a single threshold query separates only the exchanges that involve its own column.
 
 ## Scripts
 
-`sim/check_adversary.py` builds Γ over all n! permutations for n ≤ 7. It checks that the row sums and the norm equal n H_{n−1} − n + 1, and that ‖Γ_q‖ ≤ ‖K_i‖ < π for every query, with exact eigenvalues. It also checks ‖K_i‖ < π for n up to 800.
+`sim/check_adversary.py` builds Γ over all n! permutations for n ≤ 7. It checks that the row sums and the norm equal n H_{n−1} − n + 1, and that ‖Γ_q‖ ≤ ‖K_i‖ < π for every query, with a dense floating-point eigenvalue computation. It also checks ‖K_i‖ < π for n ∈ {50, 200, 800} and every ⌊n/40⌋-th i.
 
 ```
 python sim/check_adversary.py
@@ -51,7 +51,7 @@ n = 200: max_i ||K_i|| = 2.1827 < pi
 n = 800: max_i ||K_i|| = 2.3536 < pi
 ```
 
-**Not formalized:** all of the folder. The spectral adversary bound and Hilbert's inequality are classical.
+**Not formalized:** all of the folder. The spectral adversary bound and the inequality Σ_{s,t} x_s y_t/(s + t − 1) ≤ π‖x‖‖y‖ are classical.
 
 ## Use of AI
 
