@@ -51,3 +51,11 @@ for m, nmax in ((1, 30), (2, 14), (3, 8)):
         bias = abs(np.trace(rho @ sig) - np.trace(P @ rho @ P @ P @ sig @ P))
         assert bias <= 2 * q + 1e-9 and bias <= 2 * b / N + 1e-9
 print("cutoff bias bound holds; all checks passed")
+# 4. fallback instance for small d: fidelity of sqrt(1-a)|0> + sqrt(a)|1>, a in {50 eps, 53 eps}, is >= 1 - eps/20
+for eps in np.geomspace(1e-12, 1e-4, 200):
+    F_ = (math.sqrt((1 - 50 * eps) * (1 - 53 * eps)) + math.sqrt(2650) * eps) ** 2
+    assert F_ >= 1 - eps / 20
+# 5. total-photon cutoff dimension never exceeds the per-mode one: C(N-1+m, m) <= N^m <= L^m
+for m in range(1, 9):
+    for N in range(1, 60): assert math.comb(N - 1 + m, m) <= N ** m
+print("fallback fidelity and dimension comparison hold")

@@ -3,3 +3,4 @@ m=1: hard states in C_mE, K=5, d=5
 m=2: hard states in C_mE, K=25, d=350
 m=3: hard states in C_mE, K=30, d=5455
 cutoff bias bound holds; all checks passed
+fallback fidelity and dimension comparison hold
