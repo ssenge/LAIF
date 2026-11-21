@@ -1,8 +1,49 @@
-import PacketTwoLayer.Instance
+import PacketTwoLayer.Tight
 
-#print axioms PacketTwoLayer.eq₀_valid
-#print axioms PacketTwoLayer.opt₀_valid
-#print axioms PacketTwoLayer.eq₀_ufr
-#print axioms PacketTwoLayer.eq₀_makespan
-#print axioms PacketTwoLayer.opt₀_makespan
-#print axioms PacketTwoLayer.poa_ge_seven_fifths
+open PacketTwoLayer
+
+#print axioms eq₀_valid
+#print axioms opt₀_valid
+#print axioms eq₀_ufr
+#print axioms eq₀_makespan
+#print axioms opt₀_makespan
+#print axioms layer_eq
+#print axioms order_eq_range
+#print axioms layer_lower
+#print axioms layer_ne
+#print axioms out_st
+#print axioms st_congr
+#print axioms opt_cut
+#print axioms NF_layer1
+#print axioms layer1_getD
+#print axioms eqm_of_UFR
+#print axioms Phi_succ
+#print axioms Phi_eq_sum
+#print axioms BData.mu_eq
+#print axioms BData.gfun_mono
+#print axioms BData.inv_tick
+#print axioms BData.inv_join
+#print axioms BData.mu_bl
+#print axioms BData.bl_tick
+#print axioms BData.Bh_eq_zero
+#print axioms exists_of_lt_cnt
+#print axioms alpha_mono_of
+#print axioms Eqm.inv_q
+#print axioms Eqm.bl_le_Bh
+#print axioms Eqm.β_le
+#print axioms BData.nu_Psi_Phi
+#print axioms BData.step_arith
+#print axioms BData.psi_step
+#print axioms BData.psi_tele
+#print axioms BData.phik_le
+#print axioms Fk_min
+#print axioms exists_split
+#print axioms cut_le
+#print axioms eqm_cut
+#print axioms makespan_nil
+#print axioms makespan_bound
+#print axioms opt_ge
+#print axioms three_mul_makespan_le
+#print axioms poa_ge_seven_fifths
+#print axioms opt₀_ge
+#print axioms poa_eq_seven_fifths

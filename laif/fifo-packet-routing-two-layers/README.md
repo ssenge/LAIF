@@ -6,7 +6,7 @@ Posted 2026-11-21.
 
 | Graph class | Previous best bound | Our bound | Status |
 |---|---|---|---|
-| Linear multigraphs with two layers, UFR equilibria, makespan | PoA ≤ 2, for every linear multigraph [1] | PoA = 7/5 exactly: 3C ≤ 4·OPT + 1 for every instance and every UFR equilibrium, and an instance with C = 7, OPT = 5 | Instance: Lean. Upper bound: Claim, with numerical checks |
+| Linear multigraphs with two layers, UFR equilibria, makespan | PoA ≤ 2, for every linear multigraph [1] | PoA = 7/5 exactly: 3C ≤ 4·OPT + 1 for every instance and every UFR equilibrium, and an instance with C = 7, OPT = 5 | Lean |
 
 ## Model
 
@@ -62,17 +62,28 @@ n = 4j² − 2j − 1 has OPT = 3j − 1, and for j ≤ 7 a UFR equilibrium with
 
 ## Checks
 
-- **Lean** (`lean/`, Lean v4.36.0-rc1, Mathlib d875a8de5222, only the standard axioms, output in `lean/axioms.txt`):
-  `PacketTwoLayer/Instance.lean` defines the loading of a two-layer state, the UFR condition (every player, every
-  alternative path, arrival at v₁ and at d) and the makespan as computable functions, and `poa_ge_seven_fifths` states
-  that the instance above has a UFR equilibrium of makespan 7 and a state of makespan 5, proved by `decide`.
+- **Lean** (`lean/`, Lean v4.36.0-rc1, Mathlib d875a8de5222, only the standard axioms, output in `lean/axioms.txt`).
+  The model is stated once, in `PacketTwoLayer/Instance.lean`: the loading of a two-layer state, the UFR condition
+  (every player, every alternative path, arrival at v₁ and at d) and the makespan, as computable functions. All
+  theorems below are about these functions.
+  - `Instance.lean`: the instance above has a UFR equilibrium of makespan 7 and a state of makespan 5, by `decide`
+    (`poa_ge_seven_fifths`).
+  - `Loading.lean`: arrival times under the FIFO rule when the processing order is the index order.
+  - `Opt.lean`: the cut bound of step 1 for every state (`opt_cut`).
+  - `Equilibrium.lean`: every UFR equilibrium is a sequential best response in both layers (`eqm_of_UFR`).
+  - `Backlog.lean`: levels, the backlog invariant and the domination by the worst-case backlog (steps 2 and 3).
+  - `Potential.lean`: the one-step potential inequality and its sum over the loading (steps 4 and 5).
+  - `Main.lean`: `opt_ge`, OPT ≥ ⌊(3C + a₁ + b₁)/4⌋ for every UFR equilibrium and every state with the same number
+    of players, and `three_mul_makespan_le`, 3C ≤ 4·OPT + 1 when all transit times are at least 1.
+  - `Tight.lean`: every state of the instance above has makespan at least 5, so OPT = 5 and the ratio 7/5 is attained
+    (`poa_eq_seven_fifths`).
 - **Scripts** (`sim/`): `pr.py` is the exact simulator (loading, UFR test, worst equilibrium over all tie choices,
   optimum by successive shortest paths and by a time-expanded maximum flow). `proof2_check.py` tests every step of the
   proof with asserts in exact arithmetic: the cut formula for OPT on 300 instances, the structure of equilibria by
   brute force over all states of 40 small instances, the one-step inequality on 4000 random cases, the level and
   backlog lemmas and the theorem on every tie choice of 250 small instances and on 1500 random instances with
   n ≤ 100, and the family above for j = 2 to 7.
-- **Not formalized:** the upper bound 3C ≤ 4·OPT + 1 (steps 1 to 6 of the proof), and that OPT = 5 for the instance (the lower bound OPT ≥ 5 follows from step 1).
+- **Not formalized:** the family of the remark, which is checked numerically for j ≤ 7.
 
 ## Files
 
