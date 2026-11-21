@@ -123,7 +123,14 @@ All quantities are local to a link or a node. The only information exchanged is 
 
 ## Status and checks
 
-The results are numerical. No part is formalized in Lean.
+The results are numerical, except for the properties of the routing rule below, which are machine-checked in Lean 4 with Mathlib (`lean/`, Lean v4.36.0-rc1, Mathlib d875a8de5222, only the standard axioms, output in `lean/axioms.txt`):
+
+- **Loop freedom** (`noLoop_of_downhill`, `wellFounded_of_downhill`): if every split goes to a node of strictly smaller distance, no route revisits a node, and on a finite network every route ends.
+- **Two-level loop freedom** (`noLoop_twoLevel`): a node with an exact distance sends only to nodes with an exact and strictly smaller one, a node without sends only to nodes of strictly smaller cell distance; then no route revisits a node.
+- **Pruning** (`prune_sum`, `prune_zero_or_ge`, `prune_pos_imp`): dropping the shares below a threshold t with N t ≤ 1 and renormalizing gives shares that sum to 1, are 0 or at least t, and are positive only where the original share was, so pruned splits stay downhill.
+- **Triggered updates** (`pathValue_sub_le`, `dist_sub_le`): if every advertised link value is within ε of the true one, the least value over any finite set of paths with at most h links is within h ε of the true least value.
+
+The Lean files state these properties of the rule; the simulations are not formalized.
 
 - **Scope:** three networks; demand released at a constant rate over 60 minutes; the cell model with origins that release at most the capacity of their out-links per step, with a non-FIFO node model, in which a blocked turn holds back only its own traffic, which waits in the last cell of the link and takes up its capacity, and on Sioux Falls also with the strict FIFO node model of [5]; on Anaheim and Chicago Sketch only the free-flow bound; the two-level routing on Chicago Sketch at ×1.0 from a cold start only; the per-vehicle check on Sioux Falls only, without learning or origin holding; message counts are counted, not sent through a simulated network with delays or losses.
 - **Lower bound:** `dnl.check_dso` checks that at light load the linear program gives exactly the free-flow run, and that a capacity drop raises it while the simulated run stays above it. The bounds are solved with the first-order solver of HiGHS [10], with nothing left in the network at the horizon.
@@ -139,6 +146,8 @@ The results are numerical. No part is formalized in Lean.
 - `static.py`: static UE and SO by conjugate Frank-Wolfe [6]; `logit.py`: the logit split [9]; `net.py`: the network loader; `vehicles.py`: the per-vehicle runs in UXsim;
 - `common.py`: the configuration of the price scheme used in every table (`fifo_aware` for the FIFO table);
 - `sioux_falls.py`, `baselines.py`, `drift.py`, `fifo.py`, `scenarios.py`, `large.py`, `hierarchy.py`, `hierarchy_flat.py`, `messages.py`, `per_vehicle.py`: one script per table, with the outputs `out/sioux_falls.txt`, `out/baselines.txt`, `out/drift.txt`, `out/fifo.txt`, `out/scen_*.txt`, `out/large_*.txt`, `out/hierarchy*_ChicagoSketch.txt`, `out/messages_*.txt`, `out/per_vehicle.txt`; `out/dso_SiouxFalls_*.md` from `python dnl.py dso SiouxFalls 1 F` (the bound).
+
+`lean/`: the Lean project of the properties above (`lake exe cache get`, then `lake build`); `DownhillRouting/Axioms.lean` prints the axioms of every theorem.
 
 To run them, place the networks of [1] in `sim/data/tntp/` (for example `git clone https://github.com/bstabler/TransportationNetworks sim/data/tntp`) and install numpy, scipy, numba, highspy and uxsim.
 

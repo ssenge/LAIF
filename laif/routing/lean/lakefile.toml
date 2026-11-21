@@ -1,0 +1,10 @@
+name = "DownhillRouting"
+defaultTargets = ["DownhillRouting"]
+
+[[require]]
+name = "mathlib"
+scope = "leanprover-community"
+rev = "master"
+
+[[lean_lib]]
+name = "DownhillRouting"

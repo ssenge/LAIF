@@ -1,0 +1,10 @@
+'DownhillRouting.potential_lt_of_transGen' does not depend on any axioms
+'DownhillRouting.noLoop_of_downhill' does not depend on any axioms
+'DownhillRouting.wellFounded_of_downhill' depends on axioms: [propext, Classical.choice, Quot.sound]
+'DownhillRouting.noLoop_twoLevel' depends on axioms: [propext, Classical.choice, Quot.sound]
+'DownhillRouting.kept_sum_pos' depends on axioms: [propext, Classical.choice, Quot.sound]
+'DownhillRouting.prune_sum' depends on axioms: [propext, Classical.choice, Quot.sound]
+'DownhillRouting.prune_zero_or_ge' depends on axioms: [propext, Classical.choice, Quot.sound]
+'DownhillRouting.prune_pos_imp' depends on axioms: [propext, Classical.choice, Quot.sound]
+'DownhillRouting.pathValue_sub_le' depends on axioms: [propext, Classical.choice, Quot.sound]
+'DownhillRouting.dist_sub_le' depends on axioms: [propext, Classical.choice, Quot.sound]

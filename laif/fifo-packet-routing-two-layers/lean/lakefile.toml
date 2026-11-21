@@ -1,0 +1,10 @@
+name = "PacketTwoLayer"
+defaultTargets = ["PacketTwoLayer"]
+
+[[require]]
+name = "mathlib"
+scope = "leanprover-community"
+rev = "master"
+
+[[lean_lib]]
+name = "PacketTwoLayer"

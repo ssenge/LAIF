@@ -6,7 +6,7 @@ Posted 2026-11-21.
 
 | Graph class | Previous best bound | Our bound | Status |
 |---|---|---|---|
-| Linear multigraphs with two layers, UFR equilibria, makespan | PoA ≤ 2, for every linear multigraph [1] | PoA = 7/5 exactly: 3C ≤ 4·OPT + 1 for every instance and every UFR equilibrium, and an instance with C = 7, OPT = 5 | Claim, with numerical checks |
+| Linear multigraphs with two layers, UFR equilibria, makespan | PoA ≤ 2, for every linear multigraph [1] | PoA = 7/5 exactly: 3C ≤ 4·OPT + 1 for every instance and every UFR equilibrium, and an instance with C = 7, OPT = 5 | Instance: Lean. Upper bound: Claim, with numerical checks |
 
 ## Model
 
@@ -62,16 +62,21 @@ n = 4j² − 2j − 1 has OPT = 3j − 1, and for j ≤ 7 a UFR equilibrium with
 
 ## Checks
 
+- **Lean** (`lean/`, Lean v4.36.0-rc1, Mathlib d875a8de5222, only the standard axioms, output in `lean/axioms.txt`):
+  `PacketTwoLayer/Instance.lean` defines the loading of a two-layer state, the UFR condition (every player, every
+  alternative path, arrival at v₁ and at d) and the makespan as computable functions, and `poa_ge_seven_fifths` states
+  that the instance above has a UFR equilibrium of makespan 7 and a state of makespan 5, proved by `decide`.
 - **Scripts** (`sim/`): `pr.py` is the exact simulator (loading, UFR test, worst equilibrium over all tie choices,
   optimum by successive shortest paths and by a time-expanded maximum flow). `proof2_check.py` tests every step of the
   proof with asserts in exact arithmetic: the cut formula for OPT on 300 instances, the structure of equilibria by
   brute force over all states of 40 small instances, the one-step inequality on 4000 random cases, the level and
   backlog lemmas and the theorem on every tie choice of 250 small instances and on 1500 random instances with
   n ≤ 100, and the family above for j = 2 to 7.
-- **Not formalized:** the theorem and the instance.
+- **Not formalized:** the upper bound 3C ≤ 4·OPT + 1 (steps 1 to 6 of the proof), and that OPT = 5 for the instance (the lower bound OPT ≥ 5 follows from step 1).
 
 ## Files
 
+- `lean/`: Lean 4 project with Mathlib (`lake exe cache get`, then `lake build`).
 - `sim/pr.py`, `sim/proof2_check.py`: run with `python proof2_check.py [seed]` (Python 3, networkx).
 
 ## References

@@ -1,0 +1,6 @@
+'PacketTwoLayer.eq₀_valid' does not depend on any axioms
+'PacketTwoLayer.opt₀_valid' does not depend on any axioms
+'PacketTwoLayer.eq₀_ufr' depends on axioms: [propext]
+'PacketTwoLayer.eq₀_makespan' depends on axioms: [propext]
+'PacketTwoLayer.opt₀_makespan' depends on axioms: [propext]
+'PacketTwoLayer.poa_ge_seven_fifths' depends on axioms: [propext, Classical.choice, Quot.sound]
