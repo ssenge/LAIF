@@ -7,12 +7,14 @@ Written 21 Nov 2026.
 | | Problem | Previous best bound | This folder | Status |
 |---|---|---|---|---|
 | Thm 1 | k forest certificate, k ≤ n | min{m, Õ(k√(mn))} queries, implied by [1] | O(n k^{3/2} log n) queries | Claim; Lean for the certificate and the counting lemmas |
+| Thm 4 | k forest certificate, k ≤ n, by a scan | min{m, Õ(k√(mn))} queries, implied by [1] | O(n + √(mnk) + √(mn) log n) queries | Claim; Lean for the certificate |
 | Thm 2 | edge connectivity λ and a minimum cut | Õ(√(mn)) queries [2] | O(n (λ+1)^{3/2} log n) queries | Claim; Lean for the certificate |
 | Thm 3 | λ_st, a minimum s-t cut and a maximum s-t flow | λ_st: Õ(n + min{m, n^{3/2}}) [3]; λ_st and flow: min{m, Õ((f+1)√(mn))}, implied by [1] | O(n (f+1)^{3/2} log n) queries | Claim; Lean for the certificate |
+| Thm 5 | λ_st, a minimum s-t cut and a maximum s-t flow | as for Theorem 3 | Õ(√(mn(f+1))) queries | Claim; Lean for the certificate |
 
 For bounded λ this gives Θ̃(n) queries for edge connectivity, since deciding connectivity already needs Ω(n) queries [1]. For simple graphs Θ̃(n) was suspected in [2] in this model. On dense simple graphs the complexity is Θ̃(n^{3/2}) [3, 6], so the answer depends on λ. Up to logarithmic factors, Theorem 2 uses fewer queries than [2] when λ³ < m/n.
 
-The bounds implied by [1] come from augmenting paths: the residual out-list of a vertex is its array with known holes, so each path takes one directed path search of [1] with Õ(√(mn)) queries. Up to logarithmic factors, Theorem 3 uses fewer queries than this when f < m/n, and fewer than [3] when f < min{n^{1/3}, (m/n)^{2/3}}. It computes a maximum s-t flow with o(m) queries whenever f^{3/2} log n = o(m/n), against f = o(√(m/n)) for augmenting paths. The algorithms of [3, 4] compute the value and a minimum cut, and [4] asks for a sublinear quantum algorithm for a maximum flow in general.
+The bounds implied by [1] come from augmenting paths: the residual out-list of a vertex is its array with known holes, so each path takes one directed path search of [1] with Õ(√(mn)) queries. Up to logarithmic factors, Theorem 3 uses fewer queries than this when f < m/n, and fewer than [3] when f < min{n^{1/3}, (m/n)^{2/3}}. It computes a maximum s-t flow with o(m) queries whenever f^{3/2} log n = o(m/n), against f = o(√(m/n)) for augmenting paths. Theorem 5 uses fewer queries than augmenting paths by a factor of about √(f+1), and fewer than [3] when f < min{m/n, n²/m}, up to logarithmic factors. It computes a maximum s-t flow with o(m) queries whenever f = o(m/n) and m/n grows faster than log⁴ n. Since f is at most the degree of s, this covers every f below the average degree up to such a factor. Theorem 3 is the smaller of the two when m > n(f+1)². The algorithms of [3, 4] compute the value and a minimum cut, and [4] asks for a sublinear quantum algorithm for a maximum flow in general.
 
 ## 1. The certificate
 
@@ -59,6 +61,26 @@ the round costs O((n + √(n · (i − 1)n)) log n) = O(n √i log n) queries, p
 
 In particular, k-edge-connectivity of G can be decided with O(n k^{3/2} log n) queries.
 
+## 4. A scan with all solutions
+
+The forests can also be built in one pass, by the scan-first search of [5] with labels capped at k. Every vertex w has a counter r(w), initially 0. Repeatedly scan an unscanned vertex v of largest label min{k, r(v)}. To scan v, find all entries of its list that lead to an unscanned vertex w with r(w) < k. For each of them, put vw into F_{r(w)+1} and increase r(w) by one.
+
+**Lemma 4.** For i ≤ k, F_i is a forest, and every edge of G outside F_1 ∪ … ∪ F_{i−1} joins two vertices connected in F_i. So Lemma 1 applies.
+
+*Proof.* Orient each edge of F_i towards its endpoint scanned later. A vertex w receives at most one such edge, when r(w) rises from i − 1 to i, and edges point forward in the scan order, so F_i is a forest. Cut the scan order into *i-runs*: a new run starts at every vertex whose label is below i when it is scanned. While some unscanned w has r(w) ≥ i, the scanned vertex has label at least i, so no run starts. Hence a vertex w with label at least i at its scan lies in the same run as the vertex p whose scan raised r(w) to i, and pw ∈ F_i. By induction along the scan order, each run is connected in F_i. Now let vw be an edge outside F_1 ∪ … ∪ F_{i−1}, with v scanned first. When v is scanned, r(w) ≥ i − 1. If r(w) = i − 1, then vw ∈ F_i, since i − 1 < k. If r(w) ≥ i, the vertex p that raised r(w) to i was scanned before v, and no run starts between p and w, so v and w lie in the run of p. ∎
+
+**Theorem 4.** For k ≤ n, with bounded error, F_1, …, F_k can be computed with O(n + √(mnk) + √(mn) log n) queries.
+
+*Proof.* Query all degrees. Let t_v be the number of entries found while v is scanned. These entries are fixed during the scan, since every neighbour appears once in the list of v and r changes only for the neighbours found. Find them one at a time with the search of [7], in expected O(√(deg(v)/j)) queries while j of them remain, so expected O(√(deg(v) t_v)) in total. Then confirm that none is left with O(√deg(v) log n) queries and error at most n^{−3}. Each counter rises at most k times, so Σ_v t_v ≤ kn, and by the Cauchy-Schwarz inequality
+
+Σ_v √(deg(v) t_v) ≤ √(2m · kn),   Σ_v √deg(v) ≤ √(2m · n).
+
+Stopping at ten times the expected count gives bounded error. ∎
+
+**Theorem 5.** With bounded error, λ_st, a minimum s-t cut and a maximum s-t flow can be computed with O((n + √(mn) log n) log(f + 2) + √(mn(f + 1))) queries, with no knowledge of f.
+
+*Proof.* Run Theorem 4 for k = 1, 2, 4, … and stop at the first k with λ_st(H_k) < k, which comes once k > f, so k ≤ 2f + 2. The output is correct as in Theorem 3. The costs √(mnk) form a geometric sum. ∎
+
 ## Lean
 
 The library `SmallCut` in `lean/` (Lean 4, Mathlib at the revision pinned in `lean/lakefile.toml`) proves, with only the standard axioms (`lean/axioms.txt`):
@@ -69,11 +91,13 @@ The library `SmallCut` in `lean/` (Lean 4, Mathlib at the revision pinned in `le
 - `SmallCut.star_bound_end`, `SmallCut.star_bound_merge`: the two cases of the Phase 1 degree bound;
 - `SmallCut.sum_sqrt_le`: Σ √(a_C² + b_C) ≤ Σ a_C + √(c · Σ b_C).
 
-**Not formalized:** the query algorithm and its cost (Theorem 1), the bound a ≥ d + 1 of Phase 1, the charging argument of [1], Grover search, and the max-flow min-cut theorem used for Theorem 3.
+**Not formalized:** Lemma 4, the query algorithms and their costs (Theorems 1 and 4), the bound a ≥ d + 1 of Phase 1, the charging argument of [1], Grover search, and the max-flow min-cut theorem used for Theorem 3.
 
 ## Scripts
 
 `sim/check_cert.py` runs Phases 1 and 2 classically on random graphs, pairs of cliques with few joining edges, regular graphs and graphs with hubs, on up to 16 vertices and k ≤ 6. It asserts that every F_i is a maximal spanning forest of G_i, the bound a ≥ d + 1 and the degree bound of Phase 1, λ_st(H_k) ≥ min{k, λ_st(G)} for all pairs, and λ(H_k) = λ(G) when λ(H_k) < k. It also counts the round cost, with √(N_C/t) for a search with t solutions and √N_C for a failed one, and reports it against n + √(2n|H_{i−1}|), together with the totals on graphs with 300 vertices for k up to 16.
+
+`sim/check_scan.py` runs the capped scan of Section 4 with random tie breaking on random graphs, pairs of cliques and graphs with hubs, on up to 16 vertices and k ≤ 5. It asserts Lemma 4 for every i ≤ k and λ_st(H_k) ≥ min{k, λ_st(G)} for all pairs, and reports Σ_v √(deg(v)(t_v + 1)) against √(2mnk) + √(2mn) on graphs with 300 vertices.
 
 ## Use of AI
 
@@ -92,3 +116,5 @@ Claude Opus 5.5 (Anthropic) was used throughout this research: to explore approa
 [5] H. Nagamochi, T. Ibaraki. A linear-time algorithm for finding a sparse k-connected spanning subgraph of a k-connected graph. Algorithmica 7, 1992.
 
 [6] Minimum cut in the adjacency array model, `laif/minimum-cut-array-queries` in this repository.
+
+[7] M. Boyer, G. Brassard, P. Høyer, A. Tapp. Tight bounds on quantum searching. Fortschr. Phys. 46(4-5), 1998. arXiv:quant-ph/9605034.
