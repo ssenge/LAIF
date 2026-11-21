@@ -1,0 +1,7 @@
+'StateIdentity.threshold_gap' depends on axioms: [propext, Classical.choice, Quot.sound]
+'StateIdentity.overlap_sq' depends on axioms: [propext, Classical.choice, Quot.sound]
+'StateIdentity.helstrom_step' depends on axioms: [propext, Classical.choice, Quot.sound]
+'StateIdentity.copies_lower' depends on axioms: [propext, Classical.choice, Quot.sound]
+'StateIdentity.log_le_gap' depends on axioms: [propext, Classical.choice, Quot.sound]
+'StateIdentity.copies_lower_gap' depends on axioms: [propext, Classical.choice, Quot.sound]
+'StateIdentity.gap_compare' depends on axioms: [propext, Classical.choice, Quot.sound]
