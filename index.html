@@ -65,6 +65,13 @@ header.hero { padding: 40px 0 20px; display: flex; gap: 24px; align-items: cente
 .active:empty { display: none; }
 .chev { margin-left: auto; color: var(--muted); font-size: 18px; line-height: 1; transition: transform .15s; }
 .filters[open] .chev { transform: rotate(180deg); }
+.sbox { margin: 0 0 14px; }
+.sgrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 8px 18px; font-size: 13px; color: var(--muted); }
+.sgrid b { color: var(--text); font-size: 16px; display: block; }
+.hist { display: flex; align-items: flex-end; gap: 4px; height: 70px; }
+.hist div { flex: 1; background: linear-gradient(var(--accent2), var(--accent)); border-radius: 3px 3px 0 0; min-height: 1px; }
+.hlab { display: flex; gap: 4px; font-size: 11px; color: var(--faint); } .hlab span { flex: 1; text-align: center; }
+.slist { margin: 0; padding-left: 18px; font-size: 13px; } .slist li { margin: 3px 0; }
 .fbody { padding: 0 14px 14px; display: flex; flex-direction: column; gap: 12px; }
 .row2 { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 10px; }
 .field { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
@@ -157,6 +164,8 @@ col.c-date { width: 112px; } col.c-cat { width: 150px; } col.c-st { width: 170px
   </header>
 
   <section class="stats" id="stats" aria-label="Summary"></section>
+
+  <details class="filters sbox" id="sbox"><summary><span class="sum-l">Score details</span><span class="chev">⌄</span></summary><div class="fbody" id="sdet"></div></details>
 
   <section class="controls" aria-label="Filters">
     <details class="filters" id="fbox">
@@ -267,8 +276,8 @@ function load(md) {
   data = [...main, ...minor].map(d => {
     if (/^as above$/i.test(d.status) && last) d.status = last.status;
     last = d;
-    d.posted = (d.posted.match(/\d{4}-\d\d-\d\d(?: \d\d:\d\d:\d\d)?/) || [""])[0];
-    d.tags = tagsOf(d.status);
+    d.posted = (d.posted.match(/\d{4}-\d\d-\d\d(?: \d\d:\d\d:\d\d(?: CES?T)?)?/) || [""])[0];
+    d.tags = tagsOf(d.status || (d.kind === "Minor" ? d.after : ""));
     d.scoreN = parseFloat(d.score);
     d.folder = folderOf(d.details);
     d.text = plain([d.category, d.problem, d.before, d.after, d.status, d.details].join(" ")).toLowerCase();
@@ -309,9 +318,37 @@ function stats() {
     <div class="stat"><b>${data.length}</b><span>results</span></div>
     <div class="stat"><b>${new Set(data.map(d => d.category)).size}</b><span>categories</span></div>
     <div class="stat"><b>${lean}</b><span>with Lean proofs</span></div>
-    <div class="stat" data-tip="${scTip}"><b>${isNaN(avg) ? "–" : avg.toFixed(2)}</b><span>average score (0–10)</span></div>
+    <div class="stat" data-tip="${scTip}"><b>${isNaN(avg) ? "–" : avg.toFixed(2)}</b><span><a href="https://github.com/ssenge/LAIF#score" target="_blank" rel="noopener">average score (0–10)</a></span></div>
     <div class="stat spark"><span>Posted per day, ${keys[0] || ""} to ${keys.at(-1) || ""}</span>
       <svg viewBox="0 0 ${w} ${h}" preserveAspectRatio="none"><defs><linearGradient id="g" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="var(--accent2)"/><stop offset="1" stop-color="var(--accent)"/></linearGradient></defs>${bars}</svg></div>`;
+  scoreDetails(sc, avg, med);
+}
+
+function scoreDetails(sc, avg, med) {
+  const S = data.filter(d => !isNaN(d.scoreN)), f = x => isNaN(x) ? "–" : (+x.toFixed(2)).toString();
+  if (!S.length) return;
+  const sd = Math.sqrt(sc.reduce((a, x) => a + (x - avg) ** 2, 0) / sc.length), q = p => sc[Math.round(p * (sc.length - 1))];
+  const avgOf = r => r.reduce((a, d) => a + d.scoreN, 0) / r.length;
+  const link = d => `<a href="${TREE + d.folder}" target="_blank" rel="noopener">${esc(plain(d.problem).length > 140 ? plain(d.problem).slice(0, 139) + "…" : plain(d.problem))}</a> <span class="cat">${esc(d.category)}</span>`;
+  const top = [...S].sort((a, b) => b.scoreN - a.scoreN || b.posted.localeCompare(a.posted));
+  const best = top.filter(d => d.scoreN === sc.at(-1)), low = S.filter(d => d.scoreN === sc[0]);
+  const bins = Array.from({ length: 11 }, (_, i) => S.filter(d => Math.floor(d.scoreN) === i).length), bm = Math.max(...bins);
+  const cats = Object.entries(S.reduce((g, d) => ((g[d.category] ??= []).push(d), g), {})).map(([c, r]) => [c, avgOf(r), r.length]).sort((a, b) => b[1] - a[1]);
+  const main = S.filter(d => d.kind === "Main"), minor = S.filter(d => d.kind === "Minor");
+  $("#sdet").innerHTML = `
+    <div class="sgrid">
+      <div><b>${sc.length}</b>scored results</div><div><b>${f(avg)}</b>average</div><div><b>${f(med)}</b>median</div>
+      <div><b>${f(sd)}</b>standard deviation</div><div><b>${f(sc[0])}</b>lowest</div><div><b>${f(sc.at(-1))}</b>highest</div>
+      <div><b>${f(q(.25))} to ${f(q(.75))}</b>middle half</div><div><b>${f(avgOf(main))}</b>average, main results</div><div><b>${f(avgOf(minor))}</b>average, minor results</div>
+    </div>
+    <div><span class="cat">Distribution (scores rounded down)</span>
+      <div class="hist">${bins.map((n, i) => `<div style="height:${n / bm * 100}%" data-tip="Score ${i}${i < 10 ? ` to ${i}.5` : ""}: ${n} result${n === 1 ? "" : "s"}"></div>`).join("")}</div>
+      <div class="hlab">${bins.map((_, i) => `<span>${i}</span>`).join("")}</div></div>
+    <div><span class="cat">Highest score (${f(sc.at(-1))})</span><ol class="slist">${best.map(d => `<li>${link(d)}</li>`).join("")}</ol></div>
+    <div><span class="cat">Next highest</span><ol class="slist">${top.filter(d => d.scoreN < sc.at(-1)).slice(0, 8).map(d => `<li><b>${f(d.scoreN)}</b> ${link(d)}</li>`).join("")}</ol></div>
+    <div><span class="cat">Average by category</span><div class="sgrid">${cats.map(([c, a, n]) => `<div><b>${f(a)}</b>${esc(c)} (${n})</div>`).join("")}</div></div>
+    <div><span class="cat">Lowest score (${f(sc[0])}): ${low.length} result${low.length === 1 ? "" : "s"}</span></div>
+    <p class="legnote">The score is self-assessed and rates importance if the result is correct; the Status column says what is checked. <a href="https://github.com/ssenge/LAIF#score" target="_blank" rel="noopener">Scale</a>.</p>`;
 }
 
 function render() {
@@ -336,9 +373,9 @@ function render() {
       <td data-l="Posted"><span class="date">${esc(d.posted.slice(0, 10))}</span>${d.posted.length > 10 ? `<br><span class="date" style="color:var(--faint)">${esc(d.posted.slice(11))}</span>` : ""}</td>
       <td data-l="Category"><div class="cat">${esc(d.category)}</div><span class="kind ${d.kind.toLowerCase()}" data-tip="${esc(DEF[d.kind])}">${d.kind}</span></td>
       <td data-l="Problem"><div class="clamp">${inline(d.problem)}</div></td>
-      <td data-l="Previous best"><div class="clamp">${inline(d.before) || '<span style="color:var(--faint)">see folder</span>'}</div></td>
+      <td data-l="Previous best"><div class="clamp">${inline(d.before) || '<span style="color:var(--faint)">–</span>'}</div></td>
       <td data-l="Result"><div class="clamp after">${inline(d.after)}</div></td>
-      <td data-l="Status">${d.tags.map(t => `<span class="tag" data-tip="${esc(DEF[t])}" style="--c:${TAGS.find(x => x[0] === t)[2]}">${t}</span>`).join("")}${d.status ? `<div class="stxt clamp">${inline(d.status)}</div>` : '<span style="color:var(--faint)">see folder</span>'}</td>
+      <td data-l="Status">${d.tags.map(t => `<span class="tag" data-tip="${esc(DEF[t])}" style="--c:${TAGS.find(x => x[0] === t)[2]}">${t}</span>`).join("")}${d.status ? `<div class="stxt clamp">${inline(d.status)}</div>` : d.tags.length ? "" : '<span style="color:var(--faint)">–</span>'}</td>
       <td data-l="Score"><span class="date">${isNaN(d.scoreN) ? "–" : esc(d.score)}</span></td>
       <td>${d.folder ? `<a href="${TREE + d.folder}" target="_blank" rel="noopener" title="Open folder" aria-label="Open folder" onclick="event.stopPropagation()">↗</a>` : ""}</td>
     </tr>`).join("") : `<tr><td colspan="8" class="empty">No result matches these filters.</td></tr>`;
