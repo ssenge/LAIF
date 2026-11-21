@@ -1,8 +1,8 @@
-# Lattice and scalar codes per output row under one Fisher slope, 2-bit weights of Qwen2.5-0.5B
+# Lattice and scalar codes per output row under one Fisher slope, 2-bit weights of Qwen2.5-0.5B and 1.5B
 
 _21 November 2026_
 
-Post-training quantization of the decoder weights of Qwen2.5-0.5B [9] to 2.0 to 2.4 bits per weight, without fine-tuning. Each output row of every linear layer takes either the E8P lattice code of [2] at 2 bits per weight or a scalar GPTQ code [1] at 2, 3 or 4 bits, and one global slope trades the Fisher-weighted error against the bits of the row.
+Post-training quantization of the decoder weights of Qwen2.5-0.5B and Qwen2.5-1.5B [9] to 2.0 to 2.5 bits per weight, without fine-tuning. Each output row of every linear layer takes either the E8P lattice code of [2] at 2 bits per weight or a scalar GPTQ code [1] at 2, 3 or 4 bits, and one global slope trades the Fisher-weighted error against the bits of the row.
 
 ## Result
 
@@ -23,6 +23,18 @@ On WikiText-2 [10] (test split, 2048-token windows, all windows), the mix reache
 
 At 2.17 bits per weight the mix is 32% below AutoRound at 2.25 in perplexity, and at 2.36 it is 27% below AutoRound at 2.50.
 
+On Qwen2.5-1.5B, with the same protocol and sequential calibration (the H of each layer is taken from the outputs of the layers already quantized):
+
+| Method | Bits per weight | Perplexity |
+|---|---|---|
+| 16-bit weights | 16 | 9.26 |
+| GPTQ, 2 bits, groups of 64 [1] | 2.503 | 16.41 |
+| Same slope, scalar options only (2 to 4 bits) | 2.466 | 13.84 |
+| **Mix of E8P and scalar rows** | **2.227** | **12.91** |
+| **Mix of E8P and scalar rows** | **2.459** | **11.93** |
+
+At 2.46 bits per weight the mix is 27% below GPTQ at 2.50 and 14% below the scalar-only allocation at 2.47.
+
 ## Method
 
 For a linear layer with weight W (o rows, i inputs), input second moment H from calibration and diagonal empirical Fisher F of the language-model loss:
@@ -38,7 +50,7 @@ Calibration: 32 windows of 512 tokens from the WikiText-2 training split for H a
 
 Scope:
 
-- One model, Qwen2.5-0.5B; perplexity on WikiText-2 only.
+- Two models, Qwen2.5-0.5B and Qwen2.5-1.5B; perplexity on WikiText-2 only. AutoRound is run on Qwen2.5-0.5B.
 - Without fine-tuning. Methods that fine-tune after quantization, such as the full pipeline of [2], are not part of the comparison.
 - λ is set from a sample of 5 decoder layers, so the reached bits per weight lie somewhat below the targets 2.25 and 2.5.
 
@@ -50,7 +62,7 @@ Scope:
 - `sim/test_quip.py`: asserts on the E8P codebook and its nearest-point search against brute force.
 - `sim/lam_pilot.py`: λ for a target bits per weight.
 - `sim/autoround_run.py`: the AutoRound baseline on the same protocol.
-- `results/qwen05_2048.jsonl`: the rows of the table.
+- `results/qwen05_2048.jsonl`, `results/qwen15_2048.jsonl`: the rows of the tables.
 
 Run: `python -m nnc.fisher qwen05`, then `python -m nnc.pipeline --model qwen05 --evlen 2048 --sink 3.0 0.0 --out out.jsonl --specs gmix:lam=2.291e-05,refit=1,e8=1`.
 
