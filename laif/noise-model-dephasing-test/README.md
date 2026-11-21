@@ -12,7 +12,7 @@ or E is dephasing in an unknown fixed basis,
 
 E_{p,U} = (1 − p) id + p Δ_U,  Δ_U(ρ) = Σ_k P_k ρ P_k,  P_k = U|k⟩⟨k|U†,
 
-for some unitary U. The two have the same entanglement fidelity and average gate fidelity, and Λ is the average of Δ_U over uniformly random U [1]. An ordinary strategy is an adaptive circuit that calls the device one call at a time on a d-dimensional query system, with unlimited quantum memory and known operations between calls [1, Definition 4]. In [1, Theorem 3], for d = 2^n, every ordinary strategy that decides between the two cases with success probability at least 2/3 needs Ω(d^{1/16}/p) calls, while O(d²/p) calls suffice through an approximate simulation of the quantum switch [1, Section 5.1]. Sharpening these bounds is named as open in [1, Section 6].
+for some unitary U. The two have the same entanglement fidelity and average gate fidelity, and Λ is the average of Δ_U over uniformly random U [1]. An ordinary strategy is an adaptive circuit that calls the device one call at a time on a d-dimensional query system, with unlimited quantum memory and known operations between calls [1, Definition 4]. In [1, Theorem 3], for d = 2^n, every ordinary strategy that decides between the two cases with success probability at least 2/3 needs Ω(d^{1/16}/p) calls, while O(d²/p) calls suffice through an approximate simulation of the quantum switch [1, Section 5.1]. Sharpening these bounds is named as open in [1, Section 6]. After one call the two channels are at diamond distance of order p, so general identity tests against a fixed channel with unentangled measurements [3], or against a completely depolarizing reference [4], apply with cost growing as 1/p².
 
 | | calls |
 |---|---|
@@ -65,6 +65,10 @@ and E X² ≤ 2 (E X)² for all d ≥ 2. By the second-moment inequality P(X ≥
 [1] D. Li. Infinite or indefinite: the query cost of simulating the quantum switch. arXiv:2611.16229.
 
 [2] C. Bădescu, R. O'Donnell, J. Wright. Quantum state certification. STOC 2019. arXiv:1708.06002.
+
+[3] G. Rosenthal, H. Aaronson, S. Subramanian, A. Datta, T. Gur. Quantum channel testing in average-case distance. arXiv:2409.12566.
+
+[4] O. Fawzi, N. Flammarion, A. Garivier, A. Oufkir. Quantum channel certification with incoherent strategies. COLT 2023, PMLR 195. arXiv:2303.01188.
 
 ## Use of AI
 
