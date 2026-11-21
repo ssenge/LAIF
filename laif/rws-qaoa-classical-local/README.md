@@ -1,12 +1,12 @@
 # A classical radius-6 rule on the warm start of regularized warm-started QAOA for Max-Cut
 
-_18 November 2026, updated 19 November 2026_
+_18 November 2026, updated 21 November 2026_
 
 In [1], regularized warm-started QAOA (RWS-QAOA) is applied to Max-Cut on random 3-regular graphs. The warm start maximizes, over a product state with Pr[x_i = 1] = p_i,
 
 L(p) = E[cut] + 4λ Σᵢ pᵢ(1 − pᵢ),  λ = 0.6,
 
-over p in the unit cube, best of 100 random starts [1, Eq. (11)]. A depth-6 QAOA with fixed angles [1, Table I] then acts on this state, with the mixer of qubit i chosen so that its initial state is an eigenstate. By tensor-network contraction, [1] reports an average expected cut fraction of 0.917 at N = 2000 and 0.9167 at N = 10 000. Under the stated matched restrictions (no local-search post-processing and no iterative refinement), this is above the classical heuristics compared there; for example, restricted Burer-Monteiro reaches 0.909 at N = 2000.
+over p in the unit cube, best of 100 random starts [1, Eq. (11)]. A depth-6 QAOA with fixed angles [1, Table I] then acts on this state, with the mixer of qubit i chosen so that its initial state is an eigenstate. By tensor-network contraction, [1] reports an average expected cut fraction of 0.917 at N = 2000 and 0.9167 at N = 10 000. Under the stated matched restrictions (no local-search post-processing and no iterative refinement), this is above the classical heuristics compared there; for example, the restricted low-rank SDP heuristic of [1] (BM there) reaches 0.909 at N = 2000.
 
 A depth-p QAOA is a local algorithm: the expected value on an edge depends only on the radius-p neighbourhood of the edge. The matched classical competitor is therefore a classical rule of radius at most 6 applied to the same warm start.
 
@@ -59,6 +59,29 @@ With a warm start by Adam (learning rate 0.01, 30 000 steps, θᵢ uniform in [0
 
 **Claim (leakage bound).** Let the fixed spins have δᵢ = 2 arcsin √min(pᵢ, 1 − pᵢ). The expected cut of warm-started QAOA of depth p with mixer angles β₁, …, β_p is at most the maximum cut with the fixed spins at their rounded values plus c_p Σᵢ Dᵢ δᵢ², where Dᵢ is the number of edges whose radius-p light cone contains i, B = Σₜ |βₜ| and c_p = (B + 2(1/2 + B)²)/2. For the schedule of [1, Table I] at p = 6, c₆ = 9.37. Sketch: conjugation by Zᵢ shows that each edge term is even in the angle of qubit i, for any values of the other angles; its second derivative in that angle is bounded by B + 2(1/2 + B)²; and an edge term depends only on the qubits in its light cone. With coordinate ascent every fixed spin is exactly polarized, the term vanishes and the bound is exact.
 
+## The hardware comparison of [1] at N = 96
+
+In [1, Sec. II C, Fig. 2], RWS-QAOA runs on a trapped-ion processor on five random 3-regular graphs with N = 96. It is compared with two algorithms with proven approximation ratios: the semidefinite relaxation with random-hyperplane rounding [3] (SDP rounding) and the semidefinite relaxation for cubic graphs with path and triangle constraints and local moves [4] (cubic SDP); and with the warm start sampled directly (RWS). SDP rounding, RWS and RWS-QAOA are each also followed by one step of local search (LS, [1, Algorithm 3]: one pass of improving single flips, then one pass of improving double flips over the edges); the cubic SDP includes its own local moves. With local search, RWS-QAOA reaches an approximation ratio of about 0.999 and p(success) of about 0.86, and [1] concludes that RWS-QAOA on hardware outperforms these provable algorithms.
+
+On 20 random 3-regular graphs with N = 96, with the optimum computed exactly by variable elimination and the warm start of [1] by coordinate ascent (best of 100 starts):
+
+| Method | Approximation ratio | p(success) | [1, Fig. 2], read off |
+|---|---|---|---|
+| RWS, warm start sampled | 0.9332 | 0.001 | about 0.938, about 0 |
+| RWS + LS | 0.9954 | 0.548 | about 0.997, about 0.71 |
+| SDP rounding | 0.9586 | 0.014 | about 0.958, about 0.02 |
+| SDP rounding + LS | 0.9835 | 0.130 | about 0.984, about 0.15 |
+| Cubic SDP | 0.9965 | 0.776 | about 0.996, about 0.77 |
+| RWS-QAOA + LS, on hardware | | | about 0.999, about 0.86 |
+| Warm start rounded | 0.9943 | 0.45 | not shown |
+| **Warm start rounded + LS** | **1.0000** | **1.000** | not shown |
+| Radius-6 rule | 1.0000 | 1.000 | not shown |
+| X | 1.0000 | 1.000 | not shown |
+
+The approximation ratio is the mean cut over the optimum, averaged over the graphs. For sampled methods, p(success) is the fraction of bitstrings at the optimum, as in [1, Eq. (6)]. The rounded warm start, its local search and X are deterministic, so their p(success) is the fraction of graphs solved; the rule is run with 20 random priority seeds per graph.
+
+The rounded warm start followed by the same single step of local search reaches the optimum on all 20 graphs, with no circuit. Both SDP algorithms agree with the values of [1, Fig. 2], so the classical baselines are reproduced. The comparison in [1] includes the warm start sampled and then searched locally, but not the warm start rounded and then searched locally. This hints at a possible gap in the conclusion of [1, Sec. II C]: on instances of this size, the classical warm start with the local search of [1] already reaches the optimum, so the advantage over the two SDP algorithms need not come from the circuit.
+
 ## Time to the target of [1] at N = 3000 and N = 10 000
 
 In the runtime comparison of [1, Sec. II E], the target for N ≤ 10 000 is the RWS-QAOA cut fraction of Fig. 3A. The quantum runtime there is a per-shot estimate for fault-tolerant hardware and does not include the warm start. With the warm start given, the radius-6 rule reaches the target in:
@@ -77,7 +100,7 @@ From a random start on one core (medians, range in brackets; 5 graphs with 5 run
 | 3 000 | 1.0 s (0.6 to 2.1) | 0.07 s (0.007 to 0.35) | 0.5 s (0.24 to 1.5) | 0.54 s (0.10 to 2.0) |
 | 10 000 | 11 s (9.4 to 12.5) | 1.0 s (0.06 to 2.4) | 2.0 s (1.8 to 4.1) | 2.7 s (1.5 to 3.0) |
 
-Annealing is timed as in the next section (the run of the doubling ladder that first reaches the target). For MQLib the time is that of the first entry of its history at or above the target. In [1, Fig. 3C], a parallel Burer-Monteiro solver on 96 virtual CPUs reaches the target in about 0.2 s (N = 3000) and 1 s (N = 10 000).
+Annealing is timed as in the next section (the run of the doubling ladder that first reaches the target). For MQLib the time is that of the first entry of its history at or above the target. In [1, Fig. 3C], a parallel low-rank SDP solver on 96 virtual CPUs reaches the target in about 0.2 s (N = 3000) and 1 s (N = 10 000).
 
 ## Without restrictions
 
@@ -87,15 +110,16 @@ Simulated annealing from a uniformly random state on one laptop core (T from 1.5
 |---|---|---|---|---|---|
 | Time (s), three graphs | 0.2 to 0.4 | 0.2 to 0.3 | 0.4 to 0.7 | 3.9 to 4.8 | 8.3 to 16.3 |
 
-At N = 100 000, [1, Fig. 3C] gives about 5 s for the estimated fault-tolerant runtime of RWS-QAOA and about 50 s for a parallel Burer-Monteiro solver on 96 virtual CPUs to reach the same target.
+At N = 100 000, [1, Fig. 3C] gives about 5 s for the estimated fault-tolerant runtime of RWS-QAOA and about 50 s for a parallel low-rank SDP solver on 96 virtual CPUs to reach the same target.
 
 ## Scope
 
-- **Instances.** The graphs of [1] are not published. The graphs here are networkx random 3-regular graphs with seeds 0 to 9.
+- **Instances.** The graphs of [1] are not published. The graphs here are networkx random 3-regular graphs with seeds 0 to 9, and seeds 0 to 19 at N = 96. At N = 96, [1] uses five graphs, and 20 are used here.
+- **Values of [1] at N = 96.** Read from the bars of [1, Fig. 2]. At N = 96 the warm start sampled and then searched locally lies below the value of [1] (0.548 against about 0.71); the deterministic rows do not depend on sampling.
 - **Warm start.** In [1], the warm start is computed by gradient descent or Adam for a fixed number of steps. Here it is solved to a fixed point. The expected cut of the product state agrees with the RWS curve of [1, Fig. 3A] to about 0.0015. The ceiling is computed on the warm starts here. With coordinate ascent the fixed spins are exactly polarized; with Adam the ceiling holds up to the leakage bound.
 - **Not simulated.** RWS-QAOA itself is not simulated here. On these warm starts, the depth-6 light cones of the free qubits reach 87 qubits. The comparison uses the values reported in [1].
 - **Runtimes.** The times are wall-clock times on one core of an Apple M4 Pro laptop (Python with numba; MQLib compiled with clang -O2), measured while other jobs ran on the same machine, so they are upper bounds. The quantum runtimes are estimates of [1], read from Fig. 3C, with no measurement here.
-- **Not formalized.** The identification of the circuit with the layers of the Lean lemma, and the leakage bound (Claim).
+- **Not formalized.** The identification of the circuit with the layers of the Lean lemma, and the leakage bound (Claim). The N = 96 table is numerical.
 
 ## Files
 
@@ -108,8 +132,11 @@ At N = 100 000, [1, Fig. 3C] gives about 5 s for the estimated fault-tolerant ru
 - `sim/c2_x.py`: X, the free components, the elimination width and the leakage bound (`data/x_ca.jsonl`, `data/x_adam.jsonl`); `python -I c2_x.py test` checks X against brute force at n = 20.
 - `sim/rws_adam.py`: the warm start by Adam.
 - `sim/ttt3000.py`: the times to the target of [1] (`data/ttt3000.jsonl`, `data/ttt10000.jsonl`). It calls an MQLib binary [2] given by its path.
+- `sim/c1_n96.py`: the N = 96 table (`data/n96.jsonl`): exact optimum, the warm start sampled, rounded and searched locally, the rule, X and both SDP algorithms (SDPs by cvxpy with SCS, 10 000 shots per graph); `python -I c1_n96.py test` checks the optimum against brute force at n = 16, that the local moves never lower the cut, and that the cubic SDP relaxation bounds the optimum. In `data/n96.jsonl` the samples of graphs 0 to 11 come from one shared random generator, those of graphs 12 to 19 from one generator per graph, as in the script.
 
 ## References
 
 1. Z. He, A. Apte, B. Augustino, A. Babakhani, A. Khan, S. Omanakuttan, R. Shaydulin. Regularized warm-started quantum approximate optimization and conditions for surpassing classical solvers on the Max-Cut problem. arXiv:2603.10191.
 2. I. Dunning, S. Gupta, J. Silberholz. What works best when? A systematic evaluation of heuristics for Max-Cut and QUBO. INFORMS Journal on Computing 30(3), 2018. Code: https://github.com/MQLib/MQLib.
+3. M. X. Goemans, D. P. Williamson. Improved approximation algorithms for maximum cut and satisfiability problems using semidefinite programming. Journal of the ACM 42(6), 1995.
+4. E. Halperin, D. Livnat, U. Zwick. MAX CUT in cubic graphs. Journal of Algorithms 53(2), 2004.
