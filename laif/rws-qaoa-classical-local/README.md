@@ -102,6 +102,15 @@ From a random start on one core (medians, range in brackets; 5 graphs with 5 run
 
 Annealing is timed as in the next section (the run of the doubling ladder that first reaches the target). For MQLib the time is that of the first entry of its history at or above the target. In [1, Fig. 3C], a parallel low-rank SDP solver on 96 virtual CPUs reaches the target in about 0.2 s (N = 3000) and 1 s (N = 10 000).
 
+With CPU time instead of wall time, and the target at the value of [1, Fig. 3A] for each N (0.9177, or 4130 of 4500 edges, at N = 3000; 0.9167 at N = 10 000), on 5 graphs with 5 runs each (N = 3000) and 5 graphs with 2 runs each (N = 10 000), medians with the range in brackets:
+
+| N | Warm start, best of 100 | Radius-6 rule after it | X after it | One warm start and the rule, repeated | Annealing | MQLib, BURER2002 [2] |
+|---|---|---|---|---|---|---|
+| 3 000 | 1.1 s (0.8 to 1.3) | 0.2 ms, 23 of 25 runs | 0.07 s, 23 of 25 runs | 0.09 s (0.01 to 1.3), 25 of 25 | 0.8 s (0.4 to 3.1) | 1.0 s (0.2 to 4.0) |
+| 10 000 | 5.5 s (4.8 to 6.8) | 0.5 ms, 10 of 10 | 0.27 s, 10 of 10 | 0.26 s (0.04 to 1.1), 10 of 10 | 1.5 s (1.3 to 2.7) | 1.6 s (0.5 to 3.6) |
+
+At N = 3000, on 2 of 25 runs, the rule and X both end at 4129 edges, one short of the target; X is the ceiling for warm-started QAOA on that warm start. Repeating with fresh single warm starts reaches the target on every run. Annealing and MQLib reached the target on every run.
+
 ## Without restrictions
 
 Simulated annealing from a uniformly random state on one laptop core (T from 1.5 to 0.05; the smallest sweep count of a doubling ladder that reaches the target) reaches the cut fraction 0.9167 in:
@@ -131,7 +140,7 @@ At N = 100 000, [1, Fig. 3C] gives about 5 s for the estimated fault-tolerant ru
 - `sim/ttt.py`: the times to the target and the N = 100 000 values (`data/ttt.jsonl`).
 - `sim/c2_x.py`: X, the free components, the elimination width and the leakage bound (`data/x_ca.jsonl`, `data/x_adam.jsonl`); `python -I c2_x.py test` checks X against brute force at n = 20.
 - `sim/rws_adam.py`: the warm start by Adam.
-- `sim/ttt3000.py`: the times to the target of [1] (`data/ttt3000.jsonl`, `data/ttt10000.jsonl`). It calls an MQLib binary [2] given by its path.
+- `sim/ttt3000.py`: the times to the target of [1] (`data/ttt3000.jsonl`, `data/ttt10000.jsonl`; with CPU times at the per-N target, `data/ttt3000_9177.jsonl`, `data/ttt10000_cpu.jsonl`). It calls an MQLib binary [2] given by its path.
 - `sim/c1_n96.py`: the N = 96 table (`data/n96.jsonl`): exact optimum, the warm start sampled, rounded and searched locally, the rule, X and both SDP algorithms (SDPs by cvxpy with SCS, 10 000 shots per graph); `python -I c1_n96.py test` checks the optimum against brute force at n = 16, that the local moves never lower the cut, and that the cubic SDP relaxation bounds the optimum. In `data/n96.jsonl` the samples of graphs 0 to 11 come from one shared random generator, those of graphs 12 to 19 from one generator per graph, as in the script.
 
 ## References
