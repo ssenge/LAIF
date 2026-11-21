@@ -128,7 +128,7 @@ footer { color: var(--faint); font-size: 13px; padding: 10px 0 40px; border-top:
 .skel { height: 64px; border-radius: 14px; background: linear-gradient(90deg, var(--panel), var(--bg2), var(--panel)); background-size: 200% 100%; animation: sh 1.2s infinite; margin: 8px 0; }
 @keyframes sh { to { background-position: -200% 0; } }
 
-col.c-date { width: 104px; } col.c-cat { width: 150px; } col.c-st { width: 170px; } col.c-dir { width: 46px; }
+col.c-date { width: 112px; } col.c-cat { width: 150px; } col.c-st { width: 170px; } col.c-dir { width: 46px; } col.c-sc { width: 70px; }
 @media (max-width: 860px) {
   header.hero { flex-direction: column; align-items: flex-start; padding-top: 24px; }
   .hero img.logo { width: 112px; height: 112px; flex: none; clip-path: circle(47.5% at 50% 50%); }
@@ -178,7 +178,7 @@ col.c-date { width: 104px; } col.c-cat { width: 150px; } col.c-st { width: 170px
 
   <noscript><p>This page needs JavaScript. All results are listed in the <a href="https://github.com/ssenge/LAIF#results">repository README</a>.</p></noscript>
   <table aria-label="Results">
-    <colgroup><col class="c-date"><col class="c-cat"><col><col><col><col class="c-st"><col class="c-dir"></colgroup>
+    <colgroup><col class="c-date"><col class="c-cat"><col><col><col><col class="c-st"><col class="c-sc"><col class="c-dir"></colgroup>
     <thead><tr>
       <th data-k="posted">Posted<span class="arr">↕</span></th>
       <th data-k="category">Category<span class="arr">↕</span></th>
@@ -186,12 +186,13 @@ col.c-date { width: 104px; } col.c-cat { width: 150px; } col.c-st { width: 170px
       <th data-k="before">Previous best<span class="arr">↕</span></th>
       <th data-k="after">Result<span class="arr">↕</span></th>
       <th data-k="status">Status<span class="arr">↕</span></th>
+      <th data-k="score" title="Self-assessed importance from 0 (routine) to 10 (a Millennium Prize Problem), see the README">Score<span class="arr">↕</span></th>
       <th></th>
     </tr></thead>
-    <tbody id="rows"><tr><td colspan="7"><div class="skel"></div><div class="skel"></div><div class="skel"></div></td></tr></tbody>
+    <tbody id="rows"><tr><td colspan="8"><div class="skel"></div><div class="skel"></div><div class="skel"></div></td></tr></tbody>
   </table>
 
-  <footer>Data is read live from the repository README. Copyright 2026 Sebastian Senge. All rights reserved.</footer>
+  <footer>Data is read live from the repository README. Posting times are in Central European Time. The score is explained in the <a href="https://github.com/ssenge/LAIF#score">README</a>. Copyright 2026 Sebastian Senge. All rights reserved.</footer>
 </div>
 <div id="tip" role="tooltip"></div>
 
@@ -258,16 +259,17 @@ function load(md) {
   r.replace(/^(\d+)\.\s+(.+)$/gm, (_, n, t) => refs[n] = t);
   const main = tables(md, "## Results").map(o => ({
     kind: "Main", category: o.category || "", problem: o.problem || "", before: o.before || "",
-    after: o.after || "", status: o.status || "", posted: o.posted || "", details: o.details || "" }));
+    after: o.after || "", status: o.status || "", posted: o.posted || "", score: o.score || "", details: o.details || "" }));
   const minor = tables(md, "## Minor results").map(o => ({
     kind: "Minor", category: o.category || "Minor result", problem: o.problem || "", before: o.before || "",
-    after: o.result || o.after || "", status: o.status || "", posted: o.posted || "", details: o.details || "" }));
+    after: o.result || o.after || "", status: o.status || "", posted: o.posted || "", score: o.score || "", details: o.details || "" }));
   let last = null;
   data = [...main, ...minor].map(d => {
     if (/^as above$/i.test(d.status) && last) d.status = last.status;
     last = d;
-    d.posted = (d.posted.match(/\d{4}-\d\d-\d\d/) || [""])[0];
+    d.posted = (d.posted.match(/\d{4}-\d\d-\d\d(?: \d\d:\d\d:\d\d)?/) || [""])[0];
     d.tags = tagsOf(d.status);
+    d.scoreN = parseFloat(d.score);
     d.folder = folderOf(d.details);
     d.text = plain([d.category, d.problem, d.before, d.after, d.status, d.details].join(" ")).toLowerCase();
     return d;
@@ -292,7 +294,7 @@ function build() {
   stats(); render();
 }
 function stats() {
-  const dates = data.map(d => d.posted).filter(Boolean).sort();
+  const dates = data.map(d => d.posted.slice(0, 10)).filter(Boolean).sort();
   const days = {}; dates.forEach(x => days[x] = (days[x] || 0) + 1);
   const keys = [], max = Math.max(...Object.values(days));
   for (let t = Date.parse(dates[0]); dates.length && t <= Date.parse(dates.at(-1)); t += 864e5) { const k = new Date(t).toISOString().slice(0, 10); keys.push(k); days[k] ??= 0; }
@@ -300,10 +302,14 @@ function stats() {
   const bars = keys.map((k, i) => { const bh = days[k] ? Math.max(days[k] / max * (h - 4), 2) : 0, tipT = `${k}: ${days[k] || "no"} result${days[k] === 1 ? "" : "s"} posted`;
     return `<g class="bar" data-tip="${tipT}"><rect x="${i * bw}" y="0" width="${bw}" height="${h}" fill="transparent"/><rect x="${i * bw + 1}" y="${h - bh}" width="${Math.max(bw - 2, 1)}" height="${bh}" rx="2" fill="url(#g)"/></g>`; }).join("");
   const lean = data.filter(d => d.tags.includes("Lean")).length;
+  const sc = data.map(d => d.scoreN).filter(x => !isNaN(x)).sort((a, b) => a - b);
+  const avg = sc.length ? sc.reduce((a, b) => a + b, 0) / sc.length : NaN, med = sc.length ? (sc[(sc.length - 1) >> 1] + sc[sc.length >> 1]) / 2 : NaN;
+  const scTip = `Self-assessed importance from 0 (routine) to 10 (a Millennium Prize Problem). ${sc.length} scored results, median ${isNaN(med) ? "–" : med.toFixed(1)}, highest ${sc.length ? sc.at(-1) : "–"}.`;
   $("#stats").innerHTML = `
     <div class="stat"><b>${data.length}</b><span>results</span></div>
     <div class="stat"><b>${new Set(data.map(d => d.category)).size}</b><span>categories</span></div>
     <div class="stat"><b>${lean}</b><span>with Lean proofs</span></div>
+    <div class="stat" data-tip="${scTip}"><b>${isNaN(avg) ? "–" : avg.toFixed(2)}</b><span>average score (0–10)</span></div>
     <div class="stat spark"><span>Posted per day, ${keys[0] || ""} to ${keys.at(-1) || ""}</span>
       <svg viewBox="0 0 ${w} ${h}" preserveAspectRatio="none"><defs><linearGradient id="g" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="var(--accent2)"/><stop offset="1" stop-color="var(--accent)"/></linearGradient></defs>${bars}</svg></div>`;
 }
@@ -312,10 +318,11 @@ function render() {
   const q = st.q.toLowerCase().split(/\s+/).filter(Boolean);
   let rows = data.filter(d =>
     q.every(w => d.text.includes(w)) && (!st.cat || d.category === st.cat) &&
-    (!st.from || d.posted >= st.from) && (!st.to || d.posted <= st.to) &&
+    (!st.from || d.posted.slice(0, 10) >= st.from) && (!st.to || d.posted.slice(0, 10) <= st.to) &&
     (!st.kinds.size || st.kinds.has(d.kind)) && (!st.tags.size || d.tags.some(t => st.tags.has(t))));
   const k = st.sort;
-  rows.sort((a, b) => st.dir * plain(a[k]).localeCompare(plain(b[k]), "en", { numeric: true }) || b.posted.localeCompare(a.posted));
+  const num = x => isNaN(x.scoreN) ? -Infinity : x.scoreN;
+  rows.sort((a, b) => (k === "score" ? st.dir * (num(a) - num(b)) : st.dir * plain(a[k]).localeCompare(plain(b[k]), "en", { numeric: true })) || b.posted.localeCompare(a.posted));
   document.querySelectorAll("thead th[data-k]").forEach(th => {
     const on = th.dataset.k === k; th.classList.toggle("sorted", on);
     th.querySelector(".arr").textContent = on ? (st.dir > 0 ? "↑" : "↓") : "↕";
@@ -326,21 +333,22 @@ function render() {
   $("#count").textContent = `${rows.length} of ${data.length} results`;
   $("#rows").innerHTML = rows.length ? rows.map((d, i) => `
     <tr class="r" data-i="${i}" tabindex="0" aria-expanded="false">
-      <td data-l="Posted"><span class="date">${esc(d.posted)}</span></td>
+      <td data-l="Posted"><span class="date">${esc(d.posted.slice(0, 10))}</span>${d.posted.length > 10 ? `<br><span class="date" style="color:var(--faint)">${esc(d.posted.slice(11))}</span>` : ""}</td>
       <td data-l="Category"><div class="cat">${esc(d.category)}</div><span class="kind ${d.kind.toLowerCase()}" data-tip="${esc(DEF[d.kind])}">${d.kind}</span></td>
       <td data-l="Problem"><div class="clamp">${inline(d.problem)}</div></td>
       <td data-l="Previous best"><div class="clamp">${inline(d.before) || '<span style="color:var(--faint)">see folder</span>'}</div></td>
       <td data-l="Result"><div class="clamp after">${inline(d.after)}</div></td>
       <td data-l="Status">${d.tags.map(t => `<span class="tag" data-tip="${esc(DEF[t])}" style="--c:${TAGS.find(x => x[0] === t)[2]}">${t}</span>`).join("")}${d.status ? `<div class="stxt clamp">${inline(d.status)}</div>` : '<span style="color:var(--faint)">see folder</span>'}</td>
+      <td data-l="Score"><span class="date">${isNaN(d.scoreN) ? "–" : esc(d.score)}</span></td>
       <td>${d.folder ? `<a href="${TREE + d.folder}" target="_blank" rel="noopener" title="Open folder" aria-label="Open folder" onclick="event.stopPropagation()">↗</a>` : ""}</td>
-    </tr>`).join("") : `<tr><td colspan="7" class="empty">No result matches these filters.</td></tr>`;
+    </tr>`).join("") : `<tr><td colspan="8" class="empty">No result matches these filters.</td></tr>`;
   $("#rows").querySelectorAll("tr.r").forEach(tr => {
     const d = rows[tr.dataset.i];
     const toggle = () => {
       const nx = tr.nextElementSibling;
       if (nx && nx.classList.contains("detail")) { nx.remove(); tr.classList.remove("open"); tr.setAttribute("aria-expanded", "false"); return; }
       tr.classList.add("open"); tr.setAttribute("aria-expanded", "true");
-      tr.insertAdjacentHTML("afterend", `<tr class="detail"><td colspan="7"><div class="dgrid">
+      tr.insertAdjacentHTML("afterend", `<tr class="detail"><td colspan="8"><div class="dgrid">
         ${d.status ? `<div><h4>Status</h4>${inline(d.status)}</div>` : ""}
         <div><h4>Folder</h4>${inline(d.details)}</div></div></td></tr>`);
     };
@@ -387,7 +395,7 @@ document.addEventListener("mouseover", e => {
 initState();
 fetch(RAW, { cache: "no-cache" }).then(r => { if (!r.ok) throw new Error(r.status); return r.text(); })
   .then(md => { load(md); $("#cat").value = st.cat; })
-  .catch(err => { $("#rows").innerHTML = `<tr><td colspan="7" class="empty">Could not load the results (${esc(String(err))}). See the <a href="https://github.com/ssenge/LAIF#results">README</a>.</td></tr>`; });
+  .catch(err => { $("#rows").innerHTML = `<tr><td colspan="8" class="empty">Could not load the results (${esc(String(err))}). See the <a href="https://github.com/ssenge/LAIF#results">README</a>.</td></tr>`; });
 </script>
 </body>
 </html>
