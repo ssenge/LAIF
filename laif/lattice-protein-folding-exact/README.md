@@ -33,16 +33,31 @@ where (k, l) runs over the pairs (i ± 1, j) and (i, j ± 1) inside the chain, �
 
 [1] does not state its penalty constants λ_b and λ₁. The ground states and their energies are the same for λ_b = λ₁ = 5, 10, 15 and 100 (`data/penalties.jsonl`). The agreement of the exact minima with E_ref on all six sequences also checks the rebuilt Hamiltonian, since nothing is fitted.
 
+## The 33-qubit instances of an earlier demonstration
+
+In [4], the same Hamiltonian is run on 10 iterations of 2000 shots for three sequences with 10 to 12 residues (22 to 33 qubits). Their optima, obtained there by brute force, are reached only after a classical post-processing step: the best 5% of the samples, then up to three sweeps of zero-temperature single-flip descent [4, Table I]. The exhaustive search here gives the same optima. The same post-processing, applied to uniform random bitstrings instead of quantum samples, reaches them in the following fraction of 100 independent repetitions:
+
+| Sequence | Qubits | Optimum ([4] and here) | Best before post-processing [4] | 2000 random samples | 20 000 random samples |
+|---|---|---|---|---|---|
+| GYDPETGTWG | 22 | −2.549 | −1.694 | 25% | 93% |
+| QPPGGSKVILF | 27 | −3.886 | −1.886 | 37% | 96% |
+| WTFGQGTKVEIK | 33 | −4.328 | −2.694 | 9% | 62% |
+
+2000 samples is one iteration of [4], 20 000 all ten. Before post-processing, the best quantum samples of [4] lie below the best random ones (median best random energy 0.0, 29.4 and 135.7 at 2000 samples; −1.286, 0.0 and 40.0 at 20 000). After it, the optimum is reached from random samples in most repetitions at the sample count of the hardware runs. This hints at a possible gap in attributing the optimal solutions of [4] on these instances to the quantum samples, since the post-processing finds them without quantum input.
+
 ## Scope
 
 - **Exact within the encoding.** The minimum is over every assignment of the free turn and contact qubits of the Hamiltonian above, including backbones that backtrack or overlap. The reduction to the turn qubits is checked against a joint brute force over all turn and contact qubits for random sequences with N = 8 and 9.
 - **Not run.** The quantum circuits and the post-processing of [1]. The values of [1] are those printed in its Table II.
+- **Post-processing of [4].** Sweeps visit the turn qubits and then the contact qubits in a fixed order, and a flip is kept when it does not raise the energy; [4] does not state the order, the treatment of ties, or whether the best 5% are taken per iteration or over all iterations, so both sample counts are shown.
 - **Not formalized.** The search is a numerical computation.
 
 ## Files
 
 - `sim/fold_exact.py`: the Hamiltonian and the exhaustive search. `python -I fold_exact.py SEQ [λ_b λ₁]` prints the ground state; `python -I fold_exact.py test` checks the qubit counts of [1, Table I], the reduction against the joint brute force, and the lattice positions.
 - `sim/mj_matrix.txt`: the contact energies of [3] as shipped with qiskit-nature 0.4.5, unchanged (Apache License 2.0, `sim/LICENSE-mj_matrix.txt`).
+- `sim/pp_random.py`: the post-processing of [4] on uniform random samples (`python -I pp_random.py SEQ 100 [S]`; `python -I pp_random.py test` checks the energy over all qubits against the exhaustive search).
+- `data/ground_states_n10_12.jsonl`, `data/pp_random.jsonl`: the instances of [4].
 - `data/ground_states.jsonl`: per sequence the energy, the turns of one ground state, its contacts, the number of ground states and the time; `data/penalties.jsonl`: the same for other penalty constants.
 
 ## References
@@ -50,3 +65,4 @@ where (k, l) runs over the pairs (i ± 1, j) and (i, j ± 1) inside the chain, �
 1. A. Gomez Cadavid, P. Nikačević, P. Chandarana, S. V. Romero, E. Solano, N. N. Hegade, M. A. Lopez-Ruiz, C. Girotto, H. Linn, H. Doga, E. Epifanovsky, P. Kl. Barkoutsos, A. Kaushik, M. Roetteler. Protein folding on a 64 qubit trapped-ion hardware via counterdiabatic quantum optimization. arXiv:2604.26861.
 2. A. Robert, P. Kl. Barkoutsos, S. Woerner, I. Tavernelli. Resource-efficient quantum algorithm for protein folding. npj Quantum Information 7, 38 (2021). arXiv:1908.02163.
 3. S. Miyazawa, R. L. Jernigan. Residue-residue potentials with a favorable contact pair term and an unfavorable high packing density term, for simulation and threading. Journal of Molecular Biology 256(3), 623–644, 1996.
+4. S. V. Romero, A. Gomez Cadavid, P. Nikačević, E. Solano, N. N. Hegade, M. A. Lopez-Ruiz, C. Girotto, M. Yamada, P. Kl. Barkoutsos, A. Kaushik, M. Roetteler. Protein folding with an all-to-all trapped-ion quantum computer. arXiv:2506.07866.
