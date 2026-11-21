@@ -19,7 +19,7 @@ Let G be a simple undirected graph with n vertices and m edges, let s and t be t
 | Minimum degree Ω(n) | Õ(n^{11/6}) [1] | Õ(n^{3/2}), tight |
 | Dense, lower bound in the list model | Ω(n) [2] | Ω(n^{3/2}) |
 
-Below m = n^{2/3} f, the bound of [1] is the smaller one: at m = n^{3/2} and f = n it is n^{19/12} against n^{13/8}. The bounds concern the value and a minimum cut. Computing a maximum flow in o(m) queries remains open, as in [1].
+Below m = n^{2/3} f, the bound of [1] is the smaller one of these two: at m = n^{3/2} and f = n it is n^{19/12} against n^{13/8}. The upper bound is improved to Õ(n^{3/2}) in [10], with Õ(n + min{m, n^{3/2}}) queries for every m, so dense graphs take Θ̃(n^{3/2}) queries with Theorem 1. The lower bound Ω(n^{3/2}) on dense graphs was also shown independently in [10]. This folder was posted on 5 Nov 2026 and [10] on 13 Nov 2026. Up to polylogarithmic factors, Theorem 2 uses fewer queries than [10] when n^{4/3} f^{1/3} < m < n²/f, which needs f < n^{2/3}. The bounds concern the value and a minimum cut. Computing a maximum flow in o(m) queries remains open, as in [1].
 
 The algorithm builds on the contraction scheme of [1], which goes back to [3]. Our contribution: the contraction is repeated without new queries until it is stable, the flow has minimum cost for a cost that counts the unknown edges, and low degree vertices are read first.
 
@@ -88,8 +88,7 @@ The script `sim/check_contract.py` tests safety and Lemmas A, B and D on graphs 
 
 ## Open
 
-- Whether Õ(n^{7/4}) can be lowered, against the lower bound Ω(n^{3/2}).
-- Bounds for moderately dense graphs, below m = n^{2/3} f.
+- Matching bounds for each edge count m below dense graphs, which are not established in [10] either.
 
 ## Related work
 
@@ -114,6 +113,8 @@ The script `sim/check_contract.py` tests safety and Lemmas A, B and D on graphs 
 [8] K. Kawarabayashi, M. Thorup. Deterministic edge connectivity in near-linear time. J. ACM 66(1), 2018.
 
 [9] A. Auza. PhD thesis, University of Technology Sydney. https://opus.lib.uts.edu.au/bitstream/10453/171481/1/thesis.pdf
+
+[10] T. Lu, R. Ren, S. Liu. Tight quantum query bounds for minimum cut and multicut on dense graphs. arXiv:2611.17845.
 
 ## Use of AI
 

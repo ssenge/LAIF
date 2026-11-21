@@ -12,7 +12,7 @@ With [1, Theorem 21], the complexity on dense graphs is Θ̃(n^{3/2} √τ) for 
 
 **Corollary 2 (simple graphs).** Edge connectivity of simple graphs needs Ω(n^{3/2}) adjacency array queries, so it is Θ̃(n^{3/2}) on dense simple graphs.
 
-For τ = 1, [1] suspects Θ̃(n) in the adjacency array model. Corollary 2 gives a different answer on dense graphs. For τ > 1, [1] suspects Θ̃(√(mnτ)), and Theorem 1 confirms this at m = Θ(n²).
+For τ = 1, [1] suspects Θ̃(n) in the adjacency array model. Corollary 2 gives a different answer on dense graphs. The bound Ω(n^{3/2}) for dense connected simple graphs was also shown independently in [6], also for the shores of a minimum cut and with sorted neighbour arrays. This folder was posted on 5 Nov 2026 and [6] on 13 Nov 2026. For τ > 1, [1] suspects Θ̃(√(mnτ)), and Theorem 1 confirms this at m = Θ(n²).
 
 **Theorem 3 (all densities).** For n ≤ m ≤ n²/32 and 1 ≤ τ ≤ n/4, with τm/n at least a suitable constant, Ω(m √(τ/n)) adjacency array queries are needed. For simple graphs this gives Ω(max{n, m/√n}), the term n coming from connectivity [2]. Compared with Õ(√(mnτ)), a factor n/√m remains open below dense graphs.
 
@@ -77,6 +77,8 @@ The script `sim/check_family.py` tests the minimum cut formula, the fixed degree
 [4] A. Nayak, F. Wu. The quantum query complexity of approximating the median and related statistics. STOC 1999. arXiv:quant-ph/9804066.
 
 [5] F. Harary. The maximum connectivity of a graph. Proc. Natl. Acad. Sci. USA 48(7), 1962.
+
+[6] T. Lu, R. Ren, S. Liu. Tight quantum query bounds for minimum cut and multicut on dense graphs. arXiv:2611.17845.
 
 ## Use of AI
 
