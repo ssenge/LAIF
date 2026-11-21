@@ -6,7 +6,7 @@ Written 21 Nov 2026.
 
 | | Problem | Previous best bound | This folder | Status |
 |---|---|---|---|---|
-| Thm 1 | ALL-KINGS_N | O(N^{3/2}), by a search over pairs with an inner search | Q(OV_⌈N/3⌉) ≤ Q(ALL-KINGS_N) ≤ Q(OV_{2N+2}) up to O(1) terms, hence Ω(N^{5/4}) and Õ(N^{17/12}), implied by [1] | Claim; checked by script |
+| Thm 1 | ALL-KINGS_N | O(N^{3/2}), by a search over pairs with an inner search | Q(OV_⌈N/3⌉) ≤ Q(ALL-KINGS_N) ≤ Q(OV_{2N+2}) up to O(1) terms, hence Ω(N^{5/4}) and Õ(N^{17/12}), implied by [1] | Lean for Lemmas 1 and 2 and both encodings; checked by script |
 
 So deciding whether every vertex is a king has the same quantum query complexity as Orthogonal Vectors, Boolean matrix product verification and diameter at most two of undirected graphs, up to constant factors in the instance size [1]. An improvement for any of these problems transfers to the others.
 
@@ -75,11 +75,22 @@ Since m ≥ 2, a zero row of X is orthogonal to every other row. So T_X is ALL-K
 
 `sim/check_reductions.py` checks Lemma 1 and the upper reduction on every tournament with at most 5 vertices and on 300 random tournaments with 6 to 14 vertices. It checks Lemma 2 on all 3 × 3 matrices and on 800 random 5 × 5 and 7 × 7 matrices.
 
-**Not formalized:** Lemmas 1 and 2, the two reductions, and the transfer of query costs.
+## Lean
+
+The library `Kings` in `lean/` (Lean 4, Mathlib at the revision pinned in `lean/lakefile.toml`) proves, with only the standard axioms (`lean/axioms.txt`):
+
+- `Kings.not_king_iff` (Lemma 1): in a tournament, x is not a king exactly when some y ≠ x beats every vertex that x beats;
+- `Kings.hasOV_vec_iff` (upper reduction): the list of vectors U_x, W_y and two all-ones vectors, with positions and coordinates V ⊕ V ⊕ Bool, has an orthogonal pair at distinct positions exactly when some vertex is not a king;
+- `Kings.rot_asymm`, `Kings.rot_total`, `Kings.rot_two`: the rotational tournament on 2h + 1 vertices is a tournament of diameter two for h ≥ 1;
+- `Kings.isTournament_arc`: T_X is a tournament;
+- `Kings.allKings_arc_iff` (Lemma 2): every vertex of T_X is a king exactly when every two rows of X, equal or not, share a one;
+- `Kings.allKings_arc_iff_not_hasOV` (lower reduction): for m = 2h + 1 ≥ 3, every vertex of T_X is a king exactly when X has no orthogonal pair of distinct rows.
+
+**Not formalized:** the transfer of query costs (each entry or orientation is fixed or one query), the padding of an even m, and the bounds of [1] on Orthogonal Vectors.
 
 ## Use of AI
 
-Claude Opus 5.5 (Anthropic) was used throughout this research: to explore approaches, to develop and check proofs, to write the check scripts, and to draft the text.
+Claude Opus 5.5 (Anthropic) was used throughout this research: to explore approaches, to develop and check proofs, to write the Lean files and the check scripts, and to draft the text.
 
 ## References
 
