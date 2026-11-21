@@ -79,7 +79,7 @@ def ew(deg, t, d):
     return {x: int(sum(x) == t + d) for x in itertools.product((0, 1), repeat=deg) if sum(x) in (t, t + d)}
 def gate(deg, kind):
     return {x: int(any(x)) if kind == 'or' else int(all(x)) for x in itertools.product((0, 1), repeat=deg)}
-def compose(f, g, deg, m):
+def compose(f, g, deg):
     out = {}
     for parts in itertools.product(list(g), repeat=deg):
         y = tuple(g[p] for p in parts)
@@ -87,9 +87,16 @@ def compose(f, g, deg, m):
             out[tuple(b for p in parts for b in p)] = f[y]
     return out
 
+for N in range(2, 6):
+    for d in range(1, N + 1):
+        for t in range(0, N - d + 1):
+            a, b = adv(ew(N, t, d), N), (( N - t) * (t + d)) ** 0.5 / d
+            assert a >= b * (1 - 1e-6), (N, t, d, a, b)
+print("exact-weight adversary bound checked for N <= 5")
+
 for deg, (t, d), kind in [(2, (0, 1), 'or'), (2, (1, 1), 'and'), (2, (0, 2), 'or'), (3, (1, 1), 'or')]:  # deg 3 takes about 10 min
     f, g = ew(deg, t, d), gate(deg, kind)
-    af, ag, afg = adv(f, deg), adv(g, deg), adv(compose(f, g, deg, deg), deg * deg)
+    af, ag, afg = adv(f, deg), adv(g, deg), adv(compose(f, g, deg), deg * deg)
     print(f"deg={deg} EW(t={t},D={d}) o {kind}: Adv(f)={af:.4f} Adv(g)={ag:.4f} product={af*ag:.4f} Adv(fog)={afg:.4f}")
     assert afg >= af * ag * (1 - 1e-3)
 print("composition lower bound checked")
