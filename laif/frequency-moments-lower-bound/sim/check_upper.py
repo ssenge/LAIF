@@ -1,6 +1,7 @@
 """Classical simulation of the estimator of Theorem 3 (multiplicities at most B).
 Quantum steps are replaced by their ideal outputs: approximate counting returns the marked count K
 within relative error eta, and Grover sampling returns a uniformly random marked position.
+The algorithm is simulated exactly as stated in Theorem 3, with chains of positions.
 Checks: (1) the estimate of F_k has small relative error on random inputs and on moment-matching
 instances; (2) the query cost proxy s_1 + sum_l s_{l+1} sqrt(N/K_l) + sum_l sqrt(N/K_l)/eta grows as N^{a_k};
 (3) Stirling identity n^k = sum_l S(k,l) n^(l falling) and the exponents of the level sizes."""
@@ -23,7 +24,6 @@ def exps(k):
     a = Fr(2 ** (k - 1) - 1, 2 ** k - 1)
     x = [a]
     for _ in range(k - 2): x.append(a - Fr(1, 2) + x[-1] / 2)
-    assert 1 - x[-1] / 2 - Fr(1, 2) == a - 0 or True
     assert Fr(1, 2) - x[-1] / 2 == a                                   # last estimate costs sqrt(N / s_{k-1})
     for i in range(k - 2): assert x[i + 1] - x[i] / 2 + Fr(1, 2) == a      # s_{l+1} sqrt(N/s_l) = N^a
     assert all(0 < xi <= a for xi in x) and all(2 * x[i + 1] < x[i] for i in range(k - 2))
@@ -38,43 +38,39 @@ def make_string(counts, rng):
 
 def true_Fk(counts, k): return sum(c * t ** k for t, c in counts.items())
 
-def estimate(a, k, C, eta, rng, B=None):
-    """Level l holds a multiset R_l of positions. rho_l = mean over r in R_l of (t_r - l), where t_r is the
-    number of occurrences of the symbol of r: the occurrences inside the queried set U are known, and the sum
-    of the outside occurrences over R_l equals sum_{y not in U} m_l(y), m_l(y) = #{r in R_l : a_r = a_y},
-    a bounded mean (approximate counting, relative error eta). The next level samples fresh positions y with
-    weight m_l(y) (Grover sampling plus rejection with acceptance m_l(y)/B)."""
+def estimate(a, k, C, eta, rng, B=5, theta=1e-3):
+    """Algorithm of Theorem 3. Level l holds a multiset R_l of s_l chains (ordered l-tuples of distinct
+    positions with equal symbols). m_l(y) = number of chains of R_l with the symbol of y that do not contain y.
+    rho_l is estimated as (sum_y m_l(y)) / s_l, by approximate counting within relative error eta; the next
+    level draws s_{l+1} independent uniform pairs (c, y) with y an extension of c (Grover sampling of y with
+    weight m_l(y), then c uniform among the m_l(y) chains). Only the multiplicity of each chain matters, so a
+    chain is stored as (symbol, multiplicity, positions)."""
     N = len(a); al, x = exps(k)
     s = [max(1, int(C * N ** float(xi))) for xi in x]
     order = np.argsort(a, kind="stable"); sa = a[order]
     starts = np.flatnonzero(np.r_[True, sa[1:] != sa[:-1]]); ends = np.r_[starts[1:], N]
     gid = np.empty(N, dtype=np.int64); gid[order] = np.repeat(np.arange(len(starts)), ends - starts)
-    mult = (ends - starts)[gid]                                            # t of each position
-    inU = np.zeros(N, dtype=bool)
-    R = rng.choice(N, size=s[0], replace=False); inU[R] = True
+    mult = (ends - starts)[gid]
+    R = [(int(gid[p]), (int(p),)) for p in rng.integers(0, N, size=s[0])]   # with replacement
     P = [None, float(N)]; cost = s[0]
     for l in range(1, k):
-        g = gid[R]
-        # occurrences of each R-symbol inside U, known exactly from the queried positions
-        Ug = gid[inU]; in_cnt = np.bincount(Ug, minlength=len(starts))
-        out_sum = float(np.sum(mult[R] - in_cnt[g]))                       # = sum over fresh y of m_l(y)
-        cost += math.sqrt(N / max(out_sum, 1)) / eta
-        out_hat = out_sum * (1 + eta * rng.uniform(-1, 1))
-        rho = (float(np.sum(in_cnt[g])) + out_hat) / len(R) - l
-        P.append(P[-1] * max(rho, 0.0))
+        e = np.array([mult_of - l for mult_of in (int(ends[g] - starts[g]) for g, _ in R)], float)
+        # abort rule of the proof: more than 2B chains on one symbol
+        if np.bincount([g for g, _ in R]).max() > 2 * B: return float("nan"), cost
+        tot = float(e.sum())                                               # = sum_y m_l(y)
+        cost += math.sqrt(2 * B * N / (len(R) * theta)) / eta
+        rho = tot * (1 + eta * rng.uniform(-1, 1)) / len(R)
+        if rho < theta:
+            P += [0.0] * (k - l); break
+        P.append(P[-1] * rho)
         if l == k - 1: break
-        if out_sum == 0:
-            P += [0.0] * (k - 1 - l); break
-        # fresh positions with weight m_l(y): pick r in R uniformly with weight (t_r - in_U), then a fresh position of its symbol
-        w = (mult[R] - in_cnt[g]).astype(float)
-        pick = rng.choice(len(R), size=s[l], p=w / w.sum())
+        pick = rng.choice(len(R), size=s[l], p=e / tot)                    # c with weight e(c), then y uniform
         newR = []
-        for i in pick:                                                     # distinct fresh positions
-            j = g[i]; cand = order[starts[j]:ends[j]]; cand = cand[~inU[cand]]
-            if len(cand) == 0: continue
-            y = int(rng.choice(cand)); inU[y] = True; newR.append(y)
-        cost += s[l] * math.sqrt(N / max(out_sum, 1)) * (B or 1)
-        R = np.array(newR); inU[R] = True
+        for i in pick:
+            g, ch = R[i]; cand = [int(q) for q in order[starts[g]:ends[g]] if int(q) not in ch]
+            newR.append((g, ch + (cand[rng.integers(0, len(cand))],)))
+        cost += s[l] * 2 * B * math.sqrt(4 * B * N / (len(R) * theta))
+        R = newR
     F = sum(stirling2(k, l) * P[l] for l in range(1, k + 1))
     return F, cost
 
@@ -86,7 +82,7 @@ for trial in range(24):
     w = rng.dirichlet(np.ones(B))
     counts = {t: int(N0 * w[t - 1] / t) for t in range(1, B + 1)}
     a = make_string(counts, rng)
-    F, _ = estimate(a, k, 40, 0.02, rng)
+    F, _ = estimate(a, k, 40, 0.02, rng, B=B)
     err = abs(F / true_Fk(counts, k) - 1); worst = max(worst, err)
     assert err < 0.06, (trial, counts, err)
 print(f"random profiles, N = 2e6, k = 3, 4, B = 5: worst relative error {worst:.3f}")
@@ -102,6 +98,15 @@ for z in (z0, z1):
     med = float(np.median(est))
     print("pair instance: F_3/N true", round(true_Fk(counts, 3) / N, 4), "median of 5 estimates", round(med, 4))
     assert abs(med - true_Fk(counts, 3) / N) < 0.06
+
+# profiles at the bound: almost all symbols of multiplicity exactly B, and B mixed with singletons
+for k, B, counts in ((3, 5, {5: 400000}), (3, 5, {1: 1000000, 5: 200000}), (4, 4, {4: 500000}),
+                     (4, 4, {1: 1600000, 4: 100000}), (3, 2, {1: 1000000, 2: 500000})):
+    a = make_string(counts, rng); N = len(a)
+    est = [estimate(a, k, 40, 0.02, rng, B=B)[0] for _ in range(5)]
+    med = float(np.median(est)); err = abs(med / true_Fk(counts, k) - 1)
+    print(f"bound profile k={k}, B={B}, {counts}: relative error of the median {err:.3f}")
+    assert err < 0.06
 
 # cost growth: fit the exponent of the cost proxy on 2-to-1 plus 3-to-1 inputs
 for k in (3, 4):
