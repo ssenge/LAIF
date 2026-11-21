@@ -11,3 +11,6 @@ d=4 t=4: a=0 face True (7 boxes); h >= 0 True (2633 boxes); lower 0.3440453365
 max violation incl. faces 5.706555932127877e-06
 d=5 t=4: a=0 face True (9 boxes); h >= 0 True (3603 boxes); lower 0.3330398405
   upper 0.3330512472  width 1.14e-05  support 22
+d=3: 704 states, 4-design error 7.2e-16 (t = 5: 3.2e-04), frame Fisher form 0.359452991604 = upper 0.359452991604
+d=4: 33792 states, 4-design error 4.8e-15 (t = 5: 8.9e-05), frame Fisher form 0.344065821031 = upper 0.344065821031
+d=5: 1622016 states, 4-design error 1.3e-13 (t = 5: 3.1e-05), frame Fisher form 0.333051247239 = upper 0.333051247239

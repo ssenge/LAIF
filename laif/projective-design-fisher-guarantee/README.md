@@ -46,7 +46,7 @@ that is, η_des(2, t) lies between the two values. Each bound is an explicit cer
 | 4 | 0.3440453 | 0.3440659 |
 | 5 | 0.3330398 | 0.3330513 |
 
-The lower bounds are again E_Haar[q] for explicit rational polynomials q. The upper bounds are the values of explicit rational measures with 22 support points in the reduced variables below; each gives a finite weighted 4-design with that Fisher ratio.
+The lower bounds are again E_Haar[q] for explicit rational polynomials q. The upper bounds are the values of explicit rational measures with 22 support points in the reduced variables below. Each gives an explicit finite weighted 4-design with that Fisher ratio.
 
 ## Proof
 
@@ -64,26 +64,23 @@ with f = 0 at the south pole, where the outcome has probability 0 and is omitted
 
 Lower bound: if q is in this span and f ≥ q, every t-design gives Σ π_i f(φ_i) ≥ E_Haar[q]. With b = s(1 − a), the condition is h(a, s, c) = d s (1 − a) c − q(a, s(1 − a), c) ≥ 0 on [0, 1]³, together with q(0, b, c) ≤ 0 for b ∈ [0, 1] on the face a = 0, where q does not depend on c. Both are certified by Bernstein subdivision in exact arithmetic (3441, 2633 and 3603 boxes for d = 3, 4, 5). The Haar moments are E[a^p b^r] = (d − 1)! p! r!/(d − 1 + p + r)!, with (a, b) distributed as Dirichlet(1, 1, d − 2), and E[c^l] = C(2l, l)/4^l, with the phase uniform and independent.
 
-Upper bound: a probability measure μ on the points (a, b, c) whose moments a^i b^j (abc)^l agree with the Haar moments for i + j + 2l ≤ 4 lifts to an H-invariant measure on the sphere, by averaging the state (√a, √b e^{iθ}, √(1 − a − b), 0, …, 0) with cos²θ = c over H. Its moments of degree (4, 4) are those of its H-average, so it is a 4-design, and its Fisher ratio at the frame is E_μ[f]. A finite measure with the same moments of degree (4, 4) and the same value of E[f] exists by the theorem on finitely supported measures with prescribed integrals of finitely many functions [2], so η_des(d, 4) ≤ E_μ[f]. The rational measures are in `sim/cert_d{3,4,5}_t4.json` and match the moment equations exactly.
+Upper bound: let μ be a probability measure on the points (a, b, c) whose moments a^i b^j (abc)^l agree with the Haar moments for i + j + 2l ≤ 4. Average the state (√a, √b e^{iθ}, √(1 − a − b) e_3), with cos²θ = c, over H. Call the result ν. For a polynomial p of degree at most (4, 4), both ν and the Haar measure are H-invariant, so E_ν[p] and E_Haar[p] equal the expectations of the H-average of p. That average lies in the span above, where the two measures agree, so ν is a 4-design. Its Fisher form at the frame is E_μ[f], since f is H-invariant. The average over H is replaced by an exact finite quadrature. Each point gives the states (√a, ±√b e^{iθ}, √(1 − a − b) u) and their complex conjugates. Here u runs over a cubature of the unit sphere of ℂ^{d−2}: 8 phases per coordinate, exact for phase frequencies up to 7, times Gauss-Legendre nodes for the uniform law of the squared moduli, exact for the degrees that occur. The joint phase does not affect any state. This gives explicit finite weighted 4-designs with 704, 33792 and 1622016 states for d = 3, 4, 5, with Fisher ratio E_μ[f] at the frame. The rational measures are in `sim/cert_d{3,4,5}_t4.json` and match the moment equations exactly. For d = 5, three of the 22 support points have a = 0. There the outcome has probability 0 at |ψ⟩ = e_1 and is omitted, as in the definition of the Fisher form.
 
 *Structure of the optimum (numerical).* The linear program over t-designs was solved numerically, and its optimum is supported on few orbits: 4 for t = 4, at (z, u) ≈ (−0.8591, 0), (−0.2490, 0.6760), (0.3610, 0) and (0.8031, 1 − z²), and 8 and 11 for t = 6 and 8. At these orbits the dual polynomial touches f. The two certificates are rational perturbations of this pair.
 
 ## Check
 
-`sim/lp_qubit.py` solves the linear program over measures on 6002 points of the sphere. It reproduces the exact values of [1] at t = 2, 3 and 5 (1/(3 + √3), 1/3 and 5/12). `sim/exact4.py` (t = 4) and `sim/exact_t.py` (any t) solve the optimality system, made of the touching conditions of the dual polynomial and the moment equations, in high precision; primal and dual values agree to at least 30 digits. `sim/run_cert4.py` and `sim/run_cert_t.py`, with `sim/cert4.py`, build and check the rational certificates and write `sim/cert_t{4,6,8}.json`. Output in `sim/out.txt` and `sim/out_t68.txt`. For d ≥ 3, `sim/lp_qudit.py` solves the linear program in (a, b, c) on a grid and reproduces the exact values of [1] at t = 2, 3 and 5 for d = 3 (1/6, 5/16 and 2/5, up to grid error). `sim/exchange_qudit.py` refines the dual by cutting planes, and `sim/run_cert_qudit2.py`, with `sim/cert_qudit.py`, builds and checks the rational certificates. Output in `sim/out_qudit.txt`.
+`sim/lp_qubit.py` solves the linear program over measures on 6002 points of the sphere. It reproduces the exact values of [1] at t = 2, 3 and 5 (1/(3 + √3), 1/3 and 5/12). `sim/exact4.py` (t = 4) and `sim/exact_t.py` (any t) solve the optimality system, made of the touching conditions of the dual polynomial and the moment equations, in high precision; primal and dual values agree to at least 30 digits. `sim/run_cert4.py` and `sim/run_cert_t.py`, with `sim/cert4.py`, build and check the rational certificates and write `sim/cert_t{4,6,8}.json`. Output in `sim/out.txt` and `sim/out_t68.txt`. For d ≥ 3, `sim/lp_qudit.py` solves the linear program in (a, b, c) on a grid and reproduces the exact values of [1] at t = 2, 3 and 5 for d = 3 (1/6, 5/16 and 2/5, up to grid error). `sim/exchange_qudit.py` refines the dual by cutting planes, and `sim/run_cert_qudit2.py`, with `sim/cert_qudit.py`, builds and checks the rational certificates. `sim/lift_qudit.py` builds the finite designs from the certificates. It checks E|⟨x|φ⟩|^{2t} = 1/C(d + t − 1, t) for t ≤ 4 at random unit vectors x to 1e-12, and it checks that the Fisher form at the frame, computed from the state vectors, equals the certificate value. Output in `sim/out_qudit.txt`.
 
 ## Scope
 
 - Qubits with t = 4, 6, 8, and dimensions 3, 4, 5 with t = 4.
-- For d ≥ 3 the upper bound is the value of an explicit H-invariant 4-design; the finite design with the same value is given by an existence theorem, not explicitly.
 - The bounds are computer-checked certificates in exact rational arithmetic; they are not formalized in Lean.
 - Closed forms of η_des(2, t) are not stated here; the values with many digits are numerical.
 
 ## References
 
 [1] Z. Yang, B. Xiao, H. Zhu. Sharp uniform Fisher information bounds from projective designs. arXiv:2611.17288.
-
-[2] H. Richter. Parameterfreie Abschätzung und Realisierung von Erwartungswerten. Blätter der DGVFM 3 (1957).
 
 ## Use of AI
 
