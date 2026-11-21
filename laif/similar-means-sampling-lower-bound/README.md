@@ -10,24 +10,26 @@ with ⟨φ_{i,j}|φ_{i,l}⟩ = δ_{jl}. The task is to tell γ-similar means fro
 
 | | Problem | Previous best bound | This folder | Status |
 |---|---|---|---|---|
-| Thm 1 | Testing γ-similar means against ε-far, quantum sampling model, lower bound | Ω(m^{1/3} + m^{1/4}/ε) [1]; upper bound Õ(√m/ε) [1] | Ω(r m^{1/2−1/(2r)}) for every r ≥ 2 for which a moment-matching pair (μ_0, μ_1) of order r with parameters (γ, ε_1) exists and every ε < ε_1, for all large enough m | Claim; checked by script |
+| Thm 1 | Testing γ-similar means against ε-far, quantum sampling model, lower bound | Ω(1/ε), from the query model [1]; Ω(m^{1/3} + m^{1/4}/ε) is stated in [1], see the remark below; upper bound Õ(√m/ε) [1] | Ω(r m^{1/2−1/(2r)}) for every r ≥ 2 for which a moment-matching pair (μ_0, μ_1) of order r with parameters (γ, ε_1) exists and every ε < ε_1, for all large enough m | Claim; checked by script |
 | Cor 2 | The same, explicit | as above | Ω(r m^{1/2−1/(2r)}) for every even r ≥ 4 when γ ≤ cos(π/r) and ε < 4γ/r³; so the exponent of m is 1/2 − O((ε/γ)^{1/3}) | Claim; checked by script |
 
-In [1] the dependence on m in the sampling model is named as not yet fully understood. Corollary 2 gives m^{3/8} for r = 4, already above m^{1/3}, and the exponent of m tends to 1/2 as ε/γ tends to 0. So the upper bound Õ(√m/ε) of [1] has the right exponent of m up to O((ε/γ)^{1/3}). The argument follows the moment-matching method of [2], adapted to collections in which every distribution carries the same weight 1/m.
+In [1] the dependence on m in the sampling model is named as not yet fully understood. For fixed ε and γ, Corollary 2 bounds the exponent of m: it gives m^{3/8} for r = 4 when ε < γ/16 and γ ≤ cos(π/4), and the exponent tends to 1/2 as ε/γ tends to 0. So the upper bound Õ(√m/ε) of [1] has the right exponent of m up to O((ε/γ)^{1/3}). The argument follows the moment-matching method of [2], adapted to collections in which every distribution carries the same weight 1/m.
+
+*Remark on the bound Ω(m^{1/3} + m^{1/4}/ε) of [1, Thm. 4.4].* Its proof uses the collection D′ with D′_i(0) = (1 + ε)/2 and D′_i(n) = (1 − ε)/2 for every i. All of these coins have the same mean, so D′ has γ-similar means, which hints at a possible gap in that proof. The table therefore lists Ω(1/ε) from the query model of [1, Thm. 3.4], which carries over since one call of O_B costs one call of the query oracle. For fixed ε and γ, Theorem 1 with the pairs of Corollary 2 gives the dependence on m on its own.
 
 A **moment-matching pair of order r with parameters (γ, ε_1)** is a pair of distributions μ_0, μ_1 on [0, 1] with finite rational support such that E_{μ_0}[p^j] = E_{μ_1}[p^j] for j = 1, …, r − 1, μ_0 is supported in an interval J_0 of length γ, and E_{μ_1}[dist(p, J)] ≥ ε_1 for every interval J of length γ.
 
 ## The hard instances
 
-Every distribution is a coin on {0, n}: D_i(n) = p_i and D_i(0) = 1 − p_i. Take m even, R = F = m/2, a centre c ∈ J_0, and an integer M ≥ m such that every support point of μ_0 and μ_1 times M is an integer. Let N = mM. For b ∈ {0, 1}, the instance Π_b is drawn as follows. R **random rows** get biases p_1, …, p_R drawn independently from μ_b, and F **filler rows** get bias c. Every row is a set of M positions in [N], of which pM carry the bit 1 and the rest the bit 0. The positions and the names in [m] of the rows are assigned uniformly at random, which gives a function f: [N] → [m] × {0, 1}.
+Every distribution is a coin on {0, n}: D_i(n) = p_i and D_i(0) = 1 − p_i. Take m even, R = F = m/2, a centre c ∈ J_0, and an integer M ≥ m such that cM and every support point of μ_0 and μ_1 times M are integers. Let N = mM. For b ∈ {0, 1}, the instance Π_b is drawn as follows. R **random rows** get biases p_1, …, p_R drawn independently from μ_b, and F **filler rows** get bias c. Every row is a set of M positions in [N], of which pM carry the bit 1 and the rest the bit 0. The positions and the names in [m] of the rows are assigned uniformly at random, which gives a function f: [N] → [m] × {0, 1}.
 
-*Simulation.* From the oracle of f, O_B is one query: prepare the uniform superposition over x ∈ [N], write f(x) = (i, b), and put |i⟩ in the first register and |bn⟩ in the second, with |x⟩ as the junk. Each row has exactly M positions, so each i has amplitude 1/√m, and D_i(n) = p_i. The inverse and the controlled versions also cost one query each. So a T-query algorithm in the sampling model gives a T-query algorithm with oracle access to f.
+*Simulation.* From the oracle of f, O_B costs one query: prepare the uniform superposition over x ∈ [N], write f(x) = (i, b), and put |i⟩ in the first register and |bn⟩ in the second, with |x⟩ as the junk. Each row has exactly M positions, so each i has amplitude 1/√m, and D_i(n) = p_i. The inverse and the controlled versions also cost one query each. So a T-query algorithm in the sampling model gives a T-query algorithm with oracle access to f.
 
-*Promise.* Under Π_0 every bias lies in J_0, so the collection has γ-similar means. Under Π_1, take any D* with γ-similar means, with all means in nJ for an interval J of length γ. For coins, ‖D_i − D_i*‖_1 ≥ 2|E[D_i] − E[D_i*]|/n ≥ 2 dist(p_i, J), so (1/m) Σ_i ‖D_i − D_i*‖_1 ≥ (1/R) Σ_{random rows} dist(p_i, J). The support of μ_1 is finite, so with probability tending to 1 as m → ∞ the empirical frequencies of the R random biases are within ε_1 − ε of μ_1 in ℓ1 distance, and then this average is above ε for every J at once.
+*Promise.* Under Π_0 every bias lies in J_0, so the collection has γ-similar means. Under Π_1, take any D* with γ-similar means, with all means in nJ for an interval J of length γ. For coins, ‖D_i − D_i*‖_1 ≥ 2|E[D_i] − E[D_i*]|/n ≥ 2 dist(p_i, J), so (1/m) Σ_i ‖D_i − D_i*‖_1 ≥ (1/R) Σ_{random rows} dist(p_i, J). The support of μ_1 is finite, so with probability tending to 1 as m → ∞ the empirical frequencies of the R random biases are within less than ε_1 − ε of μ_1 in ℓ1 distance, and then this average is above ε for every J at once.
 
 ## Theorem 1, the proof
 
-Fix a T-query algorithm. By [3] its acceptance probability is a polynomial of degree at most 2T in the indicators [f(x) = ℓ]. Average it over the uniform positions and names. For distinct x_1, …, x_s and labels ℓ_1, …, ℓ_s using u distinct names, the probability that f(x_t) = ℓ_t for all t is the sum, over ordered u-tuples of distinct rows ρ_1, …, ρ_u, of Π_v (k_{ρ_v})_{a_v} (k′_{ρ_v})_{b_v} / ((N)_s (m)_u). Here k_ρ and k′_ρ are the numbers of positions of row ρ with bit 1 and bit 0, a_v and b_v count the labels (v, 1) and (v, 0), and (x)_a is the falling factorial. This formula holds for every function whose rows hold N positions in total and number at most m.
+Fix a T-query algorithm. By the polynomial method [3], in its form for oracles with non-Boolean values [2, Lemma 3.1], its acceptance probability is a polynomial of degree at most 2T in the indicators [f(x) = ℓ]. Average it over the uniform positions and names. For distinct x_1, …, x_s and labels ℓ_1, …, ℓ_s using u distinct names, the probability that f(x_t) = ℓ_t for all t is the sum, over ordered u-tuples of distinct rows ρ_1, …, ρ_u, of Π_v (k_{ρ_v})_{a_v} (k′_{ρ_v})_{b_v} / ((N)_s (m)_u). Here k_ρ and k′_ρ are the numbers of positions of row ρ with bit 1 and bit 0, a_v and b_v count the labels (v, 1) and (v, 0), and (x)_a is the falling factorial. This formula holds for every function whose rows hold N positions in total and number at most m.
 
 **Lemma 1.** Fix the biases w of all rows but one random row. There is a polynomial G(t, p) of degree at most 2T in t with these properties. (i) G(1, p) is the averaged acceptance probability q_w(p) when that row has bias p. (ii) G(t, p) ∈ [0, 1] for every integer 0 ≤ t ≤ F + 1 and every p ∈ {0, 1/(tM), …, 1} (every p for t = 0). (iii) Writing G(t, p) = Σ_d h_d(p) t^d, each h_d is a polynomial in p of degree at most d.
 
@@ -45,7 +47,7 @@ A tester accepts with probability at least 2/3 under Π_0. Under Π_1 it accepts
 
 T ≥ (√m/4) · (r! (2r − 1)!!/(48m))^{1/(2r)} = Ω(r m^{1/2 − 1/(2r)}).
 
-The conditions of Lemma 2 hold since M ≥ m and F + 1 > m/2. ∎
+In the case x ≤ 1/2 we have 8T² ≤ m/4 < F + 1 ≤ M, so the conditions of Lemma 2 hold. ∎
 
 ## Corollary 2, the moment-matching pairs
 
@@ -53,11 +55,20 @@ Let r be even, s ≤ 1/2 and c = 1/2, and take the r + 1 nodes y_k = c + s cos(k
 
 E_{μ_1}[dist(p, J)] ≥ (2s − γ)/r ≥ (γ/r)(1 − cos(π/r)) ≥ 4γ/r³ for r ≥ 4.
 
-Rounding the nodes to rationals with a large common denominator keeps exact moment matching, since the weights are recomputed from the rounded nodes, and changes the masses and γ only slightly. So for every ε < 4γ/r³ there is a pair with ε_1 > ε, and Theorem 1 applies. For a given ratio ε/γ, the largest even r with 4γ/r³ > ε gives the exponent 1/2 − O((ε/γ)^{1/3}).
+For the rounding, shrink s slightly and round the nodes to rationals with a large common denominator. The weights are recomputed from the rounded nodes, so the moments still match exactly, μ_0 still lies in an interval of length at most γ, and the masses change only slightly. Since 1 − cos(π/r) > 4/r² holds strictly, the bound against the target γ survives with a margin. So for every ε < 4γ/r³ there is a pair with ε_1 > ε, and Theorem 1 applies. For a given ratio ε/γ, the largest even r with 4γ/r³ > ε gives the exponent 1/2 − O((ε/γ)^{1/3}).
 
 ## Scripts
 
-`sim/check_pairs.py` builds the pairs of Corollary 2 for r ∈ {4, 6, 8, 12, 16, 24} and two values of s, in exact rational arithmetic. It checks equal total mass and equal moments of orders 1 to r − 1, that μ_0 lies in an interval of length γ, and computes ε_1 exactly as a minimum over intervals of length γ. It also checks the two polynomial inequalities of Lemma 2 on 300 random polynomials.
+`sim/check_structure.py` checks the averaging formula by exhaustive enumeration of arrangements and namings on tiny instances (3 names, at most 6 positions). It checks the degree structure of Lemma 1 (iii) symbolically on 20 random monomials, and that G(1, p) equals the probability for the actual instance with filler rows.
+
+```
+python sim/check_structure.py
+formula ok
+Lemma 1 (iii) degree structure ok
+G(1, p) matches the actual instance
+```
+
+`sim/check_pairs.py` builds the pairs of Corollary 2 for r ∈ {4, 6, 8, 12, 16, 24} and two values of s, in exact rational arithmetic. It checks equal total mass and equal moments of orders 1 to r − 1, that μ_0 lies in an interval of length γ, and computes ε_1 exactly as a minimum over intervals of length γ. The column "outer mass" is the total mass of the two outer nodes in μ_1, 1/r each. It also checks the two polynomial inequalities of Lemma 2 on 300 random polynomials.
 
 ```
 python sim/check_pairs.py
