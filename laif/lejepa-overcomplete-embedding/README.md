@@ -34,7 +34,7 @@ For M = N the first term is N(1 − ρ²), and its ratio to the optimum 2N(1 −
 
 In the Gaussian world, an encoder with matched-level alignment L(h) ≤ cN(1 − ρ) therefore has K ≥ ((M − N)/2) log 1/(1 − ρ) − C for a constant C that depends on M, N and c only. The theorem applies to encoders whose output has a density, for example encoders with injected noise. For a deterministic Lipschitz encoder with M > N the divergence is infinite by Proposition 3.
 
-**Example (an exactly Gaussian over-complete encoder).** For N = 1 and M = 2, a space-filling map built from Hilbert curves on strips that shrink towards the tail of z, followed by the polar map of two Gaussians, sends z ∼ N(0, 1) exactly to N(0, I_2) up to the resolution of the curve. For 1 − ρ between 10⁻⁸ and 10⁻⁵, its loss is between 8.8 and 9.4 times the bound 2√(1 − ρ²) of Theorem 1, with a fitted exponent of 0.49 in 1 − ρ. So the order (1 − ρ)^{N/M} of Theorem 1 is reached in this range, up to a factor that grows slowly. Applied to each coordinate, the same map gives M = 2N for every N, with N times the loss.
+**Example (an exactly Gaussian over-complete encoder).** For N = 1 and M = 2, the following space-filling map sends z ∼ N(0, 1) to N(0, I_2), up to the resolution of the curve. Fold z to s = |2Φ(z) − 1|, which is uniform on [0, 1). Then use the polar map of two Gaussians, (a, b) ↦ √(−2 log(1 − a)) (cos 2πb, sin 2πb). The a-range is cut into annular bands: radii halve towards the centre, and the mass halves towards the tail. Each band of s is sent to the same band of a, and the band is filled by Hilbert curves on K cells in b, with K chosen so that every cell is round after the polar map. For 1 − ρ between 10⁻¹⁰ and 10⁻⁵, the loss of this map is between 4.94 and 5.10 times the bound 2√(1 − ρ²) of Theorem 1. So, numerically, the order (1 − ρ)^{N/M} of Theorem 1 is reached with a constant of about 5. Applied to each coordinate, the same map gives M = 2N for every N, with N times the loss and the same ratio to the bound.
 
 These results give a possible reason for the observation of [1, Appendix H.13] that encoders trained with a SIGReg penalty and M > N leave the surplus dimensions collapsed or fill them with nonlinear functions of z. By Theorem 1 and Corollary 2, an exactly Gaussian embedding in M > N dimensions costs far more alignment than the matched case allows.
 
@@ -54,15 +54,16 @@ These results give a possible reason for the observation of [1, Appendix H.13] t
 | Corollary 2 | As Theorem 1, M > N | Claim | 2026-11-21 |
 | Proposition 3 | Locally Lipschitz encoders, M > N | Claim; uses the behaviour of Hausdorff measure under Lipschitz maps [6] | 2026-11-21 |
 | Theorem 4 | Output law with a density and E‖X‖² = M | Claim | 2026-11-21 |
-| Example | N = 1, M = 2 and M = 2N, 1 − ρ from 10⁻⁸ to 10⁻¹ | Numerical | 2026-11-21 |
+| Example | N = 1, M = 2 and M = 2N, 1 − ρ from 10⁻¹⁰ to 10⁻² | Numerical | 2026-11-21 |
 
-Not covered: SIGReg with a finite set of directions, the penalized objective of LeJEPA with a finite weight, encoders with a predictor, and a construction for N = 1 and M = 2 whose ratio to the bound stays bounded as ρ → 1. For ratios M/N other than 2, Theorem 1 is not matched by a construction.
+Not covered: SIGReg with a finite set of directions, the penalized objective of LeJEPA with a finite weight, encoders with a predictor, and a proof that the ratio of the example stays bounded as ρ → 1. For ratios M/N other than 2, Theorem 1 is not matched by a construction.
 
 ## Simulations
 
 Scripts in [`sim/`](sim/), run with NumPy and SciPy, with asserts.
 
-- `strip_rate.py`: the encoder of the example, as a fixed map with 4¹⁶ cells per Hilbert square. Checks that h(z) is close to N(0, I_2) (Kolmogorov-Smirnov tests on 10⁶ samples, correlation below 0.01), that the loss is above the bound of Theorem 1 at 13 values of 1 − ρ from 10⁻⁸ to 10⁻¹, and that the fitted exponent over 1 − ρ from 10⁻⁸ to 10⁻⁵ lies within 0.08 of 1/2.
+- `round_rate.py`: the encoder of the example, as a fixed map with 4¹⁶ points per Hilbert cell. Checks that h(z) is close to N(0, I_2) (Kolmogorov-Smirnov tests on 2 · 10⁶ samples, correlation below 0.01), that the loss is above the bound of Theorem 1 at 9 values of 1 − ρ from 10⁻¹⁰ to 10⁻², and that its ratio to the bound stays below 5.5 and varies by less than 6 % over 1 − ρ from 10⁻¹⁰ to 10⁻⁵.
+- `strip_rate.py`: a variant with Hilbert squares of equal side in each strip (cells that are not round after the polar map), as a fixed map with 4¹⁶ cells per Hilbert square. Checks that h(z) is close to N(0, I_2) (Kolmogorov-Smirnov tests on 10⁶ samples, correlation below 0.01), that the loss is above the bound of Theorem 1 at 13 values of 1 − ρ from 10⁻⁸ to 10⁻¹, and that the fitted exponent over 1 − ρ from 10⁻⁸ to 10⁻⁵ lies within 0.08 of 1/2; its ratio to the bound grows from 8.8 to 9.4 in this range.
 - `hilbert_rate.py`: the same check for the map z ↦ Φ⁻¹(H(Φ(z))) with the plain Hilbert curve H and the Gaussian distribution function Φ. The loss is above the bound at all 9 values of 1 − ρ from 10⁻⁵ to 10⁻¹, with a fitted exponent of about 0.35 in this range.
 
 ## References
