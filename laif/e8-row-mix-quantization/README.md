@@ -28,12 +28,14 @@ On Qwen2.5-1.5B, with the same protocol and sequential calibration (the H of eac
 | Method | Bits per weight | Perplexity |
 |---|---|---|
 | 16-bit weights | 16 | 9.26 |
+| GPTQ, 2 bits, groups of 128 [1] | 2.252 | 18.98 |
 | GPTQ, 2 bits, groups of 64 [1] | 2.503 | 16.41 |
 | Same slope, scalar options only (2 to 4 bits) | 2.466 | 13.84 |
+| **Mix of E8P and scalar rows** | **2.014** | **15.67** |
 | **Mix of E8P and scalar rows** | **2.227** | **12.91** |
 | **Mix of E8P and scalar rows** | **2.459** | **11.93** |
 
-At 2.46 bits per weight the mix is 27% below GPTQ at 2.50 and 14% below the scalar-only allocation at 2.47.
+At 2.23 bits per weight the mix is 32% below GPTQ at 2.25, and at 2.46 it is 27% below GPTQ at 2.50 and 14% below the scalar-only allocation at 2.47.
 
 ## Method
 

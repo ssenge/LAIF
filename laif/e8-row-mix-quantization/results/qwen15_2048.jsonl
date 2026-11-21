@@ -1,5 +1,7 @@
 {"model": "qwen15", "spec": "none", "sink": [3.0, 0.0], "seq": true, "bpw": 16.0, "model_mb": 3087.428608, "ppl": 9.2642239715442, "nwin": null, "evlen": 2048}
+{"model": "qwen15", "spec": "gptq:b=2,g=128,act=1,clip=1,had=1", "sink": [3.0, 0.0], "seq": true, "bpw": 2.2521281950280114, "model_mb": 835.878272, "ppl": 18.975001529834948, "nwin": null, "evlen": 2048}
 {"model": "qwen15", "spec": "gptq:b=2,g=64,act=1,clip=1,had=1", "sink": [3.0, 0.0], "seq": true, "bpw": 2.5025166316526612, "model_mb": 876.885504, "ppl": 16.406926512338252, "nwin": null, "evlen": 2048}
 {"model": "qwen15", "spec": "gmix:lam=6.27e-06,refit=1", "sink": [3.0, 0.0], "seq": true, "bpw": 2.4659064797794117, "model_mb": 870.889696, "ppl": 13.844480452006431, "nwin": null, "evlen": 2048}
+{"model": "qwen15", "spec": "gmix:lam=1e-4,refit=1,e8=1", "sink": [3.0, 0.0], "seq": true, "bpw": 2.013843171545962, "model_mb": 796.85327, "ppl": 15.670588634599389, "nwin": null, "evlen": 2048}
 {"model": "qwen15", "spec": "gmix:lam=4.038e-06,refit=1,e8=1", "sink": [3.0, 0.0], "seq": true, "bpw": 2.227233239487201, "model_mb": 831.801114, "ppl": 12.907204469025736, "nwin": null, "evlen": 2048}
 {"model": "qwen15", "spec": "gmix:lam=2.468e-06,refit=1,e8=1", "sink": [3.0, 0.0], "seq": true, "bpw": 2.458519797078988, "model_mb": 869.679946, "ppl": 11.934341677301294, "nwin": null, "evlen": 2048}
