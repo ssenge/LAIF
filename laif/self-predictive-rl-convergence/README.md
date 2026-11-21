@@ -45,12 +45,24 @@ For t ≥ s there is a matrix W with smallest singular value at least 1 and Q(t)
 
 | Result | Scope | Status | Posted |
 |---|---|---|---|
-| Theorem 1 | Symmetric T, every solution of equation (5) of [1], any initialization with Φ(0)ᵀΦ(0) = I, any multiplicities | Claim; uses Sylvester's law of inertia and Ostrowski's theorem [4]; checked numerically | 2026-11-21 |
-| Theorem 2 | Symmetric T, Q(0) nonsingular | Claim; uses the Łojasiewicz gradient inequality [5]; checked numerically | 2026-11-21 |
+| Theorem 1 | Symmetric T, every solution of equation (5) of [1], any initialization with Φ(0)ᵀΦ(0) = I, any multiplicities | Lean (`eig_scale`, `eig_abs_mono`, with `stiefel` for the constraint and `abs_det_mono`), assuming Ostrowski's theorem [4] and global existence for linear differential equations [7]; checked numerically | 2026-11-21 |
+| Theorem 2 | Symmetric T, Q(0) nonsingular | Lean for the nonsingular limit predictor and the T-invariant span of the limit (`limit_of_flow`), assuming in addition convergence to a critical point by the Łojasiewicz theorem [5]; Claim for the signs of the eigenvalues of the limit predictor; checked numerically | 2026-11-21 |
 | Theorem 3 | Symmetric T, nonsingular T restricted to S; (iii) for rank T ≥ k and almost every start, while a set of starts of measure zero may end at subspaces of the form (ii) | Claim; uses Cauchy's interlacing theorem and the stable manifold theorem [6]; checked numerically | 2026-11-21 |
 | Corollary 4 | rank T ≥ k, and the k-th largest absolute eigenvalue larger than the (k + 1)-th or attained by eigenvalues of one sign; almost every start | Claim | 2026-11-21 |
 
 Not covered: non-symmetric transition matrices, the action-conditional objective of [2] (a sum of trace objectives over actions), finite step sizes and predictors that are not optimal at every time.
+
+## Lean
+
+The folder [`lean/`](lean/) holds the library `SelfPred` (Lean 4.36.0-rc1, Mathlib revision `d875a8de5222f62cf1c2fafc7984588adadc990a`). It uses only the standard axioms; [`lean/axioms.txt`](lean/axioms.txt) lists the output of `#print axioms` for every named theorem.
+
+- `SelfPred/Algebra.lean`: the identities behind Theorem 1. The derivative of the predictor is QG + GQ (`qdot_eq`), the vector field is tangent to the Stiefel manifold (`tangent_eq`), G is positive semidefinite (`G_posSemidef`), and a critical point with invertible predictor has a T-invariant span (`crit_invariant`).
+- `SelfPred/Flow.lean`: along a solution of equation (5) of [1], with derivatives taken entrywise. The constraint ΦᵀΦ = I holds for all t (`stiefel`). Q(t) = W Q(s) Wᵀ with WᵀW − I positive semidefinite for t ≥ s (`pred_conj`). The ordered eigenvalues satisfy λᵢ(Q(t)) = θᵢ λᵢ(Q(s)) with θᵢ ≥ 1 (`eig_scale`), so their signs are kept and their absolute values do not decrease (`eig_abs_mono`, Theorem 1), and |det Q(t)| ≥ |det Q(s)| (`abs_det_mono`). A limit that is a critical point, reached from a nonsingular Q(s), has a nonsingular predictor and a T-invariant span (`limit_invariant`).
+- `SelfPred/Limit.lean`: Theorem 2 in the form of `limit_of_flow`.
+
+Assuming: global existence for linear matrix differential equations with continuous coefficients (`LinearODEGlobal`, [7]), Ostrowski's theorem on congruences (`OstrowskiCongruence`, [4] and Theorem 4.5.9 of [8]), and, for Theorem 2, convergence of the flow to a critical point (`LojasiewiczLimit`, [5]). Each is a `Prop` that the theorems take as a hypothesis.
+
+Not formalized: the signs of the eigenvalues of the limit predictor in Theorem 2, Theorem 3 and Corollary 4.
 
 ## Simulations
 
@@ -68,6 +80,8 @@ Not covered: non-symmetric transition matrices, the action-conditional objective
 4. A. M. Ostrowski. A quantitative formulation of Sylvester's law of inertia. Proceedings of the National Academy of Sciences 45, 1959.
 5. S. Łojasiewicz. Sur les trajectoires du gradient d'une fonction analytique. Seminari di Geometria, Bologna, 1984.
 6. J. D. Lee, I. Panageas, G. Piliouras, M. Simchowitz, M. I. Jordan, B. Recht. First-order methods almost always avoid strict saddle points. Mathematical Programming 176, 2019. arXiv:1710.07406.
+7. P. Hartman. Ordinary Differential Equations. Wiley, 1964.
+8. R. A. Horn, C. R. Johnson. Matrix Analysis, 2nd edition. Cambridge University Press, 2013.
 
 ## Use of AI
 
