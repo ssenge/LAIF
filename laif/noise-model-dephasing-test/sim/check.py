@@ -4,7 +4,8 @@ and M_p = (1-p) id + p Lambda, Lambda = (id + d Omega)/(d+1).
 2. For uniformly random psi, w_k = |<u_k|psi>|^2 is uniform on the simplex; X = sum w_k^2 - 1/d has
    E X = (d-1)/(d(d+1)), E X^2 = E S^2 - 2 E S/d + 1/d^2 with E S^2 = 4(d+5)/((d+1)(d+2)(d+3)).
    Second-moment inequality: P(X >= E X/2) >= (E X)^2/(4 E X^2) >= c0 for all d >= 2.
-3. With eta = 1/(4 sqrt(6 d)) the HS distance of the two block outputs is at least 1/(2 sqrt(6 d)) when X >= E X/2."""
+3. Identity ||s_E - s_M||_2^2 = (1-q')^2 X + (q-q')^2 (1 - 1/d - X) for all q, q' in [0, 1]; with q' <= 1/2 the
+   distance is at least sqrt(X)/2 >= 1/(2 sqrt(6 d)) when X >= E X/2."""
 from fractions import Fraction as F
 import numpy as np
 rng = np.random.default_rng(0)
@@ -29,23 +30,25 @@ for d in range(2, 2001):
     EX = ES - F(1, d); EX2 = ES2 - 2 * ES / d + F(1, d * d)
     assert EX == F(d - 1, d * (d + 1)) and EX / 2 >= F(1, 6 * d)
     pz = EX * EX / (4 * EX2); c0 = pz if c0 is None or pz < c0 else c0
-print("min PZ constant over 2 <= d <= 2000:", float(c0))
+print("min second-moment constant over 2 <= d <= 2000:", float(c0))
 assert c0 >= F(1, 8)
 # monte carlo check of the moments
 for d in (2, 7, 30):
     W = rng.dirichlet(np.ones(d), 200000); S = (W ** 2).sum(1)
     assert abs(S.mean() - 2 / (d + 1)) < 4e-3 * 2 / (d + 1) + 1e-4
     assert abs((S ** 2).mean() - 4 * (d + 5) / ((d + 1) * (d + 2) * (d + 3))) < 0.02 * 4 * (d + 5) / ((d + 1) * (d + 2) * (d + 3))
-# 3. HS gap of the block outputs on random instances
+# 3. identity and gap of the block outputs on random instances
 for d in (2, 4, 16, 64):
-    eta = 1 / (4 * np.sqrt(6 * d)); bad = 0; trials = 400
+    bad = 0; trials = 400
     for _ in range(trials):
         U = haar(d); v = haar(d)[:, 0]; psi = np.outer(v, v.conj())
         w = abs(U.conj().T @ v) ** 2; X = (w ** 2).sum() - 1 / d
-        q, qp = eta * rng.random(), eta * rng.random()      # any contamination weights up to eta
+        q, qp = rng.random(), rng.random() / 2      # any q, and q' = a^m <= 1/2
         sE = (1 - q) * dephase(U, psi) + q * psi; sM = (1 - qp) * np.eye(d) / d + qp * psi
-        hs = np.linalg.norm(sE - sM)
-        if X >= (d - 1) / (2 * d * (d + 1)): assert hs >= 1 / (2 * np.sqrt(6 * d)) - 1e-12
+        hs2 = np.linalg.norm(sE - sM) ** 2
+        assert abs(hs2 - ((1 - qp) ** 2 * X + (q - qp) ** 2 * (1 - 1 / d - X))) < 1e-10
+        assert np.sqrt(hs2) >= np.sqrt(X) / 2 - 1e-12
+        if X >= (d - 1) / (2 * d * (d + 1)): assert np.sqrt(hs2) >= 1 / (2 * np.sqrt(6 * d)) - 1e-12
         else: bad += 1
     print(f"d={d}: fraction of psi with X < E X/2: {bad / trials:.3f}")
 print("all checks passed")

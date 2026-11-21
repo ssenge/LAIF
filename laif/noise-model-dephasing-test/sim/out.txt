@@ -1,4 +1,4 @@
-min PZ constant over 2 <= d <= 2000: 0.1388888888888889
+min second-moment constant over 2 <= d <= 2000: 0.1388888888888889
 d=2: fraction of psi with X < E X/2: 0.415
 d=4: fraction of psi with X < E X/2: 0.245
 d=16: fraction of psi with X < E X/2: 0.075
