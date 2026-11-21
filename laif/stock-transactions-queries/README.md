@@ -6,7 +6,7 @@ Written 21 Nov 2026.
 
 | | Problem | Previous best bound | This folder | Status |
 |---|---|---|---|---|
-| Thm 1 | f(t), upper bound | O(√(n log^{2t−1} n)) for every constant t [1]; √n · exp(O(log² t + log t · log log n)) [2]; both independent of W | O(√(nt) · log(W+2) · log^{3/2}(n+1) · log(n log(W+2))) | Claim; checked by script |
+| Thm 1 | f(t), upper bound | O(√(n log^{2t−1} n)) for every constant t [1]; √n · exp(O(log² t + log t · log log n)) [2]; both independent of W | O(√(nt) · log(W+2) · log^{3/2}(n+1) · log(n log(W+2))) | Claim; Lemmas 1 and 4 and the run cost in Lean; checked by script |
 | Thm 2 | f(t), lower bound | Ω(√n) | Ω(√(nt)) for 1 ≤ t ≤ n/4, already for W = 1, implied by [4] | Claim; encoding checked by script |
 
 So for prices of polynomial size, log W = O(log n), and 1 ≤ t ≤ n/4, the quantum query complexity of f(t) is Θ̃(√(nt)), polynomial in the number of transactions. The bounds of [1] and [2] are stated for exactly t transactions. They apply to f(t) as well: f(t) is the largest of the values for exactly 0, …, t transactions, which for [2] are entries of one matrix product and for [1] come from t + 1 runs.
@@ -66,7 +66,16 @@ python sim/check_zigzag.py
 lower bound encoding checked
 ```
 
-**Not formalized:** all of the folder.
+## Lean
+
+The library `Stock` in `lean/` (Lean 4, toolchain and Mathlib revision pinned in `lean-toolchain` and `lake-manifest.json`) proves, with only the standard axioms (`lean/axioms.txt`):
+
+* `zigzag_eq_dp`: Lemma 1, for prices over ℚ and every fee λ ≥ 0, the zigzag value equals the final cash of the fee programme.
+* `slope_antitone`, `slope_mul_le`, `le_slope_mul`: slope bounds for an integer sequence that is concave on 0, …, n.
+* `recover`: Lemma 4, with concavity and monotonicity of f taken as hypotheses.
+* `sum_sqrt_le`: Σ √ℓ_i ≤ √(m Σ ℓ_i), the cost bound of one run.
+
+**Not formalized:** Lemma 2, the concavity of f (Lemma 3), the quantum algorithm and its query count beyond the run cost bound, and Theorem 2.
 
 ## Use of AI
 

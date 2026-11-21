@@ -1,0 +1,6 @@
+'Stock.zigzag_eq_dp' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Stock.slope_antitone' depends on axioms: [propext, Quot.sound]
+'Stock.slope_mul_le' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Stock.le_slope_mul' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Stock.recover' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Stock.sum_sqrt_le' depends on axioms: [propext, Classical.choice, Quot.sound]
