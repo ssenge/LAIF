@@ -10,8 +10,8 @@ with ⟨φ_{i,j}|φ_{i,l}⟩ = δ_{jl}. The task is to tell γ-similar means fro
 
 | | Problem | Previous best bound | This folder | Status |
 |---|---|---|---|---|
-| Thm 1 | Testing γ-similar means against ε-far, quantum sampling model, lower bound | Ω(1/ε), from the query model [1]; Ω(m^{1/3} + m^{1/4}/ε) is stated in [1], see the remark below; upper bound Õ(√m/ε) [1] | Ω(r m^{1/2−1/(2r)}) for every r ≥ 2 for which a moment-matching pair (μ_0, μ_1) of order r with parameters (γ, ε_1) exists and every ε < ε_1, for all large enough m | Claim; checked by script |
-| Cor 2 | The same, explicit | as above | Ω(r m^{1/2−1/(2r)}) for every even r ≥ 4 when γ ≤ cos(π/r) and ε < 4γ/r³; so the exponent of m is 1/2 − O((ε/γ)^{1/3}) | Claim; checked by script |
+| Thm 1 | Testing γ-similar means against ε-far, quantum sampling model, lower bound | Ω(1/ε), from the query model [1]; Ω(m^{1/3} + m^{1/4}/ε) is stated in [1], see the remark below; upper bound Õ(√m/ε) [1] | Ω(min{√m, r m^{1/2−1/(2r)}}) for every fixed r ≥ 2 for which a moment-matching pair (μ_0, μ_1) of order r with parameters (γ, ε_1) exists and every ε < ε_1, for all m above a threshold that depends on the pair and on ε_1 − ε | Claim; checked by script |
+| Cor 2 | The same, explicit | as above | Ω(m^{1/2−1/(2r)}) for every fixed even r ≥ 4 when γ ≤ cos(π/r) and ε < 4γ/r³, for large enough m; so the exponent of m is 1/2 − O((ε/γ)^{1/3}) | Claim; checked by script |
 
 In [1] the dependence on m in the sampling model is named as not yet fully understood. For fixed ε and γ, Corollary 2 bounds the exponent of m: it gives m^{3/8} for r = 4 when ε < γ/16 and γ ≤ cos(π/4), and the exponent tends to 1/2 as ε/γ tends to 0. So the upper bound Õ(√m/ε) of [1] has the right exponent of m up to O((ε/γ)^{1/3}). The argument follows the moment-matching method of [2], adapted to collections in which every distribution carries the same weight 1/m.
 
@@ -43,9 +43,9 @@ Fix a T-query algorithm. By the polynomial method [3], in its form for oracles w
 
 |Pr_{Π_0}[accept] − Pr_{Π_1}[accept]| ≤ 8m x^r / (r! (2r − 1)!!).
 
-A tester accepts with probability at least 2/3 under Π_0. Under Π_1 it accepts with probability at most 1/3 plus the probability that the instance is not ε-far, so for large m the difference is at least 1/6. Either x > 1/2, which means T > √(m/32), or x^r ≥ r!(2r − 1)!!/(48m), which means
+A tester accepts with probability at least 2/3 under Π_0. Let m be so large that Π_1 is ε-far with probability at least 5/6. Under Π_1 it accepts with probability at most 1/3 plus the probability that the instance is not ε-far, so for large m the difference is at least 1/6. Either x > 1/2, which means T > √(m/32), or x^r ≥ r!(2r − 1)!!/(48m), which means
 
-T ≥ (√m/4) · (r! (2r − 1)!!/(48m))^{1/(2r)} = Ω(r m^{1/2 − 1/(2r)}).
+T ≥ (√m/4) · (r! (2r − 1)!!/(48m))^{1/(2r)} which is Ω(r m^{1/2 − 1/(2r)}) for fixed r.
 
 In the case x ≤ 1/2 we have 8T² ≤ m/4 < F + 1 ≤ M, so the conditions of Lemma 2 hold. ∎
 
