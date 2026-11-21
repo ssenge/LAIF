@@ -1,0 +1,13 @@
+d=3 t=2: LP 0.16666685814869597
+d=3 t=3: LP 0.3127450980392157
+d=3 t=5: LP 0.40012303686906875
+ref c2=0.166667 c3=0.312500 t=4 in [0.352500, 0.375000] c5=0.400000
+max violation incl. faces 2.854749348191188e-06
+d=3 t=4: a=0 face True (1 boxes); h >= 0 True (3441 boxes); lower 0.3594473062
+  upper 0.3594529916  width 5.69e-06  support 22
+max violation incl. faces 1.0350623127486358e-05
+d=4 t=4: a=0 face True (7 boxes); h >= 0 True (2633 boxes); lower 0.3440453365
+  upper 0.3440658210  width 2.05e-05  support 22
+max violation incl. faces 5.706555932127877e-06
+d=5 t=4: a=0 face True (9 boxes); h >= 0 True (3603 boxes); lower 0.3330398405
+  upper 0.3330512472  width 1.14e-05  support 22
