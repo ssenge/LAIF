@@ -1,0 +1,4 @@
+antisymmetric projector: tr = (1 - F)/2; threshold 1/4 with slack (1 - 2 eps)/4 separates yes and no
+hard pair: trace distance sqrt(1 - (4 eps(1-eps))^m) exact; smallest m with error <= delta is at least the bound (largest bound/m = 1.000); bound >= 4 eps(1-eps) log(1/(4 delta(1-delta)))/(1-2eps)^2
+1 - 2 eps >= 1 - 2 sqrt(eps) on [0, 1]
+check: all asserts passed
