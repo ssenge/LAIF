@@ -191,15 +191,15 @@ All results below can be searched, filtered and sorted in the [results explorer]
 
 ## Score
 
-Each result carries an importance score from 0 to 10. The score is our own assessment of how much the result would matter if it is correct, measured against the previous best bound in its row. It says nothing about how well the result is checked: the Status column states what is machine-checked in Lean, what is a Claim and what is numerical only. Scores come in steps of 0.5.
+Each result carries an importance score from 0 to 10. The score is our own assessment of how much the result would matter if it is correct, measured against the previous best result in its row: a bound, an algorithm, a method or a baseline. It says nothing about how well the result is checked: the Status column states what is machine-checked in Lean, what is a Claim and what is numerical only. Scores come in steps of 0.5.
 
 | Score | Meaning |
 |---|---|
 | 0 | Routine: a reproduction, a supporting lemma or a correction |
 | 1 | A corollary of known results, a certified known optimum, or a classical baseline that matches or beats a published claim |
-| 2 | A tight bound on a restricted class, or a narrow open question of one paper answered |
-| 3 | A new bound on a stated open problem in a niche |
-| 4 | A clear improvement on a known bound in an active area |
+| 2 | A tight result on a restricted class, or a narrow open question of one paper answered |
+| 3 | A new bound or a faster algorithm for a stated open problem in a niche |
+| 4 | A clear improvement over the best known bound or algorithm in an active area |
 | 5 | A recognized open problem of a subfield settled |
 | 6–7 | A well-known problem settled that was open for ten years or more, for example almost-linear-time maximum flow |
 | 8 | A landmark of a field, for example polynomial-time quantum factoring or deterministic polynomial-time primality testing |
