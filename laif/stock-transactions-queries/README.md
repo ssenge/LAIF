@@ -11,7 +11,7 @@ Written 21 Nov 2026.
 
 So for prices of polynomial size, log W = O(log n), and 1 ≤ t ≤ n/4, the quantum query complexity of f(t) is Θ̃(√(nt)), polynomial in the number of transactions. The bounds of [1] and [2] are stated for exactly t transactions. They apply to f(t) as well: f(t) is the largest of the values for exactly 0, …, t transactions, which for [2] are entries of one matrix product and for [1] come from t + 1 runs.
 
-**Scope.** For log W = O(log n), the bound of Theorem 1 is O(√(nt) log^{7/2} n). It is smaller than the bound of [1] for every constant t ≥ 5, and smaller than the bound of [2] for every t above a constant that depends on the constant in the exponent of [2]; for t = n^δ with δ > 0 the bound of [2] exceeds n, while Theorem 1 gives n^{(1+δ)/2} polylog n. The factor log(W+2) is not present in [1] and [2], so for prices with very many bits their bounds are smaller. The bound counts queries only.
+**Scope.** For log W = O(log n), the bound of Theorem 1 is O(√(nt) log^{7/2} n). It is smaller than the bound of [1] for every constant t ≥ 5, and smaller than the bound of [2] for every t above a constant that depends on the constant in the exponent of [2]; for t = n^δ with 0 < δ < 1 the bound of [2] exceeds the trivial n queries, while Theorem 1 gives n^{(1+δ)/2} polylog n, to our knowledge the first sublinear bound for a polynomial number of transactions, and tight up to polylogarithmic factors by Theorem 2. The factor log(W+2) is not present in [1] and [2], so for prices with very many bits their bounds are smaller. The bound counts queries only.
 
 ## The fee problem and its zigzag
 
