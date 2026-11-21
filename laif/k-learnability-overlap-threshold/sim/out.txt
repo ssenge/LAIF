@@ -1,0 +1,5 @@
+cert_54.json: n = 5, k = 4, max overlap <= 612528751/1000000000 = 0.612528751, threshold (4) = 0.612372436, bound of [1, Thm 3] = 0.750000, Tr(XG) = -7.937e-08: not 4-learnable
+cert_53.json: n = 5, k = 3, max overlap <= 410428727/1000000000 = 0.410428727, threshold (4) = 0.408248290, bound of [1, Thm 3] = 0.500000, Tr(XG) = -8.172e-08: not 3-learnable
+cert_63.json: n = 6, k = 3, max overlap <= 319134087/1000000000 = 0.319134087, threshold (4) = 0.316227766, bound of [1, Thm 3] = 0.400000, Tr(XG) = -7.793e-08: not 3-learnable
+cert_64.json: n = 6, k = 4, max overlap <= 230595389/500000000 = 0.461190778, threshold (4) = 0.447213595, bound of [1, Thm 3] = 0.600000, Tr(XG) = -1.012e-06: not 4-learnable
+cert_65.json: n = 6, k = 5, max overlap <= 351956057/500000000 = 0.703912114, threshold (4) = 0.632455532, bound of [1, Thm 3] = 0.800000, Tr(XG) = -9.773e-07: not 5-learnable
