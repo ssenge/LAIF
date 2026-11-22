@@ -33,9 +33,10 @@ def play(a, pi, tie=None):
 def opt(a): return sum(map(F, a)) - max(map(F, a))
 
 
-def perms_AB(a):
+def perms_AB(a, o=None):
     """The two orders of [Thm 5.4]: OPT omits edge o (largest), WLOG left part >= right part (else mirror)."""
-    n = len(a) - 1; o = max(range(n + 1), key=lambda k: a[k])
+    n = len(a) - 1
+    if o is None: o = max(range(n + 1), key=lambda k: a[k])
     A = list(range(n - 1, o - 1, -1)) + list(range(0, o)); B = list(range(n - 1, -1, -1))
     return A, B, o
 
@@ -45,8 +46,8 @@ def mirror(a): return list(reversed(a))
 
 def best_two(a):
     n = len(a) - 1; o = max(range(n + 1), key=lambda k: a[k])
-    b = a if sum(a[:o]) >= sum(a[o + 1:]) else mirror(a)
-    A, B, _ = perms_AB(b)
+    b, ob = (a, o) if sum(a[:o]) >= sum(a[o + 1:]) else (mirror(a), n - o)   # o moves with the mirror
+    A, B, _ = perms_AB(b, ob)
     worst = lambda pi: play(b, pi)[0]   # worst tie choices
     return min(worst(A), worst(B)) / opt(b)
 

@@ -13,8 +13,8 @@ def rows_low(case):
 
 def check(a):
     n = len(a) - 1; o = max(range(n + 1), key=lambda k: a[k])
-    b = a if sum(a[:o]) >= sum(a[o + 1:]) else mirror(a)
-    A, B, o = perms_AB(b)
+    b, o = (a, o) if sum(a[:o]) >= sum(a[o + 1:]) else (mirror(a), n - o)   # o moves with the mirror
+    A, B, o = perms_AB(b, o)
     _, dA = play(b, A); _, dB = play(b, B)
     T = sum(b); OPT = T - b[o]
     if OPT == 0: return None
