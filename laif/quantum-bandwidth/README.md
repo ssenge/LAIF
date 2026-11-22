@@ -17,7 +17,7 @@ Status: Claim. Assuming the bucket-assignment method of [1] as restated in [2, S
 | Quantum, polynomial space, no quantum random access memory | | **O(3.1623^n)** |
 | Quantum, exponential space with quantum random access memory | O*(2.945^n) [2, Theorem 6] | |
 
-Theorem 1 is below every classical bound above, including those with exponential space.
+Theorem 1 is below every classical bound above, including those with exponential space. For large bandwidth the classical bound is smaller: the restricted algorithm of [1] decides b ≥ n/2 in time O*(2.83^n), so the gain of Theorem 1 is for b < n/2.
 
 Related work: the quantum halving step over middle sets is the polynomial-space end of the time-space trade-offs of [8]. Theorem 1 combines it with a search over the valid pairs of [1, 2].
 
@@ -51,6 +51,7 @@ Run it with `python bandwidth.py` in `sim/`. It exits nonzero on a failed check.
 - The reduction of [1] is used as restated in [2], where b + 1 divides n; the smaller last bucket is our extension, and the script checks it and the reduction on small graphs only.
 - The bound counts all 2k · 5^{n−1} valid pairs at the top level and all subsets of the right size below it, with no gate count.
 - The polynomial factors and the constant 2^{O(D)} are not evaluated.
+- For b ≥ n/2 the classical algorithm of [1] in time O*(2.83^n) is faster.
 
 ## References
 
@@ -58,9 +59,9 @@ Run it with `python bandwidth.py` in `sim/`. It exits nonzero on a failed check.
 2. A. Ambainis, K. Balodis, J. Iraids, M. Kokainis, K. Prūsis, J. Vihrovs. Quantum speedups for exponential-time dynamic programming algorithms. arXiv:1807.05209.
 3. L. K. Grover. A fast quantum mechanical algorithm for database search. STOC 1996.
 4. C. H. Bennett. Time/space trade-offs for reversible computation. SIAM Journal on Computing 18(4), 1989.
-5. M. Cygan, M. Pilipczuk. Bandwidth and distortion revisited. arXiv:1004.5012.
+5. M. Cygan, M. Pilipczuk. Bandwidth and distortion revisited. Discrete Applied Mathematics 160, 2012. arXiv:1004.5012.
 6. M. Cygan, M. Pilipczuk. Exact and approximate bandwidth. Theoretical Computer Science 411(40), 2010.
-7. M. Cygan, M. Pilipczuk. Even faster exact bandwidth. arXiv:0902.1661.
+7. M. Cygan, M. Pilipczuk. Even faster exact bandwidth. ACM Transactions on Algorithms 8(1), 2012. arXiv:0902.1661.
 8. S. Caroppo, J. Vihrovs, D. Zajakina, A. Zajakins. Quantum time-space tradeoffs for exponential dynamic programming. arXiv:2604.02233.
 
 ## Use of AI
