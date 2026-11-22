@@ -12,7 +12,9 @@ For a graph G and a budget k, Vertex Cover above LP asks for a vertex cover of s
 
 **Theorem 4.** Cluster Editing (at most k edge insertions and deletions that turn G into a disjoint union of cliques) has a quantum algorithm with bounded error, polynomial space and no quantum random access memory, in time O(1.2721^k) · poly(n).
 
-Status: Claim. For Odd Cycle Transversal the matching bound on the relaxation and the bound on μ are in Lean (`lean/FptBranching.lean`), and so are the bases; for the problems of Theorem 2 only the arithmetic of the budget step is. The search tree of [1] and the reductions of [1] and [4] are used as stated there (Assuming), and the walk is the direct application of [2] and [3]. For Theorem 3 the search trees of [5], [7] and [9] are used as stated there, with the changes of Section 3; the bounds of [9] are computer-assisted and are used as stated (Assuming). For Theorem 4 the search tree of [15] and Theorem 1 of [2] are used as stated, with the split step of Section 4. The bases and the split step are checked by script.
+**Theorem 5.** Mixed Dominating Set (at most k vertices and edges that together dominate all vertices and edges) has quantum algorithms of the same kind in time O(1.8734^k) · poly(n) and in time O(1.3825^n).
+
+Status: Claim. For Odd Cycle Transversal the matching bound on the relaxation and the bound on μ are in Lean (`lean/FptBranching.lean`), and so are the bases; for the problems of Theorem 2 only the arithmetic of the budget step is. The search tree of [1] and the reductions of [1] and [4] are used as stated there (Assuming), and the walk is the direct application of [2] and [3]. For Theorem 3 the search trees of [5], [7] and [9] are used as stated there, with the changes of Section 3; the bounds of [9] are computer-assisted and are used as stated (Assuming). For Theorem 4 the search tree of [15] and Theorem 1 of [2] are used as stated, with the split step of Section 4. For Theorem 5 the search trees of [18] are used as stated, with the tree of the first step given in Section 5. The bases and the split step are checked by script.
 
 ## Before and after
 
@@ -27,6 +29,8 @@ Status: Claim. For Odd Cycle Transversal the matching bound on the relaxation an
 | Cluster Editing | 1.6181^k classically [15]; 1.7321^k quantum [17]; 1.3267^k quantum, the square root of the tree of [16] | **1.2721^k** |
 | Cluster Vertex Deletion | 1.811^k classically [5]; 1.7321^k quantum [17]; 1.3821^k quantum, implied by [6] with [3] | **1.3458^k** |
 | Edge Dominating Set | 2.2351^k classically [7]; 1.5215^k quantum, implied by [8] with [3] | **1.4951^k** |
+| Mixed Dominating Set, parameter k | 3.510^k classically, polynomial space [18] | **1.8734^k** |
+| Mixed Dominating Set, n vertices | 1.912^n classically, polynomial space [18] | **1.3825^n** |
 | 3-Path Vertex Cover | 1.708^k classically [9]; 1.3089^k quantum, implied by [10] with [3] | **1.3071^k** |
 | 4-Path Vertex Cover | 2.138^k classically [9]; 1.6184^k quantum, implied by [11] with [3] | **1.4624^k** |
 | 5-, 6-, 7-Path Vertex Cover | 2.636^k, 3.334^k, 3.959^k classically [9]; 1.9863^k, 2.2242^k, 2.4395^k quantum, implied by [12] with [3] | **1.6238^k, 1.8261^k, 1.9899^k** |
@@ -67,7 +71,16 @@ The algorithm of [15, Theorem 2] works on integer-weighted instances, with s(uv)
 
 Theorem 1 of [2] then gives √(φ^k) · poly(n) = O(1.2721^k) · poly(n). A solution comes by self-reduction.
 
-## 5. Lean
+## 5. Mixed Dominating Set: Theorem 5
+
+Both algorithms of [18] are search trees whose nodes do polynomial work, with polynomial leaves.
+
+- **Parameter k [18, Theorem 8].** Reduction and branching rules build the sets D_f and P_f of a nice solution with a measure l ≤ 2k, and when no rule applies the solution is completed optimally in polynomial time [18, Lemma 10]. The tree has at most 1.8734^l · poly(n) nodes, so the walk of [3] runs in time 1.8734^{l/2} · poly(n) ≤ 1.8734^k · poly(n). A leaf is marked if its completion has size at most k.
+- **Parameter n [18, Theorem 7].** The first step lists all minimal vertex covers. As a tree, it takes a vertex v of minimum degree in the remaining graph and has one child for each u ∈ N[v], with u put into an independent set and N[u] removed. Every child removes at least deg(v) + 1 vertices, so the tree has O*(3^{n/3}) nodes, and every maximal independent set is a leaf, so every minimal vertex cover is the complement of a leaf. Each leaf is the root of the tree of the second step, with at most 1.3252^n · poly(n) nodes [18, Section 4], whose leaves are completed by a minimum edge cover [18, Lemma 8]. Every leaf yields a mixed dominating set, so a leaf is marked if its solution has size at most k. The combined tree has O*(3^{n/3} · 1.3252^n) nodes, and the walk of [3] gives time √(3^{n/3} · 1.3252^n) · poly(n) = O(1.3825^n), with a factor log n for the search over k.
+
+The vector of rule B6 of [18, Section 4] has root 1.3006, a little above the printed 1.3001; the largest root, 1.3252 of rule B5, is unchanged.
+
+## 6. Lean
 
 `lean/FptBranching.lean` proves, with only the standard axioms (`lean/axioms.txt`):
 
@@ -80,13 +93,13 @@ Lean 4 v4.36.0-rc1 with Mathlib at revision d875a8de5222f62cf1c2fafc7984588adadc
 
 Not formalized: the search trees of [1] and [15], the split step of Section 4, the walk of [3], the reductions of [1] and [4], and for the problems of Theorem 2 the two inequalities vc(G′) ≤ |M| + |O| and vc*(G′) ≥ |M| + |O|/2 and Lemma 22 of [1].
 
-## 6. Measurements
+## 7. Measurements
 
-`sim/bases.py` recomputes the root 2.314596 of the vectors of rules B5 and B6 of [1], checks the printed bases in exact arithmetic on the recurrence of the walk, and recomputes the implied bases from the root φ² of the tree of [1, Theorem 1]. Run it with `python bases.py` in `sim/`. It exits nonzero on a failed check. `sim/bases2.py` checks the bases of Theorem 3 and of the implied baselines in exact arithmetic, each the square root of the classical base rounded up at the fourth decimal, and checks that the bases for d = 3 to 6 lie below the quantum bounds for d-Hitting Set of [13]. `sim/cluster.py` checks by brute force over all partitions, on 321 random disconnected weighted graphs with up to 7 vertices, that V is additive over the components of the type graph as in Section 4, that V(H) ≥ 1/2 for a component that is not a clique of edges, and that both forms of the split step, with the removal of clique components, decide V(G) ≤ k; it checks the leaf bound of the split step for k ≥ 16 and the bases √φ ≤ 1.2721 and √1.76 ≤ 1.3267 in exact arithmetic. `sim/bookkeeping.py` checks the bookkeeping by brute force over all partitions on random weighted instances with zero-edges and forbidden pairs, up to 6 vertices: for every edge, V equals the minimum over forbidding and merging of the parameter decrease plus V of the child, with the join rules of [15]; removing a clique component lowers V by half its zero-edges to the rest; and V = z/2 when the type graph is a union of cliques. It also checks the polynomial cases of [15, Lemma 5] with zero-edges: a clique minus one pair, by a minimum cut, and Kq * H for H a 5-cycle, three isolated vertices or two disjoint edges, by the best partition of H with Kq joined to a largest cluster.
+`sim/bases.py` recomputes the root 2.314596 of the vectors of rules B5 and B6 of [1], checks the printed bases in exact arithmetic on the recurrence of the walk, and recomputes the implied bases from the root φ² of the tree of [1, Theorem 1]. Run it with `python bases.py` in `sim/`. It exits nonzero on a failed check. `sim/bases2.py` checks the bases of Theorem 3 and of the implied baselines in exact arithmetic, each the square root of the classical base rounded up at the fourth decimal, and checks that the bases for d = 3 to 6 lie below the quantum bounds for d-Hitting Set of [13]. `sim/cluster.py` checks by brute force over all partitions, on 321 random disconnected weighted graphs with up to 7 vertices, that V is additive over the components of the type graph as in Section 4, that V(H) ≥ 1/2 for a component that is not a clique of edges, and that both forms of the split step, with the removal of clique components, decide V(G) ≤ k; it checks the leaf bound of the split step for k ≥ 16 and the bases √φ ≤ 1.2721 and √1.76 ≤ 1.3267 in exact arithmetic. `sim/mds.py` recomputes the roots of all branching vectors of [18, Sections 4 and 5] in exact arithmetic, checks on 300 random graphs that the tree of the first step of Section 5 reaches every maximal independent set with at most (n + 1) · 3^{n/3} nodes, and checks 1.3825^6 ≥ 3 · 1.3252³. `sim/bookkeeping.py` checks the bookkeeping by brute force over all partitions on random weighted instances with zero-edges and forbidden pairs, up to 6 vertices: for every edge, V equals the minimum over forbidding and merging of the parameter decrease plus V of the child, with the join rules of [15]; removing a clique component lowers V by half its zero-edges to the rest; and V = z/2 when the type graph is a union of cliques. It also checks the polynomial cases of [15, Lemma 5] with zero-edges: a clique minus one pair, by a minimum cut, and Kq * H for H a 5-cycle, three isolated vertices or two disjoint edges, by the best partition of H with Kq joined to a largest cluster.
 
-## 7. Limits
+## 8. Limits
 
-- The search tree of [1], the safeness of its rules and its analysis are used as stated, as are its reductions and those of [4]. The same holds for the trees of [5] to [12] and [15]; their case analyses are used as stated.
+- The search tree of [1], the safeness of its rules and its analysis are used as stated, as are its reductions and those of [4]. The same holds for the trees of [5] to [12], [15] and [18]; their case analyses are used as stated.
 - The polynomial factor of the walk is not given explicitly, and there is no gate count.
 
 ## References
@@ -108,6 +121,7 @@ Not formalized: the search trees of [1] and [15], the split step of Section 4, t
 15. S. Böcker. A golden ratio parameterized algorithm for Cluster Editing. Journal of Discrete Algorithms, 2012.
 16. S. Böcker, P. Damaschke. Even faster parameterized cluster deletion and cluster editing. Information Processing Letters, 2011.
 17. A. Jeļisejevs. Parametrizētu algoritmu paātrinājumi kvantu datoram. Bachelor's thesis, University of Latvia, 2021. https://dspace.lu.lv/handle/7/55878. The bounds are as stated in its abstract.
+18. L. Dublois, M. Lampis, V. Th. Paschos. New algorithms for Mixed Dominating Set. Discrete Mathematics and Theoretical Computer Science 23(1), 2021. arXiv:1911.08964.
 
 ## Use of AI
 
