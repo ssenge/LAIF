@@ -43,7 +43,7 @@ def sigreg_bases(K, r, rng):
     return sigreg_pairs(K, centres[keep], hist[keep] / hist.sum())
 
 def mc_check(K, atoms, M=200000, seed=0):
-    """Monte Carlo over directions with the closed form of the t-integral, for a small atomic law."""
+    """Random sampling over directions with the closed form of the t-integral, for a small atomic law."""
     rng = np.random.default_rng(seed)
     a = rng.standard_normal((M, K)); a /= np.linalg.norm(a, axis=1, keepdims=True)
     s = a @ atoms.T                                       # slices of the atoms, equal weights
@@ -57,7 +57,7 @@ if __name__ == "__main__":
     K = 4
     cp = np.concatenate([np.sqrt(K) * np.eye(K), -np.sqrt(K) * np.eye(K)])
     (mc, se), ex = mc_check(K, cp), sigreg_crosspolytope(K)
-    print(f"K = 4 cross-polytope: Monte Carlo {mc:.5f} +- {se:.5f}, closed form {ex:.5f}")
+    print(f"K = 4 cross-polytope: random sampling {mc:.5f} +- {se:.5f}, closed form {ex:.5f}")
     assert abs(mc - ex) < 4 * se
     rng = np.random.default_rng(1)
     print(f"{'K':>5} {'uniform':>11} {'K^2 unif':>9} {'cross-pol.':>11} {'K cross':>8} {'2 bases':>10} {'K 2bases':>9}")

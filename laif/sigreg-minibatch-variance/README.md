@@ -79,7 +79,7 @@ Scripts in [`sim/`](sim/), run with NumPy and SciPy, with asserts, on one core.
 
 - `null_moments.py`: the kernel form against a direct quadrature of the integral (to 10⁻⁸). The null mean at N = 16 and 128 (within 1.3 standard errors) and the variances of one slice and of the average of 8 slices with K = 32 (within 8 %, 4000 batches). The expansions of C and V at r = 0 and the cancellation of N in the 1/K term.
 - `scale_noise.py`: the minimizer s* of N D + B at N = 64, 256 and 1024 (N²(s* − 1 + 2/N) between 0.99 and 1.00), the constant γ, the variance of T′(1) at N = 64 and 256 (ratios 1.02 and 0.96), and a finite-difference check of T′(1).
-- `shape_noise.py`: the derivative S′ against finite differences, η and the identity E[G₁(X)(X² − 1)] = D″(1) by Monte Carlo, and the variance of S′ against Proposition 4 for K = 16 (M = 1, 8, 64, 256) and K = 32 (M = 1, 64, 256), with N = 64: ratios between 0.86 and 1.08.
+- `shape_noise.py`: the derivative S′ against finite differences, η and the identity E[G₁(X)(X² − 1)] = D″(1) by random sampling, and the variance of S′ against Proposition 4 for K = 16 (M = 1, 8, 64, 256) and K = 32 (M = 1, 64, 256), with N = 64: ratios between 0.86 and 1.08.
 
 ## References
 

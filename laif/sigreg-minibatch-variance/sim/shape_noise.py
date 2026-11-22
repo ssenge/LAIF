@@ -31,7 +31,7 @@ def predict(N, K, M):
 
 
 def main():
-    # eta from its definition by Monte Carlo
+    # eta from its definition by random sampling
     rng = np.random.default_rng(4)
     X, Y = rng.standard_normal((2, 2_000_000))
     eta_mc = np.mean((-SQ2PI * (X - Y) * np.exp(-(X - Y) ** 2 / 2) + SQPI / 2 * X * np.exp(-X**2 / 4)) ** 2)
