@@ -1,7 +1,7 @@
-"""Certified lower bounds on an active-space Hamiltonian from the spin-free sum-of-squares algebra {I, a_js, a+_js, E_ij}.
+"""Certified lower bounds on an active-space energy operator from the spin-free sum-of-squares algebra {I, a_js, a+_js, E_ij}.
 
 H = ecore + sum h_pq E_pq + 1/2 sum (pq|rs) N2(p, r, s, q),  E_pq = sum_s a+_ps a_qs,  N2(j,k,l,i) = sum_st a+_js a+_kt a_lt a_is.
-Certificate (Fock space):  H - E = v+ Z v + sum P_ij E_ij + sum Q_ij (2 d_ij - E_ji),  v = (I, E_ab),  Z, P, Q PSD.
+Certificate (all particle numbers):  H - E = v+ Z v + sum P_ij E_ij + sum Q_ij (2 d_ij - E_ji),  v = (I, E_ab),  Z, P, Q PSD.
 The odd generators a_js, a+_js enter through P and Q; pairing and spin-mixing blocks vanish after averaging over the
 U(1) and SU(2) symmetries of H, so this is the optimum of the full spin-free algebra.
 Sector N0: add (N - N0)(y0 + sum y_ab E_ab), which is zero on every state with N0 electrons.
@@ -141,7 +141,7 @@ def read_fcidump(path):
 
 
 def test():
-    """Algebra against explicit fermion matrices on the full Fock space (n = 3), bounds against exact diagonalization per sector."""
+    """Algebra against explicit fermion matrices on the space of all occupation numbers (n = 3), bounds against exact diagonalization per sector."""
     import openfermion as of
     from pyscf import ao2mo, fci
     n = 3; B = Basis(n); Sz, Sp, Sq, Sy = blocks(B, 2); rng = np.random.default_rng(0)
