@@ -1,0 +1,9 @@
+d=3 lam=(0.7, 0.3) n=3 dimA=103 SDP=0.710000 pred=0.710000 P(L=r)=0.420000 diff=+1.19e-11
+d=3 lam=(0.5, 0.5) n=3 dimA=103 SDP=0.750000 pred=0.750000 P(L=r)=0.500000 diff=-1.57e-10
+d=3 lam=(0.9, 0.1) n=3 dimA=103 SDP=0.590000 pred=0.590000 P(L=r)=0.180000 diff=-3.05e-09
+d=4 lam=(0.7, 0.3) n=1 dimA=6 SDP=0.333333 pred=0.333333 P(L=r)=0.000000 diff=+3.19e-14
+d=4 lam=(0.7, 0.3) n=2 dimA=24 SDP=0.473333 pred=0.473333 P(L=r)=0.210000 diff=-2.15e-13
+d=4 lam=(0.6, 0.4) n=3 dimA=119 SDP=0.653333 pred=0.653333 P(L=r)=0.480000 diff=-8.45e-11
+d=4 lam=(0.5, 0.3, 0.2) n=1 dimA=24 SDP=0.333333 pred=0.333333 P(L=r)=0.000000 diff=+1.94e-12
+d=4 lam=(0.5, 0.3, 0.2) n=2 dimA=119 SDP=0.385000 pred=0.385000 P(L=r)=0.000000 diff=-2.85e-09
+SDP optimum equals E[1/C(d - L_n, r - L_n)] in all cases

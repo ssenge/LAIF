@@ -10,15 +10,15 @@ Let ρ be a state on ℂ^d of rank r < d with nonzero eigenvalues λ_1, …, λ_
 
 for any orthonormal basis φ_1, …, φ_r of the support of ρ. It depends only on the support, up to a phase. Anti-symmetrization asks for a copy of |A_ρ⟩ from n copies of the unknown ρ [1].
 
-*Protocols.* A protocol is any quantum channel Φ from (ℂ^d)^{⊗n} to (ℂ^d)^{⊗r}. This covers measurements, adaptive choices, ancillas, classical randomness and any order of processing the copies. Its success at ρ is the fidelity ⟨A_ρ|Φ(ρ^{⊗n})|A_ρ⟩, and its worst-case success is the minimum over all ρ with the given eigenvalues. A protocol that returns |A_ρ⟩ with probability 1 − δ, as in [1], has fidelity at least 1 − δ. A *permutation protocol* uses only instruments whose Kraus operators are linear combinations of permutations of the registers it holds, the discarding of registers, and classical control. The algorithms of [1] are permutation protocols [1, proof of Theorem 7].
+*Protocols.* A protocol is any quantum channel Φ from (ℂ^d)^{⊗n} to (ℂ^d)^{⊗r}. This covers measurements, adaptive choices, ancillas, classical randomness and any order of processing the copies. Its success at ρ is the fidelity ⟨A_ρ|Φ(ρ^{⊗n})|A_ρ⟩, and its worst-case success is the minimum over all ρ with the given eigenvalues. A protocol that returns |A_ρ⟩ with probability 1 − δ, as in [1], has fidelity at least 1 − δ. A *permutation protocol* uses only instruments whose Kraus operators are linear combinations of permutations of the registers it holds, the discarding of registers, and classical control; it adds no registers. The algorithms of [1] are permutation protocols [1, proof of Theorem 7].
 
 In [1], O(r/λ_min) copies suffice (Theorem 7), and O(r log(r)/λ_min) copies suffice for a streaming protocol (Theorem 5). The optimal complexity is named there as an open question [1, Section 1.2]: Θ(Σ_i λ_i^{-1}) copies are suggested for permutation protocols, while general protocols might need only Ω(λ_min^{-1}), and it is asked whether a protocol matches that bound.
 
 | | copies for success 1 − δ |
 |---|---|
 | Previous best bound | O(r/λ_min) [1, Theorem 7] |
-| Previous lower bound | none stated |
-| Theorem 3 (every protocol, every d > r) | Θ(Σ_i 1/λ_i + log(1/δ)/λ_min) |
+| Previous lower bound | Ω(1/λ_min), implicit in [1, Section 1.2] |
+| Theorem 3 (every protocol, every d > r, r ≥ 2, δ ≤ 1/12) | Θ(Σ_i 1/λ_i + log(1/δ)/λ_min) |
 
 Since Σ_i 1/λ_i ≥ r², no protocol uses O(1/λ_min) = O(r) copies when the spectrum is flat. For spectra with one small eigenvalue, Σ_i 1/λ_i can be much smaller than r/λ_min, and the algorithm of [1] needs only the smaller count.
 
@@ -26,7 +26,7 @@ Since Σ_i 1/λ_i ≥ r², no protocol uses O(1/λ_min) = O(r) copies when the s
 
 Let L_n be the number of rows of the irrep label obtained by weak symmetric-group sampling of ρ^{⊗n}. Its law depends only on λ_1, …, λ_r. Let G_1, …, G_r be independent geometric variables with P(G_i = j) = λ_i (1 − λ_i)^{j−1} for j ≥ 1.
 
-**Theorem 1 (optimal fidelity).** For all d > r ≥ 1 and n ≥ 1, the supremum over all protocols of the worst-case success is
+**Theorem 1 (optimal fidelity).** For all d > r ≥ 1 and n ≥ 1, the maximum over all protocols of the worst-case success is
 
 F*_n = E[ 1 / C(d − L_n, r − L_n) ],
 
@@ -71,16 +71,18 @@ extended by any fixed state outside Λ^k(ℂ^d). The functional X ↦ Tr[Π_anti
 
 ## Check
 
-`sim/check.py` checks four things.
+`sim/check.py` checks four things, and `sim/sdp.py` a fifth.
 
 - **The law of L_n, in exact rational arithmetic:** P(L_n = r) = P(G_1 + ⋯ + G_r ≤ n), by enumerating all words for r ≤ 4 and n ≤ 8.
 - **Agreement with the quantum weights:** the law of L_n from the words equals the weights of ρ^{⊗n} on the isotypic components, for d = 3 and n ≤ 5. The components are found as eigenspaces of the sum of all transpositions.
 - **The averaging step and the completion channel:** E_{V′} |A_V⟩⟨A_V| has operator norm 1/C(d − k, r − k), checked by sampling. The constant c_k and the fidelity 1/C(d − k, r − k) of the completion channel are exact for random states X, for (d, r) ∈ {(4, 2), (4, 3), (5, 3)}.
+- **The optimum itself:** `sim/sdp.py` solves the semidefinite program for the best covariant channel, which is optimal after averaging over unitaries. Its value equals E[1/C(d − L_n, r − L_n)] up to 1e-6 for eight cases with d ≤ 4, r ≤ 3 and n ≤ 3.
 - **The copy bounds:** the constants of Theorem 3, and on random spectra with r ≤ 6, that the smallest n with P(S ≤ n) ≥ 1 − 2δ lies above the bound of (a) and the count of (b) suffices.
 
 ## Scope
 
-- Theorem 1 holds for every channel on the n copies, so for every measurement strategy, adaptive or not. The optimum is a supremum: it is approached as the confidence parameter of [1, Theorem 7] goes to 0.
+- Theorem 1 holds for every channel on the n copies, so for every measurement strategy, adaptive or not. The maximum is attained, since the channels form a compact set; the algorithm of [1, Theorem 7] followed by the completion channel approaches it as its confidence parameter goes to 0.
+- The completion channel adds registers and then anti-symmetrizes. With that one extra operation, protocols built from permutations reach the value of Theorem 1, so the gap between Theorems 1 and 2 is exactly the effect of added registers.
 - Theorem 3 counts copies. The running time of the algorithm is as in [1]. Streaming protocols with small memory are not covered.
 - [1, Corollary 13], [2, Remark 2.24 and Theorem 2.14] and [3, Theorems 2.1 and 3.1] are used as stated there. Not formalized in Lean.
 
