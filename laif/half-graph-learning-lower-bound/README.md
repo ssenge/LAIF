@@ -51,7 +51,15 @@ n = 200: max_i ||K_i|| = 2.1827 < pi
 n = 800: max_i ||K_i|| = 2.3536 < pi
 ```
 
-**Not formalized:** all of the folder. The spectral adversary bound and the inequality Σ_{s,t} x_s y_t/(s + t − 1) ≤ π‖x‖‖y‖ are classical.
+## Lean
+
+The library `HalfGraph` in `lean/` (Lean 4, toolchain and Mathlib revision pinned in `lean-toolchain` and `lake-manifest.json`) proves, with only the standard axioms (`lean/axioms.txt`):
+
+* `rowSum`: the row sum Σ_{1 ≤ a < b ≤ n} 1/(b − a) = Σ_{d=1}^{n−1} (n − d)/d (values indexed from 0), with `inner_sum` for the inner sum.
+* `swap_apply_col`, `swap_swap_back`: for a fixed column j, the exchange of j with the column π^{−1}(b) puts the value b into column j, and the exchange with the column that now holds π(j) returns π. So the block from the group a to the group b is a bijection.
+* `block_norm_le`: the triangle step ‖Σ_b B_b x_b‖ ≤ Σ_b m_b ‖x_b‖ for operators with ‖B_b‖ ≤ m_b.
+
+**Not formalized:** the norm of Γ, the bound ‖Γ_q‖ ≤ ‖K_i‖ and the final bound. The spectral adversary bound and the inequality Σ_{s,t} x_s y_t/(s + t − 1) ≤ π‖x‖‖y‖ are classical.
 
 ## Use of AI
 

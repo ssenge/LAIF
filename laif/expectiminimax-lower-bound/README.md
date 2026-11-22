@@ -47,7 +47,16 @@ deg=3 EW(t=1,D=1) o or: Adv(f)=2.0000 Adv(g)=1.7321 product=3.4641 Adv(fog)=3.46
 composition lower bound checked
 ```
 
-**Not formalized:** all of the folder.
+## Lean
+
+The library `Expectiminimax` in `lean/` (Lean 4, toolchain and Mathlib revision pinned in `lean-toolchain` and `lake-manifest.json`) proves, with only the standard axioms (`lean/axioms.txt`):
+
+* `max_two`, `min_two`, `mean_two`, `chance_gap`: the induction step of Lemma 1. If every child takes one of the values ℓ ≤ h, the maximum is h exactly when some child is h, the minimum is ℓ exactly when some child is ℓ, and a chance node with k high children takes ℓ + (h − ℓ)k/deg, so the two values of a chance layer differ by (h − ℓ)Δ/deg.
+* `twoValues_gap`: the root gap is Π_j Δ_j/deg, the last statement of Lemma 1.
+* `params`: the choice of the parameters. If 1 ≤ 4ε deg^a < deg, then Δ = ⌈4ε deg^a⌉ satisfies 1 ≤ Δ ≤ deg and 4ε ≤ Δ/deg^a ≤ 8ε.
+* `choose_ratio`, `ew_product`: the arithmetic of the weighted bound for the exact-weight function, C(m, Δ)Δ = C(m − 1, Δ − 1)m and N² ≤ 4(N − t)(t + Δ) for t = ⌊(N − Δ)/2⌋.
+
+**Not formalized:** the reduction from an estimate to the partial Boolean function, the adversary bounds of the layer functions and their composition. The composition lemma [2, Lemma 6], the characterization [3, Thm. 1.1] and the positive-weight adversary bound [4, 5] are known results.
 
 ## Use of AI
 

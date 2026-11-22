@@ -1,0 +1,5 @@
+'HalfGraph.rowSum' depends on axioms: [propext, Classical.choice, Quot.sound]
+'HalfGraph.swap_apply_col' depends on axioms: [propext, Classical.choice, Quot.sound]
+'HalfGraph.swap_swap_back' depends on axioms: [propext, Classical.choice, Quot.sound]
+'HalfGraph.block_norm_le' depends on axioms: [propext, Classical.choice, Quot.sound]
+'HalfGraph.inner_sum' depends on axioms: [propext, Classical.choice, Quot.sound]

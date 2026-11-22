@@ -141,7 +141,17 @@ k=3: cost proxy exponent 0.425 (a_k = 0.429)
 k=4: cost proxy exponent 0.468 (a_k = 0.467)
 ```
 
-**Not formalized:** all of the folder. The search and amplitude estimation subroutines [7, 8], Hoeffding's inequality and Theorem 2.6 of [4] enter as known results. The simulation does not run quantum subroutines and does not measure queries.
+ The search and amplitude estimation subroutines [7, 8], Hoeffding's inequality and Theorem 2.6 of [4] enter as known results. The simulation does not run quantum subroutines and does not measure queries.
+
+## Lean
+
+The library `FreqMom` in `lean/` (Lean 4, toolchain and Mathlib revision pinned in `lean-toolchain` and `lake-manifest.json`) proves, with only the standard axioms (`lean/axioms.txt`):
+
+* `moment_gap`: Lemma 1, for ν over ℚ, with `sum_eval_eq_zero` for the step through the falling factorial.
+* `below_threshold`, `above_threshold`: the threshold step of Theorem 1. With c_k = (φ_1 − φ_0)/(4φ_1) and δ = (φ_1 − φ_0)/8, an estimate G with G ≤ (1 + c_k)F_k of a value F_k ≤ N(φ_0 + δ) lies below N(φ_0 + φ_1)/2, and an estimate G ≥ (1 − c_k)F_k of a value F_k ≥ N(φ_1 − δ) lies above it.
+* `exponent_gt`: for k ≥ 3, a_k = (2^{k−1} − 1)/(2^k − 1) exceeds 1/3 and 1/2 − 1/(2k).
+
+**Not formalized:** the instances, the concentration step and the final bound of Theorem 1, Corollary 2 and Theorem 3.
 
 ## Use of AI
 

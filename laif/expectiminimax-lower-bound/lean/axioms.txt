@@ -1,0 +1,8 @@
+'Expectiminimax.max_two' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Expectiminimax.min_two' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Expectiminimax.mean_two' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Expectiminimax.chance_gap' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Expectiminimax.twoValues_gap' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Expectiminimax.params' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Expectiminimax.choose_ratio' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Expectiminimax.ew_product' depends on axioms: [propext, Classical.choice, Quot.sound]

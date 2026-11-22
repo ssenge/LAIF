@@ -52,7 +52,15 @@ double cover LP, alternating cover and kernel equivalence checked on 400 random 
 two-phase alternating search: same Z and cost <= p sqrt(n) + sqrt(2) p^{3/2} on 600 random graphs, n <= 40
 ```
 
-**Not formalized:** all of the folder. The matching algorithms of [1], the search algorithms of [3, 4] and the LP kernel theorem of [2] enter as known results.
+## Lean
+
+The library `VCKernel` in `lean/` (Lean 4, toolchain and Mathlib revision pinned in `lean-toolchain` and `lake-manifest.json`) proves, with only the standard axioms (`lean/axioms.txt`):
+
+* `cnt_feasible`: a vertex cover C of the double cover H gives x_v + x_w ≥ 1 on every edge vw of G, with x_v = |C ∩ {v_L, v_R}|/2 (and `cnt_le_two`: x_v ≤ 1).
+* `cover_of_kernel`: if S covers every edge with both endpoints in V_{1/2}, then V_1 ∪ S is a vertex cover of G (the output step).
+* `search_cost`, `sum_sqrt_le`: the cost of the second phase of step 4. With at most p searching vertices, at most p vertices added in total, and searches over sets of at most p vertices, Σ_u √(p(t_u + 1)) ≤ √2 · p^{3/2}, by Σ_i √ℓ_i ≤ √(|I| Σ_i ℓ_i).
+
+**Not formalized:** the alternating-path computation of Z and the minimality of C, the kernel step, and the query count of steps 2, 3 and 6. The matching algorithms of [1], the search algorithms of [3, 4] and the LP kernel theorem of [2] enter as known results.
 
 ## Use of AI
 

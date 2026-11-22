@@ -1,0 +1,5 @@
+'VCKernel.cnt_feasible' depends on axioms: [propext, Classical.choice, Quot.sound]
+'VCKernel.cover_of_kernel' depends on axioms: [propext, Classical.choice, Quot.sound]
+'VCKernel.search_cost' depends on axioms: [propext, Classical.choice, Quot.sound]
+'VCKernel.cnt_le_two' depends on axioms: [propext, Quot.sound]
+'VCKernel.sum_sqrt_le' depends on axioms: [propext, Classical.choice, Quot.sound]
