@@ -1,14 +1,14 @@
 /-!
-# A three-player Shapley network design game with price of stability above 1769/1126
+# A three-player network design game with equal cost sharing with price of stability above 1769/1126
 
 Undirected graph on the vertices 0 = t₁ = t₃, 1 = t₂, 2 = s₁, 3 = s₂, 4 = s₃ with seven edges and integer costs.
 Player `i` picks a simple path from `s_i` to `t_i`. The cost of an edge is shared equally among its users. A profile
-is a Nash equilibrium if no player has a strictly cheaper simple path, given the other players.
+is a pure equilibrium if no player lowers its cost by switching alone to another simple path.
 
 Every share is a multiple of `c_e / 6`, since at most three players share an edge. All costs below are therefore
 multiplied by 6, so that every comparison is an exact comparison of natural numbers.
 
-* `ne_unique`: the game has exactly one Nash equilibrium, of cost 14506282.
+* `ne_unique`: the game has exactly one pure equilibrium, of cost 14506282.
 * `opt_eq`: the minimum cost of a profile is 9220000.
 * `pos_gt`: the price of stability 14506282 / 9220000 exceeds 1769 / 1126.
 -/

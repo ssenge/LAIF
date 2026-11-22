@@ -11,7 +11,7 @@ delay `d e x = a e * x + b e` with `a = (2, 2, 1, 0, 2)` and `b = (0, 0, 0, 2, 0
 * `paving`: every element lies in a basis, so every set of at most one element is independent (no loops). A circuit
   is a dependent set, hence every circuit has at least 2 elements, the rank. For rank 2 this is exactly the
   definition of paving (every circuit has size rank or rank + 1; circuits have at most rank + 1 elements anyway).
-* `ne_isNE`: the profile `{0, 2}, {0, 2}, {1, 4}` is a pure Nash equilibrium: no player has a cheaper basis.
+* `ne_isNE`: the profile `{0, 2}, {0, 2}, {1, 4}` is a pure equilibrium: no player lowers its cost by switching alone to another basis.
 * `ne_cost`, `opt_cost`, `opt_ge`: the equilibrium costs 16, and 11 is the minimum cost over all profiles.
 * `ratio_gt`: `16 / 11 > 13 / 9`.
 -/
