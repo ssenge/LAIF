@@ -4,7 +4,8 @@ Checks, with asserts:
 1. b = max_k |(Q K^T)_{jk}| / alpha_0 <= 1 and Z_j / N in [e^{-1}, e] for every instance.
 2. The mean squared error of the attention-row estimator is at most c(b) r^2 / m (Theorem 1),
    with c(b) = 2 e^{4b} (1 + e^{2b} sinh(b)^2) and r^2 = ||S W_v||_F^2 / N.
-3. The error of the layer output is at most 4 (1 + L) ||G_hat - G|| / (d sigma sigma') in every trial (Theorem 2).
+3. The error of the layer output is at most 4 (1 + L) ||G_hat - G|| / (sigma sigma') in every trial (Theorem 2),
+   with sigma, sigma' the norms of the centred vectors before the two layer normalizations.
 4. For fixed m the output error does not grow with N (N = 10^3 .. 10^6).
 """
 import numpy as np
@@ -27,9 +28,9 @@ L = 1.13 * np.linalg.norm(M1, 2) * np.linalg.norm(M2, 2)
 c = lambda b: 2 * exp(4 * b) * (1 + exp(2 * b) * sinh(b) ** 2)
 
 
-def LN(z):                                   # gamma = 1/sqrt(d), beta = 0: centred and normalized
-    p = z - z.mean()
-    return p / np.linalg.norm(p), np.linalg.norm(p) / sqrt(len(z))   # (output, standard deviation)
+def LN(z):                                   # gamma = 1/sqrt(d), beta = 0: centred and normalized, LN(constant) = 0
+    p = z - z.mean(); n = np.linalg.norm(p)
+    return (p / n if n > 0 else 0 * p), n    # (output, norm of the centred vector)
 
 
 def tail(G, Sj):                             # residual, LN, feed-forward, residual, LN
@@ -45,18 +46,19 @@ def instance(N, kind):
         S[: N // 2] += 3 * u; S[N // 2:] -= 3 * u
     if kind == "heavy":                                   # a few rows of large norm
         S[rng.choice(N, 10, replace=False)] *= 30
-    if kind == "dominant":                                # row 0 dominates the spectral norm, so b is close to 1
+    if kind in ("dominant", "maxscore"):                  # row 0 dominates the spectral norm
         S[0] = 100 * sqrt(N) * rng.standard_normal(d) / sqrt(d)
     return S
 
 
-for kind in ["random", "split", "heavy", "dominant"]:
+for kind in ["random", "split", "heavy", "dominant", "maxscore"]:
     for N in [10 ** 3, 10 ** 4, 10 ** 5, 10 ** 6]:
         S = instance(N, kind)
         j = 0
         alpha_s = np.linalg.norm(S, 2)                    # smallest valid normalization: the spectral norm
         a0 = alpha_s ** 2 * alpha_w ** 2
-        q = S[j] @ Wq @ Wk.T / a0
+        Wqk = np.eye(d) if kind == "maxscore" else Wq @ Wk.T   # identity: score of the query row with itself close to 1
+        q = S[j] @ Wqk / a0
         s = S @ q                                         # all scores, for the exact reference only
         b = np.abs(s).max()
         assert b <= 1
@@ -73,12 +75,12 @@ for kind in ["random", "split", "heavy", "dominant"]:
             Gh = ((wk @ S[k]) @ Wv) / wk.sum()
             oh = tail(Gh, S[j])[0]
             eg, eo = np.linalg.norm(Gh - G), np.linalg.norm(oh - out)
-            assert eo <= 4 * (1 + L) * eg / (d * s1 * s2) + 1e-12
+            assert eo <= 4 * (1 + L) * eg / (s1 * s2) + 1e-12
             err_G.append(eg ** 2); err_out.append(eo)
         mse = np.mean(err_G)
         assert mse <= c(b) * r2 / m, (mse, c(b) * r2 / m)
-        print(f"{kind:8s} N = {N:7d}: b = {b:.2e}, Z/N = {w.sum() / N:.4f}, r = {sqrt(r2):.3f}, "
+        print(f"{kind:9s} N = {N:7d}: b = {b:.2e}, Z/N = {w.sum() / N:.4f}, r = {sqrt(r2):.3f}, "
               f"MSE(G) = {mse:.2e} <= {c(b) * r2 / m:.2e}, mean output error {np.mean(err_out):.4f}, "
-              f"d sigma sigma' = {d * s1 * s2:.3f}")
+              f"sigma sigma' = {s1 * s2:.3f}")
         del S, V, s, w
 print("all checks passed")
