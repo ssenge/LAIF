@@ -1,0 +1,4 @@
+'SubsetParity.prod_sum_signs' depends on axioms: [propext, Classical.choice, Quot.sound]
+'SubsetParity.prod_eq_from_count' depends on axioms: [propext, Classical.choice, Quot.sound]
+'SubsetParity.round_eq_of_near' depends on axioms: [propext, Classical.choice, Quot.sound]
+'SubsetParity.rounding_error' depends on axioms: [propext, Classical.choice, Quot.sound]

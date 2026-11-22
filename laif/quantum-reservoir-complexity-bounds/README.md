@@ -77,12 +77,16 @@ By the inequality between the mean and the root mean square, ∫₀¹ √(log(1 
 
 `sim/bound.py`, output in `sim/out_bound.txt`: the integral identity of the proof by quadrature, and Theorem 1 against [1, Corollary 11] for the linear readout, n = 2 to 30, with the constants of [1] and r = 0.9. At n = 10 Theorem 1 gives about 1.3 · 10⁴ against about 10^{11.8} for [1, Corollary 11], both times 1/√k.
 
+## Lean
+
+`lean/ReservoirSinglet/Basic.lean` proves the two-qubit identities of the uniform-coupling part of Proposition 3: the 4 × 4 matrices are the stated tensor products (`XXYY_eq`, `Xsum_eq`, `Ysum_eq`, `Zsum_eq`), and for s = |01⟩ − |10⟩, (X⊗X + Y⊗Y)s = −2s and (X⊗I + I⊗X)s = (Y⊗I + I⊗Y)s = (Z⊗I + I⊗Z)s = 0 (`XXYY_s`, `Xsum_s`, `Ysum_s`, `Zsum_s`). `lean/axioms.txt` lists the axioms of every named theorem: only `propext`, `Classical.choice` and `Quot.sound`. The rest of the proofs is a Claim.
+
 ## Scope
 
 - Theorem 1 improves the random-sign complexity term. The other constants of the risk bound [1, eq. (27)] contain L̄_h directly and are not changed here.
 - Corollary 2 assumes (AT2) with some r < 1 on the parameter set. By Proposition 3 this fails on every box Θ_PTR for n ≥ 2, so it applies to parameter sets on which (AT2) is checked separately.
 - The random reinitialization reservoir of [1, Section 5.2] has a parameter set of dimension of order 4^n (the reset state), and Theorem 1 does not make its bound polynomial.
-- Single-output readouts only. The statements are Claims with the listed checks.
+- Single-output readouts only. The statements are Claims with the listed checks. Lean covers only the steps listed in the Lean section.
 
 ## References
 

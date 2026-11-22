@@ -39,11 +39,15 @@ So the family {χ_S : |S| ≤ k} is represented by one attention layer of budget
 - Proposition 1: every S and every x for N ≤ 12, and for N up to 10⁴ and k up to 50 three random S with 100 random inputs each.
 - Proposition 2, with and without position coordinate: every mark vector s and every x for N ≤ 10.
 
+## Lean
+
+`lean/SubsetParity/Basic.lean` proves the counting step of Propositions 1 and 2: for a list of signs the product is (−1)^m and the length minus the sum is 2m, with m the number of entries −1 (`prod_sum_signs`, `prod_eq_from_count`); rounding recovers an integer from a value within 1/2 of it (`round_eq_of_near`); and rounding to p fractional bits with 2^p ≥ 4N moves N z by at most 1/8 (`rounding_error`). `lean/axioms.txt` lists the axioms of every named theorem: only `propext`, `Classical.choice` and `Quot.sound`. The rest of the proofs is a Claim.
+
 ## Scope
 
 - The classical side is the single-layer model of [2] with input and output maps. The lower bound of [1, Lemma 1] for MATCH_k is not addressed here.
 - The quantum construction of [1] loads the bits in the computational basis. The trained head of [1] uses a different encoder, and its empirical learning results are not addressed here.
-- The statements are Claims with exact checks on the listed sizes.
+- The statements are Claims with exact checks on the listed sizes. Lean covers only the steps listed in the Lean section.
 
 ## References
 

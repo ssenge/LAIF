@@ -1,0 +1,8 @@
+'ReservoirSinglet.XXYY_eq' depends on axioms: [propext, Classical.choice, Quot.sound]
+'ReservoirSinglet.Xsum_eq' depends on axioms: [propext, Classical.choice, Quot.sound]
+'ReservoirSinglet.Ysum_eq' depends on axioms: [propext, Classical.choice, Quot.sound]
+'ReservoirSinglet.Zsum_eq' depends on axioms: [propext, Classical.choice, Quot.sound]
+'ReservoirSinglet.XXYY_s' depends on axioms: [propext, Classical.choice, Quot.sound]
+'ReservoirSinglet.Xsum_s' depends on axioms: [propext, Classical.choice, Quot.sound]
+'ReservoirSinglet.Ysum_s' depends on axioms: [propext, Classical.choice, Quot.sound]
+'ReservoirSinglet.Zsum_s' depends on axioms: [propext, Classical.choice, Quot.sound]
