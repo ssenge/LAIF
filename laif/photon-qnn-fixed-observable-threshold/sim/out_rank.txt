@@ -1,0 +1,21 @@
+m = 3, L = 1: rank 5, target dim P_(m-1)L = 5, their d = m-2 gives 3
+m = 3, L = 2: rank 9, target dim P_(m-1)L = 9, their d = m-2 gives 5
+m = 3, L = 3: rank 13, target dim P_(m-1)L = 13, their d = m-2 gives 7
+m = 3, L = 5: rank 21, target dim P_(m-1)L = 21, their d = m-2 gives 11
+m = 4, L = 1: rank 7, target dim P_(m-1)L = 7, their d = m-2 gives 5
+m = 4, L = 2: rank 13, target dim P_(m-1)L = 13, their d = m-2 gives 9
+m = 4, L = 3: rank 19, target dim P_(m-1)L = 19, their d = m-2 gives 13
+m = 4, L = 5: rank 31, target dim P_(m-1)L = 31, their d = m-2 gives 21
+m = 5, L = 1: rank 9, target dim P_(m-1)L = 9, their d = m-2 gives 7
+m = 5, L = 2: rank 17, target dim P_(m-1)L = 17, their d = m-2 gives 13
+m = 5, L = 3: rank 25, target dim P_(m-1)L = 25, their d = m-2 gives 19
+m = 5, L = 5: rank 41, target dim P_(m-1)L = 41, their d = m-2 gives 31
+m = 6, L = 1: rank 11, target dim P_(m-1)L = 11, their d = m-2 gives 9
+m = 6, L = 2: rank 21, target dim P_(m-1)L = 21, their d = m-2 gives 17
+m = 6, L = 3: rank 31, target dim P_(m-1)L = 31, their d = m-2 gives 25
+m = 6, L = 5: rank 51, target dim P_(m-1)L = 51, their d = m-2 gives 41
+m = 7, L = 1: rank 13, target dim P_(m-1)L = 13, their d = m-2 gives 11
+m = 7, L = 2: rank 25, target dim P_(m-1)L = 25, their d = m-2 gives 21
+m = 7, L = 3: rank 37, target dim P_(m-1)L = 37, their d = m-2 gives 31
+m = 7, L = 5: rank 61, target dim P_(m-1)L = 61, their d = m-2 gives 51
+all checks passed

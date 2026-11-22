@@ -71,6 +71,10 @@ The method, information about the concept bounded through the entropy of the ave
 - For d ∈ {3, 5}, λ ∈ {1, 0.3, 0.01}, m ∈ {0.02, 0.15} and eleven values of s: Tr σ^s σ′^{1−s} = 1 − 2m(2λ − λ²) for the two concepts of Corollary 2.
 - For d ∈ {16, 64, 256, 1024, 4096} and λ ∈ {1, 0.1, 0.01, 1/d}: the closed form satisfies χ ≤ 8εK, and the lower bound of Theorem 1 (with the exact count V_r) is compared with (d + ln(1/δ))/(ελ). At ε = δ = 0.01 the ratio lies between 43 and 81 for λ ≥ 1/d, and between 43 and 62 for d ≥ 256.
 
+## Lean
+
+`lean/PacGram/Basic.lean` proves the inner products of the states ψ_i (`inner_psi`), that (1 − λ)J + λI has eigenvalue λ on vectors of sum zero and λ + (1 − λ)d on the all-ones vector (`gram_sum_zero`, `gram_ones`), the rank-one form of the average on the span of u and w (`block_rank_one`), the identities for the parts of Δ(f) (`log_part`, `inv_log_part`, `inv_part`), and −(1 − x) ln(1 − x) ≤ x and η ≥ 0 on [0, 1] (`eta_one_sub_le`, `eta_nonneg`). `lean/axioms.txt` lists the axioms of every named theorem: only `propext`, `Classical.choice` and `Quot.sound`. Not formalized: the entropy formulas, h(p) ≥ 4p(1 − p), and the information and guessing inequalities.
+
 ## Scope
 
 - Theorem 1 is a lower bound for one family of classes, with one fixed spectrum of G. It does not determine the sample complexity of every class with linearly independent states.

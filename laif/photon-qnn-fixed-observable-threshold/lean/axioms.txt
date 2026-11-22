@@ -1,0 +1,5 @@
+'PhotonThreshold.quad_on_circle' depends on axioms: [propext, Classical.choice, Quot.sound]
+'PhotonThreshold.multiplier_cos' depends on axioms: [propext, Classical.choice, Quot.sound]
+'PhotonThreshold.cos_mul_cos' depends on axioms: [propext, Classical.choice, Quot.sound]
+'PhotonThreshold.cos_mul_sin' depends on axioms: [propext, Classical.choice, Quot.sound]
+'PhotonThreshold.freq_decomp' depends on axioms: [propext, Quot.sound]

@@ -1,0 +1,13 @@
+m = 3, L = 1: G constant on the curve, rank 5 = dim P_2; [1, Lemma 6] reaches P_1
+m = 3, L = 2: G constant on the curve, rank 9 = dim P_4; [1, Lemma 6] reaches P_2
+m = 3, L = 3: G constant on the curve, rank 13 = dim P_6; [1, Lemma 6] reaches P_3
+m = 4, L = 1: G constant on the curve, rank 7 = dim P_3; [1, Lemma 6] reaches P_2
+m = 4, L = 2: G constant on the curve, rank 13 = dim P_6; [1, Lemma 6] reaches P_4
+m = 4, L = 3: G constant on the curve, rank 19 = dim P_9; [1, Lemma 6] reaches P_6
+m = 5, L = 1: G constant on the curve, rank 9 = dim P_4; [1, Lemma 6] reaches P_3
+m = 5, L = 2: G constant on the curve, rank 17 = dim P_8; [1, Lemma 6] reaches P_6
+m = 5, L = 3: G constant on the curve, rank 25 = dim P_12; [1, Lemma 6] reaches P_9
+m = 6, L = 1: G constant on the curve, rank 11 = dim P_5; [1, Lemma 6] reaches P_4
+m = 6, L = 2: G constant on the curve, rank 21 = dim P_10; [1, Lemma 6] reaches P_8
+m = 6, L = 3: G constant on the curve, rank 31 = dim P_15; [1, Lemma 6] reaches P_12
+all checks passed
