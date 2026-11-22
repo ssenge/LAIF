@@ -10,6 +10,8 @@ Asserts:
      8 eps E[1 - h(f) + phi(d) - f phi(fd) - (1 - f) phi((1 - f) d)], and
      chi <= 8 eps K, K = 1/d + lam (1 + log2 e) + (lam/d) log2(d/(4 lam)).
   4. The closed form for d up to 4096 (sum over the count of ones), with the same bound.
+  6. Corollary 2: for two concepts that swap the labels of psi_1, psi_2 (mass m each, rest on psi_0),
+     Tr sigma^s rho^(1-s) = 1 - 2m(2 lam - lam^2) for every s in [0, 1].
   5. The resulting sample bound against the upper bound (d + ln 1/delta)/(eps lam) of [1, Theorem 2].
 """
 import itertools, math
@@ -79,7 +81,9 @@ for d in range(2, 11):
 for d in [16, 64, 256, 1024, 4096]:
     for lam in [1.0, 0.1, 0.01, 1 / d]:
         c = chi_closed(d, lam, 1) / 8
-        assert c <= K(d, lam) + 1e-12 and K(d, lam) <= 1 / d + 3.45 * lam + 1e-12 or lam < 1 / d
+        assert c <= K(d, lam) + 1e-12
+        if lam >= 1 / d:
+            assert K(d, lam) <= 1 / d + 3.45 * lam + 1e-12
         r = d // 8
         logV = math.log2(sum(math.comb(d, j) for j in range(r + 1)))
         eps, delta = 0.01, 0.01
@@ -87,4 +91,23 @@ for d in [16, 64, 256, 1024, 4096]:
         t_up = (d + math.log(1 / delta)) / (eps * lam)
         assert t_low > 0
         print(f"d = {d:4d}, lam = {lam:8.5f}: chi/(8 eps) = {c:.5f} <= K = {K(d, lam):.5f};  t >= {t_low:10.0f}, (d + ln 1/delta)/(eps lam) = {t_up:11.0f}, ratio {t_up / t_low:6.1f}")
+
+
+def mpow(A, s):
+    w, U = np.linalg.eigh(A); w = np.clip(w, 0, None)
+    return (U * np.where(w > 1e-14, w ** s, 0.0)) @ U.T
+
+
+for d in [3, 5]:
+    for lam in [1.0, 0.3, 0.01]:
+        V = vectors(d, lam); P = [np.outer(V[x], V[x]) for x in range(d + 1)]
+        for m in [0.02, 0.15]:
+            L0, L1 = np.diag([1.0, 0]), np.diag([0, 1.0])
+            rest = (1 - 2 * m) * np.kron(P[0], L0)
+            sig = rest + m * np.kron(P[1], L1) + m * np.kron(P[2], L0)
+            rho = rest + m * np.kron(P[1], L0) + m * np.kron(P[2], L1)
+            for s_ in np.linspace(0, 1, 11):
+                q = np.trace(mpow(sig, s_) @ mpow(rho, 1 - s_))
+                assert abs(q - (1 - 2 * m * (2 * lam - lam ** 2))) < 1e-9, (d, lam, m, s_, q)
+print("Corollary 2: Tr sigma^s rho^(1-s) = 1 - 2m(2 lam - lam^2) for all s checked")
 print("all checks passed")

@@ -27,4 +27,5 @@ d = 4096, lam =  1.00000: chi/(8 eps) = 1.00000 <= K = 2.44538;  t >=       9484
 d = 4096, lam =  0.10000: chi/(8 eps) = 0.10052 <= K = 0.24484;  t >=      94721, (d + ln 1/delta)/(eps lam) =     4100605, ratio   43.3
 d = 4096, lam =  0.01000: chi/(8 eps) = 0.01022 <= K = 0.02471;  t >=     938480, (d + ln 1/delta)/(eps lam) =    41006052, ratio   43.7
 d = 4096, lam =  0.00024: chi/(8 eps) = 0.00042 <= K = 0.00084;  t >=   27549419, (d + ln 1/delta)/(eps lam) =  1679607878, ratio   61.0
+Corollary 2: Tr sigma^s rho^(1-s) = 1 - 2m(2 lam - lam^2) for all s checked
 all checks passed

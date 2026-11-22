@@ -10,13 +10,13 @@ For linearly independent states X = {|ψ_i⟩}, let G_{ij} = ⟨ψ_i|ψ_j⟩ be 
 
 t_{Q,C}(ε, δ) ≤ c_U (d + ln(1/δ)) / (ε λ_min(G)),
 
-and in [1, Theorem 1] every class needs c_L(d/ε + ln(1/δ)(1/ε + 1/Λ_C(3ε))) examples, with a function Λ_C defined by a divergence between the example states of two concepts. For two states the answer has the form Θ(ln(1/δ)(1/ε + 1/(−ln F))) [1, Proposition 2], with F the largest squared overlap. In [1, Section 3] it is left open which parameters characterize the sample complexity.
+and in [1, Theorem 1] every class needs c_L(d/ε + ln(1/δ)(1/ε + 1/Λ_C(3ε))) examples for ε ≤ 1/8 and δ ≤ 1/100, with a function Λ_C defined by a divergence between the example states of two concepts. For two states the answer has the form Θ(ln(1/δ)(1/ε + 1/(−ln F))) [1, Proposition 2], with F the largest squared overlap. In [1, Section 3] it is left open which parameters characterize the sample complexity.
 
 | | dependence on d of t_{Q,C}(ε, δ), linearly independent states |
 |---|---|
 | Previous upper bound [1, Theorem 2] | O(d/(ε λ_min(G))) |
 | Previous lower bound [1, Theorem 1] | Ω(d/ε) |
-| Theorem 1, a class for every d and every λ_min(G) = λ ∈ [1/d, 1] | Ω(d/(ε λ)) |
+| Theorem 1, a class for every d and every λ_min(G) = λ ∈ [1/d, 1] | Ω(d/(ε λ)); with Corollary 2, Θ((d + ln(1/δ))/(ε λ)) |
 
 ## Results
 
@@ -32,7 +32,13 @@ t_{Q,C}(ε, δ) ≥ ((1 − δ)(1 − h(1/8)) d − 1) / (8ε K),  K = 1/d + (1 
 
 where h is the binary entropy and 1 − h(1/8) > 0.456. For λ ≥ 1/d one has K ≤ 1/d + 3.45λ, so t_{Q,C}(ε, δ) = Ω(d/(ε λ)).
 
-So for λ_min(G) ≥ 1/d the dependence on d in [1, Theorem 2] is tight up to constants for this class: the factor 1/λ_min(G) multiplies d. A bound of the form A(λ) d/ε + g(λ, ε, δ) for all linearly independent domains needs A(λ) = Ω(1/λ) on [1/d, 1]; in particular no bound A d/ε + g(λ, ε, δ) with a constant A holds.
+So for λ_min(G) ≥ 1/d the dependence on d in [1, Theorem 2] is tight up to constants for this class: the factor 1/λ_min(G) multiplies d. If a bound A(λ) d/ε + g(λ, ε, δ) holds for all linearly independent domains, then letting d → ∞ at fixed λ gives A(λ) ≥ c/λ with an absolute constant c > 0. In particular no bound A d/ε + g(λ, ε, δ) with a constant A holds.
+
+**Corollary 2.** For this instance, λ ≥ 1/d, ε < 1/9 and δ ≤ 1/100,
+
+t_{Q,C}(ε, δ) = Θ((d + ln(1/δ)) / (ε λ)).
+
+The upper bound is [1, Theorem 2]. The term ln(1/δ)/(ελ) is implied by [1, Theorem 1]: take D with mass m > 3ε/2 on each of ψ_1, ψ_2 and the rest on ψ_0, and the two concepts that label ψ_1, ψ_2 as (1, 0) and (0, 1). Their distance under D is 2m > 3ε. The example states σ, σ′ split by label into blocks, and the only blocks that differ hold m|ψ_1⟩⟨ψ_1| against m|ψ_2⟩⟨ψ_2|, so Tr σ^s σ′^{1−s} = 1 − 2m + 2m|⟨ψ_1|ψ_2⟩|² = 1 − 2m(2λ − λ²) for every s ∈ [0, 1]. With m ↓ 3ε/2 this gives Λ_C(3ε) ≤ −ln(1 − 3ε(2λ − λ²)) ≤ 9ελ, since x = 3ε(2λ − λ²) is at most 6ελ and at most 1/3, and −ln(1 − x) ≤ 3x/2 for such x.
 
 ## Proof
 
@@ -62,13 +68,14 @@ The method, information about the concept bounded through the entropy of the ave
 
 - For d = 2, …, 10 and λ ∈ {1, 0.5, 0.1, 0.01}: the smallest eigenvalue of G is λ, and the spectrum of ω_s matches the formula for every s.
 - For the same d and λ and ε ∈ {0.01, 0.1}: χ computed exactly, by enumerating all 2^d labellings with the states in ℝ^{d+2} ⊗ ℝ², equals the closed form 8ε E[1 − h(f) + Δ(f)] to 10⁻⁹, and χ ≤ 8εK for d ≥ 4.
-- For d ∈ {16, 64, 256, 1024, 4096} and λ ∈ {1, 0.1, 0.01, 1/d}: the closed form satisfies χ ≤ 8εK, and the lower bound of Theorem 1 (with the exact count V_r) is compared with (d + ln(1/δ))/(ελ). At ε = δ = 0.01 the ratio lies between 43 and 62.
+- For d ∈ {3, 5}, λ ∈ {1, 0.3, 0.01}, m ∈ {0.02, 0.15} and eleven values of s: Tr σ^s σ′^{1−s} = 1 − 2m(2λ − λ²) for the two concepts of Corollary 2.
+- For d ∈ {16, 64, 256, 1024, 4096} and λ ∈ {1, 0.1, 0.01, 1/d}: the closed form satisfies χ ≤ 8εK, and the lower bound of Theorem 1 (with the exact count V_r) is compared with (d + ln(1/δ))/(ελ). At ε = δ = 0.01 the ratio lies between 43 and 81 for λ ≥ 1/d, and between 43 and 62 for d ≥ 256.
 
 ## Scope
 
 - Theorem 1 is a lower bound for one family of classes, with one fixed spectrum of G. It does not determine the sample complexity of every class with linearly independent states.
 - For λ < 1/d the bound is Ω(d²/ε), below the upper bound O(d/(ελ)).
-- The dependence on δ is not addressed.
+- The term in δ of Corollary 2 rests on [1, Theorem 1].
 - The lower bound holds for every learner, proper or not, with any joint measurement on the t examples.
 - The statements are Claims with the listed checks.
 
