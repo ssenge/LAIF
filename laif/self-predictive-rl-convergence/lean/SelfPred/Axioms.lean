@@ -1,4 +1,5 @@
 import SelfPred.Limit
+import SelfPred.Turn
 
 #print axioms SelfPred.Qm_transpose
 #print axioms SelfPred.Gm_transpose
@@ -20,3 +21,8 @@ import SelfPred.Limit
 #print axioms SelfPred.abs_det_mono
 #print axioms SelfPred.limit_invariant
 #print axioms SelfPred.limit_of_flow
+#print axioms SelfPred.turn_orth
+#print axioms SelfPred.turn_Q
+#print axioms SelfPred.turn_f
+#print axioms SelfPred.change_pos
+#print axioms SelfPred.not_local_max

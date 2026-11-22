@@ -47,7 +47,7 @@ For t ≥ s there is a matrix W with smallest singular value at least 1 and Q(t)
 |---|---|---|---|
 | Theorem 1 | Symmetric T, every solution of equation (5) of [1], any initialization with Φ(0)ᵀΦ(0) = I, any multiplicities | Lean (`eig_scale`, `eig_abs_mono`, with `stiefel` for the constraint and `abs_det_mono`), assuming the eigenvalue inequality for congruences [4] and global existence for linear differential equations [7]; checked numerically | 2026-11-21 |
 | Theorem 2 | Symmetric T, Q(0) nonsingular | Lean for the nonsingular limit predictor and the T-invariant span of the limit (`limit_of_flow`), assuming in addition convergence to a critical point by the gradient inequality for real-analytic functions [5]; Claim for the signs of the eigenvalues of the limit predictor; checked numerically | 2026-11-21 |
-| Theorem 3 | Symmetric T, nonsingular T restricted to S; (iii) for rank T ≥ k and almost every start, while a set of starts of measure zero may end at subspaces of the form (ii) | Claim; uses the interlacing theorem for eigenvalues and the stable manifold theorem [6]; checked numerically | 2026-11-21 |
+| Theorem 3 | Symmetric T, nonsingular T restricted to S; (iii) for rank T ≥ k and almost every start, while a set of starts of measure zero may end at subspaces of the form (ii) | (ii): Lean (`not_local_max`); (i) and (iii): Claim, using the interlacing theorem for eigenvalues and the stable manifold theorem [6]; checked numerically | 2026-11-21 |
 | Corollary 4 | rank T ≥ k, and the k-th largest absolute eigenvalue larger than the (k + 1)-th or attained by eigenvalues of one sign; almost every start | Claim | 2026-11-21 |
 
 Not covered: non-symmetric transition matrices, the action-conditional objective of [2] (a sum of trace objectives over actions), finite step sizes and predictors that are not optimal at every time.
@@ -59,10 +59,11 @@ The folder [`lean/`](lean/) holds the library `SelfPred` (Lean 4.36.0-rc1, Mathl
 - `SelfPred/Algebra.lean`: the identities behind Theorem 1. The derivative of the predictor is QG + GQ (`qdot_eq`), the vector field is tangent to the manifold of orthonormal k-frames (`tangent_eq`), G is positive semidefinite (`G_posSemidef`), and a critical point with invertible predictor has a T-invariant span (`crit_invariant`).
 - `SelfPred/Flow.lean`: along a solution of equation (5) of [1], with derivatives taken entrywise. The constraint ΦᵀΦ = I holds for all t (`stiefel`). Q(t) = W Q(s) Wᵀ with WᵀW − I positive semidefinite for t ≥ s (`pred_conj`). The ordered eigenvalues satisfy λᵢ(Q(t)) = θᵢ λᵢ(Q(s)) with θᵢ ≥ 1 (`eig_scale`), so their signs are kept and their absolute values do not decrease (`eig_abs_mono`, Theorem 1), and |det Q(t)| ≥ |det Q(s)| (`abs_det_mono`). A limit that is a critical point, reached from a nonsingular Q(s), has a nonsingular predictor and a T-invariant span (`limit_invariant`).
 - `SelfPred/Limit.lean`: Theorem 2 in the form of `limit_of_flow`.
+- `SelfPred/Turn.lean`: Theorem 3 (ii). Turning column i of an orthonormal frame by the angle s towards a unit eigenvector v orthogonal to its span keeps the frame orthonormal (`turn_orth`) and changes the predictor only in entry (i, i), by (λ − μ) sin² s (`turn_Q`), so f changes by 2cμ + c² with c = (λ − μ) sin² s (`turn_f`). If μ(λ − μ) > 0, every neighbourhood of the frame contains an orthonormal frame with a larger f (`not_local_max`).
 
 Assuming: global existence for linear matrix differential equations with continuous coefficients (`LinearODEGlobal`, [7]), the eigenvalue inequality for congruences (`OstrowskiCongruence`, [4] and Theorem 4.5.9 of [8]), and, for Theorem 2, convergence of the flow to a critical point (`LojasiewiczLimit`, [5]). Each is a `Prop` that the theorems take as a hypothesis.
 
-Not formalized: the signs of the eigenvalues of the limit predictor in Theorem 2, Theorem 3 and Corollary 4.
+Not formalized: the signs of the eigenvalues of the limit predictor in Theorem 2, Theorem 3 (i) and (iii), and Corollary 4.
 
 ## Simulations
 
