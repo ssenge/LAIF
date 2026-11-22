@@ -288,7 +288,7 @@ theorem labels_memL {e h Tr₀ Wt C Cl cl B₀ f k₀ hh ss ww : ℕ}
   have hH : ∀ v, ¬ (N.treeN hG r (N.dart0 hne r).1).NP
       ((levelD N hG r (N.dart0 hne r).1 W (idL Af outf Tf N)).Γs P.H) v := fun v => by
     rw [hH3]
-    exact hOK.decomp.final (by rw [Fintype.card_fin]; exact hk₀) v
+    simpa using hOK.decomp.final hOK.bal (by rw [Fintype.card_fin]; exact hk₀) v
   have hleaf := fun z => leaf_card hG hOK hdep (hsurjN hG r (N.dart0 hne r).1 hne) hH z
   have hVR := valueRun_memL Aa Af outa outf Ta (Tr₀ + 1) Tf T P W r N ℓ (sA := sA) (kA := kA) (b := b) hTa hAa
   have hb1' : (W + 1) ^ 2 ≤ 2 ^ b := by

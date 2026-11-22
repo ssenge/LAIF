@@ -442,6 +442,13 @@ Expected output for each: `propext`, `Classical.choice`, `Quot.sound` (or a subs
 #print axioms SsspFlow.RotSystem.RootedTree.end_spec
 #print axioms SsspFlow.RotSystem.RootedTree.isCut_sel
 #print axioms SsspFlow.RotSystem.RootedTree.decomp_levelSeq
+#print axioms SsspFlow.RotSystem.RootedTree.bal_levelSeq
+#print axioms SsspFlow.RotSystem.RootedTree.forcedSeq_decomp
+#print axioms SsspFlow.RotSystem.RootedTree.forcedSeq_bal
+#print axioms SsspFlow.RotSystem.RootedTree.forcedSeq_final
+#print axioms SsspFlow.RotSystem.RootedTree.not_np_forcedSeq
+#print axioms SsspFlow.RotSystem.RootedTree.forced_hub_root
+#print axioms SsspFlow.RHierarchy.root_hub_bounds
 #print axioms SsspFlow.RotSystem.RootedTree.anc_iff_interval
 #print axioms SsspFlow.RotSystem.RootedTree.dart_diam
 #print axioms SsspFlow.RotSystem.RootedTree.Decomp.dart_span

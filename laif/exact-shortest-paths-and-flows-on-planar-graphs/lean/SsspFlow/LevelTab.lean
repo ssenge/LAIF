@@ -239,7 +239,11 @@ variable (h : L.OK)
 include h
 
 theorem decomp : L.t.Decomp L.w₀ L.Γs (fun d => L.t.sel L.code L.W L.fid (L.Γs d)) :=
-  decomp_levelSeq h.h₀ h.h₁ h.hR h.hc h.hinj h.hcW h.hfid
+    decomp_levelSeq h.h₀ h.h₁ h.hR h.hc h.hinj h.hcW h.hfid
+
+theorem bal : L.t.BalFrom L.Γs 0 :=
+  bal_levelSeq h.h₀ h.h₁ h.hR h.hc h.hinj h.hcW h.hfid
+
 
 theorem level (d : ℕ) : L.t.IsLevel (L.Γs d) := h.decomp.level d
 

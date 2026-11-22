@@ -535,13 +535,27 @@ structure IsCut (t : R.RootedTree V) (Γ C : Finset (D × Bool)) : Prop where
   two : ∀ u, (C.filter (fun c => R.Same Γ u c)).card ≤ 2
   balance : ∀ u, 0 < t.npOf Γ u → 4 * t.npOf (t.next Γ C) u + 2 ≤ 3 * t.npOf Γ u
 
+open Classical in
+/-- One step of a decomposition without a balance condition: the pairs of the cut lie in the next level,
+and each bag gets at most two corners. -/
+structure IsCutW (t : R.RootedTree V) (Γ C : Finset (D × Bool)) : Prop where
+  pair : ∀ d, (d, false) ∈ C → (R.rev d, false) ∈ t.next Γ C
+  two : ∀ u, (C.filter (fun c => R.Same Γ u c)).card ≤ 2
+
+theorem IsCut.toW {Γ C : Finset (D × Bool)} (h : t.IsCut Γ C) : t.IsCutW Γ C := ⟨h.pair, h.two⟩
+
+/-- The cuts are balanced from level `b` on: in each bag, the next level keeps at most about three
+quarters of the marked darts without a port. -/
+def BalFrom (t : R.RootedTree V) (Γ : ℕ → Finset (D × Bool)) (b : ℕ) : Prop :=
+  ∀ d, b ≤ d → ∀ u, 0 < t.npOf (Γ d) u → 4 * t.npOf (Γ (d + 1)) u + 2 ≤ 3 * t.npOf (Γ d) u
+
 /-- A decomposition: levels that start with one corner at the root, each one cut from the one before. -/
 structure Decomp (t : R.RootedTree V) (w₀ : D × Bool) (Γ C : ℕ → Finset (D × Bool)) : Prop where
   root : t.vertM w₀ = t.root
   snd : w₀.2 = true
   zero : Γ 0 = {w₀}
   succ : ∀ d, Γ (d + 1) = t.next (Γ d) (C d)
-  cut : ∀ d, t.IsCut (Γ d) (C d)
+  cut : ∀ d, t.IsCutW (Γ d) (C d)
 
 /-- The number of marked darts is at most twice the number of vertices. -/
 theorem card_marks_le (Γ : Finset (D × Bool)) : (t.marks Γ).card ≤ 2 * Fintype.card V := by
@@ -634,38 +648,37 @@ theorem card_filter_succ {h : ℕ} (hdep : ∀ v, t.dep v ≤ h) (d : ℕ) (u : 
   refine le_trans ?_ (show (R.portsOf (Γ d) u).card + (2 + 4 * h) ≤ _ by omega)
   convert h1
 
-theorem npOf_pow (d : ℕ) (u : D × Bool) :
-    t.npOf (Γ d) u * 4 ^ d ≤ t.npOf (Γ 0) u * 3 ^ d := by
+theorem npOf_pow {b : ℕ} (hB : t.BalFrom Γ b) (d : ℕ) (u : D × Bool) :
+    t.npOf (Γ (b + d)) u * 4 ^ d ≤ t.npOf (Γ b) u * 3 ^ d := by
   induction d with
   | zero => simp
   | succ d ih =>
-    have hm := npOf_mono (t := t) (hD.sub_succ d) u
-    rw [pow_succ, pow_succ]
-    by_cases h0 : t.npOf (Γ d) u = 0
-    · have : t.npOf (Γ (d + 1)) u = 0 := by omega
+    have hm := npOf_mono (t := t) (hD.sub_succ (b + d)) u
+    rw [pow_succ, pow_succ, ← Nat.add_assoc]
+    by_cases h0 : t.npOf (Γ (b + d)) u = 0
+    · have : t.npOf (Γ (b + d + 1)) u = 0 := by omega
       rw [this]
       simp
-    · have hb := (hD.cut d).balance u (Nat.pos_of_ne_zero h0)
-      rw [← hD.succ] at hb
-      have h1 : t.npOf (Γ (d + 1)) u * 4 ≤ t.npOf (Γ d) u * 3 := by omega
-      calc t.npOf (Γ (d + 1)) u * (4 ^ d * 4) = t.npOf (Γ (d + 1)) u * 4 * 4 ^ d := by ring
-        _ ≤ t.npOf (Γ d) u * 3 * 4 ^ d := Nat.mul_le_mul_right _ h1
-        _ = t.npOf (Γ d) u * 4 ^ d * 3 := by ring
-        _ ≤ t.npOf (Γ 0) u * 3 ^ d * 3 := Nat.mul_le_mul_right _ ih
-        _ = t.npOf (Γ 0) u * (3 ^ d * 3) := by ring
+    · have hb := hB (b + d) (Nat.le_add_right b d) u (Nat.pos_of_ne_zero h0)
+      have h1 : t.npOf (Γ (b + d + 1)) u * 4 ≤ t.npOf (Γ (b + d)) u * 3 := by omega
+      calc t.npOf (Γ (b + d + 1)) u * (4 ^ d * 4) = t.npOf (Γ (b + d + 1)) u * 4 * 4 ^ d := by ring
+        _ ≤ t.npOf (Γ (b + d)) u * 3 * 4 ^ d := Nat.mul_le_mul_right _ h1
+        _ = t.npOf (Γ (b + d)) u * 4 ^ d * 3 := by ring
+        _ ≤ t.npOf (Γ b) u * 3 ^ d * 3 := Nat.mul_le_mul_right _ ih
+        _ = t.npOf (Γ b) u * (3 ^ d * 3) := by ring
 
-/-- After logarithmically many levels, no bag has a vertex without a corner. -/
-theorem npOf_final (u : D × Bool) {k : ℕ} (hk : 2 * Fintype.card V < 2 ^ k) :
-    t.npOf (Γ (3 * k)) u = 0 := by
+/-- After logarithmically many balanced levels, no bag has a vertex without a corner. -/
+theorem npOf_final {b : ℕ} (hB : t.BalFrom Γ b) (u : D × Bool) {k : ℕ} (hk : 2 * Fintype.card V < 2 ^ k) :
+    t.npOf (Γ (b + 3 * k)) u = 0 := by
   classical
   by_contra h0
-  have h1 := hD.npOf_pow (3 * k) u
-  have h2 : t.npOf (Γ 0) u ≤ 2 * Fintype.card V :=
+  have h1 := hD.npOf_pow hB (3 * k) u
+  have h2 : t.npOf (Γ b) u ≤ 2 * Fintype.card V :=
     (Finset.card_filter_le _ _).trans (card_marks_le _)
   have h3 : 4 ^ (3 * k) ≤ 2 * Fintype.card V * 3 ^ (3 * k) := by
-    calc 4 ^ (3 * k) ≤ t.npOf (Γ (3 * k)) u * 4 ^ (3 * k) :=
+    calc 4 ^ (3 * k) ≤ t.npOf (Γ (b + 3 * k)) u * 4 ^ (3 * k) :=
           Nat.le_mul_of_pos_left _ (Nat.pos_of_ne_zero h0)
-      _ ≤ t.npOf (Γ 0) u * 3 ^ (3 * k) := h1
+      _ ≤ t.npOf (Γ b) u * 3 ^ (3 * k) := h1
       _ ≤ 2 * Fintype.card V * 3 ^ (3 * k) := Nat.mul_le_mul_right _ h2
   rw [pow_mul, pow_mul] at h3
   norm_num at h3
@@ -676,12 +689,15 @@ theorem npOf_final (u : D × Bool) {k : ℕ} (hk : 2 * Fintype.card V < 2 ^ k) :
     Nat.mul_lt_mul_of_pos_right hk (by positivity)
   omega
 
-theorem final {k : ℕ} (hk : 2 * Fintype.card V < 2 ^ k) (v : V) : ¬ t.NP (Γ (3 * k)) v := by
+/-- **Height.** If the cuts are balanced from level `b` on, no vertex is without a corner at level
+`b + 3k` once `2|V| < 2^k`. -/
+theorem final {b : ℕ} (hB : t.BalFrom Γ b) {k : ℕ} (hk : 2 * Fintype.card V < 2 ^ k) (v : V) :
+    ¬ t.NP (Γ (b + 3 * k)) v := by
   classical
   intro hv
-  have h0 := hD.npOf_final (t.c1 v) hk
-  have hm : t.c1 v ∈ (t.marks (Γ (3 * k))).filter
-      ((R.double.split (Γ (3 * k))).toHypermap.gcomp (t.c1 v)) :=
+  have h0 := hD.npOf_final hB (t.c1 v) hk
+  have hm : t.c1 v ∈ (t.marks (Γ (b + 3 * k))).filter
+      ((R.double.split (Γ (b + 3 * k))).toHypermap.gcomp (t.c1 v)) :=
     Finset.mem_filter.2 ⟨t.mem_marks.2 ⟨v, hv, Or.inl rfl⟩, connect_refl _⟩
   have := Finset.card_pos.2 ⟨_, hm⟩
   unfold npOf at h0

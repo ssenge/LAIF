@@ -551,7 +551,16 @@ theorem decomp_levelSeq (h₀ : t.vertM w₀ = t.root) (h₁ : w₀.2 = true) (h
       have hcut := isCut_sel hL₀ hL hw hR hc hinj hW hfid
       exact ⟨hL.next hcut.pair, subset_next _ _ hw⟩
   exact ⟨h₀, h₁, rfl, fun _ => rfl,
-    fun d => isCut_sel hL₀ (hall d).1 (hall d).2 hR hc hinj hW hfid⟩
+        fun d => (isCut_sel hL₀ (hall d).1 (hall d).2 hR hc hinj hW hfid).toW⟩
+
+/-- The cuts of the rule are balanced from the first level on. -/
+theorem bal_levelSeq (h₀ : t.vertM w₀ = t.root) (h₁ : w₀.2 = true) (hR : R.Planar)
+    (hc : R.Connected) (hinj : Function.Injective code) (hW : ∀ z, code z < W)
+    (hfid : ∀ x y, fid x = fid y ↔ fconnect R.double.facePerm x y) :
+    t.BalFrom (t.levelSeq code W fid w₀) 0 := fun d _ u hu => by
+  have hD := decomp_levelSeq h₀ h₁ hR hc hinj hW hfid
+  exact (isCut_sel (isLevel_singleton (t := t) h₀ h₁) (hD.level d) (hD.w₀_mem d) hR hc hinj hW hfid).balance
+    u hu
 
 end Rule
 
