@@ -83,6 +83,28 @@ def path_exists(n, adj, sig, sizes, par=None):
     return path(frozenset(), frozenset(range(n)))
 
 def bw_buckets(n, E):
+    """Bandwidth of a graph via the reduction, one connected component at a time."""
+    adj = [set() for _ in range(n)]
+    for u, v in E:
+        adj[u].add(v); adj[v].add(u)
+    comps, seen = [], set()
+    for s0 in range(n):
+        if s0 in seen:
+            continue
+        comp, st = [s0], [s0]; seen.add(s0)
+        while st:
+            x = st.pop()
+            for y in adj[x]:
+                if y not in seen:
+                    seen.add(y); comp.append(y); st.append(y)
+        comps.append(sorted(comp))
+    best = 0
+    for comp in comps:
+        idx = {v: i for i, v in enumerate(comp)}
+        best = max(best, bw_connected(len(comp), [(idx[u], idx[v]) for u, v in E if u in idx]))
+    return best
+
+def bw_connected(n, E):
     adj = [set() for _ in range(n)]
     for u, v in E:
         adj[u].add(v); adj[v].add(u)
@@ -131,6 +153,9 @@ for n in range(2, 8):
         assert a == c, (n, E, a, c)
         tested += 1
 print(f"reduction and halving recursion agree with brute force on {tested} random connected graphs, n = 2..7")
+for n, E in ((4, [(0, 1), (2, 3)]), (6, [(0, 1), (1, 2), (3, 4), (4, 5), (3, 5)]), (5, [(0, 1)])):
+    assert bw_brute(n, E) == bw_buckets(n, E), (n, E)
+print("disconnected graphs: componentwise reduction agrees with brute force")
 
 # 2. locally valid pairs: per non-root vertex, given whether its parent is in S, exactly 5 of the 6 (offset, membership)
 for b_par in (0, 1):
