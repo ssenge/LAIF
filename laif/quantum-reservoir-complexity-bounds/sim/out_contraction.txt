@@ -1,4 +1,6 @@
-n = 1: coefficient 1 at J = pi; random J in [0.2, 1]: 0.7117
-n = 2: coefficient 1 at J = pi; random J in [0.2, 1]: 0.9971
-n = 3: coefficient 1 at J = pi; random J in [0.2, 1]: 0.9217
+n = 1: coefficient 1 at J = pi
+n = 2: coefficient 1 at J = pi
+n = 3: coefficient 1 at J = pi
+n = 2: uniform couplings, two fixed states, coefficient >= 1; at c = 0.5, gamma = 0.7, v = 0.3 or 0.7: 1.0162
+n = 3: uniform couplings, two fixed states, coefficient >= 1; at c = 0.5, gamma = 0.7, v = 0.3 or 0.7: 1.0426
 all checks passed

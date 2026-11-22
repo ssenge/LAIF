@@ -5,6 +5,9 @@ Checks:
    of the input interval, while the bound of the argument is sqrt2 sqrt(v^2 + (1-v)^2) >= 1.
 2. For J = pi on every pair (and any gamma) e^{-iH} is a product of single-qubit Z rotations: the map is unitary on the
    reservoir and its coefficient is exactly 1, for every input v.
+3. For uniform couplings J_ij = c (n >= 2), the subspace singlet(qubits 1, 2) (x) (other reservoir qubits) and its complement
+   are invariant, so each carries a fixed state of T(v, .); their difference A is traceless with T(v, A) = A,
+   so the coefficient is at least 1. Asserted for several c, gamma, v and n = 2, 3.
 """
 import itertools
 import numpy as np
@@ -22,8 +25,18 @@ def ham(J, g, q):
     return H + g * sum(op(Z, i, q) for i in range(q))
 
 
+def unitary(J, g, q):
+    w, Vm = np.linalg.eigh(ham(J, g, q)); return Vm @ np.diag(np.exp(-1j * w)) @ Vm.conj().T
+
+
+def channel(J, g, v, n, A):                              # T(v, A), ancilla first
+    U = unitary(J, g, n + 1); d = 2 ** n
+    M = U @ np.kron(np.diag([v, 1 - v]), A) @ U.conj().T
+    return M.reshape(2, d, 2, d).trace(axis1=0, axis2=2)
+
+
 def coeff(J, g, v, n):                                   # n reservoir qubits, ancilla first
-    q = n + 1; w, Vm = np.linalg.eigh(ham(J, g, q)); U = Vm @ np.diag(np.exp(-1j * w)) @ Vm.conj().T
+    q = n + 1; U = unitary(J, g, q)
     d = 2 ** n; sig = np.diag([v, 1 - v])
     basis = []                                           # orthonormal traceless Hermitian basis
     for a in range(d):
@@ -54,6 +67,22 @@ for n in [1, 2, 3]:
         for v in [0.3, 0.5, 0.7]:
             c = coeff(J, g, v, n)
             assert abs(c - 1) < 1e-9, c
-    J = np.triu(rng.uniform(0.2, 1.0, (q, q)), 1)
-    print(f"n = {n}: coefficient 1 at J = pi; random J in [0.2, 1]: {coeff(J, 0.5, 0.5, n):.4f}")
+    print(f"n = {n}: coefficient 1 at J = pi")
+for n in [2, 3]:
+    q = n + 1; d = 2 ** n
+    sg = np.array([0, 1, -1, 0]) / np.sqrt(2)                     # singlet on reservoir qubits 1, 2
+    P = np.kron(np.outer(sg, sg), np.eye(2 ** (n - 2))).astype(complex)   # projector onto the invariant subspace
+    for c in [0.2, 0.5, 1.0, 2.0]:
+        J = np.triu(np.full((q, q), c), 1)
+        for g in [0.0, 0.7]:
+            for v in [0.3, 0.5, 0.7]:
+                F = P / np.trace(P).real; R = (np.eye(d) - P) / (d - np.trace(P).real)
+                for _ in range(3000):                                               # fixed states in both sectors
+                    F, R = channel(J, g, v, n, F), channel(J, g, v, n, R)
+                assert abs(np.trace(F @ P) - 1) < 1e-10 and abs(np.trace(R @ P)) < 1e-10
+                A = F - R
+                assert np.abs(channel(J, g, v, n, A) - A).max() < 1e-6
+                assert coeff(J, g, v, n) >= 1 - 1e-9
+    worst = max(coeff(np.triu(np.full((q, q), 0.5), 1), 0.7, v, n) for v in [0.3, 0.7])
+    print(f"n = {n}: uniform couplings, two fixed states, coefficient >= 1; at c = 0.5, gamma = 0.7, v = 0.3 or 0.7: {worst:.4f}")
 print("all checks passed")

@@ -1,9 +1,10 @@
 """Theorem 1 against [1, Corollary 11] for the partial-trace reservoir with linear readout.
 
-Constants of [1]: dim Theta = n(n-1)+1, L_Theta = 2^{n+1} n (4n-3) (Lemma 15), L'_Theta = L_Theta/(1-r),
+Constants of [1]: dim Theta = n(n-1)+1 as stated in [1] for its bound, n^2 + 1 (covers the n(n+1)/2 couplings of [1, eq. (13)]) for Theorem 1,
+L_Theta = 2^{n+1} sqrt(n (4n-3)) (Lemma 15), L'_Theta = L_Theta/(1-r),
 D_Theta = sqrt(n(n-1) dJ^2 + dg^2), slope bound of the readout n 2^{n/2}, L_Omega = sqrt(n+1), D_Omega = sqrt(n + 4 C^2).
 Asserts: the integral identity int_0^1 log(1 + c/u) du = log(1+c) + c log(1+1/c) <= log(1+c) + 1 (quadrature),
-Theorem 1 below [1, Corollary 11] for n = 2..30, and Theorem 1 / ((C+n) n sqrt(n)) bounded.
+Theorem 1 (with covering constant 4) below [1, Corollary 11] for n = 2..30, and Theorem 1 <= 80 (C+n) n sqrt(n).
 Exact arithmetic in logs, since the bound of [1] overflows floats for large n.
 """
 import math
@@ -20,19 +21,19 @@ k, r, dJ, dg, C = 1, 0.9, 1.0, 1.0, 1.0             # k = 1: both bounds scale a
 ratios = []
 for n in range(2, 31):
     dT, dO = n * (n - 1) + 1, n + 1
-    lnLp = (n + 1) * math.log(2) + math.log(n * (4 * n - 3)) - math.log(1 - r)
+    lnLp = (n + 1) * math.log(2) + 0.5 * math.log(n * (4 * n - 3)) - math.log(1 - r)
     lnA1 = math.log(n) + n / 2 * math.log(2) + lnLp + 0.5 * math.log(n * (n - 1) * dJ ** 2 + dg ** 2)
     lnA2 = 0.5 * math.log(n + 1) + 0.5 * math.log(n + 4 * C ** 2)
     lnA = max(lnA1, lnA2)
     ln_old = math.log(48 * 0.89 * (math.sqrt(dT) + math.sqrt(dO))) + lnA
-    B, d = C + n, dT + dO
-    lterm = math.log(2) + lnA - math.log(B)          # ln(2A/B); ln(1 + x) computed stably from ln x
+    B, d = C + n, n * n + 1 + dO
+    lterm = math.log(4) + lnA - math.log(B)          # ln(4A/B); ln(1 + x) computed stably from ln x
     L = 1 + (lterm + math.log1p(math.exp(-lterm)) if lterm > 0 else math.log1p(math.exp(lterm)))
     new = 24 * B * math.sqrt(d * L / k)
     assert math.log(new) < ln_old
     ratios.append(new / ((C + n) * n * math.sqrt(n)))
     if n in (2, 5, 10, 20, 30):
         print(f"n = {n:2d}: [1, Cor. 11] = e^{ln_old:6.1f} = 10^{ln_old / math.log(10):5.1f},  Theorem 1 = {new:9.1f}")
-assert max(ratios) < 2 * min(ratios) * 10
+assert max(ratios) <= 80
 print(f"Theorem 1 / ((C + n) n^1.5) in [{min(ratios):.1f}, {max(ratios):.1f}]")
 print("all checks passed")
