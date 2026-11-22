@@ -46,21 +46,36 @@ def components(vs, s):
         comps.append(comp)
     return comps
 
-def split_decides(vs, s, k):
-    """The split step on the first component H, with exact value oracles."""
+def split_decides(vs, s, k, small):
+    """The split step of Section 4 with exact value oracles: remove clique components (charging their zero-edges to the
+    rest), then scan budgets 1/2, 1, .. on one component H (up to K for the large-k form, up to k~ for the small-k form)."""
+    vs = list(vs)
+    while True:
+        cl = [C for C in components(vs, s) if all(s[u, v] > 0 for u, v in itertools.combinations(C, 2))]
+        if not cl:
+            break
+        C = cl[0]; R = [v for v in vs if v not in C]
+        k -= F(sum(1 for u in C for v in R if s[u, v] == 0), 2); vs = R
+    if k < 0:
+        return False
     cs = components(vs, s)
+    if len(cs) < 2:
+        return V(vs, s) <= k                      # connected or empty: the step of the source, here exact
     H = cs[0]; R = [v for v in vs if v not in H]
-    zc = sum(1 for u in H for v in R if s[u, v] == 0)
-    kt = k - F(zc, 2)
-    K = F(int(kt), 2) if kt >= 0 else F(-1)       # largest half-integer <= kt/2
-    halves = [F(i, 2) for i in range(0, int(2 * K) + 1)]
+    kt = k - F(sum(1 for u in H for v in R if s[u, v] == 0), 2)
     vH, vR = V(H, s), V(R, s)
-    for i in halves:                               # value calls on H
-        if vH <= i:
-            return vR <= kt - i                   # tail call on G - H
-    for i in halves:                               # value calls on G - H
-        if vR <= i:
-            return vH <= kt - i                   # tail call on H
+    if small:
+        for i2 in range(1, int(2 * kt) + 1):       # i = 1/2, 1, .., k~
+            if vH <= F(i2, 2):
+                return vR <= kt - F(i2, 2)
+        return False
+    K2 = int(kt) if kt >= 0 else 0                # 2K = largest integer <= k~
+    for i2 in range(1, K2 + 1):                   # value calls on H
+        if vH <= F(i2, 2):
+            return vR <= kt - F(i2, 2)            # tail call on G - H
+    for i2 in range(1, K2 + 1):                   # value calls on G - H
+        if vR <= F(i2, 2):
+            return vH <= kt - F(i2, 2)            # tail call on H
     return False
 
 random.seed(11)
@@ -81,7 +96,8 @@ for _ in range(400):
         assert V(vs, s) == V(H, s) + V(R, s) + F(zc, 2), s
         for k2 in range(0, 2 * int(V(vs, s)) + 6):
             k = F(k2, 2)
-            assert split_decides(vs, s, k) == (V(vs, s) <= k), (s, k)
+            for small in (False, True):
+                assert split_decides(vs, s, k, small) == (V(vs, s) <= k), (s, k, small)
         tests += 1
 print(f"additivity over type-graph components and the split step: {tests} disconnected random weighted graphs, n <= 7")
 
@@ -90,7 +106,7 @@ assert X_LO ** 2 < F(16180339887, 10 ** 10)
 def lhs(k):                                        # with 2K <= k, i.e. exponent 1 - 2k + 2K <= 1 - k
     return 2 * X_LO ** (1 - k) / (X_LO - 1) + 1 / X_LO
 K0 = next(k for k in range(1, 200) if lhs(k) <= 1)
-assert lhs(K0) <= 1
+assert lhs(K0) <= 1 and K0 <= 16
 print(f"split leaf count <= phi^k for every k >= {K0}")
 
 PHI_UP = F(16180339888, 10 ** 10)
