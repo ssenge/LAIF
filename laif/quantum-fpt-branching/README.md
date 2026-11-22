@@ -10,7 +10,9 @@ For a graph G and a budget k, Vertex Cover above LP asks for a vertex cover of s
 
 **Theorem 3.** With k the solution size, quantum algorithms of the same kind solve Cluster Vertex Deletion in time O(1.3458^k) · poly(n), Edge Dominating Set in O(1.4951^k) · poly(n), and d-Path Vertex Cover (deletion of at most k vertices so that no path on d vertices remains) for d = 3, 4, 5, 6, 7 in O(1.3071^k), O(1.4624^k), O(1.6238^k), O(1.8261^k) and O(1.9899^k), times poly(n).
 
-Status: Claim. For Odd Cycle Transversal the matching bound on the relaxation and the bound on μ are in Lean (`lean/FptBranching.lean`), and so are the bases; for the problems of Theorem 2 only the arithmetic of the budget step is. The search tree of [1] and the reductions of [1] and [4] are used as stated there (Assuming), and the walk is the direct application of [2] and [3]. For Theorem 3 the search trees of [5], [7] and [9] are used as stated there, with the changes of Section 3; the bounds of [9] are computer-assisted and are used as stated (Assuming). The bases are checked by script.
+**Theorem 4.** Cluster Editing (at most k edge insertions and deletions that turn G into a disjoint union of cliques) has a quantum algorithm with bounded error, polynomial space and no quantum random access memory, in time O(1.2721^k) · poly(n).
+
+Status: Claim. For Odd Cycle Transversal the matching bound on the relaxation and the bound on μ are in Lean (`lean/FptBranching.lean`), and so are the bases; for the problems of Theorem 2 only the arithmetic of the budget step is. The search tree of [1] and the reductions of [1] and [4] are used as stated there (Assuming), and the walk is the direct application of [2] and [3]. For Theorem 3 the search trees of [5], [7] and [9] are used as stated there, with the changes of Section 3; the bounds of [9] are computer-assisted and are used as stated (Assuming). For Theorem 4 the search tree of [15] and Theorem 1 of [2] are used as stated, with the split step of Section 4. The bases and the split step are checked by script.
 
 ## Before and after
 
@@ -22,6 +24,7 @@ Status: Claim. For Odd Cycle Transversal the matching bound on the relaxation an
 | KVD | 1.5214^k classically [1]; 1.2721^k quantum, implied by [1, Theorem 1] with [3] | **1.2335^k** |
 | Vertex Cover parameterized by a KVD set | 1.5214^k classically [1]; 1.2721^k quantum, implied as above | **1.2335^k** |
 | Vertex Cover parameterized by an odd cycle transversal | 1.5214^k classically [1]; 1.2721^k quantum, implied as above | **1.2335^k** |
+| Cluster Editing | 1.6181^k classically [15]; 1.3267^k quantum, implied by [16] with [2] | **1.2721^k** |
 | Cluster Vertex Deletion | 1.811^k classically [5]; 1.3821^k quantum, implied by [6] with [3] | **1.3458^k** |
 | Edge Dominating Set | 2.2351^k classically [7]; 1.5215^k quantum, implied by [8] with [3] | **1.4951^k** |
 | 3-Path Vertex Cover | 1.708^k classically [9]; 1.3089^k quantum, implied by [10] with [3] | **1.3071^k** |
@@ -51,7 +54,20 @@ Each algorithm below is a search tree whose nodes do polynomial work and then st
 - **Edge Dominating Set [7, Theorem 1].** The tree branches on vertices, 4-cycles and bad components, and a leaf with only clique components is solved in polynomial time [7, Lemma 2]. The analysis bounds the number of leaves. Its third stage is written as an enumeration of assignments of the bad components subject to two counting conditions. As a tree that assigns one component per level and prunes a node when the conditions fail even with the cheapest branch for every remaining component, it has the same leaves and at most polynomially more nodes, since the cheapest branch of each component type minimizes both counted quantities. The tree of [8] has the same final stage, over its 2-path components, and is restated in the same way.
 - **d-Path Vertex Cover [9].** The generated algorithm (Algorithm 1 and Theorem 1 of [9]) applies two polynomial reduction rules, each followed by one call, solves the instance by brute force when every component has fewer than a constant number of vertices, and otherwise branches on a rule applied to one component with the global budget. Its bounds are those of Table 1 of [9]. The earlier trees of [10] and [12] are plain in the same sense, and the algorithm of [11] uses iterative compression, where each round is one plain tree.
 
-## 4. Lean
+## 4. Cluster Editing: Theorem 4
+
+The algorithm of [15, Theorem 2] works on integer-weighted instances, with s(uv) > 0 for an edge, s(uv) < 0 for a non-edge and s(uv) = 0 for a zero-edge; the type graph has the edges as its edges. An unweighted input has weights ±1 and no zero-edges. The algorithm branches on an edge by forbidding or merging it, with branching number φ = 1.6180… in the budget, where creating and destroying a zero-edge count 1/2 each. A node (G, k) answers yes if and only if V(G) ≤ k, with V(G) = opt(G) + z(G)/2, the optimum cost plus half the number of zero-edges. Some of its steps [15, Lemmas 3 and 5] compare the cost of a solution of a connected component with k, so they are exact when that component is the whole instance. Here a node whose type graph is connected applies the step of [15] unchanged, and a node whose type graph is disconnected applies a split step.
+
+**The split step.** Components whose pairs are all edges are removed at no cost. Let H be another component, z_H the number of zero-edges between H and G − H, k̃ = k − z_H/2, and K the largest multiple of 1/2 with K ≤ k̃/2. An optimal solution never puts two components into one cluster, so V(G) = V(H) + V(G − H) + z_H/2, and V(H) ≥ 1/2, since H has a zero-edge or a conflict triple with integer weights. For k ≥ 16, make value calls (H, i) for i = 1/2, 1, … , K. If one succeeds at i = k′, make the tail call (G − H, k̃ − k′). Otherwise make value calls (G − H, i) for the same i, and if one succeeds at i = k″, make the tail call (H, k̃ − k″). If neither succeeds, V(H) + V(G − H) > k̃ and the answer is no. For k < 16, make value calls (H, i) for i = 1/2, 1, … up to k̃ and then the tail call on G − H.
+
+**Measure.** Let B(G, k) = φ^k at a node that branches or splits, and B = 2 at a leaf.
+
+- **(M1) and (M3).** On a connected node the steps of [15] are macro steps of constant size with branching number φ in the sense of Lemma 0 of [2], including the steps of several levels in [15, Lemma 5], and the comparisons of a solution with k are their leaves. The tail of the split step has budget at most k − 1/2, and its call tree has at most n^C (2 Σ_{i ≤ K} φ^i + φ^{k−1/2}) leaves, which is at most n^C φ^k for k ≥ 16. Every step lowers k by at least 1/2 or removes a vertex, so the depth is at most n + 2k. For k < 16 the budget stays below 16 in the whole call tree, every path has at most 33 split steps, each with at most 33 calls, and the tree has n^{O(1)} nodes.
+- **(M2).** For k ≥ 16 a value call has budget at most k/2, so log B(y) ≤ (1/2) log B(v). For k < 16 a value call has constant measure, which the term C log n covers.
+
+Theorem 1 of [2] then gives √(φ^k) · poly(n) = O(1.2721^k) · poly(n). A solution comes by self-reduction.
+
+## 5. Lean
 
 `lean/FptBranching.lean` proves, with only the standard axioms (`lean/axioms.txt`):
 
@@ -62,15 +78,15 @@ Each algorithm below is a search tree whose nodes do polynomial work and then st
 
 Lean 4 v4.36.0-rc1 with Mathlib at revision d875a8de5222f62cf1c2fafc7984588adadc990a. Run `lake exe cache get` and then `lake build` in `lean/`.
 
-Not formalized: the search tree of [1], the walk of [3], the reductions of [1] and [4], and for the problems of Theorem 2 the two inequalities vc(G′) ≤ |M| + |O| and vc*(G′) ≥ |M| + |O|/2 and Lemma 22 of [1].
+Not formalized: the search trees of [1] and [15], the split step of Section 4, the walk of [3], the reductions of [1] and [4], and for the problems of Theorem 2 the two inequalities vc(G′) ≤ |M| + |O| and vc*(G′) ≥ |M| + |O|/2 and Lemma 22 of [1].
 
-## 5. Measurements
+## 6. Measurements
 
-`sim/bases.py` recomputes the root 2.314596 of the vectors of rules B5 and B6 of [1], checks the printed bases in exact arithmetic on the recurrence of the walk, and recomputes the implied bases from the root φ² of the tree of [1, Theorem 1]. Run it with `python bases.py` in `sim/`. It exits nonzero on a failed check. `sim/bases2.py` checks the bases of Theorem 3 and of the implied baselines in exact arithmetic, each the square root of the classical base rounded up at the fourth decimal, and checks that the bases for d = 3 to 6 lie below the quantum bounds for d-Hitting Set of [13].
+`sim/bases.py` recomputes the root 2.314596 of the vectors of rules B5 and B6 of [1], checks the printed bases in exact arithmetic on the recurrence of the walk, and recomputes the implied bases from the root φ² of the tree of [1, Theorem 1]. Run it with `python bases.py` in `sim/`. It exits nonzero on a failed check. `sim/bases2.py` checks the bases of Theorem 3 and of the implied baselines in exact arithmetic, each the square root of the classical base rounded up at the fourth decimal, and checks that the bases for d = 3 to 6 lie below the quantum bounds for d-Hitting Set of [13]. `sim/cluster.py` checks by brute force over all partitions, on 321 random disconnected weighted graphs with up to 7 vertices, that V is additive over the components of the type graph as in Section 4, that V(H) ≥ 1/2 for a component that is not a clique of edges, and that the split step decides V(G) ≤ k; it checks the leaf bound of the split step for k ≥ 16 and the bases √φ ≤ 1.2721 and √1.76 ≤ 1.3267 in exact arithmetic.
 
-## 6. Limits
+## 7. Limits
 
-- The search tree of [1], the safeness of its rules and its analysis are used as stated, as are its reductions and those of [4]. The same holds for the trees of [5] to [12]; their case analyses are used as stated.
+- The search tree of [1], the safeness of its rules and its analysis are used as stated, as are its reductions and those of [4]. The same holds for the trees of [5] to [12] and [15]; their case analyses are used as stated.
 - The polynomial factor of the walk is not given explicitly, and there is no gate count.
 
 ## References
@@ -89,6 +105,8 @@ Not formalized: the search tree of [1], the walk of [3], the reductions of [1] a
 12. D. Tsur. l-path vertex cover is easier than l-hitting set for small l. arXiv:1906.10523.
 13. 3-Hitting Set and d-Hitting Set with a quantum algorithm. [quantum-hitting-set](../quantum-hitting-set/).
 14. Quantum monotone local search. [quantum-monotone-local-search](../quantum-monotone-local-search/).
+15. S. Böcker. A golden ratio parameterized algorithm for Cluster Editing. Journal of Discrete Algorithms, 2012.
+16. S. Böcker, P. Damaschke. Even faster parameterized cluster deletion and cluster editing. Information Processing Letters, 2011.
 
 ## Use of AI
 
