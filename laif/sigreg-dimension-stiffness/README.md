@@ -2,11 +2,11 @@
 
 Written 17 Nov 2026.
 
-LeJEPA [1] trains a joint-embedding predictive architecture with a regularizer, SIGReg, that pushes the embedding law towards the isotropic Gaussian. For embeddings z ∈ ℝ^K it draws random unit directions a, forms the slices aᵀz, and compares the empirical characteristic function of each slice with e^{−t²/2} by an unstandardized form of the statistic of [3] with weight e^{−t²/2}, multiplied by the batch size N. In [1] it is proved that the isotropic Gaussian is the unique zero, and in [2] the regularizer is written as a kernel discrepancy whose bandwidth grows with K. Table 1d of [1] reports that linear accuracy on ImageNet-1K falls as the projector dimension grows, from 75.3 at K = 64 to 73.65 at K = 1024.
+LeJEPA [1] trains a joint-embedding predictive architecture with a regularizer, SIGReg, that pushes the embedding law towards the isotropic normal law. For embeddings z ∈ ℝ^K it draws random unit directions a, forms the slices aᵀz, and compares the empirical characteristic function of each slice with e^{−t²/2} by an unstandardized form of the statistic of [3] with weight e^{−t²/2}, multiplied by the batch size N. In [1] it is proved that the isotropic normal law is the unique zero, and in [2] the regularizer is written as a kernel discrepancy whose bandwidth grows with K. Table 1d of [1] reports that linear accuracy on ImageNet-1K falls as the projector dimension grows, from 75.3 at K = 64 to 73.65 at K = 1024.
 
 The results below quantify how strongly SIGReg penalizes a non-isotropic covariance, as a function of K, and what this means for the minimizers of a linear model.
 
-**Setting.** For Gaussian embeddings z ~ N(0, Σ), every slice is N(0, aᵀΣa). The population value of SIGReg is therefore S_h(Σ) = E_a h(aᵀΣa) with the slice function
+**Setting.** For normal embeddings z ~ N(0, Σ), every slice is N(0, aᵀΣa). The population value of SIGReg is therefore S_h(Σ) = E_a h(aᵀΣa) with the slice function
 
     D(s) = ∫ (e^{−st²/2} − e^{−t²/2})² e^{−t²/2} dt = √(2π) [ (2s+1)^{−1/2} − 2 (s+2)^{−1/2} + 3^{−1/2} ],
 
@@ -22,7 +22,7 @@ the value of the statistic between N(0, s) and N(0, 1). With a uniform on the sp
 
 For SIGReg this means that the scale m enters with the full weight D(m), independent of K, while the shape v enters only with weight O(1/K): near isotropy S_D ≈ D(m) + 0.2412 v/(K+2), in general the cost of the shape lies between −0.0118 v/(K+2) and 6.86 v/(K+2), and it is Θ(v/K) for spectra inside [0, 2.4], where D'' > 0. Collapsing an isotropic embedding with m = 1 onto K/2 of the K directions at the same trace (v = 1) costs at most 6.86/(K+2), and about 2.36 · 10⁻⁴ at K = 1024, while halving the variance of every coordinate costs D(1/2) ≈ 0.049 in every dimension.
 
-**Corollary 1 (curvature at isotropy).** For smooth h and a symmetric direction Δ, the second derivative of ε ↦ S_h(I + εΔ) at ε = 0 is h''(1)((tr Δ)² + 2‖Δ‖_F²)/(K(K+2)). Per unit Frobenius norm, a traceless direction has curvature 2h''(1)/(K(K+2)) and the direction of the identity h''(1)/K, a ratio of 2/(K+2).
+**Corollary 1 (curvature at isotropy).** For smooth h and a symmetric direction Δ, the second derivative of ε ↦ S_h(I + εΔ) at ε = 0 is h''(1)((tr Δ)² + 2‖Δ‖_F²)/(K(K+2)). Per unit norm ‖Δ‖_F, a traceless direction has curvature 2h''(1)/(K(K+2)) and the direction of the identity h''(1)/K, a ratio of 2/(K+2).
 
 **Lemma 2 (minibatch statistic).** For N independent samples of N(0, s), the expected value of N times the statistic of one slice is N D(s) + B(s), with B(s) = √(2π)(1 − (2s+1)^{−1/2}). The identity holds pointwise in t, so it also holds for every quadrature in t, with D and B evaluated by that quadrature, and so does B''(1) = −2D''(1). Hence the expected minibatch loss has curvature (N − 2) D''(1) at isotropy in place of N D''(1).
 
@@ -42,19 +42,19 @@ For h = D with L = sup D'' = D''(0) ≈ 6.855, the constant in (ii) cannot be im
 
 **Corollary 3 (two normalizations).** For costs evenly spaced in a fixed range [c₁, c₁ + Δ], with h = D: if the invariance term is summed over the K coordinates and μ is fixed, then r = O(1) as K grows; if it is averaged over the coordinates, as in the code of [1] (μ = μ₀K), then r = O(√K), so the fraction of active directions is O(K^{−1/2}).
 
-**Proposition 4 (linear LeJEPA).** Let two views x, x' ∈ ℝ^d be jointly Gaussian with zero mean and Cov(x) = Cov(x') = Σ_x ≻ 0, and let a linear encoder W ∈ ℝ^{K×d}, K ≤ d, minimize E‖W(x − x')‖² + μ S_h(WΣ_xWᵀ). Then the minimum equals min_λ F(λ) with costs c = (γ₁, …, γ_K), the smallest eigenvalues of Σ_x^{−1/2} E[(x − x')(x − x')ᵀ] Σ_x^{−1/2} in increasing order, and the rank of the embedding covariance at a minimizer is that of λ*. So Theorems 2 and 3 apply when γ₁ > 0.
+**Proposition 4 (linear LeJEPA).** Let two views x, x' ∈ ℝ^d be jointly normal with zero mean and Cov(x) = Cov(x') = Σ_x ≻ 0, and let a linear encoder W ∈ ℝ^{K×d}, K ≤ d, minimize E‖W(x − x')‖² + μ S_h(WΣ_xWᵀ). Then the minimum equals min_λ F(λ) with costs c = (γ₁, …, γ_K), the smallest eigenvalues of Σ_x^{−1/2} E[(x − x')(x − x')ᵀ] Σ_x^{−1/2} in increasing order, and the rank of the embedding covariance at a minimizer is that of λ*. So Theorems 2 and 3 apply when γ₁ > 0.
 
 ## Scope and status
 
 | Result | Scope | Status | Posted |
 |---|---|---|---|
-| Lemma 1, Theorem 1 | Any direction law supported on the unit sphere with the second and fourth moments and the swap symmetry of the uniform law on the sphere; Gaussian embeddings. For a non-Gaussian embedding, S_h(Σ) is the value at the Gaussian with the same covariance | Lean, for the spectrum λ, for h bounded on [0, ∞) and with the quadratic models of h (implied by the bounds on h'') as hypotheses; the step from Σ to its spectrum uses the rotation invariance of the uniform law (classical) | 2026-11-17 |
+| Lemma 1, Theorem 1 | Any direction law supported on the unit sphere with the second and fourth moments and the swap symmetry of the uniform law on the sphere; normal embeddings. For a non-normal embedding, S_h(Σ) is the value at the normal law with the same covariance | Lean, for the spectrum λ, for h bounded on [0, ∞) and with the quadratic models of h (implied by the bounds on h'') as hypotheses; the step from Σ to its spectrum uses the rotation invariance of the uniform law (classical) | 2026-11-17 |
 | Corollary 1 | Smooth h | Claim | 2026-11-17 |
 | Lemma 2 | One slice, pairwise independent samples | Lean for the expected statistic, pointwise in t and for the integral over ℝ (folder [`lejepa-linear-dynamics`](../lejepa-linear-dynamics/), `NullBias.lean`); B''(1) = −2D''(1) and the curvature at isotropy: Claim, checked by script | 2026-11-17 |
 | Theorem 2, existence of minimizers | As stated; global minimizers of the population objective, not the points reached by stochastic gradient descent | Lean, for h and h' bounded on [0, ∞) and the quadratic upper model of h as a hypothesis (proved for D) | 2026-11-17 |
 | Theorem 3 | As stated, with μ > 0 and L > 0 in Lean (the other cases are immediate); for h = D, Lean uses the bound \|D\| ≤ 11, so h(1) − h_lo ≤ 11, while the sharp value 0 uses D ≥ 0 | Lean | 2026-11-17 |
 | Corollary 3 | Asymptotic in K at fixed N and μ₀; evenly spaced costs are a modelling assumption. For the expected minibatch loss L becomes about N · 6.86, so at the batch size N = 256 of [1], μ₀ ≈ 0.21 and costs with c₁ and Δ of order 1, the bound allows full rank up to K of the order of 10³ (the bound scales with c̄/(c₁Δ)); the corollary describes the dependence on K, not the values in Table 1d of [1] | Claim, from Theorem 3; numerical minimizers consistent with both exponents | 2026-11-17 |
-| Proposition 4 | Linear encoder, Gaussian views, no predictor | Claim, assuming the trace inequality tr(PC) ≥ Σ αᵢ↓γᵢ↑ for positive semidefinite P and C [4]; for distinct positive costs and h as in Theorem 8 there, also from the critical points of the loss (folder [`lejepa-linear-dynamics`](../lejepa-linear-dynamics/), Theorem 8 in Lean, Corollary 9) | 2026-11-17 |
+| Proposition 4 | Linear encoder, normal views, no predictor | Claim, assuming the trace inequality tr(PC) ≥ Σ αᵢ↓γᵢ↑ for positive semidefinite P and C [4]; for distinct positive costs and h as in Theorem 8 there, also from the critical points of the loss (folder [`lejepa-linear-dynamics`](../lejepa-linear-dynamics/), Theorem 8 in Lean, Corollary 9) | 2026-11-17 |
 | Theorem 5 | Laws on the sphere of radius √K with mean 0 and identity covariance; SIGReg with the t-integral over ℝ | Lean for laws with finitely many atoms: the energy bound for every profile with a cubic remainder and for the SIGReg profile with any law of u on [0, 1]; Claim for general isotropic laws, for the identity S(P) = √(2π) E H_K(ρ) + const and for the lower bound S*_K ≤ S(P); checked by random sampling | 2026-11-17 |
 | Theorem 6 | As stated, t ≥ 0 | Lean for the energy form of (i) and of the upper bound in (iii), for laws with finitely many atoms; Claim for the steps through the logarithm, for (ii), from E e^{λa₁} ≤ e^{λ²/(2K)}, for general isotropic laws and for the lower bound in (iii); checked numerically | 2026-11-17 |
 
@@ -81,7 +81,7 @@ So any two isotropic laws on the sphere, the uniform law among them, differ in S
 (ii) The uniform law has R_t ≤ −2t + 2t²/K, so a law with m atoms is separated from it by at least 2t − 2t²/K − log m.
 (iii) Every isotropic law on the sphere has 0 ≤ R_t(P) − log(e^{−2t}(1 + 2t²/K)) ≤ (e^{2t} − 1 − 2t − 2t²)/K.
 
-So the uniformity term is blind to isotropic clusters when e^{2t} is small against K, and it separates laws with m atoms when 2t exceeds log m + 2t²/K. At the usual t = 2 and K = 1024 the bound in (iii) is 0.041, and the bound in (ii) guarantees a positive margin only for laws with fewer than e^{4 − 8/K} ≈ 54 atoms, while an isotropic law needs at least K atoms. A regularizer S + γR_t keeps the Gaussian target of SIGReg and adds a guaranteed margin of γ(2t − 2t²/K − log m) against every law with m atoms, which is positive when log m < 2t − 2t²/K, for example for t between about log K and K/2 and m polynomial in K. The guaranteed margin from (ii) is largest at t = K/2, where it equals K/2 − log m. In [5] it is observed that smooth kernel discrepancies on the sphere favour clustered latent spaces while a density-based divergence separates instances; Theorems 5 and 6 give a quantitative form of this for the kernels above.
+So the uniformity term is blind to isotropic clusters when e^{2t} is small against K, and it separates laws with m atoms when 2t exceeds log m + 2t²/K. At the usual t = 2 and K = 1024 the bound in (iii) is 0.041, and the bound in (ii) guarantees a positive margin only for laws with fewer than e^{4 − 8/K} ≈ 54 atoms, while an isotropic law needs at least K atoms. A regularizer S + γR_t keeps the normal target of SIGReg and adds a guaranteed margin of γ(2t − 2t²/K − log m) against every law with m atoms, which is positive when log m < 2t − 2t²/K, for example for t between about log K and K/2 and m polynomial in K. The guaranteed margin from (ii) is largest at t = K/2, where it equals K/2 − log m. In [5] it is observed that smooth kernel discrepancies on the sphere favour clustered latent spaces while a density-based divergence separates instances; Theorems 5 and 6 give a quantitative form of this for the kernels above.
 
 The population value averages over all directions, so it does not depend on the number of slices; Table 1d of [1] also shows a smaller loss of accuracy with 4096 slices, which these results do not model.
 
@@ -102,7 +102,7 @@ The population value averages over all directions, so it does not depend on the 
 
 **Assuming.** The moments and the rotation invariance of the uniform law on the sphere, which enter as the hypothesis `SphereLike` and through the reduction from Σ to its spectrum. The trace inequality [4], used on paper for Proposition 4.
 
-**Not formalized.** D ≥ 0, Corollary 1, the relation B''(1) = −2D''(1) of Lemma 2, Corollary 3, Proposition 4, the identity of Theorem 5 between SIGReg on the sphere and the kernel energy (Gaussian integrals and the rotation invariance of the direction law), Theorems 5 and 6 for isotropic laws that are not finite, the lower bounds in Theorems 5 and 6 (iii), Theorem 6 (ii), and the steps from the bounds on h'' to the quadratic models of h, which are hypotheses in Lean and are proved for D.
+**Not formalized.** D ≥ 0, Corollary 1, the relation B''(1) = −2D''(1) of Lemma 2, Corollary 3, Proposition 4, the identity of Theorem 5 between SIGReg on the sphere and the kernel energy (integrals of the normal density and the rotation invariance of the direction law), Theorems 5 and 6 for isotropic laws that are not finite, the lower bounds in Theorems 5 and 6 (iii), Theorem 6 (ii), and the steps from the bounds on h'' to the quadratic models of h, which are hypotheses in Lean and are proved for D.
 
 ## Simulations
 
@@ -110,7 +110,7 @@ The population value averages over all directions, so it does not depend on the 
 
 - `slice_function.py`: the closed forms of D, D', D'' and B against numerical integrals, the constants above, and the curvature of the two quadratures in use, t ∈ [−5, 5] with 17 points and t ∈ [0, 3] with 17 points doubled (D''(1) = 0.24121 and 0.24118).
 - `stiffness_check.py`: S_D for collapse onto K/2 and K/8 directions and for halving the variance of every coordinate, against the second-order prediction, for K up to 1024.
-- `batch_detect.py`: Lemma 2 by random sampling, and the minibatch statistic on isotropic and collapsed Gaussian batches.
+- `batch_detect.py`: Lemma 2 by random sampling, and the minibatch statistic on isotropic and collapsed normal batches.
 - `sharpness_check.py`: the ratio of the two sides of Theorem 2 (ii) for h = D, K = 2, as the costs approach μ|D'(0)|/K.
 - `atomic_sigreg.py`: SIGReg on the sphere for the uniform law, the cross-polytope and two signed random bases, for K from 8 to 1024, from the kernel form, with a random-sampling check of the step over directions at K = 4.
 - `cluster_bounds.py`: the moment identities, the bound of Theorem 5 for the SIGReg profile, Theorem 6 (i) and (iii) for t = 1, 2, 4, and the bound on E e^{λa₁}, for K up to 256, with the separation margins of Theorem 6 at K = 1024.
