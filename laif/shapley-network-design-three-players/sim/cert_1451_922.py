@@ -1,4 +1,4 @@
-"""Exact check: 3-player undirected Shapley game with PoS -> 1451/922 (> 1769/1126).
+"""Exact check: 3-player undirected network design game with equal cost sharing with PoS -> 1451/922 (> 1769/1126).
 
 Same 5-vertex, 7-edge topology as arXiv 1211.2090 Fig. 2(b), reweighted.
 Vertices 0 = t1 = t3, 1 = t2, 2 = s1, 3 = s2, 4 = s3. Weights w0 + eps*d.

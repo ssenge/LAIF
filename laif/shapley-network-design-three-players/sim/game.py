@@ -1,4 +1,4 @@
-"""Exact Shapley network design game on an undirected graph (fair cost sharing).
+"""Exact network design game with equal cost sharing on an undirected graph (fair cost sharing).
 
 Model (arXiv 1211.2090, Sec. 2): k players, player i picks a simple s_i-t_i path,
 edge cost c_e split equally among its users. NE = no player has a strictly cheaper

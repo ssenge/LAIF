@@ -32,7 +32,7 @@ Let a₁ and b₁ be the shortest transit times of the two layers. For every two
 All three bounds are attained by the instance a = (1, 1, 1, 1, 1), b = (1, 1, 4, 4, 4), n = 11: it has a UFR
 equilibrium with C = 7, and OPT = 5. So the price of anarchy of two-layer instances is exactly 7/5.
 
-The fluid analogue of this game, Nash flows over time, has makespan ratio at most 4/3 on two-layer networks of equal
+The fluid analogue of this game, equilibrium flows over time, has makespan ratio at most 4/3 on two-layer networks of equal
 capacities [2]. In the packet model the integrality of packets adds exactly the +1 in 3C ≤ 4·OPT + 1.
 
 ## Proof sketch
