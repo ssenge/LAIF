@@ -1,6 +1,7 @@
 {
  "E_solver": -117.44342620688894,
  "E_repaired": -117.44342621380537,
+ "Lambda_eig": 106.56279259520748,
  "residual_bound": 1.0869547754541967e-14,
  "shift_bound": 0.002349738910128588,
  "lam_min": [
@@ -10,7 +11,7 @@
  ],
  "E_certified": -117.4457769527155,
  "status": "optimal_inaccurate",
- "t_solve": 3792.4150767326355,
+ "t_solve": 3835.2219309806824,
  "n": 20,
  "nelec": 30,
  "ecore": 0.0,

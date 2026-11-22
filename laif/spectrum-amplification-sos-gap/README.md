@@ -22,23 +22,34 @@ The added terms vanish on every state with 30 electrons, so H − E_SOS remains 
 
 The resource estimates of [1, Table V] use a different object: a compressed factorization of the two-electron integrals (DFTHC) that already includes a symmetry shift, with E_gap = 1.2381 Ha, Λ = 17.53 Ha and λ_eff = 6.469 Ha for this system. That gap belongs to one explicit factorization chosen for a cheap block-encoding. The gaps in the table above are the smallest values reachable by any sum of squares over the spin-free algebra, without and with the electron-number terms. They bound from below the gap any such factorization can reach on the 30-electron sector. A factorization with a gap near 0.8403 Ha and a block-encoding cost close to that of [1, Table V] has not been constructed here.
 
+## Block-encoding cost
+
+The number of walk steps in phase estimation is proportional to λ_eff = √(E_gap (2Λ − E_gap)) [1, Eq. (11)], with Λ = λ_sqrt²/2 and λ_sqrt² = Σ_α λ_α² the sum of the squared normalizations of the block-encodings of the operators O_α. Both certificates are factorized here in the same way. The eigenvectors of Z = Σ_α μ_α u_α u_αᵀ give O_α = √μ_α (u_0 I + Σ_ab g_ab E_ab) with λ_α = √μ_α (|u_0| + 2‖g‖_*), where ‖g‖_* is the sum of the singular values of g, and the terms with P and Q add twice the sum of their eigenvalues.
+
+| Certificate | E_gap (Ha) | Λ (Ha) | λ_eff (Ha) |
+|---|---|---|---|
+| All particle numbers | 0.9762 | 433.24 | 29.07 |
+| 30 electrons | 0.8403 | 106.57 | 13.36 |
+
+With this factorization the certificate on the 30-electron sector has a Λ about 4 times smaller and a λ_eff about 2.2 times smaller, so the smaller gap comes with a smaller normalization as well. For its own sum of squares, the compressed factorization of [1, Table V] reaches λ_eff = 6.469 Ha. Values are rounded up.
+
 ## Method
 
 - **Energy operator.** H = Σ h_pq E_pq + ½ Σ (pq|rs) Σ_στ a_pσ† a_rτ† a_sτ a_qσ with the integrals of [2] (20 spatial orbitals, 30 electrons, core energy 0).
 - **Certificate.** H − E = v† Z v + Σ P_ij E_ij + Σ Q_ij (2δ_ij − E_ji) + (N̂ − 30)(y₀ + Σ y_ab E_ab), with v = (I, E_ab), Z ⪰ 0 of size 401 and P, Q ⪰ 0 of size 20. The odd generators a_jσ, a_jσ† enter through P and Q. Their pairing and spin-mixing blocks can be dropped without loss, by averaging any certificate over the particle-number and spin symmetries of H. Both sides are matched operator by operator after normal ordering, which gives about 80 000 linear equalities, and E is maximized. Without the last term the program is the bound over all particle numbers.
-- **Solver and rigour.** The program is solved by SCS on one CPU core (53 and 63 minutes). The solution is then turned into an exact identity: a least-squares correction of Z makes every coefficient match, with a remaining residual of at most 2.4 · 10⁻¹⁴ in operator norm, and diagonal shifts make Z, P and Q positive semidefinite. Each shift and residual is subtracted using ‖E_pq‖ ≤ 2, ‖Σ_στ a†a†aa‖ ≤ 4, ⟨v†v⟩ ≤ 1 + 4n² and ‖N̂‖ ≤ 2n, which costs at most 3.1 mHa, together with a further 10⁻⁶ Ha. The certified bound is therefore a true lower bound for any solver accuracy.
+- **Solver and rigour.** The program is solved by SCS on one CPU core (54 and 64 minutes). The solution is then turned into an exact identity: a least-squares correction of Z makes every coefficient match, with a remaining residual of at most 2.4 · 10⁻¹⁴ in operator norm, and diagonal shifts make Z, P and Q positive semidefinite. Each shift and residual is subtracted using ‖E_pq‖ ≤ 2, ‖Σ_στ a†a†aa‖ ≤ 4, ⟨v†v⟩ ≤ 1 + 4n² and ‖N̂‖ ≤ 2n, which costs at most 3.1 mHa, together with a further 10⁻⁶ Ha. The certified bound is therefore a true lower bound for any solver accuracy.
 
 ## Scope
 
-- **Not computed.** The block-encoding cost of the new sum of squares, and its effect on the normalization λ_eff of [1, Table II]. Only E_gap is improved.
+- **Not computed.** A compressed factorization of the certificates here, such as that of [1, Table V], and the Toffoli cost of their block-encodings.
 - **One system.** Fe₂S₂ [30e, 20o]. The other systems of [1, Table II] have 36 to 150 orbitals.
 - **Not formalized.** The bounds are numerical certificates with the rigour stated above.
-- **Checks.** `sim/sos_gap.py test` compares the operator expansions with explicit fermion matrices on the space of all occupation numbers of three orbitals, and checks on random energy operators with Coulomb-like integrals that the certified bounds lie below the exact ground-state energies over all particle numbers and in fixed-electron sectors.
+- **Checks.** `sim/sos_gap.py test` compares the operator expansions with explicit fermion matrices on the space of all occupation numbers of three orbitals, and checks on random energy operators with Coulomb-like integrals that the certified bounds lie below the exact ground-state energies over all particle numbers and in fixed-electron sectors, and that the norm of each sum of squares is at most 2Λ.
 
 ## Files
 
-- `sim/sos_gap.py`: the program and the certificate (`python -I sos_gap.py FCIDUMP fock|N0 out.json`; `python -I sos_gap.py test`).
-- `data/fe2s2_fock.json`, `data/fe2s2_30.json`: solver value, repaired value, residual and shift bounds, smallest eigenvalues and the certified bound. The integrals of [2] are in the repository named there (`Fe2S2_and_Fe4S4/Fe2S2/fe2s2`) and are not copied here.
+- `sim/sos_gap.py`: the program and the certificate (`python -I sos_gap.py FCIDUMP fock|N0 out.json`; `python -I sos_gap.py check FCIDUMP fock|N0 cert.npz` re-certifies a saved certificate without the solver; `python -I sos_gap.py test`).
+- `data/fe2s2_fock.json`, `data/fe2s2_30.json`: solver value, repaired value, residual and shift bounds, smallest eigenvalues, the certified bound and Λ. `data/fe2s2_fock_cert.npz`, `data/fe2s2_30_cert.npz`: the matrices Z, P, Q and the coefficients y of the two certificates. The integrals of [2] are in the repository named there (`Fe2S2_and_Fe4S4/Fe2S2/fe2s2`) and are not copied here.
 
 ## References
 

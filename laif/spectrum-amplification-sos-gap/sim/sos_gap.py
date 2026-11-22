@@ -8,7 +8,7 @@ Sector N0: add (N - N0)(y0 + sum y_ab E_ab), which is zero on every state with N
 The SDP is solved by SCS. The certificate is then repaired to satisfy the operator identity (least-squares correction
 of Z), made PSD by diagonal shifts, and every shift and residual is subtracted with an operator-norm bound:
 ||E_pq|| <= 2, ||N2|| <= 4, <v+ v> <= 1 + 4 n^2, ||N|| <= 2n.
-Usage: python -I sos_gap.py FCIDUMP N0 out.json   |   python -I sos_gap.py test"""
+Usage: python -I sos_gap.py FCIDUMP fock|N0 out.json [eps]   |   python -I sos_gap.py check FCIDUMP fock|N0 cert.npz   |   python -I sos_gap.py test"""
 import sys, json, time
 import numpy as np
 import scipy.sparse as sp
@@ -127,9 +127,23 @@ def certify(B, S, t, sol, N0):
     res_norm = 2 * np.abs(r[1:nE]).sum() + 4 * np.abs(r[nE:]).sum()
     shift = eZ * (1 + 4 * n * n) + (eP + eQ) * 2 * n
     safety = 1e-6
-    return dict(E_solver=sol["E"], E_repaired=float(E), residual_bound=float(res_norm), shift_bound=float(shift),
+    sol["cert"] = dict(Z=Z, P=P, Q=Q, y=y)
+    return dict(E_solver=sol["E"], E_repaired=float(E), Lambda_eig=lam_eig(Z, P, Q, n), residual_bound=float(res_norm), shift_bound=float(shift),
                 lam_min=[float(lamZ), float(lamP), float(lamQ)],
                 E_certified=float(E - res_norm - shift - safety), status=sol["status"], t_solve=sol["t_solve"])
+
+
+def lam_eig(Z, P, Q, n):
+    """Block-encoding normalization Lambda = lambda_sqrt^2 / 2 of the sum of squares from the eigen-factorization
+    Z = sum_a mu_a u_a u_a^T: O_a = sqrt(mu_a)(u_0 I + sum g_ab E_ab) with LCU norm sqrt(mu_a)(|u_0| + 2 ||g||_*)
+    (singular-value form of a one-body operator, two spins); P and Q add 2 sum of their positive eigenvalues."""
+    mu, U = np.linalg.eigh(Z); lam2 = 0.0
+    for m, u in zip(mu, U.T):
+        if m <= 0: continue
+        g = u[1:].reshape(n, n)                         # index 1 + a n + b -> E_ab
+        lam2 += m * (abs(u[0]) + 2 * np.linalg.svd(g, compute_uv=False).sum()) ** 2
+    lam2 += 2 * np.clip(np.linalg.eigvalsh(P), 0, None).sum() + 2 * np.clip(np.linalg.eigvalsh(Q), 0, None).sum()
+    return float(lam2 / 2)
 
 
 def read_fcidump(path):
@@ -181,8 +195,10 @@ def test():
         sect = {}
         for N0 in range(2 * n + 1):
             idx = np.where(np.abs(Nm - N0) < 0.5)[0]; sect[N0] = np.linalg.eigvalsh(H[np.ix_(idx, idx)])[0]
-        cf, _ = solve(h, eri, 0.0, None, eps=1e-8)
+        cf, sf = solve(h, eri, 0.0, None, eps=1e-8)
         assert cf["E_certified"] <= w[0] + 1e-7, (cf, w[0])
+        k = sf["cert"]; SOS = op_of(Sz @ k["Z"].reshape(-1, order="F") + Sp @ k["P"].reshape(-1, order="F") + Sq @ k["Q"].reshape(-1, order="F"))
+        assert np.linalg.eigvalsh(SOS)[-1] <= 2 * cf["Lambda_eig"] + 1e-9, (np.linalg.eigvalsh(SOS)[-1], cf["Lambda_eig"])
         for N0 in (2, 3):
             cn, _ = solve(h, eri, 0.0, N0, eps=1e-8)
             assert cn["E_certified"] <= sect[N0] + 1e-7, (N0, cn, sect[N0])
@@ -195,7 +211,14 @@ def test():
 if __name__ == "__main__":
     if sys.argv[1] == "test":
         test(); sys.exit()
+    if sys.argv[1] == "check":                          # re-certify a saved certificate without the solver
+        h, eri, ecore, n, nelec = read_fcidump(sys.argv[2]); N0 = int(sys.argv[3]) if sys.argv[3] != "fock" else None
+        k = np.load(sys.argv[4]); B = Basis(n)
+        sol = dict(Z=k["Z"], P=k["P"], Q=k["Q"], E=float("nan"), status="loaded", t_solve=0.0)
+        if N0 is not None: sol["y"] = k["y"]
+        print(json.dumps(certify(B, blocks(B, N0 if N0 is not None else 0), target(B, h, eri, ecore), sol, N0))); sys.exit()
     h, eri, ecore, n, nelec = read_fcidump(sys.argv[1]); N0 = int(sys.argv[2]) if sys.argv[2] != "fock" else None
     c, sol = solve(h, eri, ecore, N0, eps=float(sys.argv[4]) if len(sys.argv) > 4 else 1e-9)
     c.update(n=n, nelec=nelec, ecore=ecore, N0=N0)
     json.dump(c, open(sys.argv[3], "w"), indent=1); print(json.dumps(c))
+    np.savez_compressed(sys.argv[3].replace(".json", ".npz"), **sol["cert"])
