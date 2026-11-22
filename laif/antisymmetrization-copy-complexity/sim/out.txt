@@ -1,0 +1,4 @@
+1. P(L_n = r) = P(sum of geometrics <= n) exactly
+2. law of L_n equals the isotypic weights of rho^(x)n (d = 3, n <= 5)
+3. averaging norm 1/C(d-k, r-k); completion constant and fidelity exact
+4. constants and copy bounds hold; all checks passed
