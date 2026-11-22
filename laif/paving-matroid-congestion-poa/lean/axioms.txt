@@ -1,0 +1,13 @@
+'PavingCert.bases_eq' depends on axioms: [propext]
+'PavingCert.bases_sub' depends on axioms: [propext]
+'PavingCert.bases_norm' depends on axioms: [propext, Classical.choice, Quot.sound]
+'PavingCert.exchange' depends on axioms: [propext, Classical.choice, Quot.sound]
+'PavingCert.rank_two' depends on axioms: [propext]
+'PavingCert.paving' depends on axioms: [propext, Classical.choice, Quot.sound]
+'PavingCert.ne_mem' depends on axioms: [propext, Classical.choice, Quot.sound]
+'PavingCert.opt_mem' depends on axioms: [propext, Classical.choice, Quot.sound]
+'PavingCert.ne_isNE' depends on axioms: [propext, Classical.choice, Quot.sound]
+'PavingCert.ne_cost' depends on axioms: [propext, Classical.choice, Quot.sound]
+'PavingCert.opt_cost' depends on axioms: [propext, Classical.choice, Quot.sound]
+'PavingCert.opt_ge' depends on axioms: [propext, Classical.choice, Quot.sound]
+'PavingCert.ratio_gt' does not depend on any axioms

@@ -1,0 +1,5 @@
+name = "PavingCert"
+defaultTargets = ["PavingCert"]
+
+[[lean_lib]]
+name = "PavingCert"
