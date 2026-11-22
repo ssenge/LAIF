@@ -1,0 +1,10 @@
+400 instances: YES one-sided, NO formula exact, lower bound holds; min ratio 1.0179
+max over grid of (run time / detection probability) / max(1/eps, tau/eps^2): 8.2
+rand     eps=0.05 tau=0.01 m=500 P=2.279e-01 bound=1.878e-01 time/P=43.9 max(1/eps,tau/eps^2)=20.0
+rand     eps=0.05 tau=0.2 m=3 P=3.501e-03 bound=2.541e-03 time/P=342.7 max(1/eps,tau/eps^2)=80.0
+rand     eps=0.01 tau=0.3 m=1 P=3.540e-05 bound=3.493e-05 time/P=16947.2 max(1/eps,tau/eps^2)=3000.0
+rand     eps=0.2 tau=0.5 m=1 P=3.889e-02 bound=3.641e-02 time/P=25.7 max(1/eps,tau/eps^2)=12.5
+detuned  eps=0.05 tau=0.01 m=500 P=2.292e-01 bound=1.878e-01 time/P=43.6 max(1/eps,tau/eps^2)=20.0
+detuned  eps=0.05 tau=0.2 m=3 P=3.574e-03 bound=2.541e-03 time/P=335.8 max(1/eps,tau/eps^2)=80.0
+detuned  eps=0.01 tau=0.3 m=1 P=3.572e-05 bound=3.493e-05 time/P=16797.7 max(1/eps,tau/eps^2)=3000.0
+detuned  eps=0.2 tau=0.5 m=1 P=3.887e-02 bound=3.641e-02 time/P=25.7 max(1/eps,tau/eps^2)=12.5
