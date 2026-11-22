@@ -34,10 +34,4 @@ for m in range(1, 9):
     if k >= 16: assert N(k) > 4 ** k                 # and larger than 2^(2k) from k = 16 on
     print(f"k={k:4d}  support >= k! = 2^{log2(N(k)):8.1f}   stated = 2^{log2(stated(k)):7.1f}   2^(2k) = 2^{2 * k}"
           f"   sqrt ratio support/stated >= 2^{(log2(N(k)) - log2(stated(k))) / 2:7.1f}")
-# with the vertex sets A: each of the k - 1 internal nodes chooses A subset of V with |A| <= a; for a >= 1 that is a factor
-# of at least (n + 1)^(k - 1), so the square root carries n^((k - 1)/2), which is not a polynomial factor for growing k
-n, a, k = 20, 1, 8
-per_node = sum(comb(n, i) for i in range(a + 1))
-assert per_node ** (k - 1) == (n + 1) ** (k - 1)
-print(f"with A (n={n}, |A|<=1): extra factor (n+1)^(k-1) = {per_node ** (k - 1)} for k = {k}")
 print("all checks passed")

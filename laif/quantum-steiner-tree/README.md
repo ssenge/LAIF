@@ -8,11 +8,13 @@ Input: a graph G on n vertices with edge weights in {1, …, W} and a set K of k
 
 Status: Claim. The split theorem of [2] is used as stated (Assuming), and quantum minimum finding [5] as stated. The constants are checked by script.
 
+The gain is for large weights: for W ≤ poly(n), the classical polynomial-space algorithm of [7] in time 2^k · n^{O(1)} · W is faster.
+
 ## Before and after
 
 | Model | Previous best bound | After |
 |---|---|---|
-| Classical, polynomial space, general weights | 4^{(1+ε)k} · n^{O(f(ε))} · log W [1, Theorem 1.3]; 6.751^k · n^{O(1)} · log W [1, Theorem 1.2] | |
+| Classical, polynomial space, general weights | 4^{(1+ε)k} · n^{O(f(ε))} · log W, space n^{O(f(ε))} · log W [1, Theorem 1.3]; 6.751^k · n^{O(1)} · log W [1, Theorem 1.2]; 2^k · n^{O(1)} · W, space n^{O(1)} · log W [7] | |
 | Quantum, polynomial space, no quantum random access memory, general weights | O*(2^k) stated in [3, Theorem 3], see Section 3 | **O(2^{(1+δ)k} · n^{f(δ)} · log W)** |
 | Quantum, exponential space with quantum random access memory | 1.812^k · poly(n) [4] | |
 
@@ -24,9 +26,9 @@ The new bound is the square root of the classical trade-off of [1, Theorem 1.3],
 
 W_G(K) = min over K₁ with |K₁| = (1/2 ± η)|K| and A ⊆ V with |A| ≤ s of W_G(K₁ ∪ A) + W_{G/A}(K₂ ∪ {v_A}).
 
-**Nested minimum finding.** A call with m terminals searches its at most 2^m (n + 1)^s choices (K₁, A) by quantum minimum finding [5]. For each choice it computes the two values on the right one after the other, by recursive calls on at most r(m) = ⌊(1/2 + η)m⌋ + s + 1 terminals, and adds them. Each recursive value is computed with error at most 1/(2^m (n + 1)^s k)² by O(m + s log n + log k) repetitions and a majority vote, so that the search sees a correct oracle with high probability. A call holds its own choice, the contracted graph of its path from the root and two weights, so the space is polynomial at every depth.
+**Nested minimum finding.** A call with m terminals searches its at most 2^m (n + 1)^s choices (K₁, A) by quantum minimum finding [5]. For each choice it computes the two values on the right one after the other, by recursive calls on at most r(m) = ⌊(1/2 + η)m⌋ + s + 1 terminals, and adds them. Each recursive value is computed with error at most 1/(2^m (n + 1)^s k)² by O(m + s log n + log k) repetitions and the median of the results, so that the search sees a correct oracle with high probability. The search runs coherently, with its measurements deferred to the end of the call. A call holds its own choice, the contracted graph of its path from the root and two weights, so the space is polynomial at every depth.
 
-**Cutoff.** At m ≤ m₀ = max(⌈log₂ n⌉, M(η)) terminals, with M(η) = ⌈2(s + 2)/(1 − 2η)⌉ the constant above which r(m) < m, the call computes the value classically by the subset dynamic program of [6] in time 3^m · poly(n) and space 2^m · n, which is polynomial. The cutoff is what keeps the polynomial factor bounded: below it no further levels of search over A ⊆ V are needed.
+**Cutoff.** At m ≤ m₀ = max(⌈log₂ n⌉, M(η)) terminals, with M(η) = max(⌈2(s + 2)/(1 − 2η)⌉, ⌈1/η⌉) the constant above which r(m) < m and the range (1/2 ± η)m contains an integer, the call computes the value classically by the subset dynamic program of [6] in time 3^m · poly(n) and space 2^m · n, which is polynomial. The cutoff is what keeps the polynomial factor bounded: below it no further levels of search over A ⊆ V are needed.
 
 ## 2. Analysis
 
@@ -38,13 +40,13 @@ The terminal counts along a path of calls shrink by the factor 1/2 + η plus s +
 
 ## 3. A remark on [3]
 
-The superposition of [3, Section 3.3, Figure 2 and Appendix B] gives every node of the unrolled recursion its own split of its terminal set and its own vertex set A ⊆ V with |A| ≤ ⌈log 1/ε⌉. For k a power of two, exact halving and every A empty, its support already has k! index states. The count used for the amplitude amplification in the proofs of Theorems 3 and 4 of [3] is the square root of ∏_{l=1}^{log k} C(k/2^{l−1}, k/2^l), one binomial coefficient per level, which is at most 2^{2k}. The support exceeds this product from k = 4 on and exceeds 2^{2k} from k = 16 on, and the vertex sets add a factor of at least (n + 1)^{k−1} as soon as one vertex per set is allowed.
+The superposition of [3, Section 3.3, Figure 2 and Appendix B] gives every node of the unrolled recursion its own split of its terminal set and its own vertex set A ⊆ V with |A| ≤ ⌈log 1/ε⌉. For k a power of two and exact halving, the splits of the terminal sets alone already give k! index states, counted with the vertex sets left out. The count used for the amplitude amplification in the proofs of Theorems 3 and 4 of [3] is the square root of ∏_{l=1}^{log k} C(k/2^{l−1}, k/2^l), one binomial coefficient per level, which is at most 2^{2k}. This count of the splits exceeds the product from k = 4 on and exceeds 2^{2k} from k = 16 on. The choices of the vertex sets add further index states.
 
-This hints at a possible counting gap in the proof of Theorem 3 of [3]: the square root of the support of this state is at least √(k!), and at least √(k!) · (n + 1)^{(k−1)/2} once each A may hold one vertex, so the bound O*(2^k) would need a smaller search space or a different argument. The bound 1.812^k with quantum random access memory [4] is not affected, and Theorem 1 above reaches 2^{(1+δ)k} by nested search instead.
+This hints at a possible counting gap in the proof of Theorem 3 of [3]: the square root of the number of split choices alone is about √(k!), which grows faster than any c^k, so the bound O*(2^k) would need a smaller search space or a different argument. The bound 1.812^k with quantum random access memory [4] is not affected, and Theorem 1 above reaches 2^{(1+δ)k} by nested search instead.
 
 ## 4. Measurements
 
-- `sim/nested.py` evaluates the recursion of Section 2 for δ = 0.5, 0.25, 0.1, 0.05 on a grid of k up to 10⁷ and n up to 2⁴⁰, and checks log₂ Q(k) ≤ (1 + δ)k + f · log₂ n with f at most 42, 50, 73 and 91, the shrinking condition above M(η), and that the exponent per terminal tends to 1/(1 − 2η).
+- `sim/nested.py` evaluates the recursion of Section 2 for δ = 0.5, 0.25, 0.1, 0.05 on a grid of k up to 10⁷ and n up to 2⁴⁰, and checks log₂ Q(k) ≤ (1 + δ)k + f · log₂ n for n ≥ 16 with f at most 34, 26, 36 and 76, the shrinking condition and integer split sizes above M(η), and that the exponent per terminal tends to 1/(1 − 2η).
 - `sim/support.py` counts the index states of Section 3 by brute force for k = 2, 4, 8, checks the closed form N(k) = C(k, k/2) N(k/2)² = k! up to k = 256, and checks both comparisons with asserts.
 
 Run them with `python nested.py` and `python support.py` in `sim/`. Each exits nonzero on a failed check.
@@ -53,7 +55,7 @@ Run them with `python nested.py` and `python support.py` in `sim/`. Each exits n
 
 - The split theorem of [2] is used as stated in [4], and the constant f(δ) is not optimized. The values above come from a cost model with a fixed constant for minimum finding and error reduction.
 - The polynomial factor n^{f(δ)} is large for small δ, and there is no gate count.
-- The count of Section 3 is for the state as defined in [3]; a different encoding with fewer index states is not ruled out.
+- The count of Section 3 is for the state as defined in [3], with independent split registers at the nodes; a different encoding with fewer index states is not ruled out.
 
 ## References
 
@@ -63,6 +65,7 @@ Run them with `python nested.py` and `python support.py` in `sim/`. Each exits n
 4. M. Miyamoto, M. Iwamura, K. Kise, F. Le Gall. Quantum speedup for the minimum Steiner tree problem. arXiv:1904.03581.
 5. C. Dürr, P. Høyer. A quantum algorithm for finding the minimum. arXiv:quant-ph/9607014.
 6. S. E. Dreyfus, R. A. Wagner. The Steiner problem in graphs. Networks 1(3), 1971.
+7. D. Lokshtanov, J. Nederlof. Saving space by algebraization. STOC 2010.
 
 ## Use of AI
 
