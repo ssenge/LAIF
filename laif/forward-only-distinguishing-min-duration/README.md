@@ -1,22 +1,23 @@
-# Forward-only Hamiltonian state distinguishing with a minimum evolution duration
+# Forward-only state distinguishing for an unknown generator with a minimum evolution duration
 
 2026-11-22
 
 ## Problem
 
-Let H ∈ ℂ^{d×d}, d ≥ 2, be an unknown Hamiltonian with ‖H‖ ≤ 1. An algorithm may apply e^{−iHt} to a register for any duration t ≥ τ of its choice. It cannot apply inverse or controlled evolutions, and each application costs t. Between applications it may use any operations that do not depend on H: unitaries, measurements, ancillas and adaptive classical control. Exactly one of the following holds, and ε ∈ (0, 1] is known:
+Let H ∈ ℂ^{d×d}, d ≥ 2, be an unknown self-adjoint operator with ‖H‖ ≤ 1. An algorithm may apply e^{−iHt} to a register for any duration t ≥ τ of its choice. It cannot apply inverse evolutions, and each application costs t. Between applications it may use any operations that do not depend on H: unitaries, measurements, ancillas and adaptive classical control. (The algorithm below uses no ancilla and no controlled evolution, and the lower bound Ω(1/ε) below also holds with controlled evolutions.) Exactly one of the following holds, and ε ∈ (0, 1] is known:
 
 YES: H|0⟩ = 0,  NO: H|0⟩ = ε|1⟩.
 
-The algorithm must name the case correctly with probability at least 1 − δ in both cases. Its cost is the total evolution time. For τ → 0 this is Problem 2 of [1], which needs Θ(1/ε) total evolution time [1, Theorem 1.2]. The algorithm of [1] uses evolution steps whose length goes to 0, interleaved with projections onto span{|0⟩, |1⟩}, and then learns a 2 × 2 unitary. In [1, Section 1.3] it is asked how a prescribed minimum evolution duration would affect this, and in particular how long the intermediate evolution times can be while keeping O(1/ε) scaling.
+The algorithm must name the case correctly with probability at least 1 − δ in both cases. Its cost is the total evolution time. For τ → 0 this is Problem 2 of [1], which needs Θ(1/ε) total evolution time [1, Theorem 1.2]. The algorithm of [1] uses short evolution steps interleaved with projections onto span{|0⟩, |1⟩}, and then learns a 2 × 2 unitary with the method of [3]. The error bound in the proof of [1, Theorem 3.2] is O(ts) for an evolution of time t in steps of length s, so this algorithm already allows steps of length cε for a small constant c. In [1, Section 1.3] it is asked how a prescribed minimum evolution duration would affect this, and in particular how long the intermediate evolution times can be while keeping O(1/ε) scaling.
 
 | | total evolution time (constant δ) |
 |---|---|
-| Previous best bound, τ → 0 | Θ(1/ε) [1] |
+| Previous best bound, τ ≤ cε | O(1/ε), implied by [1] |
+| Previous best bound, every τ ≤ 1 | O(d²/ε), implied by [3] (learn e^{−iHτ} to diamond distance O(ετ)) |
 | Previous lower bound, every τ | Ω(1/ε) [1, Section 2] |
-| Theorem 1 (every 0 < τ ≤ 1, d ≥ 2) | O(max{1/ε, τ/ε²}), one-sided error |
+| Theorem 1 (every 0 < τ ≤ 1, every d ≥ 2) | O(max{1/ε, τ/ε²}), one-sided error |
 
-In particular, every minimum duration τ ≤ ε keeps the optimal Θ(1/ε) total evolution time. The bound does not depend on the dimension d.
+For ε < τ ≤ 1 and d² > τ/ε, Theorem 1 is the best bound known to us. It does not depend on d. For constant δ and τ ≤ ε it gives Θ(1/ε) with an explicit constant and without a learning step.
 
 ## Results
 
@@ -26,7 +27,7 @@ m = max{1, ⌊min{1/(4εs), 1/(8s²)}⌋}.
 
 The run stops early if an outcome I − Π occurs. Otherwise it ends with a measurement in {|0⟩, |1⟩}. The algorithm answers NO if some run ends with outcome |1⟩, and YES otherwise. For τ ∈ (1/2, 1] a run is instead a single application of e^{−iHτ} to |0⟩ followed by a measurement of {|0⟩⟨0|, I − |0⟩⟨0|}, and NO is answered if some run gives the second outcome.
 
-**Theorem 1.** Let 0 < ε ≤ 1, 0 < τ ≤ 1 and 0 < δ < 1. In the YES case the algorithm never answers NO. In the NO case each run ends with the detection outcome with probability at least P, where the run time t satisfies
+**Theorem 1.** Let 0 < ε ≤ 1, 0 < τ ≤ 1 and 0 < δ < 1. In the YES case the algorithm never answers NO. In the NO case each run ends with the detection outcome with probability at least P, where P = 0.70 (ετm)² if m ≥ 2 and τ ≤ 1/2, P = 2.8 ε²τ² if m = 1 and τ ≤ 1/2, and P = 0.708 ε²τ² if τ > 1/2. The run time t satisfies
 
 t / P ≤ 46 max{1/ε, τ/ε²}.
 
@@ -36,7 +37,7 @@ So R = ⌈ln(1/δ)/P⌉ runs give error at most δ, with total evolution time at
 
 **One step as a matrix.** On span{|0⟩, |1⟩} the outcome Π of a step has Kraus operator A = Π e^{−iHs} Π, written as the 2 × 2 matrix with entries A_{jk} = ⟨j|e^{−iHs}|k⟩. A run that never sees I − Π applies the 2 × 2 matrix C^m with C = X A X A, so it ends with |1⟩ with probability |⟨1|C^m|0⟩|².
 
-**YES case.** H|0⟩ = 0 gives e^{−iHs}|0⟩ = |0⟩, and ⟨0|e^{−iHs}|1⟩ = ⟨e^{iHs}0|1⟩ = 0. So A = diag(1, δ₁) with δ₁ = ⟨1|e^{−iHs}|1⟩, and C = X A X A = δ₁ I. The state stays a multiple of |0⟩, and outcome |1⟩ never occurs.
+**YES case.** H|0⟩ = 0 gives e^{−iHs}|0⟩ = |0⟩, and ⟨0|e^{−iHs}|1⟩ = ⟨e^{iHs}0|1⟩ = 0. So A = diag(1, δ₁) with δ₁ = ⟨1|e^{−iHs}|1⟩, and C = X A X A = δ₁ I. After each pair of steps the state is a multiple of |0⟩, so the final outcome |1⟩ never occurs.
 
 **NO case, entries of A.** Write α = A₀₀, β = A₁₀ and δ₁ = A₁₁. From H|0⟩ = ε|1⟩,
 
@@ -70,8 +71,8 @@ for either square root. If y = m|q/p| ≤ 1, then |F_m(x) − m| ≤ m Σ_{j ≥
 ## Remarks
 
 - The interleaved X_Π swaps the roles of |0⟩ and |1⟩. To first order this removes the unknown energy shift ⟨1|H|1⟩, which otherwise limits the coherent transfer from |0⟩ to |1⟩ to an amplitude O(ε). The swap makes the YES dynamics a multiple of the identity exactly, at every step length, so no step length has to go to 0.
-- The leakage out of span{|0⟩, |1⟩} in each step is of order s², so its total over a run of time t is of order ts. The run lengths O(min{1/ε, 1/τ}) keep this below a constant. For τ ≤ ε a single run of time O(1/ε) succeeds with constant probability. For τ > ε, runs of time O(1/τ) succeed with probability Ω((ε/τ)²).
-- In [2], Hamiltonian learning with a minimum evolution time T reaches the 1/ε scaling for Pauli-sparse Hamiltonians, with cost exponential in the sparsity. Theorem 1 concerns a different task, distinguishing rather than learning, with no sparsity assumption, and its bound does not depend on the dimension.
+- The leakage out of span{|0⟩, |1⟩} in each step is of order s², so its total over a run of time t is of order ts. The run lengths O(min{1/ε, 1/τ}) keep this below a constant. For τ ≤ ε a single run of time O(1/ε) succeeds with constant probability. For τ > ε, runs of time O(1/τ) (a single cycle of time 2τ when τ > 1/(2√2)) succeed with probability Ω((ε/τ)²).
+- In [2], learning the generator with a minimum evolution time T reaches the 1/ε scaling for generators that are sparse in the string basis, with a cost that grows with the sparsity; the method learns the generator itself. Theorem 1 concerns a different task, distinguishing rather than learning, with no sparsity assumption, and its bound does not depend on the dimension.
 
 ## Check
 
@@ -83,7 +84,8 @@ for either square root. If y = m|q/p| ≤ 1, then |F_m(x) − m| ≤ m Σ_{j ≥
 
 ## Scope
 
-- Theorem 1 is an upper bound. For ε < τ ≤ 1 the only lower bound is Ω(1/ε) [1], so the optimal total time in that range is not determined here.
+- Theorem 1 is an upper bound. For ε < τ ≤ 1 the only lower bound is Ω(1/ε) [1], so the optimal total time in that range is not determined here. A matching lower bound would need d² ≳ τ/ε, by the O(d²/ε) bound implied by [3].
+- Minimum durations τ > 1 are not covered.
 - The step length is exactly τ. Longer steps are allowed by the model but are not used.
 - Lean: not formalized.
 
@@ -91,6 +93,7 @@ for either square root. If y = m|q/p| ≤ 1, then |F_m(x) − m| ≤ m Σ_{j ≥
 
 1. E. Wang, J. Carolan, A. M. Childs. On state distinguishing without inverse queries. arXiv:2610.05389 (2026).
 2. M. Shin, J. Lee, C. Oh. Heisenberg-limited Hamiltonian learning without short-time control. arXiv:2604.27838 (2026).
+3. J. Haah, R. Kothari, R. O'Donnell, E. Tang. Query-optimal estimation of unitary channels in diamond distance. FOCS 2023. arXiv:2302.14066.
 
 ## Use of AI
 
