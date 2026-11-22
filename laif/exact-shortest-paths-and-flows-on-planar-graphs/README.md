@@ -151,45 +151,45 @@ non-negative weights)".
 
 ## Results
 
-| Result | Rounds | Previous | Rating |
-|---|---|---|---|
-| Theorem A: exact SSSP, directed, $w\ge0$ | $\tilde O(D)$ | $\tilde O(D^2)$ [8] | modest to solid |
-| Theorem B: exact SSSP with negative weights, or a negative cycle | $D\cdot n^{o(1)}$ | $(\sqrt n+D+n^{2/5}D^{2/5})\cdot n^{o(1)}$ on general graphs [6] | modest |
-| Theorem C: exact maximum st-flow, directed | $\min\lbrace\tilde O(D^2),\ D\cdot n^{o(1)}\rbrace$ | $\tilde O(D^2)$ [9] | significant |
-| Theorem C′: the same with $s$, $t$ on a common face | $\tilde O(D)$ | approximate and undirected only [9], [18] | modest |
-| Theorem D: exact minimum st-cut (max-flow value), undirected; new | $\tilde O(D)$ | exact $\tilde O(D^2)$ [9]; $(1-o(1))$-approximate $\tilde O(D)$ [18] | modest to solid |
-| Lemma V: distances from a virtual source, and a fix of the query of [1] | $\tilde O(D/\varepsilon)$ | | minor |
-| Lemma D: the face-disjoint graph of [9], weighted, realizes dual distances | | | minor |
-| A possible gap in [1, Lemma 14] | | | modest |
-| A possible gap in Property 6 of [1, Lemma 9], for induced bags | | | modest |
-| Region bags: Property 6 for region graphs, $O(\log^2 n)$ tree components, a deterministic separator | | | modest |
-| Lemmas 14′, 15′, 16′: the repair of [1, Lemmas 14 to 16] | | | minor |
+| Result | Rounds | Previous |
+|---|---|---|
+| Theorem A: exact SSSP, directed, $w\ge0$ | $\tilde O(D)$ | $\tilde O(D^2)$ [8] |
+| Theorem B: exact SSSP with negative weights, or a negative cycle | $D\cdot n^{o(1)}$ | $(\sqrt n+D+n^{2/5}D^{2/5})\cdot n^{o(1)}$ on general graphs [6] |
+| Theorem C: exact maximum st-flow, directed | $\min\lbrace\tilde O(D^2),\ D\cdot n^{o(1)}\rbrace$ | $\tilde O(D^2)$ [9] |
+| Theorem C′: the same with $s$, $t$ on a common face | $\tilde O(D)$ | approximate and undirected only [9], [18] |
+| Theorem D: exact minimum st-cut (max-flow value), undirected; new | $\tilde O(D)$ | exact $\tilde O(D^2)$ [9]; $(1-o(1))$-approximate $\tilde O(D)$ [18] |
+| Lemma V: distances from a virtual source, and a fix of the query of [1] | $\tilde O(D/\varepsilon)$ | |
+| Lemma D: the face-disjoint graph of [9], weighted, realizes dual distances | | |
+| A possible gap in [1, Lemma 14] | | |
+| A possible gap in Property 6 of [1, Lemma 9], for induced bags | | |
+| Region bags: Property 6 for region graphs, $O(\log^2 n)$ tree components, a deterministic separator | | |
+| Lemmas 14′, 15′, 16′: the repair of [1, Lemmas 14 to 16] | | |
 
 All five theorems are conditional (see [Status](#status)): their correctness on Lemma 14′,
 and their round bounds also on the region bags of `notes/LEMMA15.md` §9. The proofs in Lean of the round bounds of
-Theorems A, B and C need neither of these, only the cited results that they name. The ratings in short:
+Theorems A, B and C need neither of these, only the cited results that they name. What each result gives:
 - **Theorem A** closes the planar exact-SSSP gap up to polylogarithmic factors and answers
   the open question of [9]. [18] (2026) still uses approximate SSSP "for the lack of
   almost-D-rounds exact distributed SSSP". The proof is short, though: the reduction of [3], the labels of
-  [1], and Lemma V. Since [3, §3.1] already says its boosting works in any model that can run
-  its oracle, the theorem is close to folklore once the labels of [1] are available.
-- **Theorem B** is a white-box substitution into [6].
+  [1], and Lemma V. [3, §3.1] already says that its boosting works in any model that can run
+  its oracle.
+- **Theorem B** substitutes the labels into [6] as a white box.
 - **Theorem C** brings the main theorem of [9] from $\tilde O(D^2)$ to $D\cdot n^{o(1)}$, close
   to the $\Omega(D)$ lower bound. The new term wins once $D$ exceeds $(\log n)^{O(\sqrt{\log n})}$.
-  The proof is entirely a composition of known pieces.
+  The proof composes known pieces.
 - **Theorem C′** is the proof of [9, Thm 1.3] with an exact oracle plugged in.
 - **Theorem D** is optimal up to polylogarithmic factors for exact minimum st-cuts in
   undirected planar networks, which [18] leaves open for lack of exact SSSP. The proof puts
   Theorem A into [18], with the weighting of Lemma D.
-- **The finding about [1, Lemma 14]** is a correctness gap in the main CONGEST result of an
-  unrefereed preprint. The repair changes no bound.
-- **The finding about Property 6** removes the round bound of the main theorem of [1] as
-  written. It also shows that [8, Def. 4.1] together with [8, Lemma 4.3 (8′)] cannot hold on
+- **The finding about [1, Lemma 14]** hints at a possible gap in the main CONGEST result of [1].
+  The repair changes no bound.
+- **The finding about Property 6** hints that the round bound of the main theorem of [1], as
+  written, needs a further argument. It also suggests that [8, Def. 4.1] together with [8, Lemma 4.3 (8′)] may not hold on
   a simple family of graphs; [8] describes the intended property for the edges a bag owns,
   which is not refuted.
 - **The region bags** restore that bound. The tools are standard (sides of edges, a crosscut
-  argument, a non-crossing count), and the component bound is one log factor weaker than
-  [8] claims.
+  argument, a non-crossing count), and the component bound has one log factor more than in
+  [8].
 
 ### Theorem A (exact SSSP)
 
@@ -1540,8 +1540,8 @@ test round counts.
 
 ## Notes (`notes/`)
 
-- `notes/NOTES.md`: the state of the art, Theorems A, B, C, C′ and D, Lemmas V and D, and the
-  ratings.
+- `notes/NOTES.md`: the state of the art, Theorems A, B, C, C′ and D, Lemmas V and D, and what
+  each result gives.
 - `notes/GHAT_REPAIR.md`: Lemma R, the repaired auxiliary graph of [18] that Theorem D runs on.
 - `notes/RECURSION.md`: Lemma S, the repaired recursion of [18, Alg. 3].
 - `notes/LEMMA_O.md`: Lemma O, the sides of one incision, which Lemma S and the exact exchange
