@@ -10,4 +10,18 @@ rescaled observable 3.0 Z (x) I, R = 3: L2 error 1.739
 rescaled observable 5.0 Z (x) I, R = 5: L2 error 1.108
 rescaled observable 7.0 Z (x) I, R = 7: L2 error 0.926
 rescaled observable 9.0 Z (x) I, R = 9: L2 error 0.828
+R = 3, random amplitudes: model = K * g, max deviation 1.1e-15
+R = 5, random amplitudes: model = K * g, max deviation 5.3e-16
+R = 4, squared triangular kernel, cos x: sup error 0.1579 <= 0.4112
+R = 4, squared triangular kernel, 0.9 sin x cos 2x: sup error 0.4263 <= 1.8506
+R = 4, squared triangular kernel, triangle wave: sup error 0.2985 <= 0.7896
+R = 6, squared triangular kernel, cos x: sup error 0.0909 <= 0.2313
+R = 6, squared triangular kernel, 0.9 sin x cos 2x: sup error 0.2864 <= 1.0409
+R = 6, squared triangular kernel, triangle wave: sup error 0.2192 <= 0.5922
+R = 8, squared triangular kernel, cos x: sup error 0.0588 <= 0.1480
+R = 8, squared triangular kernel, 0.9 sin x cos 2x: sup error 0.2012 <= 0.6662
+R = 8, squared triangular kernel, triangle wave: sup error 0.1736 <= 0.4737
+R = 5: S_4 g is a model (max deviation 6.7e-16); L2 error 2.10e-03, lower bound for every model 6.30e-04
+R = 7: S_6 g is a model (max deviation 5.8e-16); L2 error 1.89e-04, lower bound for every model 5.67e-05
+R = 9: S_8 g is a model (max deviation 7.8e-16); L2 error 1.70e-05, lower bound for every model 5.11e-06
 all checks passed

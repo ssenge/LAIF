@@ -23,6 +23,8 @@ Write F_R for the set of all such models with M = Z ⊗ I and block sizes R = (R
 | Theorem 2 | for every g with \|g\| ≤ 1, a model equals the arithmetic mean of the partial frequency sums of g of orders 0 to R_v |
 | Theorem 3 | the observables c_k Z ⊗ I with c_k → ∞ approximate every g ∈ L² |
 | Theorem 4 | every trigonometric polynomial of degree D with sup \|g\| ≤ 1 − η is a model exactly, on R ≥ 3 qubits once R + 1 ≥ D + D√(2D)/η |
+| Theorem 5 | non-uniform amplitudes give K ∗ g for every nonnegative kernel K of degree R; with a squared triangular kernel, sup \|f − g\| ≤ 3.73 ω(g, 2/R) for continuous \|g\| ≤ 1, and ≤ 15 ‖g″‖_∞/R² |
+| Theorem 6 | for sup \|g\| ≤ 1 − η and Σ_k \|k\| \|ĝ(k)\| = A < ∞, the partial frequency sum of g of order D is a model once R + 1 − D ≥ A/(η − τ_D); so the best L² error with R qubits lies between that of the best approximations of degree R and R + 1 − max{1, ⌈2A/η⌉} |
 
 Since ‖Z ⊗ I‖ = 1, every model takes values in [−1, 1], so the first form of the question can only hold up to this range. Theorem 1 shows that, up to this range, the answer is positive: every square-integrable function with values in [−1, 1] is approximated. The second form has a positive answer with rescaled copies of Z ⊗ I (Theorem 3).
 
@@ -45,6 +47,20 @@ The L² closure of the union of all F_R is exactly {g ∈ L² : |g| ≤ 1 almost
 **Theorem 3 (rescaled fixed observable).** Use R_v = k qubits in every block and the observable M_k = c_k Z ⊗ I, where c_k → ∞. For every g ∈ L² and every ε > 0 there is a K such that for all k ≥ K, unitaries W₁, W₂ exist with ‖g − f‖₂ < ε.
 
 **Theorem 4 (exact representation).** Let N = 1, and let g be a real trigonometric polynomial of degree D with sup |g| ≤ 1 − η, where 0 < η ≤ 1. If R ≥ 3 and R + 1 ≥ D + D√(2D)/η, then g is a model in F_R exactly.
+
+Let N = 1 and write S_D g = Σ_{|k| ≤ D} ĝ(k) e^{ikx} for the partial frequency sum of order D, and ω(g, δ) = sup_{|u| ≤ δ} sup_x |g(x − u) − g(x)| for the modulus of continuity of a continuous 2π-periodic g.
+
+**Theorem 5 (kernels).** Let R ≥ 3, and let a_0, …, a_R be complex numbers with Σ_t |a_t|² = 1. With ψ = Σ_t a_t e_t in place of the uniform superposition in the proof of Theorem 2, the model equals K ∗ g, where K(u) = |Σ_t a_t e^{itu}|² and (K ∗ g)(x) = ∫ K(u) g(x − u) du/(2π). Every nonnegative trigonometric polynomial K of degree at most R with mean 1 is of this form. For m = ⌊R/2⌋ + 1 and a_t proportional to m − |t − (m − 1)| for t ≤ 2m − 2 (and a_t = 0 otherwise), every continuous g with |g| ≤ 1 satisfies
+
+sup |K ∗ g − g| ≤ (1 + π√3/2) ω(g, 1/m) ≤ 3.73 ω(g, 2/R),
+
+and every twice continuously differentiable g with |g| ≤ 1 satisfies sup |K ∗ g − g| ≤ 3π² ‖g″‖_∞/(8m²) < 15 ‖g″‖_∞/R².
+
+**Theorem 6 (near-best approximation).** Let g be real with sup |g| ≤ 1 − η for some 0 < η ≤ 1 and A = Σ_k |k| |ĝ(k)| < ∞. For D ≤ R let τ_D = Σ_{|k| > D} |ĝ(k)|. If R ≥ 3, τ_D < η and R + 1 − D ≥ A/(η − τ_D), then S_D g is a model in F_R exactly. Consequently, let c = max{1, ⌈2A/η⌉}. For every R ≥ 3 with R + 1 − c ≥ 0 and τ_{R+1−c} ≤ η/2,
+
+‖g − S_R g‖₂ ≤ inf_{f ∈ F_R} ‖g − f‖₂ ≤ ‖g − S_{R+1−c} g‖₂,
+
+and some model has sup |f − g| ≤ τ_{R+1−c}.
 
 ## Proofs
 
@@ -82,11 +98,25 @@ Both terms tend to 0 as k → ∞, the first by the convergence of A_n and the s
 
 The last step bounds a sum of 2D terms by √(2D) times the root of the sum of their squares, together with ‖g‖₂ ≤ 1. So |h̃ − h| ≤ η/2 once n − D ≥ D√(2D)/η.
 
+**Theorem 5.** With ψ = Σ_t a_t e_t the computation in the proof of Theorem 2 gives f(x) = 2 Σ_{t,t'} ā_t a_{t'} ĥ(t' − t) e^{i(t'−t)x} − 1 = 2 Σ_k c_k ĥ(k) e^{ikx} − 1 with c_k = Σ_t ā_t a_{t+k}. Since c_0 = 1, this is Σ_k c_k ĝ(k) e^{ikx}, and the c_k are the frequency coefficients of K. A nonnegative trigonometric polynomial of degree R is the squared modulus of a polynomial in e^{iu} of degree R, by the classical factorization theorem for nonnegative trigonometric polynomials, which gives the second statement.
+
+For the triangular amplitudes, Σ_t a_t e^{itu} = F(u)² with F(u) = Σ_{s < m} e^{isu}, so K is even, nonnegative and of mean 1. Its first coefficient is c_1 = Σ_t a_t a_{t+1}/Σ_t a_t². The unnormalized amplitudes change by ±1 at each of 2m steps (counting a_{−1} = a_{2m−1} = 0), and Σ_t a_t² = m(2m² + 1)/3. So 1 − c_1 = (1/2) Σ_t (a_{t+1} − a_t)²/Σ_t a_t² = 3/(2m² + 1). On [−π, π], 1 − cos u ≥ 2u²/π², so ∫ u² K(u) du/(2π) ≤ (π²/2)(1 − c_1) ≤ 3π²/(4m²). Now:
+
+- If g is twice continuously differentiable, then (K ∗ g − g)(x) = ∫ K(u) [(g(x − u) + g(x + u))/2 − g(x)] du/(2π), since K is even. The bracket is at most ‖g″‖_∞ u²/2 in absolute value, which gives 3π² ‖g″‖_∞/(8m²).
+- For continuous g, |g(x − u) − g(x)| ≤ ω(g, |u|) ≤ (1 + |u|/δ) ω(g, δ). The mean of |u| under K is at most the root of the mean of u², which is at most π√3/(2m). With δ = 1/m this gives (1 + π√3/2) ω(g, 1/m).
+- Finally m > R/2, so 1/m < 2/R.
+
+**Theorem 6.** Let n = R + 1 and h_D = (1 + S_D g)/2. Since |S_D g − g| ≤ τ_D, h_D takes values in [(η − τ_D)/2, 1 − (η − τ_D)/2]. Use the constant-diagonal matrix of the proof of Theorem 4, with T(k) = ĥ(k) n/(n − |k|) for |k| ≤ D and 0 otherwise, so that the model equals 2h_D − 1 = S_D g. Its symbol h̃ satisfies
+
+|h̃ − h_D| ≤ Σ_{0<|k|≤D} |ĥ(k)| |k|/(n − |k|) ≤ A/(2(n − D)) ≤ (η − τ_D)/2,
+
+so 0 ≤ h̃ ≤ 1 and 0 ≤ G ≤ I. For the consequence, take D = R + 1 − c. Then τ_D ≤ η/2, and n − D = c ≥ 2A/η ≥ A/(η − τ_D), so the upper bounds follow. Every model is a trigonometric polynomial of degree at most R, and among those S_R g is closest to g in L², which gives the lower bound.
+
 ## Remarks
 
 - Theorems 1 to 3 hold for every number of variables N. Theorem 2 uses blocks of at least 3 qubits; this is sufficient for the counting, not necessary. The construction uses one basis vector per tuple of numbers of ones. The remaining basis vectors only complete the dilation.
 - With a single qubit and repeated data loading, models with the fixed observable Z are universal for suitably bounded targets [3, 4]. Approximation rates for periodic functions with a rescaled single-qubit amplitude are given in [5], and a model with the fixed observable |0⟩⟨0|, a rescaling and a square root of the output is given in [6]. These architectures differ from the single-layer model above.
-- For continuous g, Theorem 2 gives the uniform error of the arithmetic mean of partial sums. For every non-constant g the L² error of this construction is at least of order 1/R, since the coefficient of a frequency k ≠ 0 is reduced by the factor 1 − |k|/(R + 1). Theorem 4 shows that faster rates are possible for trigonometric polynomials with a margin.
+- For continuous g, Theorem 2 gives the uniform error of the arithmetic mean of partial sums. For every non-constant g the L² error of this construction is at least of order 1/R, since the coefficient of a frequency k ≠ 0 is reduced by the factor 1 − |k|/(R + 1). Other amplitudes give the rate 1/R² for smooth g (Theorem 5), and with a margin the error is that of best approximation up to a shift of the degree by a constant (Theorem 6). For example, if sup |g| ≤ 1 − η and the derivative of order s ≥ 2 of g has bounded variation, then |ĝ(k)| = O(|k|^{−s−1}), so A < ∞, and the L² error is O(R^{−s−1/2}).
 
 ## Check
 
@@ -94,12 +124,14 @@ The last step bounds a sum of 2D terms by √(2D) times the root of the sum of t
 
 - **Theorem 2:** the model equals 2 A_n h − 1 to within 10⁻⁹ at 60 random points, for the frequency coefficients of h used in the construction (computed on a grid of 64 points per coordinate, exact for the trigonometric polynomial targets). The targets are a square wave, a smooth function and a step function in one variable (R = 3, 5, 7), and two functions in two variables (blocks of 3 + 3 and 3 + 4 qubits).
 - **Theorem 4:** exact representation to within 10⁻⁹ for random trigonometric polynomials of degree 1, 2 and 3 with margins 0.5, 0.4 and 0.9, on the number of qubits given by the theorem (3, 11 and 11).
+- **Theorem 5:** for R = 3 and 5 with random complex amplitudes, the model equals K ∗ g to within 10⁻⁹. With the squared triangular kernel for R = 4, 6 and 8, the uniform error for cos x, 0.9 sin x cos 2x and a triangle wave lies below the bounds of Theorem 5, and for cos x it equals 3/(2m² + 1).
+- **Theorem 6:** for g with frequency coefficients (7/12) · 0.3^{|k|} (k ≠ 0) and sup |g| = 1/2, the partial sum of order R − 1 is a model exactly for R = 5, 7 and 9, to within 10⁻⁹.
 - **Theorem 3:** with the observables c Z ⊗ I for c = R = 3, 5, 7, 9 and a target with values up to 5, so that the truncation is active for R = 3, the L² error decreases with R.
 
 ## Scope
 
 - The encoding generators are single-qubit Z rotations, the standard example of [1]. Other generators change the frequency sets, and they are not treated here.
-- Theorem 4 is stated for one variable.
+- Theorems 4 to 6 are stated for one variable.
 - Lean: not formalized.
 
 ## References
