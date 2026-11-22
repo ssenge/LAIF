@@ -6,7 +6,7 @@ Input: a graph G on n vertices with edge weights in {1, …, W} and a set K of k
 
 **Theorem 1.** For every δ > 0 there is a constant f(δ) such that Minimum Steiner Tree has a quantum algorithm with bounded error, polynomial space and no quantum random access memory, in time O(2^{(1+δ)k} · n^{f(δ)} · log W).
 
-Status: Claim. The split theorem of [2] is used as stated (Assuming), and quantum minimum finding [5] as stated. The constants are checked by script.
+Status: Claim. The split theorem of [2] is used as stated (Assuming), for terminal sets with at least 1/η terminals, and quantum minimum finding [5] and search with bounded-error inputs [8] as stated. The cost model of Section 2 is evaluated by script.
 
 The gain is for large weights: for W ≤ poly(n), the classical polynomial-space algorithm of [7] in time 2^k · n^{O(1)} · W is faster.
 
@@ -26,17 +26,17 @@ The new bound is the square root of the classical trade-off of [1, Theorem 1.3],
 
 W_G(K) = min over K₁ with |K₁| = (1/2 ± η)|K| and A ⊆ V with |A| ≤ s of W_G(K₁ ∪ A) + W_{G/A}(K₂ ∪ {v_A}).
 
-**Nested minimum finding.** A call with m terminals searches its at most 2^m (n + 1)^s choices (K₁, A) by quantum minimum finding [5]. For each choice it computes the two values on the right one after the other, by recursive calls on at most r(m) = ⌊(1/2 + η)m⌋ + s + 1 terminals, and adds them. Each recursive value is computed with error at most 1/(2^m (n + 1)^s k)² by O(m + s log n + log k) repetitions and the median of the results, so that the search sees a correct oracle with high probability. The search runs coherently, with its measurements deferred to the end of the call. A call holds its own choice, the contracted graph of its path from the root and two weights, so the space is polynomial at every depth.
+**Nested minimum finding.** A call with m terminals searches its at most 2^m (n + 1)^s choices (K₁, A) by quantum minimum finding [5]. For each choice it computes the two values on the right one after the other, by recursive calls on at most r(m) = ⌊(1/2 + η)m⌋ + s + 1 terminals, and adds them. Each recursive value is computed by a constant number c of parallel copies and the median of their outputs, which brings its error below 1/10, and the comparison of the sum with the current threshold is then a bounded-error oracle. Minimum finding [5], with search with bounded-error inputs [8] in each of its O(log N) threshold stages, needs O(√N · log N) calls to such an oracle for N choices and has bounded error. Every call runs coherently, with its measurements deferred and its work uncomputed. A call holds its choice, the contracted graph of its path from the root, the weights and the c copies of each of its two children, so its workspace is S(m) ≤ 2c · S(r(m)) + poly(n). Over the depth D = O(log k) this gives (2c)^D · poly(n) = poly(k, n).
 
 **Cutoff.** At m ≤ m₀ = max(⌈log₂ n⌉, M(η)) terminals, with M(η) = max(⌈2(s + 2)/(1 − 2η)⌉, ⌈1/η⌉) the constant above which r(m) < m and the range (1/2 ± η)m contains an integer, the call computes the value classically by the subset dynamic program of [6] in time 3^m · poly(n) and space 2^m · n, which is polynomial. The cutoff is what keeps the polynomial factor bounded: below it no further levels of search over A ⊆ V are needed.
 
 ## 2. Analysis
 
-With L(m) = O(m + s log n + log k) for the error reduction, the cost satisfies
+With L(m) = 2cC · (m + s log₂(n + 1)) per level, where C is the constant of minimum finding, the cost satisfies
 
-log₂ Q(m) ≤ m/2 + (s/2) log₂(n + 1) + log₂ L(m) + 1 + log₂ Q(r(m)), and log₂ Q(m) ≤ m log₂ 3 + O(log n) for m ≤ m₀.
+log₂ Q(m) ≤ m/2 + (s/2) log₂(n + 1) + log₂ L(m) + log₂ Q(r(m)), and log₂ Q(m) ≤ m log₂ 3 + O(log n) for m ≤ m₀.
 
-The terminal counts along a path of calls shrink by the factor 1/2 + η plus s + 1, so they sum to at most k/(1/2 − η) + O(sD), where D = O(log(k/m₀)) is the depth. The square root halves this, which gives 2^{k/(1−2η) + O(sD)}. The search over A contributes n^{s/2} per level, so n^{(s/2)D} in total. Write k = t · log₂ n. For t ≤ t₀ the depth is at most a constant D₀(t₀, η), and the factors are n^{O(s D₀)} and (log n + k)^{O(D₀)}, both polynomial. For t > t₀ the factor n^{(s/2)D} = 2^{k · O(s log t / t)} is at most 2^{(δ/3)k} once t₀ is large enough, and the error factors (O(k))^D = 2^{O(log² k)} are 2^{o(k)}. Choosing η with 1/(1 − 2η) ≤ 1 + δ/3 then gives time O(2^{(1+δ)k} · n^{f(δ)}), times log W for the arithmetic on weights.
+The terminal counts along a path of calls shrink by the factor 1/2 + η plus s + 1, so they sum to at most k/(1/2 − η) + O(sD), where D = O(log(k/m₀)) is the depth. The square root halves this, which gives 2^{k/(1−2η) + O(sD)}. The search over A contributes n^{s/2} per level, so n^{(s/2)D} in total. Write k = t · log₂ n. For t ≤ t₀ the depth is at most a constant D₀(t₀, η), and the factors are n^{O(s D₀)} and (k + log n)^{O(D₀)}, both polynomial. For t > t₀ the factor n^{(s/2)D} = 2^{k · O(s log t / t)} is at most 2^{(δ/3)k} once t₀ is large enough, and the factors L(m) contribute (O(k + log n))^D = 2^{O(log² k)}, which is 2^{o(k)}. Choosing η with 1/(1 − 2η) ≤ 1 + δ/3 then gives time O(2^{(1+δ)k} · n^{f(δ)}), times log W for the arithmetic on weights.
 
 ## 3. A remark on [3]
 
@@ -46,14 +46,14 @@ This hints at a possible counting gap in the proof of Theorem 3 of [3]: the squa
 
 ## 4. Measurements
 
-- `sim/nested.py` evaluates the recursion of Section 2 for δ = 0.5, 0.25, 0.1, 0.05 on a grid of k up to 10⁷ and n up to 2⁴⁰, and checks log₂ Q(k) ≤ (1 + δ)k + f · log₂ n for n ≥ 16 with f at most 34, 26, 36 and 76, the shrinking condition and integer split sizes above M(η), and that the exponent per terminal tends to 1/(1 − 2η).
+- `sim/nested.py` evaluates the recursion of Section 2 for δ = 0.5, 0.25, 0.1, 0.05 on a grid of k up to 10⁷ and n up to 2⁴⁰, and checks log₂ Q(k) ≤ (1 + δ)k + f · log₂ n for n ≥ 16 with f at most 38, 29, 37 and 77 (with c = 8 and C = 64), the space factor (2c)^D ≤ k^6, the shrinking condition and integer split sizes above M(η), and that the exponent per terminal tends to 1/(1 − 2η).
 - `sim/support.py` counts the index states of Section 3 by brute force for k = 2, 4, 8, checks the closed form N(k) = C(k, k/2) N(k/2)² = k! up to k = 256, and checks both comparisons with asserts.
 
 Run them with `python nested.py` and `python support.py` in `sim/`. Each exits nonzero on a failed check.
 
 ## 5. Limits
 
-- The split theorem of [2] is used as stated in [4], and the constant f(δ) is not optimized. The values above come from a cost model with a fixed constant for minimum finding and error reduction.
+- The split theorem of [2] is used as stated in [4], and the constant f(δ) is not optimized. The values above come from a cost model with fixed constants c and C, evaluated on a grid; the bound for all k and n rests on the argument of Section 2.
 - The polynomial factor n^{f(δ)} is large for small δ, and there is no gate count.
 - The count of Section 3 is for the state as defined in [3], with independent split registers at the nodes; a different encoding with fewer index states is not ruled out.
 
@@ -66,6 +66,7 @@ Run them with `python nested.py` and `python support.py` in `sim/`. Each exits n
 5. C. Dürr, P. Høyer. A quantum algorithm for finding the minimum. arXiv:quant-ph/9607014.
 6. S. E. Dreyfus, R. A. Wagner. The Steiner problem in graphs. Networks 1(3), 1971.
 7. D. Lokshtanov, J. Nederlof. Saving space by algebraization. STOC 2010.
+8. P. Høyer, M. Mosca, R. de Wolf. Quantum search on bounded-error inputs. ICALP 2003, arXiv:quant-ph/0304052.
 
 ## Use of AI
 
