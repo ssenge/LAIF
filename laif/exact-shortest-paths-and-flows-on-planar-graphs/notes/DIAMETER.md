@@ -1,7 +1,7 @@
 # Exact eccentricities and diameter of unweighted planar networks in Õ(D²) rounds
 
 **Status.** Claim, written 3 Nov 2026. Proofs below, simulation in `sim/diameter/`. It uses the region bags of `notes/LEMMA15.md`, Section 9, and the pattern bound of [2]. It does not use the labels (L2) of the Label Hypothesis of [3]; of that form it uses only the clauses (V1) to (V3) and (L1) of §9.9, and these have no black box beyond the given embedding.
-Importance if it survives: solid, since the best stated bound for the diameter is Õ(D³) [2].
+The best stated bound for the diameter is Õ(D³) [2].
 
 The model is CONGEST on a connected, undirected, unweighted planar network with n vertices and hop diameter D, with a known embedding. Õ hides
 factors polylogarithmic in n. Words have O(log n) bits.
@@ -134,7 +134,7 @@ The diameter and radius follow by one convergecast over T. This proves the theor
 
 Tokens can carry the identifier of a vertex that attains them, and so can A_X, so every vertex also learns a farthest vertex.
 
-**Sum Corollary.** In Õ(D²) rounds every vertex u learns S(u) = Σ_v d_G(u,v). So the closeness of every vertex, a medoid and the Wiener index are computed in Õ(D²) rounds, deterministically. Importance if it survives: modest. To our knowledge there is no earlier CONGEST bound for these on planar networks.
+**Sum Corollary.** In Õ(D²) rounds every vertex u learns S(u) = Σ_v d_G(u,v). So the closeness of every vertex, a medoid and the Wiener index are computed in Õ(D²) rounds, deterministically. To our knowledge there is no earlier CONGEST bound for these on planar networks.
 
 For v ∈ V(X) off S_X let Y(v) be its unique child, by (H3). Each p ∈ L_X off S_X broadcasts Y(p) over T_X. Add to each non-leaf bag X, with one word per value since values are at most n(D + k):
 - (A) For each face and pattern, the count and the sum of offsets of the vertices of X° off P_X, by a convergecast over T_X as in Step 5.

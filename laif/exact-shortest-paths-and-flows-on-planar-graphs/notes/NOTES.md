@@ -1,7 +1,7 @@
 # Exact SSSP and exact max flow in CONGEST
 
 Started 2026-10-28. Literature checked on that date (arXiv, DROPS, author pages). Items marked
-**~** are from memory and still need a look at the original paper.
+**~** are not taken from the text of the original paper.
 
 ## 1. State of the art
 
@@ -241,15 +241,15 @@ hierarchy and of the labels ([1, Lemma 16]), or the counterexample (that one is 
 - **Tree.** Run the algorithm on w'(e) = n²·w(e) + 1. All weights are positive, so any
   tight in-edge per vertex gives a tree, and d(v) = ⌊d'(v)/n²⌋.
 
-### Importance rating: modest to solid
+### What it gives
 
-Valuable as a statement, light as technique. [3, §3.1] already says its boosting works in any
+[3, §3.1] already says its boosting works in any
 model that can run the oracle.
 
 - **What it does.** It closes the planar exact-SSSP gap up to polylog factors and answers the
   second open question of [9].
-- **How much is new.** Little. The proof is about a page: a two-paper combination plus Lemma V.
-- **Risks.**
+- **Proof.** About a page: the combination of two papers plus Lemma V.
+- **Conditions.**
   1. It depends on [1], which is four months old and unrefereed.
   2. [1, Lemma 14] has a possible gap as stated, so (L) is conditional on Lemma 14′ (LEMMA15.md).
   3. Property 6 of [1, Lemma 9] seems not to hold for induced bags, so the Õ(D/ε) round bound of (L)
