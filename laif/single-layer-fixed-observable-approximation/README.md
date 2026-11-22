@@ -4,7 +4,7 @@
 
 ## Problem
 
-Let x = (x_1, …, x_N) ∈ [0, 2π)^N carry the uniform probability measure, and let L² be the space of real-valued square-integrable functions on it. A register of R = R_1 + … + R_N qubits is split into blocks, and block v of R_v qubits encodes x_v by single-qubit rotations about the z axis:
+Let x = (x_1, …, x_N) ∈ [0, 2π)^N carry the uniform probability measure (for the unnormalized measure, the distance bound of Theorem 1 is multiplied by (2π)^{N/2}), and let L² be the space of real-valued square-integrable functions on it. A register of R = R_1 + … + R_N qubits is split into blocks, and block v of R_v qubits encodes x_v by single-qubit rotations about the z axis:
 
 S(x) = ⊗_v ⊗_{r ≤ R_v} e^{−i x_v Z/2}.
 
@@ -19,12 +19,12 @@ Write F_R for the set of all such models with M = Z ⊗ I and block sizes R = (R
 | | fixed observable Z ⊗ I |
 |---|---|
 | Previous result | approximation of all of L² with target-dependent observables [2]; the fixed-observable case is open [1] |
-| Theorem 1 | the L² closure of the models is exactly {g : \|g\| ≤ 1 almost everywhere}; the uniform closure is exactly the continuous g with \|g\| ≤ 1 |
+| Theorem 1 | for M = Z ⊗ I, the L² closure of the models is exactly {g : \|g\| ≤ 1 almost everywhere}; the uniform closure is exactly the continuous g with \|g\| ≤ 1 |
 | Theorem 2 | for every g with \|g\| ≤ 1, a model equals the arithmetic mean of the partial frequency sums of g of orders 0 to R_v |
 | Theorem 3 | the observables c_k Z ⊗ I with c_k → ∞ approximate every g ∈ L² |
-| Theorem 4 | every trigonometric polynomial of degree D with sup \|g\| ≤ 1 − η is a model exactly, on R qubits once R + 1 ≥ D + D√(2D)/η |
+| Theorem 4 | every trigonometric polynomial of degree D with sup \|g\| ≤ 1 − η is a model exactly, on R ≥ 3 qubits once R + 1 ≥ D + D√(2D)/η |
 
-So the first form of the question has a negative answer: a function that exceeds 1 in absolute value on a set of positive measure stays at a fixed positive distance from every model. The second form has a positive answer with rescaled copies of Z ⊗ I.
+Since ‖Z ⊗ I‖ = 1, every model takes values in [−1, 1], so the first form of the question can only hold up to this range. Theorem 1 shows that, up to this range, the answer is positive: every square-integrable function with values in [−1, 1] is approximated. The second form has a positive answer with rescaled copies of Z ⊗ I (Theorem 3).
 
 ## Results
 
@@ -58,7 +58,7 @@ so 0 ≤ G ≤ I. Choose L further basis vectors η_t outside {ε_t}. On span{ε
 
 P₀ = [[G, B], [B, I − G]],  B = (G(I − G))^{1/2},
 
-is an orthogonal projector of rank L, the dilation of G. Add 2^{R−1} − L further basis vectors to its range. This is possible because R_v + 1 ≤ 2^{R_v − 1} for R_v ≥ 3, so L ≤ 2^{R−N} ≤ 2^{R−1}. Then 2L + (2^{R−1} − L) ≤ 2^R basis vectors are used. The result is a projector P of rank 2^{R−1}, so 2P − I has the spectrum of Z ⊗ I, and some unitary W₂ has W₂*(Z ⊗ I)W₂ = 2P − I.
+is an orthogonal projector of rank L, the dilation of G. The same dilation, which realizes an operator of norm at most 1 on at most half of the space through a single-qubit readout, is used in [7]. Add 2^{R−1} − L further basis vectors to its range. This is possible because R_v + 1 ≤ 2^{R_v − 1} for R_v ≥ 3, so L ≤ 2^{R−N} ≤ 2^{R−1}. Then 2L + (2^{R−1} − L) ≤ 2^R basis vectors are used. The result is a projector P of rank 2^{R−1}, so 2P − I has the spectrum of Z ⊗ I, and some unitary W₂ has W₂*(Z ⊗ I)W₂ = 2P − I.
 
 Since S(x)ψ lies in span{ε_t}, where P acts as G,
 
@@ -84,17 +84,17 @@ The last step bounds a sum of 2D terms by √(2D) times the root of the sum of t
 
 ## Remarks
 
-- Theorems 1 to 3 hold for every number of variables N, with one block of at least 3 qubits per variable. The construction uses one basis vector per tuple of numbers of ones. The remaining basis vectors only complete the dilation.
+- Theorems 1 to 3 hold for every number of variables N. Theorem 2 uses blocks of at least 3 qubits; this is sufficient for the counting, not necessary. The construction uses one basis vector per tuple of numbers of ones. The remaining basis vectors only complete the dilation.
 - With a single qubit and repeated data loading, models with the fixed observable Z are universal for suitably bounded targets [3, 4]. Approximation rates for periodic functions with a rescaled single-qubit amplitude are given in [5], and a model with the fixed observable |0⟩⟨0|, a rescaling and a square root of the output is given in [6]. These architectures differ from the single-layer model above.
-- For continuous g, Theorem 2 gives the uniform error of the arithmetic mean of partial sums. For every non-constant g the L² error is at least of order 1/R, since the coefficient of a frequency k ≠ 0 is reduced by the factor 1 − |k|/(R + 1). Theorem 4 shows that faster rates are possible for trigonometric polynomials with a margin.
+- For continuous g, Theorem 2 gives the uniform error of the arithmetic mean of partial sums. For every non-constant g the L² error of this construction is at least of order 1/R, since the coefficient of a frequency k ≠ 0 is reduced by the factor 1 − |k|/(R + 1). Theorem 4 shows that faster rates are possible for trigonometric polynomials with a margin.
 
 ## Check
 
 `sim/check.py`, output in `sim/out.txt`. The script builds W₁ and W₂ explicitly, evaluates the model as in [1, eq. (9)] with the observable Z ⊗ I, and asserts:
 
-- **Theorem 2:** the model equals A_n g to within 10⁻⁹ at 60 random points. The targets are a square wave, a smooth function and a step function in one variable (R = 3, 5, 7), and two functions in two variables (blocks of 3 + 3 and 3 + 4 qubits).
+- **Theorem 2:** the model equals 2 A_n h − 1 to within 10⁻⁹ at 60 random points, for the frequency coefficients of h used in the construction (computed on a grid of 64 points per coordinate, exact for the trigonometric polynomial targets). The targets are a square wave, a smooth function and a step function in one variable (R = 3, 5, 7), and two functions in two variables (blocks of 3 + 3 and 3 + 4 qubits).
 - **Theorem 4:** exact representation to within 10⁻⁹ for random trigonometric polynomials of degree 1, 2 and 3 with margins 0.5, 0.4 and 0.9, on the number of qubits given by the theorem (3, 11 and 11).
-- **Theorem 3:** with the observable 6 Z ⊗ I, the L² error for a target with values up to 5 decreases with R.
+- **Theorem 3:** with the observables c Z ⊗ I for c = R = 3, 5, 7, 9 and a target with values up to 5, so that the truncation is active for R = 3, the L² error decreases with R.
 
 ## Scope
 
@@ -110,6 +110,7 @@ The last step bounds a sum of 2D terms by √(2D) times the root of the sum of t
 4. Z. Yu, H. Yao, M. Li, X. Wang. Power and limitations of single-qubit native quantum neural networks. NeurIPS 2022. arXiv:2205.07848.
 5. A. Neufeld, P. Schmocker, V. K. Tran. Approximation rates of quantum neural networks for periodic functions via Jackson's inequality. arXiv:2511.16149.
 6. J. Tang, J. Zhang, X. Sun. SAQNN: Spectral adaptive quantum neural network as a universal approximator. arXiv:2602.09718.
+7. Y. Wu, J. Yao, P. Zhang, H. Zhai. Expressivity of quantum neural networks. Phys. Rev. Research 3, 032049 (2021). arXiv:2101.04273.
 
 ## Use of AI
 

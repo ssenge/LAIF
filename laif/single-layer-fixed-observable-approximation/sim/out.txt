@@ -6,8 +6,8 @@ blocks (3, 4): model = mean of partial sums, max deviation 1.1e-15
 degree 1, margin 0.5: exact representation with R = 3 qubits, max deviation 7.2e-16
 degree 2, margin 0.4: exact representation with R = 11 qubits, max deviation 2.0e-15
 degree 3, margin 0.9: exact representation with R = 11 qubits, max deviation 5.0e-16
-rescaled observable 6.0 Z (x) I, R = 3: L2 error 1.355
-rescaled observable 6.0 Z (x) I, R = 5: L2 error 1.108
-rescaled observable 6.0 Z (x) I, R = 7: L2 error 0.926
-rescaled observable 6.0 Z (x) I, R = 9: L2 error 0.828
+rescaled observable 3.0 Z (x) I, R = 3: L2 error 1.739
+rescaled observable 5.0 Z (x) I, R = 5: L2 error 1.108
+rescaled observable 7.0 Z (x) I, R = 7: L2 error 0.926
+rescaled observable 9.0 Z (x) I, R = 9: L2 error 0.828
 all checks passed

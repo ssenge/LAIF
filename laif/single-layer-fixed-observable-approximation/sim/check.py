@@ -96,7 +96,7 @@ for D, eta in [(1, 0.5), (2, 0.4), (3, 0.9)]:   # R up to 11 qubits (dense 2^11 
 g = lambda x: 3 * np.cos(x) + 2 * np.sign(np.sin(2 * x))
 xs = 2 * np.pi * np.arange(2048) / 2048
 prev = np.inf
-for R, cR in [(3, 6.0), (5, 6.0), (7, 6.0), (9, 6.0)]:
+for R, cR in [(3, 3.0), (5, 5.0), (7, 7.0), (9, 9.0)]:   # c = R grows; truncation active at R = 3
     gc = lambda x: np.clip(g(x), -cR, cR) / cR
     gh = freq_coeffs(gc, 1, K=256); N = R + 1
     hh = lambda k: (0.5 if k[0] == 0 else 0) + gh(k) / 2
