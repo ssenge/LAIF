@@ -1,0 +1,17 @@
+random   N =    1000: b = 3.11e-03, Z/N = 1.0000, r = 0.530, MSE(G) = 1.30e-04 <= 2.85e-04, mean output error 0.0110, d sigma sigma' = 0.956
+random   N =   10000: b = 2.55e-04, Z/N = 1.0000, r = 0.528, MSE(G) = 1.33e-04 <= 2.79e-04, mean output error 0.0160, d sigma sigma' = 0.658
+random   N =  100000: b = 6.13e-05, Z/N = 1.0000, r = 0.529, MSE(G) = 1.40e-04 <= 2.79e-04, mean output error 0.0116, d sigma sigma' = 0.930
+random   N = 1000000: b = 3.87e-06, Z/N = 1.0000, r = 0.528, MSE(G) = 1.42e-04 <= 2.79e-04, mean output error 0.0124, d sigma sigma' = 0.850
+split    N =    1000: b = 9.77e-05, Z/N = 1.0000, r = 1.723, MSE(G) = 2.00e-03 <= 2.97e-03, mean output error 0.0129, d sigma sigma' = 2.704
+split    N =   10000: b = 1.34e-05, Z/N = 1.0000, r = 1.433, MSE(G) = 1.35e-03 <= 2.05e-03, mean output error 0.0123, d sigma sigma' = 2.435
+split    N =  100000: b = 2.50e-06, Z/N = 1.0000, r = 1.809, MSE(G) = 1.74e-03 <= 3.27e-03, mean output error 0.0108, d sigma sigma' = 3.045
+split    N = 1000000: b = 2.34e-07, Z/N = 1.0000, r = 1.846, MSE(G) = 1.95e-03 <= 3.41e-03, mean output error 0.0107, d sigma sigma' = 3.307
+heavy    N =    1000: b = 1.48e-03, Z/N = 1.0000, r = 1.556, MSE(G) = 1.13e-03 <= 2.44e-03, mean output error 0.0316, d sigma sigma' = 0.972
+heavy    N =   10000: b = 9.92e-04, Z/N = 1.0000, r = 0.743, MSE(G) = 2.86e-04 <= 5.54e-04, mean output error 0.0147, d sigma sigma' = 1.002
+heavy    N =  100000: b = 4.12e-04, Z/N = 1.0000, r = 0.549, MSE(G) = 1.30e-04 <= 3.02e-04, mean output error 0.0124, d sigma sigma' = 0.840
+heavy    N = 1000000: b = 5.81e-05, Z/N = 1.0000, r = 0.531, MSE(G) = 1.48e-04 <= 2.82e-04, mean output error 0.0102, d sigma sigma' = 1.100
+dominant N =    1000: b = 6.16e-03, Z/N = 1.0000, r = 41.827, MSE(G) = 6.65e-01 <= 1.79e+00, mean output error 0.0002, d sigma sigma' = 2346.881
+dominant N =   10000: b = 1.17e-01, Z/N = 1.0000, r = 40.586, MSE(G) = 8.15e-01 <= 2.68e+00, mean output error 0.0001, d sigma sigma' = 7429.234
+dominant N =  100000: b = 2.10e-02, Z/N = 1.0000, r = 83.262, MSE(G) = 7.24e-02 <= 7.54e+00, mean output error 0.0000, d sigma sigma' = 33989.573
+dominant N = 1000000: b = 1.02e-02, Z/N = 1.0000, r = 48.496, MSE(G) = 2.68e-03 <= 2.45e+00, mean output error 0.0000, d sigma sigma' = 113431.096
+all checks passed
