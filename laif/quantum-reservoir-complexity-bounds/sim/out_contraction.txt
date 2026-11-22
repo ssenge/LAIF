@@ -1,0 +1,4 @@
+n = 1: coefficient 1 at J = pi; random J in [0.2, 1]: 0.7117
+n = 2: coefficient 1 at J = pi; random J in [0.2, 1]: 0.9971
+n = 3: coefficient 1 at J = pi; random J in [0.2, 1]: 0.9217
+all checks passed
