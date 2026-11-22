@@ -9,7 +9,7 @@ os.environ.setdefault('HF_HUB_DISABLE_TELEMETRY', '1')
 ROOT = pathlib.Path(__file__).resolve().parents[1]
 CKPT = ROOT / 'models'
 LLMS = {'smollm': 'HuggingFaceTB/SmolLM2-135M', 'smollm360': 'HuggingFaceTB/SmolLM2-360M', 'qwen05': 'Qwen/Qwen2.5-0.5B',
-        'qwen15': 'Qwen/Qwen2.5-1.5B'}
+        'qwen15': 'Qwen/Qwen2.5-1.5B', 'tinyllama': 'TinyLlama/TinyLlama-1.1B-Chat-v1.0'}
 
 
 def vision_data(name):

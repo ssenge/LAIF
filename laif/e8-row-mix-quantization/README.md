@@ -1,4 +1,4 @@
-# Lattice and scalar codes per output row under one Fisher slope, 2-bit weights of Qwen2.5-0.5B and 1.5B
+# Lattice and scalar codes per output row under one Fisher slope, 2-bit weights of Qwen2.5-0.5B, Qwen2.5-1.5B and TinyLlama-1.1B
 
 _21 November 2026_
 
@@ -38,6 +38,18 @@ On Qwen2.5-1.5B, with the same protocol and sequential calibration (the H of eac
 
 At 2.23 bits per weight the mix is 32% below GPTQ at 2.25, and at 2.46 it is 27% below GPTQ at 2.50, 23% below AutoRound at 2.50 and 14% below the scalar-only allocation at 2.47.
 
+On TinyLlama-1.1B-Chat [12], with the same protocol, next to the released 2-bit AQLM checkpoint of this model [11] (one codebook of 2^16 entries per layer for groups of 8 inputs, with fine-tuning). AQLM takes 2.0 bits per weight for the codes and 3.34 including the per-layer codebooks, which weigh more at 1.1B parameters. Its decoded weights are evaluated on our perplexity path.
+
+| Method | Bits per weight | Perplexity |
+|---|---|---|
+| 16-bit weights | 16 | 7.97 |
+| GPTQ, 2 bits, groups of 128 [1] | 2.252 | 14.44 |
+| GPTQ, 2 bits, groups of 64 [1] | 2.502 | 12.98 |
+| GPTQ, 3 bits, groups of 128 [1] | 3.252 | 8.71 |
+| AQLM, released checkpoint [11] | 2.0 (codes), 3.34 (with codebooks) | 10.74 |
+| **Mix of E8P and scalar rows** | **2.011** | **12.53** |
+| **Mix of E8P and scalar rows** | **3.498** | **8.36** |
+
 ## Method
 
 For a linear layer with weight W (o rows, i inputs), input second moment H from calibration and diagonal empirical Fisher F of the language-model loss:
@@ -53,8 +65,8 @@ Calibration: 32 windows of 512 tokens from the WikiText-2 training split for H a
 
 Scope:
 
-- Two models, Qwen2.5-0.5B and Qwen2.5-1.5B; perplexity on WikiText-2 only. AutoRound is run with groups of 128 and 64 on Qwen2.5-0.5B and with groups of 64 on Qwen2.5-1.5B.
-- Without fine-tuning. Methods that fine-tune after quantization, such as the full pipeline of [2], are not part of the comparison.
+- Three models, Qwen2.5-0.5B, Qwen2.5-1.5B and TinyLlama-1.1B-Chat; perplexity on WikiText-2 only. AutoRound is run with groups of 128 and 64 on Qwen2.5-0.5B and with groups of 64 on Qwen2.5-1.5B.
+- Without fine-tuning. Among methods that fine-tune after quantization, only the released AQLM checkpoint of TinyLlama-1.1B-Chat is part of the comparison.
 - λ is set from a sample of 5 decoder layers, so the reached bits per weight lie somewhat below the targets 2.25 and 2.5.
 
 ## Files
@@ -65,7 +77,8 @@ Scope:
 - `sim/test_quip.py`: asserts on the E8P codebook and its nearest-point search against brute force.
 - `sim/lam_pilot.py`: λ for a target bits per weight.
 - `sim/autoround_run.py`: the AutoRound baseline on the same protocol.
-- `results/qwen05_2048.jsonl`, `results/qwen15_2048.jsonl`: the rows of the tables.
+- `sim/aqlm_eval.py`: decodes the released AQLM checkpoint (safetensors) to dense weights, with an assert against the aqlm kernel, and counts its bits.
+- `results/qwen05_2048.jsonl`, `results/qwen15_2048.jsonl`, `results/tinyllama_2048.jsonl`: the rows of the tables.
 
 Run: `python -m nnc.fisher qwen05`, then `python -m nnc.pipeline --model qwen05 --evlen 2048 --sink 3.0 0.0 --out out.jsonl --specs gmix:lam=2.291e-05,refit=1,e8=1`.
 
@@ -81,3 +94,5 @@ Run: `python -m nnc.fisher qwen05`, then `python -m nnc.pipeline --model qwen05 
 8. G. Lee, S. Son, Y. Lee, B. Kim, J. H. Ahn. SchurQuant: Groupwise discrete optimization for layer-wise LLM quantization. arXiv:2608.15567.
 9. Qwen Team. Qwen2.5 technical report. arXiv:2412.15115.
 10. S. Merity, C. Xiong, J. Bradbury, R. Socher. Pointer sentinel mixture models. ICLR 2017. arXiv:1609.07843.
+11. V. Egiazarian, A. Panferov, D. Kuznedelev, E. Frantar, A. Babenko, D. Alistarh. Extreme compression of large language models via additive quantization. ICML 2024. arXiv:2401.06118.
+12. P. Zhang, G. Zeng, T. Wang, W. Lu. TinyLlama: An open-source small language model. arXiv:2401.02385.

@@ -1,0 +1,7 @@
+{"model": "tinyllama", "spec": "none", "sink": [3.0, 0.0], "bpw": 16.0, "model_mb": 2200.096768, "ppl": 7.972057352472877, "nwin": null, "evlen": 2048}
+{"model": "tinyllama", "spec": "gptq:b=2,g=128,act=1,clip=1,had=1", "sink": [3.0, 0.0], "bpw": 2.2518833705357144, "model_mb": 535.055104, "ppl": 14.439748492177637, "nwin": null, "evlen": 2048}
+{"model": "tinyllama", "spec": "gptq:b=2,g=64,act=1,clip=1,had=1", "sink": [3.0, 0.0], "bpw": 2.502290271577381, "model_mb": 565.382016, "ppl": 12.978945109670713, "nwin": null, "evlen": 2048}
+{"model": "tinyllama", "spec": "gptq:b=3,g=128,act=1,clip=1,had=1", "sink": [3.0, 0.0], "bpw": 3.2518833705357144, "model_mb": 656.165632, "ppl": 8.71315017824999, "nwin": null, "evlen": 2048}
+{"model": "tinyllama", "spec": "aqlm:aqlm_tinyllama,1x16,g8", "bpw": 3.33984375, "bpw_codes": 2.0, "ppl": 10.739231497321098, "nwin": null, "evlen": 2048}
+{"model": "tinyllama", "spec": "gmix:lam=1e-4,refit=1,e8=1", "sink": [3.0, 0.0], "bpw": 2.0114530257848435, "model_mb": 505.936458, "ppl": 12.526197332878972, "nwin": null, "evlen": 2048}
+{"model": "tinyllama", "spec": "gmix:lam=6.054e-07,refit=1,e8=1", "sink": [3.0, 0.0], "bpw": 3.498367540764086, "model_mb": 686.01746, "ppl": 8.360291293231384, "nwin": null, "evlen": 2048}
