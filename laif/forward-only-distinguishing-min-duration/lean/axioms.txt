@@ -1,0 +1,8 @@
+'MinDur.cycle_yes' depends on axioms: [propext, Classical.choice, Quot.sound]
+'MinDur.cycle_no' depends on axioms: [propext, Classical.choice, Quot.sound]
+'MinDur.offdiag_sq' depends on axioms: [propext, Classical.choice, Quot.sound]
+'MinDur.exp_neg_half_gt' depends on axioms: [propext, Classical.choice, Quot.sound]
+'MinDur.sinh_one_lt' depends on axioms: [propext, Classical.choice, Quot.sound]
+'MinDur.amplitude_constant' depends on axioms: [propext, Classical.choice, Quot.sound]
+'MinDur.sin_ge' depends on axioms: [propext, Classical.choice, Quot.sound]
+'MinDur.final_constants' depends on axioms: [propext, Classical.choice, Quot.sound]

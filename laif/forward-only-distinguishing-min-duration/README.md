@@ -82,12 +82,16 @@ for either square root. If y = m|q/p| ≤ 1, then |F_m(x) − m| ≤ m Σ_{j ≥
 - Over a logarithmic grid of 300 × 300 pairs with 10⁻⁴ ≤ ε ≤ 1 and 10⁻⁵ ≤ τ ≤ 1, the per-run bounds of the proof give t/P ≤ 8.2 max{1/ε, τ/ε²}, inside the constant 46 of Theorem 1.
 - On fixed instances in d = 8, the exact detection probability per run lies above the bound.
 
+## Lean
+
+`lean/MinDur/Basic.lean` proves the 2 × 2 algebra of the cycle: C = δ₁ I in the YES case (`cycle_yes`), the form of C for a symmetric step matrix (`cycle_no`) and N² = q² I with q² = 4αβ²δ₁ (`offdiag_sq`). It also checks the numerical constants: e^{−1/2} > 0.6065, sinh 1 < 1.1753, sin s ≥ 0.958 s on [0, 1/2], the amplitude constant 0.837 and the constants of t/P ≤ 46 max{1/ε, τ/ε²} (`exp_neg_half_gt`, `sinh_one_lt`, `sin_ge`, `amplitude_constant`, `final_constants`). `lean/axioms.txt` lists the axioms of every named theorem: only `propext`, `Classical.choice` and `Quot.sound`. The rest of the proofs is a Claim.
+
 ## Scope
 
 - Theorem 1 is an upper bound. For ε < τ ≤ 1 the only lower bound is Ω(1/ε) [1], so the optimal total time in that range is not determined here. A matching lower bound would need d² ≳ τ/ε, by the O(d²/ε) bound implied by [3].
 - Minimum durations τ > 1 are not covered.
 - The step length is exactly τ. Longer steps are allowed by the model but are not used.
-- Lean: not formalized.
+- Lean covers only the steps listed in the Lean section.
 
 ## References
 

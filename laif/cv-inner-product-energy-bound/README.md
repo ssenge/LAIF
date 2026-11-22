@@ -53,11 +53,15 @@ using K ≥ b/(100ε) − 1. For the second bound, take the two states of [2, Le
 - **Hard states:** the instances of Theorem 1 satisfy the energy constraint, for m = 1, 2, 3 with random φ on H_K, and the fidelity bound of the instance for small d holds.
 - **Bias bound:** the inequality |Tr(ρσ) − Tr(PρP PσP)| ≤ 2 max{q_ρ, q_σ} ≤ 2b/N_c holds for the total-photon projector. It is tested on random mixed states of the class with m ≤ 3, truncated at a finite total photon number.
 
+## Lean
+
+`lean/CVInner/Basic.lean` proves the counting steps: C(K + m, m) as a product (`choose_eq_prod`), (1 + K/m)^m ≤ C(K + m, m) (`pow_le_choose`), C(N − 1 + m, m) ≤ N^m (`choose_le_pow`), the shell size (`shell_base`), the fidelity of the small-dimension instance (`fallback_fidelity`) and the cutoff tail b/N_c ≤ ε/4 (`cutoff_tail`). `lean/axioms.txt` lists the axioms of every named theorem: only `propext`, `Classical.choice` and `Quot.sound`. The rest of the proofs is a Claim.
+
 ## Scope
 
 - Theorem 1 holds for every protocol with local operations and classical communication, shared randomness included. It does not separate coordinated from independent measurements, which [1] also names as an open question. The coordinated protocol of [1] attains the optimal exponents. The exponents of the parity and homodyne protocols of [1] are higher.
 - The constants of Theorem 1 come from [2] and are not explicit. The constants of the two bounds differ by a factor C^m.
-- [2, Theorem 11, Theorem 12, Lemma 13, Theorem 6] and the proof of [1, Proposition 5] are used as stated there. Not formalized in Lean.
+- [2, Theorem 11, Theorem 12, Lemma 13, Theorem 6] and the proof of [1, Proposition 5] are used as stated there. Lean covers only the steps listed in the Lean section.
 
 ## References
 

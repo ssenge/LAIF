@@ -1,0 +1,6 @@
+'CVInner.choose_eq_prod' depends on axioms: [propext, Classical.choice, Quot.sound]
+'CVInner.pow_le_choose' depends on axioms: [propext, Classical.choice, Quot.sound]
+'CVInner.choose_le_pow' depends on axioms: [propext, Classical.choice, Quot.sound]
+'CVInner.shell_base' depends on axioms: [propext, Classical.choice, Quot.sound]
+'CVInner.fallback_fidelity' depends on axioms: [propext, Classical.choice, Quot.sound]
+'CVInner.cutoff_tail' depends on axioms: [propext, Classical.choice, Quot.sound]

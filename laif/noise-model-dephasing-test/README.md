@@ -75,11 +75,15 @@ For every unitary the sum of |u_{a_1} ⋯ u_{a_s}⟩⟨u_{a_1} ⋯ u_{a_s}| over
 
 `sim/check.py` checks the block formulas against direct composition, the identity for ‖σ_E − σ_M‖₂², the exact moments E X and E X² against Monte Carlo sampling, the constant (E X)²/(4 E X²) for 2 ≤ d ≤ 2000 in exact rational arithmetic, and the gap ‖σ_E − σ_M‖₂ ≥ √X/2 on random instances with q in [0, 1] and q′ ≤ 1/2. `sim/parallel.py` samples the three couplings and compares Z_{H2} with its exact form for s = 2 and s = 3, where R follows by inclusion and exclusion; the error shrinks as the sample size grows. It then checks the bound on λ_max(Z_{H2}) against the exact spectrum for d ≤ 10, which is attained for s = 2, and the sampled λ_max(Z_{1H}) against its exact value 3/(d + 1) for s = 2. `sim/pz_all_d.py` proves E X² ≤ 2 (E X)² for all d ≥ 2: in t = d − 2 the numerator and the denominator of 2 (E X)² − E X² have nonnegative coefficients.
 
+## Lean
+
+`lean/NoiseTest/Basic.lean` proves the scalar and inner-product steps of both proofs: the moment bound E X² ≤ 2 (E X)² and E X/2 ≥ 1/(6d) (`second_moment_le`, `half_mean_ge`, `second_moment_constant`), the distance identity and the gap ‖A − B‖² ≥ ‖A‖²/4 in a real inner product space (`dist_identity`, `dist_ge`), the block length (`block_pow_le`), the nine rounds (`rounds`), and the product, γ and final constants of the parallel bound (`prod_ge`, `gamma_bounds`, `parallel_constants`, `final_constant`). `lean/axioms.txt` lists the axioms of every named theorem: only `propext`, `Classical.choice` and `Quot.sound`. The rest of the proofs is a Claim.
+
 ## Scope
 
 - The strategy measures jointly across the O(d) stored outputs, as [2] does; it uses one query system and sequential calls only.
 - For adaptive strategies and d = 2^n the query complexity lies between d^{1/16}/p [1] and d/p. Theorem 2 covers parallel strategies only; the tester of Theorem 1 is sequential.
-- Not formalized in Lean. [2, Theorem 1.4] is used as stated there.
+- Lean covers only the steps listed in the Lean section. [2, Theorem 1.4] is used as stated there.
 
 ## References
 

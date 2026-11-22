@@ -1,0 +1,8 @@
+'AntiSym.completion_identity' depends on axioms: [propext, Classical.choice, Quot.sound]
+'AntiSym.choose_ge' depends on axioms: [propext, Classical.choice, Quot.sound]
+'AntiSym.sum_inv_ge' depends on axioms: [propext, Classical.choice, Quot.sound]
+'AntiSym.rate_ge' depends on axioms: [propext, Classical.choice, Quot.sound]
+'AntiSym.lower_tail_constant' depends on axioms: [propext, Classical.choice, Quot.sound]
+'AntiSym.neg_log_le' depends on axioms: [propext, Classical.choice, Quot.sound]
+'AntiSym.success_forces' depends on axioms: [propext, Classical.choice, Quot.sound]
+'AntiSym.two_halves' depends on axioms: [propext, Classical.choice, Quot.sound]

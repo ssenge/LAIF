@@ -79,12 +79,16 @@ extended by any fixed state outside Λ^k(ℂ^d). The functional X ↦ Tr[Π_anti
 - **The optimum itself:** `sim/sdp.py` solves the semidefinite program for the best covariant channel, which is optimal after averaging over unitaries. Its value equals E[1/C(d − L_n, r − L_n)] up to 1e-6 for eight cases with d ≤ 4, r ≤ 3 and n ≤ 3.
 - **The copy bounds:** the constants of Theorem 3, and on random spectra with r ≤ 6, that the smallest n with P(S ≤ n) ≥ 1 − 2δ lies above the bound of (a) and the count of (b) suffices.
 
+## Lean
+
+`lean/AntiSym/Basic.lean` proves the combinatorial and scalar steps: the completion identity C(d, r) C(r, k) = C(d, k) C(d − k, r − k) (`completion_identity`), C(d − k, r − k) ≥ d − r + 1 (`choose_ge`), Σ 1/λ_i ≥ r² (`sum_inv_ge`), and the constants of the copy bounds (`rate_ge`, `lower_tail_constant`, `neg_log_le`, `success_forces`, `two_halves`). `lean/axioms.txt` lists the axioms of every named theorem: only `propext`, `Classical.choice` and `Quot.sound`. The rest of the proofs is a Claim.
+
 ## Scope
 
 - Theorem 1 holds for every channel on the n copies, so for every measurement strategy, adaptive or not. The maximum is attained, since the channels form a compact set; the algorithm of [1, Theorem 7] followed by the completion channel approaches it as its confidence parameter goes to 0.
 - The completion channel adds registers and then anti-symmetrizes. With that one extra operation, protocols built from permutations reach the value of Theorem 1, so the gap between Theorems 1 and 2 is exactly the effect of added registers.
 - Theorem 3 counts copies. The running time of the algorithm is as in [1]. Streaming protocols with small memory are not covered.
-- [1, Corollary 13], [2, Remark 2.24 and Theorem 2.14] and [3, Theorems 2.1 and 3.1] are used as stated there. Not formalized in Lean.
+- [1, Corollary 13], [2, Remark 2.24 and Theorem 2.14] and [3, Theorems 2.1 and 3.1] are used as stated there. Lean covers only the steps listed in the Lean section.
 
 ## References
 
