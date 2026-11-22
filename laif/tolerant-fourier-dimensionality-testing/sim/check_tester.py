@@ -1,8 +1,8 @@
 """Classical simulation of the two-phase tolerant tester on abstract Fourier distributions over F_2^n.
 
 Yes: some subspace U of dim k has mass <= 4 alpha eps outside. No: every subspace of dim <= k has mass >= 2 eps
-outside (checked exhaustively). Amplitude estimation is replaced by exact values with the stated relative errors
-(worst-case rounding), amplified samples by exact conditional samples. Checks acceptance rates and the query count.
+outside (checked exhaustively). Amplitude estimation is replaced by exact values perturbed at random within the stated errors
+(|w_hat - w| <= (x/8) max(w, eps) in phase B), amplified samples by exact conditional samples. Checks acceptance rates and the query count.
 """
 import itertools, math, random
 import numpy as np
@@ -69,11 +69,12 @@ def tester(mu, k, alpha, eps, rng, C=1.0):
         cost += 2 * math.log(k + 2) / math.sqrt(Lam * eps)
         large = w >= Lam * eps or (w >= Lam * eps / 2 and rng.random() < 0.5)
         if not large: break
+        cost += 2 * math.log(k + 2) / math.sqrt(Lam * eps / 2)
         s = sample(mu, W, rng); basis.append(s); W = span(basis)
         if len(basis) > k: return False, cost
     d = len(basis)
     delta = x / 8
-    w_hat = w * (1 + delta * rng.uniform(-1, 1))
+    w_hat = w + delta * max(w, eps) * rng.uniform(-1, 1)
     cost += 1 / (x * math.sqrt(eps))
     if w_hat <= (1 + 2 * alpha) * eps: return True, cost
     m = int(math.ceil(C * Lam * k / x ** 2 * math.log(math.e * Lam / x)))
