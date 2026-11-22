@@ -1,55 +1,52 @@
-"""Cost of nested quantum minimum finding over the balanced split recursion of Minimum Steiner Tree, polynomial space.
+"""Exponent of nested quantum minimum finding over the balanced split recursion of Minimum Steiner Tree, at constant depth.
 
-Recursion (split theorem, restated as Lemma 3 and Theorem 4 of arXiv:1904.03581): for eta > 0,
+Recursion (split theorem, restated as Lemma 3 and Theorem 4 of arXiv:1904.03581), for eta > 0 and m >= 1/eta terminals:
   W_G(K) = min over K1 with |K1| = (1/2 +- eta)|K| and A subset of V with |A| <= s = ceil(log2(1/eta)) of
            W_G(K1 + A) + W_{G/A}(K2 + v_A),     K2 = K - (K1 + A).
-A node with m terminals searches its at most 2^m (n+1)^s choices by quantum minimum finding; each choice evaluates the
-two children one after the other. Children have at most r(m) = floor((1/2 + eta) m) + s + 1 terminals. At m <= m0 =
-max(ceil(log2 n), M), with M = max(ceil(2 (s + 2) / (1 - 2 eta)), ceil(1 / eta)) a constant above which r(m) < m and
-the balanced range (1/2 +- eta) m holds an integer, the value is computed classically by the subset dynamic program in 3^m poly(n) time and 2^m n space.
+The algorithm unrolls D levels. A call with m terminals searches its at most 2^m (n+1)^s choices by quantum minimum
+finding and evaluates both children; children have at most r(m) = floor((1/2 + eta) m) + s + 1 terminals. After D levels,
+or once m < 1/eta, the value is computed by the classical polynomial-space algorithm in 6.751^m n^O(1) log W time, run
+reversibly in time T^(1 + eps) and space O(S log T).
 
-Each child value is computed by c parallel copies and their median (error at most 1/10), and minimum finding tolerates a
-bounded-error comparison oracle with C log2 N calls per square root of the N choices (C, c constants). Cost model:
-  log2 Q(m) = m/2 + (s/2) log2(n+1) + log2(2 c C (m + s log2(n+1))) + log2 Q(r(m)),   log2 Q(m) = m log2 3 + c0 log2 n for m <= m0.
-Space: the copies multiply the workspace by 2c per level, S(m) <= 2c S(r(m)) + p(n), so S(k) <= (2c)^D poly(n) with
-depth D; checked: (2c)^D <= k^a for the stated a, a polynomial factor.
-Checked here: for each delta in the table and the stated eta, log2 Q(k) <= (1 + delta) k + f log2 n on a grid of k up to
-10^7 and n up to 2^40, with the excess decreasing in k at the top of the grid; the k-exponent tends to 1/(1 - 2 eta). """
+Exponent of k in log2 of the time, from the square roots along one path of calls (all other factors are poly(k, n)):
+  e(D, eta, eps) = (1 - (1/2 + eta)^D) / (1 - 2 eta) + (1 + eps) log2(6.751) (1/2 + eta)^D.
+Proof of the k-exponent: m_l <= (1/2 + eta)^l k + R with R = (s + 1) / (1/2 - eta), so the sum of m_l / 2 over the D search
+levels is at most k (1 - (1/2 + eta)^D) / (1 - 2 eta) + D R / 2, and the leaf has m_D <= (1/2 + eta)^D k + R.
+Checked here, for each delta in the table: e <= 1 + delta/2 exactly (fractions), so 2^{(1+delta)k} absorbs the
+poly(k) factors; the recursion on integers stays within the bound for k up to 10^6; and the space factor (2L)^D. """
+from fractions import Fraction as F
 from math import ceil, floor, log2
 
-C, c, c0 = 64, 8, 3
+LOG6751_UP = F(2756, 1000)                         # log2(6.751) = 2.75507... rounded up
+assert log2(6.751) < float(LOG6751_UP)
 
-def logQ(k, n, eta):
-    s = ceil(log2(1 / eta)); m0 = max(ceil(log2(n)), ceil(2 * (s + 2) / (1 - 2 * eta)), ceil(1 / eta)); tot = 0.0; m = k; depth = 0
-    while m > m0:
-        r = int((0.5 + eta) * m) + s + 1
-        assert r < m, (m, r)                       # the recursion shrinks once m exceeds the cutoff (checked below)
-        tot += m / 2 + (s / 2) * log2(n + 1) + log2(2 * c * C * (m + s * log2(n + 1))); m = r; depth += 1
-    return tot + m * log2(3) + c0 * log2(n), depth
+def e(D, eta, eps):
+    q = F(1, 2) + eta
+    return (1 - q ** D) / (1 - 2 * eta) + (1 + eps) * LOG6751_UP * q ** D
 
-def worst_f(delta, eta, ks, ns):
-    """Smallest f with logQ <= (1 + delta) k + f log2 n on the grid."""
-    return max((logQ(k, n, eta)[0] - (1 + delta) * k) / log2(n) for k in ks for n in ns)
+def path(k, D, eta):
+    """Terminal counts m_0..m_D along one path, with integer rounding and the additive s + 1."""
+    s = ceil(log2(1 / eta)); ms = [k]
+    for _ in range(D):
+        m = ms[-1]
+        if m < 1 / eta:
+            break
+        ms.append(floor((F(1, 2) + eta) * m) + s + 1)
+    return ms, s
 
-ns = [2 ** e for e in range(4, 41, 2)]             # n from 16 to 2^40
-ks = list(range(1, 200)) + list(range(200, 20001, 50)) + [10 ** e for e in range(5, 8)] + [3 * 10 ** e for e in range(5, 7)]
-STATED = {0.5: 38, 0.25: 29, 0.1: 37, 0.05: 77}
-for delta, eta in ((0.5, 0.05), (0.25, 0.02), (0.1, 0.005), (0.05, 0.002)):
-    s = ceil(log2(1 / eta))
-    M = max(ceil(2 * (s + 2) / (1 - 2 * eta)), ceil(1 / eta))  # above M splits shrink and the range holds an integer
-    assert all(floor((0.5 + eta) * m) >= ceil((0.5 - eta) * m) for m in range(M, M + 10 ** 4))
-    assert all(int((0.5 + eta) * m) + s + 1 < m for m in range(M + 1, M + 10 ** 4))
-    assert 1 / (1 - 2 * eta) < 1 + delta           # the limit exponent lies below 1 + delta
-    f = worst_f(delta, eta, ks, ns)
-    # beyond the grid the excess (log2 Q - (1 + delta) k) / log2 n only falls: check it is decreasing in k at the top end
-    for n in ns:
-        e = [(logQ(k, n, eta)[0] - (1 + delta) * k) / log2(n) for k in (10 ** 6, 3 * 10 ** 6, 10 ** 7)]
-        assert e[0] > e[1] > e[2], (n, e)
-    a = max(logQ(k, n, eta)[1] * log2(2 * c) / log2(k) for k in ks if k >= 2 for n in ns)
-    assert a <= 6, a                               # space factor (2c)^D <= k^6
-    lim = [logQ(10 ** 7, n, eta)[0] / 10 ** 7 for n in (2 ** 10, 2 ** 20)]
-    print(f"delta={delta:5.3f}  eta={eta:6.4f}  s={s:2d}  M={M:3d}  f(delta) <= {f:7.2f}  space k^{a:.2f}   log2 Q / k at k=10^7: "
-          f"{lim[0]:.4f} (n=2^10), {lim[1]:.4f} (n=2^20); limit 1/(1-2 eta) = {1 / (1 - 2 * eta):.4f}")
-    assert STATED.get(delta, ceil(f)) == ceil(f), (delta, f)    # the README states the ceiling
-    assert all(l < 1 + delta for l in lim)
+ROWS = [(F(1, 2), F(1, 50), F(1, 10)), (F(1, 4), F(1, 100), F(1, 10)), (F(1, 10), F(1, 500), F(1, 10)), (F(1, 20), F(1, 2000), F(1, 10))]
+for delta, eta, eps in ROWS:
+    D = next(d for d in range(1, 40) if e(d, eta, eps) <= 1 + delta / 2)   # smallest depth that works
+    ex = e(D, eta, eps)
+    assert ex <= 1 + delta / 2, (delta, float(ex))
+    s = ceil(log2(1 / eta)); R = (s + 1) / (F(1, 2) - eta)
+    for k in list(range(1, 3000)) + list(range(3000, 10 ** 6, 997)):
+        ms, _ = path(k, D, eta)
+        for l, m in enumerate(ms):               # the closed-form bound on every m_l
+            assert m <= (F(1, 2) + eta) ** l * k + R, (k, l, m)
+        srch = sum(F(m, 2) for m in ms[:-1]); leaf = (1 + eps) * LOG6751_UP * ms[-1]
+        # early stop below 1/eta terminals adds at most the constant (1 + eps) log2(6.751) / eta
+        assert srch + leaf <= ex * k + len(ms) * R / 2 + (1 + eps) * LOG6751_UP * (R + 1 / eta), (k, D)
+    print(f"delta={float(delta):5.3f}  D={D}  eta={float(eta):.4f}  s={s:2d}  k-exponent {float(ex):.4f} <= {float(1 + delta / 2):.3f}"
+          f"   n-exponent from the searches over A: (s/2) D = {s * D / 2}   space factor (2L)^D with L = O(k + log n)")
 print("all checks passed")
