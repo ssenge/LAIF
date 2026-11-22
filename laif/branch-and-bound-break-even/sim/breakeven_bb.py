@@ -10,7 +10,7 @@ Per-node quantum cost model G: (LP iterations per node) * C_PIV, C_PIV = 1e3 T-d
   a comparison tree, an optimistic floor), and at least C_PIV per node.
 Hybrid: classical root and top levels down to depth h, quantum search on each subtree below, either on one QPU in
   sequence (sum over subtrees) or on one QPU per subtree in parallel (max over subtrees)."""
-import json, sys, math
+import json, sys, math, os
 import numpy as np
 
 C_WALK = 32.0
@@ -61,7 +61,7 @@ if __name__ == "__main__":
         a = analyse(r); a["class"] = cls.get(r["file"], "?")
         a["tree_partial"] = r["status"] != "optimal"     # SCIP stopped: T is a lower bound, so f* is a lower bound too
         res.append(a)
-    with open("breakeven_bb.jsonl", "w") as f:
+    with open(os.path.join(os.path.dirname(sys.argv[1]), "breakeven_bb.jsonl"), "w") as f:
         for a in res:
             f.write(json.dumps(a) + "\n")
     print(f"{'class':15s} {'file':22s} {'T':>9s} {'d':>4s} {'t_c[s]':>8s} {'it/node':>7s} {'f* [Hz]':>9s} {'G*@10MHz':>9s} {'seq f*':>9s} {'par f* (QPUs)':>16s}")
