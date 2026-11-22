@@ -50,13 +50,24 @@ These results give a possible reason for the observation of [1, Appendix H.13] t
 
 | Result | Scope | Status | Posted |
 |---|---|---|---|
-| Theorem 1 | Exact SIGReg, h(x) ∼ N(0, I_M); any pair of views with finite mutual information; the normal world of [1] for the second statement | Claim; uses the data processing inequality and the rate distortion function of the normal law [4] and the expansion in orthogonal polynomials of the normal density [5]; checked numerically | 2026-11-21 |
+| Theorem 1 | Exact SIGReg, h(x) ∼ N(0, I_M); any pair of views with finite mutual information; the normal world of [1] for the second statement | Lean for the inequality chain (`align_lower`, `align_lower_gauss`, `align_lower_hermite`), assuming the data processing inequality and the rate distortion function of the normal law [4], and the correlation bound of the expansion in orthogonal polynomials of the normal density [5]; checked numerically | 2026-11-21 |
 | Corollary 2 | As Theorem 1, M > N | Claim | 2026-11-21 |
-| Proposition 3 | Locally slope-bounded encoders, M > N | Claim; uses the behaviour of dimension under slope-bounded maps [6] | 2026-11-21 |
-| Theorem 4 | Output law with a density and E‖X‖² = M | Claim | 2026-11-21 |
+| Proposition 3 | Locally slope-bounded encoders, M > N | Lean (`not_map_eq`) | 2026-11-21 |
+| Theorem 4 | Output law with a density and E‖X‖² = M | Lean for the inequality (`kl_lower`, `kl_lower_gauss`), assuming the data processing inequality and the entropy bound of [4] | 2026-11-21 |
 | Example | N = 1, M = 2 and M = 2N, 1 − ρ from 10⁻¹⁰ to 10⁻² | Numerical | 2026-11-21 |
 
 Not covered: SIGReg with a finite set of directions, the penalized objective of LeJEPA with a finite weight, encoders with a predictor, and a proof that the ratio of the example stays bounded as ρ → 1. For ratios M/N other than 2, Theorem 1 is not matched by a construction.
+
+## Lean
+
+The folder [`lean/`](lean/) holds the library `OverIdent` (Lean 4.36.0-rc1, Mathlib revision `d875a8de5222f62cf1c2fafc7984588adadc990a`). It uses only the standard axioms; [`lean/axioms.txt`](lean/axioms.txt) lists the output of `#print axioms` for every named theorem.
+
+- `OverIdent/Bound.lean`: the inequalities of Theorems 1 and 4 for real numbers I, I(X; Y), L and K. From I(X; Y) ≤ I and the rate distortion bound, L ≥ M e^{−2I/M} (`align_lower`); in the normal world L ≥ M(1 − ρ²)^{N/M} (`align_lower_gauss`, with `exp_gauss` for the identity e^{−2I/M} = (1 − ρ²)^{N/M}). From per-coordinate correlations at most ρ, L ≥ 2M(1 − ρ) (`align_lower_hermite`). From I(X; Y) ≤ I and the entropy bound, K ≥ (M/2) log(M/L) − I (`kl_lower`), and the normal-world form of Theorem 4 with the constant C = (M/2) log(cN/M) (`kl_lower_gauss`).
+- `OverIdent/Lipschitz.lean`: for N < M the range of a locally slope-bounded map ℝ^N → ℝ^M has volume 0 (`volume_range_eq_zero`), so the image of a probability measure under such a map is not absolutely continuous, and in particular not N(0, I_M) (`not_map_eq`, Proposition 3).
+
+Assuming: the data processing inequality (`DataProcessing`, [4, Theorem 2.8.1]), the rate distortion function of N(0, I_M) under squared error (`GaussianRD`, [4, Theorem 10.3.3]) and the maximum entropy bound (`ShannonLower`, [4, Theorem 8.6.5]), each a `Prop` that the theorems take as a hypothesis, and for `align_lower_hermite` the per-coordinate correlation bound E[f(z) f(z′)] ≤ ρ Var f of [5, Chapter 11].
+
+Not formalized: the information-theoretic quantities themselves (mutual information, differential entropy and the normal-world value of I), Corollary 2 and the example.
 
 ## Simulations
 

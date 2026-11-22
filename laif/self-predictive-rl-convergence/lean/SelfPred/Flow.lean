@@ -13,7 +13,7 @@ Along a solution `Φ : ℝ → Matrix n k ℝ` of `Φ' = (1 - Φ Φᵀ) T Φ Q` 
   nonsingular predictor and a `T`-invariant span.
 
 Two classical theorems enter as hypotheses: global existence for linear matrix differential equations
-(`LinearODEGlobal`) and Ostrowski's theorem on congruences (`OstrowskiCongruence`).
+(`LinearODEGlobal`) and the eigenvalue inequality for congruences (`OstrowskiCongruence`).
 -/
 
 set_option linter.unusedSectionVars false
@@ -79,7 +79,7 @@ def LinearODEGlobal (k : Type*) [Fintype k] [DecidableEq k] : Prop :=
   ∀ A : ℝ → Matrix k k ℝ, Continuous A → ∀ s : ℝ,
     ∃ X : ℝ → Matrix k k ℝ, X s = 1 ∧ ∀ t, HasMatDeriv X (A t * X t) t
 
-/-- Ostrowski's theorem on congruences (A. M. Ostrowski, Proc. Natl. Acad. Sci. USA 45, 1959; R. A. Horn and
+/-- The eigenvalue inequality for congruences (A. M. Ostrowski, Proc. Natl. Acad. Sci. USA 45, 1959; R. A. Horn and
 C. R. Johnson, Matrix Analysis, 2nd ed., Theorem 4.5.9): if `B = W A Wᵀ` with symmetric `A` and all singular
 values of `W` at least 1, then the eigenvalues in the same order satisfy `λᵢ(B) = θᵢ λᵢ(A)` with `θᵢ ≥ 1`. -/
 def OstrowskiCongruence (k : Type*) [Fintype k] [DecidableEq k] : Prop :=

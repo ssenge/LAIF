@@ -56,7 +56,7 @@ lemma Pm_mul_self {Φ : Matrix n k ℝ} (h : Φᵀ * Φ = 1) : Pm Φ * Φ = 0 :=
 lemma transpose_mul_Pm {Φ : Matrix n k ℝ} (h : Φᵀ * Φ = 1) : Φᵀ * Pm Φ = 0 := by
   simp [Pm, Matrix.mul_sub, ← Matrix.mul_assoc, h]
 
-/-- The constraint `Φᵀ Φ = 1` is preserved: `V(Φ)` is tangent to the Stiefel manifold. -/
+/-- The constraint `Φᵀ Φ = 1` is preserved: `V(Φ)` is tangent to the manifold of orthonormal frames. -/
 theorem tangent_eq {T : Matrix n n ℝ} (hT : Tᵀ = T) {Φ : Matrix n k ℝ} (h : Φᵀ * Φ = 1) :
     (vf T Φ)ᵀ * Φ + Φᵀ * vf T Φ = 0 := by
   have h1 : (vf T Φ)ᵀ = Qm T Φ * Φᵀ * T * Pm Φ := by
@@ -74,7 +74,7 @@ lemma Pm_idem {Φ : Matrix n k ℝ} (h : Φᵀ * Φ = 1) : Pm Φ * Pm Φ = Pm Φ
   simp only [Pm, Matrix.sub_mul, Matrix.mul_sub, Matrix.one_mul, Matrix.mul_one, this]
   abel
 
-/-- `G` is positive semidefinite on the Stiefel manifold. -/
+/-- `G` is positive semidefinite on the manifold of orthonormal frames. -/
 theorem G_posSemidef (T : Matrix n n ℝ) {Φ : Matrix n k ℝ} (h : Φᵀ * Φ = 1) : (Gm T Φ).PosSemidef := by
   have hG : Gm T Φ = (Pm Φ * (T * Φ))ᴴ * (Pm Φ * (T * Φ)) := by
     rw [conjTranspose_eq_transpose_of_trivial, transpose_mul, Pm_transpose]

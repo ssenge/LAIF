@@ -3,8 +3,8 @@ import SelfPred.Flow
 /-!
 # Linear self-predictive learning: the limit
 
-The dynamics is the gradient flow of `tr(Q²)/4` on the Stiefel manifold, a real-analytic function on a compact
-real-analytic manifold, so by the Łojasiewicz gradient inequality every solution converges to a single critical
+The dynamics is the gradient flow of `tr(Q²)/4` on the manifold of orthonormal frames, a real-analytic function on a compact
+real-analytic manifold, so by the gradient inequality for real-analytic functions every solution converges to a single critical
 point. This enters as the named hypothesis `LojasiewiczLimit`. With it, `limit_of_flow` (Theorem 2) states that from
 a nonsingular predictor the limit has a nonsingular predictor and a `T`-invariant span.
 -/
@@ -16,8 +16,8 @@ namespace SelfPred
 variable {n k : Type*} [Fintype n] [Fintype k] [DecidableEq n] [DecidableEq k]
 
 /-- Convergence of the flow to a critical point: the solution `Φ` converges as `t → ∞` to some `Φ∞` with
-`V(Φ∞) = 0`. For the gradient flow of the real-analytic function `tr(Q²)/4` on the compact Stiefel manifold this is
-the Łojasiewicz theorem (S. Łojasiewicz, Sur les trajectoires du gradient d'une fonction analytique, Seminari di
+`V(Φ∞) = 0`. For the gradient flow of the real-analytic function `tr(Q²)/4` on the compact manifold of orthonormal frames this is
+the gradient inequality for real-analytic functions (S. Łojasiewicz, Sur les trajectoires du gradient d'une fonction analytique, Seminari di
 Geometria, Bologna, 1984). -/
 def LojasiewiczLimit (T : Matrix n n ℝ) (Φ : ℝ → Matrix n k ℝ) : Prop :=
   ∃ Φinf : Matrix n k ℝ, Tendsto Φ atTop (𝓝 Φinf) ∧ vf T Φinf = 0

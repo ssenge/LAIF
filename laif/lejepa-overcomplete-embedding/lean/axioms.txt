@@ -1,0 +1,8 @@
+'OverIdent.align_lower' depends on axioms: [propext, Classical.choice, Quot.sound]
+'OverIdent.exp_gauss' depends on axioms: [propext, Classical.choice, Quot.sound]
+'OverIdent.align_lower_gauss' depends on axioms: [propext, Classical.choice, Quot.sound]
+'OverIdent.align_lower_hermite' depends on axioms: [propext, Classical.choice, Quot.sound]
+'OverIdent.kl_lower' depends on axioms: [propext, Classical.choice, Quot.sound]
+'OverIdent.kl_lower_gauss' depends on axioms: [propext, Classical.choice, Quot.sound]
+'OverIdent.volume_range_eq_zero' depends on axioms: [propext, Classical.choice, Quot.sound]
+'OverIdent.not_map_eq' depends on axioms: [propext, Classical.choice, Quot.sound]
