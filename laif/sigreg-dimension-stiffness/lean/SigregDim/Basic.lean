@@ -1,7 +1,7 @@
 import Mathlib
 
 /-!
-# Sliced regularizers on Gaussian embeddings: setting and slice moments
+# Sliced regularizers on normal embeddings: setting and slice moments
 
 A sliced regularizer with slice function `h` evaluates, for an embedding law `N(0, Σ)` on `ℝ^K`, the
 quantity `E_a h(aᵀ Σ a)` over a random unit direction `a`. It depends on `Σ` only through the

@@ -8,7 +8,7 @@ For a slice with law `N(0, s)`, the population characteristic-function statistic
 This file shows that `D` satisfies the assumptions `SliceFn` of the collapse theorems on `[0, ∞)`
 with curvature constant `L = 8` (the sharp value is `D''(0) ≈ 6.855`).
 
-The closed form of `D` itself rests on the Gaussian integral `∫ e^{-ct²/2} dt = √(2π/c)`.
+The closed form of `D` itself rests on the normal integral `∫ e^{-ct²/2} dt = √(2π/c)`.
 -/
 
 open Real Set
@@ -177,7 +177,7 @@ theorem sliceFn_epD : SliceFn epD epD' 8 where
     linarith [le_abs_self (epD' y - epD' x)]
   L_nonneg := by norm_num
 
-/-- `D(1) = 0`: the standard Gaussian slice has zero statistic. -/
+/-- `D(1) = 0`: the standard normal slice has zero statistic. -/
 lemma epD_one : epD 1 = 0 := by
   unfold epD
   rw [show (2 * (1 : ℝ) + 1) = 3 by norm_num, show ((1 : ℝ) + 2) = 3 by norm_num]

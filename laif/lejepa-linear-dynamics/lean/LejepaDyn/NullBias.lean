@@ -125,7 +125,7 @@ lemma integral_cos_sin_gaussian (v : NNReal) (t : ℝ) :
   rw [e2, Complex.exp_ofReal_im] at him
   exact ⟨hre, him⟩
 
-/-- **Gaussian batch.** For pairwise independent `Xⱼ ~ N(0, v)`,
+/-- **Normal batch.** For pairwise independent `Xⱼ ~ N(0, v)`,
 `N E|φ_N(t) - e^{-t²/2}|² = N (e^{-v t²/2} - e^{-t²/2})² + 1 - e^{-v t²}`. -/
 theorem stat_pointwise_gaussian {N : ℕ} (hN : 0 < N) {X : Fin N → Ω → ℝ} (hX : ∀ j, Measurable (X j))
     (hind : Pairwise fun i j => IndepFun (X i) (X j) P) {v : NNReal} (hlaw : ∀ j, P.map (X j) = gaussianReal 0 v)

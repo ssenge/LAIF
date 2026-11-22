@@ -4,7 +4,7 @@ import LejepaDyn.Flow
 # Linear LeJEPA with the minibatch statistic
 
 The statistic of LeJEPA is `N` times the squared distance of the empirical characteristic function of a batch of
-`N` samples to the Gaussian one. For a Gaussian slice of variance `s`, its expectation is `N D(s) + B(s)` with the
+`N` samples to the normal one. For a normal slice of variance `s`, its expectation is `N D(s) + B(s)` with the
 null bias `B(s) = √(2π) (1 - (2s+1)^{-1/2})`. With `h_N = N D + B` as slice function:
 
 * `loss_hN`: the loss is the loss with slice function `D` and weight `μ N`, plus `μ ∫ B`.

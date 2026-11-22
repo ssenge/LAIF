@@ -7,7 +7,7 @@ Two profiles in the normalized inner product `ρ` matter here.
 
 * The SIGReg profile on the sphere of radius `√K`: `ρ ↦ ∫ exp (-K (1 - ρ) u) dν(u)`, where `ν` is the law of
   `a₁²` for a uniformly random direction `a`. The statements hold for every probability law `ν` on `[0, 1]`.
-* The Gaussian-kernel uniformity profile at inverse temperature `t`: `ρ ↦ exp (-2t (1 - ρ))`.
+* The squared-exponential-kernel uniformity profile at inverse temperature `t`: `ρ ↦ exp (-2t (1 - ρ))`.
 
 Both are power series in `ρ` with nonnegative coefficients, which gives cubic remainders on `[-1, 1]` and
 hence, through `energy_near`, energies of isotropic finite laws that agree up to `O(1/K)`. The uniformity
@@ -47,7 +47,7 @@ lemma exp_tail_nonneg {y : ℝ} (hy : 0 ≤ y) : 0 ≤ exp y - 1 - y - y ^ 2 / 2
   have := Real.quadratic_le_exp_of_nonneg hy
   linarith
 
-/-- **Blindness of the uniformity loss.** For every isotropic finite law on the sphere, the Gaussian-kernel
+/-- **Blindness of the uniformity loss.** For every isotropic finite law on the sphere, the squared-exponential-kernel
 energy at inverse temperature `t` lies within `e^{-2t} (e^{2t} - 1 - 2t - 2t²) / K` of
 `e^{-2t} (1 + 2t²/K)`. -/
 theorem unif_energy_near (hK : 0 < K) {x : Fin m → Fin K → ℝ} {p : Fin m → ℝ} (h : IsoAtoms K m x p)
@@ -72,7 +72,7 @@ theorem unif_energy_near (hK : 0 < K) {x : Fin m → Fin K → ℝ} {p : Fin m �
         mul_le_mul_of_nonneg_left this hE.le
     _ = _ := by ring
 
-/-- **Separation by the uniformity loss.** A finite law on the sphere with `m` atoms has Gaussian-kernel
+/-- **Separation by the uniformity loss.** A finite law on the sphere with `m` atoms has squared-exponential-kernel
 energy at least `1/m`, at every inverse temperature. -/
 theorem unif_energy_ge (hK : 0 < K) (hm : 0 < m) {x : Fin m → Fin K → ℝ} {p : Fin m → ℝ}
     (hp : ∀ j, 0 ≤ p j) (h1 : ∑ j, p j = 1) (hx : ∀ j, ∑ i, x j i ^ 2 = K) (t : ℝ) :

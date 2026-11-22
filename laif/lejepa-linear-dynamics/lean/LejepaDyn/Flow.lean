@@ -49,7 +49,7 @@ noncomputable def grad (ν : Measure (Fin K → ℝ)) (hp : ℝ → ℝ) (μ : �
     (W : Fin K → Fin d → ℝ) : Fin K → Fin d → ℝ := fun k p =>
   2 * ∑ q, W k q * Δ q p + 2 * μ * ∫ a, hp (qf (bW S W) a) * (a k * ∑ r, sl S W a r * S r p) ∂ν
 
-/-- Frobenius inner product. -/
+/-- The trace inner product `⟨A, B⟩ = tr(Aᵀ B)`. -/
 noncomputable def frob (X Y : Fin K → Fin d → ℝ) : ℝ := ∑ k, ∑ p, X k p * Y k p
 
 /-! ## Algebra -/
@@ -315,7 +315,7 @@ theorem feature_ode {ν : Measure (Fin K → ℝ)} [IsFiniteMeasure ν] (hs : �
 
 /-! ## Theorems 1 and 2 for the gradient flow of the loss -/
 
-/-- A gradient flow of the loss (in the Frobenius inner product) follows `Ẇ = -grad W`. -/
+/-- A gradient flow of the loss (in the trace inner product) follows `Ẇ = -grad W`. -/
 lemma flow_eq {ν : Measure (Fin K → ℝ)} [IsFiniteMeasure ν] (hs : ∀ᵐ a ∂ν, nsq a = 1)
     {h hp : ℝ → ℝ} (hd : ∀ x, 0 ≤ x → HasDerivAt h (hp x) x) (hm : Measurable hp) {C C0 : ℝ}
     (hC : ∀ x, 0 ≤ x → |hp x| ≤ C) (hC0 : ∀ x, 0 ≤ x → |h x| ≤ C0) {Δ S : Fin d → Fin d → ℝ}
