@@ -1,28 +1,69 @@
-# Minimum Steiner Tree in polynomial space with a quantum algorithm: the support of the unrolled recursion
+# Minimum Steiner Tree in polynomial space with a quantum algorithm
 
 Written 22 Nov 2026.
 
-Input: a graph G on n vertices with edge weights and a set K of k terminals. Question: the minimum weight of a tree in G that contains K. In [1] a quantum algorithm in polynomial space and without quantum random access memory is given, by one amplitude amplification with minimum finding over a superposition that indexes all choices of the split recursion of [2] at once [1, Section 3.3, Figure 2, Appendix B]. Its Theorem 3 states the time O*(2^k).
+Input: a graph G on n vertices with edge weights in {1, …, W} and a set K of k terminals. Question: the minimum weight of a tree in G that contains K.
 
-**Observation.** In the superposition of [1], every node of the unrolled recursion carries its own split of its terminal set and its own vertex set A ⊆ V with |A| ≤ ⌈log 1/ε⌉ [1, Figure 2 and Appendix B, levels I to III]. For k a power of two, exact halving and every A empty, the support already has k! index states. The count used for the amplitude amplification in the proofs of Theorems 3 and 4 of [1] is the square root of ∏_{l=1}^{log k} C(k/2^{l−1}, k/2^l), one binomial coefficient per level, which is at most 2^{2k}. The support exceeds this product from k = 4 on and exceeds 2^{2k} from k = 16 on, and the vertex sets add a factor of at least (n + 1)^{k−1} as soon as one vertex per set is allowed.
+**Theorem 1.** For every δ > 0 there is a constant f(δ) such that Minimum Steiner Tree has a quantum algorithm with bounded error, polynomial space and no quantum random access memory, in time O(2^{(1+δ)k} · n^{f(δ)} · log W).
 
-This hints at a possible counting gap in the proof of Theorem 3 of [1]: the square root of the support of this state is at least √(k!), and at least √(k!) · (n + 1)^{(k−1)/2} once each A may hold one vertex, so the bound O*(2^k) would need a smaller search space or a different argument. The bound 1.812^k with quantum random access memory [3] is not affected.
+Status: Claim. The split theorem of [2] is used as stated (Assuming), and quantum minimum finding [5] as stated. The constants are checked by script.
 
-## Measurements
+## Before and after
 
-`sim/support.py` counts the index states by brute force for k = 2, 4, 8, checks the closed form N(k) = C(k, k/2) N(k/2)² = k! up to k = 256, and checks both comparisons above with asserts. Run it with `python support.py` in `sim/`. It exits nonzero on a failed check.
+| Model | Previous best bound | After |
+|---|---|---|
+| Classical, polynomial space, general weights | 4^{(1+ε)k} · n^{O(f(ε))} · log W [1, Theorem 1.3]; 6.751^k · n^{O(1)} · log W [1, Theorem 1.2] | |
+| Quantum, polynomial space, no quantum random access memory, general weights | O*(2^k) stated in [3, Theorem 3], see Section 3 | **O(2^{(1+δ)k} · n^{f(δ)} · log W)** |
+| Quantum, exponential space with quantum random access memory | 1.812^k · poly(n) [4] | |
 
-## Limits
+The new bound is the square root of the classical trade-off of [1, Theorem 1.3], up to the term δ.
 
-- The support is counted for the state as defined in [1]; a different encoding with fewer index states is not ruled out.
-- The count is a lower bound: it fixes α = 1/2, η = 0 and A = ∅, and every other choice only enlarges the support.
+## 1. The algorithm
+
+**The split theorem** [2, Theorem 4, restated as Lemma 3 and Theorem 4 of [4]]. Let η > 0 and s = ⌈log₂(1/η)⌉. For every minimum Steiner tree T for K there is a partition of its edges into a subtree T₁ and a forest, meeting in a set A of at most s vertices, such that K₁ = K ∩ V(T₁) \ A has (1/2 ± η)|K| terminals. T₁ is a minimum Steiner tree for K₁ ∪ A in G, and the forest becomes a minimum Steiner tree for K₂ ∪ {v_A} in the graph G/A in which A is contracted to one vertex v_A, with K₂ = K \ (K₁ ∪ A). Since the union of any tree for K₁ ∪ A and any tree for K₂ ∪ {v_A} in G/A connects K, this gives
+
+W_G(K) = min over K₁ with |K₁| = (1/2 ± η)|K| and A ⊆ V with |A| ≤ s of W_G(K₁ ∪ A) + W_{G/A}(K₂ ∪ {v_A}).
+
+**Nested minimum finding.** A call with m terminals searches its at most 2^m (n + 1)^s choices (K₁, A) by quantum minimum finding [5]. For each choice it computes the two values on the right one after the other, by recursive calls on at most r(m) = ⌊(1/2 + η)m⌋ + s + 1 terminals, and adds them. Each recursive value is computed with error at most 1/(2^m (n + 1)^s k)² by O(m + s log n + log k) repetitions and a majority vote, so that the search sees a correct oracle with high probability. A call holds its own choice, the contracted graph of its path from the root and two weights, so the space is polynomial at every depth.
+
+**Cutoff.** At m ≤ m₀ = max(⌈log₂ n⌉, M(η)) terminals, with M(η) = ⌈2(s + 2)/(1 − 2η)⌉ the constant above which r(m) < m, the call computes the value classically by the subset dynamic program of [6] in time 3^m · poly(n) and space 2^m · n, which is polynomial. The cutoff is what keeps the polynomial factor bounded: below it no further levels of search over A ⊆ V are needed.
+
+## 2. Analysis
+
+With L(m) = O(m + s log n + log k) for the error reduction, the cost satisfies
+
+log₂ Q(m) ≤ m/2 + (s/2) log₂(n + 1) + log₂ L(m) + 1 + log₂ Q(r(m)), and log₂ Q(m) ≤ m log₂ 3 + O(log n) for m ≤ m₀.
+
+The terminal counts along a path of calls shrink by the factor 1/2 + η plus s + 1, so they sum to at most k/(1/2 − η) + O(sD), where D = O(log(k/m₀)) is the depth. The square root halves this, which gives 2^{k/(1−2η) + O(sD)}. The search over A contributes n^{s/2} per level, so n^{(s/2)D} in total. Write k = t · log₂ n. For t ≤ t₀ the depth is at most a constant D₀(t₀, η), and the factors are n^{O(s D₀)} and (log n + k)^{O(D₀)}, both polynomial. For t > t₀ the factor n^{(s/2)D} = 2^{k · O(s log t / t)} is at most 2^{(δ/3)k} once t₀ is large enough, and the error factors (O(k))^D = 2^{O(log² k)} are 2^{o(k)}. Choosing η with 1/(1 − 2η) ≤ 1 + δ/3 then gives time O(2^{(1+δ)k} · n^{f(δ)}), times log W for the arithmetic on weights.
+
+## 3. A remark on [3]
+
+The superposition of [3, Section 3.3, Figure 2 and Appendix B] gives every node of the unrolled recursion its own split of its terminal set and its own vertex set A ⊆ V with |A| ≤ ⌈log 1/ε⌉. For k a power of two, exact halving and every A empty, its support already has k! index states. The count used for the amplitude amplification in the proofs of Theorems 3 and 4 of [3] is the square root of ∏_{l=1}^{log k} C(k/2^{l−1}, k/2^l), one binomial coefficient per level, which is at most 2^{2k}. The support exceeds this product from k = 4 on and exceeds 2^{2k} from k = 16 on, and the vertex sets add a factor of at least (n + 1)^{k−1} as soon as one vertex per set is allowed.
+
+This hints at a possible counting gap in the proof of Theorem 3 of [3]: the square root of the support of this state is at least √(k!), and at least √(k!) · (n + 1)^{(k−1)/2} once each A may hold one vertex, so the bound O*(2^k) would need a smaller search space or a different argument. The bound 1.812^k with quantum random access memory [4] is not affected, and Theorem 1 above reaches 2^{(1+δ)k} by nested search instead.
+
+## 4. Measurements
+
+- `sim/nested.py` evaluates the recursion of Section 2 for δ = 0.5, 0.25, 0.1, 0.05 on a grid of k up to 10⁷ and n up to 2⁴⁰, and checks log₂ Q(k) ≤ (1 + δ)k + f · log₂ n with f at most 42, 50, 73 and 91, the shrinking condition above M(η), and that the exponent per terminal tends to 1/(1 − 2η).
+- `sim/support.py` counts the index states of Section 3 by brute force for k = 2, 4, 8, checks the closed form N(k) = C(k, k/2) N(k/2)² = k! up to k = 256, and checks both comparisons with asserts.
+
+Run them with `python nested.py` and `python support.py` in `sim/`. Each exits nonzero on a failed check.
+
+## 5. Limits
+
+- The split theorem of [2] is used as stated in [4], and the constant f(δ) is not optimized. The values above come from a cost model with a fixed constant for minimum finding and error reduction.
+- The polynomial factor n^{f(δ)} is large for small δ, and there is no gate count.
+- The count of Section 3 is for the state as defined in [3]; a different encoding with fewer index states is not ruled out.
 
 ## References
 
-1. L. Meng, D. S. Novo, A. H. Werner, S. Bhatt. Quantum algorithms for the Minimum Steiner Tree problem with application to Binary Near-Perfect Phylogenies. arXiv:2510.09911.
-2. S. E. Dreyfus, R. A. Wagner. The Steiner problem in graphs. Networks 1(3), 1971.
-3. M. Miyamoto, M. Iwamura, K. Kise, F. Le Gall. Quantum speedup for the minimum Steiner tree problem. arXiv:1904.03581.
+1. F. V. Fomin, P. Kaski, D. Lokshtanov, F. Panolan, S. Saurabh. Parameterized single-exponential time polynomial space algorithm for Steiner Tree. SIAM Journal on Discrete Mathematics 33(1), 2019.
+2. B. Fuchs, W. Kern, X. Wang. Speeding up the Dreyfus–Wagner algorithm for minimum Steiner trees. Mathematical Methods of Operations Research 66(1), 2007.
+3. L. Meng, D. S. Novo, A. H. Werner, S. Bhatt. Quantum algorithms for the Minimum Steiner Tree problem with application to Binary Near-Perfect Phylogenies. arXiv:2510.09911.
+4. M. Miyamoto, M. Iwamura, K. Kise, F. Le Gall. Quantum speedup for the minimum Steiner tree problem. arXiv:1904.03581.
+5. C. Dürr, P. Høyer. A quantum algorithm for finding the minimum. arXiv:quant-ph/9607014.
+6. S. E. Dreyfus, R. A. Wagner. The Steiner problem in graphs. Networks 1(3), 1971.
 
 ## Use of AI
 
-Claude Opus 5.5 (Anthropic) was used throughout this research: to explore approaches, to check the counting, to write the simulation script, and to draft the text.
+Claude Opus 5.5 (Anthropic) was used throughout this research: to explore approaches, to develop and check the analysis and the counting, to write the simulation scripts, and to draft the text.
