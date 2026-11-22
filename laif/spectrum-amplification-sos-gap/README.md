@@ -49,7 +49,7 @@ With this factorization the certificate on the 30-electron sector has a Λ about
 ## Files
 
 - `sim/sos_gap.py`: the program and the certificate (`python -I sos_gap.py FCIDUMP fock|N0 out.json`; `python -I sos_gap.py check FCIDUMP fock|N0 cert.npz` re-certifies a saved certificate without the solver; `python -I sos_gap.py test`).
-- `data/fe2s2_fock.json`, `data/fe2s2_30.json`: solver value, repaired value, residual and shift bounds, smallest eigenvalues, the certified bound and Λ. `data/fe2s2_fock_cert.npz`, `data/fe2s2_30_cert.npz`: the matrices Z, P, Q and the coefficients y of the two certificates. The integrals of [2] are in the repository named there (`Fe2S2_and_Fe4S4/Fe2S2/fe2s2`) and are not copied here.
+- `data/fe2s2_fock.json`, `data/fe2s2_30.json`: solver value, repaired value, residual and shift bounds, smallest eigenvalues, the certified bound and Λ. A solver run also writes the matrices Z, P, Q and the coefficients y of the certificate to `out.npz` beside `out.json`, and the check mode re-certifies the bound from that file. The integrals of [2] are in the repository named there (`Fe2S2_and_Fe4S4/Fe2S2/fe2s2`) and are not copied here.
 
 ## References
 
