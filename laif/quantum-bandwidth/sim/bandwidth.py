@@ -31,7 +31,17 @@ def positions_order(sizes):
     """Fill order of positions: offset j, then bucket i; full buckets are skipped."""
     return [(i, j) for j in range(max(sizes)) for i in range(len(sizes)) if j < sizes[i]]
 
-def path_exists(n, adj, sig, sizes):
+def path_exists(n, adj, sig, sizes, par=None):
+    def locally_valid(S):
+        for v in range(n):
+            p = par[v] if par else None
+            if p is None:
+                continue
+            if p in S and sig[v] == sig[p] + 1 and v not in S:
+                return False
+            if p not in S and sig[v] == sig[p] - 1 and v in S:
+                return False
+        return True
     order = positions_order(sizes)
     bucket = lambda i: [v for v in range(n) if sig[v] == i]
     def step_ok(S, v):            # insert v at the next position of the fill order
@@ -66,6 +76,8 @@ def path_exists(n, adj, sig, sizes):
         for C in itertools.combinations(sorted(B - A), h):
             M = A | set(C)
             if balanced(M) and path(frozenset(A), frozenset(M)) and path(frozenset(M), frozenset(B)):
+                if not A:                         # a top-level middle set on a sequence is locally valid for sigma
+                    assert locally_valid(M), (sig, M)
                 return True
         return False
     return path(frozenset(), frozenset(range(n)))
@@ -89,7 +101,7 @@ def bw_buckets(n, E):
                     continue
                 if any(abs(sig[u] - sig[v]) >= 2 for u, v in E):
                     continue
-                if path_exists(n, adj, sig, sizes):
+                if path_exists(n, adj, sig, sizes, par):
                     found = True; break
             if found:
                 break
