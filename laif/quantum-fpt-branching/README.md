@@ -107,7 +107,7 @@ Not formalized: the search trees of [1] and [15], the split step of Section 4, t
 14. Quantum monotone local search. [quantum-monotone-local-search](../quantum-monotone-local-search/).
 15. S. Böcker. A golden ratio parameterized algorithm for Cluster Editing. Journal of Discrete Algorithms, 2012.
 16. S. Böcker, P. Damaschke. Even faster parameterized cluster deletion and cluster editing. Information Processing Letters, 2011.
-17. Parametrizētu algoritmu paātrinājumi kvantu datoram. Thesis, University of Latvia. https://dspace.lu.lv/handle/7/55878.
+17. A. Jeļisejevs. Parametrizētu algoritmu paātrinājumi kvantu datoram. Bachelor's thesis, University of Latvia, 2021. https://dspace.lu.lv/handle/7/55878. The bounds are as stated in its abstract.
 
 ## Use of AI
 
