@@ -5,3 +5,4 @@
 {"model": "tinyllama", "spec": "aqlm:aqlm_tinyllama,1x16,g8", "bpw": 3.33984375, "bpw_codes": 2.0, "ppl": 10.739231497321098, "nwin": null, "evlen": 2048}
 {"model": "tinyllama", "spec": "gmix:lam=1e-4,refit=1,e8=1", "sink": [3.0, 0.0], "bpw": 2.0114530257848435, "model_mb": 505.936458, "ppl": 12.526197332878972, "nwin": null, "evlen": 2048}
 {"model": "tinyllama", "spec": "gmix:lam=6.054e-07,refit=1,e8=1", "sink": [3.0, 0.0], "bpw": 3.498367540764086, "model_mb": 686.01746, "ppl": 8.360291293231384, "nwin": null, "evlen": 2048}
+{"model": "tinyllama", "spec": "gmix:lam=7.2e-07,refit=1,e8=1", "sink": [3.0, 0.0], "bpw": 3.2969298259520428, "model_mb": 661.621232, "ppl": 8.491463636608685, "nwin": null, "evlen": 2048}

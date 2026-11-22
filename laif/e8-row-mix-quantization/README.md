@@ -48,6 +48,7 @@ On TinyLlama-1.1B-Chat [12], with the same protocol, next to the released 2-bit 
 | GPTQ, 3 bits, groups of 128 [1] | 3.252 | 8.71 |
 | AQLM, released checkpoint [11] | 2.0 (codes), 3.34 (with codebooks) | 10.74 |
 | **Mix of E8P and scalar rows** | **2.011** | **12.53** |
+| **Mix of E8P and scalar rows** | **3.297** | **8.49** |
 | **Mix of E8P and scalar rows** | **3.498** | **8.36** |
 
 ## Method
