@@ -8,7 +8,7 @@ For a graph G and a budget k, Vertex Cover above LP asks for a vertex cover of s
 
 **Theorem 2.** Deletion to a graph whose vertex cover number equals its matching number (KVD), and Vertex Cover parameterized by the size k of a KVD set or of an odd cycle transversal, have quantum algorithms of the same kind in time O(1.2335^k) · poly(n).
 
-Status: Claim. The search tree of [1] and the reductions of [1] and [4] are used as stated there (Assuming), and the walk is the direct application of [2] and [3]. The excess bounds and the bases are checked by script.
+Status: Claim. For Odd Cycle Transversal the matching bound on the relaxation and the bound on μ are in Lean (`lean/FptBranching.lean`), and so are the bases; for the problems of Theorem 2 only the arithmetic of the budget step is. The search tree of [1] and the reductions of [1] and [4] are used as stated there (Assuming), and the walk is the direct application of [2] and [3].
 
 ## Before and after
 
@@ -29,21 +29,33 @@ The algorithm of [1, Theorem 2] decides Vertex Cover above LP with a search tree
 
 ## 2. The reductions
 
-- **Odd Cycle Transversal.** The construction of [1, Section 5.2] takes two copies of the vertex set, puts a copy of G on each, and joins the copies of each vertex by an edge. G has an odd cycle transversal of size at most k exactly when this graph H has a vertex cover of size at most n + k [1, Lemma 20]. The n joining edges form a perfect matching of H, so every fractional vertex cover of H has weight at least n, and the excess at budget n + k is at most k.
+- **Odd Cycle Transversal.** The construction of [1, Section 5.2] takes two copies of the vertex set, puts a copy of G on each, and joins the copies of each vertex by an edge. G has an odd cycle transversal of size at most k exactly when this graph H has a vertex cover of size at most n + k [1, Lemma 20]. The n joining edges form a perfect matching of H, so every fractional vertex cover of H has weight at least n (`matching_le_fractional`), and the excess at budget n + k is at most k (`transversal_excess`).
 - **Above Guarantee Vertex Cover.** The relaxation is at least the size of a maximum matching, so μ is at most the excess over the matching [1, Theorem 3].
 - **Almost 2-SAT.** Both versions reduce to Above Guarantee Vertex Cover [1, Corollary 2]. As instances of BIP2 they also reduce in linear time to Vertex Cover above LP with the same gap above the relaxation, which is at most k [4, Theorem 1 and Example 3].
-- **Vertex Cover parameterized by a KVD set.** The preprocessing in the proof of [1, Theorem 5] (Lemma 1 there) leaves a graph G′ and a budget ℓ′, and G′ has a KVD set O of size at most k [1, Lemma 22]. Then vc(G′) − vc*(G′) ≤ |O|/2 ≤ k/2, from the two inequalities in the proof there. If ℓ′ ≥ vc*(G′) + k/2 the answer is yes at once, and otherwise the excess ℓ′ − vc*(G′) is below k/2. The walk then costs O(1.5214^{k/2}) = O(1.2335^k), times poly(n).
+- **Vertex Cover parameterized by a KVD set.** The preprocessing in the proof of [1, Theorem 5] (Lemma 1 there) leaves a graph G′ and a budget ℓ′, and G′ has a KVD set O of size at most k [1, Lemma 22]. Then vc(G′) − vc*(G′) ≤ |O|/2 ≤ k/2 (`kvd_excess`, from the two inequalities in the proof there). If ℓ′ ≥ vc*(G′) + k/2 the answer is yes at once, and otherwise the excess ℓ′ − vc*(G′) is below k/2 (`kvd_budget`). The walk then costs O(1.5214^{k/2}) = O(1.2335^k), times poly(n) (`half_cost`).
 - **Vertex Cover parameterized by an odd cycle transversal.** An odd cycle transversal is a KVD set [1, Corollary 5].
 - **KVD.** If G has a KVD set of size at most k, then vc(G) − vc*(G) = vc(G′) − vc*(G′) ≤ k/2 on the preprocessed graph G′ [1, Lemmas 2 and 22]. The walk tries the budgets from ⌈vc*(G′)⌉ up to vc*(G′) + k/2 on G′, and if none of them succeeds the answer is no. Otherwise a minimum vertex cover comes by self-reduction, which does not raise the excess, at a polynomial factor, and it gives a minimum KVD set in polynomial time [1, Corollary 4].
 
-## 3. Measurements
+## 3. Lean
+
+`lean/FptBranching.lean` proves, with only the standard axioms (`lean/axioms.txt`):
+
+- `matching_le_fractional`: a matching of size m, given by 2m distinct endpoints, forces every nonnegative fractional vertex cover to have weight at least m.
+- `transversal_excess`, `transversal_cost`: the excess of the transversal reduction is at most k, and a cost C · 1.5214^μ is then at most C · 1.5214^k.
+- `kvd_excess`, `kvd_budget`, `half_excess_base`, `half_cost`: the arithmetic of the budget step, and an excess of at most k/2 gives C · 1.2335^k.
+- `walk_base_k`, `walk_base_half`, `base_half_sq`: 2.3146 < 1.5214², 2.3146 < 1.2335⁴ and 1.5214 ≤ 1.2335².
+
+Lean 4 v4.36.0-rc1 with Mathlib at revision d875a8de5222f62cf1c2fafc7984588adadc990a. Run `lake exe cache get` and then `lake build` in `lean/`.
+
+Not formalized: the search tree of [1], the walk of [3], the reductions of [1] and [4], and for the problems of Theorem 2 the two inequalities vc(G′) ≤ |M| + |O| and vc*(G′) ≥ |M| + |O|/2 and Lemma 22 of [1].
+
+## 4. Measurements
 
 `sim/bases.py` recomputes the root 2.314596 of the vectors of rules B5 and B6 of [1], checks the printed bases in exact arithmetic on the recurrence of the walk, and recomputes the implied bases from the root φ² of the tree of [1, Theorem 1]. Run it with `python bases.py` in `sim/`. It exits nonzero on a failed check.
 
-## 4. Limits
+## 5. Limits
 
 - The search tree of [1], the safeness of its rules and its analysis are used as stated, as are its reductions and those of [4].
-- Not formalized: the search tree of [1], the walk of [3], and the reductions of [1] and [4].
 - The polynomial factor of the walk is not given explicitly, and there is no gate count.
 
 ## References
@@ -55,4 +67,4 @@ The algorithm of [1, Theorem 2] decides Vertex Cover above LP with a search tree
 
 ## Use of AI
 
-Claude Opus 5.5 (Anthropic) was used throughout this research: to explore approaches, to develop and check proofs, to write the simulation script, and to draft the text.
+Claude Opus 5.5 (Anthropic) was used throughout this research: to explore approaches, to develop and check proofs, to write the simulation script and the Lean files, and to draft the text.
