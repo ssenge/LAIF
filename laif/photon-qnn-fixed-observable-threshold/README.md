@@ -58,7 +58,7 @@ The construction of [1, Lemma 6] uses a point y with y_1 = … = y_{m−1}, wher
 
 `sim/exact.py`, output in `sim/out_exact.txt`. For m = 3, …, 6 and L = 1, 2, 3 it checks in exact arithmetic that G has degree m − 1 and is constant on the curve, that its gradient there is the list of multipliers above, and that the products M_j p, with p in the basis of P_L, have rank 2(m − 1)L + 1 = dim P_{(m−1)L}.
 
-`sim/newton.py` solves g(y* + v) = p by Newton steps with v ∈ T for a random small p ∈ P_{(m−1)L}, for m = 3, …, 6 and L = 1, 2, 3, with residual below 10⁻⁹ and y* + v > 0 on a fine grid, so it checks P_{(m−1)L} ⊆ H_g directly.
+`sim/newton.py` solves g(y* + v) = p with v ∈ T by repeated linearization (least-squares steps with the derivative) for a random small p ∈ P_{(m−1)L}, for m = 3, …, 6 and L = 1, 2, 3, with residual below 10⁻⁹ and y* + v > 0 on a fine grid, so it checks P_{(m−1)L} ⊆ H_g directly.
 
 `sim/rank.py` repeats the rank test numerically for a random ellipse and a random G constant on it, for m = 3, …, 7 and L ∈ {1, 2, 3, 5}.
 
