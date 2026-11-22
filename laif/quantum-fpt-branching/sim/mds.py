@@ -6,7 +6,11 @@
 2. The tree of the first step: branching on a vertex v of minimum degree, with one child for each u in N[v] put into the
    independent set and N[u] removed. On random graphs its leaves include every maximal independent set (so the
    complements include every minimal vertex cover) and its number of nodes is at most (n + 1) * 3^(n/3).
-3. Bases: the walk on the FPT tree has size 1.8734^l with l <= 2k, so its square root is 1.8734^k; for the exact
+3. The leaf completion of the exact tree: with S = Pf + Pf' and U empty, D_f plus |S| - nu(G[S]) edges of G that cover S
+   is a mixed dominating set, and the minimum of its size over all minimal vertex covers C and all tuples with U empty
+   equals the optimum, by brute force on random graphs without isolated vertices. For K_{2,4} the tuple D_f = {u},
+   P_f = {w} has no edge cover of G[S] at all, while the completion above gives the optimum 2.
+4. Bases: the walk on the FPT tree has size 1.8734^l with l <= 2k, so its square root is 1.8734^k; for the exact
    algorithm sqrt(3^(n/3) * 1.3252^n) <= 1.3825^n, i.e. 1.3825^6 >= 3 * 1.3252^3, and 1.3824^6 < 3 * 1.3252^3.
 """
 import itertools, random
@@ -94,6 +98,67 @@ for _ in range(300):
            and all(x in S or adj[x] & set(S) for x in range(n))]
     assert set(mis) <= set(leaves), (n, adj)
 print("first-step tree: all maximal independent sets reached, nodes <= (n + 1) 3^(n/3), 300 random graphs")
+
+def valid(n, E, D, M):
+    VM = {x for e in M for x in e}
+    return (all(v in D or v in VM or any((v, w) in E or (w, v) in E for w in D) for v in range(n))
+            and all(e in M or e[0] in D or e[1] in D or e[0] in VM or e[1] in VM for e in E))
+
+def nu(S, E):                                      # maximum matching of G[S], brute force
+    es = [e for e in E if e[0] in S and e[1] in S]
+    for r in range(len(S) // 2, 0, -1):
+        if any(len({x for e in c for x in e}) == 2 * r for c in itertools.combinations(es, r)):
+            return r
+    return 0
+
+def completion(n, E, Df, S):                      # D_f and |S| - nu(G[S]) edges of G covering S
+    es = [e for e in E if e[0] in S and e[1] in S]
+    r = nu(S, E)
+    Mm = next(list(c) for c in itertools.combinations(es, r) if len({x for e in c for x in e}) == 2 * r) if r else []
+    left = set(S) - {x for e in Mm for x in e}
+    M = Mm + [next(e for e in E if x in e) for x in sorted(left)]
+    return set(Df), set(M)
+
+def opt_mds(n, E):
+    best = n
+    for d in range(n + 1):
+        for D in itertools.combinations(range(n), d):
+            for m in range(0, best - d):
+                if any(valid(n, E, set(D), set(M)) for M in itertools.combinations(E, m)):
+                    best = min(best, d + m); break
+    return best
+
+def leaf_min(n, E):
+    adj = {x: set() for x in range(n)}
+    for a, b in E:
+        adj[a].add(b); adj[b].add(a)
+    _, leaves = tree(range(n), adj)
+    best = None
+    for Z in set(leaves):
+        C = [x for x in range(n) if x not in Z]
+        for bits in itertools.product((0, 1), repeat=n):
+            Df = {c for c, t in zip(C, bits) if t}; Pf = set(C) - Df
+            Pz = {z for z, t in zip(sorted(Z), bits[len(C):]) if t}
+            if any(z not in Pz and not (adj[z] & Df) for z in Z):
+                continue                           # U must be empty
+            D, M = completion(n, E, Df, Pf | Pz)
+            assert valid(n, E, D, M), (E, Df, Pf, Pz)
+            size = len(D) + len(M)
+            best = size if best is None else min(best, size)
+    return best
+
+K24 = [(0, 2), (0, 3), (0, 4), (0, 5), (1, 2), (1, 3), (1, 4), (1, 5)]
+assert not [e for e in K24 if e[0] in {1} and e[1] in {1}] and opt_mds(6, K24) == 2
+D, M = completion(6, K24, {0}, {1}); assert valid(6, K24, D, M) and len(D) + len(M) == 2
+cnt = 0
+for _ in range(120):
+    n = random.randint(2, 6); p = random.uniform(0.3, 0.8)
+    E = [(a, b) for a, b in itertools.combinations(range(n), 2) if random.random() < p]
+    if len(E) > 9 or any(all(x not in e for e in E) for x in range(n)):
+        continue
+    assert leaf_min(n, E) == opt_mds(n, E), E
+    cnt += 1
+print(f"leaf completion: valid at every leaf, optimal over leaves on {cnt} random graphs, and optimal on K_2,4")
 
 assert F("1.3825") ** 6 >= 3 * F("1.3252") ** 3 > F("1.3824") ** 6
 print("bases: 1.8734^k and 1.3825^n")
