@@ -2,7 +2,7 @@
 
 _22 November 2026_
 
-Spectrum amplification [1] writes the electronic-structure energy operator H as H = Σ_α O_α† O_α + E_SOS with E_SOS a lower bound on its energy. The cost of phase estimation then depends on the gap E_gap = E_gs − E_SOS instead of the full spectral range, roughly as its square root. In [1, Table II] the bound E_SOS comes from a semidefinite program over the spin-free algebra {I, a_jσ, a_jσ†, E_ij} with E_ij = Σ_σ a_iσ† a_jσ, and it holds for every particle number. It was noted in [1] that tighter bounds could come from adding penalty or symmetry-shift operators to the sum of squares.
+Spectrum amplification [1] writes the electronic-structure energy operator H as H = Σ_α O_α† O_α + E_SOS with E_SOS a lower bound on its energy. The cost of phase estimation then depends on the gap E_gap = E_gs − E_SOS instead of the full spectral range, roughly as its square root. In [1, Table II] the bound E_SOS comes from a semidefinite program over the spin-free algebra {I, a_jσ, a_jσ†, E_ij} with E_ij = Σ_σ a_iσ† a_jσ. It is taken over the space of all occupation numbers, that is, over every particle number at once. It was noted in [1] that this lower bound could be tightened by adding penalty or symmetry-shift operators to the sum of squares.
 
 ## Result
 
@@ -19,6 +19,8 @@ Previous best bound: E_gap = 0.976 Ha [1, Table II].
 The recomputed bound over all particle numbers agrees with [1, Table II] to its printed digits, which also checks the energy operator and the algebra used here. Both bounds are certified (below) and rounded down, and the gaps are rounded up. The DMRG energy is the upper bound of [1, Table II] for the same energy operator, with no core energy.
 
 The added terms vanish on every state with 30 electrons, so H − E_SOS remains a sum of squares on that sector, which is where phase estimation runs.
+
+The resource estimates of [1, Table V] use a different object: a compressed factorization of the two-electron integrals (DFTHC) that already includes a symmetry shift, with E_gap = 1.2381 Ha, Λ = 17.53 Ha and λ_eff = 6.469 Ha for this system. That gap belongs to one explicit factorization chosen for a cheap block-encoding. The gaps in the table above are the smallest values reachable by any sum of squares over the spin-free algebra, without and with the electron-number terms. They bound from below the gap any such factorization can reach on the 30-electron sector. A factorization with a gap near 0.8403 Ha and a block-encoding cost close to that of [1, Table V] has not been constructed here.
 
 ## Method
 
