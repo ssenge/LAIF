@@ -1,4 +1,4 @@
-"""Variance bound b(m) of matchgate shadows for Gaussian density operators, eq. (40) of [2]."""
+"""Variance bound b(m) of matchgate shadows for quasi-free (free-fermion) density operators, eq. (40) of [2]."""
 from fractions import Fraction
 from math import comb, factorial, lgamma, exp, log, sqrt
 import numpy as np
