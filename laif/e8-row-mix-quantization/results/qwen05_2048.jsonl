@@ -8,3 +8,4 @@
 {"model": "qwen05", "spec": "gmix:lam=1e-4,refit=1,e8=1", "sink": [3.0, 0.0], "bpw": 2.040782305259844, "model_mb": 363.69318, "ppl": 26.227492060971358, "nwin": null, "evlen": 2048}
 {"model": "qwen05", "spec": "gmix:lam=2.291e-05,refit=1,e8=1", "sink": [3.0, 0.0], "bpw": 2.173156246422848, "model_mb": 369.614044, "ppl": 20.30843927935877, "nwin": null, "evlen": 2048}
 {"model": "qwen05", "spec": "gmix:lam=1.249e-05,refit=1,e8=1", "sink": [3.0, 0.0], "bpw": 2.3620069343091803, "model_mb": 378.061018, "ppl": 18.155105139618186, "nwin": null, "evlen": 2048}
+{"model": "qwen05", "spec": "quip:rows=1", "sink": [3.0, 0.0], "bpw": 2.0135989010989013, "model_mb": 362.477312, "ppl": 29.02863078951567, "nwin": null, "evlen": 2048}

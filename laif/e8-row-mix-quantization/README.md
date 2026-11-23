@@ -15,7 +15,8 @@ On WikiText-2 [10] (test split, 2048-token windows, all windows), the mix reache
 | GPTQ, 2 bits, groups of 64 [1] | 2.504 | 27.04 |
 | AutoRound, 2 bits, groups of 128 [3] | 2.250 | 29.71 |
 | AutoRound, 2 bits, groups of 64 [3] | 2.500 | 24.94 |
-| E8P rows only, our reimplementation of the code of [2] without fine-tuning, one scale per row, input rotation only | 2.014 | 30.10 |
+| E8P on every row, our reimplementation of the code of [2] without fine-tuning, one scale per row, input and output rotation | 2.014 | 29.03 |
+| E8P on every row, our reimplementation of the code of [2] without fine-tuning, one scale per row, input rotation only | 2.014 | 30.10 |
 | Same slope, scalar options only (2 to 4 bits, per-layer level grid) | 2.472 | 19.53 |
 | **Mix of E8P and scalar rows** | **2.041** | **26.23** |
 | **Mix of E8P and scalar rows** | **2.173** | **20.31** |
@@ -47,6 +48,8 @@ On TinyLlama-1.1B-Chat [12], with the same protocol, next to the released 2-bit 
 | GPTQ, 2 bits, groups of 64 [1] | 2.502 | 12.98 |
 | GPTQ, 3 bits, groups of 128 [1] | 3.252 | 8.71 |
 | AQLM, released checkpoint [11] | 2.0 (codes), 3.34 (with codebooks) | 10.74 |
+| E8P on every row, our reimplementation of the code of [2] without fine-tuning, one scale per row, input rotation only | 2.007 | 11.79 |
+| E8P on every row, our reimplementation of the code of [2] without fine-tuning, one scale per row, input and output rotation | 2.007 | 12.34 |
 | **Mix of E8P and scalar rows** | **2.011** | **12.53** |
 | **Mix of E8P and scalar rows** | **2.226** | **10.72** |
 | **Mix of E8P and scalar rows** | **2.484** | **9.78** |
