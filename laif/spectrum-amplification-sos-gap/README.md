@@ -24,14 +24,14 @@ The resource estimates of [1, Table V] use a different object: a compressed fact
 
 ## Block-encoding cost
 
-The number of walk steps in phase estimation is proportional to λ_eff = √(E_gap (2Λ − E_gap)) [1, Eq. (11)], with Λ = λ_sqrt²/2 and λ_sqrt² = Σ_α λ_α² the sum of the squared normalizations of the block-encodings of the operators O_α. Both certificates are factorized here in the same way. The eigenvectors of Z = Σ_α μ_α u_α u_αᵀ give O_α = √μ_α (u_0 I + Σ_ab g_ab E_ab) with λ_α = √μ_α (|u_0| + 2‖g‖_*), where ‖g‖_* is the sum of the singular values of g, and the terms with P and Q add twice the sum of their eigenvalues.
+The number of walk steps in phase estimation is proportional to λ_eff = √(E_gap (2Λ − E_gap)) [1, Eq. (11)], with Λ = λ_sqrt²/2 and λ_sqrt² = Σ_α λ_α² the sum of the squared normalizations of the block-encodings of the operators O_α. Both certificates are factorized here in the same way. The eigenvectors of Z = Σ_α μ_α u_α u_αᵀ give O_α = √μ_α (u_0 I + Σ_ab g_ab E_ab) with λ_α = √μ_α · min(|u_0| + 2‖g‖_*, |u_0 + tr S| + ‖S‖_* + ‖A‖_*). Here S and A are the symmetric and antisymmetric parts of g, and ‖·‖_* is the sum of the singular values. The first form writes Σ g_ab E_ab in the singular-value bases of g. The second rotates the orbitals into the eigenbases of S and of iA and writes each number operator as (1 − Z)/2, as in double factorization. The terms with P and Q add twice the sum of their eigenvalues.
 
 | Certificate | E_gap (Ha) | Λ (Ha) | λ_eff (Ha) |
 |---|---|---|---|
-| All particle numbers | 0.9762 | 433.24 | 29.07 |
-| 30 electrons | 0.8403 | 106.57 | 13.36 |
+| All particle numbers | 0.9762 | 85.74 | 12.91 |
+| 30 electrons | 0.8403 | 31.06 | 7.18 |
 
-With this factorization the certificate on the 30-electron sector has a Λ about 4 times smaller and a λ_eff about 2.2 times smaller, so the smaller gap comes with a smaller normalization as well. For its own sum of squares, the compressed factorization of [1, Table V] reaches λ_eff = 6.469 Ha. Values are rounded up.
+With this factorization the certificate on the 30-electron sector has a Λ about 2.8 times smaller and a λ_eff about 1.8 times smaller, so the smaller gap comes with a smaller normalization as well. For its own sum of squares, the compressed factorization of [1, Table V] reaches λ_eff = 6.469 Ha. Values are rounded up.
 
 ## Method
 
@@ -44,7 +44,7 @@ With this factorization the certificate on the 30-electron sector has a Λ about
 - **Not computed.** A compressed factorization of the certificates here, such as that of [1, Table V], and the Toffoli cost of their block-encodings.
 - **One system.** Fe₂S₂ [30e, 20o]. The other systems of [1, Table II] have 36 to 150 orbitals.
 - **Not formalized.** The bounds are numerical certificates with the rigour stated above.
-- **Checks.** `sim/sos_gap.py test` compares the operator expansions with explicit fermion matrices on the space of all occupation numbers of three orbitals, and checks on random energy operators with Coulomb-like integrals that the certified bounds lie below the exact ground-state energies over all particle numbers and in fixed-electron sectors, and that the norm of each sum of squares is at most 2Λ.
+- **Checks.** `sim/sos_gap.py test` compares the operator expansions with explicit fermion matrices on the space of all occupation numbers of three orbitals, and checks on random energy operators with Coulomb-like integrals that the certified bounds lie below the exact ground-state energies over all particle numbers and in fixed-electron sectors, that the operator norm of each factor O_α is at most λ_α, and that the norm of each sum of squares is at most 2Λ.
 
 ## Files
 

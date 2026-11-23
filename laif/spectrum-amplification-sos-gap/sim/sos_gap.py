@@ -8,7 +8,7 @@ Sector N0: add (N - N0)(y0 + sum y_ab E_ab), which is zero on every state with N
 The SDP is solved by SCS. The certificate is then repaired to satisfy the operator identity (least-squares correction
 of Z), made PSD by diagonal shifts, and every shift and residual is subtracted with an operator-norm bound:
 ||E_pq|| <= 2, ||N2|| <= 4, <v+ v> <= 1 + 4 n^2, ||N|| <= 2n.
-Usage: python -I sos_gap.py FCIDUMP fock|N0 out.json [eps]   |   python -I sos_gap.py check FCIDUMP fock|N0 cert.npz   |   python -I sos_gap.py test"""
+Usage: python -I sos_gap.py FCIDUMP fock|N0 out.json [eps [Emin]]   |   python -I sos_gap.py check FCIDUMP fock|N0 cert.npz   |   python -I sos_gap.py test"""
 import sys, json, time
 import numpy as np
 import scipy.sparse as sp
@@ -80,7 +80,9 @@ def target(B, h, eri, ecore):
     return t
 
 
-def solve(h, eri, ecore, N0=None, eps=1e-9, max_iters=200000, verbose=False):
+def solve(h, eri, ecore, N0=None, eps=1e-9, max_iters=200000, verbose=False, Emin=None):
+    """Emin None: maximize E. Otherwise keep E >= Emin and minimize tr(W Z) + tr P + tr Q with W = diag(1, 4n, ..., 4n),
+    an upper bound on Lambda of lam_eig, since (|u_0| + 2||g||_*)^2 <= 2 u_0^2 + 8 n ||g||_F^2."""
     import cvxpy as cp
     n = len(h); B = Basis(n); D = 1 + n * n
     Sz, Sp, Sq, Sy = blocks(B, N0 if N0 is not None else 0)
@@ -92,7 +94,11 @@ def solve(h, eri, ecore, N0=None, eps=1e-9, max_iters=200000, verbose=False):
     if N0 is not None:
         y0 = cp.Variable(); Y = cp.Variable((n, n), symmetric=True)
         lhs = lhs + Sy @ cp.hstack([cp.reshape(y0, (1,), order="F"), cp.vec(Y, order="F")])
-    prob = cp.Problem(cp.Maximize(E), [lhs == t])
+    if Emin is None:
+        prob = cp.Problem(cp.Maximize(E), [lhs == t])
+    else:
+        w = np.full(D, 4.0 * n); w[0] = 1.0
+        prob = cp.Problem(cp.Minimize(cp.sum(cp.multiply(w, cp.diag(Z))) + cp.trace(P) + cp.trace(Q)), [lhs == t, E >= Emin])
     t0 = time.time()
     prob.solve(solver="SCS", eps_abs=eps, eps_rel=eps, max_iters=max_iters, verbose=verbose)
     assert prob.status in ("optimal", "optimal_inaccurate"), prob.status
@@ -133,15 +139,23 @@ def certify(B, S, t, sol, N0):
                 E_certified=float(E - res_norm - shift - safety), status=sol["status"], t_solve=sol["t_solve"])
 
 
+def lam_factor(u, n):
+    """LCU norm of u_0 I + sum g_ab E_ab, g[a, b] = u[1 + a n + b]."""
+    g = u[1:].reshape(n, n); S, A = (g + g.T) / 2, (g - g.T) / 2   # eigenbasis form: sum_k m_k (n_k_up + n_k_dn), n = (1 - Z)/2
+    rot = abs(u[0] + np.trace(S)) + np.abs(np.linalg.eigvalsh(S)).sum() + np.abs(np.linalg.eigvalsh(1j * A)).sum()
+    return min(abs(u[0]) + 2 * np.linalg.svd(g, compute_uv=False).sum(), rot)
+
+
 def lam_eig(Z, P, Q, n):
     """Block-encoding normalization Lambda = lambda_sqrt^2 / 2 of the sum of squares from the eigen-factorization
-    Z = sum_a mu_a u_a u_a^T: O_a = sqrt(mu_a)(u_0 I + sum g_ab E_ab) with LCU norm sqrt(mu_a)(|u_0| + 2 ||g||_*)
+    Z = sum_a mu_a u_a u_a^T: O_a = sqrt(mu_a)(u_0 I + sum g_ab E_ab) with LCU norm sqrt(mu_a) times the smaller of |u_0| + 2 ||g||_* (singular-value form)
+    and |u_0 + tr S| + ||S||_* + ||A||_* (eigenbasis form of the symmetric part S and the antisymmetric part A of g)
     (singular-value form of a one-body operator, two spins); P and Q add 2 sum of their positive eigenvalues."""
     mu, U = np.linalg.eigh(Z); lam2 = 0.0
     for m, u in zip(mu, U.T):
         if m <= 0: continue
         g = u[1:].reshape(n, n)                         # index 1 + a n + b -> E_ab
-        lam2 += m * (abs(u[0]) + 2 * np.linalg.svd(g, compute_uv=False).sum()) ** 2
+        lam2 += m * lam_factor(u, n) ** 2
     lam2 += 2 * np.clip(np.linalg.eigvalsh(P), 0, None).sum() + 2 * np.clip(np.linalg.eigvalsh(Q), 0, None).sum()
     return float(lam2 / 2)
 
@@ -199,10 +213,20 @@ def test():
         assert cf["E_certified"] <= w[0] + 1e-7, (cf, w[0])
         k = sf["cert"]; SOS = op_of(Sz @ k["Z"].reshape(-1, order="F") + Sp @ k["P"].reshape(-1, order="F") + Sq @ k["Q"].reshape(-1, order="F"))
         assert np.linalg.eigvalsh(SOS)[-1] <= 2 * cf["Lambda_eig"] + 1e-9, (np.linalg.eigvalsh(SOS)[-1], cf["Lambda_eig"])
+        for _ in range(20):                             # each factor: operator norm at most its LCU norm
+            u = rng.normal(size=1 + n * n) * (rng.random(1 + n * n) < 0.5); vec = np.zeros(B.nrows); vec[:1 + n * n] = u
+            assert np.linalg.norm(op_of(vec), 2) <= lam_factor(u, n) + 1e-9
+        for u in np.linalg.eigh(k["Z"])[1].T:
+            vec = np.zeros(B.nrows); vec[:1 + n * n] = u
+            assert np.linalg.norm(op_of(vec), 2) <= lam_factor(u, n) + 1e-9
         for N0 in (2, 3):
             cn, _ = solve(h, eri, 0.0, N0, eps=1e-8)
             assert cn["E_certified"] <= sect[N0] + 1e-7, (N0, cn, sect[N0])
             assert cn["E_certified"] >= cf["E_certified"] - 1e-4, (cn, cf)
+        cm, sm = solve(h, eri, 0.0, 3, eps=1e-8, Emin=cn["E_repaired"] - 0.05)
+        assert cm["E_certified"] <= sect[3] + 1e-7 and cm["E_certified"] >= cn["E_repaired"] - 0.06, (cm, cn)
+        k = sm["cert"]; wt = np.full(len(k["Z"]), 4.0 * n); wt[0] = 1.0
+        assert cm["Lambda_eig"] <= (wt * np.diag(k["Z"])).sum() + np.trace(k["P"]) + np.trace(k["Q"]) + 1e-9
         print("seed", seed, "fock", round(cf["E_certified"], 6), "exact", round(w[0], 6),
               "N=3", round(cn["E_certified"], 6), "exact N=3", round(sect[3], 6))
     print("sos_gap self-checks passed")
@@ -218,7 +242,8 @@ if __name__ == "__main__":
         if N0 is not None: sol["y"] = k["y"]
         print(json.dumps(certify(B, blocks(B, N0 if N0 is not None else 0), target(B, h, eri, ecore), sol, N0))); sys.exit()
     h, eri, ecore, n, nelec = read_fcidump(sys.argv[1]); N0 = int(sys.argv[2]) if sys.argv[2] != "fock" else None
-    c, sol = solve(h, eri, ecore, N0, eps=float(sys.argv[4]) if len(sys.argv) > 4 else 1e-9)
+    c, sol = solve(h, eri, ecore, N0, eps=float(sys.argv[4]) if len(sys.argv) > 4 else 1e-9,
+                   Emin=float(sys.argv[5]) if len(sys.argv) > 5 else None)
     c.update(n=n, nelec=nelec, ecore=ecore, N0=N0)
     json.dump(c, open(sys.argv[3], "w"), indent=1); print(json.dumps(c))
     np.savez_compressed(sys.argv[3].replace(".json", ".npz"), **sol["cert"])
