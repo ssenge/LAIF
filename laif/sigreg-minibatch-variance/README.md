@@ -48,6 +48,16 @@ The first term, about 0.923/M, comes from the random directions. The second, abo
 
 The first two terms come from the random directions and the last from the batch. So the directions dominate the noise of the shape gradient unless M ≳ 1.8 K³/(K² + N), that is, M ≳ 1.8K when N ≤ K². The remainder terms are not bounded; the formula agrees with simulation within 15 % for K = 16 and 32 and M from 1 to 256.
 
+**Proposition 5 (any weight, and the integral computed by quadrature).** Replace the integral by a sum over knots tₗ with weights wₗ > 0 that include the factor e^{−t²/2}, as in the code of [1], and let gₗ = e^{−tₗ²/2}. Under the null the kernel stays degenerate, and for every N:
+(a) E T = Σₗ wₗ(1 − gₗ²), and two slices of one batch with aᵀa′ = r have covariance F(r) = 2(1 − 1/N) C(r) + V(r)/N with
+
+    C(r) = Σₗₘ wₗwₘ gₗ²gₘ² [(cosh(tₗtₘr) − 1)² + sinh²(tₗtₘr)],   V(r) = 4 Σₗₘ wₗwₘ gₗ²gₘ² (cosh(tₗtₘr) − 1).
+
+(b) F(r) = 2S₂² r² + O(r⁴) for every N, with S₂ = Σₗ wₗtₗ²gₗ². For the integral, 2S₂² = 4π/27 as in Proposition 2.
+(c) For M directions drawn uniformly and afresh for each batch, Var S = F(1)/M + (1 − 1/M) E F(r) exactly, where r = aᵀa′ for two independent uniform directions has density proportional to (1 − r²)^{(K−3)/2} on [−1, 1], and E F(r) = 2S₂²/K + O(1/K²).
+
+For the two quadratures in use, 17 points on [−5, 5] and 17 points on [0, 3] with doubled weights, the constants C(1), V(1) and 2S₂² agree with those of the integral to within 7·10⁻⁴, and the mean is 1.0594 and 1.0525. At N = 32 the exact average E F(r) is 10.6 % above 2S₂²/K at K = 16, 1.3 % at K = 128 and 0.2 % at K = 1024.
+
 Taken together, the noise from random directions is removed by integrating them out [5, 6], but a floor of order 1/K for the value and (K² + N)/K⁴ for the shape gradient stays, set by the batch. The bias of Proposition 3(a) comes from the diagonal terms j = k of the double sum, which the unbiased estimator of [5] leaves out.
 
 ## Proofs
@@ -62,6 +72,8 @@ Taken together, the noise from random directions is removed by integrating them 
 
 **Proposition 4 (leading order).** On slice m the batch moves by ρ_m x + w with ρ_m = a_mᵀΔa_m and w independent of the slice x. The terms with one direction give 4η E|w|²/M with E|w|² = 1/K + O(1/K²), where η = E[∂₁H(X, Y)²], and 4ρ_m² Var T′(1)/M with E ρ² = 2/(K(K + 2)). For M → ∞ the derivative becomes a double-sum statistic in z with kernel Φ(z, z′) = E_a[∂₁H(aᵀz, aᵀz′) aᵀΔz]. One projection vanishes. The other is D″(1)·2zᵀΔz/(K(K + 2)) + O(K^{−3}), by integration by parts against the normal density and the expansion in orthogonal polynomials of the normal density, and gives 32N D″(1)²/K⁴. The two degenerate parts each give 4(2D″(1))²/K², from the moment formula for products of jointly normal variables with E[∂₁²H] = 0 and E[∂₁∂₂H] = 2D″(1). Terms of order K^{−3} and remainders in 1/N are not bounded.
 
+**Proposition 5.** Here T = (1/N) Σⱼₖ H(Xⱼ, X_k) with H(x, y) = Σₗ wₗ[(cos tₗx − gₗ)(cos tₗy − gₗ) + sin tₗx sin tₗy], and E cos(tX) = g(t), E sin(tX) = 0 give E H(x, Y) = 0, so the splitting of Propositions 1 and 2 applies. For (X, X′) normal with correlation r, aX ± bX′ is normal with variance a² + b² ± 2abr, so E cos(aX) cos(bX′) = g(a)g(b) cosh(abr) and E sin(aX) sin(bX′) = g(a)g(b) sinh(abr); the mixed terms vanish by symmetry. With cₗ = cos tₗx − gₗ and sₗ = sin tₗx, E[H(X, Y) H(X′, Y′)] = Σₗₘ wₗwₘ[(E cₗ(X)cₘ(X′))² + (E sₗ(X)sₘ(X′))²] gives C(r). Since H(x, x) = Σₗ wₗ(1 + gₗ² − 2gₗ cos tₗx), Cov(H(X, X), H(X′, X′)) = 4 Σₗₘ wₗwₘ gₗgₘ Cov(cos tₗX, cos tₘX′) gives V(r). (b) From cosh u − 1 = u²/2 + O(u⁴) and sinh u = u + O(u³), C(r) = S₂²r² + O(r⁴) and V(r) = 2S₂²r² + O(r⁴), so the terms in N cancel. (c) Every slice is N(0, 1) whatever its direction, so the mean of S given the directions is constant, and Var S is the average over the directions of the conditional covariances. Two different fresh directions have r with the stated density and E r² = 1/K.
+
 ## Scope and status
 
 | Result | Scope | Status | Posted |
@@ -70,8 +82,9 @@ Taken together, the noise from random directions is removed by integrating them 
 | Proposition 2 | Null N(0, I_K), any directions; the expansion in r for uniform directions | Claim; checked numerically | 2026-11-22 |
 | Proposition 3 | Null, the isotropic scale direction; (b) up to O(1) in the variance | Claim; checked numerically | 2026-11-22 |
 | Proposition 4 | Null, traceless shape directions, fresh uniform directions per batch, leading order in 1/K | Numerical, with a derivation to leading order | 2026-11-22 |
+| Proposition 5 | Null, any knots and positive weights; (c) for fresh uniform directions | Claim; checked numerically | 2026-11-24 |
 
-Not covered: the integral computed by quadrature as in the code of [1] (the constants change slightly), embeddings that are not normal, where the kernel is not degenerate and the variance grows with N, the gradient through a nonlinear encoder, and bounds on the remainders of Proposition 4.
+Not covered: embeddings that are not normal, where the kernel is not degenerate and the variance grows with N, the gradient through a nonlinear encoder, and bounds on the remainders of Proposition 4.
 
 ## Simulations
 
@@ -80,6 +93,8 @@ Scripts in [`sim/`](sim/), run with NumPy and SciPy, with asserts, on one core.
 - `null_moments.py`: the kernel form against a direct quadrature of the integral (to 10⁻⁸). The null mean at N = 16 and 128 (within 1.3 standard errors) and the variances of one slice and of the average of 8 slices with K = 32 (within 8 %, 4000 batches). The expansions of C and V at r = 0 and the cancellation of N in the 1/K term.
 - `scale_noise.py`: the minimizer s* of N D + B at N = 64, 256 and 1024 (N²(s* − 1 + 2/N) between 0.99 and 1.00), the constant γ, the variance of T′(1) at N = 64 and 256 (ratios 1.02 and 0.96), and a finite-difference check of T′(1).
 - `shape_noise.py`: the derivative S′ against finite differences, η and the identity E[G₁(X)(X² − 1)] = D″(1) by random sampling, and the variance of S′ against Proposition 4 for K = 16 (M = 1, 8, 64, 256) and K = 32 (M = 1, 64, 256), with N = 64: ratios between 0.86 and 1.08.
+
+- `quadrature_moments.py`: the formulas of Proposition 5 against the closed forms of Propositions 1 and 2 (a fine grid for the integral, to 10⁻⁹, also at r = 0.37). For both quadratures in use: the r² coefficient 2S₂² at N = 2, 64 and 4096, the mean, the variance of one slice and the covariance of two slices with r = 0.6 at N = 32 (40000 batches, within 6 % and 10 %), the exact average E F(r) at K = 16, 128 and 1024, and Var S for K = 16, M = 8 against part (c) (6000 batches, within 3 %).
 
 ## References
 
