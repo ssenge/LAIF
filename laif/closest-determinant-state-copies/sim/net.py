@@ -1,10 +1,10 @@
-"""Checks for the net, the selection step and the lower bound of the closest Slater determinant README."""
+"""Checks for the net, the selection step and the lower bound of the closest determinant state README."""
 import numpy as np, itertools
 from math import log, sqrt, comb
 from bvar import b_float
 rng = np.random.default_rng(3)
 
-def wedge_state(U):  # amplitudes of the Slater determinant of the columns of U on the basis of n-subsets
+def wedge_state(U):  # amplitudes of the determinant state of the columns of U on the basis of n-subsets
     m, n = U.shape
     return np.array([np.linalg.det(U[list(r), :]) for r in itertools.combinations(range(m), n)])
 
@@ -12,7 +12,7 @@ def haar_stiefel(m, n):
     Q, _ = np.linalg.qr(rng.normal(size=(m, n)) + 1j * rng.normal(size=(m, n)))
     return Q
 
-# Lemma 1: <S_U|S_V> = det(U^dag V) and |F(U) - F(V)| <= ||U - V||_F for every state rho
+# Lemma 1: <S_U|S_V> = det(U^dag V) and |F(U) - F(V)| <= ||U - V||_2 for every state rho
 worst = 0
 for _ in range(3000):
     m = rng.integers(2, 8); n = rng.integers(1, m + 1)
@@ -30,9 +30,9 @@ for _ in range(3000):
     assert 2 * np.sum(1 - sig) <= np.linalg.norm(U - V) ** 2 + 1e-9
     assert dF <= sqrt(max(lhs, 0)) + 1e-9 and dF <= np.linalg.norm(U - V) + 1e-9
     worst = max(worst, dF / np.linalg.norm(U - V))
-print("Lemma 1 on 3000 random instances: max |F(U)-F(V)| / ||U-V||_F =", round(worst, 4))
+print("Lemma 1 on 3000 random instances: max |F(U)-F(V)| / ||U-V||_2 =", round(worst, 4))
 
-# Lower bound: two orthogonal Slaters with weights 1/2 +- 2 eps; a fidelity >= OPT - eps forces a - b >= 1/2
+# Lower bound: two orthogonal determinant states with weights 1/2 +- 2 eps; a fidelity >= OPT - eps forces a - b >= 1/2
 for _ in range(20000):
     eps = rng.uniform(1e-4, 1 / 8)
     a = rng.uniform(0, 1); b = rng.uniform(0, 1 - a)

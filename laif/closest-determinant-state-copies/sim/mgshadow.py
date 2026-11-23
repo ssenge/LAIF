@@ -1,6 +1,6 @@
 """Exact matchgate shadows on m = 3 modes: the Clifford matchgate group is enumerated
 (signed permutations of the 2m Majorana operators), the shadow channel is formed exactly, and
-the second moment of the estimator of a Slater fidelity is compared with b(m) of bvar.py."""
+the second moment of the estimator of a determinant-state fidelity is compared with b(m) of bvar.py."""
 import numpy as np, itertools
 from bvar import b_exact
 from math import comb
@@ -81,4 +81,4 @@ for n in (1, 2):
         assert w <= bm + 1e-9, (n, w, bm)
         worst = max(worst, w)
 print("group size", len(G), "channel eigenvalues ok, estimator unbiased")
-print("largest second moment over Slater projectors and n-particle states:", round(worst, 6), " b(3) =", bm)
+print("largest second moment over determinant-state projectors and n-particle states:", round(worst, 6), " b(3) =", bm)

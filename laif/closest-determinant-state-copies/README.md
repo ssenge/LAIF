@@ -10,65 +10,72 @@ A determinant state of n fermions in m modes is the antisymmetrized product of n
 
 with probability at least 1 − δ. The quantum algorithm of [1] works in two stages:
 - It first estimates the one-particle reduced density matrix to operator-norm error of order ε/n, which costs O(m² n² log(m/δ)/ε²) copies [1, Appendix C].
-- It then searches a finite set of determinant states in an active space of dimension O(n²/ε). This search uses the threshold search procedure, with entangled measurements on Õ(n⁶/ε⁴) copies [1, Theorem 2].
+- It then runs the threshold search procedure over a finite set of determinant states in an active space of dimension O(n²/ε). This uses entangled measurements on Õ(n⁶/ε⁴) copies [1, Theorem 2].
 
-| | copies for fidelity OPT − ε | measurements |
-|---|---|---|
-| Previous best bound [1, Theorem 2 and Appendix C] | O(m² n² log(m/δ)/ε²) + Õ(n⁶/ε⁴) | entangled across copies |
-| Theorem 1 | O(√m log m · (m n log(n/ε) + log(1/δ))/ε²) | single copy, random matchgate circuits |
-| Proposition 2 (every algorithm) | Ω(log(1/δ)/ε²) | |
-| Corollary 3, closest pure free-fermion state (any particle number) | O(√m log m · (m² log(m/ε) + log(1/δ))/ε²) | single copy, random matchgate circuits |
+Below, k = min{n, m − n}, and ‖·‖₂ is the entrywise norm, the square root of the sum of the squared moduli of all entries.
 
-So the copy count is Õ(n m^{3/2}/ε²). The exponent of 1/ε is optimal. Up to logarithms, the bound lies below the first term O(m² n²/ε²) of the previous bound by a factor of order √m · n, and it has no term n⁶/ε⁴. If n > m/2, then n can be replaced by m − n.
+| | copies for fidelity OPT − ε | measurements | time per fidelity estimate |
+|---|---|---|---|
+| Previous best bound [1, Theorem 2 and Appendix C] | O(m² n² log(m/δ)/ε²) + Õ(n⁶/ε⁴) | entangled across copies | |
+| Theorem 1, implied by [3] | O((mk log(k/ε) + log(1/δ))/ε²) | single copy, global random circuits of [3] on the m-qubit encoding | C(m, k) · poly(m) |
+| Theorem 2, fermionic measurements | O(b(m) (mk log(k/ε) + log(1/δ))/ε²) | single copy, random matchgate circuits of [2] | poly(m) |
+| Proposition 3 (every algorithm, n ≥ 1) | Ω(log(1/δ)/ε²) | | |
+| Corollary 4, closest pure free-fermion state | O((m² log(m/ε) + log(1/δ))/ε²) | as in Theorem 1 | |
+
+The exponent of 1/ε in Theorem 1 is optimal by Proposition 3. Asymptotically, the copy count Õ(nm/ε²) of Theorem 1 lies below the first term of the previous bound by a factor of order mn up to a logarithm, and it has no term n⁶/ε⁴. The constants of [1] are not stated, so no crossover point is given.
 
 ## Results
 
-**Theorem 1.** Measure each of N copies of ρ in the occupation basis after a uniformly random circuit from the discrete matchgate ensemble of [2], and form the classical shadow of [2]. Here N = 612 b(m) (2mk ln(1 + 6√k/ε) + ln(2/δ))/ε², with k = min{n, m − n}. The constant b(m) is the variance bound of [2, eq. (40)], and b(m) = O(√m log m) [2, Appendix F]. Then a determinant state S with ⟨S|ρ|S⟩ ≥ OPT − ε can be computed from the outcomes with probability at least 1 − δ. The measurements are fixed in advance and act on one copy at a time.
+**Theorem 1 (implied by [3]).** Encode the m modes in m qubits, one per mode. Measure each of N copies of ρ in the computational basis after a uniformly random circuit from the global ensemble of [3], and form the classical shadows of [3]. Here, up to rounding, N = 1836 (2mk ln(1 + 6√k/ε) + ln(2/δ))/ε². A determinant state S with ⟨S|ρ|S⟩ ≥ OPT − ε can then be computed from the outcomes with probability at least 1 − δ. The measurements are fixed in advance and act on one copy at a time.
 
-The estimator of each fidelity is computed classically in time polynomial in m [2, Theorem 2]. The selection runs over a set of exp(O(mk log(k/ε))) states, so the total running time is exponential in mk. The algorithm of [1] runs in time m^{poly(n,1/ε)}.
+The selection runs over a set of exp(O(mk log(k/ε))) states, so the total running time is exponential in mk. The algorithm of [1] runs in time m^{poly(n,1/ε)}.
 
-**Remark (active space).** Suppose the selection step of [1, Theorem 2] uses the same shadows, on its set of determinant states with orbitals in an active space of dimension r = O(n²/ε). Then that step needs O(b(m) (n r log(n/ε) + log(1/δ))/ε²) = Õ(√m n³/ε³) single-copy measurements instead of Õ(n⁶/ε⁴) entangled ones. Its running time is that of [1].
+**Theorem 2 (fermionic measurements).** The same holds with the random matchgate circuits of [2] and, up to rounding, N = 612 b(m) (2mk ln(1 + 6√k/ε) + ln(2/δ))/ε². Here b(m) is the variance bound of [2, eq. (40)]. It is at most 1.5 √m ln(m + 1) for m ≤ 128 (`sim/bvar.py`), and of order √m log m by the asymptotic argument of [2, Appendix F]. These circuits preserve the fermionic structure, and each fidelity estimate is computed in time polynomial in m [2, Theorem 2].
 
-**Proposition 2.** Let m ≥ n + 1, 0 < ε ≤ 1/8 and δ < 1/4. Every algorithm that learns the closest determinant state to fidelity OPT − ε with probability 1 − δ, with any joint measurement on its N copies, needs N ≥ ln(1/(4δ))/(64ε²).
+**Remark (active space).** Keep the first stage of [1], and run the selection step of [1, Theorem 2] with the shadows of Theorem 1 on fresh copies, independent of the first stage, over its set of determinant states with orbitals in the active space of dimension r = O(n²/ε). That step then needs O((n r log(n/ε) + log(1/δ))/ε²) = Õ(n³/ε³) single-copy measurements, independent of m, instead of Õ(n⁶/ε⁴) entangled ones. The fidelity estimates cost m^{O(n)} time each, which fits in the running time m^{poly(n,1/ε)} of [1].
 
-**Corollary 3 (pure free-fermion states).** A pure free-fermion state of m modes is determined by its covariance matrix M_{ab} = (i/2)⟨[c_a, c_b]⟩, where c_1, …, c_{2m} are the self-adjoint generators of the fermionic algebra. M is real antisymmetric with M² = −I. Let OPT_G be the largest fidelity of ρ with such a state, for an arbitrary state ρ of m modes. With the same measurements and N = 612 b(m) (m(2m − 1) ln(1 + 3√m/ε) + ln(2/δ))/ε² = Õ(m^{5/2}/ε²) copies, a pure free-fermion state of fidelity at least OPT_G − ε is computed with probability at least 1 − δ. The lower bound of Proposition 2 holds here as well, with the vacuum and a two-particle occupation state as the two orthogonal states. In [1, Section VII] the closest such state is named as a direction for further study.
+**Proposition 3.** Let n ≥ 1, m ≥ n + 1, 0 < ε ≤ 1/8 and δ < 1/4. Every algorithm that learns the closest determinant state to fidelity OPT − ε with probability 1 − δ, with any joint measurement on its N copies, needs N ≥ ln(1/(4δ))/(64ε²).
+
+**Corollary 4 (pure free-fermion states).** A pure free-fermion state of m modes is determined by its covariance matrix M_{ab} = (i/2)⟨[c_a, c_b]⟩, where c_1, …, c_{2m} are the self-adjoint generators of the fermionic algebra. M is real antisymmetric with M² = −I. Let OPT_G be the largest fidelity of an arbitrary state ρ of m modes with such a state. With the measurements of Theorem 1 and, up to rounding, N = 1836 (m(2m − 1) ln(1 + 3√m/ε) + ln(2/δ))/ε² copies, a pure free-fermion state of fidelity at least OPT_G − ε is computed with probability at least 1 − δ. With the matchgate circuits of Theorem 2, N = 612 b(m) (m(2m − 1) ln(1 + 3√m/ε) + ln(2/δ))/ε² copies suffice. The lower bound of Proposition 3 holds here as well, with the vacuum and a two-particle occupation state as the two orthogonal states. In [1, Section VII] the closest such state is named as a direction for further study.
 
 ## Proof
 
-**Lemma 1 (Lipschitz bound).** Let U, V be m × n matrices with orthonormal columns. Then |⟨S(U)|ρ|S(U)⟩ − ⟨S(V)|ρ|S(V)⟩| ≤ ‖U − V‖_F for every state ρ.
+**Lemma 1 (overlap bound).** Let U, V be m × n matrices with orthonormal columns. Then |⟨S(U)|ρ|S(U)⟩ − ⟨S(V)|ρ|S(V)⟩| ≤ ‖U − V‖₂ for every state ρ.
 
-*Proof.* For two unit vectors the difference of their projectors has eigenvalues ±√(1 − |⟨a|b⟩|²) and 0. So the left side is at most √(1 − |det(U†V)|²). Let σ_1, …, σ_n ∈ [0, 1] be the singular values of U†V. Then 1 − ∏σ_i² ≤ Σ(1 − σ_i²) ≤ 2Σ(1 − σ_i). The first inequality holds because 1 − ∏a_i ≤ Σ(1 − a_i) for a_i ∈ [0, 1], and the second because 1 − σ² ≤ 2(1 − σ). Finally ‖U − V‖_F² = 2n − 2 Re tr(U†V) ≥ 2n − 2Σσ_i, since |tr(U†V)| ≤ Σσ_i.
+*Proof.* For two unit vectors the difference of their projectors has eigenvalues ±√(1 − |⟨a|b⟩|²) and 0. So the left side is at most √(1 − |det(U†V)|²). Let σ_1, …, σ_n ∈ [0, 1] be the singular values of U†V. Then 1 − ∏σ_i² ≤ Σ(1 − σ_i²) ≤ 2Σ(1 − σ_i). The first inequality holds because 1 − ∏a_i ≤ Σ(1 − a_i) for a_i ∈ [0, 1], and the second because 1 − σ² ≤ 2(1 − σ). Finally ‖U − V‖₂² = 2n − 2 Re tr(U†V) ≥ 2n − 2Σσ_i, since |tr(U†V)| ≤ Σσ_i.
 
-**The finite set.** The matrices with orthonormal columns lie on the sphere of radius √n in ℝ^{2mn}. A maximal subset with pairwise distances at least ε/3 has at most (1 + 6√n/ε)^{2mn} elements, because the balls of radius ε/6 around its points are disjoint and lie in the ball of radius √n + ε/6. Its points are determinant states, and by Lemma 1 every determinant state has a point within fidelity ε/3.
+**The finite set.** The matrices with orthonormal columns lie on the sphere of radius √n in ℝ^{2mn}. A maximal subset with pairwise distances at least ε/3 has at most (1 + 6√n/ε)^{2mn} elements, because the balls of radius ε/6 around its points are disjoint and lie in the ball of radius √n + ε/6. Its points are determinant states, and by Lemma 1 every determinant state has a point within fidelity ε/3. Such a set is fixed in advance. A greedy pass over a fine grid gives one with the same bounds up to a factor close to 1 in the radii. The orthonormal complements satisfy |det(U†V)| = |det(U_⊥†V_⊥)|, so the same holds with n replaced by m − n, and hence by k.
 
-**Selection.** By [2, eqs. (36) and (40)], the single-shot shadow estimate of tr(ϱρ) has second moment at most b(m), for every state ρ and every density operator ϱ of a pure free-fermion state. Every determinant state is such a state. Split the N shots into K = 2 ln(2M/δ) groups of 34 · 9 b(m)/ε² shots and take the median of the group means. By [3, Theorem 1], all M fidelities are then estimated to within ε/3 with probability at least 1 − δ. Output the point with the largest estimate. Its fidelity is at least that of the best point minus 2ε/3, and so at least OPT − ε. The particle-hole map is a free-fermion unitary that maps n-fermion determinant states to (m − n)-fermion determinant states, and the matchgate ensemble is invariant under it. This gives k = min{n, m − n}.
+**Selection.** Let v bound the second moment of the single-shot shadow estimate of each fidelity. The shadow channel preserves the trace, so the variance is at most v, and the median-of-means argument of [3, Theorem 1] uses only this variance bound. Split the N shots into ⌈2 ln(2M/δ)⌉ groups of ⌈306 v/ε²⌉ shots and take the median of the group means. All M fidelities are then estimated to within ε/3 with probability at least 1 − δ. Output the point with the largest estimate. Its fidelity is at least that of the best point minus 2ε/3, and so at least OPT − ε.
+- For Theorem 1, v = 3: for the global ensemble the shadow norm of a pure-state projector is at most 3 [3], and the constant part adds nothing to the variance. One estimate is (2^m + 1)|⟨b|C|S⟩|² − 1, with C the random circuit and b the outcome. The amplitude ⟨b|C|S⟩ is a sum over the C(m, n) occupation patterns of a minor of U times an amplitude of a stabilizer state.
+- For Theorem 2, v = b(m): by [2, eqs. (36) and (40)], the single-shot estimate of tr(ϱρ) has second moment at most b(m), for every state ρ and every density operator ϱ of a pure free-fermion state. Every determinant state is such a state.
 
-**Proposition 2.** Take two orthogonal determinant states S_1, S_2 and ρ_± = (1/2 ± 2ε)|S_1⟩⟨S_1| + (1/2 ∓ 2ε)|S_2⟩⟨S_2|. For ρ_+ we have OPT ≥ 1/2 + 2ε. Let a = |⟨S|S_1⟩|² and b = |⟨S|S_2⟩|², so a + b ≤ 1. A state S with fidelity at least 1/2 + ε satisfies (a + b)/2 + 2ε(a − b) ≥ 1/2 + ε, so a − b ≥ 1/2. For ρ_− the same argument gives b − a ≥ 1/2. So the algorithm distinguishes ρ_+^{⊗N} from ρ_−^{⊗N} with both errors at most δ. Both states are diagonal in one product basis, so the error sum of any test is at least one minus the total variation distance of the two coin sequences with biases 1/2 ± 2ε, which is at least (1/2) exp(−N D). Here D = 4ε ln((1 + 4ε)/(1 − 4ε)) ≤ 64ε² is their relative entropy per copy. Hence 2δ ≥ (1/2) exp(−64Nε²).
+**Proposition 3.** Take two orthogonal determinant states S_1, S_2 and ρ_± = (1/2 ± 2ε)|S_1⟩⟨S_1| + (1/2 ∓ 2ε)|S_2⟩⟨S_2|. For ρ_+ we have OPT = 1/2 + 2ε. Let a = |⟨S|S_1⟩|² and b = |⟨S|S_2⟩|², so a + b ≤ 1. A state S with fidelity at least 1/2 + ε satisfies (a + b)/2 + 2ε(a − b) ≥ 1/2 + ε, so a − b ≥ 1/2. For ρ_− the same argument gives b − a ≥ 1/2. So the algorithm distinguishes ρ_+^{⊗N} from ρ_−^{⊗N} with both errors at most δ. Both states are diagonal in one product basis, so the error sum of any test is at least one minus the total variation distance of the two coin sequences with biases 1/2 ± 2ε. That is at least (1/2) exp(−N D), where D = 4ε ln((1 + 4ε)/(1 − 4ε)) ≤ 64ε² is their relative entropy per copy. Hence 2δ ≥ (1/2) exp(−64Nε²).
 
-**Corollary 3.** For two pure free-fermion states with covariance matrices M_1, M_2, |⟨ψ_1|ψ_2⟩|² = √det((M_1 + M_2)/2). Write M_1 + M_2 = M_1(I + O) with O = M_1ᵀM_2 orthogonal. Its eigenvalues are e^{±iθ_j}, j = 1, …, m, and det M_1 = 1, so |⟨ψ_1|ψ_2⟩|² = ∏_j |cos(θ_j/2)|. Then 1 − ∏_j |cos(θ_j/2)| ≤ Σ_j sin²(θ_j/2) = ‖I − O‖_F²/8 = ‖M_1 − M_2‖_F²/8. As in Lemma 1, the two fidelities with ρ differ by at most ‖M_1 − M_2‖_F/(2√2). The covariance matrices lie on the sphere of radius √(2m) in the space of antisymmetric matrices, which has dimension m(2m − 1). A maximal subset with pairwise distances at least 2√2ε/3 has at most (1 + 3√m/ε)^{m(2m−1)} elements, and every pure free-fermion state is within fidelity ε/3 of one of them. The second-moment bound b(m) of [2] holds for every pure free-fermion state, of either parity, so the selection step is unchanged.
+**Corollary 4.** For two pure free-fermion states with covariance matrices M_1, M_2, |⟨ψ_1|ψ_2⟩|² = √det((M_1 + M_2)/2). Write M_1 + M_2 = M_1(I + O) with O = M_1ᵀM_2 orthogonal. Its eigenvalues are e^{±iθ_j}, j = 1, …, m, and det M_1 = 1, so |⟨ψ_1|ψ_2⟩|² = ∏_j |cos(θ_j/2)|. Then 1 − ∏_j |cos(θ_j/2)| ≤ Σ_j sin²(θ_j/2) = ‖I − O‖₂²/8 = ‖M_1 − M_2‖₂²/8. As in Lemma 1, the two fidelities with ρ differ by at most ‖M_1 − M_2‖₂/(2√2). The covariance matrices lie on the sphere of radius √(2m) in the space of antisymmetric matrices, which has dimension m(2m − 1). A maximal subset with pairwise distances at least 2√2ε/3 has at most (1 + 3√m/ε)^{m(2m−1)} elements, and every pure free-fermion state is within fidelity ε/3 of one of them. The variance bounds 3 of [3] and b(m) of [2] hold for every pure free-fermion state, of either parity, so the selection step is unchanged.
 
 ## Check
 
 `sim/bvar.py`, output in `sim/out_bvar.txt`:
 - computes b(m) from [2, eq. (40)] exactly (rational arithmetic) for m ≤ 12 and in floating point up to m = 256;
-- asserts that b(m) is increasing and at most 1.5 √m ln(m + 1) for m ≤ 128; for example b(256) = 40.08.
+- asserts that b(m) is increasing and at most 1.5 √m ln(m + 1) for m ≤ 128. For example b(256) = 40.08, and b(m) > 3 from m = 6 on.
 
 `sim/mgshadow.py`, output in `sim/out_mgshadow.txt`, for m = 3:
 - enumerates the discrete matchgate group, all 46080 signed permutations of the six self-adjoint generators of the fermionic algebra;
-- checks the eigenvalues of the shadow channel and that the estimator is unbiased;
+- checks the eigenvalues of the shadow channel on the even monomials and that the estimator is unbiased;
 - computes the largest second moment of the fidelity estimator over n-particle states, for random determinant states with n = 1, 2. It is 2.0, equal to b(3) = 2.
 
 `sim/net.py`, output in `sim/out_net.txt`:
 - checks det(U†V) = ⟨S(U)|S(V)⟩ and the chain of inequalities in Lemma 1 on 3000 random instances with m ≤ 7;
-- checks the reduction a − b ≥ 1/2 and the bound D ≤ 64ε² of Proposition 2.
+- checks the reduction a − b ≥ 1/2 and the bound D ≤ 64ε² of Proposition 3.
 
-`sim/gauss.py`, output in `sim/out_gauss.txt`: for 600 pairs of random pure free-fermion states of both parities with m ≤ 4, it checks M² = −I, the overlap formula, the bound 1 − |⟨ψ_1|ψ_2⟩|² ≤ ‖M_1 − M_2‖_F²/8, which is attained up to 10⁻⁴ by close pairs, and the fidelity bound for random states ρ.
+`sim/quasifree.py`, output in `sim/out_quasifree.txt`: for 600 pairs of random pure free-fermion states of both parities with m ≤ 4, it checks M² = −I, the overlap formula, the bound 1 − |⟨ψ_1|ψ_2⟩|² ≤ ‖M_1 − M_2‖₂²/8, which is attained up to 10⁻⁴ by close pairs, and the fidelity bound for random states ρ.
 
 ## Scope
 
-- Theorem 1 bounds copies. Its running time is exponential in m·min{n, m − n}, and [1] gives an algorithm with running time m^{poly(n,1/ε)}. The running time of Corollary 3 is exponential in m². The remark keeps that running time and improves only the selection step.
-- The variance bound b(m) and its order √m log m are taken from [2]. For m = 3 they are checked exactly here.
-- Between Proposition 2 and Theorem 1 the dependence on m and n remains open.
+- Theorems 1 and 2 bound copies. Their running time is exponential in mk, the running time of Corollary 4 is exponential in m², and [1] gives an algorithm with running time m^{poly(n,1/ε)}. The remark keeps that running time and improves only the selection step.
+- The variance bounds are taken from [3] and [2]. The bound b(m) of [2] is checked exactly here for m = 3.
+- Between Proposition 3 and Theorem 1 the dependence on m and n remains open.
 - The statements are Claims with the listed checks.
 
 ## References

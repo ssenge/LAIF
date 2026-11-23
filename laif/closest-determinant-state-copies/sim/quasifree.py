@@ -1,5 +1,5 @@
 """Checks for Corollary 3: pure free-fermion states, their overlap through the covariance matrices,
-and the Lipschitz bound 1 - |<psi1|psi2>|^2 <= ||M1 - M2||_F^2 / 8."""
+and the overlap bound 1 - |<psi1|psi2>|^2 <= ||M1 - M2||_2^2 / 8."""
 import numpy as np
 from scipy.linalg import expm
 from math import sqrt

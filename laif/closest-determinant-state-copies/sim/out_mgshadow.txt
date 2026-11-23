@@ -1,2 +1,2 @@
 group size 46080 channel eigenvalues ok, estimator unbiased
-largest second moment over Slater projectors and n-particle states: 2.0  b(3) = 2.0
+largest second moment over determinant-state projectors and n-particle states: 2.0  b(3) = 2.0

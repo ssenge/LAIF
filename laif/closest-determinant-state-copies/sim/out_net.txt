@@ -1,4 +1,4 @@
-Lemma 1 on 3000 random instances: max |F(U)-F(V)| / ||U-V||_F = 0.9194
+Lemma 1 on 3000 random instances: max |F(U)-F(V)| / ||U-V||_2 = 0.9194
 lower bound reduction and KL bound ok
 m n eps  Theorem1 (explicit constant)   m^2 n^2 ln(m/delta)/eps^2 and n^6/eps^4 (constants of [1] not stated)
 20 4 0.1 3.71e+08 4.86e+06 4.10e+07
