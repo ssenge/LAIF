@@ -1,0 +1,2 @@
+600 pairs, m <= 4: overlap = sqrt(det((M1+M2)/2)); max (1-|<>|^2) / (||M1-M2||^2/8) = 1.0
+ok
