@@ -6,7 +6,7 @@ Posted 2026-11-22.
 
 | Problem | Previous best bound | Our bound | Status |
 |---|---|---|---|
-| Myopic sequential price of stability of the multicast network design game on a ring, equal cost sharing | 4/3 ≤ PoS ≤ 26/19 ≈ 1.3684 [1], conjectured 4/3 [1, Conj. 5.5] | Exactly 4/3: one of two fixed arrival orders always ends within 4/3 of the optimum, with ties broken in the worst way | Claim |
+| Myopic sequential price of stability of the multicast network design game on a ring, equal cost sharing | 4/3 ≤ PoS ≤ 26/19 ≈ 1.3684 [1], conjectured 4/3 [1, Conj. 5.5] | Exactly 4/3: one of two fixed arrival orders always ends within 4/3 of the optimum, with ties broken in the worst way | Claim; Lean for the relaxations and certificates (steps 2 to 4) |
 
 The lower bound 4/3 is the instance of [1, Fig. 3].
 
@@ -75,8 +75,17 @@ All bounds are at most 1/3.
 Run with `python proof_certs.py`, `python checkrelax.py 2000` and `python crosscheck.py 2000` (Python 3, standard
 library only).
 
-Not formalized: the structure lemma and the relaxation steps are a written proof. The certificates are checked by
-script.
+- **Lean** (`lean/`, Lean v4.36.0-rc1, Mathlib d875a8de5222, only the standard axioms, output in `lean/axioms.txt`).
+  The theorems take the best-response conditions of step 2 as hypotheses, as finite sums over the edges with
+  general n, o, p and q, and prove the bound on z for every case.
+  - `Cases.lean`: `tail_le` and `after_eq`, the weakening of the far terms of a right path and the mass after p;
+    `cond_A` and `left_share`, the weakened condition of player p; `bound_p_zero`, `bound_succ` (q + 1 = p),
+    `bound_ge` (q ≥ p), `bound_d2`, `bound_d2_none` and `bound_d3_none` (q = −1).
+  - `Window.lean`: `window_bound` for d ≥ 4, from the window of the four edges p, p − 1, p − 2, p − 3, and `bound_d3`.
+  - `Basic.lean`: the seven relaxed linear programs of step 4 with their bounds, by `linarith`.
+
+Not formalized: step 1 (the structure of the two orders), and the derivation of the best-response conditions of
+step 2 from the game.
 
 ## References
 
