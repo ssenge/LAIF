@@ -1,5 +1,5 @@
-"""Exact matchgate shadows on m = 3 modes: the Clifford matchgate group is enumerated
-(signed permutations of the 2m Majorana operators), the shadow channel is formed exactly, and
+"""Exact matchgate shadows on m = 3 modes: the discrete matchgate group is enumerated
+(signed permutations of the 2m self-adjoint generators of the fermionic algebra), the shadow channel is formed exactly, and
 the second moment of the estimator of a determinant-state fidelity is compared with b(m) of bvar.py."""
 import numpy as np, itertools
 from bvar import b_exact
@@ -38,7 +38,7 @@ for U in G:
         P = np.outer(v, v.conj()).reshape(-1)
         Msup += np.outer(P, P.conj())
 Msup /= len(G)
-# predicted inverse: sum_l C(2m,2l)/C(m,l) P_{2l} on even Majorana monomials; check M on them
+# predicted inverse: sum_l C(2m,2l)/C(m,l) P_{2l} on even monomials of the generators; check M on them
 for S in itertools.chain.from_iterable(itertools.combinations(range(2 * m), k) for k in range(0, 2 * m + 1, 2)):
     op = np.eye(D, dtype=complex)
     for a in S: op = op @ gam[a]
