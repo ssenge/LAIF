@@ -1,4 +1,4 @@
-"""Linear-Gaussian controlled world and the population objective of a LeWM-type world model.
+"""Linear controlled world with normal noise and the population objective of a LeWM-type world model.
 
 World: s' = A s + B a + w, a ~ N(0, I_m) white, w ~ N(0, Q), stationary covariance Sigma = A Sigma A^T + B B^T + Q.
 Latent z = E s with E Sigma E^T = I_K (the zero set of the normality regularizer for normal data), linear predictor of

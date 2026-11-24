@@ -2,7 +2,7 @@
 
 Claims checked:
   (1) the term equals tr(U^T Wt_H U) with Wt_H = sum_{h<H} At^h Bt Bt^T (At^h)^T = Sigma^{-1/2} W_H Sigma^{-1/2}, the
-      H-step controllability Gramian in whitened coordinates, 0 <= Wt_H <= I (simulated data);
+      H-step controllability matrix in whitened coordinates, 0 <= Wt_H <= I (simulated data);
   (2) its maximum over orthonormal U is the sum of the K largest eigenvalues of Wt_H;
   (3) static modes against noisy controllable scalar modes (the world of action_blind.py): the minimizer of
       L_pred - mu * term keeps mode i at full scale exactly when mu > q_i / w_i, w_i = b_i^2 (1 - alpha_i^(2H)) / (1 - alpha_i^2),

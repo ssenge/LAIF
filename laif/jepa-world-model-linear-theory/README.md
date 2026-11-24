@@ -4,7 +4,7 @@ Written 24 Nov 2026.
 
 A JEPA world model such as LeWM [1] trains an encoder and a predictor with two terms: the error of predicting the next latent from the current latent and the action, and a regularizer (SIGReg [2]) that pushes the latents towards the standard normal law. Planning then searches for actions whose predicted latent is close to the latent of a goal. Several recent studies report that such models can lose what planning needs: latents that follow static content of the scene [3], latents that barely respond to the action [4], and lost controllable modes [5]; the remedies add an inverse-dynamics term that reads the action from consecutive latents [4, 5, 6, 7, 8].
 
-This folder solves the objective exactly in a linear world with normal noise, for a latent dimension K below the state dimension. The solution says which directions of the state the prediction objective keeps (Theorem 1), shows that actuator noise makes every near-minimizer blind to the action (Theorem 2), shows that an inverse-dynamics term can be met by a latent whose response to the action is arbitrarily small (Theorem 3), and gives a term, the covariance between future latents and past actions, whose optimum is the top eigenspace of a controllability Gramian and which has no such loophole (Theorem 4).
+This folder solves the objective exactly in a linear world with normal noise, for a latent dimension K below the state dimension. The solution says which directions of the state the prediction objective keeps (Theorem 1), shows that actuator noise makes every near-minimizer blind to the action (Theorem 2), shows that an inverse-dynamics term can be met by a latent whose response to the action is arbitrarily small (Theorem 3), and gives a term, the covariance between future latents and past actions, whose optimum is the top eigenspace of a controllability matrix and which has no such loophole (Theorem 4).
 
 ## Setting
 
@@ -49,7 +49,7 @@ and below λᵢ it is approached by latents whose action response tends to 0.
 
     T_H(E) = Σ_{h=1}^{H} ‖Cov(z_{t+h}, a_t)‖²_F.
 
-(a) T_H(E) = tr(UᵀW̃_H U) with W̃_H = Σ_{h=0}^{H−1} Ã^h B̃B̃ᵀ(Ã^h)ᵀ = Σ^{−1/2}W_HΣ^{−1/2}, where W_H is the H-step controllability Gramian, and 0 ⪯ W̃_H ⪯ I. For a unit vector u, uᵀW̃_H u is the share of the variance of the direction u that the last H actions caused.
+(a) T_H(E) = tr(UᵀW̃_H U) with W̃_H = Σ_{h=0}^{H−1} Ã^h B̃B̃ᵀ(Ã^h)ᵀ = Σ^{−1/2}W_HΣ^{−1/2}, where W_H is the H-step controllability matrix, and 0 ⪯ W̃_H ⪯ I. For a unit vector u, uᵀW̃_H u is the share of the variance of the direction u that the last H actions caused.
 (b) Over all encoders with EΣEᵀ = I, T_H is maximal exactly on the span of eigenvectors for the K largest eigenvalues of W̃_H, with value their sum.
 (c) The latent displacements that action sequences of total energy 1 reach in H steps form the ellipsoid with matrix UᵀW̃_H U. So the maximizers of T_H are the latents in which goals are cheapest to reach.
 (d) T_H is quadratic in the scale of an action-dependent component: the latent of Theorem 3(b) has T_H = ε² vᵀW̃_H v/(1 + ε²). In the world of Theorem 3(c) the minimizers of L − μT_H keep mode i exactly when μ > qᵢ/wᵢ with wᵢ = bᵢ²(1 − αᵢ^{2H})/(1 − αᵢ²), which is at most qᵢ/bᵢ², a factor 2(1 + αᵢ) or more below λᵢ.
@@ -77,7 +77,7 @@ Taken together: the prediction objective ranks directions by how little fresh no
 
 Not covered: nonlinear worlds and encoders, actions chosen by a policy that depends on the state, predictors that see a window of past latents, finite samples and the dynamics of training, and experiments from pixels. With a policy that depends on the state, the covariance in T_H is to be taken after removing from a_t its regression on z_t.
 
-Relation to other work, to our knowledge: linear results with the controllability Gramian for an inverse-dynamics term are in [5], conditions under which the full state and transition are identified at full latent dimension in [9, 10], and a split of the latent into controllable and uncontrollable parts in [11]. The formulas of Theorems 1 to 4 for K below the state dimension, the bound of Theorem 2, the small-component solution of Theorem 3 and the term T_H are, to our knowledge, not in these works.
+Relation to other work, to our knowledge: linear results with the controllability matrix for an inverse-dynamics term are in [5], conditions under which the full state and transition are identified at full latent dimension in [9, 10], and a split of the latent into controllable and uncontrollable parts in [11]. The formulas of Theorems 1 to 4 for K below the state dimension, the bound of Theorem 2, the small-component solution of Theorem 3 and the term T_H are, to our knowledge, not in these works.
 
 ## Simulations
 
