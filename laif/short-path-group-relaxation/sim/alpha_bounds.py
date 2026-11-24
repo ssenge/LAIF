@@ -1,12 +1,14 @@
 """Exact checks of upper bounds on the gain alpha of the generalized short-path runtime (Theorems 4.2, 4.3 of
 arXiv:2410.23270, used as Theorems 2, 3 in arXiv:2602.13494) for group relaxations: a coset x0 + K of a subgroup K of
-Z_r^d, linear cost f(x) = c.x with representatives in [0, r), Cayley walk on K with holding probability p0.
+Z_r^d, linear cost f(x) = c.x with representatives in [0, r), group walk on K (moves x -> x +- s, s in S) with holding
+probability p0.
 
 Quantities: L = ln(|K|/|K*|), Gamma = E_pi f - OPT, M = max f - OPT, Gamma_S = mean of f(x* +- s) - OPT over the moves s.
 Claims checked:
   (a) every valid Delta_P(eta) obeys Delta_P >= E_{y ~ P(x*)} min(f(y) - OPT, eta |E*|)  (Def. 6 at an optimum x*);
   (b) condition (12)/(4) forces pi(E <= (1 - eta) E*) <= 1/16, hence eta |E*| <= (16/15) Gamma;
-  (c) Poincare version: alpha < (2/15)(1 - eta) (delta / (1 - p0)) M / (Gamma_S L), and delta / (1 - p0) <= 1 + 1/(|K| - 1);
+  (c) Poincare version: whenever pi(E <= (1 - eta) E*) < 1 (implied by gamma-spectral density with gamma > 0),
+      alpha < (1/8)(1 - eta) (delta / (1 - p0)) M / (Gamma_S L), and delta / (1 - p0) <= 1 + 1/(|K| - 1);
   (d) the generator weight sum_{i: h_i != 0} |c_i| max(h_i, r - h_i) of a uniformly random element of K has mean >= M/4;
   (e) the family of Theorem 10 of 2602.13494 (K = t Z_{t^2}^m, unit costs) has M = m t (t - 1) = 2 Gamma.
 """
@@ -78,10 +80,10 @@ def check(rng, r, d, ngen, moves, p0, out):
             p = np.mean(H <= (1 - eta) * (-Eabs))
             ok12 = D > 0 and p > 0 and delta > 0 and 1 / (2 * math.sqrt(p)) - max(4 * math.log(n) / delta, 3 * Eabs ** 2 * (1 - eta) ** 2 / D ** 2) >= 2
             if ok12: assert p <= 1 / 16; out[1] += 1
-            if p > 1 / 16: continue                                    # the bound (c) only uses p <= 1/16
-            assert eta * Eabs <= 16 / 15 * Gamma + 1e-9                                           # (b)
+            if p <= 1 / 16: assert eta * Eabs <= 16 / 15 * Gamma + 1e-9                         # (b)
+            if p >= 1 or Gamma_S == 0: continue                        # the bound (c) only uses p < 1
             alpha = eta * (1 - eta) * Eabs * (delta / 4) / (2 * D * L)                             # sup over b < delta/4
-            bound = 2 / 15 * (1 - eta) * delta / (1 - p0) * M / (Gamma_S * L)
+            bound = 1 / 8 * (1 - eta) * delta / (1 - p0) * M / (Gamma_S * L)
             assert alpha <= bound + 1e-12, (alpha, bound)                                         # (c)
             out[0].append(alpha / bound)
     K = [tuple((a - b) % r for a, b in zip(x, X[0])) for x in X]; c = instance_cost[0]
@@ -106,7 +108,7 @@ def test():
                 for _ in range(3):
                     check(rng, r, d, ngen, moves, p0, ratios); cases += 1
     print(f"alpha_bounds self-checks passed: {cases} instances, {len(ratios[0])} (eta, shift) pairs with "
-          f"pi(E <= (1-eta)E*) <= 1/16, {ratios[1]} meeting condition (12), largest alpha/bound {max(ratios[0]):.3f}")
+          f"pi(E <= (1-eta)E*) < 1, {ratios[1]} meeting condition (12), largest alpha/bound {max(ratios[0]):.3f}")
 
 
 if __name__ == "__main__":
