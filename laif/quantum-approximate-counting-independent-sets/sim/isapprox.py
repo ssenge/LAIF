@@ -9,8 +9,8 @@ exclude deletes it, include deletes its closed neighbourhood; a leaf is the empt
 1. Exact identity: C is a full binary tree, and  #IS(G) = (N + 1)/2 + sum over easy leaves e of (#IS(e) - 1),
    with N the number of nodes of C.  Checked on random graphs against brute-force counting.
 2. Ticket bounds: P has at most T(b) leaves, T(b) = T(b-1) + T(b-7) for b > 0 and T(b) = 1 for b <= 0, and the
-   node-ticket map of C is a bijection from its marked tickets onto the nodes of C, inside a universe of size
-   U_C = 2 T(budget) 2^{(1 - beta) n}.
+   node-ticket map of C sends its marked tickets bijectively onto the root paths of the nodes of C, inside a
+   universe of size at most U_C = 2 T(budget) 2^{(1 - beta) n}.
 3. Bucketed sum: for values f_e and (1 +- eps)-accurate estimates, sum over buckets (1+eps)^k M_k is within a factor
    (1 +- 3 eps) of sum f_e.
 4. Exponents: a = log2 of the root of x^7 = x^6 + 1, 2^{-a} + 2^{-7a} <= 1, beta = 1/(1 + a), quantum exponent
@@ -107,39 +107,39 @@ for n in range(8, 19):
 print(f"identity #IS = (N + 1)/2 + sum_easy (f - 1) holds on {checked} random graphs (n <= 18)")
 
 # 2b. node tickets: ticket m at a node of the compiled tree; 0 is the node itself, then the children's blocks
-def node_ticket(adj, verts, b, m, n, budget, phase):
+def node_ticket(adj, verts, b, m, n, budget, phase, path=()):
     """Returns the node reached by ticket m, or None.  Bounds: P node with budget b: 2 T(b) 2^{n - budget} - 1;
     include/exclude node on k vertices: 2^{k + 1} - 1 (full binary tree with at most 2^k leaves)."""
     if phase == "P" and (b <= 0):
         phase = "core"
     if phase == "P" and easy(adj, verts):
-        return ("easyleaf", verts) if m == 0 else None
+        return path if m == 0 else None
     if m == 0:
-        return (phase, verts, b)
+        return path
     m -= 1
     if phase == "P":
         v = branch_vertex(adj, verts); d = len(adj[v] & verts)
         kids = [(verts - {v}, b - 1), (verts - (adj[v] | {v}), b - (d + 1))]
-        for (kv, kb) in kids:
+        for i, (kv, kb) in enumerate(kids):
             bound = (2 * T(kb) * 2 ** (n - budget) - 1) if kb > 0 else (2 ** (len(kv) + 1) - 1)
             if m < bound:
-                return node_ticket(adj, kv, kb, m, n, budget, "P")
+                return node_ticket(adj, kv, kb, m, n, budget, "P", path + (i,))
             m -= bound
         return None
     if not verts:
         return None
     v = min(verts)
-    for kv in (verts - {v}, verts - (adj[v] | {v})):
+    for i, kv in enumerate((verts - {v}, verts - (adj[v] | {v}))):
         bound = 2 ** (len(kv) + 1) - 1
         if m < bound:
-            return node_ticket(adj, kv, 0, m, n, budget, "core")
+            return node_ticket(adj, kv, 0, m, n, budget, "core", path + (i,))
         m -= bound
     return None
 
-for n in (10, 12):
+for n, p in ((10, 0.7), (12, 0.7), (11, 1.0), (12, 0.5), (13, 0.85)):
     adj = {u: set() for u in range(n)}
     for u, w in itertools.combinations(range(n), 2):
-        if random.random() < 0.7:
+        if random.random() < p:
             adj[u].add(w); adj[w].add(u)
     adj = {u: frozenset(s) for u, s in adj.items()}
     V = frozenset(range(n)); budget = ceil(beta * n)
@@ -148,7 +148,9 @@ for n in (10, 12):
     hard, easy_l, stats = [], [], {"P": 0}
     preprocess(adj, V, budget, hard, easy_l, stats)
     N = stats["P"] - len(hard) + sum(naive_nodes(adj, H) for H in hard)
-    assert sum(h is not None for h in hits) == N, (n, N)
+    paths = [h for h in hits if h is not None]
+    assert len(paths) == len(set(paths)) == N, (n, N)                  # distinct root paths, one per node
+    assert U <= 2 * T(budget) * 2 ** (n - budget)                      # inside U_C
 print("node-ticket map hits every node of the compiled tree exactly once (exhaustive over the universe)")
 
 # 3. bucketed sum with (1 +- eps)-accurate estimates
@@ -175,7 +177,9 @@ q = A_EXP / (2 * (1 + A_EXP)); c = A_EXP / (1 + A_EXP)
 assert abs(beta * A_EXP - (1 - beta)) < 1e-12                      # balance: preprocessing size = residual size
 assert 2 ** q < 1.0895 and 2 ** c < 1.1869
 mixed = A_EXP / (1 + 3 * A_EXP)                                     # classical preprocessing, quantum cores
-assert 2 ** mixed > 1.1214 and 2 ** 0.25 > 1.1892
+easy_only = log2(hi) / 2                                            # bucketed count over the leaves of P with no budget
+assert 2 ** mixed > 1.1214 and 2 ** 0.25 > 1.1892 and 2 ** easy_only > 1.1204
 print(f"quantum exponent a/(2(1 + a)) = {q:.6f}: base {2 ** q:.5f}; classical [1] {2 ** c:.5f};"
-      f" classical preprocessing with quantum cores {2 ** mixed:.5f}; include/exclude tree alone {2 ** 0.25:.5f}")
+      f" classical preprocessing with quantum cores {2 ** mixed:.5f}; bucketed count without budget {2 ** easy_only:.5f};"
+      f" include/exclude tree alone {2 ** 0.25:.5f}")
 print("all checks passed")
