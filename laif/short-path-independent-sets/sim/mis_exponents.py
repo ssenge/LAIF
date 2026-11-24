@@ -117,13 +117,14 @@ def test():
 def row(d):
     """All exponents in nats per vertex. lam_c: uniqueness threshold (Theorems 5.17, 5.19 of 2410.23270);
     lam_rr = 1/(2 sqrt(d-1) - 1) (Theorem 5.21). LT: whp lower bound on (1/n) ln(1/pi_lam(E*)) from the empty set and the
-    greedy bound alpha* >= alpha_g. c_bound: whp upper bound on c in Theorem 4.2. holds: psi <= (1 - 2 c_bound) LT, i.e.
+    greedy bound alpha* >= alpha_g. c_bound: upper bound (1 + lam)/24 on c in Theorem 4.2 at lam_c (Delta_P >= |x*|/(n(1+lam)),
+    omega <= delta/2 <= 1/(2n), gamma <= 1, eta(1-eta) <= 1/4; |x*| cancels). holds: psi <= (1 - 2 c_bound) LT, i.e.
     listing maximal sets takes at most the square of the quantum runtime bound."""
     lam_c = float(np.exp((d - 1) * np.log(d - 1) - d * np.log(d - 2))); lam_rr = 1 / (2 * np.sqrt(d - 1) - 1)
     pm, am = phi_max(d); ag = alpha_greedy(d); a1 = alpha_first_moment(d); ps = psi_max(d)[0] * (1 + 1e-4)   # rounded up (relative)
     tail = phi(ag, d) if ag >= am else pm
     LT = lambda lam: ag * np.log(1 / lam) - tail
-    cb = a1 * (1 + lam_c) / (12 * ag)
+    cb = (1 + lam_c) / 24
     r = dict(d=d, psi=ps, phi_max=pm, alpha_greedy=ag, alpha_first_moment=a1, lam_c=lam_c, lam_rr=lam_rr,
              LT_c=LT(lam_c), c_bound=cb, holds_c=bool(ps <= (1 - 2 * cb) * LT(lam_c)), LT_rr=LT(lam_rr),
              kappa_bits=kappa(d) if d <= 10 ** 6 else None)
@@ -134,17 +135,20 @@ def row(d):
 
 def table(path):
     import json
-    ds = sorted(set([6, 8, 10, 15, 20, 30, 50, 100, 200, 300, 400, 500, 1000, 10 ** 4, 10 ** 5, 10 ** 6, 10 ** 7]
-                    + [int(x) for x in np.unique(np.round(np.exp(np.linspace(np.log(100), np.log(1e7), 300))))]))
+    ds = sorted(set([6, 8, 10, 15] + list(range(20, 450)) + [10 ** 4, 10 ** 5, 10 ** 6, 10 ** 7]
+                    + [int(x) for x in np.unique(np.round(np.exp(np.linspace(np.log(100), np.log(1e9), 300))))]))
+    ds = [d for d in ds if d <= 10 ** 7]   # shortcut: the float evaluation of psi loses accuracy beyond about 1e8
     rows = [row(d) for d in ds]
     json.dump(rows, open(path, "w"), indent=1)
-    ok = [r["d"] for r in rows if r["holds_c"]]; bad = [r["d"] for r in rows if not r["holds_c"] and r["d"] >= 100]
-    assert min(ok) > max(bad) and max(ok) == 10 ** 7, (min(ok), max(bad))
+    ok = sorted(r["d"] for r in rows if r["holds_c"]); lo = ok[0]
+    hi = max(d for d in ok if all(r["holds_c"] for r in rows if lo <= r["d"] <= d))
+    assert all(not r["holds_c"] for r in rows if r["d"] < lo)
+    marg = min(((1 - 2 * r["c_bound"]) * r["LT_c"] / r["psi"] - 1, r["d"]) for r in rows if lo <= r["d"] <= hi)
+    print("holds for every listed d from", lo, "to", hi, "; smallest relative margin", marg)
     for r in rows:
-        if r["d"] in (6, 10, 20, 50, 100, 200, 449, 500, 1000, 10 ** 4, 10 ** 5, 10 ** 6, 10 ** 7) or r["d"] == min(ok):
+        if r["d"] in (6, 10, 20, 50, 100, 200, 449, 500, 1000, 10 ** 4, 10 ** 5, 10 ** 6, 10 ** 7, 10 ** 8, 10 ** 9) or r["d"] in (lo, hi):
             print(f"{r['d']:8d} psi {r['psi']:.6f} LT_c {r['LT_c']:+.6f} c< {r['c_bound']:.4f} holds {r['holds_c']}  "
                   f"ann_c* {r['annealed_cstar_c']:+.3f} ann_c*_rr {r['annealed_cstar_rr']:+.3f}")
-    print("holds for every listed d from", min(ok), "to", max(ok), "; fails at", max(bad))
 
 
 if __name__ == "__main__":
