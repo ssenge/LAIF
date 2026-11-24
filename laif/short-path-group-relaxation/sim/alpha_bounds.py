@@ -7,7 +7,7 @@ Quantities: L = ln(|K|/|K*|), Gamma = E_pi f - OPT, M = max f - OPT, Gamma_S = m
 Claims checked:
   (a) every valid Delta_P(eta) obeys Delta_P >= E_{y ~ P(x*)} min(f(y) - OPT, eta |E*|)  (Def. 6 at an optimum x*);
   (b) condition (12)/(4) forces pi(E <= (1 - eta) E*) <= 1/16, hence eta |E*| <= (16/15) Gamma;
-  (c) Poincare version: whenever pi(E <= (1 - eta) E*) < 1 (implied by gamma-spectral density with gamma > 0),
+  (c) spectral-gap version: whenever pi(E <= (1 - eta) E*) < 1 (implied by gamma-spectral density with gamma > 0),
       alpha < (1/8)(1 - eta) (delta / (1 - p0)) M / (Gamma_S L), and delta / (1 - p0) <= 1 + 1/(|K| - 1);
   (d) the generator weight sum_{i: h_i != 0} |c_i| max(h_i, r - h_i) of a uniformly random element of K has mean >= M/4;
   (e) the family of Theorem 10 of 2602.13494 (K = t Z_{t^2}^m, unit costs) has M = m t (t - 1) = 2 Gamma.

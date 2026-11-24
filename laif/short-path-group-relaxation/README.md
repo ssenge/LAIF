@@ -23,17 +23,17 @@ where δ is the spectral gap of the walk and p_0 its holding probability. The pr
 - **The depth of the well.** The spectral-density condition [1, Definition 5] with γ > 0 leaves some feasible point above the well, so η|E*| < M. The technical condition (4) of [1, Theorem 3] even forces π(E ≤ (1 − η)E*) ≤ 1/16, and then Markov's inequality applied to f − OPT gives η|E*| ≤ (16/15) Γ.
 - **The exponent.** With b < δ/4, the first two steps bound the exponent η(1 − η)|E*| b / (2 Δ_P L).
 
-The log-Sobolev version [2, Theorem 4.2] ([1, Theorem 2]) gives α < (1/3)(1 − η) M / (Γ_S ln|K|) for every group walk, since the indicator of one point shows that the log-Sobolev constant is at most (1 − p_0)/ln|K|.
+The version of [2, Theorem 4.2] with a logarithmic entropy inequality ([1, Theorem 2]) gives α < (1/3)(1 − η) M / (Γ_S ln|K|) for every group walk, since the indicator of one point shows that its entropy-decay constant is at most (1 − p_0)/ln|K|.
 
 **Corollary 2 (expander walk).** For the expander of [1, Theorem 11], each move x* ± s with s uniformly random is uniform on the coset, so the expected value of Γ_S is Γ. If M/Γ = O(1), then with high probability
 
   α ≤ (1/4)(1 + o(1)) · M / (Γ L) = O(1/L),
 
-which is O(1/n) in the regime of [1], where L = Θ(n). For the family of [1, Theorem 10], M = 2Γ exactly, so α ≤ (1/2)(1 + o(1)) / (m ln t), with m constraints and generators of order t. The log-Sobolev version gives the same order.
+which is O(1/n) in the regime of [1], where L = Θ(n). For the family of [1, Theorem 10], M = 2Γ exactly, so α ≤ (1/2)(1 + o(1)) / (m ln t), with m constraints and generators of order t. The entropy-inequality version gives the same order.
 
 This hints at a possible gap in the proof of [1, Theorem 11]. That proof needs the largest cyclic weight of the generators to be of order |OPT_B| / L, together with a shift |E*| of the order of |OPT_B|. A uniformly random element of K has mean cyclic weight at least M/2 over its support. So the condition forces |E*| to grow like L · M, and that conflicts with η|E*| ≤ (16/15) Γ from condition (4) once L is large. In the same proof, the spectral-density exponent is computed with the truncated cost θ̃ in place of the cost itself. θ̃ takes values in [−1, 0], so the bound OPT_B − C ≤ E_π θ̃ ≤ (1 − η)(OPT_B − C) used there appears to need (1 − η)|E*| ≤ 1.
 
-For the product-of-cycles walk of [1, Theorem 9], the log-Sobolev bound above does not exclude a constant gain. On the family of [1, Theorem 10] it equals (2/3)(t − 1)/(t ln t), about 0.48 at t = 2. The survey entry [3, Sec. 8.1] cites [1] for a super-quadratic speedup over classical local search on the group relaxation, and the family of [1, Theorem 10] remains consistent with that statement.
+For the product-of-cycles walk of [1, Theorem 9], the entropy-inequality bound above does not exclude a constant gain. On the family of [1, Theorem 10] it equals (2/3)(t − 1)/(t ln t), about 0.48 at t = 2. The survey entry [3, Sec. 8.1] cites [1] for a super-quadratic speedup over classical local search on the group relaxation, and the family of [1, Theorem 10] remains consistent with that statement.
 
 ## Scope
 
