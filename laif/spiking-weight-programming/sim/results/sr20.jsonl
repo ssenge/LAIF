@@ -1,0 +1,6 @@
+{"task": "20-dim STORE-RECALL", "neurons": 81, "sequences": 2048, "seed": 1, "recall_silent": true, "recalls": 2300, "word_accuracy": 1.0, "bit_accuracy": 1.0, "wrong_words": 0, "rate_hz_per_neuron": 26.770447530864196}
+{"task": "20-dim STORE-RECALL", "neurons": 81, "sequences": 2048, "seed": 1, "recall_silent": false, "recalls": 2300, "word_accuracy": 1.0, "bit_accuracy": 1.0, "wrong_words": 0, "rate_hz_per_neuron": 26.741524402006174}
+{"task": "20-dim STORE-RECALL", "neurons": 81, "sequences": 2048, "seed": 2, "recall_silent": true, "recalls": 2268, "word_accuracy": 1.0, "bit_accuracy": 1.0, "wrong_words": 0, "rate_hz_per_neuron": 26.744993610146604}
+{"task": "20-dim STORE-RECALL", "neurons": 81, "sequences": 2048, "seed": 2, "recall_silent": false, "recalls": 2268, "word_accuracy": 1.0, "bit_accuracy": 1.0, "wrong_words": 0, "rate_hz_per_neuron": 26.723201798804013}
+{"task": "20-dim STORE-RECALL", "neurons": 81, "sequences": 2048, "seed": 3, "recall_silent": true, "recalls": 2249, "word_accuracy": 1.0, "bit_accuracy": 1.0, "wrong_words": 0, "rate_hz_per_neuron": 26.604443962191358}
+{"task": "20-dim STORE-RECALL", "neurons": 81, "sequences": 2048, "seed": 3, "recall_silent": false, "recalls": 2249, "word_accuracy": 1.0, "bit_accuracy": 1.0, "wrong_words": 0, "rate_hz_per_neuron": 26.584309895833332}

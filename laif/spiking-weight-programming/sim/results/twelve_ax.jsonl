@@ -1,0 +1,5 @@
+{"task": "12AX", "neurons": 25, "episodes": 2000, "seed": 1, "success_rate": 1.0, "symbol_success_rate": 1.0, "wrong_episodes": 0, "rate_hz_per_neuron": 29.096095555555554}
+{"task": "12AX", "neurons": 25, "episodes": 2000, "seed": 2, "success_rate": 1.0, "symbol_success_rate": 1.0, "wrong_episodes": 0, "rate_hz_per_neuron": 29.173193333333334}
+{"task": "12AX", "neurons": 25, "episodes": 2000, "seed": 3, "success_rate": 1.0, "symbol_success_rate": 1.0, "wrong_episodes": 0, "rate_hz_per_neuron": 29.105235555555556}
+{"task": "12AX", "neurons": 25, "episodes": 2000, "seed": 4, "success_rate": 1.0, "symbol_success_rate": 1.0, "wrong_episodes": 0, "rate_hz_per_neuron": 29.176978222222225}
+{"task": "12AX", "neurons": 25, "episodes": 2000, "seed": 5, "success_rate": 1.0, "symbol_success_rate": 1.0, "wrong_episodes": 0, "rate_hz_per_neuron": 29.138727555555555}
