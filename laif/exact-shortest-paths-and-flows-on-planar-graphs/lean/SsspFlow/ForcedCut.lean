@@ -72,6 +72,33 @@ theorem not_np_next_of_anc {Γ C : Finset (D × Bool)} (hroot : ∃ z ∈ Γ, t.
     obtain ⟨z, hz, hzw⟩ := hΓ
     exact hn z (t.mem_next.2 (Or.inl hz)) hzw
 
+/-- **The next level for any cut.** A dart belongs to it if it is a corner, a corner of the cut, or a rail
+of a vertex whose interval on the tour through all darts holds a corner of the cut. -/
+theorem mem_next_iff_cut {Γ C : Finset (D × Bool)} {w₀ : D × Bool} (hL : t.IsLevel Γ)
+    (h₀ : t.vertM w₀ = t.root) (h₁ : w₀.2 = true) (z : D × Bool) :
+    z ∈ t.next Γ C ↔ z ∈ Γ ∨ z ∈ C ∨
+      ∃ u, u ≠ t.root ∧ (z = t.r0 u ∨ z = t.c0 u) ∧ ∃ c ∈ C,
+        pos (t.tau w₀) w₀ (t.c1 u) ≤ pos (t.tau w₀) w₀ c ∧
+          pos (t.tau w₀) w₀ c ≤ pos (t.tau w₀) w₀ (t.r0 u) := by
+  rw [t.mem_next]
+  constructor
+  · rintro (h | ⟨c, hc, rfl | h⟩)
+    · exact Or.inl h
+    · exact Or.inr (Or.inl hc)
+    · obtain ⟨w, hwn, ha, hz⟩ := t.mem_railsUp.1 h
+      have hne := hwn.ne_root hL
+      exact Or.inr (Or.inr ⟨w, hne, hz, c, hc, (anc_iff_interval h₀ h₁ hne c).1 ha⟩)
+  · rintro (h | h | ⟨u, hu, hz, c, hc, hi⟩)
+    · exact Or.inl h
+    · exact Or.inr ⟨z, h, Or.inl rfl⟩
+    · by_cases hzΓ : z ∈ Γ
+      · exact Or.inl hzΓ
+      · have hn : t.NP Γ u := by
+          rcases hz with rfl | rfl
+          · exact np_of_r0_not_mem hL hu hzΓ
+          · exact np_of_c0_not_mem hL hu hzΓ
+        exact Or.inr ⟨c, hc, Or.inr (t.mem_railsUp.2 ⟨u, hn, (anc_iff_interval h₀ h₁ hu c).2 hi, hz⟩)⟩
+
 section Forced
 
 variable (code : D × Bool → ℕ) (W : ℕ) (fid : D × Bool → ℕ) (w₀ : D × Bool) (C₀ : Finset (D × Bool))

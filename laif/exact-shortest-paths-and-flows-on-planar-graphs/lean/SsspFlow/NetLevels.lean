@@ -41,8 +41,12 @@ def phRecY (d : ℕ) : ℕ := 15 + 6 * d
 
 section Readers
 
-variable (W : ℕ) (r : Fin n) (rl : List (Fin n)) (v : Fin n) (m : Mem) (d : ℕ)
+variable (W : ℕ) (r : Fin n) (rl : List (Fin n)) (fl : Option (Fin n × Bool → Bool × Bool)) (v : Fin n) (m : Mem) (d : ℕ)
   (C : Finset (Fin n × Bool)) (y : Fin n × Bool)
+
+/-- The prescribed cut at a depth, from the flags of the node: the flags at depth `0`, nothing at the other
+depths. -/
+def frcL : Option (Fin n × Bool → Bool × Bool) := if d = 0 then fl else none
 
 /-- The least code of a corner of the bag of a dart, from the memory. -/
 def minC : ℕ := m (phFlood d) (cL v y)
@@ -68,17 +72,19 @@ def smL : Prop := v ≠ r ∧ y = (parR rl v m, false) ∧ C = ∅
 
 /-- The value of a dart as the first dart of a cut, from the memory. -/
 noncomputable def candAL : Option ℕ :=
-  candA W (tabPL v m d y) (minC v m d y) (viewL r rl v m y) (viewR v m y) (mkL r rl v m C y)
-    (smL r rl v m C y)
+  match frcL fl d with
+  | some f => if (f y).1 then some 0 else none
+  | none => candA W (tabPL v m d y) (minC v m d y) (viewL r rl v m y) (viewR v m y) (mkL r rl v m C y)
+      (smL r rl v m C y)
 
 /-- The pairs of a dart in the call for the first dart. -/
-noncomputable def selAIts : List (ℕ × ℕ) := (candAL W r rl v m d C y).toList.map fun a => (0, a)
+noncomputable def selAIts : List (ℕ × ℕ) := (candAL W r rl fl v m d C y).toList.map fun a => (0, a)
 
 /-- The answer of the call for the first dart. -/
 def minAL : ℕ := m (phSelA d) (Nat.pair (nameL v m d y) 0)
 
 /-- The dart is the first dart of the cut of its bag, from the memory. -/
-def isAL : Prop := ∃ a, candAL W r rl v m d C y = some a ∧ minAL v m d y = a + 1
+def isAL : Prop := ∃ a, candAL W r rl fl v m d C y = some a ∧ minAL v m d y = a + 1
 
 /-- The name of the face of a dart, from the memory. -/
 def fidL : ℕ :=
@@ -88,7 +94,7 @@ def fidL : ℕ :=
 open Classical in
 /-- The pairs of a dart in the call for the record of the first dart. -/
 noncomputable def recAIts : List (ℕ × ℕ) :=
-  if isAL W r rl v m d C y then
+  if isAL W r rl fl v m d C y then
     [(0, numPL r rl v m y), (1, mFT W (tabPL v m d y) (minC v m d y) (viewL r rl v m y)),
       (2, pUT W (tabPL v m d y) (minC v m d y) (viewL r rl v m y)), (3, fidL v m y)]
   else []
@@ -98,21 +104,23 @@ def recAL (κ : ℕ) : ℕ := m (phRecA d) (Nat.pair (nameL v m d y) κ)
 
 /-- The value of a dart as the second dart of a cut, from the memory. -/
 noncomputable def candYL : Option ℕ :=
-  candY W (tabPL v m d y) (minC v m d y) (recAL v m d y 0 ≠ 0) (recAL v m d y 2 - 1) (recAL v m d y 1 - 1)
-    (recAL v m d y 3 - 1) (fidL v m y) (viewL r rl v m y)
+  match frcL fl d with
+  | some f => if (f y).2 then some 0 else none
+  | none => candY W (tabPL v m d y) (minC v m d y) (recAL v m d y 0 ≠ 0) (recAL v m d y 2 - 1)
+      (recAL v m d y 1 - 1) (recAL v m d y 3 - 1) (fidL v m y) (viewL r rl v m y)
 
 /-- The pairs of a dart in the call for the second dart. -/
-noncomputable def selYIts : List (ℕ × ℕ) := (candYL W r rl v m d y).toList.map fun a => (0, a)
+noncomputable def selYIts : List (ℕ × ℕ) := (candYL W r rl fl v m d y).toList.map fun a => (0, a)
 
 /-- The answer of the call for the second dart. -/
 def minYL : ℕ := m (phSelY d) (Nat.pair (nameL v m d y) 0)
 
 /-- The dart is the second dart of the cut of its bag, from the memory. -/
-def isYL : Prop := ∃ a, candYL W r rl v m d y = some a ∧ minYL v m d y = a + 1
+def isYL : Prop := ∃ a, candYL W r rl fl v m d y = some a ∧ minYL v m d y = a + 1
 
 open Classical in
 /-- The pairs of a dart in the call for the record of the second dart. -/
-noncomputable def recYIts : List (ℕ × ℕ) := if isYL W r rl v m d y then [(0, numPL r rl v m y)] else []
+noncomputable def recYIts : List (ℕ × ℕ) := if isYL W r rl fl v m d y then [(0, numPL r rl v m y)] else []
 
 /-- The record of the second dart, from the memory. -/
 def recYL : ℕ := m (phRecY d) (Nat.pair (nameL v m d y) 0)
@@ -158,11 +166,11 @@ end Readers
 
 open Classical in
 /-- The corners of a level at a node, from the memory. -/
-noncomputable def corL (W : ℕ) (r : Fin n) (rl : List (Fin n)) (v : Fin n) (m : Mem) :
+noncomputable def corL (W : ℕ) (r : Fin n) (rl : List (Fin n)) (fl : Option (Fin n × Bool → Bool × Bool)) (v : Fin n) (m : Mem) :
     ℕ → Finset (Fin n × Bool)
   | 0 => if v = r then {(rl.headD v, true)} else ∅
-  | d + 1 => corL W r rl v m d ∪ (ownL rl).toFinset.filter fun y =>
-      isAL W r rl v m d (corL W r rl v m d) y ∨ isYL W r rl v m d y ∨ railL r rl v m d y
+  | d + 1 => corL W r rl fl v m d ∪ (ownL rl).toFinset.filter fun y =>
+      isAL W r rl fl v m d (corL W r rl fl v m d) y ∨ isYL W r rl fl v m d y ∨ railL r rl v m d y
 
 section Entries
 
@@ -248,19 +256,37 @@ theorem inIv_iff (hF : EF N L m d) (hR : ER N L m d) (hS : ES N L m d) (z : N.G.
 
 end Read
 
-/-- The data of the levels of a network. -/
+/-- The flags of the corners of a node for a prescribed first cut: whether a corner is the first or the second
+corner of the cut. -/
+def Net.flN (N : Net (Fin n)) (C₀ : Option ((N.G.Dart × Bool) × (N.G.Dart × Bool))) (v : Fin n) : Option (Fin n × Bool → Bool × Bool) :=
+  C₀.map fun p y => (decide (p.1.1.fst = v ∧ N.locN p.1 = y), decide (p.2.1.fst = v ∧ N.locN p.2 = y))
+
+/-- The data of the levels of a network, with a prescribed first cut if `C₀` is a pair. -/
 noncomputable abbrev levelD (N : Net (Fin n)) (hG : N.G.Connected) (r : Fin n) (d₀ : N.G.Dart) (W : ℕ)
-    (id : N.G.Dart → ℕ) : LevelData (Fin n) N.toRot :=
-  ⟨N.treeN hG r d₀, N.codeN, W, N.fidN id, (d₀, true)⟩
+    (id : N.G.Dart → ℕ) (C₀ : Option ((N.G.Dart × Bool) × (N.G.Dart × Bool))) : LevelData (Fin n) N.toRot :=
+  ⟨N.treeN hG r d₀, N.codeN, W, N.fidN id, (d₀, true), C₀⟩
 
 section Concrete
 
 variable {N : Net (Fin n)} (hG : N.G.Connected) {r : Fin n} {d₀ : N.G.Dart} {W : ℕ} {id : N.G.Dart → ℕ}
-  {m : Fin n → Mem} {d : ℕ}
+  {C₀ : Option ((N.G.Dart × Bool) × (N.G.Dart × Bool))} {m : Fin n → Mem} {d : ℕ}
 
-local notation "𝓛" => levelD N hG r d₀ W id
+local notation "𝓛" => levelD N hG r d₀ W id C₀
 local notation "𝓣" => Net.treeN N hG r d₀
 local notation "𝓦" => ((d₀, true) : N.G.Dart × Bool)
+
+/-- A node reads the prescribed cut of a depth from its flags. -/
+theorem frcL_flN (v : Fin n) : frcL (N.flN C₀ v) d = N.flN ((𝓛).frc d) v := by
+  unfold frcL LevelData.frc
+  split_ifs <;> rfl
+
+theorem frcL_none (hd : (𝓛).frc d = none) (v : Fin n) : frcL (N.flN C₀ v) d = none := by
+  rw [frcL_flN hG, hd] <;> rfl
+
+theorem frcL_some {p : (N.G.Dart × Bool) × (N.G.Dart × Bool)} (hd : (𝓛).frc d = some p) (v : Fin n) :
+    frcL (N.flN C₀ v) d = some fun y =>
+      (decide (p.1.1.fst = v ∧ N.locN p.1 = y), decide (p.2.1.fst = v ∧ N.locN p.2 = y)) := by
+  rw [frcL_flN hG, hd] <;> rfl
 
 variable (r d₀) in
 theorem corners_empty_iff {v : Fin n} {Γ : Finset (N.G.Dart × Bool)} :
@@ -459,23 +485,33 @@ theorem portItsL_eq (hOK : (𝓛).OK) (z : N.G.Dart × Bool) {C : Finset (Fin n 
 include hC hd₀ hhd hR hc in
 theorem candAL_eq (hOK : (𝓛).OK) (hF : EF N (𝓛) m d) (hP : EP N (𝓛) m d) (z : N.G.Dart × Bool)
     {C : Finset (Fin n × Bool)} (hcor : C = N.cornersAt z.1.fst ((𝓛).Γs d)) :
-    candAL W r (N.rotList z.1.fst) z.1.fst (m z.1.fst) d C (N.locN z) = (𝓛).aCand d z := by
+    candAL W r (N.rotList z.1.fst) (N.flN C₀ z.1.fst) z.1.fst (m z.1.fst) d C (N.locN z) = (𝓛).aCand d z := by
   subst hcor
-  unfold candAL LevelData.aCand
-  rw [tabPL_eq hF hP z, minC_eq hF z, viewL_eq hG hC hd₀ hhd hR hc z, viewR_eq hG hC z,
-    propext (mkL_iff hG hC (hOK.level d) z), propext (smL_iff hG hC (hOK.level d) z)]
+  unfold candAL
+  rcases hd : (𝓛).frc d with _ | p
+  · simp only [frcL_none hG hd]
+    rw [LevelData.aCand_of hd, tabPL_eq hF hP z, minC_eq hF z, viewL_eq hG hC hd₀ hhd hR hc z, viewR_eq hG hC z,
+      propext (mkL_iff hG hC (hOK.level d) z), propext (smL_iff hG hC (hOK.level d) z)]
+  · simp only [frcL_some hG hd, LevelData.aCand_frc hd]
+    by_cases hz : z = p.1
+    · subst hz
+      simp
+    · have hn : ¬ (decide (p.1.1.fst = z.1.fst ∧ N.locN p.1 = N.locN z) = true) := by
+        rw [decide_eq_true_eq]
+        exact fun h => hz (N.dart_ext h.1 h.2).symm
+      rw [if_neg hn, if_neg hz]
 
 include hC hd₀ hhd hR hc in
 theorem selAIts_eq (hOK : (𝓛).OK) (hF : EF N (𝓛) m d) (hP : EP N (𝓛) m d) (z : N.G.Dart × Bool)
     {C : Finset (Fin n × Bool)} (hcor : C = N.cornersAt z.1.fst ((𝓛).Γs d)) :
-    selAIts W r (N.rotList z.1.fst) z.1.fst (m z.1.fst) d C (N.locN z) = (𝓛).aItems d z := by
+    selAIts W r (N.rotList z.1.fst) (N.flN C₀ z.1.fst) z.1.fst (m z.1.fst) d C (N.locN z) = (𝓛).aItems d z := by
   unfold selAIts LevelData.aItems
   rw [candAL_eq hG hC hd₀ hhd hR hc hOK hF hP z hcor]
 
 include hC hd₀ hhd hR hc in
 theorem isAL_iff (hOK : (𝓛).OK) (hF : EF N (𝓛) m d) (hP : EP N (𝓛) m d) (hA : EA N (𝓛) m d) (z : N.G.Dart × Bool)
     {C : Finset (Fin n × Bool)} (hcor : C = N.cornersAt z.1.fst ((𝓛).Γs d)) :
-    isAL W r (N.rotList z.1.fst) z.1.fst (m z.1.fst) d C (N.locN z) ↔ (𝓛).isA d z := by
+    isAL W r (N.rotList z.1.fst) (N.flN C₀ z.1.fst) z.1.fst (m z.1.fst) d C (N.locN z) ↔ (𝓛).isA d z := by
   unfold isAL LevelData.isA
   rw [candAL_eq hG hC hd₀ hhd hR hc hOK hF hP z hcor, minAL_eq hF hA z]
 
@@ -491,7 +527,7 @@ include hC hd₀ hhd hR hc in
 theorem recAIts_eq (hOK : (𝓛).OK) (hid : ∀ x : N.G.Dart, m x.fst 0 x.snd = id x) (hF : EF N (𝓛) m d)
     (hP : EP N (𝓛) m d) (hA : EA N (𝓛) m d) (z : N.G.Dart × Bool)
     {C : Finset (Fin n × Bool)} (hcor : C = N.cornersAt z.1.fst ((𝓛).Γs d)) :
-    recAIts W r (N.rotList z.1.fst) z.1.fst (m z.1.fst) d C (N.locN z) = (𝓛).raItems d z := by
+    recAIts W r (N.rotList z.1.fst) (N.flN C₀ z.1.fst) z.1.fst (m z.1.fst) d C (N.locN z) = (𝓛).raItems d z := by
   classical
   have e := isAL_iff hG hC hd₀ hhd hR hc hOK hF hP hA z hcor
   unfold recAIts LevelData.raItems
@@ -504,28 +540,39 @@ theorem recAIts_eq (hOK : (𝓛).OK) (hid : ∀ x : N.G.Dart, m x.fst 0 x.snd = 
 include hC hd₀ hhd hR hc in
 theorem candYL_eq (hid : ∀ x : N.G.Dart, m x.fst 0 x.snd = id x) (hF : EF N (𝓛) m d)
     (hP : EP N (𝓛) m d) (hRA : ER N (𝓛) m d) (z : N.G.Dart × Bool) :
-    candYL W r (N.rotList z.1.fst) z.1.fst (m z.1.fst) d (N.locN z) = (𝓛).yCand d z := by
-  unfold candYL LevelData.yCand
-  rw [tabPL_eq hF hP z, minC_eq hF z, viewL_eq hG hC hd₀ hhd hR hc z, fidL_eq hid z, recAL_eq hF hRA z]
+    candYL W r (N.rotList z.1.fst) (N.flN C₀ z.1.fst) z.1.fst (m z.1.fst) d (N.locN z) = (𝓛).yCand d z := by
+  unfold candYL
+  rcases hd : (𝓛).frc d with _ | p
+  · simp only [frcL_none hG hd]
+    rw [LevelData.yCand_of hd, tabPL_eq hF hP z, minC_eq hF z, viewL_eq hG hC hd₀ hhd hR hc z, fidL_eq hid z,
+      recAL_eq hF hRA z]
+  · simp only [frcL_some hG hd, LevelData.yCand_frc hd]
+    by_cases hz : z = p.2
+    · subst hz
+      simp
+    · have hn : ¬ (decide (p.2.1.fst = z.1.fst ∧ N.locN p.2 = N.locN z) = true) := by
+        rw [decide_eq_true_eq]
+        exact fun h => hz (N.dart_ext h.1 h.2).symm
+      rw [if_neg hn, if_neg hz]
 
 include hC hd₀ hhd hR hc in
 theorem selYIts_eq (hid : ∀ x : N.G.Dart, m x.fst 0 x.snd = id x) (hF : EF N (𝓛) m d)
     (hP : EP N (𝓛) m d) (hRA : ER N (𝓛) m d) (z : N.G.Dart × Bool) :
-    selYIts W r (N.rotList z.1.fst) z.1.fst (m z.1.fst) d (N.locN z) = (𝓛).yItems d z := by
+    selYIts W r (N.rotList z.1.fst) (N.flN C₀ z.1.fst) z.1.fst (m z.1.fst) d (N.locN z) = (𝓛).yItems d z := by
   unfold selYIts LevelData.yItems
   rw [candYL_eq hG hC hd₀ hhd hR hc hid hF hP hRA z]
 
 include hC hd₀ hhd hR hc in
 theorem isYL_iff (hid : ∀ x : N.G.Dart, m x.fst 0 x.snd = id x) (hF : EF N (𝓛) m d)
     (hP : EP N (𝓛) m d) (hRA : ER N (𝓛) m d) (hY : EY N (𝓛) m d) (z : N.G.Dart × Bool) :
-    isYL W r (N.rotList z.1.fst) z.1.fst (m z.1.fst) d (N.locN z) ↔ (𝓛).isY d z := by
+    isYL W r (N.rotList z.1.fst) (N.flN C₀ z.1.fst) z.1.fst (m z.1.fst) d (N.locN z) ↔ (𝓛).isY d z := by
   unfold isYL LevelData.isY
   rw [candYL_eq hG hC hd₀ hhd hR hc hid hF hP hRA z, minYL_eq hF hY z]
 
 include hC hd₀ hhd hR hc in
 theorem recYIts_eq (hid : ∀ x : N.G.Dart, m x.fst 0 x.snd = id x) (hF : EF N (𝓛) m d)
     (hP : EP N (𝓛) m d) (hRA : ER N (𝓛) m d) (hY : EY N (𝓛) m d) (z : N.G.Dart × Bool) :
-    recYIts W r (N.rotList z.1.fst) z.1.fst (m z.1.fst) d (N.locN z) = (𝓛).ryItems d z := by
+    recYIts W r (N.rotList z.1.fst) (N.flN C₀ z.1.fst) z.1.fst (m z.1.fst) d (N.locN z) = (𝓛).ryItems d z := by
   classical
   have e := isYL_iff hG hC hd₀ hhd hR hc hid hF hP hRA hY z
   unfold recYIts LevelData.ryItems
@@ -592,11 +639,11 @@ include hC hd₀ hhd hR hc in
 /-- **A node reads its corners at a level from its memory.** -/
 theorem corL_eq (hOK : (𝓛).OK) (hid : ∀ x : N.G.Dart, m x.fst 0 x.snd = id x) (d : ℕ)
     (hprev : ∀ d', d' < d → EAll N (𝓛) m d') (v : Fin n) :
-    corL W r (N.rotList v) v (m v) d = N.cornersAt v ((𝓛).Γs d) := by
+    corL W r (N.rotList v) (N.flN C₀ v) v (m v) d = N.cornersAt v ((𝓛).Γs d) := by
   classical
   induction d generalizing v with
   | zero =>
-    have e : (𝓛).Γs 0 = {𝓦} := rfl
+    have e : (𝓛).Γs 0 = {𝓦} := hOK.decomp.zero
     rw [e]
     unfold corL Net.cornersAt
     rw [Finset.filter_singleton]
@@ -642,28 +689,29 @@ end Concrete
 section Run
 
 /-- What the level phases of a run compute. -/
-structure LevelRun (N : Net (Fin n)) (B Tr W s k b : ℕ) (r : Fin n) (H : ℕ) (mem : ℕ → Fin n → Mem) :
+structure LevelRun (N : Net (Fin n)) (B Tr W s k b : ℕ) (r : Fin n) (F : Fin n → Option (Fin n × Bool → Bool × Bool)) (H : ℕ)
+    (mem : ℕ → Fin n → Mem) :
     Prop where
   stable : ∀ {j k}, j < k → ∀ v, mem k v j = mem (j + 1) v j
   hFlood : ∀ d, d ≤ H → ∀ v, mem (phFlood d + 1) v (phFlood d) = relaxSt B N.G
-    (fun v => floodIn W v (N.rotList v) (corL W r (N.rotList v) v (mem (phFlood d) v) d)) Tr v
+    (fun v => floodIn W v (N.rotList v) (corL W r (N.rotList v) (F v) v (mem (phFlood d) v) d)) Tr v
   hPorts : ∀ d, d ≤ H → AggDone N (fun v => nameL v (mem (phPorts d) v) d)
     (fun v => portItsL r (N.rotList v) v (mem (phPorts d) v)
-      (corL W r (N.rotList v) v (mem (phPorts d) v) d)) s k b
+      (corL W r (N.rotList v) (F v) v (mem (phPorts d) v) d)) s k b
     (fun v => mem (phPorts d + 1) v (phPorts d))
   hSelA : ∀ d, d ≤ H → AggDone N (fun v => nameL v (mem (phSelA d) v) d)
-    (fun v => selAIts W r (N.rotList v) v (mem (phSelA d) v) d
-      (corL W r (N.rotList v) v (mem (phSelA d) v) d)) s k b
+    (fun v => selAIts W r (N.rotList v) (F v) v (mem (phSelA d) v) d
+      (corL W r (N.rotList v) (F v) v (mem (phSelA d) v) d)) s k b
     (fun v => mem (phSelA d + 1) v (phSelA d))
   hRecA : ∀ d, d ≤ H → AggDone N (fun v => nameL v (mem (phRecA d) v) d)
-    (fun v => recAIts W r (N.rotList v) v (mem (phRecA d) v) d
-      (corL W r (N.rotList v) v (mem (phRecA d) v) d)) s k b
+    (fun v => recAIts W r (N.rotList v) (F v) v (mem (phRecA d) v) d
+      (corL W r (N.rotList v) (F v) v (mem (phRecA d) v) d)) s k b
     (fun v => mem (phRecA d + 1) v (phRecA d))
   hSelY : ∀ d, d ≤ H → AggDone N (fun v => nameL v (mem (phSelY d) v) d)
-    (fun v => selYIts W r (N.rotList v) v (mem (phSelY d) v) d) s k b
+    (fun v => selYIts W r (N.rotList v) (F v) v (mem (phSelY d) v) d) s k b
     (fun v => mem (phSelY d + 1) v (phSelY d))
   hRecY : ∀ d, d ≤ H → AggDone N (fun v => nameL v (mem (phRecY d) v) d)
-    (fun v => recYIts W r (N.rotList v) v (mem (phRecY d) v) d) s k b
+    (fun v => recYIts W r (N.rotList v) (F v) v (mem (phRecY d) v) d) s k b
     (fun v => mem (phRecY d + 1) v (phRecY d))
 
 /-- An answer of a call with given names and pairs. -/
@@ -685,9 +733,9 @@ theorem call_tab {N : Net (Fin n)} {s k b : ℕ} {nm : Fin n → Fin n × Bool �
   exact hdone.tab (valid_of hsymm hspan hk hname hf) z κ
 
 variable {N : Net (Fin n)} (hG : N.G.Connected) {r : Fin n} {d₀ : N.G.Dart} {W : ℕ} {id : N.G.Dart → ℕ}
-  {d : ℕ}
+  {C₀ : Option ((N.G.Dart × Bool) × (N.G.Dart × Bool))} {d : ℕ}
 
-local notation "𝓛" => levelD N hG r d₀ W id
+local notation "𝓛" => levelD N hG r d₀ W id C₀
 local notation "𝓣" => Net.treeN N hG r d₀
 
 /-- An answer of a call on the bags of a depth. -/
@@ -704,13 +752,13 @@ theorem level_call (hOK : (𝓛).OK) {h H s k b : ℕ} (hdep : ∀ v, (𝓣).dep
   call_tab hn hi hdone (fun z => (LevelData.nm_congr (same_rev _ z)).symm)
     (fun z z' hzz => (hOK.span hdep hd hzz).mono hs) hk hnm hf z κ
 
-variable {B Tr s k b H h : ℕ} {mem : ℕ → Fin n → Mem}
+variable {B Tr s k b H h : ℕ} {mem : ℕ → Fin n → Mem} {F : Fin n → Option (Fin n × Bool → Bool × Bool)}
 
-theorem LevelRun.entry (hrun : LevelRun N B Tr W s k b r H mem) {j j' j'' : ℕ} (h1 : j < j') (h2 : j < j'')
+theorem LevelRun.entry (hrun : LevelRun N B Tr W s k b r F H mem) {j j' j'' : ℕ} (h1 : j < j') (h2 : j < j'')
     (v : Fin n) : mem j' v j = mem j'' v j :=
   (hrun.stable h1 v).trans (hrun.stable h2 v).symm
 
-theorem LevelRun.transport (hrun : LevelRun N B Tr W s k b r H mem) {L : LevelData (Fin n) N.toRot}
+theorem LevelRun.transport (hrun : LevelRun N B Tr W s k b r F H mem) {L : LevelData (Fin n) N.toRot}
     {d j : ℕ} (hE : EAll N L (mem (phRecY d + 1)) d) (hj : phRecY d + 1 ≤ j) : EAll N L (mem j) d where
   f z := by
     have h1 : phFlood d < j := by unfold phFlood; unfold phRecY at hj; omega
@@ -744,7 +792,7 @@ theorem LevelRun.transport (hrun : LevelRun N B Tr W s k b r H mem) {L : LevelDa
     exact hE.ry z
 
 /-- **The level phases.** A run gives all entries at all depths. -/
-theorem levels_of_run (hOK : (𝓛).OK) (hrun : LevelRun N B Tr W s k b r H mem)
+theorem levels_of_run (hOK : (𝓛).OK) (hrun : LevelRun N B Tr W s k b r (N.flN C₀) H mem)
     (hK : ∀ j, 10 ≤ j → ∀ v, ConstAt N hG r d₀ (mem j v) v)
     (hid : ∀ j, 1 ≤ j → ∀ x : N.G.Dart, mem j x.fst 0 x.snd = id x)
     (hd₀ : d₀.fst = r) (hhd : d₀.snd = (N.rotList r).headD r) (hR : N.toRot.Planar) (hc : N.toRot.Connected)
@@ -766,7 +814,7 @@ theorem levels_of_run (hOK : (𝓛).OK) (hrun : LevelRun N B Tr W s k b r H mem)
       unfold phFlood at hj
       unfold phRecY
       omega
-    have hcor : ∀ j, phFlood d ≤ j → ∀ v, corL W r (N.rotList v) v (mem j v) d =
+    have hcor : ∀ j, phFlood d ≤ j → ∀ v, corL W r (N.rotList v) (N.flN C₀ v) v (mem j v) d =
         N.cornersAt v ((𝓛).Γs d) := fun j hj v =>
       corL_eq hG (hK j (by unfold phFlood at hj; omega)) hd₀ hhd hR hc hOK
         (hid j (by unfold phFlood at hj; omega)) d (hprev j hj) v
@@ -774,7 +822,7 @@ theorem levels_of_run (hOK : (𝓛).OK) (hrun : LevelRun N B Tr W s k b r H mem)
     have hF : ∀ j, phFlood d < j → EF N (𝓛) (mem j) d := by
       intro j hj z
       rw [hrun.stable hj z.1.fst, hrun.hFlood d hd z.1.fst]
-      have e : (fun v => floodIn W v (N.rotList v) (corL W r (N.rotList v) v (mem (phFlood d) v) d)) =
+      have e : (fun v => floodIn W v (N.rotList v) (corL W r (N.rotList v) (N.flN C₀ v) v (mem (phFlood d) v) d)) =
           floodFam N W ((𝓛).Γs d) := by
         funext v
         rw [hcor _ le_rfl v]

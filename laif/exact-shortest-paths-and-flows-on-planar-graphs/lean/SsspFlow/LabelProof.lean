@@ -33,12 +33,12 @@ noncomputable def constIn (r : Fin n) (rl : List (Fin n)) (v : Fin n) (m : Mem) 
 /-- The inputs of the phases of one level. -/
 noncomputable def levelIn (W : ℕ) (r : Fin n) (rl : List (Fin n)) (v : Fin n) (m : Mem) (d : ℕ) :
     ℕ → AggIn (Fin n) ⊕ RelaxIn (Fin n) ⊕ List (Fin n)
-  | 0 => .inr (.inl (floodIn W v rl (corL W r rl v m d)))
-  | 1 => .inl (aggInOf rl (nameL v m d) (portItsL r rl v m (corL W r rl v m d)))
-  | 2 => .inl (aggInOf rl (nameL v m d) (selAIts W r rl v m d (corL W r rl v m d)))
-  | 3 => .inl (aggInOf rl (nameL v m d) (recAIts W r rl v m d (corL W r rl v m d)))
-  | 4 => .inl (aggInOf rl (nameL v m d) (selYIts W r rl v m d))
-  | _ => .inl (aggInOf rl (nameL v m d) (recYIts W r rl v m d))
+  | 0 => .inr (.inl (floodIn W v rl (corL W r rl none v m d)))
+  | 1 => .inl (aggInOf rl (nameL v m d) (portItsL r rl v m (corL W r rl none v m d)))
+  | 2 => .inl (aggInOf rl (nameL v m d) (selAIts W r rl none v m d (corL W r rl none v m d)))
+  | 3 => .inl (aggInOf rl (nameL v m d) (recAIts W r rl none v m d (corL W r rl none v m d)))
+  | 4 => .inl (aggInOf rl (nameL v m d) (selYIts W r rl none v m d))
+  | _ => .inl (aggInOf rl (nameL v m d) (recYIts W r rl none v m d))
 
 /-- **The program of a node.** -/
 noncomputable def progL (P : ValP) (W : ℕ) (r : Fin n) (k : ℕ) (v : Fin n) (loc : LocalIn (Fin n)) (m : Mem) :
@@ -47,7 +47,7 @@ noncomputable def progL (P : ValP) (W : ℕ) (r : Fin n) (k : ℕ) (v : Fin n) (
   else if k < 10 then .inr (.inl (constIn r loc.nbrs v m k))
   else if k < 10 + 6 * (P.H + 1) then levelIn W r loc.nbrs v m ((k - 10) / 6) ((k - 10) % 6)
   else .inl (aggInOf loc.nbrs (nameL v m (P.H - (k - (10 + 6 * (P.H + 1)))))
-    (vItsL P W r loc.nbrs loc.lenOut v m (k - (10 + 6 * (P.H + 1)))))
+    (vItsL P W r loc.nbrs none loc.lenOut v m (k - (10 + 6 * (P.H + 1)))))
 
 section Prog
 
@@ -69,7 +69,7 @@ theorem progL_level {k d i : ℕ} (hk : k = 10 + 6 * d + i) (hd : d ≤ P.H) (hi
     show (k - 10) % 6 = i by omega]
 
 theorem progL_val (i : ℕ) : progL P W r (phVal P.H i) v loc m =
-    .inl (aggInOf loc.nbrs (nameL v m (P.H - i)) (vItsL P W r loc.nbrs loc.lenOut v m i)) := by
+    .inl (aggInOf loc.nbrs (nameL v m (P.H - i)) (vItsL P W r loc.nbrs none loc.lenOut v m i)) := by
   unfold progL phVal
   rw [if_neg (by omega), if_neg (by omega), if_neg (by omega),
     show 10 + 6 * (P.H + 1) + i - (10 + 6 * (P.H + 1)) = i by omega]
@@ -150,7 +150,7 @@ theorem aggDone_memL {k₀ : ℕ} {nm : Fin n → Fin n × Bool → ℕ} {its : 
   rw [Nat.unpair_pair]
 
 theorem levelRun_memL (hTr : Tr ≤ T) (hTa : Ta ≤ T) (hAa : AggSpec N Aa outa Ta sA kA b) :
-    LevelRun N Bm Tr W sA kA b r P.H (memL Aa Af outa outf Ta Tr Tf T P W r N ℓ) where
+    LevelRun N Bm Tr W sA kA b r (fun _ => none) P.H (memL Aa Af outa outf Ta Tr Tf T P W r N ℓ) where
   stable := fun h v => mem_stable Aa Af Ta Tr Tf T _ _ _ N.G _ h v
   hFlood d hd v := mem_relax Aa Af Ta Tr Tf T _ _ _ N.G _ _
     (fun w => progL_level P W r w _ _ (i := 0) (by unfold phFlood; omega) hd (by omega)) hTr v
@@ -166,7 +166,7 @@ theorem levelRun_memL (hTr : Tr ≤ T) (hTa : Ta ≤ T) (hAa : AggSpec N Aa outa
     (fun w => progL_level P W r w _ _ (i := 5) (by unfold phRecY; omega) hd (by omega))
 
 theorem valueRun_memL (hTa : Ta ≤ T) (hAa : AggSpec N Aa outa Ta sA kA b) :
-    ValueRun N P W r (fun v => (N.localIn ℓ v).lenOut) sA kA b (memL Aa Af outa outf Ta Tr Tf T P W r N ℓ) where
+    ValueRun N P W r (fun _ => none) (fun v => (N.localIn ℓ v).lenOut) sA kA b (memL Aa Af outa outf Ta Tr Tf T P W r N ℓ) where
   stable := fun h v => mem_stable Aa Af Ta Tr Tf T _ _ _ N.G _ h v
   hVal i _ := aggDone_memL Aa Af outa outf Ta Tr Tf T P W r N ℓ hTa hAa (fun w => progL_val P W r w _ _ i)
 
@@ -232,7 +232,7 @@ theorem labels_memL {e h Tr₀ Wt C Cl cl B₀ f k₀ hh ss ww : ℕ}
   have hd₀ : (N.dart0 hne r).1.fst = r := rfl
   have hhd : (N.dart0 hne r).1.snd = (N.rotList r).headD r := rfl
   have hWz : ∀ z, N.codeN z < W := fun z => (N.codeN_lt z).trans_le (by have := hNum.hWn; omega)
-  have hOK : (levelD N hG r (N.dart0 hne r).1 W (idL Af outf Tf N)).OK :=
+  have hOK : (levelD N hG r (N.dart0 hne r).1 W (idL Af outf Tf N) none).OK :=
     { h₀ := hd₀
       h₁ := rfl
       hR := hR
@@ -240,9 +240,10 @@ theorem labels_memL {e h Tr₀ Wt C Cl cl B₀ f k₀ hh ss ww : ℕ}
       hinj := N.codeN_inj
       hcW := hWz
       hW := N.card_le.trans (show 2 * n * n ≤ W by have := hNum.hWn; omega)
-      hfid := N.fid_iff hfaces }
+      hfid := N.fid_iff hfaces
+      hC₀ := fun _ h => by simp at h }
   have hdep : ∀ v, (N.treeN hG r (N.dart0 hne r).1).dep v ≤ h := hdist
-  have hVk : LevelData.VOK (levelD N hG r (N.dart0 hne r).1 W (idL Af outf Tf N)) P (gOf N ℓ) C Cl cl B₀ Wt h :=
+  have hVk : LevelData.VOK (levelD N hG r (N.dart0 hne r).1 W (idL Af outf Tf N) none) P (gOf N ℓ) C Cl cl B₀ Wt h :=
     { hC := hRB
       hq := hq
       hU := hU
@@ -282,13 +283,13 @@ theorem labels_memL {e h Tr₀ Wt C Cl cl B₀ f k₀ hh ss ww : ℕ}
   have hlevels := levels_of_run hG hOK hLR hK hid hd₀ hhd hR hc hdep hNum.hBm hNum.hTrB hNum.hs hNum.hk1 hNum.hb1
     hbf hNum.hHW hNum.hW5
   have hE : ∀ j, phVal P.H 0 ≤ j → ∀ d, d ≤ P.H →
-      EAll N (levelD N hG r (N.dart0 hne r).1 W (idL Af outf Tf N))
+      EAll N (levelD N hG r (N.dart0 hne r).1 W (idL Af outf Tf N) none)
         (memL Aa Af outa outf Ta (Tr₀ + 1) Tf T P W r N ℓ j) d :=
     fun j hj d hd' => hLR.transport (hlevels d hd') (by unfold phVal at hj; unfold phRecY; omega)
   have hH : ∀ v, ¬ (N.treeN hG r (N.dart0 hne r).1).NP
-      ((levelD N hG r (N.dart0 hne r).1 W (idL Af outf Tf N)).Γs P.H) v := fun v => by
+      ((levelD N hG r (N.dart0 hne r).1 W (idL Af outf Tf N) none).Γs P.H) v := fun v => by
     rw [hH3]
-    simpa using hOK.decomp.final hOK.bal (by rw [Fintype.card_fin]; exact hk₀) v
+    simpa using hOK.decomp.final (hOK.bal rfl) (by rw [Fintype.card_fin]; exact hk₀) v
   have hleaf := fun z => leaf_card hG hOK hdep (hsurjN hG r (N.dart0 hne r).1 hne) hH z
   have hVR := valueRun_memL Aa Af outa outf Ta (Tr₀ + 1) Tf T P W r N ℓ (sA := sA) (kA := kA) (b := b) hTa hAa
   have hb1' : (W + 1) ^ 2 ≤ 2 ^ b := by
@@ -298,13 +299,13 @@ theorem labels_memL {e h Tr₀ Wt C Cl cl B₀ f k₀ hh ss ww : ℕ}
   have hvals := values_of_run hG hOK hVk hVR hK hid hE hd₀ hhd hR hc (fun z => if_pos z.1.adj) hNum.hs hNum.hk2
     hleaf hNum.hHW hb1' hNum.hb2 hNum.hb3 (by have := hNum.hWn; omega)
   have hphi : phVal P.H 0 ≤ phVal P.H P.H + 1 := by unfold phVal; omega
-  have hM : MemOK N hG r (N.dart0 hne r).1 W (idL Af outf Tf N) P (gOf N ℓ)
+  have hM : MemOK N hG r (N.dart0 hne r).1 W (idL Af outf Tf N) none P (gOf N ℓ)
       (memL Aa Af outa outf Ta (Tr₀ + 1) Tf T P W r N ℓ (phVal P.H P.H + 1)) :=
     { hC := hK _ (by unfold phVal; omega)
       hid := hid _ (by unfold phVal; omega)
       hE := hE _ hphi
       hV := fun i hi => hvals i hi _ (by unfold phVal; omega) }
-  exact labelsOK_of_mem hG hOK hVk hM hne hH hd₀ hhd hR hc hce hNum.hhh hNum.hspan hNum.hcard hNum.hHW hNum.hname
+  exact labelsOK_of_mem hG rfl hOK hVk hM hne hH hd₀ hhd hR hc hce hNum.hhh hNum.hspan hNum.hcard hNum.hHW hNum.hname
     hNum.hval
 
 end Mach

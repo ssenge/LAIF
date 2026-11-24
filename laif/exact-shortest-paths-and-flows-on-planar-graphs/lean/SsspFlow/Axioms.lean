@@ -443,6 +443,7 @@ Expected output for each: `propext`, `Classical.choice`, `Quot.sound` (or a subs
 #print axioms SsspFlow.RotSystem.RootedTree.isCut_sel
 #print axioms SsspFlow.RotSystem.RootedTree.decomp_levelSeq
 #print axioms SsspFlow.RotSystem.RootedTree.bal_levelSeq
+#print axioms SsspFlow.RotSystem.RootedTree.mem_next_iff_cut
 #print axioms SsspFlow.RotSystem.RootedTree.forcedSeq_decomp
 #print axioms SsspFlow.RotSystem.RootedTree.forcedSeq_bal
 #print axioms SsspFlow.RotSystem.RootedTree.forcedSeq_final
@@ -474,6 +475,17 @@ Expected output for each: `propext`, `Classical.choice`, `Quot.sound` (or a subs
 #print axioms SsspFlow.Congest.LevelData.OK.isA_iff
 #print axioms SsspFlow.Congest.LevelData.OK.isY_iff
 #print axioms SsspFlow.Congest.LevelData.OK.mem_next
+#print axioms SsspFlow.Congest.LevelData.OK.decomp
+#print axioms SsspFlow.Congest.LevelData.OK.bal_forced
+#print axioms SsspFlow.Congest.LevelData.OK.cutD_eq
+#print axioms SsspFlow.Congest.LevelData.OK.mem_next_zero
+#print axioms SsspFlow.Congest.LevelData.OK.pair_true
+#print axioms SsspFlow.Congest.LevelData.OK.isA_frc
+#print axioms SsspFlow.Congest.LevelData.OK.isY_frc
+#print axioms SsspFlow.Congest.LevelData.OK.raOf_frc
+#print axioms SsspFlow.Congest.LevelData.OK.ryOf_frc
+#print axioms SsspFlow.Congest.LevelData.OK.iv_frc
+#print axioms SsspFlow.Congest.LevelData.OK.not_np_one
 #print axioms SsspFlow.Congest.corL_eq
 #print axioms SsspFlow.Congest.levels_of_run
 #print axioms SsspFlow.RotSystem.card_le_of_planar
@@ -1189,3 +1201,6 @@ Expected output for each: `propext`, `Classical.choice`, `Quot.sound` (or a subs
 #print axioms SsspFlow.RotSystem.RData.gsBase_eq_cut
 #print axioms SsspFlow.RotSystem.RData.pieceAt_eq_iff
 #print axioms SsspFlow.RotSystem.RData.gsBase_eq_piece
+#print axioms SsspFlow.Congest.root_values
+#print axioms SsspFlow.Congest.forced_hub
+#print axioms SsspFlow.Congest.forced_root_values

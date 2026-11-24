@@ -3,8 +3,11 @@
 **Status.** Claim, written 21 Nov 2026. Proofs below, simulation in `sim/detflow/`. Parts 1 to 3 of the
 Root Cut Lemma, part 4 for the vertices on the tree paths from x and y to the root, and the bound of
 part 5 are formalized in `lean/SsspFlow/ForcedCut.lean`, for any rooted
-tree and any prescribed first cut of two corners with b = 1; the facts about the face S, the round count
-and the step to (L3) are not. The result improves the deterministic bound for exact maximum flow in directed planar networks
+tree and any prescribed first cut of two corners with b = 1. The phases of the levels and of the values with
+this first cut, and the values of the root between the vertices on these tree paths in the memory of every
+node, are formalized in `lean/SsspFlow/Output.lean` (`forced_root_values`); the facts about the face S, the
+program that takes the two corners as local input with its round count, and the chain from (L3) to the flow
+are not. The result improves the deterministic bound for exact maximum flow in directed planar networks
 from Õ(D²) to Õ(D), and it gives the flow on every edge, which [3] asks for.
 
 The model is CONGEST on a connected directed planar network with n vertices and hop diameter D, with

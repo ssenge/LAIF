@@ -1,4 +1,5 @@
 import SsspFlow.NetFlood
+import SsspFlow.ForcedCut
 
 /-!
 # The answers of the calls of one level
@@ -94,13 +95,24 @@ structure LevelData where
   W : ℕ
   fid : D × Bool → ℕ
   w₀ : D × Bool
+  /-- A prescribed first cut of two corners, if any. -/
+  C₀ : Option ((D × Bool) × (D × Bool))
 
 namespace LevelData
 
 variable (L : LevelData V R)
 
-/-- The levels. -/
-noncomputable def Γs : ℕ → Finset (D × Bool) := L.t.levelSeq L.code L.W L.fid L.w₀
+/-- The levels: those of the rule, or those with the prescribed first cut. -/
+noncomputable def Γs : ℕ → Finset (D × Bool) :=
+  match L.C₀ with
+  | none => L.t.levelSeq L.code L.W L.fid L.w₀
+  | some p => L.t.forcedSeq L.code L.W L.fid L.w₀ {p.1, p.2}
+
+/-- The cut of each level. -/
+noncomputable def cutD (d : ℕ) : Finset (D × Bool) :=
+  match L.C₀ with
+  | none => L.t.sel L.code L.W L.fid (L.Γs d)
+  | some p => if d = 0 then {p.1, p.2} else L.t.sel L.code L.W L.fid (L.Γs d)
 
 /-- The name of the bag of a dart. -/
 noncomputable def nm (d : ℕ) (z : D × Bool) : ℕ := R.bagName L.code L.Γs d z
@@ -130,9 +142,14 @@ noncomputable def mcOf (d : ℕ) (z : D × Bool) : ℕ := R.minCode L.code (L.Γ
 /-- The numbers of a dart. -/
 noncomputable abbrev view (z : D × Bool) : View := L.t.viewOf L.code L.w₀ z
 
-/-- The value of a dart as the first dart of a cut. -/
+/-- The prescribed cut at a depth: the pair at depth `0`, nothing at the other depths. -/
+def frc (d : ℕ) : Option ((D × Bool) × (D × Bool)) := if d = 0 then L.C₀ else none
+
+/-- The value of a dart as the first dart of a cut. At a prescribed cut, only its first corner has a value. -/
 noncomputable def aCand (d : ℕ) (z : D × Bool) : Option ℕ :=
-  candA L.W (L.ptOf d z) (L.mcOf d z) (L.view z) (L.view (R.double.rev z))
+  match L.frc d with
+  | some p => if z = p.1 then some 0 else none
+  | none => candA L.W (L.ptOf d z) (L.mcOf d z) (L.view z) (L.view (R.double.rev z))
     (z ∈ L.t.marks (L.Γs d)) (∃ v, L.t.NP (L.Γs d) v ∧ z = L.t.r0 v)
 
 /-- The pairs of a dart in the call for the first dart. -/
@@ -159,9 +176,12 @@ noncomputable def raItems (d : ℕ) (z : D × Bool) : List (ℕ × ℕ) :=
 noncomputable def raOf (d : ℕ) (z : D × Bool) (κ : ℕ) : ℕ :=
   tabD (L.nm d) (L.raItems d) (L.nm d z) κ
 
-/-- The value of a dart as the second dart of a cut. -/
+/-- The value of a dart as the second dart of a cut. At a prescribed cut, only its second corner has a
+value. -/
 noncomputable def yCand (d : ℕ) (z : D × Bool) : Option ℕ :=
-  candY L.W (L.ptOf d z) (L.mcOf d z) (L.raOf d z 0 ≠ 0) (L.raOf d z 2 - 1) (L.raOf d z 1 - 1)
+  match L.frc d with
+  | some p => if z = p.2 then some 0 else none
+  | none => candY L.W (L.ptOf d z) (L.mcOf d z) (L.raOf d z 0 ≠ 0) (L.raOf d z 2 - 1) (L.raOf d z 1 - 1)
     (L.raOf d z 3 - 1) (L.fid z) (L.view z)
 
 /-- The pairs of a dart in the call for the second dart. -/
@@ -197,6 +217,7 @@ structure OK : Prop where
   hcW : ∀ z, L.code z < L.W
   hW : Fintype.card (D × Bool) ≤ L.W
   hfid : ∀ x y, L.fid x = L.fid y ↔ fconnect R.double.facePerm x y
+  hC₀ : ∀ p, L.C₀ = some p → p.1.2 = true ∧ p.2.2 = true
 
 variable {L}
 
@@ -232,17 +253,82 @@ theorem mem_aItems {d : ℕ} {z : D × Bool} {κ a : ℕ} :
 theorem mem_yItems {d : ℕ} {z : D × Bool} {κ a : ℕ} :
     (κ, a) ∈ L.yItems d z ↔ κ = 0 ∧ L.yCand d z = some a := mem_optItems
 
+theorem frc_some {d : ℕ} {p : (D × Bool) × (D × Bool)} (hp : L.frc d = some p) : d = 0 ∧ L.C₀ = some p := by
+  unfold frc at hp
+  by_cases hd : d = 0
+  · rw [if_pos hd] at hp
+    exact ⟨hd, hp⟩
+  · rw [if_neg hd] at hp
+    exact absurd hp (by simp)
+
+theorem aCand_of {d : ℕ} (hd : L.frc d = none) (z : D × Bool) :
+    L.aCand d z = candA L.W (L.ptOf d z) (L.mcOf d z) (L.view z) (L.view (R.double.rev z))
+      (z ∈ L.t.marks (L.Γs d)) (∃ v, L.t.NP (L.Γs d) v ∧ z = L.t.r0 v) := by
+  simp only [aCand, hd]
+
+theorem aCand_frc {d : ℕ} {p : (D × Bool) × (D × Bool)} (hp : L.frc d = some p) (z : D × Bool) :
+    L.aCand d z = if z = p.1 then some 0 else none := by
+  simp only [aCand, hp]
+
+theorem yCand_of {d : ℕ} (hd : L.frc d = none) (z : D × Bool) :
+    L.yCand d z = candY L.W (L.ptOf d z) (L.mcOf d z) (L.raOf d z 0 ≠ 0) (L.raOf d z 2 - 1) (L.raOf d z 1 - 1)
+      (L.raOf d z 3 - 1) (L.fid z) (L.view z) := by
+  simp only [yCand, hd]
+
+theorem yCand_frc {d : ℕ} {p : (D × Bool) × (D × Bool)} (hp : L.frc d = some p) (z : D × Bool) :
+    L.yCand d z = if z = p.2 then some 0 else none := by
+  simp only [yCand, hp]
+
 namespace OK
 
 variable (h : L.OK)
 
 include h
 
-theorem decomp : L.t.Decomp L.w₀ L.Γs (fun d => L.t.sel L.code L.W L.fid (L.Γs d)) :=
-    decomp_levelSeq h.h₀ h.h₁ h.hR h.hc h.hinj h.hcW h.hfid
+/-- The prescribed corners have `b = 1`, and there are at most two. -/
+theorem pair_true {p : (D × Bool) × (D × Bool)} (hC : L.C₀ = some p) :
+    (∀ c ∈ ({p.1, p.2} : Finset (D × Bool)), c.2 = true) ∧ ({p.1, p.2} : Finset (D × Bool)).card ≤ 2 := by
+  obtain ⟨h1, h2⟩ := h.hC₀ p hC
+  refine ⟨fun c hc => ?_, Finset.card_le_two⟩
+  rcases Finset.mem_insert.1 hc with rfl | hc
+  · exact h1
+  · rw [Finset.mem_singleton.1 hc]; exact h2
 
-theorem bal : L.t.BalFrom L.Γs 0 :=
-  bal_levelSeq h.h₀ h.h₁ h.hR h.hc h.hinj h.hcW h.hfid
+theorem decomp : L.t.Decomp L.w₀ L.Γs L.cutD := by
+  rcases hC : L.C₀ with _ | p
+  · have e1 : L.Γs = L.t.levelSeq L.code L.W L.fid L.w₀ := by simp only [Γs, hC]
+    have e2 : L.cutD = fun d => L.t.sel L.code L.W L.fid (L.Γs d) := by funext d; simp only [cutD, hC]
+    rw [e2, e1]
+    exact decomp_levelSeq h.h₀ h.h₁ h.hR h.hc h.hinj h.hcW h.hfid
+  · have e1 : L.Γs = L.t.forcedSeq L.code L.W L.fid L.w₀ {p.1, p.2} := by simp only [Γs, hC]
+    have e2 : L.cutD = L.t.forcedCut L.code L.W L.fid L.w₀ {p.1, p.2} := by
+      funext d; simp only [cutD, hC, forcedCut, e1]
+    rw [e2, e1]
+    exact forcedSeq_decomp h.h₀ h.h₁ h.hR h.hc h.hinj h.hcW h.hfid (h.pair_true hC).1 (h.pair_true hC).2
+
+theorem bal (hC : L.C₀ = none) : L.t.BalFrom L.Γs 0 := by
+  have e1 : L.Γs = L.t.levelSeq L.code L.W L.fid L.w₀ := by simp only [Γs, hC]
+  rw [e1]
+  exact bal_levelSeq h.h₀ h.h₁ h.hR h.hc h.hinj h.hcW h.hfid
+
+/-- With a prescribed first cut, the cuts are balanced from the first level on. -/
+theorem bal_forced {p : (D × Bool) × (D × Bool)} (hC : L.C₀ = some p) : L.t.BalFrom L.Γs 1 := by
+  have e1 : L.Γs = L.t.forcedSeq L.code L.W L.fid L.w₀ {p.1, p.2} := by simp only [Γs, hC]
+  rw [e1]
+  exact forcedSeq_bal h.h₀ h.h₁ h.hR h.hc h.hinj h.hcW h.hfid (h.pair_true hC).1 (h.pair_true hC).2
+
+/-- Away from a prescribed first cut, the cut of a level is the cut of the rule. -/
+theorem cutD_eq {d : ℕ} (hd : L.frc d = none) :
+    L.cutD d = L.t.sel L.code L.W L.fid (L.Γs d) := by
+  unfold cutD
+  rcases hC : L.C₀ with _ | p
+  · rfl
+  · have hd0 : d ≠ 0 := by
+      rintro rfl
+      unfold frc at hd
+      rw [if_pos rfl, hC] at hd
+      exact absurd hd (by simp)
+    simp only [hd0, ↓reduceIte]
 
 
 theorem level (d : ℕ) : L.t.IsLevel (L.Γs d) := h.decomp.level d
@@ -288,21 +374,20 @@ theorem portTab {d : ℕ} {g₀ : D × Bool} :
     obtain ⟨hzΓ, j, _, he, _⟩ := mem_portItems.1 hm
     exact hc z (mem_portsOf.2 ⟨hzΓ, h.nm_eq_iff.1 hz.symm⟩) (Nat.pair_eq_pair.1 he).1.symm
 
-theorem aCand_eq {d : ℕ} {g₀ z : D × Bool} (hg : g₀ ∈ L.Γs d) (hgc : L.code g₀ = L.mcOf d g₀)
+theorem aCand_eq {d : ℕ} {g₀ z : D × Bool} (hd : L.frc d = none) (hg : g₀ ∈ L.Γs d) (hgc : L.code g₀ = L.mcOf d g₀)
     (hs : R.Same (L.Γs d) g₀ z) :
     L.aCand d z = if z ∈ L.t.aSet (L.Γs d) g₀ then some (L.t.aVal L.code L.W (L.Γs d) g₀ z) else none := by
-  unfold aCand
-  rw [← ptOf_congr hs, ← mcOf_congr hs, ← hgc]
+  rw [aCand_of hd, ← ptOf_congr hs, ← mcOf_congr hs, ← hgc]
   exact candA_eq (h.level d) (h.w₀_mem d) h.h₀ h.h₁ h.hL₀ h.hR h.hc hg h.hinj h.hcW h.hW h.portTab hs
     Iff.rfl Iff.rfl
 
 /-- **A dart reads whether it is the first dart of the cut of its bag.** -/
-theorem isA_iff {d : ℕ} {z : D × Bool} : L.isA d z ↔ z ∈ L.t.selA L.code L.W (L.Γs d) z := by
+theorem isA_iff {d : ℕ} {z : D × Bool} (hd : L.frc d = none) : L.isA d z ↔ z ∈ L.t.selA L.code L.W (L.Γs d) z := by
   classical
   obtain ⟨g₀, hg, hzg, hgc⟩ := h.exists_minPort d z
   have hgz : R.Same (L.Γs d) g₀ z := Same.symm hzg
   have hgc' : L.code g₀ = L.mcOf d g₀ := hgc.trans (mcOf_congr hzg)
-  have key := fun {z' : D × Bool} (hs' : R.Same (L.Γs d) g₀ z') => h.aCand_eq hg hgc' hs'
+  have key := fun {z' : D × Bool} (hs' : R.Same (L.Γs d) g₀ z') => h.aCand_eq hd hg hgc' hs'
   rw [selA_congr hzg]
   unfold RotSystem.RootedTree.selA
   rw [mem_argminF]
@@ -343,36 +428,36 @@ theorem raFields_unique {d : ℕ} {κ x y : ℕ} {z : D × Bool} (hx : (κ, x) �
     rcases hy with ⟨h3, h4⟩ | ⟨h3, h4⟩ | ⟨h3, h4⟩ | ⟨h3, h4⟩ <;> omega
 
 /-- The record of the first dart of a cut. -/
-theorem raOf_eq {d : ℕ} {z a : D × Bool} {κ x : ℕ} (ha : a ∈ L.t.selA L.code L.W (L.Γs d) z)
+theorem raOf_eq {d : ℕ} {z a : D × Bool} {κ x : ℕ} (hd : L.frc d = none) (ha : a ∈ L.t.selA L.code L.W (L.Γs d) z)
     (hv : (κ, x) ∈ L.raFields d a) : L.raOf d z κ = x + 1 := by
   classical
   have hsame := selA_same ha
-  have hA : L.isA d a := h.isA_iff.2 (by rw [← selA_congr hsame]; exact ha)
+  have hA : L.isA d a := (h.isA_iff hd).2 (by rw [← selA_congr hsame]; exact ha)
   refine tabD_of_unique ⟨a, (nm_congr hsame).symm, by unfold raItems; rw [if_pos hA]; exact hv⟩ ?_
   intro z' a' hn hm
   unfold raItems at hm
   by_cases hA' : L.isA d z'
   · rw [if_pos hA'] at hm
-    have hz' := h.isA_iff.1 hA'
+    have hz' := (h.isA_iff hd).1 hA'
     rw [← selA_congr (h.nm_eq_iff.1 hn.symm)] at hz'
     obtain rfl : z' = a := mem_selA_unique h.hinj h.hcW hz' ha
     exact h.raFields_unique hm hv
   · rw [if_neg hA'] at hm
     simp at hm
 
-theorem raOf_none {d : ℕ} {z : D × Bool} (hn : L.t.selA L.code L.W (L.Γs d) z = ∅) (κ : ℕ) :
+theorem raOf_none {d : ℕ} {z : D × Bool} (hd : L.frc d = none) (hn : L.t.selA L.code L.W (L.Γs d) z = ∅) (κ : ℕ) :
     L.raOf d z κ = 0 := by
   classical
   refine tabD_none fun z' a hz' hm => ?_
   unfold raItems at hm
   by_cases hA : L.isA d z'
-  · have hz := h.isA_iff.1 hA
+  · have hz := (h.isA_iff hd).1 hA
     rw [← selA_congr (h.nm_eq_iff.1 hz'.symm), hn] at hz
     simp at hz
   · rw [if_neg hA] at hm
     simp at hm
 
-theorem yCand_eq {d : ℕ} {g₀ a z : D × Bool} (hg : g₀ ∈ L.Γs d) (hgc : L.code g₀ = L.mcOf d g₀)
+theorem yCand_eq {d : ℕ} {g₀ a z : D × Bool} (hd : L.frc d = none) (hg : g₀ ∈ L.Γs d) (hgc : L.code g₀ = L.mcOf d g₀)
     (ha : a ∈ L.t.selA L.code L.W (L.Γs d) g₀) (hs : R.Same (L.Γs d) g₀ z)
     (hn : 4 ≤ L.t.npOf (L.Γs d) g₀) :
     L.yCand d z = if z ∈ L.t.endSet L.fid (L.Γs d) g₀ a then
@@ -381,33 +466,33 @@ theorem yCand_eq {d : ℕ} {g₀ a z : D × Bool} (hg : g₀ ∈ L.Γs d) (hgc :
   have hP : L.ptOf d a = L.ptOf d g₀ := (ptOf_congr hsa).symm
   have hM : L.mcOf d a = L.code g₀ := by rw [hgc]; exact (mcOf_congr hsa).symm
   have hsel : a ∈ L.t.selA L.code L.W (L.Γs d) z := by rw [← selA_congr hs]; exact ha
-  have h0 : L.raOf d z 0 = pos (L.t.tau L.w₀) L.w₀ a + 1 := h.raOf_eq hsel (by simp [raFields])
+  have h0 : L.raOf d z 0 = pos (L.t.tau L.w₀) L.w₀ a + 1 := h.raOf_eq hd hsel (by simp [raFields])
   have h1 : L.raOf d z 1 = mFT L.W (L.ptOf d g₀) (L.code g₀) (L.view a) + 1 := by
-    have := h.raOf_eq hsel (κ := 1) (x := mFT L.W (L.ptOf d a) (L.mcOf d a) (L.view a))
+    have := h.raOf_eq hd hsel (κ := 1) (x := mFT L.W (L.ptOf d a) (L.mcOf d a) (L.view a))
       (by simp [raFields])
     rwa [hP, hM] at this
   have h2 : L.raOf d z 2 = pUT L.W (L.ptOf d g₀) (L.code g₀) (L.view a) + 1 := by
-    have := h.raOf_eq hsel (κ := 2) (x := pUT L.W (L.ptOf d a) (L.mcOf d a) (L.view a))
+    have := h.raOf_eq hd hsel (κ := 2) (x := pUT L.W (L.ptOf d a) (L.mcOf d a) (L.view a))
       (by simp [raFields])
     rwa [hP, hM] at this
-  have h3 : L.raOf d z 3 = L.fid a + 1 := h.raOf_eq hsel (by simp [raFields])
+  have h3 : L.raOf d z 3 = L.fid a + 1 := h.raOf_eq hd hsel (by simp [raFields])
   have hT : (L.raOf d z 0 ≠ 0) = True := by
     rw [h0]
     simp
-  unfold yCand
-  rw [hT, h1, h2, h3, ← ptOf_congr hs, ← mcOf_congr hs, ← hgc]
+  rw [yCand_of hd, hT, h1, h2, h3, ← ptOf_congr hs, ← mcOf_congr hs, ← hgc]
   simp only [Nat.add_sub_cancel]
   exact candY_eq (h.level d) (h.w₀_mem d) h.h₀ h.h₁ h.hL₀ h.hR h.hc hg h.hinj h.hcW h.hW h.portTab hsa hs hn
 
 /-- **A dart reads whether it is the second dart of the cut of its bag.** -/
-theorem isY_iff {d : ℕ} {z : D × Bool} : L.isY d z ↔ z ∈ L.t.selY L.code L.W L.fid (L.Γs d) z := by
+theorem isY_iff {d : ℕ} {z : D × Bool} (hd : L.frc d = none) : L.isY d z ↔ z ∈ L.t.selY L.code L.W L.fid (L.Γs d) z := by
   classical
   obtain ⟨g₀, hg, hzg, hgc⟩ := h.exists_minPort d z
   have hgz : R.Same (L.Γs d) g₀ z := Same.symm hzg
   have hgc' : L.code g₀ = L.mcOf d g₀ := hgc.trans (mcOf_congr hzg)
   by_cases h4 : L.t.npOf (L.Γs d) z < 4
   · have hnone : L.yCand d z = none := by
-      unfold yCand candY
+      rw [yCand_of hd]
+      unfold candY
       rw [if_neg]
       rintro ⟨h5, -⟩
       have h6 := cycFT_eq (h.level d) (h.w₀_mem d) h.h₀ h.h₁ h.hL₀ h.hR h.hc hg h.hinj h.hcW h.hW
@@ -431,7 +516,7 @@ theorem isY_iff {d : ℕ} {z : D × Bool} : L.isY d z ↔ z ∈ L.t.selY L.code 
     have hsel : a ∈ L.t.selA L.code L.W (L.Γs d) g₀ := by
       rw [selA_eq_start (by rw [← npOf_congr hzg]; exact h0) (by rw [← npOf_congr hzg]; exact h4)]
       exact ha
-    have key := fun {z' : D × Bool} (hs' : R.Same (L.Γs d) g₀ z') => h.yCand_eq hg hgc' hsel hs' hn
+    have key := fun {z' : D × Bool} (hs' : R.Same (L.Γs d) g₀ z') => h.yCand_eq hd hg hgc' hsel hs' hn
     have hY : z ∈ L.t.selY L.code L.W L.fid (L.Γs d) z ↔
         z ∈ argminF (L.t.endSet L.fid (L.Γs d) g₀ a) (L.t.endVal L.code L.W (L.Γs d) a) := by
       unfold RotSystem.RootedTree.selY
@@ -495,52 +580,52 @@ theorem selY_unique {d : ℕ} {z y y' : D × Bool} (hy : y ∈ L.t.selY L.code L
     rw [← endVal_mod (t := L.t) (Γ := L.Γs d) (a := a) h.hcW u, e, endVal_mod h.hcW]
 
 /-- The record of the second dart of a cut. -/
-theorem ryOf_eq {d : ℕ} {z y : D × Bool} (hy : y ∈ L.t.selY L.code L.W L.fid (L.Γs d) z) :
+theorem ryOf_eq {d : ℕ} {z y : D × Bool} (hd : L.frc d = none) (hy : y ∈ L.t.selY L.code L.W L.fid (L.Γs d) z) :
     L.ryOf d z = pos (L.t.tau L.w₀) L.w₀ y + 1 := by
   classical
   have hsame := selOf_same' hy
-  have hA : L.isY d y := h.isY_iff.2 (by rw [← selY_congr hsame]; exact hy)
+  have hA : L.isY d y := (h.isY_iff hd).2 (by rw [← selY_congr hsame]; exact hy)
   refine tabD_of_unique ⟨y, (nm_congr hsame).symm, by unfold ryItems; rw [if_pos hA]; simp⟩ ?_
   intro z' a' hn hm
   unfold ryItems at hm
   by_cases hA' : L.isY d z'
   · rw [if_pos hA'] at hm
-    have hz' := h.isY_iff.1 hA'
+    have hz' := (h.isY_iff hd).1 hA'
     rw [← selY_congr (h.nm_eq_iff.1 hn.symm)] at hz'
     obtain rfl : z' = y := h.selY_unique hz' hy
     simpa using hm
   · rw [if_neg hA'] at hm
     simp at hm
 
-theorem ryOf_none {d : ℕ} {z : D × Bool} (hn : L.t.selY L.code L.W L.fid (L.Γs d) z = ∅) :
+theorem ryOf_none {d : ℕ} {z : D × Bool} (hd : L.frc d = none) (hn : L.t.selY L.code L.W L.fid (L.Γs d) z = ∅) :
     L.ryOf d z = 0 := by
   classical
   refine tabD_none fun z' a hz' hm => ?_
   unfold ryItems at hm
   by_cases hA : L.isY d z'
-  · have hz := h.isY_iff.1 hA
+  · have hz := (h.isY_iff hd).1 hA
     rw [← selY_congr (h.nm_eq_iff.1 hz'.symm), hn] at hz
     simp at hz
   · rw [if_neg hA] at hm
     simp at hm
 
-theorem iv_iff {d : ℕ} {z : D × Bool} {lo hi : ℕ} :
+theorem iv_iff {d : ℕ} {z : D × Bool} {lo hi : ℕ} (hd : L.frc d = none) :
     L.ivOf d z lo hi ↔ ∃ c ∈ L.t.selOf L.code L.W L.fid (L.Γs d) z,
       lo ≤ pos (L.t.tau L.w₀) L.w₀ c ∧ pos (L.t.tau L.w₀) L.w₀ c ≤ hi := by
   classical
   have hA : ∀ {a}, a ∈ L.t.selA L.code L.W (L.Γs d) z →
-      L.raOf d z 0 = pos (L.t.tau L.w₀) L.w₀ a + 1 := fun ha => h.raOf_eq ha (by simp [raFields])
+      L.raOf d z 0 = pos (L.t.tau L.w₀) L.w₀ a + 1 := fun ha => h.raOf_eq hd ha (by simp [raFields])
   constructor
   · rintro (⟨h1, h2, h3⟩ | ⟨h1, h2, h3⟩)
     · obtain ⟨a, ha⟩ : (L.t.selA L.code L.W (L.Γs d) z).Nonempty := by
         by_contra hne
-        exact h1 (h.raOf_none (Finset.not_nonempty_iff_eq_empty.1 hne) 0)
+        exact h1 (h.raOf_none hd (Finset.not_nonempty_iff_eq_empty.1 hne) 0)
       rw [hA ha] at h2 h3
       exact ⟨a, by rw [selOf_eq]; exact Finset.mem_union_left _ ha, by simpa using h2, by simpa using h3⟩
     · obtain ⟨y, hy⟩ : (L.t.selY L.code L.W L.fid (L.Γs d) z).Nonempty := by
         by_contra hne
-        exact h1 (h.ryOf_none (Finset.not_nonempty_iff_eq_empty.1 hne))
-      rw [h.ryOf_eq hy] at h2 h3
+        exact h1 (h.ryOf_none hd (Finset.not_nonempty_iff_eq_empty.1 hne))
+      rw [h.ryOf_eq hd hy] at h2 h3
       exact ⟨y, by rw [selOf_eq]; exact Finset.mem_union_right _ hy, by simpa using h2, by simpa using h3⟩
   · rintro ⟨c, hc, h2, h3⟩
     rw [selOf_eq, Finset.mem_union] at hc
@@ -549,19 +634,115 @@ theorem iv_iff {d : ℕ} {z : D × Bool} {lo hi : ℕ} :
       rw [hA hc]
       simpa using ⟨h2, h3⟩
     · refine Or.inr ?_
-      rw [h.ryOf_eq hc]
+      rw [h.ryOf_eq hd hc]
       simpa using ⟨h2, h3⟩
+
+/-- **The first level after a prescribed cut.** A dart belongs to it if it is the root corner, one of the
+two prescribed corners, or a rail of a vertex whose interval on the tour holds one of them. -/
+theorem mem_next_zero {p : (D × Bool) × (D × Bool)} (hC : L.C₀ = some p) {z : D × Bool} :
+    z ∈ L.Γs 1 ↔ z ∈ L.Γs 0 ∨ z = p.1 ∨ z = p.2 ∨
+      ∃ u, u ≠ L.t.root ∧ (z = L.t.r0 u ∨ z = L.t.c0 u) ∧
+        ((pos (L.t.tau L.w₀) L.w₀ (L.t.c1 u) ≤ pos (L.t.tau L.w₀) L.w₀ p.1 ∧
+            pos (L.t.tau L.w₀) L.w₀ p.1 ≤ pos (L.t.tau L.w₀) L.w₀ (L.t.r0 u)) ∨
+          (pos (L.t.tau L.w₀) L.w₀ (L.t.c1 u) ≤ pos (L.t.tau L.w₀) L.w₀ p.2 ∧
+            pos (L.t.tau L.w₀) L.w₀ p.2 ≤ pos (L.t.tau L.w₀) L.w₀ (L.t.r0 u))) := by
+  have e : L.cutD 0 = {p.1, p.2} := by simp only [cutD, hC, ↓reduceIte]
+  rw [h.decomp.succ 0, e, mem_next_iff_cut (h.level 0) h.h₀ h.h₁]
+  simp only [Finset.mem_insert, Finset.mem_singleton, exists_eq_or_imp, exists_eq_left, or_assoc]
+
+/-- **At a prescribed cut, a dart reads that it is the first dart of the cut exactly at the first corner.** -/
+theorem isA_frc {d : ℕ} {p : (D × Bool) × (D × Bool)} (hp : L.frc d = some p) {z : D × Bool} :
+    L.isA d z ↔ z = p.1 := by
+  constructor
+  · rintro ⟨a, hc, -⟩
+    rw [aCand_frc hp] at hc
+    by_contra hne
+    rw [if_neg hne] at hc
+    exact absurd hc (by simp)
+  · rintro rfl
+    refine ⟨0, by rw [aCand_frc hp, if_pos rfl], tabD_of_least ⟨p.1, rfl, mem_aItems.2 ⟨rfl, ?_⟩⟩
+      fun _ _ _ _ => Nat.zero_le _⟩
+    rw [aCand_frc hp, if_pos rfl]
+
+/-- **At a prescribed cut, a dart reads that it is the second dart of the cut exactly at the second
+corner.** -/
+theorem isY_frc {d : ℕ} {p : (D × Bool) × (D × Bool)} (hp : L.frc d = some p) {z : D × Bool} :
+    L.isY d z ↔ z = p.2 := by
+  constructor
+  · rintro ⟨a, hc, -⟩
+    rw [yCand_frc hp] at hc
+    by_contra hne
+    rw [if_neg hne] at hc
+    exact absurd hc (by simp)
+  · rintro rfl
+    refine ⟨0, by rw [yCand_frc hp, if_pos rfl], tabD_of_least ⟨p.2, rfl, mem_yItems.2 ⟨rfl, ?_⟩⟩
+      fun _ _ _ _ => Nat.zero_le _⟩
+    rw [yCand_frc hp, if_pos rfl]
+
+/-- The record of the first dart of a prescribed cut, at every dart. -/
+theorem raOf_frc {d : ℕ} {p : (D × Bool) × (D × Bool)} (hp : L.frc d = some p) (z : D × Bool) {κ x : ℕ}
+    (hv : (κ, x) ∈ L.raFields d p.1) : L.raOf d z κ = x + 1 := by
+  classical
+  obtain ⟨rfl, -⟩ := frc_some hp
+  refine tabD_of_unique ⟨p.1, nm_congr (h.decomp.same_zero h.hc _ _), by
+    unfold raItems; rw [if_pos ((h.isA_frc hp).2 rfl)]; exact hv⟩ ?_
+  intro z' a' _ hm
+  unfold raItems at hm
+  by_cases hA' : L.isA 0 z'
+  · rw [if_pos hA'] at hm
+    obtain rfl := (h.isA_frc hp).1 hA'
+    exact h.raFields_unique hm hv
+  · rw [if_neg hA'] at hm
+    simp at hm
+
+/-- The record of the second dart of a prescribed cut, at every dart. -/
+theorem ryOf_frc {d : ℕ} {p : (D × Bool) × (D × Bool)} (hp : L.frc d = some p) (z : D × Bool) :
+    L.ryOf d z = pos (L.t.tau L.w₀) L.w₀ p.2 + 1 := by
+  classical
+  obtain ⟨rfl, -⟩ := frc_some hp
+  refine tabD_of_unique ⟨p.2, nm_congr (h.decomp.same_zero h.hc _ _), by
+    unfold ryItems; rw [if_pos ((h.isY_frc hp).2 rfl)]; simp⟩ ?_
+  intro z' a' _ hm
+  unfold ryItems at hm
+  by_cases hA' : L.isY 0 z'
+  · rw [if_pos hA'] at hm
+    obtain rfl := (h.isY_frc hp).1 hA'
+    simpa using hm
+  · rw [if_neg hA'] at hm
+    simp at hm
+
+/-- At a prescribed cut, a dart reads whether one of the two corners lies in an interval of positions. -/
+theorem iv_frc {d : ℕ} {p : (D × Bool) × (D × Bool)} (hp : L.frc d = some p) {z : D × Bool} {lo hi : ℕ} :
+    L.ivOf d z lo hi ↔ (lo ≤ pos (L.t.tau L.w₀) L.w₀ p.1 ∧ pos (L.t.tau L.w₀) L.w₀ p.1 ≤ hi) ∨ (lo ≤ pos (L.t.tau L.w₀) L.w₀ p.2 ∧ pos (L.t.tau L.w₀) L.w₀ p.2 ≤ hi) := by
+  unfold ivOf
+  rw [h.raOf_frc hp z (κ := 0) (x := pos (L.t.tau L.w₀) L.w₀ p.1) (by simp [raFields]), h.ryOf_frc hp z]
+  simp
 
 /-- **A dart reads whether it belongs to the next level.** -/
 theorem mem_next {d : ℕ} {z : D × Bool} :
     z ∈ L.Γs (d + 1) ↔ z ∈ L.Γs d ∨ L.isA d z ∨ L.isY d z ∨
       ∃ u, u ≠ L.t.root ∧ (z = L.t.r0 u ∨ z = L.t.c0 u) ∧
         L.ivOf d z (pos (L.t.tau L.w₀) L.w₀ (L.t.c1 u)) (pos (L.t.tau L.w₀) L.w₀ (L.t.r0 u)) := by
-  have e : z ∈ L.Γs (d + 1) ↔ z ∈ L.t.next (L.Γs d) (L.t.sel L.code L.W L.fid (L.Γs d)) := Iff.rfl
+  rcases hd : L.frc d with _ | p
+  swap
+  · obtain ⟨rfl, hC⟩ := frc_some hd
+    rw [h.mem_next_zero hC, h.isA_frc hd, h.isY_frc hd]
+    simp only [h.iv_frc hd]
+  have e : z ∈ L.Γs (d + 1) ↔ z ∈ L.t.next (L.Γs d) (L.t.sel L.code L.W L.fid (L.Γs d)) := by
+    rw [h.decomp.succ d, h.cutD_eq hd]
   have e2 : z ∈ L.t.selOf L.code L.W L.fid (L.Γs d) z ↔ L.isA d z ∨ L.isY d z := by
-    rw [selOf_eq, Finset.mem_union, h.isA_iff, h.isY_iff]
+    rw [selOf_eq, Finset.mem_union, h.isA_iff hd, h.isY_iff hd]
   rw [e, mem_next_iff (h.level d) h.h₀ h.h₁ z, e2]
-  simp only [h.iv_iff, or_assoc]
+  simp only [h.iv_iff hd, or_assoc]
+
+/-- **The prescribed cut gives root hubs.** Every ancestor of the vertex of a prescribed corner has a corner
+in the first level. -/
+theorem not_np_one {p : (D × Bool) × (D × Bool)} (hC : L.C₀ = some p) {c : D × Bool} (hc : c = p.1 ∨ c = p.2)
+    {w : V} (hw : L.t.Anc w (L.t.vertM c)) : ¬ L.t.NP (L.Γs 1) w := by
+  have e : L.cutD 0 = {p.1, p.2} := by simp only [cutD, hC, ↓reduceIte]
+  rw [h.decomp.succ 0, e]
+  refine not_np_next_of_anc ⟨L.w₀, h.w₀_mem 0, h.h₀⟩ ?_ hw
+  rcases hc with rfl | rfl <;> simp
 
 /-! ### Bounds of the values and of the keys -/
 
@@ -650,8 +831,14 @@ theorem mass_le_W (f : Equiv.Perm (D × Bool)) (T : Finset (D × Bool)) (x y : D
   exact (Finset.card_filter_le _ _).trans (h.card_le_W _)
 
 theorem aCand_lt {d a : ℕ} {z : D × Bool} (hc : L.aCand d z = some a) : a < (L.W + 2) * (L.W + 2) := by
+  rcases hd : L.frc d with _ | p
+  swap
+  · rw [aCand_frc hd] at hc
+    split_ifs at hc
+    obtain rfl := Option.some.inj hc
+    positivity
   obtain ⟨g₀, hg, hzg, hgc⟩ := h.exists_minPort d z
-  rw [h.aCand_eq hg (hgc.trans (mcOf_congr hzg)) (Same.symm hzg)] at hc
+  rw [h.aCand_eq hd hg (hgc.trans (mcOf_congr hzg)) (Same.symm hzg)] at hc
   split_ifs at hc with hm
   obtain rfl := Option.some.inj hc
   have hz := h.hcW z
@@ -686,7 +873,14 @@ theorem mFT_view (d : ℕ) (z : D × Bool) :
 theorem yCand_lt {d a : ℕ} {z : D × Bool} (hc : L.yCand d z = some a) : a < (L.W + 2) * (L.W + 2) := by
   obtain ⟨h1, -, h3⟩ := h.mFT_view d z
   have hz := h.hcW z
-  unfold yCand candY at hc
+  rcases hd : L.frc d with _ | p
+  swap
+  · rw [yCand_frc hd] at hc
+    split_ifs at hc
+    obtain rfl := Option.some.inj hc
+    positivity
+  rw [yCand_of hd] at hc
+  unfold candY at hc
   split_ifs at hc
   obtain rfl := Option.some.inj hc
   have h2 : massFromT L.W (L.ptOf d z) (L.mcOf d z) (L.raOf d z 2 - 1) (L.raOf d z 1 - 1) (L.view z) ≤ L.W := by

@@ -4,7 +4,9 @@ import SsspFlow.NetValues
 # The output of a node
 
 From the tables of the value calls a node computes its chain of bags, the hubs of these bags and the estimates to and
-from the hubs (`outL`). `labelsOK_of_mem`: the entries of the memory give correct labels.
+from the hubs (`outL`). `labelsOK_of_mem`: the entries of the memory give correct labels. `root_values`: every node
+reads the values of the root bag between its hubs. With a prescribed first cut, the vertices on the tree paths from its
+corners to the root are hubs of the root bag (`forced_hub`), so every node reads their values (`forced_root_values`).
 
 `estFix`, `estL`: the estimates by a recursion along the children of a hierarchy, and the same recursion along the chain
 of one vertex. `floorE`: the floor of an extended number. The hubs of a bag lie in the bag, and the bag has short walks,
@@ -228,14 +230,14 @@ noncomputable def entryL (d : ℕ) : BagEntry (Fin n) where
 open Classical in
 /-- **The output of a node.** It depends on its memory and its rotation list alone. -/
 noncomputable def outL : LabelOut (Fin n) where
-  chain := ((List.range (P.H + 1)).filter fun d => decide (d = 0 ∨ corL W r rl v m d = ∅)).map
+  chain := ((List.range (P.H + 1)).filter fun d => decide (d = 0 ∨ corL W r rl none v m d = ∅)).map
     (entryL P W rl v m)
   treeBags u := if u ∈ rl then
       (List.range (P.H + 1)).flatMap fun d => [nameL v m d (u, false), nameL v m d (u, true)]
     else []
 
 theorem mem_chain_iff {E : BagEntry (Fin n)} : E ∈ (outL P W r rl v m).chain ↔
-    ∃ d, d ≤ P.H ∧ (d = 0 ∨ corL W r rl v m d = ∅) ∧ entryL P W rl v m d = E := by
+    ∃ d, d ≤ P.H ∧ (d = 0 ∨ corL W r rl none v m d = ∅) ∧ entryL P W rl v m d = E := by
   classical
   unfold outL
   simp only [List.mem_map, List.mem_filter, List.mem_range, decide_eq_true_eq, Nat.lt_succ_iff, and_assoc]
@@ -291,8 +293,9 @@ theorem dist_le_floorE {V : Type} {adj : V → V → Prop} {ℓ : V → V → �
 section Main
 
 variable {N : Net (Fin n)} (hG : N.G.Connected) {r : Fin n} {d₀ : N.G.Dart} {W : ℕ} {id : N.G.Dart → ℕ} {P : ValP}
+  {C₀ : Option ((N.G.Dart × Bool) × (N.G.Dart × Bool))}
 
-local notation "𝓛" => levelD N hG r d₀ W id
+local notation "𝓛" => levelD N hG r d₀ W id C₀
 local notation "𝓣" => Net.treeN N hG r d₀
 
 theorem hadjN (r : Fin n) (d₀ : N.G.Dart) : ∀ a b, N.G.Adj a b →
@@ -312,30 +315,31 @@ noncomputable abbrev hierN (hOK : (𝓛).OK) (hne : ∀ v, ∃ u, N.G.Adj v u) {
 
 /-- The entries of the memory that the output reads. -/
 structure MemOK (N : Net (Fin n)) (hG : N.G.Connected) (r : Fin n) (d₀ : N.G.Dart) (W : ℕ) (id : N.G.Dart → ℕ)
-    (P : ValP) (g : N.G.Dart × Bool → ℕ) (m : Fin n → Mem) : Prop where
+    (C₀ : Option ((N.G.Dart × Bool) × (N.G.Dart × Bool))) (P : ValP) (g : N.G.Dart × Bool → ℕ) (m : Fin n → Mem) :
+    Prop where
   hC : ∀ v, ConstAt N hG r d₀ (m v) v
   hid : ∀ x : N.G.Dart, m x.fst 0 x.snd = id x
-  hE : ∀ d, d ≤ P.H → EAll N (levelD N hG r d₀ W id) m d
-  hV : ∀ i, i ≤ P.H → EV N (levelD N hG r d₀ W id) P g (N.secN ((levelD N hG r d₀ W id).Γt P)) m i
+  hE : ∀ d, d ≤ P.H → EAll N (levelD N hG r d₀ W id C₀) m d
+  hV : ∀ i, i ≤ P.H → EV N (levelD N hG r d₀ W id C₀) P g (N.secN ((levelD N hG r d₀ W id C₀).Γt P)) m i
 
 variable {g : N.G.Dart × Bool → ℕ} {m : Fin n → Mem}
 
 /-- The values between the hubs of the bags. -/
-noncomputable abbrev dVN (hG : N.G.Connected) (r : Fin n) (d₀ : N.G.Dart) (W : ℕ) (id : N.G.Dart → ℕ) (P : ValP)
-    (g : N.G.Dart × Bool → ℕ) : ℕ → Fin n → Fin n → ℝ≥0∞ :=
-  bagVal (N.treeN hG r d₀) N.codeN (levelD N hG r d₀ W id).Γs P.H ((levelD N hG r d₀ W id).vals P g)
+noncomputable abbrev dVN (hG : N.G.Connected) (r : Fin n) (d₀ : N.G.Dart) (W : ℕ) (id : N.G.Dart → ℕ)
+    (C₀ : Option ((N.G.Dart × Bool) × (N.G.Dart × Bool))) (P : ValP) (g : N.G.Dart × Bool → ℕ) : ℕ → Fin n → Fin n → ℝ≥0∞ :=
+  bagVal (N.treeN hG r d₀) N.codeN (levelD N hG r d₀ W id C₀).Γs P.H ((levelD N hG r d₀ W id C₀).vals P g)
 
-theorem nameL_own (hM : MemOK N hG r d₀ W id P g m) (hne : ∀ v, ∃ u, N.G.Adj v u) (v : Fin n) {d : ℕ}
+theorem nameL_own (hM : MemOK N hG r d₀ W id C₀ P g m) (hne : ∀ v, ∃ u, N.G.Adj v u) (v : Fin n) {d : ℕ}
     (hd : d ≤ P.H) : nameL v (m v) d (own0 (N.rotList v) v) = (𝓛).nm d (N.dart0 hne v) :=
   nameL_eq (hM.hE d hd).f (N.dart0 hne v)
 
-theorem tabV_own (hM : MemOK N hG r d₀ W id P g m) (hne : ∀ v, ∃ u, N.G.Adj v u) (v : Fin n) {d : ℕ}
+theorem tabV_own (hM : MemOK N hG r d₀ W id C₀ P g m) (hne : ∀ v, ∃ u, N.G.Adj v u) (v : Fin n) {d : ℕ}
     (hd : d ≤ P.H) : tabV P v (m v) (P.H - d) (own0 (N.rotList v) v) =
       (𝓛).vT P g (N.secN ((𝓛).Γt P)) (P.H - d) (N.dart0 hne v) :=
   tabV_eq hG (hM.hE _ (by omega)).f (hM.hV _ (by omega)) (N.dart0 hne v)
 
 /-- A node reads the hubs of a bag. -/
-theorem mem_hubsL_iff (hOK : (𝓛).OK) (hM : MemOK N hG r d₀ W id P g m) (hne : ∀ v, ∃ u, N.G.Adj v u)
+theorem mem_hubsL_iff (hOK : (𝓛).OK) (hM : MemOK N hG r d₀ W id C₀ P g m) (hne : ∀ v, ∃ u, N.G.Adj v u)
     (hH : ∀ v, ¬ (𝓣).NP ((𝓛).Γs P.H) v) (v : Fin n) {d : ℕ} (hd : d ≤ P.H) (y : Fin n) :
     y ∈ hubsL P W (N.rotList v) v (m v) d ↔ y ∈ (hierN hG hOK hne hH).hub ((𝓛).nm d (N.dart0 hne v)) := by
   classical
@@ -365,9 +369,9 @@ theorem mem_hubsL_iff (hOK : (𝓛).OK) (hM : MemOK N hG r d₀ W id P g m) (hne
     rwa [f1] at h3
 
 /-- A node reads the values of a bag. -/
-theorem valL_eq (hOK : (𝓛).OK) (hM : MemOK N hG r d₀ W id P g m) (hU : 1 ≤ P.U) (hne : ∀ v, ∃ u, N.G.Adj v u)
+theorem valL_eq (hOK : (𝓛).OK) (hM : MemOK N hG r d₀ W id C₀ P g m) (hU : 1 ≤ P.U) (hne : ∀ v, ∃ u, N.G.Adj v u)
     (v : Fin n) {d : ℕ} (hd : d ≤ P.H) (a b : Fin n) :
-    valL P W (N.rotList v) v (m v) d a b = dVN hG r d₀ W id P g ((𝓛).nm d (N.dart0 hne v)) a b := by
+    valL P W (N.rotList v) v (m v) d a b = dVN hG r d₀ W id C₀ P g ((𝓛).nm d (N.dart0 hne v)) a b := by
   unfold valL
   rw [tabV_own hG hM hne v hd]
   have h := hOK.bagVal_read (P := P) (g := g) (sec := N.secN ((𝓛).Γt P)) hU (i := P.H - d) (by omega)
@@ -376,7 +380,7 @@ theorem valL_eq (hOK : (𝓛).OK) (hM : MemOK N hG r d₀ W id P g m) (hU : 1 �
   exact h.symm
 
 /-- The estimates of a node are those of the hierarchy. -/
-theorem est_read (hOK : (𝓛).OK) (hM : MemOK N hG r d₀ W id P g m) (hne : ∀ v, ∃ u, N.G.Adj v u)
+theorem est_read (hOK : (𝓛).OK) (hM : MemOK N hG r d₀ W id C₀ P g m) (hne : ∀ v, ∃ u, N.G.Adj v u)
     (hH : ∀ v, ¬ (𝓣).NP ((𝓛).Γs P.H) v) (v : Fin n) {val : ℕ → Fin n → Fin n → ℝ≥0∞}
     {dV : ℕ → Fin n → Fin n → ℝ≥0∞}
     (hval : ∀ d, d ≤ P.H → ∀ a b, val d a b = dV ((𝓛).nm d (N.dart0 hne v)) a b)
@@ -404,17 +408,25 @@ theorem est_read (hOK : (𝓛).OK) (hM : MemOK N hG r d₀ W id P g m) (hne : �
       x c t hk ha hac
 
 /-- A node with no corner at a depth reads this from its memory. -/
-theorem corL_empty_iff (hOK : (𝓛).OK) (hM : MemOK N hG r d₀ W id P g m) (hd₀ : d₀.fst = r)
+theorem corL_empty_iff (hOK : (𝓛).OK) (hM : MemOK N hG r d₀ W id C₀ P g m) (hd₀ : d₀.fst = r)
     (hhd : d₀.snd = (N.rotList r).headD r) (hR : N.toRot.Planar) (hc : N.toRot.Connected) {d : ℕ} (hd : d ≤ P.H)
-    (v : Fin n) : corL W r (N.rotList v) v (m v) d = ∅ ↔ (𝓣).NP ((𝓛).Γs d) v := by
+    (v : Fin n) : corL W r (N.rotList v) (N.flN C₀ v) v (m v) d = ∅ ↔ (𝓣).NP ((𝓛).Γs d) v := by
   rw [corL_eq hG hM.hC hd₀ hhd hR hc hOK hM.hid d (fun d' hd' => hM.hE d' (by omega)) v]
   exact corners_empty_iff hG r d₀
+
+/-- The same for the label machine, which has no prescribed cut. -/
+theorem corL_empty_iff_none (h0 : C₀ = none) (hOK : (𝓛).OK) (hM : MemOK N hG r d₀ W id C₀ P g m)
+    (hd₀ : d₀.fst = r) (hhd : d₀.snd = (N.rotList r).headD r) (hR : N.toRot.Planar) (hc : N.toRot.Connected)
+    {d : ℕ} (hd : d ≤ P.H) (v : Fin n) : corL W r (N.rotList v) none v (m v) d = ∅ ↔ (𝓣).NP ((𝓛).Γs d) v := by
+  have e : N.flN C₀ v = none := by rw [h0] <;> rfl
+  rw [← e]
+  exact corL_empty_iff hG hOK hM hd₀ hhd hR hc hd v
 
 variable {ℓ : Fin n → Fin n → ℕ} {C Cl cl B Wt h : ℕ}
 
 /-- The bounds of the estimates of a node. -/
 theorem entry_bounds (hOK : (𝓛).OK) (hVk : LevelData.VOK (𝓛) P (gOf N ℓ) C Cl cl B Wt h)
-    (hM : MemOK N hG r d₀ W id P (gOf N ℓ) m) (hne : ∀ v, ∃ u, N.G.Adj v u)
+    (hM : MemOK N hG r d₀ W id C₀ P (gOf N ℓ) m) (hne : ∀ v, ∃ u, N.G.Adj v u)
     (hH : ∀ v, ¬ (𝓣).NP ((𝓛).Γs P.H) v) (v : Fin n) {d : ℕ} (hd : d ≤ P.H) {y : Fin n}
     (hy : y ∈ hubsL P W (N.rotList v) v (m v) d) :
     let A := (hierN hG hOK hne hH).arc ((𝓛).nm d (N.dart0 hne v))
@@ -438,10 +450,10 @@ theorem entry_bounds (hOK : (𝓛).OK) (hVk : LevelData.VOK (𝓛) P (gOf N ℓ)
   have hadj' : ∀ z : N.G.Dart × Bool, N.G.Adj ((𝓣).vertM z) ((𝓣).vertM (N.toRot.double.rev z)) :=
     fun z => z.1.adj
   have hlo : ∀ x, ∀ a ∈ (hierN hG hOK hne hH).hub x, ∀ b ∈ (hierN hG hOK hne hH).hub x,
-      (P.U : ℝ≥0∞) * dist N.G.Adj (lenOf ℓ) Set.univ a b ≤ dVN hG r d₀ W id P (gOf N ℓ) x a b :=
+      (P.U : ℝ≥0∞) * dist N.G.Adj (lenOf ℓ) Set.univ a b ≤ dVN hG r d₀ W id C₀ P (gOf N ℓ) x a b :=
     fun x a _ b _ => hD.bagVal_lo hadj' hgw hvals x a b
   have hhi : ∀ x, ∀ a ∈ (hierN hG hOK hne hH).hub x, ∀ b ∈ (hierN hG hOK hne hH).hub x,
-      dVN hG r d₀ W id P (gOf N ℓ) x a b ≤
+      dVN hG r d₀ W id C₀ P (gOf N ℓ) x a b ≤
         (c * (P.U : ℝ≥0∞)) * distR N.G.Adj (lenOf ℓ) ((hierN hG hOK hne hH).arc x) a b :=
     fun x a ha b hb => hD.bagVal_hi hOK.hc hOK.hinj (hadjN hG r d₀) (hsurjN hG r d₀ hne) hH hgw hU hvals x a b ha hb
   have hubk : ∀ x c t, (hierN hG hOK hne hH).kid c x → t ∈ (hierN hG hOK hne hH).hub x →
@@ -468,26 +480,85 @@ theorem entry_bounds (hOK : (𝓛).OK) (hVk : LevelData.VOK (𝓛) P (gOf N ℓ)
   have hedge := fun x a b h' ha => hD.hedge_out hOK.hc hOK.hinj (hadjN hG r d₀) (hsurjN hG r d₀ hne) hH x a b h' ha
   have hedge' := fun x a b h' ha => hD.hedge_in hOK.hc hOK.hinj (hadjN hG r d₀) (hsurjN hG r d₀ hne) hH x a b h' ha
   have b1 := (hierN hG hOK hne hH).est_bounds hedge hubk (lenOf ℓ) (P.U : ℝ≥0∞) (c * (P.U : ℝ≥0∞)) hlam0 hlamT
-    (dVN hG r d₀ W id P (gOf N ℓ)) hlo hhi ((hierN hG hOK hne hH).estFix (dVN hG r d₀ W id P (gOf N ℓ)))
+    (dVN hG r d₀ W id C₀ P (gOf N ℓ)) hlo hhi ((hierN hG hOK hne hH).estFix (dVN hG r d₀ W id C₀ P (gOf N ℓ)))
     (fun x v h hv _ => RHierarchy.estFix_hub hv h)
     (fun x v h _ hv _ => RHierarchy.estFix_not_hub hv h) _ v hbag y hhub
   have b2 := (hierN hG hOK hne hH).est_bounds_in hedge' hubk (lenOf ℓ) (P.U : ℝ≥0∞) (c * (P.U : ℝ≥0∞)) hlam0 hlamT
-    (dVN hG r d₀ W id P (gOf N ℓ)) hlo hhi
-    ((hierN hG hOK hne hH).estFix (fun x a b => dVN hG r d₀ W id P (gOf N ℓ) x b a))
+    (dVN hG r d₀ W id C₀ P (gOf N ℓ)) hlo hhi
+    ((hierN hG hOK hne hH).estFix (fun x a b => dVN hG r d₀ W id C₀ P (gOf N ℓ) x b a))
     (fun x v h hv _ => RHierarchy.estFix_hub hv h)
     (fun x v h _ hv _ => RHierarchy.estFix_not_hub hv h) _ v hbag y hhub
   have e1 := est_read hG hOK hM hne hH v (val := valL P W (N.rotList v) v (m v))
-    (dV := dVN hG r d₀ W id P (gOf N ℓ)) (fun d hd a b => valL_eq hG hOK hM hU hne v hd a b) hd y
+    (dV := dVN hG r d₀ W id C₀ P (gOf N ℓ)) (fun d hd a b => valL_eq hG hOK hM hU hne v hd a b) hd y
   have e2 := est_read hG hOK hM hne hH v (val := fun d a b => valL P W (N.rotList v) v (m v) d b a)
-    (dV := fun x a b => dVN hG r d₀ W id P (gOf N ℓ) x b a)
+    (dV := fun x a b => dVN hG r d₀ W id C₀ P (gOf N ℓ) x b a)
     (fun d hd a b => valL_eq hG hOK hM hU hne v hd b a) hd y
   rw [e1] at b1
   rw [e2] at b2
   exact ⟨dist_le_floorE q hU b1.1, floorE_hi hU b1.2, dist_le_floorE q' hU b2.1, floorE_hi hU b2.2⟩
 
+/-- **The values of the root bag at every node.** Every node reads, for any two hubs of the root bag, a value
+between `P.U` times the distance and `cU P.U ^ (2 * P.H + 1) * P.U` times the distance. -/
+theorem root_values (hOK : (𝓛).OK) (hVk : LevelData.VOK (𝓛) P (gOf N ℓ) C Cl cl B Wt h)
+    (hM : MemOK N hG r d₀ W id C₀ P (gOf N ℓ) m) (hne : ∀ v, ∃ u, N.G.Adj v u)
+    (hH : ∀ v, ¬ (𝓣).NP ((𝓛).Γs P.H) v) (v : Fin n) {a b : Fin n}
+    (ha : a ∈ hubsL P W (N.rotList v) v (m v) 0) (hb : b ∈ hubsL P W (N.rotList v) v (m v) 0) :
+    (P.U : ℝ≥0∞) * dist N.G.Adj (lenOf ℓ) Set.univ a b ≤ valL P W (N.rotList v) v (m v) 0 a b ∧
+      valL P W (N.rotList v) v (m v) 0 a b ≤
+        (cU P.U ^ (2 * P.H + 1) * (P.U : ℝ≥0∞)) * dist N.G.Adj (lenOf ℓ) Set.univ a b := by
+  have hU := hVk.hU
+  have hD := hOK.decomp
+  have hvals := hOK.vals_metric hVk
+  have hgw : ∀ z : N.G.Dart × Bool, ((gOf N ℓ z : ℕ) : ℝ≥0∞) =
+      lenOf ℓ ((𝓣).vertM z) ((𝓣).vertM (N.toRot.double.rev z)) := fun _ => rfl
+  have hadj' : ∀ z : N.G.Dart × Bool, N.G.Adj ((𝓣).vertM z) ((𝓣).vertM (N.toRot.double.rev z)) :=
+    fun z => z.1.adj
+  have hlo : ∀ x, ∀ a ∈ (hierN hG hOK hne hH).hub x, ∀ b ∈ (hierN hG hOK hne hH).hub x,
+      (P.U : ℝ≥0∞) * dist N.G.Adj (lenOf ℓ) Set.univ a b ≤ dVN hG r d₀ W id C₀ P (gOf N ℓ) x a b :=
+    fun x a _ b _ => hD.bagVal_lo hadj' hgw hvals x a b
+  have hhi : ∀ x, ∀ a ∈ (hierN hG hOK hne hH).hub x, ∀ b ∈ (hierN hG hOK hne hH).hub x,
+      dVN hG r d₀ W id C₀ P (gOf N ℓ) x a b ≤
+        (cU P.U ^ (2 * P.H + 1) * (P.U : ℝ≥0∞)) * distR N.G.Adj (lenOf ℓ) ((hierN hG hOK hne hH).arc x) a b :=
+    fun x a ha b hb => hD.bagVal_hi hOK.hc hOK.hinj (hadjN hG r d₀) (hsurjN hG r d₀ hne) hH hgw hU hvals x a b ha hb
+  have hroot : (𝓛).nm 0 (N.dart0 hne v) = (hierN hG hOK hne hH).root :=
+    LevelData.nm_congr (u' := (d₀, true)) (hD.same_zero hOK.hc _ _)
+  have ha' := (mem_hubsL_iff hG hOK hM hne hH v (Nat.zero_le _) a).1 ha
+  have hb' := (mem_hubsL_iff hG hOK hM hne hH v (Nat.zero_le _) b).1 hb
+  rw [hroot] at ha' hb'
+  rw [valL_eq hG hOK hM hU hne v (Nat.zero_le _) a b, hroot]
+  exact (hierN hG hOK hne hH).root_hub_bounds (lenOf ℓ) (P.U : ℝ≥0∞) (cU P.U ^ (2 * P.H + 1) * (P.U : ℝ≥0∞))
+    (dVN hG r d₀ W id C₀ P (gOf N ℓ)) hlo hhi ha' hb'
+
+/-- **The prescribed cut at every node.** With a prescribed first cut of two corners, every vertex on the tree
+path from the vertex of one of them to the root is a hub of the root bag at every node. -/
+theorem forced_hub {p : (N.G.Dart × Bool) × (N.G.Dart × Bool)} (hC : C₀ = some p) (hOK : (𝓛).OK)
+    (hM : MemOK N hG r d₀ W id C₀ P g m) (hne : ∀ v, ∃ u, N.G.Adj v u) (hH : ∀ v, ¬ (𝓣).NP ((𝓛).Γs P.H) v)
+    (v : Fin n) {c : N.G.Dart × Bool} (hc : c = p.1 ∨ c = p.2) {a : Fin n} (ha : (𝓣).Anc a ((𝓣).vertM c)) :
+    a ∈ hubsL P W (N.rotList v) v (m v) 0 := by
+  have hroot : (𝓛).nm 0 (N.dart0 hne v) = (hierN hG hOK hne hH).root :=
+    LevelData.nm_congr (u' := (d₀, true)) (hOK.decomp.same_zero hOK.hc _ _)
+  rw [mem_hubsL_iff hG hOK hM hne hH v (Nat.zero_le _) a, hroot]
+  exact hOK.decomp.mem_hub_root hOK.hc hOK.hinj (hadjN hG r d₀) (hsurjN hG r d₀ hne) hH (hOK.not_np_one hC hc ha)
+
+/-- **Hypothesis (L3) from the memory.** With a prescribed first cut of two corners, every node reads, for any
+two vertices on the tree paths from their vertices to the root, a value between `P.U` times the distance and
+`cU P.U ^ (2 * P.H + 1) * P.U` times the distance. -/
+theorem forced_root_values {p : (N.G.Dart × Bool) × (N.G.Dart × Bool)} (hC : C₀ = some p) (hOK : (𝓛).OK)
+    (hVk : LevelData.VOK (𝓛) P (gOf N ℓ) C Cl cl B Wt h) (hM : MemOK N hG r d₀ W id C₀ P (gOf N ℓ) m)
+    (hne : ∀ v, ∃ u, N.G.Adj v u) (hH : ∀ v, ¬ (𝓣).NP ((𝓛).Γs P.H) v) (v : Fin n) {a b : Fin n}
+    (ha : ∃ c, (c = p.1 ∨ c = p.2) ∧ (𝓣).Anc a ((𝓣).vertM c))
+    (hb : ∃ c, (c = p.1 ∨ c = p.2) ∧ (𝓣).Anc b ((𝓣).vertM c)) :
+    (P.U : ℝ≥0∞) * dist N.G.Adj (lenOf ℓ) Set.univ a b ≤ valL P W (N.rotList v) v (m v) 0 a b ∧
+      valL P W (N.rotList v) v (m v) 0 a b ≤
+        (cU P.U ^ (2 * P.H + 1) * (P.U : ℝ≥0∞)) * dist N.G.Adj (lenOf ℓ) Set.univ a b := by
+  obtain ⟨c, hc, hac⟩ := ha
+  obtain ⟨c', hc', hbc⟩ := hb
+  exact root_values hG hOK hVk hM hne hH v (forced_hub hG hC hOK hM hne hH v hc hac)
+    (forced_hub hG hC hOK hM hne hH v hc' hbc)
+
 /-- **The entries of the memory give correct labels.** -/
-theorem labelsOK_of_mem {e hh ss ww : ℕ} (hOK : (𝓛).OK) (hVk : LevelData.VOK (𝓛) P (gOf N ℓ) C Cl cl B Wt h)
-    (hM : MemOK N hG r d₀ W id P (gOf N ℓ) m) (hne : ∀ v, ∃ u, N.G.Adj v u)
+theorem labelsOK_of_mem {e hh ss ww : ℕ} (h0 : C₀ = none) (hOK : (𝓛).OK) (hVk : LevelData.VOK (𝓛) P (gOf N ℓ) C Cl cl B Wt h)
+    (hM : MemOK N hG r d₀ W id C₀ P (gOf N ℓ) m) (hne : ∀ v, ∃ u, N.G.Adj v u)
     (hH : ∀ v, ¬ (𝓣).NP ((𝓛).Γs P.H) v) (hd₀ : d₀.fst = r) (hhd : d₀.snd = (N.rotList r).headD r)
     (hR : N.toRot.Planar) (hc : N.toRot.Connected) (hce : cU P.U ^ (2 * P.H + 1) ≤ 1 + (e : ℝ≥0∞)⁻¹)
     (hhh : P.H ≤ hh) (hspan : (2 * P.H + 2) * (2 * (h + (1 + P.H * (2 + 4 * h))) + 1) ≤ ss)
@@ -569,7 +640,7 @@ theorem labelsOK_of_mem {e hh ss ww : ℕ} (hOK : (𝓛).OK) (hVk : LevelData.VO
       refine ⟨entryL P W (N.rotList v) v (m v) d, (mem_chain_iff _ _ _ _ _ _).2 ⟨d, hd, ?_, rfl⟩, ?_⟩
       · rcases hA with rfl | hA
         · exact Or.inl rfl
-        · exact Or.inr ((corL_empty_iff hG hOK hM hd₀ hhd hR hc hd v).2 hA)
+        · exact Or.inr ((corL_empty_iff_none hG h0 hOK hM hd₀ hhd hR hc hd v).2 hA)
       · show nameL v (m v) d (own0 (N.rotList v) v) = _
         rw [nameL_own hG hM hne v hd]
         exact LevelData.nm_congr (hsame v d _ _ rfl hz hA)
@@ -578,7 +649,7 @@ theorem labelsOK_of_mem {e hh ss ww : ℕ} (hOK : (𝓛).OK) (hVk : LevelData.VO
       refine ⟨d, N.dart0 hne v, hd, rfl, ?_, nameL_own hG hM hne v hd⟩
       rcases hA with rfl | hA
       · exact Or.inl rfl
-      · exact Or.inr ((corL_empty_iff hG hOK hM hd₀ hhd hR hc hd v).1 hA)
+      · exact Or.inr ((corL_empty_iff_none hG h0 hOK hM hd₀ hhd hR hc hd v).1 hA)
   · intro v E hE y
     obtain ⟨d, hd, -, rfl⟩ := (mem_chain_iff _ _ _ _ _ _).1 hE
     show y ∈ (hierN hG hOK hne hH).hub (nameL v (m v) d (own0 (N.rotList v) v)) ↔ _

@@ -47,21 +47,21 @@ theorem secEnc_le (hn : 0 < n) (v : Fin n) (o : Option (Fin n × Bool)) : secEnc
 
 section Readers
 
-variable (P : ValP) (W : ℕ) (r : Fin n) (rl : List (Fin n)) (len : Fin n → ℕ) (v : Fin n) (m : Mem)
+variable (P : ValP) (W : ℕ) (r : Fin n) (rl : List (Fin n)) (fl : Option (Fin n × Bool → Bool × Bool)) (len : Fin n → ℕ) (v : Fin n) (m : Mem)
   (i : ℕ) (y : Fin n × Bool)
 
 /-- The corners of a level from the top at a node, from the memory. -/
 noncomputable def corV : Finset (Fin n × Bool) :=
-  if i = 0 then (ownL rl).toFinset else corL W r rl v m (P.H + 1 - i)
+  if i = 0 then (ownL rl).toFinset else corL W r rl fl v m (P.H + 1 - i)
 
 /-- The name of the cycle of a corner, from the memory. -/
 def cyV : ℕ := if i = 0 then Nat.pair 0 (min (cL v y) (cR v y)) else nameL v m (P.H + 1 - i) y
 
 /-- The name of the sector of a corner, from the memory. -/
-noncomputable def secV : ℕ := Nat.pair v (secEnc v (secOf (rotV rl) (corV P W r rl v m (i + 1)) y))
+noncomputable def secV : ℕ := Nat.pair v (secEnc v (secOf (rotV rl) (corV P W r rl fl v m (i + 1)) y))
 
 /-- The flag of a corner of the next level, from the memory. -/
-noncomputable def flV : ℕ := if y ∈ corV P W r rl v m (i + 1) then 1 else 0
+noncomputable def flV : ℕ := if y ∈ corV P W r rl fl v m (i + 1) then 1 else 0
 
 /-- The table of a value call for the bag of a dart, from the memory. -/
 def tabV (κ : ℕ) : ℕ := m (phVal P.H i) (Nat.pair (nameL v m (P.H - i) y) κ)
@@ -73,8 +73,8 @@ noncomputable def labV : ℕ → List ℕ
 
 /-- The pairs of a dart in a value call, from the memory. -/
 noncomputable def vItsL : List (ℕ × ℕ) :=
-  if y ∈ corV P W r rl v m i then
-    fieldItems (cL v y) (cyV P v m i y) (secV P W r rl v m i y) (numPL r rl v m y) (flV P W r rl v m i y)
+  if y ∈ corV P W r rl fl v m i then
+    fieldItems (cL v y) (cyV P v m i y) (secV P W r rl fl v m i y) (numPL r rl v m y) (flV P W r rl fl v m i y)
       (labV P W len v m y i)
   else []
 
@@ -108,9 +108,9 @@ def EV (N : Net (Fin n)) (L : LevelData (Fin n) N.toRot) (P : ValP) (g : N.G.Dar
 section Concrete
 
 variable {N : Net (Fin n)} (hG : N.G.Connected) {r : Fin n} {d₀ : N.G.Dart} {W : ℕ} {id : N.G.Dart → ℕ}
-  {m : Fin n → Mem} {P : ValP} {g : N.G.Dart × Bool → ℕ} {len : Fin n → Fin n → ℕ}
+  {C₀ : Option ((N.G.Dart × Bool) × (N.G.Dart × Bool))} {m : Fin n → Mem} {P : ValP} {g : N.G.Dart × Bool → ℕ} {len : Fin n → Fin n → ℕ}
 
-local notation "𝓛" => levelD N hG r d₀ W id
+local notation "𝓛" => levelD N hG r d₀ W id C₀
 local notation "𝓣" => Net.treeN N hG r d₀
 
 /-- Corners on one vertex of a split share a sector, and the name of the sector tells it. -/
@@ -140,7 +140,7 @@ include hC hd₀ hhd hR hc in
 /-- **A node reads its corners at a level from the top from its memory.** -/
 theorem corV_eq (hOK : (𝓛).OK) (hid : ∀ x : N.G.Dart, m x.fst 0 x.snd = id x)
     (hE : ∀ d, d ≤ P.H → EAll N (𝓛) m d) (i : ℕ) (v : Fin n) :
-    corV P W r (N.rotList v) v (m v) i = N.cornersAt v ((𝓛).Γt P i) := by
+    corV P W r (N.rotList v) (N.flN C₀ v) v (m v) i = N.cornersAt v ((𝓛).Γt P i) := by
   classical
   cases i with
   | zero =>
@@ -173,14 +173,14 @@ theorem cyV_eq (hE : ∀ d, d ≤ P.H → EF N (𝓛) m d) {i : ℕ} (z : N.G.Da
 include hC hd₀ hhd hR hc in
 theorem secV_eq (hOK : (𝓛).OK) (hid : ∀ x : N.G.Dart, m x.fst 0 x.snd = id x)
     (hE : ∀ d, d ≤ P.H → EAll N (𝓛) m d) (i : ℕ) (z : N.G.Dart × Bool) :
-    secV P W r (N.rotList z.1.fst) z.1.fst (m z.1.fst) i (N.locN z) = N.secN ((𝓛).Γt P) i z := by
+    secV P W r (N.rotList z.1.fst) (N.flN C₀ z.1.fst) z.1.fst (m z.1.fst) i (N.locN z) = N.secN ((𝓛).Γt P) i z := by
   unfold secV Net.secN
   rw [corV_eq hG hC hd₀ hhd hR hc hOK hid hE]
 
 include hC hd₀ hhd hR hc in
 theorem flV_eq (hOK : (𝓛).OK) (hid : ∀ x : N.G.Dart, m x.fst 0 x.snd = id x)
     (hE : ∀ d, d ≤ P.H → EAll N (𝓛) m d) (i : ℕ) (z : N.G.Dart × Bool) :
-    flV P W r (N.rotList z.1.fst) z.1.fst (m z.1.fst) i (N.locN z) = (𝓛).flagOf P i z := by
+    flV P W r (N.rotList z.1.fst) (N.flN C₀ z.1.fst) z.1.fst (m z.1.fst) i (N.locN z) = (𝓛).flagOf P i z := by
   unfold flV LevelData.flagOf
   rw [corV_eq hG hC hd₀ hhd hR hc hOK hid hE]
   simp only [N.mem_cornersAt rfl]
@@ -198,7 +198,7 @@ include hC hd₀ hhd hR hc in
 theorem vItsL_eq (hOK : (𝓛).OK) (hid : ∀ x : N.G.Dart, m x.fst 0 x.snd = id x)
     (hE : ∀ d, d ≤ P.H → EAll N (𝓛) m d) (hU : 1 ≤ P.U) (hlen : ∀ z : N.G.Dart × Bool, len z.1.fst z.1.snd = g z)
     {i : ℕ} (hprev : ∀ i', i = i' + 1 → EV N (𝓛) P g (N.secN ((𝓛).Γt P)) m i') (z : N.G.Dart × Bool) :
-    vItsL P W r (N.rotList z.1.fst) (len z.1.fst) z.1.fst (m z.1.fst) i (N.locN z) =
+    vItsL P W r (N.rotList z.1.fst) (N.flN C₀ z.1.fst) (len z.1.fst) z.1.fst (m z.1.fst) i (N.locN z) =
       (𝓛).vItems P g (N.secN ((𝓛).Γt P)) i z := by
   classical
   unfold vItsL LevelData.vItems
@@ -227,23 +227,23 @@ end Concrete
 section Run
 
 /-- What the value phases of a run compute. -/
-structure ValueRun (N : Net (Fin n)) (P : ValP) (W : ℕ) (r : Fin n) (len : Fin n → Fin n → ℕ) (s k b : ℕ)
-    (mem : ℕ → Fin n → Mem) : Prop where
+structure ValueRun (N : Net (Fin n)) (P : ValP) (W : ℕ) (r : Fin n) (F : Fin n → Option (Fin n × Bool → Bool × Bool))
+    (len : Fin n → Fin n → ℕ) (s k b : ℕ) (mem : ℕ → Fin n → Mem) : Prop where
   stable : ∀ {j k}, j < k → ∀ v, mem k v j = mem (j + 1) v j
   hVal : ∀ i, i ≤ P.H → AggDone N (fun v => nameL v (mem (phVal P.H i) v) (P.H - i))
-    (fun v => vItsL P W r (N.rotList v) (len v) v (mem (phVal P.H i) v) i) s k b
+    (fun v => vItsL P W r (N.rotList v) (F v) (len v) v (mem (phVal P.H i) v) i) s k b
     (fun v => mem (phVal P.H i + 1) v (phVal P.H i))
 
 variable {N : Net (Fin n)} (hG : N.G.Connected) {r : Fin n} {d₀ : N.G.Dart} {W : ℕ} {id : N.G.Dart → ℕ}
-  {P : ValP} {g : N.G.Dart × Bool → ℕ} {len : Fin n → Fin n → ℕ} {s k b h Jl C Cl cl B Wt : ℕ}
+  {C₀ : Option ((N.G.Dart × Bool) × (N.G.Dart × Bool))} {P : ValP} {g : N.G.Dart × Bool → ℕ} {len : Fin n → Fin n → ℕ} {s k b h Jl C Cl cl B Wt : ℕ}
   {mem : ℕ → Fin n → Mem}
 
-local notation "𝓛" => levelD N hG r d₀ W id
+local notation "𝓛" => levelD N hG r d₀ W id C₀
 local notation "𝓣" => Net.treeN N hG r d₀
 
 /-- **The value phases of a run give the tables of all value calls.** -/
 theorem values_of_run (hOK : (𝓛).OK) (hV : LevelData.VOK (𝓛) P g C Cl cl B Wt h)
-    (hrun : ValueRun N P W r len s k b mem)
+    (hrun : ValueRun N P W r (N.flN C₀) len s k b mem)
     (hK : ∀ j, 10 ≤ j → ∀ v, ConstAt N hG r d₀ (mem j v) v)
     (hid : ∀ j, 1 ≤ j → ∀ x : N.G.Dart, mem j x.fst 0 x.snd = id x)
     (hE : ∀ j, phVal P.H 0 ≤ j → ∀ d, d ≤ P.H → EAll N (𝓛) (mem j) d)
