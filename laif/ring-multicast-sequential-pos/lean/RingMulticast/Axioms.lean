@@ -2,6 +2,7 @@ import RingMulticast.Basic
 import RingMulticast.Cases
 import RingMulticast.Window
 import RingMulticast.Main
+import RingMulticast.Mirror
 
 #print axioms bound_q_ge_p
 #print axioms bound_q_succ_eq_p
@@ -51,3 +52,23 @@ import RingMulticast.Main
 #print axioms RingMulticast.conv_A
 #print axioms RingMulticast.conv_AL
 #print axioms RingMulticast.two_orders
+#print axioms RingMulticast.leftCost_congr
+#print axioms RingMulticast.rightCost_congr
+#print axioms RingMulticast.play_eq
+#print axioms RingMulticast.exists_myopic
+#print axioms RingMulticast.usesB_mir
+#print axioms RingMulticast.users_mir
+#print axioms RingMulticast.share_mir
+#print axioms RingMulticast.left_mir
+#print axioms RingMulticast.right_mir
+#print axioms RingMulticast.before_mir
+#print axioms RingMulticast.before_lt
+#print axioms RingMulticast.myopic_mir
+#print axioms RingMulticast.netCost_mir
+#print axioms RingMulticast.myopic_congr
+#print axioms RingMulticast.sum_mir_lo
+#print axioms RingMulticast.sum_mir_hi
+#print axioms RingMulticast.tB_injOn
+#print axioms RingMulticast.mirT_injOn
+#print axioms RingMulticast.oriented_order
+#print axioms RingMulticast.sequential_pos
