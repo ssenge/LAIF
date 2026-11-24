@@ -1,5 +1,4 @@
-"""Exponents of Theorem 6 (Feedback Vertex Set in Tournaments and in Bipartite Tournaments), exact rational
-arithmetic where it decides. The bipartite algorithm of [26] has the same branching and leaf (its Lemmas 34, 45).
+"""Exponents of Theorem 6 (Feedback Vertex Set in Tournaments), exact rational arithmetic where it decides.
 
 Classical algorithm of [19] (arXiv:1510.07676): a family X of 2^{O(k/log k)} pairs (Lemma 5), a reduction to d-FVC with
 d = 2 log^4 k (Lemma 6), a (1, 2) branching tree in k and a (1, 3) tree in n (Lemma 9), whose leaves call the
@@ -71,7 +70,7 @@ def nodes(j):                                  # cut tree with j = budget - s0; 
     return 1 if j < 0 else 1 + nodes(j - 1) + nodes(j - 2)
 for j in range(0, 200):
     assert nodes(j) <= 3 * float(phi_hi) ** (j + 1), j        # O(phi^{k - s0})
-assert sqrt(2) < 1.4143                                       # baseline, rounded up
+assert sqrt(2) < 1.4143 and sqrt(1.5) < 1.2248               # baselines, rounded up
 @lru_cache(maxsize=None)
 def h(s): return 1 if s <= 4 else 2 ** (1 + s // 2) * h(s // 4)
 for s in range(0, 2000):
