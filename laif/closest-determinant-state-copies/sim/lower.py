@@ -34,14 +34,14 @@ for _ in range(2000):
     rho = (1 - beta) * np.eye(d) / d + beta * np.outer(v, v.conj())
     gap = (1 - beta) / d + beta - (u.conj() @ rho @ u).real
     assert abs(gap - beta * (1 - abs(np.vdot(u, v)) ** 2)) < 1e-12
-# cap probability P(|<u|v>|^2 >= s) = (1-s)^(d-1) for Haar v (Monte Carlo)
+# cap probability P(|<u|v>|^2 >= s) = (1-s)^(d-1) for uniformly random v (sampling)
 for d in (2, 3, 5):
     V = rng.normal(size=(400000, d)) + 1j * rng.normal(size=(400000, d)); V /= np.linalg.norm(V, axis=1, keepdims=True)
     p = np.mean(np.abs(V[:, 0]) ** 2 >= 0.5)
     assert abs(p - 0.5 ** (d - 1)) < 4e-3, (d, p)
 print("spiked gap identity and cap probability: ok")
 
-# single-copy information: E_v chi^2 for a rank-one element equals w beta^2 (d-1)/(d (d+1)); Monte Carlo over Haar v
+# single-copy information: E_v chi^2 for a rank-one element equals w beta^2 (d-1)/(d (d+1)); sampling over uniformly random v
 for d in (2, 4, 9):
     beta = 0.3; phi = stiefel(d, 1)[:, 0]
     V = rng.normal(size=(300000, d)) + 1j * rng.normal(size=(300000, d)); V /= np.linalg.norm(V, axis=1, keepdims=True)
