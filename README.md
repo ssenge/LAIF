@@ -12,7 +12,7 @@
 
 <!-- stats:start -->
 
-**194 results** (92 main, 102 minor) · **average score 2.19 / 10** · median 2 · highest 4 · [what the score means](#score)
+**195 results** (92 main, 103 minor) · **average score 2.19 / 10** · median 2 · highest 4 · [what the score means](#score)
 
 <!-- stats:end -->
 
