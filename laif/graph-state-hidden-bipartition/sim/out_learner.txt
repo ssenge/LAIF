@@ -1,0 +1,12 @@
+n=2000 d=8 p=1/(4d) k=1: success 0/10, S_A connected 0, S_B connected 0, covered 0
+n=2000 d=8 p=1/(4d) k=2: success 0/10, S_A connected 0, S_B connected 0, covered 0
+n=2000 d=8 p=1/(4d) k=4: success 6/10, S_A connected 8, S_B connected 9, covered 0
+n=2000 d=8 p=1/(4d) k=8: success 10/10, S_A connected 10, S_B connected 10, covered 10
+n=8000 d=9 p=1/(4d) k=1: success 0/10, S_A connected 0, S_B connected 0, covered 0
+n=8000 d=9 p=1/(4d) k=2: success 0/10, S_A connected 0, S_B connected 0, covered 0
+n=8000 d=9 p=1/(4d) k=4: success 1/10, S_A connected 6, S_B connected 7, covered 0
+n=8000 d=9 p=1/(4d) k=8: success 10/10, S_A connected 10, S_B connected 10, covered 10
+n=20000 d=10 p=1/(4d) k=1: success 0/10, S_A connected 0, S_B connected 0, covered 0
+n=20000 d=10 p=1/(4d) k=2: success 0/10, S_A connected 0, S_B connected 0, covered 0
+n=20000 d=10 p=1/(4d) k=4: success 1/10, S_A connected 6, S_B connected 6, covered 0
+n=20000 d=10 p=1/(4d) k=8: success 10/10, S_A connected 10, S_B connected 10, covered 10
