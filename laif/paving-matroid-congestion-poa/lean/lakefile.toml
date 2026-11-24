@@ -1,5 +1,13 @@
 name = "PavingCert"
-defaultTargets = ["PavingCert"]
+defaultTargets = ["PavingCert", "PavingReduction"]
+
+[[require]]
+name = "mathlib"
+scope = "leanprover-community"
+rev = "master"
 
 [[lean_lib]]
 name = "PavingCert"
+
+[[lean_lib]]
+name = "PavingReduction"

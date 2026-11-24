@@ -7,7 +7,7 @@ Posted 2026-11-22.
 | Problem | Previous best bound | Our bound | Status |
 |---|---|---|---|
 | Price of anarchy of symmetric paving matroid congestion games with affine delays | 13/9 ≈ 1.4444 ≤ PoA ≤ 17/7 ≈ 2.4286 [1] | PoA ≥ 16/11 ≈ 1.4545, by a rank-2 instance with 5 resources and 3 players | Lean |
-| The same, restricted to rank 2 and 3 players | at most 17/7 ≈ 2.4286 [1] | Exactly 16/11 ≈ 1.4545 | Claim (exact certificates for every case) |
+| The same, restricted to rank 2 and 3 players | at most 17/7 ≈ 2.4286 [1] | Exactly 16/11 ≈ 1.4545 | Claim (exact certificates for every case); Lean for steps 1 and 2 of the proof |
 
 ## Model
 
@@ -64,13 +64,22 @@ resources from different classes. Fix an equilibrium F and an optimum H.
   enumerating all profiles. For a fixed equilibrium profile and comparison profile, the equilibrium conditions are linear in
   the delay coefficients, and `lp_pair` maximizes the equilibrium cost by a linear program; this is how the delays
   above were found. Run with `python paving.py` (Python 3, numpy, scipy).
-- **Lean** (`lean/`, Lean v4.36.0-rc1, core library only, only the standard axioms, output in `lean/axioms.txt`):
+- **Lean** (`lean/`, Lean v4.36.0-rc1, only the standard axioms, output in `lean/axioms.txt`; `PavingCert` uses the
+  core library only, `PavingReduction` uses Mathlib d875a8de5222):
   `PavingCert/Basic.lean` defines the bases, the delays, the loads, the social cost and the equilibrium condition against
   every basis, all in natural numbers. Proved by `decide`: `bases_norm` and `exchange`, the basis exchange axiom
   (so the bases are those of a matroid); `rank_two`, every basis has 2 elements; `paving`, every resource lies in a
   basis, so there are no loops and every circuit has at least 2 elements, which for rank 2 is the definition of
   paving; `ne_isNE`, the profile above is a pure equilibrium; `ne_cost`, its cost is 16;
   `opt_cost` and `opt_ge`, the minimum social cost over all 512 ordered profiles is 11; `ratio_gt`, 16/11 > 13/9.
+- `PavingReduction/Basic.lean` states the game for every loopless rank-2 matroid, given by its parallel classes,
+  with N players, affine delays with rational coefficients, the social cost and the equilibrium condition against
+  every basis. `reduction` proves steps 1 and 2 of Theorem 2: if cost(F) ≤ r cost(H) holds for every equilibrium F
+  and every profile H of every game in which each resource is used by F or H and each two classes are joined by a
+  basis of F or H, then it holds for every game. `card_le` (at most 4N resources), `choose_classes_le` (C(k, 2) ≤ 2N
+  for k classes) and `classes_le_four` (k ≤ 4 for N = 3) give the sizes of the remaining games.
+  `PavingReduction/Instance.lean`: the instance of Theorem 1 is an equilibrium of cost 16 in this model, against a
+  profile of cost 11, so no bound below 16/11 holds for three players (`not_bound`).
 - `sim/types2.py` lists the types of Theorem 2. It introduces resources and classes in their order of first
   appearance, and the bases of F and of H in sorted order. `sim/certN.py` solves the dual linear program of each
   type, rounds the dual solution to rationals, and checks in exact arithmetic that the dual is feasible and its
@@ -78,8 +87,8 @@ resources from different classes. Fix an equilibrium F and an optimum H.
   `python certN.py 3 16/11 fails.jsonl` (about 50 minutes on one core, numpy and scipy). The output ends with
   `fails 0` and `worst certified 16/11`.
 
-Not formalized: Theorem 2. The certificates are checked by script, and the two reduction steps are a written
-proof.
+Not formalized: step 3 of Theorem 2. The certificates and the completeness of the list of types are checked by
+script.
 
 ## References
 
