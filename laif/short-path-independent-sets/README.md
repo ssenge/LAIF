@@ -45,13 +45,15 @@ All rows are at λ = λ_c, the supremum of the range of [1, Theorem 5.17]. ψ is
 ## Scope
 
 - **Graphs.** Random d-regular graphs, the family of [1, Proposition 5.22] and [2, Sec. 8.1], with high probability over the graph. Worst-case regular graphs are not covered.
+- **Lean.** Theorem 1, for any finite family of configurations with a size function (`ChainSearch.card_le_card_opt_mul_samples`) and in its form for the independent sets of a finite simple graph (`ChainSearch.indepSets_card_le`). Only the standard axioms are used (`lean/axioms.txt`).
 - **Assuming.** The greedy limit α_g = (1 − (d − 1)^(−2/(d−2)))/2 for random d-regular graphs [8], polynomial-delay listing of maximal independent sets [3, 4], and, for the statement for every sufficiently large d, the asymptotic independence ratio of [7].
-- **Not formalized.** Theorems 1, 2 and 3 and the corollary are written proofs with numerical evaluation of the exponents (`sim/mis_exponents.py`). Above d = 449 the range up to 10⁷ is sampled, not checked for every integer d.
+- **Not formalized.** Theorems 2 and 3 and the corollary are written proofs with numerical evaluation of the exponents (`sim/mis_exponents.py`). Above d = 449 the range up to 10⁷ is sampled, not checked for every integer d.
 - **Short-path runtime.** Only the bound of [1] is compared. The true runtime of the short-path algorithm may be smaller than that bound.
 
 ## Files
 
 - `sim/mis_exponents.py`: the exponents φ, ψ, the bound on c, the guarantee κ, the annealed estimates and the table (`python -I mis_exponents.py out.json`). `python -I mis_exponents.py test` checks the closed forms against exact first moments, the limit ψ against exact counts of maximal sets for n = 200 and 400, Theorem 1 and the count of maximal sets by brute force on small graphs, and the spectral gap ≤ 1/n and the stability bound on the exact chain of small graphs.
+- `lean/ChainSearch/Basic.lean`: Theorem 1. `lean/Axioms.lean` prints the axioms of both theorems.
 - `data/exponents.json`: all quantities for 624 degrees from 6 to 10⁷.
 
 ## Use of AI

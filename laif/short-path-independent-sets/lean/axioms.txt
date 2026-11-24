@@ -1,0 +1,2 @@
+'ChainSearch.card_le_card_opt_mul_samples' depends on axioms: [propext, Classical.choice, Quot.sound]
+'ChainSearch.indepSets_card_le' depends on axioms: [propext, Classical.choice, Quot.sound]
