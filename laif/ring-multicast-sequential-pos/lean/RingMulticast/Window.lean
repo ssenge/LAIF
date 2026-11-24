@@ -3,19 +3,19 @@ import Mathlib
 /-!
 # The case d ≥ 4 of the ring bound, from the best-response conditions
 
-Edges a 0, ..., a n of a ring, a most expensive edge o, the optimum Σ_{k ≠ o} a k normalized to 1. In the first
+Edges a 0, ..., a n of a ring, a most expensive edge o, the optimum Opt = Σ_{k ≠ o} a k. In the first
 arrival order, players 0, ..., p − 1 go left and player p goes right, with p = m + 3 < o; in the second order,
 players p − 1, p − 2, p − 3 go right. The hypotheses are the weak best-response conditions of these players, with
-the cost shares at their arrival. The conclusion is a o − a p ≤ 1/3.
+the cost shares at their arrival. The conclusion is a o − a p ≤ Opt/3.
 -/
 
 open Finset
 
 namespace RingMulticast
 
-theorem window_bound (a : ℕ → ℚ) (n o m : ℕ) (hpo : m + 3 < o) (hon : o ≤ n)
+theorem window_bound (a : ℕ → ℚ) (n o m : ℕ) (Opt : ℚ) (hpo : m + 3 < o) (hon : o ≤ n)
     (ha : ∀ k, 0 ≤ a k) (hcap : ∀ k, k ≤ n → a k ≤ a o)
-    (hopt : (∑ k ∈ range o, a k) + ∑ k ∈ Ico (o + 1) (n + 1), a k = 1)
+    (hopt : (∑ k ∈ range o, a k) + ∑ k ∈ Ico (o + 1) (n + 1), a k = Opt)
     -- player p = m + 3 prefers right in the first order
     (hA : (∑ k ∈ Ico (m + 4) (o + 1), a k) + (∑ k ∈ Ico (o + 1) (n + 1), a k / ((k : ℚ) - o + 1))
         ≤ ∑ k ∈ range (m + 4), a k / ((m : ℚ) + 3 - k + 1))
@@ -25,7 +25,7 @@ theorem window_bound (a : ℕ → ℚ) (n o m : ℕ) (hpo : m + 3 < o) (hon : o 
     -- players m, m + 1, m + 2 prefer right in the second order
     (hBR : ∀ j, m ≤ j → j < m + 3 →
         (∑ k ∈ Ico (j + 1) (n + 1), a k / ((k : ℚ) - j)) ≤ ∑ k ∈ range (j + 1), a k) :
-    a o - a (m + 3) ≤ 1 / 3 := by
+    a o - a (m + 3) ≤ Opt / 3 := by
   have hV0 : 0 ≤ ∑ k ∈ range m, a k := sum_nonneg fun k _ => ha k
   have hW0 : 0 ≤ ∑ k ∈ Ico (o + 1) (n + 1), a k / ((k : ℚ) - o + 1) := sum_nonneg fun k hk => by
     have : (o : ℚ) + 1 ≤ k := by exact_mod_cast (mem_Ico.1 hk).1
@@ -110,10 +110,10 @@ theorem window_bound (a : ℕ → ℚ) (n o m : ℕ) (hpo : m + 3 < o) (hon : o 
   have n0 := ha m; have n1 := ha (m + 1); have n2 := ha (m + 2); have n3 := ha (m + 3)
   linarith
 
-/-- Case d = 3 with q = m ≥ 0: min (a o − a p) (a o − a (q + 1)) ≤ 1/3, with p = m + 3. -/
-theorem bound_d3 (a : ℕ → ℚ) (n o m : ℕ) (hpo : m + 3 < o) (hon : o ≤ n)
+/-- Case d = 3 with q = m ≥ 0: min (a o − a p) (a o − a (q + 1)) ≤ Opt/3, with p = m + 3. -/
+theorem bound_d3 (a : ℕ → ℚ) (n o m : ℕ) (Opt : ℚ) (hpo : m + 3 < o) (hon : o ≤ n)
     (ha : ∀ k, 0 ≤ a k) (hcap : ∀ k, k ≤ n → a k ≤ a o)
-    (hopt : (∑ k ∈ range o, a k) + ∑ k ∈ Ico (o + 1) (n + 1), a k = 1)
+    (hopt : (∑ k ∈ range o, a k) + ∑ k ∈ Ico (o + 1) (n + 1), a k = Opt)
     -- player p = m + 3 prefers right in the first order
     (hA : (∑ k ∈ Ico (m + 4) (o + 1), a k) + (∑ k ∈ Ico (o + 1) (n + 1), a k / ((k : ℚ) - o + 1))
         ≤ ∑ k ∈ range (m + 4), a k / ((m : ℚ) + 3 - k + 1))
@@ -122,7 +122,7 @@ theorem bound_d3 (a : ℕ → ℚ) (n o m : ℕ) (hpo : m + 3 < o) (hon : o ≤ 
         ≤ (∑ k ∈ Ico (m + 3) (o + 1), a k) + ∑ k ∈ Ico (o + 1) (n + 1), a k / ((k : ℚ) - o + 1))
     -- player q + 1 = m + 1 prefers right in the second order
     (hBR1 : (∑ k ∈ Ico (m + 1 + 1) (n + 1), a k / ((k : ℚ) - ↑(m + 1))) ≤ ∑ k ∈ range (m + 1 + 1), a k) :
-    min (a o - a (m + 3)) (a o - a (m + 1)) ≤ 1 / 3 := by
+    min (a o - a (m + 3)) (a o - a (m + 1)) ≤ Opt / 3 := by
   have hBR : ∀ j, j = m + 1 →
       (∑ k ∈ Ico (j + 1) (n + 1), a k / ((k : ℚ) - j)) ≤ ∑ k ∈ range (j + 1), a k := by
     rintro j rfl; exact hBR1

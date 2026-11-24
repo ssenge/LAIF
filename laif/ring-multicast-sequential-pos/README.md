@@ -6,7 +6,7 @@ Posted 2026-11-22.
 
 | Problem | Previous best bound | Our bound | Status |
 |---|---|---|---|
-| Myopic sequential price of stability of the multicast network design game on a ring, equal cost sharing | 4/3 ≤ PoS ≤ 26/19 ≈ 1.3684 [1], conjectured 4/3 [1, Conj. 5.5] | Exactly 4/3: one of two fixed arrival orders always ends within 4/3 of the optimum, with ties broken in the worst way | Claim; Lean for the relaxations and certificates (steps 2 to 4) |
+| Myopic sequential price of stability of the multicast network design game on a ring, equal cost sharing | 4/3 ≤ PoS ≤ 26/19 ≈ 1.3684 [1], conjectured 4/3 [1, Conj. 5.5] | Exactly 4/3: one of two fixed arrival orders always ends within 4/3 of the optimum, with ties broken in the worst way | Lean for the theorem in its stated orientation; the other orientation is its mirror image |
 
 The lower bound 4/3 is the instance of [1, Fig. 3].
 
@@ -76,16 +76,25 @@ Run with `python proof_certs.py`, `python checkrelax.py 2000` and `python crossc
 library only).
 
 - **Lean** (`lean/`, Lean v4.36.0-rc1, Mathlib d875a8de5222, only the standard axioms, output in `lean/axioms.txt`).
-  The theorems take the best-response conditions of step 2 as hypotheses, as finite sums over the edges with
-  general n, o, p and q, and prove the bound on z for every case.
-  - `Cases.lean`: `tail_le` and `after_eq`, the weakening of the far terms of a right path and the mass after p;
+  `two_orders` proves the theorem from the game itself: for every outcome of myopic sequential play in A and in B,
+  with ties broken either way, 3 min(cost_A, cost_B) ≤ 4 OPT, for general n and o in the orientation of the
+  theorem.
+  - `Game.lean`: the game, with the left and right paths, equal shares, the players present at each arrival, myopic
+    sequential play with ties broken either way (`Myopic`), the network cost and the orders A and B (`tA`, `tB`).
+    `netCost_ge`: every network costs at least T − a_o, so the bound holds against the optimum.
+  - `Structure.lean`: step 1. `right_of_ge`: players o, ..., n − 1 go right in both orders. `A_mid` and `A_unused`:
+    in A every player of p, ..., o − 1 goes right and edge p is unused (`A_unused_o` if there is no p). `B_low` and
+    `B_unused`: in B every player of 0, ..., q goes left and edge q + 1 is unused (`B_unused_none` if q = −1).
+    `costs_A` and `costs_B`: the costs of both paths at arrival as finite sums, which give the conditions of step 2.
+  - `Main.lean`: `two_orders`, which splits into the cases of the table and applies the bounds below.
+  - `Cases.lean`: the bounds on z, from the best-response conditions as hypotheses, with a general optimum OPT.
+    `tail_le` and `after_eq`, the weakening of the far terms of a right path and the mass after p;
     `cond_A` and `left_share`, the weakened condition of player p; `bound_p_zero`, `bound_succ` (q + 1 = p),
     `bound_ge` (q ≥ p), `bound_d2`, `bound_d2_none` and `bound_d3_none` (q = −1).
   - `Window.lean`: `window_bound` for d ≥ 4, from the window of the four edges p, p − 1, p − 2, p − 3, and `bound_d3`.
   - `Basic.lean`: the seven relaxed linear programs of step 4 with their bounds, by `linarith`.
 
-Not formalized: step 1 (the structure of the two orders), and the derivation of the best-response conditions of
-step 2 from the game.
+Not formalized: the other orientation of the ring, which is the mirror image of the stated one.
 
 ## References
 

@@ -3,11 +3,11 @@ import Mathlib
 /-!
 # The cases d ≤ 3 of the ring bound, from the best-response conditions
 
-Notation as in `RingMulticast.Window`: edges a 0, ..., a n, a most expensive edge o, the optimum normalized to 1.
+Notation as in `RingMulticast.Window`: edges a 0, ..., a n, a most expensive edge o, the optimum Opt.
 Player p is the first of 0, ..., o − 1 to go right in the first order (players before p go left), and player q is
 the first of o − 1, ..., 0 to go left in the second order (players o − 1, ..., q + 1 go right before it). Each
 theorem takes the weak best-response conditions of the players it names and bounds
-z = min (a o − a p) (a o − a (q + 1)) by 1/3.
+z = min (a o − a p) (a o − a (q + 1)) by Opt/3.
 -/
 
 open Finset
@@ -27,10 +27,10 @@ theorem tail_le (a : ℕ → ℚ) (ha : ∀ k, 0 ≤ a k) (q p n : ℕ) (hqp : q
   have hq : (q : ℚ) ≤ p := by exact_mod_cast hqp
   exact div_le_div_of_nonneg_left (ha k) (by linarith) (by linarith)
 
-/-- The mass after p, with the optimum normalized to 1. -/
-theorem after_eq (a : ℕ → ℚ) (n o p : ℕ) (hpo : p < o) (hon : o ≤ n)
-    (hopt : (∑ k ∈ range o, a k) + ∑ k ∈ Ico (o + 1) (n + 1), a k = 1) :
-    ∑ k ∈ Ico (p + 1) (n + 1), a k = 1 + a o - ∑ k ∈ range (p + 1), a k := by
+/-- The mass after p, with the optimum Opt. -/
+theorem after_eq (a : ℕ → ℚ) (n o p : ℕ) (Opt : ℚ) (hpo : p < o) (hon : o ≤ n)
+    (hopt : (∑ k ∈ range o, a k) + ∑ k ∈ Ico (o + 1) (n + 1), a k = Opt) :
+    ∑ k ∈ Ico (p + 1) (n + 1), a k = Opt + a o - ∑ k ∈ range (p + 1), a k := by
   have h1 := sum_range_add_sum_Ico a (by omega : p + 1 ≤ o + 1)
   have h2 := sum_range_add_sum_Ico a (by omega : o + 1 ≤ n + 1)
   have h3 := sum_range_add_sum_Ico a (by omega : p + 1 ≤ n + 1)
@@ -72,18 +72,18 @@ theorem left_share (a : ℕ → ℚ) (ha : ∀ k, 0 ≤ a k) (p : ℕ) :
     exact div_le_div_of_nonneg_left (ha k) (by norm_num) (by linarith)
   linarith
 
-/-- Case q + 1 = p ≥ 1: a o − a p ≤ 1/3. -/
-theorem bound_succ (a : ℕ → ℚ) (n o q : ℕ) (hpo : q + 1 < o) (hon : o ≤ n)
+/-- Case q + 1 = p ≥ 1: a o − a p ≤ Opt/3. -/
+theorem bound_succ (a : ℕ → ℚ) (n o q : ℕ) (Opt : ℚ) (hpo : q + 1 < o) (hon : o ≤ n)
     (ha : ∀ k, 0 ≤ a k) (hcap : ∀ k, k ≤ n → a k ≤ a o)
-    (hopt : (∑ k ∈ range o, a k) + ∑ k ∈ Ico (o + 1) (n + 1), a k = 1)
+    (hopt : (∑ k ∈ range o, a k) + ∑ k ∈ Ico (o + 1) (n + 1), a k = Opt)
     (hA : (∑ k ∈ Ico (q + 1 + 1) (o + 1), a k) + (∑ k ∈ Ico (o + 1) (n + 1), a k / ((k : ℚ) - o + 1))
         ≤ ∑ k ∈ range (q + 1 + 1), a k / (((q + 1 : ℕ) : ℚ) - k + 1))
     (hB : (∑ k ∈ range (q + 1), a k) ≤ ∑ k ∈ Ico (q + 1) (n + 1), a k / ((k : ℚ) - q)) :
-    a o - a (q + 1) ≤ 1 / 3 := by
+    a o - a (q + 1) ≤ Opt / 3 := by
   have hA' := cond_A a n o (q + 1) hpo ha hA
   have hL := left_share a ha (q + 1)
   have hT := tail_le a ha q (q + 1) n (by omega) (by omega)
-  have hE := after_eq a n o (q + 1) hpo hon hopt
+  have hE := after_eq a n o (q + 1) Opt hpo hon hopt
   have e1 : ∑ k ∈ Ico (q + 1) (q + 1 + 1), a k / ((k : ℚ) - q) = a (q + 1) := by
     rw [sum_Ico_succ_top le_rfl, Ico_self, sum_empty]; push_cast; ring
   rw [e1] at hT
@@ -99,13 +99,13 @@ theorem bound_succ (a : ℕ → ℚ) (n o q : ℕ) (hpo : q + 1 < o) (hon : o �
   linarith
 
 /-- Case q ≥ p: min (a o − a p) (a o − a (q + 1)) ≤ 1/5. -/
-theorem bound_ge (a : ℕ → ℚ) (n o p q : ℕ) (hpq : p ≤ q) (hqo : q < o) (hon : o ≤ n)
+theorem bound_ge (a : ℕ → ℚ) (n o p q : ℕ) (Opt : ℚ) (hpq : p ≤ q) (hqo : q < o) (hon : o ≤ n)
     (ha : ∀ k, 0 ≤ a k) (hcap : ∀ k, k ≤ n → a k ≤ a o)
-    (hopt : (∑ k ∈ range o, a k) + ∑ k ∈ Ico (o + 1) (n + 1), a k = 1)
+    (hopt : (∑ k ∈ range o, a k) + ∑ k ∈ Ico (o + 1) (n + 1), a k = Opt)
     (hA : (∑ k ∈ Ico (p + 1) (o + 1), a k) + (∑ k ∈ Ico (o + 1) (n + 1), a k / ((k : ℚ) - o + 1))
         ≤ ∑ k ∈ range (p + 1), a k / ((p : ℚ) - k + 1))
     (hB : (∑ k ∈ range (q + 1), a k) ≤ ∑ k ∈ Ico (q + 1) (n + 1), a k / ((k : ℚ) - q)) :
-    min (a o - a p) (a o - a (q + 1)) ≤ 1 / 5 := by
+    min (a o - a p) (a o - a (q + 1)) ≤ Opt / 5 := by
   have hA' := cond_A a n o p (by omega) ha hA
   have hL := left_share a ha p
   have hT := tail_le a ha q (q + 1) n (by omega) (by omega)
@@ -114,7 +114,7 @@ theorem bound_ge (a : ℕ → ℚ) (n o p q : ℕ) (hpq : p ≤ q) (hqo : q < o)
   rw [e1] at hT
   have e2 : ((q + 1 : ℕ) : ℚ) + 1 - q = 2 := by push_cast; ring
   rw [e2] at hT
-  -- mass after q + 1, against the optimum: 1 + a o = Σ_{k ≤ q+1} a k + Σ_{k > q+1} a k
+  -- mass after q + 1, against the optimum: Opt + a o = Σ_{k ≤ q+1} a k + Σ_{k > q+1} a k
   have h1 := sum_range_add_sum_Ico a (by omega : q + 1 + 1 ≤ n + 1)
   have h2 := sum_range_add_sum_Ico a (by omega : o + 1 ≤ n + 1)
   rw [sum_range_succ] at h2
@@ -136,14 +136,14 @@ theorem bound_ge (a : ℕ → ℚ) (n o p q : ℕ) (hpq : p ≤ q) (hqo : q < o)
   linarith
 
 
-/-- Case d = 2 with q = m ≥ 0, p = m + 2: min (a o − a p) (a o − a (q + 1)) ≤ 1/3. -/
-theorem bound_d2 (a : ℕ → ℚ) (n o m : ℕ) (hpo : m + 2 < o) (hon : o ≤ n)
+/-- Case d = 2 with q = m ≥ 0, p = m + 2: min (a o − a p) (a o − a (q + 1)) ≤ Opt/3. -/
+theorem bound_d2 (a : ℕ → ℚ) (n o m : ℕ) (Opt : ℚ) (hpo : m + 2 < o) (hon : o ≤ n)
     (ha : ∀ k, 0 ≤ a k) (hcap : ∀ k, k ≤ n → a k ≤ a o)
-    (hopt : (∑ k ∈ range o, a k) + ∑ k ∈ Ico (o + 1) (n + 1), a k = 1)
+    (hopt : (∑ k ∈ range o, a k) + ∑ k ∈ Ico (o + 1) (n + 1), a k = Opt)
     (hA : (∑ k ∈ Ico (m + 2 + 1) (o + 1), a k) + (∑ k ∈ Ico (o + 1) (n + 1), a k / ((k : ℚ) - o + 1))
         ≤ ∑ k ∈ range (m + 2 + 1), a k / (((m + 2 : ℕ) : ℚ) - k + 1))
     (hB : (∑ k ∈ range (m + 1), a k) ≤ ∑ k ∈ Ico (m + 1) (n + 1), a k / ((k : ℚ) - m)) :
-    min (a o - a (m + 2)) (a o - a (m + 1)) ≤ 1 / 3 := by
+    min (a o - a (m + 2)) (a o - a (m + 1)) ≤ Opt / 3 := by
   have hA' := cond_A a n o (m + 2) hpo ha hA
   have hs : ∑ k ∈ range (m + 2 + 1), a k / (((m + 2 : ℕ) : ℚ) - k + 1)
       = (∑ k ∈ range (m + 1), a k / (((m + 2 : ℕ) : ℚ) - k + 1)) + a (m + 1) / 2 + a (m + 2) := by
@@ -160,7 +160,7 @@ theorem bound_d2 (a : ℕ → ℚ) (n o m : ℕ) (hpo : m + 2 < o) (hon : o ≤ 
     rw [sum_Ico_succ_top (by omega), sum_Ico_succ_top (by omega), Ico_self, sum_empty]; push_cast; ring
   have e2 : ((m + 2 : ℕ) : ℚ) + 1 - m = 3 := by push_cast; ring
   rw [e1, e2] at hT
-  have hE := after_eq a n o (m + 2) hpo hon hopt
+  have hE := after_eq a n o (m + 2) Opt hpo hon hopt
   have hr : ∑ k ∈ range (m + 2 + 1), a k = (∑ k ∈ range (m + 1), a k) + a (m + 1) + a (m + 2) := by
     rw [sum_range_succ, sum_range_succ]
   have hro := sum_range_add_sum_Ico a (by omega : m + 2 + 1 ≤ o)
@@ -176,12 +176,12 @@ theorem bound_d2 (a : ℕ → ℚ) (n o m : ℕ) (hpo : m + 2 < o) (hon : o ≤ 
   linarith
 
 /-- Case d = 2 with q = −1 (nobody goes left in the second order), p = 1. -/
-theorem bound_d2_none (a : ℕ → ℚ) (n o : ℕ) (hpo : 1 < o) (hon : o ≤ n)
+theorem bound_d2_none (a : ℕ → ℚ) (n o : ℕ) (Opt : ℚ) (hpo : 1 < o) (hon : o ≤ n)
     (ha : ∀ k, 0 ≤ a k)
-    (hopt : (∑ k ∈ range o, a k) + ∑ k ∈ Ico (o + 1) (n + 1), a k = 1)
+    (hopt : (∑ k ∈ range o, a k) + ∑ k ∈ Ico (o + 1) (n + 1), a k = Opt)
     (hA : (∑ k ∈ Ico (1 + 1) (o + 1), a k) + (∑ k ∈ Ico (o + 1) (n + 1), a k / ((k : ℚ) - o + 1))
         ≤ ∑ k ∈ range (1 + 1), a k / (((1 : ℕ) : ℚ) - k + 1)) :
-    min (a o - a 1) (a o - a 0) ≤ 1 / 3 := by
+    min (a o - a 1) (a o - a 0) ≤ Opt / 3 := by
   have hA' := cond_A a n o 1 hpo ha hA
   simp only [sum_range_succ, sum_range_zero] at hA'
   norm_num at hA'
@@ -198,15 +198,15 @@ theorem bound_d2_none (a : ℕ → ℚ) (n o : ℕ) (hpo : 1 < o) (hon : o ≤ n
 
 /-- Case d = 3 with q = −1, p = 2: players 0 and 1 go left and player 2 goes right in the first order, and
 player 0 goes right in the second order. -/
-theorem bound_d3_none (a : ℕ → ℚ) (n o : ℕ) (hpo : 2 < o) (hon : o ≤ n)
+theorem bound_d3_none (a : ℕ → ℚ) (n o : ℕ) (Opt : ℚ) (hpo : 2 < o) (hon : o ≤ n)
     (ha : ∀ k, 0 ≤ a k) (hcap : ∀ k, k ≤ n → a k ≤ a o)
-    (hopt : (∑ k ∈ range o, a k) + ∑ k ∈ Ico (o + 1) (n + 1), a k = 1)
+    (hopt : (∑ k ∈ range o, a k) + ∑ k ∈ Ico (o + 1) (n + 1), a k = Opt)
     (hA : (∑ k ∈ Ico (2 + 1) (o + 1), a k) + (∑ k ∈ Ico (o + 1) (n + 1), a k / ((k : ℚ) - o + 1))
         ≤ ∑ k ∈ range (2 + 1), a k / (((2 : ℕ) : ℚ) - k + 1))
     (hAL : (∑ k ∈ range 2, a k / ((2 : ℚ) - k))
         ≤ (∑ k ∈ Ico 2 (o + 1), a k) + ∑ k ∈ Ico (o + 1) (n + 1), a k / ((k : ℚ) - o + 1))
     (hBR : (∑ k ∈ Ico 1 (n + 1), a k / ((k : ℚ) - 0)) ≤ ∑ k ∈ range 1, a k) :
-    min (a o - a 2) (a o - a 0) ≤ 1 / 3 := by
+    min (a o - a 2) (a o - a 0) ≤ Opt / 3 := by
   have hA' := cond_A a n o 2 hpo ha hA
   simp only [sum_range_succ, sum_range_zero] at hA' hAL hBR
   norm_num at hA' hAL
