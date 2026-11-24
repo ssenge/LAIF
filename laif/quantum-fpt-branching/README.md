@@ -14,7 +14,9 @@ For a graph G and a budget k, Vertex Cover above LP asks for a vertex cover of s
 
 **Theorem 5.** Mixed Dominating Set (at most k vertices and edges that together dominate all vertices and edges) has quantum algorithms of the same kind in time O(1.8734^k) · poly(n) and in time O(1.3825^n).
 
-Status: Claim. For Odd Cycle Transversal the matching bound on the relaxation and the bound on μ are in Lean (`lean/FptBranching.lean`), and so are the bases; for the problems of Theorem 2 only the arithmetic of the budget step is. The search tree of [1] and the reductions of [1] and [4] are used as stated there (Assuming), and the walk is the direct application of [2] and [3]. For Theorem 3 the search trees of [5], [7] and [9] are used as stated there, with the changes of Section 3; the bounds of [9] are computer-assisted and are used as stated (Assuming). For Theorem 4 the search tree of [15] and Theorem 1 of [2] are used as stated, with the split step of Section 4. For Theorem 5 the search trees of [18] are used as stated, with the tree of the first step given in Section 5. The bases and the split step are checked by script.
+**Theorem 6.** Feedback Vertex Set in Tournaments (delete at most k vertices so that a tournament on n vertices becomes acyclic) has quantum algorithms of the same kind in time φ^{k/2} · 2^{O(k/log k)} + poly(n) and in time ρ^{n/2} · 2^{O(n/log n)}, where φ = 1.61803… is the golden ratio, ρ = 1.46557… is the root of x³ = x² + 1, √φ = 1.27202… and √ρ = 1.21061…. Asymptotically this is O(1.2721^k + poly(n)) and O(1.2107^n).
+
+Status: Claim. For Odd Cycle Transversal the matching bound on the relaxation and the bound on μ are in Lean (`lean/FptBranching.lean`), and so are the bases; for the problems of Theorem 2 only the arithmetic of the budget step is. The search tree of [1] and the reductions of [1] and [4] are used as stated there (Assuming), and the walk is the direct application of [2] and [3]. For Theorem 3 the search trees of [5], [7] and [9] are used as stated there, with the changes of Section 3; the bounds of [9] are computer-assisted and are used as stated (Assuming). For Theorem 4 the search tree of [15] and Theorem 1 of [2] are used as stated, with the split step of Section 4. For Theorem 5 the search trees of [18] are used as stated, with the tree of the first step given in Section 5. The bases and the split step are checked by script. For Theorem 6 the family of [19, Lemma 5], the reduction of [19, Lemma 6], the branching of [19, Lemma 9] and the minimization of [19, Lemma 7] with its partition [19, Lemma 10] are used as stated (Assuming), with quantum minimum finding [20] and reversible simulation [21]; the exponents are checked by script.
 
 ## Before and after
 
@@ -31,6 +33,8 @@ Status: Claim. For Odd Cycle Transversal the matching bound on the relaxation an
 | Edge Dominating Set | 2.2351^k classically [7]; 1.5215^k quantum, implied by [8] with [3] | **1.4951^k** |
 | Mixed Dominating Set, parameter k | 3.510^k classically, polynomial space [18] | **1.8734^k** |
 | Mixed Dominating Set, n vertices | 1.912^n classically, polynomial space [18] | **1.3825^n** |
+| Feedback Vertex Set in Tournaments, parameter k | 1.6181^k classically [19]; 1.7321^k quantum, implied by branching on directed triangles with [3] | **1.2721^k** |
+| Feedback Vertex Set in Tournaments, n vertices | 1.4656^n classically [19]; 1.4143^n quantum by search over vertex subsets [22] | **1.2107^n** |
 | 3-Path Vertex Cover | 1.708^k classically [9]; 1.3089^k quantum, implied by [10] with [3] | **1.3071^k** |
 | 4-Path Vertex Cover | 2.138^k classically [9]; 1.6184^k quantum, implied by [11] with [3] | **1.4624^k** |
 | 5-, 6-, 7-Path Vertex Cover | 2.636^k, 3.334^k, 3.959^k classically [9]; 1.9863^k, 2.2242^k, 2.4395^k quantum, implied by [12] with [3] | **1.6238^k, 1.8261^k, 1.9899^k** |
@@ -80,7 +84,15 @@ Both algorithms of [18] are search trees whose nodes do polynomial work, with po
 
 The completion of [18, Lemma 8] uses a minimum edge cover of G[S], which need not exist at a leaf consistent with an optimal solution: for the complete bipartite graph K_{2,4} with parts {u, w} and {z₁, … , z₄}, the leaf D_f = {u}, P_f = {w} has S = {w}, while the optimum {u} with the edge wz₁ has size 2. This hints at a possible gap in the proof of Lemma 8 of [18]; the completion above keeps its bound 1.912^n. The vector of rule B6 of [18, Section 4] has root 1.3006, a little above the printed 1.3001; the largest root, 1.3252 of rule B5, is unchanged.
 
-## 6. Lean
+## 6. Feedback Vertex Set in Tournaments: Theorem 6
+
+**The classical algorithm** [19]. A kernel leaves O(k³) vertices. A family X of 2^{O(k/log k)} pairs (M, P), listed in polynomial space, contains for every solution H a pair with M ∩ H = ∅ and P ⊆ H [19, Lemma 5]. For each pair, a polynomial reduction gives an instance of d-Feedback Vertex Cover on a mixed multigraph with blocks of at most d = 2 log⁴ k vertices [19, Lemma 6]. Its search tree branches on a vertex v with at least two undirected neighbours: v is deleted (k drops by 1, n by 1), or all its undirected neighbours are deleted and v is contracted (k drops by at least 2, n by at least 3) [19, Lemma 9]. A node where no such vertex is left has s ≤ k disjoint undirected edges, and the minimization of [19, Lemma 7] decides it: it splits the vertices by the partition of [19, Lemma 10], with at most s/2 + d crossing edges, and takes the minimum over all subsets C of the crossing edges of the number of crossing edges plus the optima of two independent instances with at most s/4 + d² edges each; components are solved separately and instances with at most d edges by brute force in time 2^{O(d²)}. Classically this takes 2^{2s/3} · 2^{O(d² + d log s)} · poly(n).
+
+**Quantum leaf.** The minimization is run as nested quantum minimum finding [20] over C, with the two optima computed by recursive calls, for D = 3 levels; below them the classical minimization runs reversibly [21] in time T^{1+ε}, with ε = 1/10. Each recursive value is computed by O(k) parallel copies and their minimum, which brings the error of a comparison below the inverse of the number of comparisons, and the copies are uncomputed, so the workspace stays polynomial at constant depth. The time is Q(s) ≤ 2^{s(1/3 + η)} · 2^{O(d²)} · poly(n) with η = (1 + 2ε)/(3 · 4^D) = 1/160, since the square roots 2^{(s_l/2 + d)/2} of the search spaces multiply along a path and the leaf costs 2^{(1+ε) 2 s_D/3} with s_D ≤ s/4^D + 2d².
+
+**The walk.** For each s₀ = 0, …, k, the walk of [3] runs on the tree of [19, Lemma 9] cut off at budget s₀: a node with budget below s₀ is an unmarked leaf, and a node where the branching stops with s₀ undirected edges is marked if the quantum leaf finds a solution within its budget. Every stopping node with s₀ edges has budget at least s₀, so it lies in the cut tree, which has at most φ^{k − s₀ + 1} nodes. Each step of the walk evaluates the marking with error below the inverse of the number of steps, so the run takes φ^{(k − s₀)/2} · Q(s₀) · poly(k). Since 2^{1/3 + η} = 1.2654 < √φ, the largest term is the one with s₀ = 0, and the sum over s₀ and over the pairs of X is φ^{k/2} · 2^{O(k/log k)} · poly(k), after the kernel in time poly(n). In terms of n the tree has the vector (1, 3), so its cut at n₀ vertices has at most ρ^{n − n₀ + O(1)} nodes, and a stopping node with n₀ vertices has at most n₀/2 undirected edges; with 2^{(1/3 + η)/2} = 1.1249 < √ρ, the time is ρ^{n/2} · 2^{O(n/log n)}; the kernel only lowers n.
+
+## 7. Lean
 
 `lean/FptBranching.lean` proves, with only the standard axioms (`lean/axioms.txt`):
 
@@ -93,14 +105,17 @@ Lean 4 v4.36.0-rc1 with Mathlib at revision d875a8de5222f62cf1c2fafc7984588adadc
 
 Not formalized: the search trees of [1] and [15], the split step of Section 4, the walk of [3], the reductions of [1] and [4], and for the problems of Theorem 2 the two inequalities vc(G′) ≤ |M| + |O| and vc*(G′) ≥ |M| + |O|/2 and Lemma 22 of [1].
 
-## 7. Measurements
+## 8. Measurements
 
 `sim/bases.py` recomputes the root 2.314596 of the vectors of rules B5 and B6 of [1], checks the printed bases in exact arithmetic on the recurrence of the walk, and recomputes the implied bases from the root φ² of the tree of [1, Theorem 1]. Run it with `python bases.py` in `sim/`. It exits nonzero on a failed check. `sim/bases2.py` checks the bases of Theorem 3 and of the implied baselines in exact arithmetic, each the square root of the classical base rounded up at the fourth decimal, and checks that the bases for d = 3 to 6 lie below the quantum bounds for d-Hitting Set of [13]. `sim/cluster.py` checks by brute force over all partitions, on 321 random disconnected weighted graphs with up to 7 vertices, that V is additive over the components of the type graph as in Section 4, that V(H) ≥ 1/2 for a component that is not a clique of edges, and that both forms of the split step, with the removal of clique components, decide V(G) ≤ k; it checks the leaf bound of the split step for k ≥ 16 and the bases √φ ≤ 1.2721 and √1.76 ≤ 1.3267 in exact arithmetic. `sim/mds.py` recomputes the roots of all branching vectors of [18, Sections 4 and 5] in exact arithmetic, checks on 300 random graphs that the tree of the first step of Section 5 reaches every maximal independent set with at most (n + 1) · 3^{n/3} nodes, checks by brute force that the completion of Section 5 gives a mixed dominating set at every leaf with U empty and that the best such leaf over all minimal vertex covers is optimal, on 73 random graphs without isolated vertices with up to 6 vertices and on K_{2,4}, and checks 1.3825^6 ≥ 3 · 1.3252³. `sim/bookkeeping.py` checks the bookkeeping by brute force over all partitions on random weighted instances with zero-edges and forbidden pairs, up to 6 vertices: for every edge, V equals the minimum over forbidding and merging of the parameter decrease plus V of the child, with the join rules of [15]; removing a clique component lowers V by half its zero-edges to the rest; and V = z/2 when the type graph is a union of cliques. It also checks the polynomial cases of [15, Lemma 5] with zero-edges: a clique minus one pair, by a minimum cut, and Kq * H for H a 5-cycle, three isolated vertices or two disjoint edges, by the best partition of H with Kq joined to a largest cluster.
 
-## 8. Limits
+`sim/tfvs.py` checks the exponents of Theorem 6 in exact rational arithmetic: the roots φ and ρ, 2^{1/3 + η} < √φ and 2^{(1/3 + η)/2} < √ρ for D = 3 and ε = 1/10, the exponent of the nested minimization on the integer recursion s_{l+1} = s_l/4 + d² for s up to 2 · 10⁵ and d up to 64, that the maximum over s₀ and n₀ of the combined exponent is at 0 for k up to 300, the leaf count of the cut (1, 2) tree, and the leaf count 2^{2s/3} of the classical recursion. Run it with `python tfvs.py` in `sim/`.
+
+## 9. Limits
 
 - The search tree of [1], the safeness of its rules and its analysis are used as stated, as are its reductions and those of [4]. The same holds for the trees of [5] to [12], [15] and [18]; their case analyses are used as stated.
 - The polynomial factor of the walk is not given explicitly, and there is no gate count.
+- Theorem 6 uses [19, Lemmas 5, 6, 7, 9 and 10] as stated, including the bound of [19, Lemma 10] on the crossing and remaining edges; the factors 2^{O(k/log k)} and 2^{O(n/log n)} are absorbed into 1.2721^k and 1.2107^n only for large k and n.
 
 ## References
 
@@ -122,6 +137,10 @@ Not formalized: the search trees of [1] and [15], the split step of Section 4, t
 16. S. Böcker, P. Damaschke. Even faster parameterized cluster deletion and cluster editing. Information Processing Letters, 2011.
 17. A. Jeļisejevs. Parametrizētu algoritmu paātrinājumi kvantu datoram. Bachelor's thesis, University of Latvia, 2021. https://dspace.lu.lv/handle/7/55878. The bounds are as stated in its abstract.
 18. L. Dublois, M. Lampis, V. Th. Paschos. New algorithms for Mixed Dominating Set. Discrete Mathematics and Theoretical Computer Science 23(1), 2021. arXiv:1911.08964.
+19. M. Kumar, D. Lokshtanov. Faster exact and parameterized algorithm for Feedback Vertex Set in Tournaments. STACS 2016. arXiv:1510.07676.
+20. C. Dürr, P. Høyer. A quantum algorithm for finding the minimum. arXiv:quant-ph/9607014.
+21. C. H. Bennett. Time/space trade-offs for reversible computation. SIAM Journal on Computing 18(4), 1989.
+22. L. K. Grover. A fast quantum mechanical algorithm for database search. STOC 1996.
 
 ## Use of AI
 
