@@ -33,7 +33,7 @@ Status: Claim. For Odd Cycle Transversal the matching bound on the relaxation an
 | Edge Dominating Set | 2.2351^k classically [7]; 1.5215^k quantum, implied by [8] with [3] | **1.4951^k** |
 | Mixed Dominating Set, parameter k | 3.510^k classically, polynomial space [18] | **1.8734^k** |
 | Mixed Dominating Set, n vertices | 1.912^n classically, polynomial space [18] | **1.3825^n** |
-| Feedback Vertex Set in Tournaments, parameter k | 1.6181^k classically [19]; 1.4143^k quantum, implied by the iterative compression of [23] with quantum search [22] | **1.2721^k** |
+| Feedback Vertex Set in Tournaments, parameter k | 1.6181^k classically [19]; 1.4143^k quantum, implied by the iterative compression of [23], with its disjoint step in polynomial time as in [25, Section 4.2], and quantum search [22] over the 2^{k+1} guesses of each compression step | **1.2721^k** |
 | Feedback Vertex Set in Tournaments, n vertices | 1.4656^n classically [19]; 1.2939^n quantum, implied by the polynomial-delay enumeration of the at most 1.6740^n minimal feedback vertex sets of [24] with [3] | **1.2107^n** |
 | 3-Path Vertex Cover | 1.708^k classically [9]; 1.3089^k quantum, implied by [10] with [3] | **1.3071^k** |
 | 4-Path Vertex Cover | 2.138^k classically [9]; 1.6184^k quantum, implied by [11] with [3] | **1.4624^k** |
@@ -141,8 +141,9 @@ Not formalized: the search trees of [1] and [15], the split step of Section 4, t
 20. C. Dürr, P. Høyer. A quantum algorithm for finding the minimum. arXiv:quant-ph/9607014.
 21. C. H. Bennett. Time/space trade-offs for reversible computation. SIAM Journal on Computing 18(4), 1989.
 22. L. K. Grover. A fast quantum mechanical algorithm for database search. STOC 1996.
-23. M. Dom, J. Guo, F. Hüffner, R. Niedermeier, A. Truß. Fixed-parameter tractability results for feedback set problems in tournaments. CIAC 2006.
+23. M. Dom, J. Guo, F. Hüffner, R. Niedermeier, A. Truß. Fixed-parameter tractability results for feedback set problems in tournaments. Journal of Discrete Algorithms 8(1), 2010. Conference version CIAC 2006.
 24. S. Gaspers, M. Mnich. Feedback vertex sets in tournaments. arXiv:0905.0567.
+25. M. Cygan, F. V. Fomin, Ł. Kowalik, D. Lokshtanov, D. Marx, M. Pilipczuk, M. Pilipczuk, S. Saurabh. Parameterized Algorithms. Springer, 2015.
 
 ## Use of AI
 

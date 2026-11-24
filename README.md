@@ -540,7 +540,7 @@ The folders `exact-planar-bipartite-matching`, `exact-shortest-paths-and-flows-o
 294. L. F. Toso, Y. LeCun, J. Anderson, O. Bounou. Preserving unstable modes through inverse dynamics in JEPA world models. arXiv:2610.07540, 2026.
 295. X. Zhang, Y. Guan, B. Zhang, H. Li, Y.-Q. Zhang, S. E. Li. On the identifiability of controlled world models. arXiv:2607.22430, 2026.
 296. M. Kumar, D. Lokshtanov. Faster exact and parameterized algorithm for Feedback Vertex Set in Tournaments. STACS 2016. arXiv:1510.07676.
-297. M. Dom, J. Guo, F. Hüffner, R. Niedermeier, A. Truß. Fixed-parameter tractability results for feedback set problems in tournaments. CIAC 2006.
+297. M. Dom, J. Guo, F. Hüffner, R. Niedermeier, A. Truß. Fixed-parameter tractability results for feedback set problems in tournaments. Journal of Discrete Algorithms 8(1), 2010. Conference version CIAC 2006.
 298. S. Gaspers, M. Mnich. Feedback vertex sets in tournaments. arXiv:0905.0567.
 
 ## Copyright
