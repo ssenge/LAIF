@@ -4,7 +4,7 @@ Written 24 Nov 2026.
 
 A JEPA world model such as LeWM [1] trains an encoder and a predictor with two terms: the error of predicting the next latent from the current latent and the action, and a regularizer (SIGReg [2]) that pushes the latents towards the standard normal law. Planning then searches for actions whose predicted latent is close to the latent of a goal. Several recent studies report that such models can lose what planning needs: latents that follow static content of the scene [3], latents that barely respond to the action [4], and lost controllable modes [5]; the remedies add an inverse-dynamics term that reads the action from consecutive latents [4, 5, 6, 7, 8].
 
-This folder solves the objective exactly in a linear world with normal noise, for a latent dimension K below the state dimension. The solution says which directions of the state the prediction objective keeps (Theorem 1), shows that actuator noise makes every near-minimizer blind to the action (Theorem 2), shows that an inverse-dynamics term can be met by a latent whose response to the action is arbitrarily small (Theorem 3), and gives a term, the covariance between future latents and past actions, whose optimum is the top eigenspace of a controllability matrix and which has no such loophole (Theorem 4). This term, like every term with zero derivative at zero action covariance, has zero gradient at an action-blind latent, so gradient descent can stay at such a latent although the minimizer is elsewhere; the unsquared norm of the covariances has no such stationary points (Theorem 5).
+This folder solves the objective exactly in a linear world with normal noise, for a latent dimension K below the state dimension. The solution says which directions of the state the prediction objective keeps (Theorem 1), shows that actuator noise makes every near-minimizer blind to the action (Theorem 2), shows that an inverse-dynamics term can be met by a latent whose response to the action is arbitrarily small (Theorem 3), and gives a term, the covariance between future latents and past actions, whose optimum is the top eigenspace of a controllability matrix and which has no such loophole (Theorem 4). This term, like every term with zero derivative at zero action covariance, has zero gradient at an action-blind latent, so gradient descent can stay at such a latent although the minimizer is elsewhere; the unsquared norm of the covariances has no such stationary points (Theorem 5). A small pixel test shows the same three effects with a convolutional encoder, and shows that the inverse-dynamics term together with T_H gives latents that carry the agent.
 
 ## Setting
 
@@ -65,6 +65,26 @@ and the second variation under any small perturbation is the sum of such terms o
 
 Taken together: the prediction objective ranks directions by how little fresh noise they carry and treats static content as ideal; with noisy actuators it removes the action from the latent; reading the action back restores it only as an arbitrarily small component; a term that measures how much of the latent variance the actions cause selects the controllable directions with a finite, explicit weight; in its squared form it gives no gradient at a latent that is already blind to the action, while the unsquared form does.
 
+## Pixel test
+
+A small world from pixels tests Theorems 1, 3 and 5 beyond the linear setting (script `sim/pixel_toy.py`, CPU).
+
+- **World.** Images of 32 × 32 pixels. The agent is a bump of width 0.05 at a position p ∈ [0, 1]² that moves by p′ = clip(p + 0.08(a + 0.5e)) with a, e ∼ N(0, I₂), so the actuators are noisy. The background is a sum of 6 fixed cosine patterns of total amplitude 0.5, with coefficients drawn once per episode from the uniform law with unit variance, so it is static content within an episode.
+- **Model.** A convolutional encoder (three stride-2 layers and two linear layers) to K = 4 latents and an MLP predictor of z_{t+1} from (z_t, a_t). The loss is the squared prediction error plus SIGReg with weight 0.1 (64 slices, 17 knots on [0, 3], the statistic scaled by the batch size as in the code of [1]). Training runs 3000 steps of Adam (learning rate 10⁻³) on batches of 64 episodes of 6 steps.
+- **Variants.** LeWM (prediction and SIGReg); inverse dynamics (plus the squared error of an MLP that reads a_t from (z_t, z_{t+1}), weight 1); inverse dynamics and T_H (plus −μT_H with μ = 10 and H = 3, computed on batch-whitened latents so that Cov(z) = I as in Theorem 4); and, as a reference, a supervised linear readout of p from z with weight 10, which shows what a latent that carries the agent gives.
+- **Measures.** R² of a linear probe of the agent position and of the background coefficients from z (2000 frames, half for fitting). The action response, the variance over 64 random actions of the predicted next latent, summed over coordinates. Goal reaching by random-shooting control: 256 candidate sequences of 5 actions, replanned at each of 25 steps, with the squared latent distance to the image of the goal (same background) as cost. The mean start distance is 0.53, and an episode succeeds when the final distance is below 0.1 (100 episodes).
+
+Three seeds, mean ± standard deviation:
+
+| Variant | Position R² | Background R² | Action response | Success | Final distance |
+|---|---|---|---|---|---|
+| LeWM | 0.00 ± 0.00 | 0.60 ± 0.08 | 0.001 ± 0.000 | 1.3 ± 1.5 % | 0.60 ± 0.06 |
+| Inverse dynamics | 0.01 ± 0.01 | 0.58 ± 0.11 | 0.002 ± 0.001 | 5.0 ± 1.0 % | 0.48 ± 0.05 |
+| Inverse dynamics and T_H | 0.57 ± 0.42 | 0.41 ± 0.18 | 0.096 ± 0.075 | 17.0 ± 3.6 % | 0.30 ± 0.10 |
+| Position readout (reference) | 0.98 ± 0.01 | 0.31 ± 0.01 | 0.114 ± 0.014 | 22.7 ± 6.7 % | 0.18 ± 0.01 |
+
+LeWM keeps the background and ignores the agent, as Theorems 1 and 2 predict for static content and noisy actuators. Inverse dynamics raises the action response only to 0.002, against 0.11 for a latent that carries the agent: the small-component solution of Theorem 3. With T_H added, the agent position becomes linearly readable in two of the three seeds (R² 0.78 and 0.84, and 0.08 in the third) and goal reaching rises from 5 % to 17 %. With the term T_H alone (μ = 1 and μ = 10, seed 0) the latent stays action-blind (action response 0.001), in line with Theorem 5(a): the inverse-dynamics term supplies a small action component, and T_H, whose gradient grows with that component, enlarges it.
+
 ## Proofs
 
 **Theorem 1.** Let s̃ = Σ^{−1/2}s, which has covariance I, and split s̃_t = Uz_t + s̃⊥ with s̃⊥ = (I − UUᵀ)s̃_t, uncorrelated with z_t. Then z_{t+1} = Uᵀ(Ãs̃_t + B̃a_t + w̃_t) = Mz_t + Ga_t + η_t with η_t = UᵀÃs̃⊥ + Uᵀw̃_t. All variables are jointly normal and η_t is uncorrelated with (z_t, a_t), so Mz + Ga is the conditional mean and L(E) = E|η_t|² = tr(UᵀÃ(I − UUᵀ)ÃᵀU) + tr(UᵀQ̃U). The second form follows from Uᵀ(ÃÃᵀ + B̃B̃ᵀ + Q̃)U = I_K. The bound is the extremal property of the trace for the K smallest eigenvalues. For decoupled modes Ã and Q̃ are diagonal and the coordinate subspace of the K smallest qᵢ attains the bound. L(E) = 0 means UᵀQ̃U = 0, that is EQEᵀ = 0 and hence EQ = 0, and (I − UUᵀ)ÃᵀU = 0, which says that the row space Σ^{−1/2} span(U) of E is invariant under Aᵀ.
@@ -86,8 +106,9 @@ Taken together: the prediction objective ranks directions by how little fresh no
 | Theorem 3 | As Theorem 1; (b) for K = 1 and a static direction; (c) for static and decoupled scalar modes | Claim; checked numerically | 2026-11-24 |
 | Theorem 4 | As Theorem 1; (d) for the world of Theorem 3(c) | Claim; checked numerically | 2026-11-24 |
 | Theorem 5 | (a) any differentiable encoder, population or batch covariances; (b) the world of Theorem 3(c); (c) as Theorem 1, the formula for one scalar mode | Claim; checked numerically | 2026-11-24 |
+| Pixel test | The world above, K = 4, 3 seeds, 3000 steps; not the architecture or the tasks of [1] | Numerical only | 2026-11-25 |
 
-Not covered: nonlinear worlds and encoders, actions chosen by a policy that depends on the state, predictors that see a window of past latents, finite samples and the dynamics of training, and experiments from pixels. With a policy that depends on the state, the covariance in T_H is to be taken after removing from a_t its regression on z_t.
+Not covered: nonlinear worlds and encoders, actions chosen by a policy that depends on the state, predictors that see a window of past latents, finite samples and the dynamics of training, and experiments from pixels beyond the pixel test above. With a policy that depends on the state, the covariance in T_H is to be taken after removing from a_t its regression on z_t.
 
 Relation to other work, to our knowledge: linear results with the controllability matrix for an inverse-dynamics term are in [5], conditions under which the full state and transition are identified at full latent dimension in [9, 10], and a split of the latent into controllable and uncontrollable parts in [11]. The formulas of Theorems 1 to 4 for K below the state dimension, the bound of Theorem 2, the small-component solution of Theorem 3, the term T_H and the stationarity of Theorem 5 are, to our knowledge, not in these works.
 
@@ -99,6 +120,7 @@ Scripts in [`sim/`](sim/), run with NumPy, SciPy and PyTorch, with asserts, on o
 - `action_blind.py`: Theorem 3(a) against a regression (within 2 %). Three static modes and two scalar modes with actuator noise σ = 0.5: at λ = 0 the minimizer has loss and action response 0 (Theorem 2); for λ on both sides of the thresholds λᵢ = 0.75 and 0.95, the infimum and the action response against Theorem 3(c) (to 3·10⁻⁴).
 - `action_covariance.py`: Theorem 4(a) on simulated data (within 3 %), (b) against a numerical maximization (to 10⁻⁵), and (d) on the same world as above with H = 4: thresholds μᵢ = 0.083 and 0.188, value and action response on both sides (to 10⁻⁴).
 - `saddle.py`: Theorem 5 on the same world: the gradient on the manifold of orthonormal frames at the static latent is 0 for μ = 0.1, 1 and 10; the second variation along each mode matches qᵢ + (1 − αᵢ)² − μwᵢ (local thresholds 0.105 and 0.502); at μ = 0.094, between the global and the local threshold of mode 0, 300 random small perturbations of the static latent raise the objective, while keeping mode 0 lowers it below 0. For the unsquared term with one scalar mode the minimum over frames matches min f and the action response b²s* for μ = 0.002, 0.01, 0.05 and 0.5 (s* = 0.0008, 0.020, 1, 1).
+- `pixel_toy.py`, `run_pixel.sh`, `pixel_table.py`, `pixel_runs.jsonl`: the pixel test. `run_pixel.sh` runs the 12 runs of the table and the 2 runs with T_H alone (about 4 minutes each on 2 CPU threads), and `pixel_table.py` prints the table from the results.
 
 ## References
 
