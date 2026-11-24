@@ -55,7 +55,17 @@ k=2 alpha=0.05 eps=0.005: yes accepted 60/60, no rejected 60/60, cost <= 987 (k/
 
 The cost column counts queries with the constants of the tester; at these sizes the constant 80 in Λ dominates, and the gain over the k/ε scale appears only for small ε.
 
-**Not formalized:** all of the folder. Amplitude estimation and amplification, and the facts (Y) and (N) of [1], are taken from the literature.
+## Lean
+
+The library `FourierDim` in `lean/` (Lean 4, toolchain and Mathlib revision pinned in `lean-toolchain` and `lake-manifest.json`) proves, with only the standard axioms (`lean/axioms.txt`):
+
+* `phaseA_ratio`: 4αε/(Λε/2) ≤ 1/(10k) for Λ ≥ 80αk, the phase A step of the yes case.
+* `phaseB_mass`: ŵ > (1 + 2α)ε and |ŵ − w| ≤ (x/8) max(w, ε) give w > 7ε/8.
+* `est_ratio`, `yes_margin`, `second_moment_eq`, `second_moment_le`: the yes case of phase B, from ŵ ≤ (1 + x/7)w and the margin (5/7)x to the bound 8αΛ/(m x²).
+* `no_estimate`, `no_threshold`, `tail_exponent`: the no case, with ŵ > (1 + 2α)ε, τ ≤ (1 − x/4)E[Y] for m x ≥ 16k, and the exponent x²(m − k)/(16Λ).
+* `outside_same`: for W ≤ U, a sample lies outside W + span of the samples in U exactly when it lies outside U, the reduction to the sets J.
+
+**Not formalized:** the size bound |J| ≤ k, the tail and second-moment inequalities, the union bound over J, the query count and the failure sum. Amplitude estimation and amplification, and the facts (Y) and (N) of [1], are taken from the literature.
 
 ## Use of AI
 
