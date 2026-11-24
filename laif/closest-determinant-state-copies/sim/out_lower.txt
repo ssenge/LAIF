@@ -1,0 +1,8 @@
+reduction F = <psi|rho_1|psi>, |psi| <= 1 on 400 random instances: ok
+spiked gap identity and cap probability: ok
+per-copy chi^2 average: ok
+relative entropy bound: ok
+20 1 non-adaptive single-copy >= 6e+03 any measurement >= 309
+100 10 non-adaptive single-copy >= 2.88e+04 any measurement >= 960
+1000 1 non-adaptive single-copy >= 3.21e+05 any measurement >= 5.78e+03
+ok

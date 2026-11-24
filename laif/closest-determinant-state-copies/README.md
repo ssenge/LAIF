@@ -20,9 +20,11 @@ Below, k = min{n, m − n}, and ‖·‖₂ is the entrywise norm, the square ro
 | Theorem 1, implied by [3] | O((mk log(k/ε) + log(1/δ))/ε²) | single copy, global random circuits of [3] on the m-qubit encoding | C(m, k) · poly(m) |
 | Theorem 2, fermionic measurements | O(b(m) (mk log(k/ε) + log(1/δ))/ε²) | single copy, random matchgate circuits of [2] | poly(m) |
 | Proposition 3 (every algorithm, n ≥ 1) | Ω(log(1/δ)/ε²) | | |
+| Proposition 5 (every algorithm, 1 ≤ n ≤ m − 1) | Ω(m/(ε log(εm))) for ε ≥ 1/m | any, entangled across copies | |
+| Proposition 5 (non-adaptive single-copy algorithms) | Ω(m/ε²) | each copy measured alone, measurements fixed in advance | |
 | Corollary 4, closest pure free-fermion state | O((m² log(m/ε) + log(1/δ))/ε²) | as in Theorem 1 | |
 
-The exponent of 1/ε in Theorem 1 is optimal by Proposition 3. Asymptotically, the copy count Õ(nm/ε²) of Theorem 1 lies below the first term of the previous bound by a factor of order mn up to a logarithm, and it has no term n⁶/ε⁴. The constants of [1] are not stated, so no crossover point is given.
+The exponent of 1/ε in Theorem 1 is optimal by Proposition 3. Among non-adaptive single-copy algorithms, the class of Theorems 1 and 2, Theorem 1 is optimal up to the factor k log(k/ε) by Proposition 5, so for n = 1 or n = m − 1 up to log(1/ε). Asymptotically, the copy count Õ(nm/ε²) of Theorem 1 lies below the first term of the previous bound by a factor of order mn up to a logarithm, and it has no term n⁶/ε⁴. The constants of [1] are not stated, so no crossover point is given.
 
 ## Results
 
@@ -38,6 +40,10 @@ The selection runs over a set of exp(O(mk log(k/ε))) states, so the total runni
 
 **Corollary 4 (pure free-fermion states).** A pure free-fermion state of m modes is determined by its covariance matrix M_{ab} = (i/2)⟨[c_a, c_b]⟩, where c_1, …, c_{2m} are the self-adjoint generators of the fermionic algebra. M is real antisymmetric with M² = −I. Let OPT_G be the largest fidelity of an arbitrary state ρ of m modes with such a state. With the measurements of Theorem 1 and, up to rounding, N = 1836 (m(2m − 1) ln(1 + 3√m/ε) + ln(2/δ))/ε² copies, a pure free-fermion state of fidelity at least OPT_G − ε is computed with probability at least 1 − δ. With the matchgate circuits of Theorem 2, N = 612 b(m) (m(2m − 1) ln(1 + 3√m/ε) + ln(2/δ))/ε² copies suffice. The lower bound of Proposition 3 holds here as well, with the vacuum and a two-particle occupation state as the two orthogonal states. In [1, Section VII] the closest such state is named as a direction for further study.
 
+**Proposition 5 (dependence on m).** Let 1 ≤ n ≤ m − 1, 0 < ε ≤ 1/8, d = max{n, m − n} + 1, and let an algorithm output a determinant state of fidelity at least OPT − ε with probability at least 1 − δ on every n-fermion state. Then:
+- if it measures each copy separately with measurements fixed in advance, N ≥ ((1 − δ)(d − 1) ln 8 − ln 2)/(64ε²);
+- for any joint measurement on the N copies, N ≥ ((1 − δ)(d − 1) ln 8 − ln 2)/((8ε + 1/d) ln(1 + 8εd)).
+
 ## Proof
 
 **Lemma 1 (overlap bound).** Let U, V be m × n matrices with orthonormal columns. Then |⟨S(U)|ρ|S(U)⟩ − ⟨S(V)|ρ|S(V)⟩| ≤ ‖U − V‖₂ for every state ρ.
@@ -51,6 +57,12 @@ The selection runs over a set of exp(O(mk log(k/ε))) states, so the total runni
 - For Theorem 2, v = b(m): by [2, eqs. (36) and (40)], the single-shot estimate of tr(ϱρ) has second moment at most b(m), for every state ρ and every density operator ϱ of a pure free-fermion state. Every determinant state is such a state.
 
 **Proposition 3.** Take two orthogonal determinant states S_1, S_2 and ρ_± = (1/2 ± 2ε)|S_1⟩⟨S_1| + (1/2 ∓ 2ε)|S_2⟩⟨S_2|. For ρ_+ we have OPT = 1/2 + 2ε. Let a = |⟨S|S_1⟩|² and b = |⟨S|S_2⟩|², so a + b ≤ 1. A state S with fidelity at least 1/2 + ε satisfies (a + b)/2 + 2ε(a − b) ≥ 1/2 + ε, so a − b ≥ 1/2. For ρ_− the same argument gives b − a ≥ 1/2. So the algorithm distinguishes ρ_+^{⊗N} from ρ_−^{⊗N} with both errors at most δ. Both states are diagonal in one product basis, so the error sum of any test is at least one minus the total variation distance of the two coin sequences with biases 1/2 ± 2ε. That is at least (1/2) exp(−N D), where D = 4ε ln((1 + 4ε)/(1 − 4ε)) ≤ 64ε² is their relative entropy per copy. Hence 2δ ≥ (1/2) exp(−64Nε²).
+
+**Proposition 5.** Take n ≤ m − n; otherwise exchange particles and holes, a free-fermion map that sends determinant states to determinant states, so d = m − n + 1 in both cases after relabelling. Fix the core orbitals e_1, …, e_{n−1}, and put the last particle in the d remaining modes, in the one-particle state ρ_v = (1 − β)I/d + βvv† with β = 8ε and v a uniformly random unit vector of ℂ^d. The n-fermion state ρ is the core with ρ_v added.
+- *Reduction.* For a determinant state S′, let ψ ∈ ℂ^d be its amplitudes on the configurations core ∪ {j}. Then ⟨S′|ρ|S′⟩ = ⟨ψ|ρ_v|ψ⟩ and ‖ψ‖ ≤ 1, so u = ψ/‖ψ‖ satisfies ⟨u|ρ_v|u⟩ ≥ ⟨S′|ρ|S′⟩. Also OPT = λ_max(ρ_v), attained by the core with v. Since λ_max(ρ_v) − ⟨u|ρ_v|u⟩ = β(1 − |⟨u|v⟩|²), a successful output gives a unit vector u with |⟨u|v⟩|² ≥ 7/8.
+- *Guessing.* For uniformly random v, the probability that |⟨u|v⟩|² ≥ 7/8 for a fixed u is 8^{−(d−1)}. Let Z indicate success. Comparing the joint law of (v, outcomes) with the product of its marginals, the binary relative entropy gives (1 − δ) ln 8^{d−1} − ln 2 ≤ J, where J is the mutual information between v and the outcomes.
+- *Single copies.* With measurements fixed in advance, the outcomes are independent given v, so J ≤ Σ_t J_t, with J_t the mutual information of v and the outcome of copy t. Each measurement acts on ρ_v through a measurement on ℂ^d, refined into rank-one elements w_x|φ_x⟩⟨φ_x| with Σw_x = d. The average outcome law is w_x/d. Its χ² divergence from the law under v, averaged over v, is Σ_x w_x d β² Var|⟨φ_x|v⟩|² = β²(d − 1)/(d + 1) ≤ 64ε², since |⟨φ|v⟩|² has the law Beta(1, d − 1). Relative entropy is at most the χ² divergence, so J_t ≤ 64ε².
+- *Joint measurements.* The average of ρ_v is I/d, so by subadditivity and the bound of accessible information by the entropy difference, J ≤ N(ln d − S(ρ_v)). This is the relative entropy of ρ_v to I/d, at most (β + 1/d) ln(1 + βd).
 
 **Corollary 4.** For two pure free-fermion states with covariance matrices M_1, M_2, |⟨ψ_1|ψ_2⟩|² = √det((M_1 + M_2)/2). Write M_1 + M_2 = M_1(I + O) with O = M_1ᵀM_2 orthogonal. Its eigenvalues are e^{±iθ_j}, j = 1, …, m, and det M_1 = 1, so |⟨ψ_1|ψ_2⟩|² = ∏_j |cos(θ_j/2)|. Then 1 − ∏_j |cos(θ_j/2)| ≤ Σ_j sin²(θ_j/2) = ‖I − O‖₂²/8 = ‖M_1 − M_2‖₂²/8. As in Lemma 1, the two fidelities with ρ differ by at most ‖M_1 − M_2‖₂/(2√2). The covariance matrices lie on the sphere of radius √(2m) in the space of antisymmetric matrices, which has dimension m(2m − 1). A maximal subset with pairwise distances at least 2√2ε/3 has at most (1 + 3√m/ε)^{m(2m−1)} elements, and every pure free-fermion state is within fidelity ε/3 of one of them. The variance bounds 3 of [3] and b(m) of [2] hold for every pure free-fermion state, of either parity, so the selection step is unchanged.
 
@@ -69,13 +81,15 @@ The selection runs over a set of exp(O(mk log(k/ε))) states, so the total runni
 - checks det(U†V) = ⟨S(U)|S(V)⟩ and the chain of inequalities in Lemma 1 on 3000 random instances with m ≤ 7;
 - checks the reduction a − b ≥ 1/2 and the bound D ≤ 64ε² of Proposition 3.
 
+`sim/lower.py`, output in `sim/out_lower.txt`: it checks the reduction ⟨S′|ρ|S′⟩ = ⟨ψ|ρ_v|ψ⟩ with ‖ψ‖ ≤ 1 on 400 random instances with m ≤ 7, the identity λ_max − ⟨u|ρ_v|u⟩ = β(1 − |⟨u|v⟩|²), the cap probability (by sampling), the averaged χ² divergence (by sampling), and the relative-entropy bound on a grid.
+
 `sim/quasifree.py`, output in `sim/out_quasifree.txt`: for 600 pairs of random pure free-fermion states of both parities with m ≤ 4, it checks M² = −I, the overlap formula, the bound 1 − |⟨ψ_1|ψ_2⟩|² ≤ ‖M_1 − M_2‖₂²/8, which is attained up to 10⁻⁴ by close pairs, and the fidelity bound for random states ρ.
 
 ## Scope
 
 - Theorems 1 and 2 bound copies. Their running time is exponential in mk, the running time of Corollary 4 is exponential in m², and [1] gives an algorithm with running time m^{poly(n,1/ε)}. The remark keeps that running time and improves only the selection step.
 - The variance bounds are taken from [3] and [2]. The bound b(m) of [2] is checked exactly here for m = 3.
-- Between Proposition 3 and Theorem 1 the dependence on m and n remains open.
+- For adaptive single-copy algorithms and for joint measurements, the gap between Proposition 5 and Theorem 1 in m and n remains open. Among non-adaptive single-copy algorithms, a factor k log(k/ε) remains.
 - The statements are Claims with the listed checks.
 
 ## References
