@@ -48,7 +48,16 @@ cliques: n=4000 Delta=199 l=17: max t_v=180 (l^2=289), max |C_v|=3258 (n l^2/(De
 cliques: n=4000 Delta=63 l=17: max t_v=63 (l^2=289), max |C_v|=3999 (n l^2/(Delta+1)=18062), proper list colouring found; neighbour cost 512919 (2 n sqrt(Delta) l = 1079467), adjacency cost 4101219 (2 n sqrt(n/Delta) l^2 = 18422457)
 ```
 
-**Not formalized:** all of the folder. The palette sparsification theorem and quantum search are taken from the literature.
+## Lean
+
+The library `Colouring` in `lean/` (Lean 4, toolchain and Mathlib revision pinned in `lean-toolchain` and `lake-manifest.json`) proves, with only the standard axioms (`lean/axioms.txt`):
+
+* `proper_of_conflict`: a colouring from the lists that is proper on the conflict edges is proper on G, the correctness step.
+* `pair_bound`, with `count_containing`: two independent uniform lists of ℓ colours from {1, …, Δ + 1} share a colour for at most a fraction ℓ²/(Δ + 1) of the pairs of lists, the first statement of the size step.
+* `vertex_cost`, `total_cost`: a vertex with N ≤ M candidates and t ≤ T marked ones costs √(N(t + 1)) + √N L ≤ √M(√(T + 1) + L), summed over the vertices.
+* `balance`, with `min_sq_le`: the square of min{n√Δ L, n^{3/2}Δ^{−1/2} L²} is at most n^{5/2} L³, so the minimum is at most n^{5/4} L^{3/2}.
+
+**Not formalized:** the tail bounds on t_v and |C_v|, the search algorithms and the first-moment budget, and Corollary 2. The palette sparsification theorem [2] and quantum search [3, 5] are taken from the literature.
 
 ## Use of AI
 

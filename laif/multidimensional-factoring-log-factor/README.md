@@ -69,5 +69,5 @@ Claude Opus 5.5 (Anthropic) was used throughout this research: to explore approa
 2. O. Regev. An efficient quantum factoring algorithm. arXiv:2308.06572, 2023.
 3. S. Ragavan, V. Vaikuntanathan. Space-efficient and noise-robust quantum factoring. arXiv:2310.00899, 2023.
 4. M. Ekerå, J. Gärtner. Extending Regev's factoring algorithm to compute discrete logarithms. arXiv:2311.05545, 2023.
-5. A Lean proof of the Riemann hypothesis and of the hypothesis for Dirichlet L-functions, November 2026. https://leanprover-community.github.io/blog/posts/riemann-hypothesis/ (theorem list: https://math.mit.edu/~drew/grh/).
+5. A Lean proof of the Riemann hypothesis and of the hypothesis for Dirichlet L-functions, November 2026. https://leanprover-community.github.io/blog/posts/riemann-hypothesis/ (theorem list: https://math.mit.edu/~drew/grh/). Lean library: https://github.com/Deicyde/riemann-hypothesis
 6. On the generation of multiplicative groups by small primes. arXiv:2609.25393, 2026.

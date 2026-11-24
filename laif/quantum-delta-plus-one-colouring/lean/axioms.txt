@@ -1,0 +1,7 @@
+'Colouring.proper_of_conflict' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Colouring.count_containing' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Colouring.pair_bound' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Colouring.vertex_cost' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Colouring.total_cost' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Colouring.min_sq_le' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Colouring.balance' depends on axioms: [propext, Classical.choice, Quot.sound]

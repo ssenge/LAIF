@@ -1,0 +1,5 @@
+name = "spiking"
+defaultTargets = ["SpikingCircuits"]
+
+[[lean_lib]]
+name = "SpikingCircuits"

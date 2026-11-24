@@ -91,13 +91,26 @@ Seven weight values.
 
 Outputs are in `sim/results/`.
 
+## Lean
+
+`lean/SpikingCircuits/TwelveAX.lean` (Lean 4, core library only, no axioms; `lean/axioms.txt`).
+
+- `target`: the target function of 12AX, with the last digit and the last relevant letter as state.
+- `machine`: the state machine that the 12AX circuit implements, with four flags: context 1, context 2,
+  armed for X, armed for Y.
+- `machine_eq_target`: both give the same outputs on every symbol sequence.
+
+Not formalized: the spiking dynamics. That the latches, gates and the timer realize the four flags under Poisson
+input is covered by the measurements only.
+
 ## Scope and limits
 
 - The weights are written by hand for each task. Nothing here is learned, and the comparison says nothing
   about learning rules, which are the subject of [1].
 - The tasks have small finite state, so circuits of this kind exist in principle. What is measured is their
   size and their accuracy under the Poisson input noise of the benchmark.
-- The accuracies are measured on the stated numbers of random sequences. They are not proved.
+- The accuracies are measured on the stated numbers of random sequences. The Lean file covers the logic of the
+  12AX state machine, not the spiking dynamics.
 - The delay labels are the nominal settings of [1]. Sequences are cut at their fixed length, so the delays that
   occur are shorter: the mean distance from STORE to RECALL is about 0.2, 1.4, 2.5, 4.6 and 7.3 s in the five
   settings. The generator is the one of [1], so the rows are comparable.

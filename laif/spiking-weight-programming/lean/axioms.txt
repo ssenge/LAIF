@@ -1,0 +1,3 @@
+'TwelveAX.step_eq' does not depend on any axioms
+'TwelveAX.machine_eq_target_from' does not depend on any axioms
+'TwelveAX.machine_eq_target' does not depend on any axioms
