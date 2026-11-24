@@ -1,0 +1,6 @@
+'DetState.one_sub_prod_le_sum' depends on axioms: [propext, Classical.choice, Quot.sound]
+'DetState.one_sub_sq_le' depends on axioms: [propext, Classical.choice, Quot.sound]
+'DetState.one_sub_le_one_sub_sq' depends on axioms: [propext, Classical.choice, Quot.sound]
+'DetState.log_ratio_le' depends on axioms: [propext, Classical.choice, Quot.sound]
+'DetState.coin_divergence_le' depends on axioms: [propext, Classical.choice, Quot.sound]
+'DetState.reduction' depends on axioms: [propext, Classical.choice, Quot.sound]

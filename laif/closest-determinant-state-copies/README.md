@@ -85,6 +85,18 @@ The selection runs over a set of exp(O(mk log(k/ε))) states, so the total runni
 
 `sim/quasifree.py`, output in `sim/out_quasifree.txt`: for 600 pairs of random pure free-fermion states of both parities with m ≤ 4, it checks M² = −I, the overlap formula, the bound 1 − |⟨ψ_1|ψ_2⟩|² ≤ ‖M_1 − M_2‖₂²/8, which is attained up to 10⁻⁴ by close pairs, and the fidelity bound for random states ρ.
 
+## Lean
+
+`lean/DetState/Basic.lean` proves the scalar steps of the proofs:
+
+- `one_sub_prod_le_sum`: 1 − ∏a_i ≤ Σ(1 − a_i) for a_i ∈ [0, 1] (Lemma 1 and Corollary 4);
+- `one_sub_sq_le`: 1 − σ² ≤ 2(1 − σ) (Lemma 1);
+- `one_sub_le_one_sub_sq`: 1 − c ≤ 1 − c² for c ∈ [0, 1] (Corollary 4);
+- `log_ratio_le` and `coin_divergence_le`: 4ε ln((1 + 4ε)/(1 − 4ε)) ≤ 64ε² for 0 ≤ ε ≤ 1/8 (Proposition 3);
+- `reduction`: (1/2 + 2ε)a + (1/2 − 2ε)b ≥ 1/2 + ε with a + b ≤ 1 and ε > 0 gives a − b ≥ 1/2 (Proposition 3).
+
+`lean/axioms.txt` lists the axioms of every named theorem: only standard axioms. Not formalized: the shadow variance bounds of [3] and [2], the net and selection arguments, the free-fermion overlap formula and the information bounds of Proposition 5.
+
 ## Scope
 
 - Theorems 1 and 2 bound copies. Their running time is exponential in mk, the running time of Corollary 4 is exponential in m², and [1] gives an algorithm with running time m^{poly(n,1/ε)}. The remark keeps that running time and improves only the selection step.
