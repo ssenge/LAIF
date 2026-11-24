@@ -4,7 +4,7 @@ Written 24 Nov 2026.
 
 A JEPA world model such as LeWM [1] trains an encoder and a predictor with two terms: the error of predicting the next latent from the current latent and the action, and a regularizer (SIGReg [2]) that pushes the latents towards the standard normal law. Planning then searches for actions whose predicted latent is close to the latent of a goal. Several recent studies report that such models can lose what planning needs: latents that follow static content of the scene [3], latents that barely respond to the action [4], and lost controllable modes [5]; the remedies add an inverse-dynamics term that reads the action from consecutive latents [4, 5, 6, 7, 8].
 
-This folder solves the objective exactly in a linear world with normal noise, for a latent dimension K below the state dimension. The solution says which directions of the state the prediction objective keeps (Theorem 1), shows that actuator noise makes every near-minimizer blind to the action (Theorem 2), shows that an inverse-dynamics term can be met by a latent whose response to the action is arbitrarily small (Theorem 3), and gives a term, the covariance between future latents and past actions, whose optimum is the top eigenspace of a controllability matrix and which has no such loophole (Theorem 4).
+This folder solves the objective exactly in a linear world with normal noise, for a latent dimension K below the state dimension. The solution says which directions of the state the prediction objective keeps (Theorem 1), shows that actuator noise makes every near-minimizer blind to the action (Theorem 2), shows that an inverse-dynamics term can be met by a latent whose response to the action is arbitrarily small (Theorem 3), and gives a term, the covariance between future latents and past actions, whose optimum is the top eigenspace of a controllability matrix and which has no such loophole (Theorem 4). This term, like every term with zero derivative at zero action covariance, has zero gradient at an action-blind latent, so gradient descent can stay at such a latent although the minimizer is elsewhere; the unsquared norm of the covariances has no such stationary points (Theorem 5).
 
 ## Setting
 
@@ -54,7 +54,16 @@ and below λᵢ it is approached by latents whose action response tends to 0.
 (c) The latent displacements that action sequences of total energy 1 reach in H steps form the ellipsoid with matrix UᵀW̃_H U. So the maximizers of T_H are the latents in which goals are cheapest to reach.
 (d) T_H is quadratic in the scale of an action-dependent component: the latent of Theorem 3(b) has T_H = ε² vᵀW̃_H v/(1 + ε²). In the world of Theorem 3(c) the minimizers of L − μT_H keep mode i exactly when μ > qᵢ/wᵢ with wᵢ = bᵢ²(1 − αᵢ^{2H})/(1 − αᵢ²), which is at most qᵢ/bᵢ², a factor 2(1 + αᵢ) or more below λᵢ.
 
-Taken together: the prediction objective ranks directions by how little fresh noise they carry and treats static content as ideal; with noisy actuators it removes the action from the latent; reading the action back restores it only as an arbitrarily small component; a term that measures how much of the latent variance the actions cause selects the controllable directions with a finite, explicit weight.
+**Theorem 5 (action-blind latents are stationary).** Call a latent action-blind when Cov(z_{t+h}, a_t) = 0 for h = 1, …, H; by Theorem 4(a) this means W̃_H U = 0.
+(a) Let φ be a function of the covariances C_h = Cov(z_{t+h}, a_t), h = 1, …, H, that is differentiable at 0 with zero derivative there, such as T_H. For any encoder that depends differentiably on its parameters, φ has zero gradient at every action-blind encoder. So every action-blind stationary point of L, in particular every minimizer in Theorem 2, is a stationary point of L − μφ for every μ.
+(b) In the world of Theorem 3(c), let one column of a static latent turn towards mode i by the angle ε. Then
+
+    L − μT_H = ε²(qᵢ + (1 − αᵢ)² − μwᵢ) + O(ε⁴),
+
+and the second variation under any small perturbation is the sum of such terms over the columns and modes. If μ < (qⱼ + (1 − αⱼ)²)/wⱼ for every mode j, the static latents are local minima of L − μT_H. If in addition μ > qᵢ/wᵢ for some i, they are not global minima (Theorem 4(d)).
+(c) Let N_H(E) = Σ_{h=1}^{H} ‖Cov(z_{t+h}, a_t)‖_F, the sum of unsquared norms. If W̃_H ≠ 0, then for every μ > 0 no action-blind encoder is a local minimizer of L − μN_H. With one scalar mode, along the rotation of (b) the objective is f(s) = (qᵢ + (1 − αᵢ)²)s − (1 − αᵢ)²s² − μSᵢ√s, where s = sin²ε and Sᵢ = bᵢ Σ_{h<H} |αᵢ|^h, so its minimizer s* is positive for every μ > 0.
+
+Taken together: the prediction objective ranks directions by how little fresh noise they carry and treats static content as ideal; with noisy actuators it removes the action from the latent; reading the action back restores it only as an arbitrarily small component; a term that measures how much of the latent variance the actions cause selects the controllable directions with a finite, explicit weight; in its squared form it gives no gradient at a latent that is already blind to the action, while the unsquared form does.
 
 ## Proofs
 
@@ -66,6 +75,8 @@ Taken together: the prediction objective ranks directions by how little fresh no
 
 **Theorem 4.** (a) s̃_{t+h} = Ã^{h−1}B̃a_t plus terms uncorrelated with a_t, so Cov(z_{t+h}, a_t) = UᵀÃ^{h−1}B̃. Iterating I = ÃÃᵀ + B̃B̃ᵀ + Q̃ gives I = Ã^H(Ã^H)ᵀ + Σ_{h<H} Ã^h(B̃B̃ᵀ + Q̃)(Ã^h)ᵀ ⪰ W̃_H. (b) is the extremal property of the trace. (c) The displacement is Σ_h UᵀÃ^{H−1−h}B̃a_h, a linear image of the unit ball whose matrix is UᵀW̃_H U. (d) u_εᵀW̃_H u_ε = ε²vᵀW̃_H v/(1 + ε²) since W̃_H u = 0 for a static u; for scalar modes the objective is a sum over the kept modes of qᵢ − μwᵢ, and wᵢ ≥ bᵢ².
 
+**Theorem 5.** (a) The gradient of φ(C(θ)) is Dφ(C(θ)) applied to the derivative of C(θ), and Dφ(0) = 0. (b) With the column u = cos ε v + sin ε eᵢ, the matching diagonal entry of M is cos²ε + αᵢ sin²ε and the matching row of G is sin ε bᵢ, so with s = sin²ε, L = 2(1 − αᵢ)s − (1 − αᵢ)²s² − bᵢ²s and T_H = wᵢs, and 2(1 − αᵢ) − bᵢ² = qᵢ + (1 − αᵢ)². Under a general small perturbation X of the columns the off-diagonal entries of M and G change at order |X|², so they enter L at order |X|⁴. (c) For v ≠ 0 in the range of W̃_H, W̃_H U = 0 gives v ⟂ span(U). Turning one column of U towards v/|v| by ε makes C_h = sin ε · eₖ(v/|v|)ᵀÃ^{h−1}B̃, and these rows do not all vanish since vᵀW̃_H v > 0. So the objective is L(U) + εℓ − μ|ε|n + O(ε²) with n > 0, and one sign of ε lowers it. The formula for f follows from the computation in (b), with Σ_h ‖C_h‖_F = √s Sᵢ.
+
 ## Scope and status
 
 | Result | Scope | Status | Posted |
@@ -74,10 +85,11 @@ Taken together: the prediction objective ranks directions by how little fresh no
 | Theorem 2 | As Theorem 1, with Q ⪰ σ²BBᵀ | Claim; checked numerically | 2026-11-24 |
 | Theorem 3 | As Theorem 1; (b) for K = 1 and a static direction; (c) for static and decoupled scalar modes | Claim; checked numerically | 2026-11-24 |
 | Theorem 4 | As Theorem 1; (d) for the world of Theorem 3(c) | Claim; checked numerically | 2026-11-24 |
+| Theorem 5 | (a) any differentiable encoder, population or batch covariances; (b) the world of Theorem 3(c); (c) as Theorem 1, the formula for one scalar mode | Claim; checked numerically | 2026-11-24 |
 
 Not covered: nonlinear worlds and encoders, actions chosen by a policy that depends on the state, predictors that see a window of past latents, finite samples and the dynamics of training, and experiments from pixels. With a policy that depends on the state, the covariance in T_H is to be taken after removing from a_t its regression on z_t.
 
-Relation to other work, to our knowledge: linear results with the controllability matrix for an inverse-dynamics term are in [5], conditions under which the full state and transition are identified at full latent dimension in [9, 10], and a split of the latent into controllable and uncontrollable parts in [11]. The formulas of Theorems 1 to 4 for K below the state dimension, the bound of Theorem 2, the small-component solution of Theorem 3 and the term T_H are, to our knowledge, not in these works.
+Relation to other work, to our knowledge: linear results with the controllability matrix for an inverse-dynamics term are in [5], conditions under which the full state and transition are identified at full latent dimension in [9, 10], and a split of the latent into controllable and uncontrollable parts in [11]. The formulas of Theorems 1 to 4 for K below the state dimension, the bound of Theorem 2, the small-component solution of Theorem 3, the term T_H and the stationarity of Theorem 5 are, to our knowledge, not in these works.
 
 ## Simulations
 
@@ -86,6 +98,7 @@ Scripts in [`sim/`](sim/), run with NumPy, SciPy and PyTorch, with asserts, on o
 - `population.py`: Theorem 1 on a random world with d = 8, K = 3: the loss of an explicit regression on 400000 simulated steps against both closed forms (within 2 %), and gradient descent on an unconstrained encoder and predictor with a whitening penalty against the maximum of ‖UᵀÃU‖² + ‖UᵀB̃‖² over orthonormal U (0.111 against 0.114).
 - `action_blind.py`: Theorem 3(a) against a regression (within 2 %). Three static modes and two scalar modes with actuator noise σ = 0.5: at λ = 0 the minimizer has loss and action response 0 (Theorem 2); for λ on both sides of the thresholds λᵢ = 0.75 and 0.95, the infimum and the action response against Theorem 3(c) (to 3·10⁻⁴).
 - `action_covariance.py`: Theorem 4(a) on simulated data (within 3 %), (b) against a numerical maximization (to 10⁻⁵), and (d) on the same world as above with H = 4: thresholds μᵢ = 0.083 and 0.188, value and action response on both sides (to 10⁻⁴).
+- `saddle.py`: Theorem 5 on the same world: the gradient on the manifold of orthonormal frames at the static latent is 0 for μ = 0.1, 1 and 10; the second variation along each mode matches qᵢ + (1 − αᵢ)² − μwᵢ (local thresholds 0.105 and 0.502); at μ = 0.094, between the global and the local threshold of mode 0, 300 random small perturbations of the static latent raise the objective, while keeping mode 0 lowers it below 0. For the unsquared term with one scalar mode the minimum over frames matches min f and the action response b²s* for μ = 0.002, 0.01, 0.05 and 0.5 (s* = 0.0008, 0.020, 1, 1).
 
 ## References
 
