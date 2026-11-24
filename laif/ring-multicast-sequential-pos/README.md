@@ -6,7 +6,7 @@ Posted 2026-11-22.
 
 | Problem | Previous best bound | Our bound | Status |
 |---|---|---|---|
-| Myopic sequential price of stability of the multicast network design game on a ring, equal cost sharing | 4/3 ≤ PoS ≤ 26/19 ≈ 1.3684 [1], conjectured 4/3 [1, Conj. 5.5] | Exactly 4/3: one of two fixed arrival orders always ends within 4/3 of the optimum, with ties broken in the worst way | Lean for the theorem in its stated orientation; the other orientation is its mirror image |
+| Myopic sequential price of stability of the multicast network design game on a ring, equal cost sharing | 4/3 ≤ PoS ≤ 26/19 ≈ 1.3684 [1], conjectured 4/3 [1, Conj. 5.5] | Exactly 4/3: one of two fixed arrival orders always ends within 4/3 of the optimum, with ties broken in the worst way | Lean for the upper bound, every ring; the lower bound is from [1] |
 
 The lower bound 4/3 is the instance of [1, Fig. 3].
 
@@ -78,7 +78,9 @@ library only).
 - **Lean** (`lean/`, Lean v4.36.0-rc1, Mathlib d875a8de5222, only the standard axioms, output in `lean/axioms.txt`).
   `two_orders` proves the theorem from the game itself: for every outcome of myopic sequential play in A and in B,
   with ties broken either way, 3 min(cost_A, cost_B) ≤ 4 OPT, for general n and o in the orientation of the
-  theorem.
+  theorem. `sequential_pos` gives the price of stability for every ring: there is an arrival order such that every
+  outcome of myopic sequential play, with ties broken either way, costs at most 4/3 of every network, and such an
+  outcome exists.
   - `Game.lean`: the game, with the left and right paths, equal shares, the players present at each arrival, myopic
     sequential play with ties broken either way (`Myopic`), the network cost and the orders A and B (`tA`, `tB`).
     `netCost_ge`: every network costs at least T − a_o, so the bound holds against the optimum.
@@ -87,6 +89,11 @@ library only).
     `B_unused`: in B every player of 0, ..., q goes left and edge q + 1 is unused (`B_unused_none` if q = −1).
     `costs_A` and `costs_B`: the costs of both paths at arrival as finite sums, which give the conditions of step 2.
   - `Main.lean`: `two_orders`, which splits into the cases of the table and applies the bounds below.
+  - `Mirror.lean`: the ring read clockwise (edge k to n − k, player j to n − 1 − j), with `myopic_mir` and
+    `netCost_mir` (myopic play and the network cost carry over), `oriented_order` (A or B works for every tie
+    choice) and `sequential_pos`.
+  - `Play.lean`: `exists_myopic`, every order has an outcome of myopic sequential play (`play`, ties broken to the
+    right, by recursion on the arrival time).
   - `Cases.lean`: the bounds on z, from the best-response conditions as hypotheses, with a general optimum OPT.
     `tail_le` and `after_eq`, the weakening of the far terms of a right path and the mass after p;
     `cond_A` and `left_share`, the weakened condition of player p; `bound_p_zero`, `bound_succ` (q + 1 = p),
@@ -94,7 +101,7 @@ library only).
   - `Window.lean`: `window_bound` for d ≥ 4, from the window of the four edges p, p − 1, p − 2, p − 3, and `bound_d3`.
   - `Basic.lean`: the seven relaxed linear programs of step 4 with their bounds, by `linarith`.
 
-Not formalized: the other orientation of the ring, which is the mirror image of the stated one.
+Not formalized: the lower bound 4/3, which is the instance family of [1, Fig. 3].
 
 ## References
 

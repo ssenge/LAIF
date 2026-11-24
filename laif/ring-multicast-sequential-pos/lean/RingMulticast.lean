@@ -4,3 +4,5 @@ import RingMulticast.Window
 import RingMulticast.Game
 import RingMulticast.Structure
 import RingMulticast.Main
+import RingMulticast.Play
+import RingMulticast.Mirror
