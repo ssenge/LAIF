@@ -84,7 +84,8 @@ Seven weight values.
   seed. The result is the same with the value inputs silent during RECALL, as described in [1], and with values
   shown during RECALL.
 - 12AX: seeds 1 to 5, 2,000 episodes each, as many per seed as the test of [1].
-- Trained LIF network of `sim/sr_train.py` at 200 ms: 98.5, 98.3 and 97.1 % for seeds 0 to 2, against 96.7 % in [1].
+- Trained LIF network of `sim/sr_train.py`: 98.5, 98.3 and 97.1 % at 200 ms for seeds 0 to 2 (96.7 % in [1]);
+  50.3, 49.1 and 49.4 % at 2 s (51 % in [1]); 50.5 % at 4 s for seed 0 (50 % in [1]).
 - Mean firing rate per neuron: 35 to 48 Hz (one-dimensional), 27 Hz (20-dimensional), 29 Hz (12AX). A latch
   that is on fires at the highest rate the refractory period allows, 250 Hz in the STORE-RECALL tasks and
   167 Hz in 12AX.

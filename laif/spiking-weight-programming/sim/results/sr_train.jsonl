@@ -1,3 +1,7 @@
 {"model": "LIF trained", "setting": "200 ms", "seed": 0, "n": 60, "iters": 400, "recalls": 2476, "acc": 0.9850565428109854, "rate_hz_per_neuron": 19.42964643239975, "train_acc_last20": 0.9913500000000001, "seconds": 37}
 {"model": "LIF trained", "setting": "200 ms", "seed": 1, "n": 60, "iters": 400, "recalls": 2443, "acc": 0.9832173557101924, "rate_hz_per_neuron": 19.13301646709442, "train_acc_last20": 0.9798999999999998, "seconds": 34}
 {"model": "LIF trained", "setting": "200 ms", "seed": 2, "n": 60, "iters": 400, "recalls": 2462, "acc": 0.9707554833468724, "rate_hz_per_neuron": 21.57428627833724, "train_acc_last20": 0.9749999999999999, "seconds": 43}
+{"model": "LIF trained", "setting": "2 s", "seed": 0, "n": 60, "iters": 400, "recalls": 2380, "acc": 0.5029411764705882, "rate_hz_per_neuron": 9.219376603141427, "train_acc_last20": 0.5005999999999999, "seconds": 224}
+{"model": "LIF trained", "setting": "2 s", "seed": 1, "n": 60, "iters": 400, "recalls": 2401, "acc": 0.4910453977509371, "rate_hz_per_neuron": 9.307053638622165, "train_acc_last20": 0.51515, "seconds": 226}
+{"model": "LIF trained", "setting": "2 s", "seed": 2, "n": 60, "iters": 400, "recalls": 2365, "acc": 0.49429175475687104, "rate_hz_per_neuron": 8.696590200997889, "train_acc_last20": 0.48584999999999995, "seconds": 226}
+{"model": "LIF trained", "setting": "4 s", "seed": 0, "n": 60, "iters": 400, "recalls": 2510, "acc": 0.5051792828685259, "rate_hz_per_neuron": 9.101226110942662, "train_acc_last20": 0.4868500000000001, "seconds": 463}
