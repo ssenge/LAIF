@@ -9,12 +9,12 @@ Quantum form checked here:
 1. Lemma 7 as nested minimum finding of depth D with classical leaves run reversibly (time T^{1+eps}):
    log2 Q(s) <= sum_{l<D} (s_l/2 + d)/2 + (1+eps)(2/3) s_D + O(D d^2 + log), s_{l+1} <= s_l/4 + d^2,
    so log2 Q(s) <= s (1/3 + eta) + O(D d^2) with eta = (1 + 2 eps) / (3 4^D).
-2. Parameter k: for each leaf size s0, the walk over the tree truncated at budget s0 (at most phi^{k-s0+1} nodes)
+2. Parameter k: for each leaf size s0, the walk over the tree cut at budget s0 (O(phi^{k-s0}) nodes)
    with leaf checks of cost Q(s0): exponent (k - s0) log2(phi)/2 + s0 (1/3 + eta) <= k log2(phi)/2 iff
    1/3 + eta <= log2(phi)/2.
 3. Parameter n: tree x^3 = x^2 + 1 (root rho = 1.46557...), truncated at n0 vertices, leaf with s <= n0/2 edges:
    (n - n0) log2(rho)/2 + (n0/2)(1/3 + eta) <= n log2(rho)/2 iff (1/3 + eta)/2 <= log2(rho)/2.
-4. The truncated (1, 2) tree has at most phi^{k-s0+1} leaves; Lemma 7's classical leaf count recursion gives 2^{2s/3}.
+4. The (1, 2) tree cut at budget s0 has O(phi^{k-s0}) nodes; Lemma 7's classical leaf count recursion gives 2^{2s/3}.
 """
 from fractions import Fraction as F
 from math import log2, sqrt
@@ -58,13 +58,14 @@ for k in range(0, 300):
     assert max((k - s0) * LOG2PHI_LO / 2 + s0 * (F(1, 3) + e) for s0 in range(k + 1)) == k * LOG2PHI_LO / 2
     assert max((k - n0) * LOG2RHO_LO / 2 + F(n0, 2) * (F(1, 3) + e) for n0 in range(k + 1)) == k * LOG2RHO_LO / 2
 
-# 4. leaves of the (1, 2) tree truncated at budget s0, and the classical leaf recursion of Lemma 7
+# 4. nodes of the (1, 2) tree cut at budget s0, and the classical leaf recursion of Lemma 7
 from functools import lru_cache
 @lru_cache(maxsize=None)
-def leaves(k, s0): return 1 if k < s0 + 2 else leaves(k - 1, s0) + leaves(k - 2, s0)
-for s0 in range(0, 20):
-    for k in range(s0, s0 + 60):
-        assert leaves(k, s0) <= float(phi_hi) ** (k - s0 + 1)
+def nodes(j):                                  # cut tree with j = budget - s0; budget below s0 is a leaf
+    return 1 if j < 0 else 1 + nodes(j - 1) + nodes(j - 2)
+for j in range(0, 200):
+    assert nodes(j) <= 3 * float(phi_hi) ** (j + 1), j        # O(phi^{k - s0})
+assert sqrt(2) < 1.4143 and sqrt(1.6740) < 1.2939            # implied baselines, rounded up
 @lru_cache(maxsize=None)
 def h(s): return 1 if s <= 4 else 2 ** (1 + s // 2) * h(s // 4)
 for s in range(0, 2000):
