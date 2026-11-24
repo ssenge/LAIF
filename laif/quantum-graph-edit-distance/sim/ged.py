@@ -5,10 +5,13 @@
        R(V', W', c) = min over injections psi: S -> W' and bipartitions W1 + W2 = W' - psi(S), |W1| = |V1|, of
                       c_S(psi) + R(V1, W1, c^psi) + R(V2, W2, c^psi) + insertion cost of the H-edges between W1 and W2,
    where c^psi(v, w) = c(v, w) + sum over s in S of c_E({s, v}, {psi(s), w}) absorbs the edges at the separator.
-   It is compared with brute force over all bijections on random small instances (G a path, tree, grid,
+   It is compared with brute force over all bijections on random small instances (G a path, tree, ladder,
    cycle or sparse graph, H arbitrary, random reasonable costs).
 2. The exponents: the classical count 2^{n_i} n_i^{s(n_i)} per level and the quantum square root of it,
    summed over the levels n_i = alpha^i n, give 2^{n/(1 - alpha)} and 2^{n/(2(1 - alpha))} up to 2^{o(n)}.
+3. The classical exponential-space comparison: a dynamic program over a vertex order of G whose states are the
+   images of the frontier (placed vertices with a later neighbour) and the set of used images, in time and space
+   2^n n^{O(frontier)}, equals brute force on the same families.
 Run: python ged.py
 """
 import itertools, random
@@ -23,7 +26,7 @@ def instance(n, kind):
     if kind == "path": E = {frozenset((i, i + 1)) for i in range(n - 1)}
     elif kind == "cycle": E = {frozenset((i, (i + 1) % n)) for i in range(n)} if n >= 3 else set()
     elif kind == "tree": E = {frozenset((i, random.randrange(i))) for i in range(1, n)}
-    elif kind == "grid":
+    elif kind == "ladder":
         w = 2; E = {frozenset((i, i + 1)) for i in range(n - 1) if (i + 1) % w} | {frozenset((i, i + w)) for i in range(n - w)}
     else: E = {frozenset(p) for p in itertools.combinations(V, 2) if random.random() < 0.3}
     F = {frozenset(p) for p in itertools.combinations(V, 2) if random.random() < 0.5}
@@ -104,7 +107,7 @@ def R(Vs, Ws, cv, E, F, cE, ins):
 
 
 count = 0
-for kind in ("path", "cycle", "tree", "grid", "sparse"):
+for kind in ("path", "cycle", "tree", "ladder", "sparse"):
     for n in range(1, 8):
         for _ in range(3 if n <= 6 else 1):
             V, E, F, cV, cE, ins = instance(n, kind)
@@ -116,7 +119,7 @@ print(f"decomposition equals brute-force GED on {count} instances (n <= 7)")
 for alpha in (0.51, 0.55, 0.6):
     prev = None
     for n in (10 ** 6, 10 ** 8, 10 ** 10, 10 ** 12):
-        s = lambda m: m ** 0.5                       # planar separators, s(m) = O(sqrt m)
+        s = lambda m: 8 * m ** 0.5                   # planar separators, c_mu * s(m) = O(sqrt m), c_mu = 8 here
         ni, cl, qu = float(n), 0.0, 0.0
         while ni >= 2:
             lgN = ni + s(ni) * log2(ni)              # bipartitions <= 2^{n_i}, separator maps <= n_i^{s(n_i)}
@@ -129,6 +132,35 @@ for alpha in (0.51, 0.55, 0.6):
     print(f"alpha = {alpha}: quantum base -> 2^(1/(2(1 - alpha))) = {2 ** (1 / (2 * (1 - alpha))):.4f},"
           f" classical 2^(1/(1 - alpha)) = {2 ** (1 / (1 - alpha)):.4f}")
 for eps in (0.5, 0.1, 0.01):
-    mu = 0.5 - 1 / (2 * log2(2 + eps))               # balance 1/2 + mu with 2^{1/(2(1/2 - mu))} = 2 + eps
-    assert 0 < mu < 0.5 and abs(2 ** (1 / (2 * (0.5 - mu))) - (2 + eps)) < 1e-9
+    mu = 0.5 - 1 / (2 * log2(2 + eps / 2))           # balance 1/2 + mu with 2^{1/(2(1/2 - mu))} = 2 + eps/2
+    assert 0 < mu < 0.5 and 2 ** (1 / (2 * (0.5 - mu))) < 2 + eps
+
+
+def dp(V, E, F, cV, cE, ins):
+    """Exponential-space dynamic program over the vertex order of V."""
+    states = {((), frozenset()): 0}
+    for t, v in enumerate(V):
+        old = [u for u in V[:t] if any(frozenset((u, x)) in E for x in V[t:])]
+        new_front = [u for u in V[:t + 1] if any(frozenset((u, x)) in E for x in V[t + 1:])]
+        nxt = {}
+        for (img, used), c in states.items():
+            fmap = dict(zip(old, img))
+            for w in V:
+                if w in used: continue
+                add = cV[(v, w)] + sum(cE(frozenset((u, v)), frozenset((fmap[u], w))) for u in old)
+                add += sum(ins.get(frozenset((x, w)), 0) for x in used - set(img))   # no G-edge from v to these
+                m = dict(fmap); m[v] = w
+                key = (tuple(m[u] for u in new_front), used | {w})
+                if key not in nxt or c + add < nxt[key]: nxt[key] = c + add
+        states = nxt
+    return min(states.values())
+
+
+random.seed(11)
+cnt = 0
+for kind in ("path", "cycle", "tree", "ladder", "sparse"):
+    for n in range(1, 8):
+        V, E, F, cV, cE, ins = instance(n, kind)
+        assert dp(V, E, F, cV, cE, ins) == brute(V, E, F, cV, cE), (kind, n); cnt += 1
+print(f"exponential-space dynamic program equals brute force on {cnt} instances")
 print("all checks passed")
