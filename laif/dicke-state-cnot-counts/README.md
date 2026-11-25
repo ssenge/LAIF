@@ -2,7 +2,7 @@
 
 2026-11-25
 
-The symmetric weight-k state D(n, k) is the uniform superposition of all n-qubit basis states of Hamming weight k (called a Dicke state in [1]). The task is exact preparation from |0…0⟩ with arbitrary single-qubit gates and CNOT gates between any two qubits, counting CNOT gates. This is the model of the comparison in [1, Table IV], whose best counts are 6 for D(4, 2), 16 for D(5, 2), 22 for D(6, 2) and 25 for D(6, 3). The counts of [1] are optimal within the gate library used there, which builds a state from single-target rotations controlled by basis states; the circuits below use CNOT placements outside that library. A later method of the same line reports about 33 CNOT gates for D(6, 3) [2, Fig. 3e, read from the plot]. For D(8, 2), an explicit circuit with 27 CNOT gates is given in [3, Fig. 6].
+The symmetric weight-k state D(n, k) is the uniform superposition of all n-qubit basis states of Hamming weight k. The task is exact preparation from |0…0⟩ with arbitrary single-qubit gates and CNOT gates between any two qubits, counting CNOT gates. This is the model of the comparison in [1, Table IV], whose best counts are 6 for D(4, 2), 16 for D(5, 2), 22 for D(6, 2) and 25 for D(6, 3). The counts of [1] are optimal within the gate library used there, which builds a state from single-target rotations controlled by basis states; the circuits below use CNOT placements outside that library. A later method of the same line reports about 33 CNOT gates for D(6, 3) [2, Fig. 3e, read from the plot]. For D(8, 2), an explicit circuit with 27 CNOT gates is given in [3, Fig. 6].
 
 ## Results
 
