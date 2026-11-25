@@ -1,9 +1,9 @@
 """Simulations for the threshold harvesting paper.
 
 Model: dX = X(mu - kappa X - h) dt + sigma X dB, h = M 1{X > b}.
-Scheme: Euler step for Y = log X (positivity preserving):
+Scheme: explicit first-order time step for Y = log X (positivity preserving):
     Y <- Y + (mu - kappa e^Y - h - sigma^2/2) dt + sigma sqrt(dt) Z,   yield += M e^Y 1{e^Y > b} dt.
-Checks (asserts): (i) step-size convergence: the time-averaged yield with dt and dt/2 on the same Brownian
+Checks (asserts): (i) step-size convergence: the time-averaged yield with dt and dt/2 on the same noise
 increments agrees within 1 % on the scheme comparison run; (ii) Monte Carlo long-run yield matches the exact
 yield H(b) within 4 standard errors at every simulated threshold.
 Outputs CSV files for pgfplots in data/.
@@ -51,7 +51,7 @@ def simulate(b, n_paths, T, dt, seed, x0=None, mu=MU, M_=M, kappa=KAPPA, s2=S2, 
 
 
 def convergence_check():
-    """Same Brownian path at dt and dt/2: increments of the fine grid summed pairwise for the coarse one."""
+    """Same noise path at dt and dt/2: increments of the fine grid summed pairwise for the coarse one."""
     rng = np.random.default_rng(1)
     T, dt, n_paths, b = 200.0, 0.01, 100, 0.4643
     zf = rng.standard_normal((int(T / (dt / 2)), n_paths))

@@ -137,7 +137,7 @@ and Theorem 1), the closed form and Proposition 2, and the extension to general 
   Lemma 1, the sign rule of Lemma 2, and unimodality of H on 400 random parameter sets (212 with μ − M > σ²/2,
   188 with μ − M ≤ σ²/2), with 40-digit incomplete gamma functions.
 - `sim/optimal_threshold.py`: the bisection of Proposition 2, checked against a grid search, and the table of ξ and h.
-- `sim/simulate.py`: sample paths of the harvested population with an Euler step for log X, a step-size check, and
+- `sim/simulate.py`: sample paths of the harvested population with an explicit first-order time step for log X, a step-size check, and
   Monte Carlo long-run yields against the exact H at seven thresholds; data for figures in `sim/data/`.
 
 ## Use of AI
