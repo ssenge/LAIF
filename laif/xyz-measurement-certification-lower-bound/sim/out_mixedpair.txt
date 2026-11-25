@@ -1,0 +1,16 @@
+n= 1 lam=0.2: max_b H^2 = 1.2519e-02, bound = 3.3333e-02, ratio = 0.376, copies to separate the pair >= 4.7
+n= 2 lam=0.2: max_b H^2 = 6.7194e-03, bound = 2.2222e-02, ratio = 0.302, copies to separate the pair >= 8.7
+n= 3 lam=0.2: max_b H^2 = 5.6112e-03, bound = 1.4815e-02, ratio = 0.379, copies to separate the pair >= 10.5
+n= 4 lam=0.2: max_b H^2 = 4.0428e-03, bound = 9.8765e-03, ratio = 0.409, copies to separate the pair >= 14.5
+n= 5 lam=0.2: max_b H^2 = 2.5376e-03, bound = 6.5844e-03, ratio = 0.385, copies to separate the pair >= 23.2
+n= 6 lam=0.2: max_b H^2 = 1.3728e-03, bound = 4.3896e-03, ratio = 0.313, copies to separate the pair >= 42.9
+n= 7 lam=0.2: max_b H^2 = 1.1499e-03, bound = 2.9264e-03, ratio = 0.393, copies to separate the pair >= 51.2
+n= 8 lam=0.2: max_b H^2 = 8.2955e-04, bound = 1.9509e-03, ratio = 0.425, copies to separate the pair >= 71.0
+n= 9 lam=0.2: max_b H^2 = 5.2075e-04, bound = 1.3006e-03, ratio = 0.400, copies to separate the pair >= 113.1
+n=10 lam=0.2: max_b H^2 = 2.8154e-04, bound = 8.6708e-04, ratio = 0.325, copies to separate the pair >= 209.2
+n=11 lam=0.2: max_b H^2 = 2.3547e-04, bound = 5.7805e-04, ratio = 0.407, copies to separate the pair >= 250.1
+n=12 lam=0.2: max_b H^2 = 1.6959e-04, bound = 3.8537e-04, ratio = 0.440, copies to separate the pair >= 347.2
+n=13 lam=0.2: max_b H^2 = 1.0628e-04, bound = 2.5691e-04, ratio = 0.414, copies to separate the pair >= 554.1
+n=14 lam=0.2: max_b H^2 = 5.7359e-05, bound = 1.7127e-04, ratio = 0.335, copies to separate the pair >= 1026.7
+largest ratio max_b H^2 / bound: 0.4811
+adaptive trees at n = 4: bound holds for 400 random trees
