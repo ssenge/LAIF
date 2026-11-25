@@ -12,7 +12,7 @@ Lower bounds for a worst-case target, X, Y, Z measurements on every qubit, q = (
 |---|---|---|
 | Upper bound, non-adaptive | | O(d^{0.7716}/ε²) [5] |
 | Previous best lower bound | Ω(1/ε), the bound for arbitrary measurements; 2^{Ω(n)} for algorithms with little adaptivity [2, Theorem 2] | Ω(1/ε²), the bound for arbitrary measurements; 2^{Ω(n)} for algorithms with little adaptivity, implied by [2, Theorem 2] |
-| Theorems 1 and 2, stored copies, any order, fully adaptive | ln(5/3)(3/2)^{n/2}/(2ε) | ln(13/9)(3/2)^{n/2}/(25ε²) = Ω(d^{0.2924}/ε²) |
+| Theorems 1 and 2, stored copies, any order, fully adaptive | ln(5/3)(3/2)^{n/2}/(2ε) | ln(3/2)(3/2)^{n/2}/(16ε²) = Ω(d^{0.2924}/ε²) |
 
 ## Setting
 
@@ -34,15 +34,15 @@ All T copies are held at once, and the next qubit may belong to any copy, so str
 
 (b) a strategy that accepts ψ_n and rejects σ_ε, each with probability at least 2/3, uses T ≥ ln(5/3)/ln(1 + 2εq) ≥ ln(5/3)(3/2)^{n/2}/(2ε) copies.
 
-**Theorem 2.** For 0 ≤ s ≤ 1 and every strategy, χ²(P_{ρ_s} ‖ P_{ρ_n}) ≤ (1 + s²q)^T − 1 for the outcome laws on T copies. Hence for 0 < ε ≤ 1/10 a strategy that estimates ⟨ψ_n|σ|ψ_n⟩ to ±ε with probability at least 2/3 for every state σ uses T ≥ ln(13/9)/(25ε²q) = ln(13/9)(3/2)^{n/2}/(25ε²) copies.
+**Theorem 2.** For 0 ≤ s ≤ 1 and every strategy, χ²(P_{ρ_s} ‖ P_{ρ_n}) ≤ (1 + s²q)^T − 1 for the outcome laws on T copies. Hence for 0 < ε < 1/4 a strategy that estimates ⟨ψ_n|σ|ψ_n⟩ to ±ε with probability at least 2/3 for every state σ uses T ≥ ln(3/2)/(16ε²q) = ln(3/2)(3/2)^{n/2}/(16ε²) copies.
 
-Here ln(5/3) = 0.5108…, ln(13/9) = 0.3677…, and (3/2)^{n/2} = d^{log₂(3/2)/2} with log₂(3/2)/2 = 0.29248…, so all bounds grow as d^{0.2924}. So with X, Y, Z measurements the worst-case exponent of fidelity estimation lies between 0.2924 and 0.7716 [5], and certification of the explicit target ψ_n costs exponentially many copies for every adaptive strategy.
+Here ln(5/3) = 0.5108…, ln(3/2) = 0.4054…, and (3/2)^{n/2} = d^{log₂(3/2)/2} with log₂(3/2)/2 = 0.29248…, so all bounds grow as d^{0.2924}. So with X, Y, Z measurements the worst-case exponent of fidelity estimation lies between 0.2924 and 0.7716 [5], and certification of the explicit target ψ_n costs exponentially many copies for every adaptive strategy.
 
-*Non-vacuity.* All states used are valid for the stated ranges of ε. The bounds exceed one copy: Theorem 1(a) from n = 3 on, Theorem 1(b) for every n once ε ≤ 1/4, and Theorem 2 for every n and ε ≤ 1/10. The chi-square bound of Theorem 2 is attained up to a factor 0.8165 at one copy and n = 1 (`sim/stored2.py`), and the per-copy factor √(2/3) is an equality for every axis.
+*Non-vacuity.* All states used are valid for the stated ranges of ε. The bounds exceed one copy: Theorem 1(a) from n = 3 on, Theorem 1(b) for every n once ε ≤ 1/4, and Theorem 2 for every n once ε ≤ 1/8. For the phase of |ā⟩ fixed in the scripts, the chi-square bound of Theorem 2 is attained up to a factor 0.8165 at one copy and n = 1 (`sim/stored2.py`), and the per-copy factor √(2/3) is an equality for every axis.
 
 ## Proof
 
-*Trees.* Given its random coins, a strategy is a decision tree: each node measures one not yet measured qubit along X, Y or Z. A random strategy is a mixture of such trees, and the bounds below hold for each tree, so they hold for the mixture. Measuring the remaining qubits at a leaf only refines the outcome, and refining cannot decrease the total variation distance, the chi-square divergence or the relative entropy (data processing). So assume every leaf ℓ has measured every qubit, with outcome states |e_j⟩, each an eigenvector of the chosen axis. The event of reaching ℓ is the product projector onto |e_ℓ⟩ = ⊗_j |e_j⟩.
+*Trees.* Given its random coins, a strategy is a decision tree: each node measures one not yet measured qubit along X, Y or Z. A random strategy is a mixture of such trees; recording the coins as part of the outcome, the total variation distance and the chi-square divergence become averages over the coins of their values for single trees, so bounds for each tree hold for the mixture. Measuring the remaining qubits at a leaf only refines the outcome, and refining cannot decrease the total variation distance, the chi-square divergence or the relative entropy (data processing). So assume every leaf ℓ has measured every qubit, with outcome states |e_j⟩, each an eigenvector of the chosen axis. The event of reaching ℓ is the product projector onto |e_ℓ⟩ = ⊗_j |e_j⟩.
 
 *The per-qubit factor.* Along X, Y or Z the two outcome probabilities of |a⟩ are (1 ± 1/√3)/2 and those of |ā⟩ are (1 ∓ 1/√3)/2, so for every axis
 
@@ -78,7 +78,7 @@ At the root every g_t equals λ^n = q, so Z = (1 + s²q)^T, and at a leaf Z = (P
 - *Not the last qubit of copy t:* E[h_t after] = Σ_e (m′_e/m′) |u′||v′||⟨e|a⟩||⟨e|ā⟩|/m′_e = λh_t, and R_t drops by one, so E[g_t after] = g_t.
 - *The last qubit (R_t = 1):* with c_e = Re(u′v̄′⟨e|a⟩⟨ā|e⟩), the new value is r_t = c_e/m′_e. Since Σ_e ⟨e|a⟩⟨ā|e⟩ = ⟨ā|a⟩ = 0, E[r_t] = Σ_e c_e/m′ = 0. Since |c_e| ≤ |u′||v′||⟨e|a⟩||⟨e|ā⟩| ≤ m′_e, E[r_t²] = Σ_e c_e²/(m′ m′_e) ≤ λh_t = g_t. So E[(1 + s r_t)²] = 1 + s²E[r_t²] ≤ 1 + s²g_t.
 
-Hence χ²(P_{ρ_s} ‖ P_{ρ_n}) + 1 = E[Z at the leaf] ≤ (1 + s²q)^T. Total variation is at most √χ²/2, and success probability 2/3 forces total variation at least 1/3, so (1 + s²q)^T ≥ 13/9. The states ρ_n and ρ_{5ε} have fidelities 1/2 and 1/2 + 5ε/2 with ψ_n, so an estimate to ±ε tells them apart; with s = 5ε and ln(1 + x) ≤ x this gives T ≥ ln(13/9)/(25ε²q). ∎
+Hence χ²(P_{ρ_s} ‖ P_{ρ_n}) + 1 = E[Z at the leaf] ≤ (1 + s²q)^T. If an event has probability at least 2/3 under one law and at most 1/3 under the other, the chi-square divergence of the two-outcome coarse-graining, and hence χ², is at least (1/3)²/((1/3)(2/3)) = 1/2, so (1 + s²q)^T ≥ 3/2. For s > 4ε the states ρ_n and ρ_s have fidelities 1/2 and 1/2 + s/2 with ψ_n, more than 2ε apart, so an estimate to ±ε tells them apart. With ln(1 + x) ≤ x this gives T ≥ ln(3/2)/(s²q) for every s in (4ε, 1], hence T ≥ ln(3/2)/(16ε²q). ∎
 
 The proof of Theorem 1 follows the cross-term approach of [2, Section 3], which compares a superposition of product states with their mixture. With X, Y, Z axes and the state |a⟩, the per-qubit factor √(2/3) is the same for every allowed axis, and this is what makes the bound hold for every adaptive tree.
 
