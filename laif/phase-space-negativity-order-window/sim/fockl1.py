@@ -1,5 +1,5 @@
 """||W_n||_1 = (1/2) int_0^inf e^{-x/2} |L_n(x)| dx for number states, via the stable recurrence
-of the Laguerre functions f_k = e^{-x/2} L_k on a grid in u = sqrt(x)."""
+of the radial functions f_k = e^{-x/2} L_k on a grid in u = sqrt(x)."""
 import sys, numpy as np
 
 def l1(n, per=60):

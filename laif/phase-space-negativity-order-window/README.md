@@ -8,7 +8,7 @@ For a state ρ of one bosonic mode let W be its phase-space quasi-probability an
 
 h_a(Q) = (1/(1 − a)) ln ∫Q^a d²α,  Δ_a(ρ) = h_a(Q) − h_a(Q_vac) ≥ 0,
 
-with the limits h_1 = −∫Q ln Q and h_∞ = −ln max Q. Then Δ_a(ρ) = (1/(1 − a)) ln(a π^{a−1} ∫Q^a) for a ≠ 1. The conjecture of [1] is the order-1/2 inequality
+with the limits h_1 = −∫Q ln Q and h_∞ = −ln max Q. Then Δ_a(ρ) = (1/(1 − a)) ln(a π^{a−1} ∫Q^a) for finite a ≠ 1, Δ_1 = h_1(Q) − 1 − ln π and Δ_∞ = −ln(π max Q). In the phase-space units of [1] every h_a shifts by the same constant ln 2, so Δ_a is the same. The conjecture of [1] is the order-1/2 inequality
 
 ln‖W‖₁ ≤ Δ_{1/2}(ρ),  ‖W‖₁ = ∫|W| d²α,
 
@@ -37,14 +37,14 @@ in (0, 1/2). Then a₁ = 0.28870337711563801763… and, for every 0 < a < a₁, 
 
 ln‖W_{|1⟩}‖₁ = ln(4e^{−1/2} − 1) = 0.354959… > Δ_a(|1⟩).
 
-More generally, among orders a ∈ (0, 1/2], |n⟩ violates (I_a) exactly for a < a₁(n), where a₁(n) is the unique zero in (0, 1/2) of h_n(a) = ln Γ(an + 1) − a ln n! − an ln a − (1 − a) ln‖W_n‖₁.
+More generally, let h_n(a) = ln Γ(an + 1) − a ln n! − an ln a − (1 − a) ln‖W_n‖₁. For every n with h_n(1/2) > 0, among orders a ∈ (0, 1/2] the state |n⟩ violates (I_a) exactly for a < a₁(n), the unique zero of h_n in (0, 1/2). The condition h_n(1/2) > 0 is the order-1/2 inequality at |n⟩; it holds for n = 1 and is checked numerically for the n listed below.
 
 **Theorem 2 (high orders).** For every a ∈ (1/2, ∞] there are t > 0 and β > 0 such that ψ = (|0⟩ + t|β⟩)/‖|0⟩ + t|β⟩‖ violates (I_a). As β → ∞,
 
 - ‖W_ψ‖₁ → 1 + 4t/(π(1 + t²));
-- Δ_a(ψ) → D_a(t) = (1/(1 − a)) ln((1 + t^{2a})/(1 + t²)^a) for a ≠ 1, the binary entropy of t²/(1 + t²) for a = 1, and ln(1 + t²) for a = ∞.
+- Δ_a(ψ) → D_a(t) = (1/(1 − a)) ln((1 + t^{2a})/(1 + t²)^a) for finite a ≠ 1, the binary entropy of t²/(1 + t²) for a = 1, and ln(1 + t²) for a = ∞.
 
-As t → 0, ln(1 + 4t/(π(1 + t²))) ∼ 4t/π, while D_a(t) is of order t^{2a} for 1/2 < a < 1, t² ln(1/t) for a = 1 and t² for a > 1, all o(t). At a = 1/2 the limit is D_{1/2}(t) = 2 ln((1 + t)/√(1 + t²)) ∼ 2t > 4t/π, so this family does not violate the order-1/2 inequality, in line with the conjecture of [1].
+As t → 0, ln(1 + 4t/(π(1 + t²))) ∼ 4t/π, while D_a(t) is of order t^{2a} for 1/2 < a < 1, t² ln(1/t) for a = 1 and t² for a > 1, all o(t). At a = 1/2 the limit is D_{1/2}(t) = ln(1 + 2s) with s = t/(1 + t²), which exceeds the limit ln(1 + 4s/π) of ln‖W_ψ‖₁ for every t > 0. So in the limit β → ∞ this family does not violate the order-1/2 inequality, in line with the conjecture of [1].
 
 ## Proof
 
@@ -56,7 +56,7 @@ So, for 0 < a < 1, (I_a) fails at |n⟩ exactly when h_n(a) < 0.
 
 **Concavity.** h_n''(a) = n²ψ′(an + 1) − n/a, where ψ′ is the trigamma function. From ψ′(z) = Σ_{k≥0}(z + k)^{−2} < z^{−2} + ∫₀^∞(z + s)^{−2} ds = z^{−2} + z^{−1} and ψ′(z + 1) = ψ′(z) − z^{−2}, one gets ψ′(an + 1) < 1/(an), so h_n'' < 0 on (0, 1).
 
-**Theorem 1.** h_n is concave with h_n(0+) = −ln‖W_n‖₁ < 0 and h_n(1/2) > 0, which holds for n = 1 (h(1/2) = 0.0483) and is checked numerically for the other listed n. So h_n has exactly one zero a₁(n) in (0, 1/2), with h_n'(a₁(n)) > 0. Concavity puts h_n below its tangent at a₁(n), so h_n < 0 on (0, a₁(n)). For n = 1, a₁ = 0.288703377… and h'(a₁) = 0.41523…, evaluated with 40 significant digits.
+**Theorem 1.** h_n is concave with h_n(0+) = −ln‖W_n‖₁ < 0 and, by assumption, h_n(1/2) > 0 (for n = 1, h(1/2) = 0.0483). So h_n has exactly one zero a₁(n) in (0, 1/2), with h_n'(a₁(n)) > 0. Concavity puts h_n below its tangent at a₁(n), so h_n < 0 on (0, a₁(n)). For n = 1, a₁ = 0.288703377… and h'(a₁) = 0.41523…, evaluated with 40 significant digits.
 
 **Theorem 2, negativity.** Take β > 0 real and N² = 1 + t² + 2te^{−β²/2}. Then
 
@@ -75,14 +75,14 @@ As β → ∞ the first term tends to 1 + t² and the second and fourth tend to 
 ## Check
 
 - `sim/threshold.py`, output in `sim/out_threshold.txt`, computes a₁ and h′(a₁) with 40 digits. It also checks ‖W_1‖₁ by quadrature and the sign of h at 288 points of (0, a₁) and at 0.2888.
-- `sim/fockthr.py`, output in `sim/out_fockthr.txt`, computes ‖W_n‖₁ for n up to 3200 from the stable recurrence of the Laguerre functions (`sim/fockl1.py`).
-  - The thresholds a₁(n) decrease with n: 0.2887 at n = 1, 0.1872 at n = 100, 0.1726 at n = 3200.
+- `sim/fockthr.py`, output in `sim/out_fockthr.txt`, computes ‖W_n‖₁ for n up to 3200 from the stable three-term recurrence of the radial functions e^{−x/2}L_n(x) (`sim/fockl1.py`).
+  - At the listed n, h_n(1/2) > 0 and the thresholds a₁(n) decrease with n: 0.2887 at n = 1, 0.1872 at n = 100, 0.1726 at n = 3200.
   - ln‖W_n‖₁ − (1/2) ln n approaches c = ln((2/π)^{3/2}Γ(3/4)²/Γ(3/2)) = −0.1500, the value of a semiclassical approximation, at rate n^{−1/2}.
   - With this c, a₁(n) tends to the limit 0.1693, the threshold suggested in [1].
 - `sim/upper.py`, output in `sim/out_upper.txt`, finds t with a violation in the limit for a = 0.55, 0.6, 0.75, 1, 2, ∞.
   - It checks the limits on a grid at finite β. At t = 0.2, β = 3√2 it reproduces the values of [1].
   - At t = 0.05, β = 7 it gives ln‖W‖₁ = 0.0615 > Δ_{0.75} = 0.0370, an explicit violation at order 3/4.
-- `sim/order.py`, output in `sim/out_order.txt`, maximizes ln‖W‖₁ − Δ_a over pure states in span{|0⟩, …, |3⟩} from random starts. The maximum is found at |1⟩ for a = 0.25 and 0.29. For a = 0.32 and 0.36 no state beats the vacuum.
+- `sim/order.py`, output in `sim/out_order.txt`, maximizes ln‖W‖₁ − Δ_a over pure states in span{|0⟩, …, |3⟩} from random starts. At a = 0.25 the maximum is positive and attained at a displaced |1⟩, which has the same values as |1⟩. For a = 0.29, 0.32 and 0.36 the maximum is 0, attained at coherent states, and the best non-Gaussian local maximum at a = 0.29 is |1⟩ with a negative value.
 
 ## Scope
 

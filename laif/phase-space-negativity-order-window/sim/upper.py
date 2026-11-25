@@ -1,4 +1,4 @@
-"""Orders a > 1/2: psi = (|0> + t|beta>)/N with beta -> infinity. Limits (README, Theorem 4):
+"""Orders a > 1/2: psi = (|0> + t|beta>)/N with beta -> infinity. Limits (README, Theorem 2):
 ||W||_1 -> 1 + 4t/(pi(1+t^2)),  Delta_a -> D_a(t) = ln((1+t^{2a})/(1+t^2)^a)/(1-a)  (a != 1),
 Delta_1 -> binary entropy of t^2/(1+t^2), Delta_inf -> ln(1+t^2). Finds t with ln||W||_1 > Delta_a and
 checks the limits on a grid at finite beta."""
@@ -18,7 +18,7 @@ for a in [0.55, 0.6, 0.75, 1, 2, np.inf]:
     lts = np.linspace(-60, 0, 6001); v = np.array([f(x) for x in lts]); assert (v > 0).any()
     tbest = np.exp(lts[np.argmax(v)]); print(f"a={a}: violated in the limit for t = {tbest:.3g}, margin {v.max():.3g}")
 
-# finite beta on a grid: t = 0.2, beta = 3 sqrt 2 (the example of [1]) and t = 0.05, beta = 6
+# finite beta on a grid: t = 0.2, beta = 3 sqrt 2 (the example of [1]) and t = 0.05, beta = 7
 def finite(t, beta, a_list, L=12.0, K=1201):
     x = np.linspace(-L, L, K) ; X, Y = np.meshgrid(x + beta / 2, x); A = X + 1j * Y; h2 = (x[1] - x[0]) ** 2
     N2 = 1 + t * t + 2 * t * np.exp(-beta ** 2 / 2)
