@@ -61,9 +61,11 @@ Please read this before relying on anything here.
   - `negReduction_of_ldd` in `lean/SsspFlow/NegFinal.lean` proves this reduction, the one of arXiv:2410.20959, with a
     polylogarithmic factor, from the low-diameter decomposition of [6] with the order of its clusters. So
     `negFlow_of_cited` gives $\tilde O(D)$ rounds with high probability for negative weights and for maximum flow, from
-    four cited results: realization, distance labels, face identifiers and the decomposition.
+    the three cited results and the decomposition of [6] in the form of Lemma 2 of `notes/NEGATIVE.md` (`LDDBox`, see
+    [What is assumed](#what-is-assumed)).
   - The cited results stay hypotheses of these theorems.
-- **Correctness.** Theorems A, B and C are proved in Lean from the cited results above, with labels
+- **Correctness.** Theorem A, and Theorems B and C in their $\tilde O(D)$ form with high probability, are proved in
+  Lean from the cited results above, with labels
   built from disks cut along a breadth-first tree (`notes/DISKS.md`). This proof does not use
   Lemma 14′ or the decomposition of [8]. Theorem C′ uses Theorem A and is proved in the notes. The
   written route of `notes/LEMMA15.md`, with Lemma 14′, our replacement for [1, Lemma 14], is a
@@ -89,8 +91,8 @@ Please read this before relying on anything here.
   minimum 15, computed 37). Lemma S repairs this with two more shortest-path calls per level,
   and the side lemma it needs (Lemma O) is proved. The naming of sides and the cut extraction
   are in `notes/RECURSION.md`. The value of the minimum cut in $\tilde O(D)$ rounds is proved in Lean,
-  as one algorithm of the message model, from the three cited results of Theorem A and the classical
-  cut duality (`RData.theoremD_net_of_cited`).
+  as one algorithm of the message model, from the three cited results of Theorem A and the duality of
+  planar minimum cuts on the cut map, (G8) (`RData.theoremD_net_of_cited`).
 - **Determinism.** The labels from disks are built deterministically, and so is the decomposition of
   the route of `notes/LEMMA15.md` with Lemma B5. So Theorem A is deterministic,
   given a deterministic planar embedding and deterministic face identifiers (G6). Both are
@@ -144,7 +146,7 @@ non-negative weights)".
 |---|---|---|---|---|---|
 | Distributed algorithms, CONGEST | Exact single-source shortest paths on directed planar networks, nonnegative weights | Õ(D²) [8] | Õ(D); the Label Hypothesis stated in this folder, modelled on the labels of [1], is proved in Lean from cited results; this folder also completes the proof of [1], with a repair of one lemma | Directed planar networks, polynomial integer weights, rotation lists as input; deterministic relative to the cited results | Lean, assuming three cited results: realization, distance labels, face identifiers; paper arXiv:2611.02256 |
 | Distributed algorithms, CONGEST | Exact maximum st-flow on directed planar networks, with the flow on every edge | Õ(D²) [9] | min{Õ(D²), D·n^{o(1)}}; Õ(D) when s and t lie on a common face; Õ(D) with high probability in a later note; Õ(D) deterministically, given the embedding, in a later note | Directed planar networks, rotation lists as input | Claim; in Lean the bound of Õ(D) rounds with high probability, assuming the three cited results and a low-diameter decomposition |
-| Distributed algorithms, CONGEST | Exact minimum st-cut and minimum cut value on undirected planar networks | (1 − o(1))-approximation in Õ(D) [18]; exact in Õ(D²) [9] | Õ(D), through the Exact SSSP Theorem, with two repairs of [18]: its auxiliary graph at the terminals, and its recursion, which as we read it can miss the minimum cut | Undirected planar networks | Claim; in Lean the recursion argument, and the interval form on the cut map |
+| Distributed algorithms, CONGEST | Exact value of a minimum st-cut on undirected planar networks | (1 − o(1))-approximation in Õ(D) [18]; exact in Õ(D²) [9] | Õ(D), through the Exact SSSP Theorem, with two repairs of [18]: its auxiliary graph at the terminals, and its recursion, which as we read it can miss the minimum cut | Undirected planar networks | Lean for the value (`RData.theoremD_net_of_cited`), assuming the cited results of Theorem A and the duality of planar minimum cuts on the cut map (`CutDuality`) |
 | Distributed algorithms, CONGEST | Negative weights, minimum arborescences and replacement paths on planar digraphs | D·n^{o(1)} for negative weights through a general reduction; no bound in D alone known to us for the others | Õ(D) with high probability for negative weights and for arborescences; replacement paths exactly in Õ(D·min(h, D)) and within 1 + ε in Õ(D/ε) | Planar digraphs; the claims use the Label Hypothesis, proved in Lean from cited results | Negative weights in Lean, assuming four cited results; the others claims in notes, cores in Lean |
 | Distributed algorithms, CONGEST | Diameter and all eccentricities of unweighted undirected planar networks | Õ(D³) [arXiv:2608.07187](https://arxiv.org/abs/2608.07187) | Õ(D²), with no hypothesis; within 1 + ε in Õ(D + 1/ε⁴) | Unweighted undirected planar networks | Claim |
 | Corrections | Lemma 14 and a decomposition property of [1]; the auxiliary graph and the recursion of [18] | As stated | Counterexamples, and repairs: tiles in place of the hub network and region bags for the round count of [1]; a repaired auxiliary graph at the terminals and two more shortest-path computations per level of the recursion of [18] | As we read the texts | Counterexamples checked by scripts; repairs on paper, the recursion repair in Lean |
@@ -157,7 +159,7 @@ non-negative weights)".
 | Theorem B: exact SSSP with negative weights, or a negative cycle | $D\cdot n^{o(1)}$ | $(\sqrt n+D+n^{2/5}D^{2/5})\cdot n^{o(1)}$ on general graphs [6] |
 | Theorem C: exact maximum st-flow, directed | $\min\lbrace\tilde O(D^2),\ D\cdot n^{o(1)}\rbrace$ | $\tilde O(D^2)$ [9] |
 | Theorem C′: the same with $s$, $t$ on a common face | $\tilde O(D)$ | approximate and undirected only [9], [18] |
-| Theorem D: exact minimum st-cut (max-flow value), undirected; new | $\tilde O(D)$ | exact $\tilde O(D^2)$ [9]; $(1-o(1))$-approximate $\tilde O(D)$ [18] |
+| Theorem D: exact value of a minimum st-cut (the max-flow value), undirected; new | $\tilde O(D)$ | exact $\tilde O(D^2)$ [9]; $(1-o(1))$-approximate $\tilde O(D)$ [18] |
 | Lemma V: distances from a virtual source, and a fix of the query of [1] | $\tilde O(D/\varepsilon)$ | |
 | Lemma D: the face-disjoint graph of [9], weighted, realizes dual distances | | |
 | A possible gap in [1, Lemma 14] | | |
@@ -478,13 +480,20 @@ Beyond the results cited in the proofs, these enter as black boxes:
   This is standard. The notes give the proof, and `lean/SsspFlow/Crossing.lean` proves it for
   rotation systems.
 - **(G5) Distance oracles** for planar digraphs [13, Thm 3.16], as used in [1, Lemma 11], with the
-  reachability labels of [13, Thm 2.7] for lengths 0.
+  reachability labels of [13, Thm 2.7] for lengths 0. `DistanceLabelBox` combines the two into one query over all
+  scales, for every planar rotation system; this combined form is ours.
 - **(G6) Face identifiers** in $\tilde O(D)$ rounds [9, Lemma 5.11], deterministically
-  [18, Lemma 3.17] with [20, Thm 1.5].
+  [18, Lemma 3.17] with [20, Thm 1.5]. `FaceIdBox` states the deterministic form composed from these.
+- **(G7) The low-diameter decomposition** of [6, Lemma 4, Cor. 27, Lemma 5, Prop. 32, Cor. 33], in the form of
+  Lemma 2 of `notes/NEGATIVE.md` with the repairs of its Section 8, in $\tilde O(D)$ rounds by [9, Cor. 4.6, Lemma 4.8]
+  (`LDDBox`). This form is derived from the sources.
+- **(G8) The duality of planar minimum cuts**, stated for the cut map of `lean/SsspFlow/CutMap.lean` (`CutDuality`).
+  The duality is classical; its form on this cut map is ours.
 
 The proof in Lean of the Label Hypothesis takes (G3), (G5) and (G6) as hypotheses. It builds its decomposition
 itself, so it does not use (G1), it proves what it needs of (G4), and it proves the aggregation primitive it calls.
-Theorem A in Lean takes the same three as hypotheses, since the smoothing of [3] is proved as well.
+Theorem A in Lean takes the same three as hypotheses, since the smoothing of [3] is proved as well. Theorems B and
+C in Lean take (G7) as well, and Theorem D takes (G8).
 
 ## Machine-checked proofs (`lean/`)
 
