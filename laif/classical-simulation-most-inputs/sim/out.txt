@@ -1,0 +1,5 @@
+all asserts passed (60 random polynomials)
+depth bound 2d/(delta*phi) = 4446.1 * d^7 / (eps^5 delta^3.5)
+T=1 eps=0.1 delta=0.1: ours 1.800e+14, exponent-7 bound 6.554e+26
+T=5 eps=0.1 delta=0.1: ours 1.406e+19, exponent-7 bound 2.560e+32
+T=10 eps=0.01 delta=0.01: ours 5.691e+29, exponent-7 bound 6.554e+56

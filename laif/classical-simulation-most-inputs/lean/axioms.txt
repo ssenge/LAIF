@@ -1,0 +1,8 @@
+'AASimulation.mean_restrict' depends on axioms: [propext, Classical.choice, Quot.sound]
+'AASimulation.totInf_restrict' depends on axioms: [propext, Classical.choice, Quot.sound]
+'AASimulation.DTree.eval_fix' depends on axioms: [propext, Classical.choice, Quot.sound]
+'AASimulation.bad_leaf_le' depends on axioms: [propext, Classical.choice, Quot.sound]
+'AASimulation.exists_fix_le' depends on axioms: [propext, Classical.choice, Quot.sound]
+'AASimulation.bad_node' depends on axioms: [propext, Classical.choice, Quot.sound]
+'AASimulation.exists_tree' depends on axioms: [propext, Classical.choice, Quot.sound]
+'AASimulation.simulation' depends on axioms: [propext, Classical.choice, Quot.sound]
