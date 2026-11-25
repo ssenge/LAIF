@@ -1,0 +1,10 @@
+L=4: depth 3 preparation, residual 3.8e-16, |<closed form|state>| = 1.000000000000
+   angles gamma = [1.32351665 0.87588631 1.22151264]  beta = [1.08649651 1.15704096 0.        ]
+L=6: depth 4 preparation, residual 6.5e-16, |<closed form|state>| = 1.000000000000
+   angles gamma = [0.99966201 0.86181597 0.98805559 0.83039147]  beta = [0.6138259  1.36423441 0.70089016 0.        ]
+L=8: depth 5 preparation, residual 1.6e-15, |<closed form|state>| = 1.000000000000
+   angles gamma = [0.49098054 0.54081328 0.77315824 0.68876123 0.61660735]  beta = [0.83540543 0.64414294 0.57550304 0.63711544 0.        ]
+L=10: depth 6 preparation, residual 1.2e-15, |<closed form|state>| = 1.000000000000
+   angles gamma = [0.64905438 0.75957042 1.06128625 1.03980061 0.73466803 0.61544538]  beta = [0.93008095 0.74522912 1.06397777 0.75895609 0.96911623 0.        ]
+rigidity checks passed for L = 4..30
+generated algebra has dimension 3L/2 for L = 4..24
