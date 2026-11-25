@@ -73,6 +73,17 @@ in Lean for sequences of every length (below).
 A two-neuron solution of the one-dimensional task with hand-set weights and adaptive neurons is shown in
 [1, Figure 1D, E]. The circuits here use neurons without adaptation, and cover the two larger tasks.
 
+**Every finite automaton, at every decay.** The gates of the binary adding network give a general construction in
+the neuron model of [4] and [6] (potential d * c + x with hard reset, threshold 0.5). For an automaton with
+states Q, input symbols A and any transition function, one recurrent layer of |Q| * |A| + 1 neurons with
+weights 0.75 tracks the state: the gate (q, a) is silent exactly when the automaton is in state q and reads a,
+and a linear readout gives the state after every step. A silent gate has drive 0 and a gate that fires is reset,
+so the construction holds for every value of the decay d. This is proved in Lean
+(`lean/LeakyGate/Automaton.lean`) and checked numerically on 300 random automata (`sim/lif_automaton.py`).
+Recurrent networks of threshold units without leak are classically known to realize finite automata, and
+automata have been built from cell assemblies of spiking neurons [7]; to our knowledge the statement for single
+leaky neurons with hard reset at every decay, with a machine-checked proof, is new.
+
 ## The circuits
 
 Weights are given in units of the firing threshold. The circuits are built from five parts.
@@ -165,6 +176,7 @@ All weights are multiples of 0.75, and the always-firing neuron has bias 1. The 
 | `sim/ea_train.py` | 100 neurons trained with backpropagation through time in the tutorial setting of [5], with and without adaptation |
 | `sim/badd.py` | the binary adding task and the programmed two-layer network |
 | `sim/badd_reference_check.py` | the same network on sequences from the generator of [6] |
+| `sim/lif_automaton.py` | network for any finite automaton; readout checked against the automaton on random automata, words and decays |
 | `sim/badd_train.py` | recurrent LIF network of [6] trained with backpropagation through time on binary adding |
 | `sim/al.py` | the AL task and the programmed three-layer network |
 | `sim/al_reference_check.py` | the same network on sequences from the generator of [4] |
@@ -195,6 +207,10 @@ All weights are multiples of 0.75, and the always-firing neuron has bias 1. The 
   `sim/badd.py`, and 2,000 test sequences drawn with the unmodified generator of [6], all at decay 0.5. On average
   12 % of the 256 neurons fire per step. Lengths 100 to 2400: 2,000 sequences each, seed 7, the fourth argument
   of `sim/badd.py` (`sim/results/badd_lengths.jsonl`).
+- Finite automata: 300 random automata with up to 12 states and 5 symbols (up to 61 neurons), each at decays 0,
+  0.3, 0.5, 0.9, 1 and one random value between -2 and 3, words of 200 symbols, 360,000 steps in total; the
+  readout equals the state of the automaton after every step, in 32-bit floating point
+  (`sim/results/lif_automaton.jsonl`).
 - Trained recurrent LIF network of `sim/badd_train.py` on binary adding, in the setting of [6] (50,000 training
   sequences, 50 epochs): best test accuracy over the epochs 56.6 % (53.35 % in [6]), 53.2 % after the last epoch.
 - Mean firing rate per neuron: 35 to 47 Hz (one-dimensional), 27 Hz (20-dimensional), 29 Hz (12AX). A latch
@@ -282,6 +298,22 @@ fires is reset, so no potential is carried between steps.
   decay 1/2. So the statement has content, and its conclusion fails in a case where the margins do not hold. `Margins` is a
   sufficient condition.
 
+`lean/LeakyGate/Automaton.lean` (Lean 4 with Mathlib, standard axioms).
+
+- `step`: one step of the layer of |Q| * |A| gates and one marker neuron, with real potentials, hard reset and
+  an arbitrary real decay d. `stateTerm`: the linear function of the spikes that says whether the automaton is in
+  a given state.
+- `network_hot`: for every finite automaton, every real d and every non-empty input word, after the last step
+  exactly the gate of the state before the last symbol and the last symbol is silent.
+- `readout_eq_state`: the linear readout for a state is 1 if the automaton is in that state after the word and 0
+  otherwise.
+- `hot_unique`, `not_hot_init`, `parity_readouts`, `parity_net_ne_or`: the silent gate determines state and
+  symbol, the pattern is absent before the first step, the readout of the parity automaton takes both values,
+  and it differs from the state of another automaton on a word of two symbols. So the statement has content.
+
+The input is one symbol per step as a one-hot vector, and the potentials are real numbers; the weights 0.75 and
+their small integer multiples are exact in binary floating point.
+
 Lean version and Mathlib revision are fixed in `lean/lean-toolchain` and `lean/lake-manifest.json`.
 
 Not formalized: that the drives of the neurons of `sim/al.py` lie in the ranges used above (asserted on sampled
@@ -332,3 +364,5 @@ spikes of the tasks of [1] and [5]). These points are covered by the measurement
    github.com/IGITUGraz/eligibility_propagation.
 6. Spiking neural networks for temporal processing: status quo and future prospects. arXiv:2502.09449, 2025.
    Code: github.com/liyc5929/neuroseqbench.
+7. J. Cabessa, G. Horcholle-Bossavit, B. Quenet. Neural computation with spiking neural networks composed of
+   synfire rings. ICANN 2017, LNCS 10613, pp. 245-253.

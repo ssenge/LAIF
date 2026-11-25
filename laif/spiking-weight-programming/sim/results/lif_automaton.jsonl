@@ -1,0 +1,1 @@
+{"check": "readout equals automaton state after every step", "automata": 300, "steps": 360000, "decays": "0, 0.3, 0.5, 0.9, 1 and one random value in [-2, 3] per automaton", "largest_network": 61, "seed": 0}
