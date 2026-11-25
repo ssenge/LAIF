@@ -6,7 +6,7 @@ Written 21 Nov 2026.
 
 | | Problem | Previous best bound | This folder | Status |
 |---|---|---|---|---|
-| Thm 1 | k forest certificate, k ≤ n | min{m, Õ(k√(mn))} queries, implied by [1] | O(n k^{3/2} log n) queries | Claim; Lean for the certificate and the counting lemmas |
+| Thm 1 | k forest certificate, k ≤ n | min{m, Õ(k√(mn))} queries, implied by [1] | O(n k^{3/2} log n) queries | Claim; Lean for the certificate and the arithmetic of the counting lemmas |
 | Thm 4 | k forest certificate, k ≤ n, by a scan | min{m, Õ(k√(mn))} queries, implied by [1] | O(n + √(mnk) + √(mn) log n) queries | Claim; Lean for Lemma 4, the certificate and the count of found entries |
 | Thm 2 | edge connectivity λ and a minimum cut | Õ(√(mn)) queries [2] | O(n (λ+1)^{3/2} log n) queries | Claim; Lean for the certificate |
 | Thm 3 | λ_st, a minimum s-t cut and a maximum s-t flow | λ_st: Õ(n + min{m, n^{3/2}}) [3]; λ_st and flow: min{m, Õ((f+1)√(mn)), Õ(n^{7/6}√m)}, implied by [1] and from [8] | O(n (f+1)^{3/2} log n) queries | Claim; Lean for the certificate |
@@ -90,11 +90,11 @@ The library `SmallCut` in `lean/` (Lean 4, Mathlib at the revision pinned in `le
 - `SmallCut.certificate`: for edge-disjoint subgraphs F 0, F 1, … such that, for i < k, every edge of G outside F 0, …, F (i − 1) joins two vertices connected in F i, the union of F 0, …, F (k − 1) has at least min{k, c} edges across every vertex set S, where c is the number of edges of G across S (Lemma 1);
 - `SmallCut.certificate_eq`: if moreover each F i is a subgraph of G and the union has fewer than k edges across S, then G has the same number (Lemma 1, second part);
 - `SmallCut.cross_of_reachable`: a path from S to its complement has an edge across S;
-- `SmallCut.star_bound_end`, `SmallCut.star_bound_merge`: the two cases of the Phase 1 degree bound;
+- `SmallCut.star_bound_end`, `SmallCut.star_bound_merge`: the arithmetic of the two cases of the Phase 1 degree bound, with the bounds on the stars (s ≤ d + d² and t ≤ b d) as hypotheses;
 - `SmallCut.sum_sqrt_le`: Σ √(a_C² + b_C) ≤ Σ a_C + √(c · Σ b_C);
 - `SmallCut.scan_hmax` (Lemma 4): for an injective scan order `pos` that obeys the rule of Section 4, `hscan`, and for i < k, every edge of G outside forests 0, …, i − 1 of the scan joins two vertices connected in forest i. Forest i of the scan, `scanF`, holds the edges vw with pos v < pos w for which exactly i neighbours of w come before v. This is the forest that the scan with counters gives, since r(w) = min{k, number of earlier neighbours} at every step;
 - `SmallCut.scan_run`: a stretch of the scan with no new run is connected in forest i;
-- `SmallCut.scan_parent_unique`: each vertex has at most one earlier neighbour in forest i, so forest i is a forest;
+- `SmallCut.scan_parent_unique`: each vertex has at most one earlier neighbour in forest i (that F_i has no cycle follows from this as in the proof of Lemma 4, and is not stated in Lean);
 - `SmallCut.scan_certificate`: Lemma 1 for the scan;
 - `SmallCut.sum_found_le`: the scan finds at most k·|V| entries in total.
 
