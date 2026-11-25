@@ -8,6 +8,7 @@ letter, and answers `true` (R) at an `X` that follows `1 … A …`, or at a `Y`
 `c1`, `c2` (last digit was 1, 2) and `px`, `py` (armed for X, armed for Y).
 
 `machine_eq_target`: both give the same outputs on every symbol sequence.
+`target_not_constant` and `machineNoClear_ne_target` show that the statement has content.
 The file uses core Lean only.
 -/
 
@@ -92,7 +93,32 @@ theorem machine_eq_target (l : List Sym) :
     machine ⟨false, false, false, false⟩ l = target ⟨.none, .none⟩ l :=
   machine_eq_target_from ⟨.none, .none⟩ l
 
+/-! ### Content of the statement
+
+`machine_eq_target` has no hypotheses. The lemmas below show that it is not an equality of constant functions,
+and that a machine with one transition changed does not satisfy it. -/
+
 /-- The target function has content: `1 A C X` ends with an R, and a second `X` does not. -/
-example : target ⟨.none, .none⟩ [.one, .A, .C, .X, .X] = [false, false, false, true, false] := by decide
+theorem target_example :
+    target ⟨.none, .none⟩ [.one, .A, .C, .X, .X] = [false, false, false, true, false] := by decide
+
+/-- The target is not constant: it answers R on one sequence and never on another of the same length. -/
+theorem target_not_constant :
+    target ⟨.none, .none⟩ [.one, .A, .X] ≠ target ⟨.none, .none⟩ [.two, .A, .X] := by decide
+
+/-- A machine that forgets to clear the armed flags at `X` and `Y`. -/
+def machStepNoClear (f : Flags) : Sym → Flags × Bool
+  | .X => (f, f.px)
+  | .Y => (f, f.py)
+  | s => machStep f s
+
+def machineNoClear : Flags → List Sym → List Bool
+  | _, [] => []
+  | f, s :: l => (machStepNoClear f s).2 :: machineNoClear (machStepNoClear f s).1 l
+
+/-- The changed machine disagrees with the target on `1 A X X`, so the statement can fail for a wrong machine. -/
+theorem machineNoClear_ne_target :
+    machineNoClear ⟨false, false, false, false⟩ [.one, .A, .X, .X]
+      ≠ target ⟨.none, .none⟩ [.one, .A, .X, .X] := by decide
 
 end TwelveAX

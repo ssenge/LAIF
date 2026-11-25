@@ -48,12 +48,20 @@ from the reference code of [5].
 |---|---|---|---|
 | Evidence accumulation, 7 cues, trial of 2250 ms | learned to the error criterion of 8 % with 50 LIF and 50 adaptive neurons | not solved, 100 neurons | 10,000 of 10,000 trials, 23 neurons |
 
+A sixth benchmark is binary adding at sequence length 100 from the neuron comparison of [6]: a random bit and a
+mask with nine ones arrive in every sequence, and the number of masked ones is the label (10 classes). The network
+has the shape 2-128-128-10 and the membrane decay 0.5 and threshold 0.5 of the benchmark's recurrent LIF run.
+
+| Task | Best published models [6] | Trained LIF [6] | Programmed LIF network |
+|---|---|---|---|
+| Binary adding, length 100, test accuracy | 100 % (three neuron models with slower or richer dynamics) | 53.35 % recurrent, 29.60 % feedforward | 10,000 of 10,000 sequences, and 2,000 of 2,000 from the generator of [6]; 41 of the 256 neurons used |
+
 A two-neuron solution of the one-dimensional task with hand-set weights and adaptive neurons is shown in
 [1, Figure 1D, E]. The circuits here use neurons without adaptation, and cover the two larger tasks.
 
 ## The circuits
 
-Weights are given in units of the firing threshold. Every circuit is built from four parts.
+Weights are given in units of the firing threshold. The circuits are built from five parts.
 
 - **Detector with veto.** A neuron driven by one input group and inhibited more strongly by another fires only
   when the first group is active and the second is silent. With the complementary value groups of the tasks
@@ -65,6 +73,9 @@ Weights are given in units of the firing threshold. Every circuit is built from 
 - **Gate.** A neuron that receives two regular spike trains with a weight below threshold for one train and
   above threshold for both fires only when both are present.
 - **Timer.** A chain of latches in which each stage charges the next one slowly, about 60 ms per stage.
+- **NAND gate** (binary adding). A neuron that fires unless all of its inputs are present, with drive w times the
+  number of missing inputs and w = 0.6 against a threshold of 0.5. A silent neuron has drive 0 and a firing one
+  is reset, so no potential is carried to the next step, whatever the membrane decay is.
 
 **One-dimensional STORE-RECALL, 5 neurons** (`sim/sr_circuit.py`). A set detector (STORE without value 0) switches
 the latch on, a reset detector (STORE without value 1) switches it off, and a fifth neuron fires at RECALL when
@@ -114,6 +125,16 @@ background input.
 
 Eight weight values, taken from the design calculation without adjustment on data.
 
+**Binary adding, 41 neurons in two layers** (`sim/badd.py`). Every neuron is a NAND gate.
+- Layer 1, 30 neurons: for each count i from 0 to 9 and each of the three input cases (mask 0; mask 1 and bit 0;
+  mask 1 and bit 1) one neuron that is silent exactly when the count before the step is i and the input is that
+  case. Exactly one of the 30 is silent at every step, and "the count before the step is i" is a linear function
+  of the silent neurons of the previous step. One further neuron fires at every step and marks the first step.
+- Layer 2, 10 neurons: neuron j fires when the count after the step is j. The classifier reads them at the last
+  step.
+
+One weight value. The result is the same at decay 0, 0.5, 0.9 and 1.
+
 ## Measurements
 
 | Script | What it runs |
@@ -126,6 +147,9 @@ Eight weight values, taken from the design calculation without adjustment on dat
 | `sim/sr_finetune.py` | the same training, started from the programmed circuit with weight noise |
 | `sim/ea.py` | port of the evidence accumulation task and the 23-neuron circuit |
 | `sim/ea_train.py` | 100 neurons trained with backpropagation through time in the tutorial setting of [5], with and without adaptation |
+| `sim/badd.py` | the binary adding task and the programmed two-layer network |
+| `sim/badd_reference_check.py` | the same network on sequences from the generator of [6] |
+| `sim/badd_train.py` | recurrent LIF network of [6] trained with backpropagation through time on binary adding |
 | `sim/al.py` | the AL task and the programmed three-layer network |
 | `sim/al_reference_check.py` | the same network on sequences from the generator of [4] |
 | `sim/al_train.py` | recurrent LIF network of [4] trained with backpropagation through time on AL |
@@ -150,6 +174,11 @@ Eight weight values, taken from the design calculation without adjustment on dat
 - Trained networks of `sim/ea_train.py` on evidence accumulation: with adaptation the error criterion of 7 % of
   the tutorial is reached after 240 and 180 iterations, test accuracy 95.3 and 93.8 % (seeds 0, 1); without
   adaptation the test accuracy is 49.2 and 51.3 % after 2,000 iterations.
+- Binary adding: seeds 1 to 5, 2,000 sequences each with balanced classes (the test size of [6]) from
+  `sim/badd.py`, and the 2,000 test sequences of the unmodified generator of [6], all at decay 0.5. On average
+  12 % of the 256 neurons fire per step.
+- Trained recurrent LIF network of `sim/badd_train.py` on binary adding, in the setting of [6] (50,000 training
+  sequences, 50 epochs): best test accuracy over the epochs 56.6 % (53.35 % in [6]), 53.2 % after the last epoch.
 - Mean firing rate per neuron: 35 to 47 Hz (one-dimensional), 27 Hz (20-dimensional), 29 Hz (12AX). A latch
   that is on fires at the highest rate the refractory period allows, 250 Hz in the STORE-RECALL tasks and
   167 Hz in 12AX.
@@ -188,6 +217,8 @@ seed. Only the accuracy is measured, not the distance of the weights from the ci
 - `machine`: the state machine that the 12AX circuit implements, with four flags: context 1, context 2,
   armed for X, armed for Y.
 - `machine_eq_target`: both give the same outputs on every symbol sequence.
+- `target_not_constant` and `machineNoClear_ne_target`: the target answers differently on two sequences, and a
+  machine that does not clear its flags at X and Y disagrees with the target, so the statement has content.
 
 `lean/SpikingCircuits/Localization.lean` (Lean 4, core library only, standard axioms).
 
@@ -197,6 +228,8 @@ seed. Only the accuracy is measured, not the distance of the weights from the ci
 - `event`: the output of the two crossing units in one step. `readout`: their sum along a sequence.
 - `readout_eq_label`: for every action sequence the summed readout is 1 if the final x is at least 1 and 0
   otherwise.
+- `label_one`, `label_zero` and `readoutUp_ne_label`: the label takes both values, and a readout without the
+  second crossing unit is wrong on a walk to x = 1 and back, so the statement has content.
 
 In this file the thermometer code is unbounded, the heading is given directly and the crossing units are a
 Boolean formula; the network of `sim/al.py` tracks x from -86 to 87, holds the heading in 16 neurons and has
@@ -222,6 +255,8 @@ input spikes in the tasks of [1] and [5] and with the membrane decay in AL, is c
   176 moves in one direction.
 - The evidence accumulation circuit uses that a trial has exactly seven cues, as in [5]. With another number
   of cues the count to four would have to change.
+- Three models of [6] also reach 100 % on binary adding after training. The programmed network shows that the
+  LIF model of the benchmark can represent the solution at its own decay and threshold.
 - The delay labels are the nominal settings of [1]. Sequences are cut at their fixed length, so the delays that
   occur are shorter: the mean distance from STORE to RECALL is about 0.2, 1.4, 2.5, 4.6 and 7.3 s in the five
   settings. The generator is the one of [1], so the rows are comparable.
@@ -242,3 +277,5 @@ input spikes in the tasks of [1] and [5] and with the membrane decay in AL, is c
 5. G. Bellec, F. Scherr, A. Subramoney, E. Hajek, D. Salaj, R. Legenstein, W. Maass. A solution to the learning
    dilemma for recurrent networks of spiking neurons. Nature Communications 11:3625, 2020. Reference code:
    github.com/IGITUGraz/eligibility_propagation.
+6. Spiking neural networks for temporal processing: status quo and future prospects. arXiv:2502.09449, 2025.
+   Code: github.com/liyc5929/neuroseqbench.

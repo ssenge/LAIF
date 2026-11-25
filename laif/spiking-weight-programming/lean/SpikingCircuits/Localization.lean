@@ -11,6 +11,7 @@ further units fire when x goes from 0 to 1 and from 1 to 0. The readout adds the
 second over the whole sequence.
 
 `readout_eq_label`: this sum is 1 if the final x is at least 1, and 0 otherwise, for every action sequence.
+`label_one`, `label_zero` and `readoutUp_ne_label` show that the statement has content.
 The thermometer code is unbounded here. The file uses core Lean only.
 -/
 
@@ -91,8 +92,27 @@ theorem readout_eq_label (l : List Act) :
     readout 0 (thermo 0) l = ind (finalX 0 0 l) := by
   rw [readout_from]; simp [ind]
 
-/-- The label has content: turn right, go straight gives x = 1; turning around and going straight gives 0. -/
-example : ind (finalX 0 0 [.right, .straight]) = 1 := by decide
-example : ind (finalX 0 0 [.right, .straight, .right, .right, .straight]) = 0 := by decide
+/-! ### Content of the statement
+
+`readout_eq_label` has no hypotheses. The lemmas below show that the label takes both values, and that a network
+without the second crossing unit does not satisfy the statement. -/
+
+/-- The label takes both values: turn right and go straight gives 1; turning around and going back gives 0. -/
+theorem label_one : ind (finalX 0 0 [.right, .straight]) = 1 := by decide
+
+theorem label_zero : ind (finalX 0 0 [.right, .straight, .right, .right, .straight]) = 0 := by decide
+
+/-- The readout with the first crossing unit only (no unit for x going from 1 to 0). -/
+def eventUp (u : Int → Bool) (d : Int) : Int := b2i (u 0 && !u 1 && decide (d = 1))
+
+def readoutUp : Nat → (Int → Bool) → List Act → Int
+  | _, _, [] => 0
+  | h, u, a :: l => eventUp u (incr h a) + readoutUp (turn h a) (unext u (incr h a)) l
+
+/-- Without the second crossing unit the readout is wrong on a walk that goes to x = 1 and back. -/
+theorem readoutUp_ne_label :
+    readoutUp 0 (thermo 0) [.right, .straight, .right, .right, .straight]
+      ≠ ind (finalX 0 0 [.right, .straight, .right, .right, .straight]) := by
+  decide
 
 end Localization
