@@ -54,7 +54,7 @@ At the minimal 4-tuple memory, cos tᵢ = (1/4, 1/√6, √(3/8)) and the optima
 | 0.1925 | 3 | 0.279693 |
 | 0.1929 | 3 | 0.279680 |
 
-Each entry is a configuration found by numerical optimization; its time is an upper bound for that memory. The entries for k = 3 are the algorithm of [1] with other inner products in the configuration, which [1, Lemma 3.16] covers; they are implied by [1] and listed for comparison.
+Each entry is a configuration found by numerical optimization with three starting points, which agree to six decimals; its time is an upper bound for that memory. The entries for k = 3 are the algorithm of [1] with other inner products in the configuration, which [1, Lemma 3.16] covers; they are implied by [1] and listed for comparison.
 
 ## 4. Measurements
 
