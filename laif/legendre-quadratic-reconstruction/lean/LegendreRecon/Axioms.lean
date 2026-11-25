@@ -28,3 +28,5 @@ import LegendreRecon
 #print axioms LegendreRecon.line_peak
 #print axioms LegendreRecon.sample_linear
 #print axioms LegendreRecon.both_signs
+#print axioms LegendreRecon.gauss_hypotheses
+#print axioms LegendreRecon.gauss_hypotheses_zmod_three

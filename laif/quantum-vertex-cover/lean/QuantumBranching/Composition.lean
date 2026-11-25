@@ -701,11 +701,11 @@ theorem log_factor_le {n : ℕ} {a : ℝ} (d : ℕ) (ha : 0 ≤ a) (hn : (1 + a)
     _ = _ := by rw [pow_succ]; ring
 
 /-- **Theorem 1, for the time.** Let a family of settings have polynomial constants, with `K = n ^ C`
-and `c = C * log n`, and satisfy the conditions. Then there is a `q` that does not depend on `n`, and
+and `c = C * log n`, and satisfy the conditions for `n ≥ 4`. Then there is a `q` that does not depend on `n`, and
 `N₀`, such that for `n ≥ N₀` the constants are dominated by `n ^ q`, the time is at most
 `n ^ (A q / 2) * √(B x)` for all `x`, and the base run and the walk at every level fit the budgets.
 The exponent `q` comes from the polynomials and from the degree `d` alone. Only `N₀` depends on `W q`. -/
-theorem theorem1 (S : ∀ n, Setting (I n)) (hC : ∀ n, (S n).Conditions) (C : ℕ)
+theorem theorem1 (S : ∀ n, Setting (I n)) (hC : ∀ n, 4 ≤ n → (S n).Conditions) (C : ℕ)
     (hK : ∀ n, (S n).K = (n : ℝ) ^ C) (hc : ∀ n, (S n).c = C * log n)
     (hD : IsPoly fun n => ((S n).D : ℝ)) (ht : IsPoly fun n => ((S n).t : ℝ))
     (hs : IsPoly fun n => ((S n).s : ℝ)) (hr : IsPoly fun n => ((S n).r : ℝ))
@@ -743,8 +743,8 @@ theorem theorem1 (S : ∀ n, Setting (I n)) (hC : ∀ n, (S n).Conditions) (C : 
     rw [hK]
     exact one_le_pow₀ (by linarith)
   have hK0 : 0 ≤ (S n).K := by linarith
-  have hρ0 := (hC n).ρ_nonneg
-  have hloc1 := (hC n).loc_ge
+  have hρ0 := (hC n hn4').ρ_nonneg
+  have hloc1 := (hC n hn4').loc_ge
   have hrn : (0 : ℝ) ≤ ((S n).r : ℝ) := Nat.cast_nonneg _
   have hDn : (0 : ℝ) ≤ ((S n).D : ℝ) := Nat.cast_nonneg _
   have htn : (0 : ℝ) ≤ ((S n).t : ℝ) := Nat.cast_nonneg _
@@ -777,11 +777,52 @@ theorem theorem1 (S : ∀ n, Setting (I n)) (hC : ∀ n, (S n).Conditions) (C : 
     have hl : 0 ≤ log (n : ℝ) := (log_N_pos hn4).le
     have : (C : ℝ) ≤ (q : ℝ) := by exact_mod_cast (by omega : C ≤ q)
     exact mul_le_mul_of_nonneg_right this hl
-  refine ⟨hQ, fun x => Setting.time_bound (hC n) hQ hwalk rfl x, fun x m hx => ⟨fun hm => ?_,
-    fun hR => Setting.treeSq_le (hC n) hQ hwalk rfl hR hx⟩⟩
+  refine ⟨hQ, fun x => Setting.time_bound (hC n hn4') hQ hwalk rfl x, fun x m hx => ⟨fun hm => ?_,
+    fun hR => Setting.treeSq_le (hC n hn4') hQ hwalk rfl hR hx⟩⟩
   unfold Setting.levelTime
   rw [ite_eq_left hm]
-  exact Setting.base_fits (hC n) hQ hpeb rfl hx
+  exact Setting.base_fits (hC n hn4') hQ hpeb rfl hx
+
+
+namespace Examples
+
+/-- The one point setting of measure `2`, with `K = n` and `c = log n`. -/
+noncomputable def pointFamily (n : ℕ) : Setting Unit :=
+  { pointSetting 2 with K := n, c := log n }
+
+end Examples
+
+/-- Non-vacuity of `theorem1`: the family `pointFamily` meets every hypothesis on the settings with
+`C = 1`, so `K = n` grows with `n`; with `hypotheses_satisfiable` for the primitives, all hypotheses of
+`theorem1` hold together. -/
+theorem theorem1_settings_satisfiable :
+    (∀ n, 4 ≤ n → (Examples.pointFamily n).Conditions) ∧
+    (∀ n, (Examples.pointFamily n).K = (n : ℝ) ^ (1 : ℕ)) ∧
+    (∀ n, (Examples.pointFamily n).c = ((1 : ℕ) : ℝ) * log n) ∧
+    IsPoly (fun n => ((Examples.pointFamily n).D : ℝ)) ∧ IsPoly (fun n => ((Examples.pointFamily n).t : ℝ)) ∧
+    IsPoly (fun n => ((Examples.pointFamily n).s : ℝ)) ∧ IsPoly (fun n => ((Examples.pointFamily n).r : ℝ)) ∧
+    IsPoly (fun n => (Examples.pointFamily n).ρ) ∧ IsPoly (fun n => (Examples.pointFamily n).loc) := by
+  refine ⟨fun n hn => ?_, fun n => by simp [Examples.pointFamily], fun n => by simp [Examples.pointFamily],
+    ?_, ?_, ?_, ?_, ?_, ?_⟩
+  · have hn' : (4 : ℝ) ≤ n := by exact_mod_cast hn
+    have hlog : 0 ≤ log (n : ℝ) := Real.log_nonneg (by linarith)
+    obtain ⟨h, -⟩ := setting_satisfiable 2 le_rfl
+    refine ⟨h.B_ge, h.rank_le, h.width_le, h.calls_le, h.box_time, h.ρ_nonneg, h.loc_ge,
+      fun x hx l hl => ?_, fun v y hy => ?_, fun x => ?_⟩
+    · have h1 := h.M1 x hx l hl
+      have h2 : (Examples.pointSetting 2).K * (Examples.pointSetting 2).B x ≤
+          (Examples.pointFamily n).K * (Examples.pointFamily n).B x := by
+        simp [Examples.pointFamily, Examples.pointSetting]; linarith
+      exact h1.trans h2
+    · have h1 := h.M2 v y hy
+      simp [Examples.pointFamily, Examples.pointSetting] at h1 ⊢
+      linarith
+    · have h1 := h.M3 x
+      have h2 : (Examples.pointSetting 2).K * (Examples.pointSetting 2).B x ≤
+          (Examples.pointFamily n).K * (Examples.pointFamily n).B x := by
+        simp [Examples.pointFamily, Examples.pointSetting]; linarith
+      exact h1.trans h2
+  all_goals exact ⟨1, 0, zero_le_one, fun n => by simp [Examples.pointFamily, Examples.pointSetting]⟩
 
 end Family
 

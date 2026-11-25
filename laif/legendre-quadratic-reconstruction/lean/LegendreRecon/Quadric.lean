@@ -328,4 +328,20 @@ theorem both_signs {K : Type*} [Field K] (h2 : (2 : K) ≠ 0) {r c u m : K} (hr 
   rw [hu, mul_zero, zero_add] at hp
   exact hp
 
+/-- Non-vacuity of the hypotheses of section `Gauss`: in every finite field of odd characteristic the
+quadratic character, read in `ℂ`, satisfies `hχ`, `hq` and `hsq`. -/
+theorem gauss_hypotheses (hF : ringChar F ≠ 2) :
+    (quadraticChar F).ringHomComp (Int.castRingHom ℂ) ≠ 1 ∧
+      ((quadraticChar F).ringHomComp (Int.castRingHom ℂ)).IsQuadratic ∧
+      ∀ u : F, ((univ.filter fun y : F => y ^ 2 = u).card : ℂ) =
+        (quadraticChar F).ringHomComp (Int.castRingHom ℂ) u + 1 :=
+  ⟨(MulChar.ringHomComp_ne_one_iff (f := Int.castRingHom ℂ) Int.cast_injective).mpr (quadraticChar_ne_one hF),
+    (quadraticChar_isQuadratic F).comp _, card_sqrts_quadraticChar hF⟩
+
+/-- Non-vacuity of `hψ` together with the rest: `ZMod 3` has odd characteristic and a primitive additive
+character, so every hypothesis of section `Gauss` holds for `F = ZMod 3`. -/
+theorem gauss_hypotheses_zmod_three :
+    ringChar (ZMod 3) ≠ 2 ∧ (ZMod.stdAddChar (N := 3)).IsPrimitive :=
+  ⟨by rw [ZMod.ringChar_zmod_n]; norm_num, ZMod.isPrimitive_stdAddChar 3⟩
+
 end LegendreRecon

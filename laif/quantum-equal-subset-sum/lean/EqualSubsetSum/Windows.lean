@@ -94,3 +94,21 @@ theorem marked_fraction {K r m P P₀ s b : ℝ} (hK : 0 < K) (hs : 0 < s) (hb :
     nlinarith
 
 end EqualSubsetSum
+
+namespace EqualSubsetSum
+
+variable {ι : Type*} [Fintype ι] [DecidableEq ι] {L : ι → Label} {ν : Layout} {y : ι → ℤ}
+
+/-- Content of `PairFound`: when the layout has a coordinate of label `B` with value `-1`, a pair in the
+windows gives a nonzero trinary `Z = X - Y` with `dot Z y = 0`, so every marked residue yields a solution. -/
+theorem pairFound_valid {P T : ℕ} {ex : ∀ ρ, Enum (binX L ν y P ρ)} {ey : ∀ ρ, Enum (binY L ν y P ρ)}
+    {ρ : ℤ} (hB : 0 < ν .B (-1)) (h : PairFound T ex ey ρ) :
+    ∃ Z : ι → ℤ, Trinary Z ∧ Z ≠ 0 ∧ dot Z y = 0 := by
+  obtain ⟨X, hX, Y, hY, hs⟩ := h
+  have hX' : X ∈ binX L ν y P ρ := firstWindow_subset (ex ρ) T hX
+  have hY' : Y ∈ binY L ν y P ρ := firstWindow_subset (ey ρ) T hY
+  rw [binX, mem_filter] at hX'
+  rw [binY, mem_filter] at hY'
+  exact ⟨X - Y, validity (mem_listX.mp hX'.1) (mem_listY.mp hY'.1) hB hs⟩
+
+end EqualSubsetSum

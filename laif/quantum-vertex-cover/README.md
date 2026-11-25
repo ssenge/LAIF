@@ -10,7 +10,7 @@ Input: a graph G and a number k. Output: whether G has a vertex cover of at most
 
 **Theorem 2.** Consequently Vertex Cover has a quantum algorithm running in time O*(1.25281^{k/2}) ⊂ O*(1.1193^k), and Maximum Independent Set one running in time O*(1.19951^{n/2}) ⊂ O*(1.0953^n), both with bounded error and polynomial space. The table below lists further cases.
 
-Status: Claim. The counting lemmas, the semantics of the recursion, the recursion of the costs, the level scan and the table arithmetic are in Lean, with the quantum primitives as named hypotheses. The time bound is in Lean for one setting with its constants K and c (`Setting.time_bound`, `Setting.treeSq_le`, `Setting.search_valid`); the form for a family with K = n^C and c = C log n is a Claim. That the cited classical algorithms satisfy (M1) to (M3) is argued here from their analyses.
+Status: Claim. The counting lemmas, the semantics of the recursion, the recursion of the costs, the level scan and the table arithmetic are in Lean, with the quantum primitives as named hypotheses. The time bound is in Lean for a family of settings with K = n^C and c = C log n that satisfy the conditions for n ≥ 4 (`theorem1`), and `theorem1_settings_satisfiable` gives such a family. That the cited classical algorithms satisfy (M1) to (M3) is argued here from their analyses.
 
 ## Before and after
 
@@ -126,7 +126,7 @@ Run each with `python name.py`, in `sim/`, with numpy and scipy, and qiskit and 
 
 ## 8. Formal verification
 
-`lean/` builds with `lake build` (Lean 4 v4.36.0-rc1, Mathlib `d875a8de`), with no `sorry`, `axiom` or `native_decide` in the sources. `lake env lean QuantumBranching/Axioms.lean` prints the axioms of 78 theorems: only `propext`, `Classical.choice` and `Quot.sound`, and subsets of those.
+`lean/` builds with `lake build` (Lean 4 v4.36.0-rc1, Mathlib `d875a8de`), with no `sorry`, `axiom` or `native_decide` in the sources. `lake env lean QuantumBranching/Axioms.lean` prints the axioms of 79 theorems, listed in [`lean/axioms.txt`](lean/axioms.txt): only `propext`, `Classical.choice` and `Quot.sound`, and subsets of those.
 
 | Part | Theorems | Hypotheses |
 |---|---|---|
@@ -137,10 +137,10 @@ Run each with `python name.py`, in `sim/`, with numpy and scipy, and qiskit and 
 | Theorem 3, Lemma 15 of [1] | `iterations_le`, `pairing_half` | `AmplitudeAmplification` |
 | Error reduction | `agree_prob`, `pathProb_eq`, `bernoulli_sum`, `reduction_error`, `amplitude_budget`, `amplitude_distance` | `ErrorReduction`, `AmplitudeError` |
 | Table | `quantum_le_classical`, `table_tight_deg4`, `table_tight_mis4`, and strict inequalities for each row | |
-| Theorem 1, time, for one setting | `Setting.time_bound`, `Setting.search_valid`, `Setting.treeSq_le`, `Setting.quadratic_bound_setting`, `qubits_levels`, `qubits_polynomial` | `WalkBound`, `Pebbling` |
-| Consistency | `hypotheses_satisfiable`, `setting_satisfiable`, `M3_box_gap` | |
+| Theorem 1, time | `theorem1`, `Setting.time_bound`, `Setting.search_valid`, `Setting.treeSq_le`, `Setting.quadratic_bound_setting`, `qubits_levels`, `qubits_polynomial` | `WalkBound`, `Pebbling` |
+| Consistency | `hypotheses_satisfiable`, `setting_satisfiable`, `theorem1_settings_satisfiable`, `M3_box_gap` | |
 
-**Assuming.** The hypotheses are named in `lean/QuantumBranching/Model.lean`. They are inequalities on real functions in a record `Primitives`, with no circuit model: the time and acceptance of the walk for any T′ ≥ T, the error reduction, the amplitude error, and pebbling. `AmplitudeAmplification`, in `lean/QuantumBranching/Randomized.lean`, is amplitude amplification with a known lower bound q on the success probability: c/√q iterations succeed with probability at least 2/3 for every success probability p ≥ q, as in the randomized-iteration form with a classical check of each answer. `hypotheses_satisfiable` shows that the hypotheses of `Primitives` are consistent. (M1), (M2) and (M3) are fields of `Setting.Conditions`. For one setting, `Setting.time_bound` and `Setting.treeSq_le` bound the base run and the sum of squared steps at every level by a closed formula, and `search_valid` adds the acceptance and the drop of the level. `quadratic_bound` proves the same bound by induction, for any cost function that meets the walk bound. 
+**Assuming.** The hypotheses are named in `lean/QuantumBranching/Model.lean`. They are inequalities on real functions in a record `Primitives`, with no circuit model: the time and acceptance of the walk for any T′ ≥ T, the error reduction, the amplitude error, and pebbling. `AmplitudeAmplification`, in `lean/QuantumBranching/Randomized.lean`, is amplitude amplification with a known lower bound q on the success probability: c/√q iterations succeed with probability at least 2/3 for every success probability p ≥ q, as in the randomized-iteration form with a classical check of each answer. `hypotheses_satisfiable` shows that the hypotheses of `Primitives` are consistent, and `theorem1_settings_satisfiable` that the hypotheses of `theorem1` on the settings can hold for growing n: a one-point setting with K = n and c = log n satisfies the conditions for every n ≥ 4, with K = n^1, c = 1 · log n and constant, hence polynomial, D, t, s, r, ρ and loc. (M1), (M2) and (M3) are fields of `Setting.Conditions`. In `theorem1` the time is a closed formula, shown to bound the base run and the sum of squared steps at every level, and `search_valid` adds the acceptance and the drop of the level. `theorem1` holds for n at least some N₀ ≥ 4, and q does not depend on n, W or A. `quadratic_bound` proves the same bound by induction, for any cost function that meets the walk bound. 
 
 **Not formalized.** Circuits, gate counts and the absence of quantum random access memory; the walk itself, the known-times oracle and the shared register; Jordan's lemma and Hoeffding's inequality, where only the two-dimensional fact and the product form are proved; pebbling and its space; the link from `walkAccept` to a circuit; the link between Lemma 0 on `FinTree` and (M1) on `ORTree`; the level form of the scan; and that the classical algorithms of §5 satisfy (M1) to (M3).
 

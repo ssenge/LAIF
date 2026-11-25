@@ -89,3 +89,4 @@ import QuantumBranching
 #print axioms QuantumBranching.log_factor_le
 #print axioms QuantumBranching.reduction_error
 #print axioms QuantumBranching.amplitude_budget
+#print axioms QuantumBranching.theorem1_settings_satisfiable

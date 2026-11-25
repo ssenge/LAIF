@@ -141,7 +141,7 @@ This takes seven runs of the even algorithm, each with failure probability δ/7.
 
 ## 6. Formal verification
 
-[`lean/`](lean/) is a Lean 4 library `LegendreRecon` on Mathlib with 26 theorems, no `sorry`, and only the standard axioms (propext, Classical.choice, Quot.sound), as listed by `lean/LegendreRecon/Axioms.lean`. Build with `lake build` in `lean/`.
+[`lean/`](lean/) is a Lean 4 library `LegendreRecon` on Mathlib with 28 theorems, no `sorry`, and only the standard axioms (propext, Classical.choice, Quot.sound), as listed by `lean/LegendreRecon/Axioms.lean` in [`lean/axioms.txt`](lean/axioms.txt). Build with `lake build` in `lean/`.
 
 | Part | Theorems |
 |---|---|
@@ -154,6 +154,7 @@ This takes seven runs of the even algorithm, each with failure probability δ/7.
 | Theorem 3, Gauss sums in odd characteristic: Σ_y ψ(cy²) = χ(c)G and Σ_y ψ(cy² + by) = χ(c)Gψ(−b²/(4c)) for c ≠ 0, Σ_t χ(t)ψ(α/t) = χ(α)G, with the number of square roots 1 + χ(u) for the quadratic character | `sum_psi_sq`, `sum_psi_quad`, `sum_char_psi_inv`, `card_sqrts_quadraticChar`, `psi_sum`, `sum_psi_mul_eq_zero`, `chi_mul_self`, `chi_inv_eq`, `chi_pow_even` |
 | Theorem 3, the identity q Σ_k Σ_{y² = D Q*(k)} ψ(y − k·(x + s)) = G^{n+2} χ(D det A) χ(f(x)) and the Fourier formula (★), for diagonal A and even n | `term_eq`, `dual_cone`, `sum_psi_dot`, `fourier_coeff` |
 | Theorem 3, the coefficients on a line k = λk₀, the amplitude q − 2 of the outcome w after the transform over λ, the linear form of the sample equation, and k₀·s′ = 0, k₀ᵀM′k₀ = 0 when both roots annihilate (s′, M′) | `line_coeff`, `line_peak`, `sample_linear`, `both_signs` |
+| Theorem 3, the hypotheses on χ and ψ can hold: in every finite field of odd characteristic the quadratic character, read in ℂ, is nontrivial, quadratic and counts square roots as 1 + χ(u); and F = ZMod 3 has odd characteristic and a primitive additive character | `gauss_hypotheses`, `gauss_hypotheses_zmod_three` |
 
 **Not formalized.** The quantum circuits (Fourier transform, coherent root finding, measurement of the rank), the product over the steps, the sum over ranks and the lower bound of Theorem 1; the Weil bound, used as the hypothesis on c; the dihedral hidden subgroup algorithms of [5, 6]; the final classical test. For Theorem 3: the reduction of a general A to a diagonal one by a linear change of variables, the probabilities of the runs, the rank and Chernoff argument, and the hyperplane geometry for odd n.
 

@@ -72,3 +72,4 @@ import EqualSubsetSum
 #print axioms EqualSubsetSum.coin_mean_minimal
 #print axioms EqualSubsetSum.coin_mean_empty
 #print axioms EqualSubsetSum.coin_cost
+#print axioms EqualSubsetSum.pairFound_valid
