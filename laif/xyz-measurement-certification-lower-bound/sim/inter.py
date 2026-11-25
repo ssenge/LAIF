@@ -1,4 +1,4 @@
-"""Interleaved strategies on T stored copies (README, Theorem 2): random adaptive trees over all nT qubits, each node
+"""Interleaved strategies on T stored copies (README, Theorem 1, stored copies): random adaptive trees over all nT qubits, each node
 measuring one not yet measured qubit of any copy along X, Y or Z, chosen from the outcomes so far.
 Asserts, with q = (2/3)^{n/2}, for (n, T) in {(1,2),(1,3),(1,4),(2,2),(2,3),(3,2)}:
   (1) sum_leaves |<e|p_s>| |<e|p_s'>| = q^{d(s,s')} for the product pattern states p_s (copy t in a^n or abar^n);
