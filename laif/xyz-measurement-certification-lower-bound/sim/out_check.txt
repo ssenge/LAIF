@@ -1,1 +1,1 @@
-all asserts passed; max chi^2 / (2/3)^{n/2} over Pauli bases: {1: np.float64(0.8165), 2: np.float64(0.75), 3: np.float64(0.6804), 4: np.float64(0.6429), 5: np.float64(0.6), 6: np.float64(0.5749)}
+all asserts passed; max chi^2 / (2/3)^{n/2} over X/Y/Z basis settings: {1: np.float64(0.8165), 2: np.float64(0.75), 3: np.float64(0.6804), 4: np.float64(0.6429), 5: np.float64(0.6), 6: np.float64(0.5749)}

@@ -1,5 +1,5 @@
-"""Sketch: minimize over orthogonal k-qubit pairs (A, A') the max over Pauli bases B in {X,Y,Z}^k of the
-Bhattacharyya coefficient BC_B = sum_x |<x_B|A>| |<x_B|A'>|. Per-qubit exponent alpha = -log2(BC*)/k."""
+"""Numerical search (local, non-adaptive settings): minimize over orthogonal k-qubit pairs (A, A') the max over X/Y/Z basis settings B in {X,Y,Z}^k of the
+overlap coefficient BC_B = sum_x |<x_B|A>| |<x_B|A'>|. Per-qubit exponent alpha = -log2(BC*)/k."""
 import itertools, numpy as np, sys
 from scipy.optimize import minimize
 H = np.array([[1, 1], [1, -1]]) / np.sqrt(2); Sd = np.array([[1, 0], [0, -1j]])
