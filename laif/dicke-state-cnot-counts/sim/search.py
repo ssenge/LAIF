@@ -1,6 +1,6 @@
-"""Search for CNOT + Ry circuits preparing the Dicke state D(n,k) from |0..0>.
+"""Search for CNOT + Ry circuits preparing the symmetric weight-k state D(n,k) from |0..0>.
 A skeleton is a list of qubit pairs (control, target). The circuit is: Ry on every qubit, then for each pair a CNOT
-followed by Ry on both of its qubits. Real amplitudes only (Dicke states are real).
+followed by Ry on both of its qubits. Real amplitudes only (the target states are real).
 Loss = 1 - <D|psi>^2, minimized by L-BFGS with an exact gradient (forward/backward pass).
 usage: python search.py n k c [restarts]   prints the best loss per skeleton class that reaches < 1e-10.
 """

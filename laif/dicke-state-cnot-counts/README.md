@@ -1,8 +1,8 @@
-# Fewer CNOT gates for small Dicke states
+# Fewer CNOT gates for small symmetric weight-k states
 
 2026-11-25
 
-The Dicke state D(n, k) is the uniform superposition of all n-qubit basis states of Hamming weight k; D(n, 1) is the W state. The task is exact preparation from |0…0⟩ with arbitrary single-qubit gates and CNOT gates between any two qubits, counting CNOT gates. This is the model of the comparison in [1, Table IV], whose best counts are 7 for D(4, 1) and 6 for D(4, 2).
+The symmetric weight-k state D(n, k) is the uniform superposition of all n-qubit basis states of Hamming weight k (called a Dicke state in [1]); D(n, 1) is the W state. The task is exact preparation from |0…0⟩ with arbitrary single-qubit gates and CNOT gates between any two qubits, counting CNOT gates. This is the model of the comparison in [1, Table IV], whose best counts are 7 for D(4, 1) and 6 for D(4, 2).
 
 ## Results
 

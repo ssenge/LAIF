@@ -1,4 +1,4 @@
-"""Exact check: a 5-CNOT circuit for the Dicke state D(4,2), angles in closed form.
+"""Exact check: a 5-CNOT circuit for the symmetric weight-2 state D(4,2), angles in closed form.
 Circuit (search.py convention): Ry on q0..q3, then for each pair (a,b): CNOT(a->b), Ry on a, Ry on b.
 t1 = arccos(sqrt(2/3)). Every Ry angle is t1*u + m*pi/2 with u in {0,1,2}, so every half-angle cosine and sine is a
 polynomial in C = cos(t1/2), S = sin(t1/2), h = sqrt(2)/2. The amplitudes are reduced exactly, by symbolic elimination, modulo the relations

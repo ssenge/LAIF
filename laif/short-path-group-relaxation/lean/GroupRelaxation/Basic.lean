@@ -4,7 +4,7 @@ import Mathlib
 # An upper bound on the gain of the generalized short-path algorithm on group walks
 
 For the runtime bound of the generalized short-path algorithm with the spectral-gap condition, the gain over a
-quadratic speedup of Markov chain search is `α = η (1 − η) |E*| b / (2 Δ_P L)`, where `b < δ / 4`, `δ` is the
+quadratic speedup of random-walk search is `α = η (1 − η) |E*| b / (2 Δ_P L)`, where `b < δ / 4`, `δ` is the
 spectral gap of the walk, `Δ_P` its stability constant and `L = ln(1 / π(E*))`.
 
 Write every energy as its excess `z = H(y) − E* ≥ 0` over the optimum and put `a = η |E*|`. The truncated cost of the
