@@ -4,7 +4,8 @@ Per random-product-code repetition, with buckets of angles a1, a2, a3:
   |T0| = m^2 p(a1), |T1| = m^2 W(t1, a1 | a1), x3-candidates per pair m p(a2), good ones m W(t2, a2 | a2),
   x4-candidates per triple m p(a3).  A pair is completed by an inner two-oracle search over x3 with an x4 check.
   Cost per solution: sqrt(|T0| / S) + sqrt(|T1| / S) * inner, S = solutions in this repetition,
-  inner = sqrt(m p(a2) / n) + sqrt(m W2 / n) * sqrt(m p(a3)), n = max(1, completions per pair in T1).
+  inner = sqrt(max(1, m W2)) * (sqrt(m p(a2)) + sqrt(m p(a3))), valid with at most one completion per prefix
+  in expectation (other configurations are rejected).
   Repetitions ell = prod_i p(a_i) / W(a_i, a_i | t_i); preprocessing ell * m.
 Run: python k4_chain.py"""
 from math import log2, sqrt, acos, cos
@@ -39,16 +40,16 @@ def time_k(m, ts, cs):
         pref.append(pref[-1] + m + Wl[i])
     # expected completions (log, at least 0) of a prefix with j + 2 vectors in one repetition
     comp = {j: max(0.0, S - pref[j]) for j in range(k1)}
+    if any(comp[j] > 1e-9 for j in range(k1 - 1)):
+        return 9                                            # regime with several completions per prefix: not covered
     def cost_complete(j):
-        """cost to find one completion of a prefix with j + 2 vectors, j = 0 .. k1 - 2"""
+        """cost to find one completion of a prefix with j + 2 vectors (at most one completion in expectation):
+        amplification over the bucket of the next vector with the angle test (sqrt(B) iterations, no lower bound on
+        the good set), nested inside amplification over the good set (sqrt(max(1, G)) iterations) with the next check."""
         nxt = j + 1
-        n = comp[j]
         if nxt == k1 - 1:                                   # last vector: plain search in the bucket
-            return 0.5 * (m + P[nxt]) - 0.5 * n if n < m + P[nxt] else 0.0
-        # two-oracle search over the next vector: candidates m P, good ones m W
-        a = 0.5 * (m + P[nxt] - n)
-        b = 0.5 * (max(m + Wl[nxt], n) - n) + cost_complete(nxt)   # the good set contains the target, so has >= 1 element
-        return max(a, b)
+            return 0.5 * (m + P[nxt])
+        return 0.5 * max(m + Wl[nxt], 0.0) + max(0.5 * (m + P[nxt]), cost_complete(nxt))
     T0 = 2 * m + P[0]
     per_sol = max(0.5 * (T0 - S), 0.5 * (pref[0] - S) + cost_complete(0))
     tot = max(ell + m, ell + S + per_sol)

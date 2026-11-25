@@ -1,6 +1,6 @@
 """Independent explicit form of the 4-tuple cost (no recursion), checked against k4_chain.time_k.
 Per repetition (log2/d): T0 = 2m + p1, T1 = 2m + W(t1, a1 | a1), S = m - ell solutions.
-Per solution: max(T0 - S, T1 - S + 2 * inner) / 2 with inner = max(m + p2, max(m + W(t2, a2 | a2), 0) + m + p3) / 2,
+Per solution: max(T0 - S, T1 - S + 2 * inner) / 2 with inner = (max(m + W(t2, a2 | a2), 0) + max(m + p2, m + p3)) / 2,
 valid when completions per prefix are below one (asserted). Total = max(ell + m, ell + S + per solution)."""
 import sys
 from math import log2, sqrt, acos, degrees
@@ -18,7 +18,7 @@ S = m - ell
 T0, T1 = 2 * m + P[0], 2 * m + Wl[0]
 triples = T1 + m + Wl[1]
 assert S < T1 and S < triples and abs(triples + m + Wl[2] - S) < 1e-9   # under one completion per prefix; counts agree
-inner = max(m + P[1], max(m + Wl[1], 0) + m + P[2]) / 2
+inner = max(m + Wl[1], 0) / 2 + max(m + P[1], m + P[2]) / 2
 per = max(T0 - S, T1 - S + 2 * inner) / 2
 total = max(ell + m, ell + S + per)
 print(f"ell {ell:.6f}  S {S:.6f}  T0 {T0:.6f}  T1 {T1:.6f}  buckets {[round(m + x, 6) for x in P]}  good {[round(m + x, 6) for x in Wl]}")

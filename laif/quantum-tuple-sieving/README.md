@@ -8,10 +8,10 @@ Here the method of [1] is carried to k − 1 nested levels, one random product c
 
 **Theorem 1 (heuristic).** In the model of [1] (classical memory readable in superposition, 2^{o(d)} qubits), under the heuristics of [1, Section 4]:
 
-1. 4-tuple sieving runs in time 2^{0.304495d + o(d)} with the minimal 4-tuple memory 2^{0.172369d + o(d)}.
-2. For every memory exponent m in [0.1625, 0.195], k-tuple sieving with k ∈ {3, 4, 5, 6} runs in time 2^{t(m)d + o(d)} with t(m) as in the table of Section 3. For m in [0.1625, 0.1875], t(m) < 0.2989, and for m in [0.19, 0.195], t(m) < 0.2846.
+1. 4-tuple sieving runs in time 2^{0.304495d + o(d)} with the minimal 4-tuple memory 2^{0.172369d + o(d)}. This concerns k = 4; with larger k, less time is possible at this memory (part 2 and [2, Table 2]).
+2. For every memory exponent m in [0.1625, 0.1887), k-tuple sieving with some k ∈ {4, 5, 6} runs in time 2^{t(m)d + o(d)}, where t(m) is the entry of the table of Section 3 at the largest listed memory not above m. In particular t(m) < 0.2989 on this range.
 
-Status: Claim. The cost formula, the optimization of the angles and the reproduction of the exponent 0.284551 of [1] are checked by script.
+Status: Claim. The cost formula is evaluated and optimized by script, and the script reproduces the exponent 0.284551 of [1]; its derivation is the written argument of Sections 1 and 2.
 
 ## Before and after
 
@@ -19,7 +19,6 @@ Status: Claim. The cost formula, the optimization of the angles and the reproduc
 |---|---|---|
 | Quantum 4-tuple sieving at the minimal memory 0.1724 | time 0.3178 [2, Table 3] | time 0.3045 |
 | Quantum sieving with memory 2^{md}, m ∈ [0.1625, 0.1875] | time 0.2989, from the k-sieve at memory 0.1395 [2, Table 2] | t(m) from 0.2982 (m = 0.1625) to 0.2873 (m = 0.1846) |
-| Quantum sieving with memory 2^{md}, m ∈ [0.19, 0.195] | time 0.2846 from the 3-tuple sieve at memory 0.1887 [1] | t(m) from 0.2806 to 0.2797 |
 
 ## 1. The algorithm
 
@@ -33,7 +32,7 @@ All quantities below are log₂(·)/d. With ℓ = Σ_i (p(a_i) − W(a_i, a_i | 
 
 max(ℓ + m, ℓ + S + max(T₀ − S, T₁ − S + 2c₂)/2),
 
-where c_i is the cost of completing a prefix at level i: c_{k−1} = (m + p(a_{k−1}))/2 for the last bucket, and c_i = max(m + p(a_i), max(0, m + W(t_i, a_i | a_i)) + 2c_{i+1})/2 for the levels in between, when a prefix has fewer than one completion in expectation (the general case divides by the number of completions). For k = 3 this is equation (4) of [1].
+where c_i is the cost of completing a prefix at level i: c_{k−1} = (m + p(a_{k−1}))/2 for the last bucket, and c_i = max(0, m + W(t_i, a_i | a_i))/2 + max(m + p(a_i), 2c_{i+1})/2 for the levels in between: an amplification over the bucket with the angle test, nested in an amplification over the vectors at the right angle with the next check. The formula is used when a prefix has at most one completion in expectation, which holds at every configuration reported here; the scripts reject other configurations. For k = 3 this is equation (4) of [1].
 
 At the minimal 4-tuple memory, cos tᵢ = (1/4, 1/√6, √(3/8)) and the optimal cos aᵢ = (0.232941, 0.421080, 0.421080) give ℓ = 0.132126, S = 0.040243, buckets of 2^{0.1321d}, 2^{0.0316d} and 2^{0.0316d} vectors, and equal preprocessing and search costs of 0.304495.
 
@@ -55,7 +54,7 @@ At the minimal 4-tuple memory, cos tᵢ = (1/4, 1/√6, √(3/8)) and the optima
 | 0.1925 | 3 | 0.279693 |
 | 0.1929 | 3 | 0.279680 |
 
-Each entry is a configuration found by numerical optimization; its time is an upper bound for that memory. The entries for k = 3 are the algorithm of [1] with other inner products in the configuration, chosen for the given memory.
+Each entry is a configuration found by numerical optimization; its time is an upper bound for that memory. The entries for k = 3 are the algorithm of [1] with other inner products in the configuration, which [1, Lemma 3.16] covers; they are implied by [1] and listed for comparison.
 
 ## 4. Measurements
 
@@ -63,14 +62,14 @@ Each entry is a configuration found by numerical optimization; its time is an up
 - [`sim/k4_chain.py`](sim/k4_chain.py): the cost for general k; for k = 4 at the minimal memory it checks the chain count m⁴ p(t₁)p(t₂)p(t₃) = m and finds 0.304495.
 - [`sim/k4_explicit.py`](sim/k4_explicit.py): the closed form of Section 2 for k = 4, which agrees with the recursive one, with the count of chains per repetition equal to S.
 - [`sim/k_general.py`](sim/k_general.py) and [`sim/curve.py`](sim/curve.py): free chain angles and the table of Section 3, written to `curve.csv`.
-- [`sim/envelope.py`](sim/envelope.py): compares the table with the lower envelope of the quantum points of [2, Tables 2, 3 and Figure 1], [1] and [3, Tables 4, 5], [4, Table 2], and of the quantum 2-sieves at memory 0.2075, extended to larger memory; the table lies below it for every memory bound from 0.1625 to 0.195.
+- [`sim/envelope.py`](sim/envelope.py): compares the table with the lower envelope of the quantum points of [2, Tables 2, 3 and Figure 1], [1] and [3, Tables 4, 5], [4, Table 2], and of the quantum 2-sieves at memory 0.2075, extended to larger memory, with the k = 3 entries counted as known; the entries for k ≥ 4 lie below it for every memory bound from 0.1625 to 0.1875.
 
 Run each with `python <script>` in `sim/` (SciPy needed).
 
 ## 5. Limits
 
 - The bounds are heuristic, under the assumptions of [1, Section 4] on the list vectors, and hold up to 2^{o(d)} factors.
-- The argument of [1, Lemma 3.16] is carried to more levels, where the expected number of good vectors in a bucket per prefix is below one; only upper bounds on these counts enter.
+- The argument of [1, Lemma 3.16] is carried to more levels, where the expected number of good vectors in a bucket per prefix is at most one; only upper bounds on these counts enter.
 - Memory is classical memory readable in superposition, with unit cost per access, as for all the exponents compared here. With an access cost that grows with the list size, the exponents change, see [4, Section 3.4].
 - The exponents of the table come from numerical optimization and are not claimed optimal.
 - Not formalized in Lean.

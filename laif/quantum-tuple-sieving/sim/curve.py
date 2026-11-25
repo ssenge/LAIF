@@ -1,7 +1,7 @@
 """Time-memory curve of the nested quantum k-tuple sieve, k = 3..6 (cost model of k4_chain.time_k, free chain angles).
 For each memory bound M, minimize time over configurations with memory <= M; write curve.csv (M, k, time, memory, x).
 Checks: k = 3 at the minimal 3-tuple memory gives 0.284551; k = 4 at the minimal 4-tuple memory gives 0.304495.
-Run: python curve.py (single core, about 30 minutes)"""
+Run: python curve.py [seeds] (single core, about 30 minutes per seed)"""
 import csv, sys
 from math import log2, sqrt
 sys.path.insert(0, __file__.rsplit("/", 1)[0])
@@ -23,6 +23,7 @@ def best_time(k, M, x0=None, seed=0):
     return (t, mem, r.x) if mem is not None and mem <= M + 1e-6 else (9, mem, r.x)
 
 if __name__ == "__main__":
+    SEEDS = int(sys.argv[1]) if len(sys.argv) > 1 else 1    # optimizer seeds per point (seed 0 warm-started)
     t3, m3 = evaluate([1 / 3, 1 / sqrt(3), 0.347606, 0.427124], 3)       # 2510.08473, Theorem 3.1
     assert abs(t3 - 0.284551) < 2e-6 and abs(m3 - 0.25 * log2(27 / 16)) < 1e-9, t3
     t4, m4 = evaluate([1 / 4, 1 / sqrt(6), sqrt(3 / 8), 0.23294119, 0.42108008, 0.42108008], 4)
@@ -32,7 +33,8 @@ if __name__ == "__main__":
     for M in grid:
         best = None
         for k in (3, 4, 5, 6):
-            t, mem, x = best_time(k, M, prev.get(k))
+            t, mem, x = min((best_time(k, M, prev.get(k) if sd == 0 else None, seed=sd) for sd in range(SEEDS)),
+                            key=lambda r: r[0])
             if t < 9:
                 prev[k] = x
                 rows.append((M, k, t, mem, list(x)))
