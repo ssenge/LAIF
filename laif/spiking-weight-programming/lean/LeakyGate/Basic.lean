@@ -83,20 +83,23 @@ theorem spikes_eq (h : Margins d θ lo L F m M) (c : ℝ) (hm : m ≤ c) (hM : c
 
 /-! ### The neurons of the localization network, decay 3/10 and threshold 1/2 -/
 
+/-! The drives below are the values produced by the weights of the network, each with a tolerance of 0.01, so
+that the ranges also contain the values computed in 32-bit floating point. -/
+
 /-- Gate of two unit inputs with weight 0.75 and bias -0.42: drives -0.42, 0.33 (low) and 1.08 (high). -/
-theorem and_gate : Margins (3 / 10) (1 / 2) (-42 / 100) (33 / 100) (108 / 100) (-6 / 10) (48 / 100) := by
+theorem and_gate : Margins (3 / 10) (1 / 2) (-43 / 100) (34 / 100) (107 / 100) (-62 / 100) (49 / 100) := by
   constructor <;> norm_num
 
 /-- Thermometer unit with bias -0.67: drives from -1.67 to 0.33 (levels -1 to 1, low) and from 1.33 (level 2). -/
-theorem counter_unit : Margins (3 / 10) (1 / 2) (-167 / 100) (33 / 100) (133 / 100) (-24 / 10) (48 / 100) := by
+theorem counter_unit : Margins (3 / 10) (1 / 2) (-168 / 100) (34 / 100) (132 / 100) (-241 / 100) (49 / 100) := by
   constructor <;> norm_num
 
 /-- Crossing unit: drives -1.17, -0.42, 0.33 (low) and 1.08 (high). -/
-theorem crossing_unit : Margins (3 / 10) (1 / 2) (-117 / 100) (33 / 100) (108 / 100) (-17 / 10) (48 / 100) := by
+theorem crossing_unit : Margins (3 / 10) (1 / 2) (-118 / 100) (34 / 100) (107 / 100) (-17 / 10) (49 / 100) := by
   constructor <;> norm_num
 
 /-- Relay unit of the third layer: drive 0 (low) or 1 (high). -/
-theorem relay_unit : Margins (3 / 10) (1 / 2) 0 0 1 0 0 := by
+theorem relay_unit : Margins (3 / 10) (1 / 2) (-1 / 100) (1 / 100) (99 / 100) (-2 / 100) (2 / 100) := by
   constructor <;> norm_num
 
 /-! ### Content of the statement

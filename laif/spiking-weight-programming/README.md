@@ -155,6 +155,7 @@ All weights are multiples of 0.75, and the always-firing neuron has bias 1. The 
 | `sim/badd_train.py` | recurrent LIF network of [6] trained with backpropagation through time on binary adding |
 | `sim/al.py` | the AL task and the programmed three-layer network |
 | `sim/al_reference_check.py` | the same network on sequences from the generator of [4] |
+| `sim/al_drive_ranges.py` | every drive of the AL network lies in the ranges of `lean/LeakyGate/Basic.lean` |
 | `sim/al_train.py` | recurrent LIF network of [4] trained with backpropagation through time on AL |
 
 - One-dimensional task: seeds 1 to 5, 2,048 sequences per seed and setting. The weights were chosen on separate
@@ -246,9 +247,9 @@ extra terms for the first step.
   carried potential starts in the range [m, M] of `Margins` (for example at 0), the neuron spikes exactly at the
   high inputs, for input sequences of any length.
 - `and_gate`, `counter_unit`, `crossing_unit`, `relay_unit`: `Margins` holds at decay 3/10 and threshold 1/2 for
-  the exact drive values of the four kinds of neurons of the AL network, so the hypotheses of `spikes_eq` can be
-  met. The simulation computes the drives in 32-bit floating point, which differs from these values by about
-  1e-7.
+  drive ranges of the four kinds of neurons of the AL network, each with a tolerance of 0.01 around the values
+  given by the weights, so the hypotheses of `spikes_eq` can be met. `sim/al_drive_ranges.py` asserts that every
+  drive of the simulation, computed in 32-bit floating point, lies in these ranges.
 - `and_gate_outcomes`, `low_inputs_fire_at_decay_half`, `no_and_gate_margins_at_decay_half`: both outcomes occur;
   at decay 1/2 the same neuron fires at a repeated low input; and the conditions for the gate cannot be met at
   decay 1/2. So the statement has content, and its conclusion fails in a case where the margins do not hold. `Margins` is a
@@ -256,7 +257,8 @@ extra terms for the first step.
 
 Lean version and Mathlib revision are fixed in `lean/lean-toolchain` and `lean/lake-manifest.json`.
 
-Not formalized: that the drives of the neurons of `sim/al.py` lie in the ranges used above, the composition of
+Not formalized: that the drives of the neurons of `sim/al.py` lie in the ranges used above (asserted on sampled
+sequences by `sim/al_drive_ranges.py`), the composition of
 the three AL statements into one theorem about the network, the binary adding network, and the spiking dynamics
 of the other circuits (that the latches, gates and timers realize the state machines under the random input
 spikes of the tasks of [1] and [5]). These points are covered by the measurements only.
