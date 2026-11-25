@@ -1,4 +1,4 @@
-# Phase-space negativity and the coherent-state Rényi-1/2 entropy: coherent states are local maximizers among pure states on every finite truncation
+# Phase-space negativity and the coherent-state order-1/2 entropy: coherent states are local maximizers among pure states on every finite truncation
 
 2026-11-25
 
@@ -8,7 +8,7 @@ For a state ρ of one bosonic mode let W be its phase-space quasi-probability an
 
 ‖W‖₁ = ∫|W| d²α ≤ (∫√Q d²α)² / (4π),
 
-with equality exactly for coherent states. In logarithmic form, the phase-space negativity ln‖W‖₁ is at most the excess of the coherent-state Rényi-1/2 entropy 2 ln ∫√Q over its coherent-state value. In the units of [1] the constant is 8π instead of 4π. In [1] the bound is proved up to an additive ln 2, and it is shown that pure states suffice. Question (i) of [1, Sec. VII] asks whether coherent states are at least local maximizers of ‖W‖₁/(∫√Q)².
+with equality exactly for coherent states. In logarithmic form, the phase-space negativity ln‖W‖₁ is at most the excess of the coherent-state order-1/2 entropy 2 ln ∫√Q over its coherent-state value. In the units of [1] the constant is 8π instead of 4π. In [1] the bound is proved up to an additive ln 2, and it is shown that pure states suffice. Question (i) of [1, Sec. VII] asks whether coherent states are at least local maximizers of ‖W‖₁/(∫√Q)².
 
 | | near a coherent state |
 |---|---|
@@ -44,7 +44,7 @@ W_ψ(α) = (2/π) e^{−2|α|²} [1 + 2 Re p_v(α) + q_v(α)] / (1 + ‖v‖²),
 
 where p_v and q_v are polynomials of degree at most K and 2K whose coefficients are bounded by C_K‖v‖ and C_K‖v‖². For ‖v‖ ≤ 1, W_ψ < 0 only where C_K‖v‖(1 + |α|)^{2K} ≥ 1/4, that is, outside a disc of radius R = (4C_K‖v‖)^{−1/(2K)} − 1. Since ∫W = 1, ‖W‖₁ = 1 + 2∫W₋, and the Gaussian tail outside that disc gives ‖W_ψ‖₁ − 1 ≤ C′_K exp(−c_K ‖v‖^{−1/K}).
 
-**Rényi-1/2 side.** With F(z) = Σ_n φ_n z^n/√n!, an entire function with F(0) = 0, one has ⟨α|ψ_t⟩ = e^{−|α|²/2}(1 + tF(ᾱ))/√(1 + t²). Hence
+**Order-1/2 side.** With F(z) = Σ_n φ_n z^n/√n!, an entire function with F(0) = 0, one has ⟨α|ψ_t⟩ = e^{−|α|²/2}(1 + tF(ᾱ))/√(1 + t²). Hence
 
 ∫√Q_{ψ_t} = I(t) / √(π(1 + t²)),  I(t) = ∫ e^{−|z|²/2} |1 + tF(z)| d²z.
 
