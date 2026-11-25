@@ -1,6 +1,12 @@
-T, seeds 0..9: regret / ((1 + Delta(u)/Gamma) log2 T), max over seeds; phases
-T=1e3: max ratio 24.12, mean 6.03, phases 0..3
-T=1e4: max ratio 44.79, mean 24.94, phases 2..9
-T=1e5: max ratio 52.07, mean 47.25, phases 12..12
-T=1e6: max ratio 53.22, mean 48.22, phases 16..16
-T=1e7: max ratio 52.45, mean 47.99, phases 19..19
+mode alt; T, seeds 0..9: regret / ((1 + Delta(u)/Gamma) log2 T), max over seeds; phases
+T=1e3: max ratio 25.32, mean 6.15, phases 0..2
+T=1e4: max ratio 72.18, mean 33.28, phases 1..8
+T=1e5: max ratio 93.66, mean 85.66, phases 9..11
+T=1e6: max ratio 104.93, mean 94.47, phases 15..15
+T=1e7: max ratio 104.62, mean 95.21, phases 18..18
+mode rand; T, seeds 0..9: regret / ((1 + Delta(u)/Gamma) log2 T), max over seeds; phases
+T=1e3: max ratio 25.32, mean 6.15, phases 0..2
+T=1e4: max ratio 72.20, mean 33.33, phases 1..8
+T=1e5: max ratio 93.61, mean 87.96, phases 9..11
+T=1e6: max ratio 105.63, mean 97.86, phases 15..15
+T=1e7: max ratio 106.77, mean 98.50, phases 18..18

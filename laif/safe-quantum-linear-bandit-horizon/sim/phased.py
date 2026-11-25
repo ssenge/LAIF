@@ -2,7 +2,10 @@
 The mean estimator is modelled by its guarantee: an estimate within eta of the mean in every coordinate, with a
 sign pattern chosen against the learner (alternating worst case), at a cost of ceil(1/eta) queries at that action.
 Asserts: every queried action is feasible, a* survives every phase, the estimates are within e_l on C_l, and the
-regret of every phase is at most the bound of Lemma 3. Double precision limits the check to T <= 1e7."""
+regret of every phase is at most the per-phase bound in the proof of Theorem 1. The design here is a conditional-gradient
+design with g <= 2r and full range (asserted), in place of the sparsified design of the README; the accuracy is asserted
+directly. Error signs: alternating (mode "alt") or independent random signs per coordinate (mode "rand").
+Double precision limits the check to T <= 1e7."""
 import math, sys, numpy as np
 from scipy.optimize import linprog
 d = 2
@@ -20,8 +23,10 @@ def design(P):                              # conditional-gradient G-optimal des
         r = np.linalg.matrix_rank(V, 1e-12)
         if g[j] <= 2 * r: break
         gam = (g[j] / r - 1) / (g[j] - 1); pi *= 1 - gam; pi[j] += gam
+    assert g[j] <= 2 * r * (1 + 1e-9), "design did not converge"
+    assert r == np.linalg.matrix_rank(P, 1e-12), "range of V"
     keep = pi > 1e-12; return P[keep], pi[keep] / pi[keep].sum(), r
-def run(T, seed, verbose=False):
+def run(T, seed, mode="alt"):
     rng = np.random.default_rng(seed)
     A = [0.95 * np.array([math.cos(t), math.sin(t)]) for t in np.linspace(0, 2 * math.pi, 9)[:-1] + rng.uniform(0, 1)]
     th = rng.normal(size=d); th *= rng.uniform(0.5, 1) / np.linalg.norm(th)
@@ -34,7 +39,8 @@ def run(T, seed, verbose=False):
         nonlocal t, reg
         assert ph @ a <= al + 1e-12, "unsafe query"
         q = min(math.ceil(1 / eta), T - t); t += q; reg += q * (mu - th @ a); sgn[0] = -sgn[0]
-        return np.array([th @ a, ph @ a]) + sgn[0] * eta * np.array([1, -1])
+        s2 = sgn[0] * np.array([1, -1]) if mode == "alt" else rng.choice([-1, 1], 2)
+        return np.array([th @ a, ph @ a]) + eta * s2
     # warm-up at u
     j = 0
     while True:
@@ -42,12 +48,13 @@ def run(T, seed, verbose=False):
         Gh = al - w[1] - om
         if Gh >= 16 * om or t >= T: break
     if t >= T: return reg, Du, Gam, 0
-    assert om <= Gam / 16 + 1e-12 and Gam / 2 <= Gh <= Gam + 1e-12
+    assert om <= Gam / 16 + 1e-12 and 7 * Gam / 8 - 1e-12 <= Gh <= Gam + 1e-12
+    assert t <= 72 / Gam + math.log2(36 / Gam) + 1, "warm-up queries"
     C = [np.array(v) for v in A]; e_prev = 1.0; phases = 0
     while t < T:
         phases += 1; e = e_prev / 2; rho = Gh / (Gh + 2 * e_prev)
         M = [(1 - rho) * u + rho * x for x in C]
-        S, pi, r = design(M); eta = rho * e / (2 * math.sqrt(2 * d))
+        S, pi, r = design(M); eta = rho * e / (6 * math.sqrt(d))
         reg0 = reg; Y = np.array([qme(a, eta) for a in S])
         if t >= T and len(Y) < len(S): break
         V = (S.T * pi) @ S; Vi = np.linalg.pinv(V); ghat = Vi @ (S.T * pi) @ Y        # columns: theta, phi
@@ -57,7 +64,7 @@ def run(T, seed, verbose=False):
             assert abs(est(x, 0) - th @ x) <= e + 1e-9 and abs(est(x, 1) - ph @ x) <= e + 1e-9, "accuracy"
         assert max(mu - th @ x for x in C) <= 30 / 7 * e_prev * (1 + Du / Gam) + 1e-9, "Lemma 4"
         assert max(mu - th @ ((1 - rho) * u + rho * x) for x in C) <= 46 / 7 * e_prev * (1 + Du / Gam) + 1e-9, "gap of mixtures"
-        Qbd = len(S) * (2 * math.sqrt(2 * d) / (rho * e) + 1) * (46 / 7 * e_prev * (1 + Du / Gam)) * 1.0001
+        Qbd = len(S) * (6 * math.sqrt(d) / (rho * e) + 1) * (46 / 7 * e_prev * (1 + Du / Gam)) * 1.0001
         assert reg - reg0 <= Qbd + 1e-9, "phase regret bound"
         # affine estimates as (h, b): est(x) = h.x + b
         hb = [(rho * ghat[:, c] / rho, ((1 - rho) * (u @ ghat[:, c]) - (1 - rho) * w[c]) / rho) for c in (0, 1)]
@@ -80,9 +87,10 @@ def point_in(C, p):
     if len(C) < 3: return min(np.linalg.norm(p - x) for x in C) < 1e-9 if C else False
     V = np.array(C); return all(((V[(i + 1) % len(V)] - V[i])[0] * (p - V[i])[1] - (V[(i + 1) % len(V)] - V[i])[1] * (p - V[i])[0]) >= -1e-9 for i in range(len(V)))
 if __name__ == "__main__":
-    print("T, seeds 0..9: regret / ((1 + Delta(u)/Gamma) log2 T), max over seeds; phases")
-    for T in [10 ** 3, 10 ** 4, 10 ** 5, 10 ** 6, 10 ** 7]:          # shortcut: double precision, cond(V) ~ 1e11 at T = 1e8
-        rs, ph_ = [], []
-        for s in range(10):
-            reg, Du, Gam, P = run(T, s); rs.append(reg / ((1 + Du / Gam) * math.log2(T))); ph_.append(P)
-        print(f"T=1e{int(math.log10(T))}: max ratio {max(rs):.2f}, mean {np.mean(rs):.2f}, phases {min(ph_)}..{max(ph_)}", flush=True)
+    for mode in ["alt", "rand"]:
+     print(f"mode {mode}; T, seeds 0..9: regret / ((1 + Delta(u)/Gamma) log2 T), max over seeds; phases")
+     for T in [10 ** 3, 10 ** 4, 10 ** 5, 10 ** 6, 10 ** 7]:          # shortcut: double precision, cond(V) ~ 1e11 at T = 1e8
+         rs, ph_ = [], []
+         for s in range(10):
+             reg, Du, Gam, P = run(T, s, mode); rs.append(reg / ((1 + Du / Gam) * math.log2(T))); ph_.append(P)
+         print(f"T=1e{int(math.log10(T))}: max ratio {max(rs):.2f}, mean {np.mean(rs):.2f}, phases {min(ph_)}..{max(ph_)}", flush=True)
