@@ -1,0 +1,16 @@
+n= 6 gap=3.516 Var(V)=6.2574e-02 n*Var(V)=0.3754 Schur=1.0313e-01 infidelity(eps=0.2)=1.923e-05
+n= 6 gap=3.321 Var(V)=7.5957e-02 n*Var(V)=0.4557 Schur=1.3555e-01 infidelity(eps=0.2)=2.728e-05
+n= 6 gap=3.104 Var(V)=5.5593e-02 n*Var(V)=0.3336 Schur=9.2475e-02 infidelity(eps=0.2)=2.048e-05
+n= 8 gap=3.053 Var(V)=7.7253e-02 n*Var(V)=0.6180 Schur=1.1864e-01 infidelity(eps=0.2)=2.971e-05
+n= 8 gap=3.115 Var(V)=8.0498e-02 n*Var(V)=0.6440 Schur=1.1868e-01 infidelity(eps=0.2)=2.945e-05
+n= 8 gap=3.201 Var(V)=8.8903e-02 n*Var(V)=0.7112 Schur=1.2901e-01 infidelity(eps=0.2)=3.356e-05
+n=10 gap=3.495 Var(V)=4.2413e-02 n*Var(V)=0.4241 Schur=7.5798e-02 infidelity(eps=0.2)=1.502e-05
+n=10 gap=3.188 Var(V)=6.0034e-02 n*Var(V)=0.6003 Schur=1.0187e-01 infidelity(eps=0.2)=2.276e-05
+n=10 gap=3.339 Var(V)=4.7004e-02 n*Var(V)=0.4700 Schur=1.1523e-01 infidelity(eps=0.2)=1.657e-05
+n=12 gap=3.607 Var(V)=4.9797e-02 n*Var(V)=0.5976 Schur=7.9837e-02 infidelity(eps=0.2)=1.577e-05
+n=12 gap=3.171 Var(V)=5.8447e-02 n*Var(V)=0.7014 Schur=9.6806e-02 infidelity(eps=0.2)=2.195e-05
+n=12 gap=2.744 Var(V)=4.6248e-02 n*Var(V)=0.5550 Schur=7.6764e-02 infidelity(eps=0.2)=1.693e-05
+n=14 gap=3.186 Var(V)=4.9942e-02 n*Var(V)=0.6992 Schur=7.6389e-02 infidelity(eps=0.2)=1.682e-05
+n=14 gap=3.105 Var(V)=3.6044e-02 n*Var(V)=0.5046 Schur=5.7721e-02 infidelity(eps=0.2)=1.295e-05
+n=14 gap=2.898 Var(V)=4.1744e-02 n*Var(V)=0.5844 Schur=8.5418e-02 infidelity(eps=0.2)=1.628e-05
+largest infidelity / Lemma 3 bound: 0.0627
