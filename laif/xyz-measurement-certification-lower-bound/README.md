@@ -86,6 +86,21 @@ Hence χ²(P_{ρ_s} ‖ P_{ρ_n}) + 1 = E[Z at the leaf] ≤ (1 + s²q)^T. If an
 
 The proof of Theorem 1 follows the cross-term approach of [2, Section 3], which compares a superposition of product states with their mixture. With X, Y, Z axes and the state |a⟩, the per-qubit factor √(2/3) is the same for every allowed axis, and this is what makes the bound hold for every adaptive tree.
 
+## Lean
+
+The folder [lean/](lean/) checks the scalar facts behind Theorems 1 and 2 in Lean 4 with Mathlib, with no `sorry` and only the standard axioms (`lean/axioms.txt`).
+
+**Checked** (`AxisCert/Basic.lean`):
+
+- the per-axis factor: for outcome probabilities (1 ± 1/√3)/2 and the reversed ones, the sum of the geometric means is √(2/3) (`per_axis`);
+- the leaf term of the chi-square divergence: with c² ≤ xy and m = (x + y)/2, c²/m ≤ √(xy), via the inequality between the harmonic and geometric means (`hm_le_gm`, `chi_term`);
+- the mixture identity Σ_j C(T, j)(p(1 + q))^j (1 − p)^{T−j} = (1 + pq)^T used for σ_ε in Theorem 1(b) (`mixture_identity`);
+- from (1 + κ)^T ≥ c to T ≥ ln c/κ, which gives the copy counts of Theorems 1 and 2 with c = 5/3 and c = 3/2 (`copies_of_bound`), the constant 1/16 at s = 4ε (`theorem2_constant`), and the bound χ² ≥ 1/2 for an event of probability at least 2/3 under one law and at most 1/3 under the other (`chi_binary`).
+
+**Non-vacuity** (same file): `hm_le_gm_eq`, `chi_term_eq` and `chi_binary_eq` attain equality with nonzero sides; `distance_hyp_sat` shows that the hypothesis of `copies_of_bound` holds for some T and fails for others; `bound_exceeds_one` shows that the bound of Theorem 1(a) exceeds 1 at n = 8.
+
+**Not formalized:** the measurement model, Lemma 1, the pattern expansion and the supermartingale argument of Theorem 2, and Corollary 3; these are Claims with the checks below.
+
 ## Check
 
 `sim/check.py` (output `sim/out_check.txt`) builds ψ_n and ρ_n and asserts, for n ≤ 6 and all 3^n settings of the axes, the leaf formulas, the identity Σ|u||v| = (2/3)^{n/2}, the bound χ²(P_ψ ‖ P_ρ) ≤ (2/3)^{n/2}, the per-copy chi-square bound for σ_ε at ε = 0.01, 0.1, 0.2, the one-copy identity χ²(P_{ρ_s} ‖ P_ρ) = s² Σ c²/m, with P_{ρ_s} computed from the density matrix of ρ_s, for s up to 1, and the fidelity 1/2. The numbers below use the phase of |ā⟩ fixed in the scripts. For n ≤ 5 it asserts the identity and the bound on 200 random adaptive trees each, with the qubit order and the axes chosen at random from the outcomes so far. Over the non-adaptive settings, the largest χ²(P_ψ ‖ P_ρ) is 0.82, 0.75, 0.68, 0.64, 0.60, 0.57 times (2/3)^{n/2} for n = 1, …, 6, all attained by measuring every qubit along Z. For that setting `sim/allz.py` (output `sim/out_allz.txt`) computes χ² exactly up to n = 320: χ²/(2/3)^{n/2} times √n increases to 1.89 at n = 320, so the per-copy bound is attained up to a factor Θ(n^{−1/2}) (numerical). Since the squared distance between √P_ψ and √P_ρ is at least χ²/6 here (because |c_ℓ| ≤ m_ℓ), a likelihood-ratio test on all-Z data tells ψ_n from ρ_n with O(√n (3/2)^{n/2}) copies, so, for the phase of |ā⟩ fixed in the scripts, Theorem 1(a) is tight up to the factor √n for this pair, given the numerical asymptotics. `sim/inter.py` (output `sim/out_inter.txt`) draws 40 random fully adaptive trees on all nT qubits of T stored copies, for (n, T) = (1, 2), (1, 3), (1, 4), (2, 2), (2, 3), (3, 2), and asserts the identity Σ_ℓ |⟨e_ℓ|p_s⟩||⟨e_ℓ|p_{s′}⟩| = q^{d(s,s′)}, the bound of Lemma 1 for every set A of copies and all patterns on A with ψ_n on the other copies, and the bounds (1 + q)^T − 1 and (1 + 2εq)^T − 1 on the summed leaf differences of Theorem 1, and (1 + sq)^T − 1 for ρ_s. `sim/stored2.py` (output `sim/out_stored2.txt`) draws 40 random fully adaptive trees on all nT qubits for (n, T) = (1, 1), …, (1, 4), (2, 1), (2, 2), (2, 3), (3, 1), (3, 2) and asserts the product form of P_{ρ_s}/P_{ρ_n} at every leaf and the bound χ²(P_{ρ_s} ‖ P_{ρ_n}) ≤ (1 + s²q)^T − 1 for s = 0.05, 0.2, 0.5, 1, with both laws computed from the density matrices; the largest ratio of the two sides is 0.8165. `sim/axes.py` (output `sim/out_axes.txt`) computes κ(S) by local minimization from 400 starting points, which gives an admissible r and hence a valid upper estimate of κ(S); it asserts κ = √(2/3) for X, Y, Z and κ = 1/√2 for X, Z, and finds 0.9428 for X, Y, Z with the four diagonals (±1, ±1, 1)/√3 and 0.9849 for the 13 axes through the faces, edges and corners of a cube. `sim/blocks.py` is a local numerical search over non-adaptive settings: it minimizes the largest coefficient Σ|⟨e|A⟩||⟨e|A′⟩| over orthogonal pairs of k-qubit states A, A′ for k = 1, 2, 3; per qubit it finds √(2/3) each time, the value of the pair a, ā.
@@ -95,7 +110,7 @@ The proof of Theorem 1 follows the cross-term approach of [2, Section 3], which 
 - Theorems 1 and 2 concern single-qubit measurements along X, Y and Z, and Corollary 3 along any fixed finite set of axes. Measurements with axes from an infinite set, joint measurements of several qubits, and measurements on several copies at once are not covered; with other single-qubit axes, polynomially many copies suffice [2].
 - The lower bound concerns the worst case over targets: it is proved for the target ψ_n. The upper bound O(d^{0.7716}/ε²) [5] holds for every target.
 - The hardness comes from the axis restriction alone: after the single-qubit rotation that maps ψ_n to (|0⟩^{⊗n} + |1⟩^{⊗n})/√2, measurements along the rotated axes of random elements of its stabilizer group accept with probability (1 + F)/2 at fidelity F, which certifies it with O(1/ε) copies.
-- **Not formalized:** the theorems have no Lean proof.
+- Lean covers the scalar facts listed in the Lean section; the probabilistic arguments are Claims.
 
 ## References
 
