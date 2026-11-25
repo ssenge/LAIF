@@ -1,0 +1,4 @@
+X, Y, Z: kappa = 0.816497, q = kappa^n, exponent log2(1/kappa) = 0.2925 per qubit, r = [-0.5774 -0.5774  0.5774]
+X and Z only: kappa = 0.707107, q = kappa^n, exponent log2(1/kappa) = 0.5000 per qubit, r = [-0.7071 -0.     -0.7071]
+cube: 3 faces + 6 edges + 4 body diagonals: kappa = 0.984876, q = kappa^n, exponent log2(1/kappa) = 0.0220 per qubit, r = [ 0.1733 -0.4183  0.8916]
+X, Y, Z and the 4 body diagonals: kappa = 0.942809, q = kappa^n, exponent log2(1/kappa) = 0.0850 per qubit, r = [0.5774 0.5774 0.5774]
