@@ -137,11 +137,13 @@ The folder [lean/](lean/) checks the deterministic inequalities behind Lemmas 1 
 
 - **Lemma 1** (`chart_bound`): (1 + |a|²)(1 + |b|²) − |1 + ⟨a, b⟩|² ≥ |a − b|².
 - **The region |a| > 1 in Theorem 1** (`chart_region`): (u − 1/2)² ≥ (1 + u²)/8 for u ≥ 1.
-- **Lemma 2** (`inner_orth_sq_le`, `overlap_deriv_sq_le`): for unit φ, ψ and v ⊥ ψ, |⟨φ|v⟩|² ≤ (1 − |⟨ψ|φ⟩|²)|v|², and the derivative 2 Re(conj⟨φ|ψ⟩ ⟨φ|iλψ + v⟩) of the overlap has square at most 4q(1 − q)|v|².
+- **Lemma 2** (`inner_orth_sq_le`, `overlap_deriv_sq_le`): for unit φ, ψ and v ⊥ ψ, |⟨φ|v⟩|² ≤ (1 − |⟨ψ|φ⟩|²)|v|², and the expression 2 Re(conj⟨φ|ψ⟩ ⟨φ|iλψ + v⟩) for the derivative of the overlap has square at most 4q(1 − q)|v|².
 - **Lemma 3** (`pair_difference`): |⟨x + y|ψ⟩|² − |⟨x − y|ψ⟩|² = 4 Re(conj⟨x|ψ⟩ ⟨y|ψ⟩).
 - **Lemma 4** (`update_bound`): for unit c, ψ with ⟨c|ψ⟩ ≠ 0 and y ⊥ c, the infidelity of (c + y)/|c + y| with ψ is at most |y − β/α|².
 
-**Not formalized:** the chart bound |v| ≤ |θ̇| in Lemma 2, the information inequality and the prior in the proof of Theorem 1, Lemma 5, the warm-up, the epoch analysis and Theorems 1 to 3 themselves.
+**Non-vacuity** (`QuditRegret/NonVacuity.lean`): the hypotheses can be met (`units_exist`), and each inequality is attained with nonzero sides: Lemma 1 at b = 0 (`chart_bound_zero`); the region bound at u = 1, which fails at u = 1/2 without the hypothesis u ≥ 1 (`chart_region_eq`, `chart_region_fails`); Lemma 2 for v = φ − ⟨ψ|φ⟩ψ and a real overlap (`proj_facts`, `inner_orth_sq_eq`, `overlap_deriv_sq_eq`). The update y = β/α meets the hypotheses of Lemma 4 and gives infidelity 0 (`update_bound_exact`).
+
+**Not formalized:** that 2 Re(conj⟨φ|ψ⟩ ⟨φ|iλψ + v⟩) is the derivative of the overlap, the chart bound |v| ≤ |θ̇| in Lemma 2, the information inequality and the prior in the proof of Theorem 1, Lemma 5, the warm-up, the epoch analysis and Theorems 1 to 3 themselves.
 
 ## Scope
 

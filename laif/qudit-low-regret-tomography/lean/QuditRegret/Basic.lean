@@ -98,7 +98,7 @@ theorem overlap_deriv_sq_le {φ ψ v : E} (hφ : ‖φ‖ = 1) (hψ : ‖ψ‖ =
   linear_combination 4 * hsq + 4 * mul_le_mul_of_nonneg_left horth hp0
 
 /-- Lemma 3: for a symmetric pair `x ± y`, `|⟪x + y, ψ⟫|² - |⟪x - y, ψ⟫|² = 4 Re(conj⟪x, ψ⟫ ⟪y, ψ⟫)`.
-With `x = cos s · c` and `y = sin s · u` this is `q₊ - q₋ = 2 sin 2s · Re(conj α ⟪u, β⟫)`. -/
+With `x = cos s · c` and `y = sin s · u`, `u ⊥ c`, this is `q₊ - q₋ = 2 sin 2s · Re(conj α ⟪u, β⟫)`. -/
 theorem pair_difference (x y ψ : E) :
     ‖⟪x + y, ψ⟫_ℂ‖ ^ 2 - ‖⟪x - y, ψ⟫_ℂ‖ ^ 2 = 4 * (conj ⟪x, ψ⟫_ℂ * ⟪y, ψ⟫_ℂ).re := by
   rw [inner_add_left, inner_sub_left, Complex.sq_norm, Complex.sq_norm, Complex.normSq_apply,
