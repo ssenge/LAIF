@@ -19,6 +19,11 @@ def Gpoly(word):
 
 if __name__ == "__main__":
     P = Gpoly(WP); assert sp.expand(P.as_expr() - (t + t * (1 - t) * (1 - 2 * t ** 2))) == 0
+    gA, gB, r2 = Gpoly(WA).as_expr(), Gpoly(WB).as_expr(), 1 / sp.sqrt(2)
+    assert gA.subs(t, 1) == 1 and sp.diff(gA, t).subs(t, 1) == 26
+    assert sp.simplify(gA.subs(t, r2) - r2) == 0 and sp.simplify(sp.diff(gA, t).subs(t, r2) - (1 - sp.sqrt(2))) == 0
+    assert sp.simplify(gB.subs(t, r2) - r2) == 0 and sp.simplify(sp.diff(gB, t).subs(t, r2)) == 0
+    assert sp.simplify(sp.diff(gB, t, 2).subs(t, r2) / 2 - (11 - 11 * sp.sqrt(2) / 2)) == 0
     for name, w in [("A", WA), ("B", WB)]:
         p = Gpoly(w); print(name, "degree", p.degree(), "coeffs", p.all_coeffs())
         print("   G(1) =", p.eval(1), " G'(1) =", sp.diff(p.as_expr(), t).subs(t, 1))
