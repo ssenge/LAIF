@@ -1,0 +1,12 @@
+\begin{tikzpicture}
+\begin{axis}[xmin=0, xmax=2.5, ymin=0, ymax=0.16, xlabel={threshold $\eta$}, ylabel={long-run yield},
+  height=5cm, legend pos=north east, legend cell align=left, scaled y ticks=false, yticklabel style={/pgf/number format/fixed}]
+\addplot[black, thick] table[col sep=comma, x=b, y=H] {\datadir/yield_exact.csv};
+\addlegendentry{exact $H(\eta)$}
+\addplot[only marks, mark=o, blue!70!black, error bars/.cd, y dir=both, y explicit]
+  table[col sep=comma, x=b, y=H, y error=ci] {\datadir/yield_mc.csv};
+\addlegendentry{simulation, 95\% interval}
+\draw[thr] (axis cs:0.4643,0) -- (axis cs:0.4643,0.16);
+\node[font=\footnotesize, anchor=south west, red!70!black] at (axis cs:0.48,0.005) {$\eta^*$};
+\end{axis}
+\end{tikzpicture}

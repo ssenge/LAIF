@@ -1,0 +1,580 @@
+\documentclass[11pt]{article}
+\usepackage[a4paper,margin=2.5cm]{geometry}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{booktabs}
+\usepackage{pgfplots}
+\usepgfplotslibrary{groupplots}
+\usetikzlibrary{calc}
+\usepackage[hidelinks]{hyperref}
+\input{fig/style}
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{assumption}[theorem]{Assumption}
+\newtheorem{remark}[theorem]{Remark}
+
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\dd}{\,\mathrm{d}}
+\DeclareMathOperator{\sign}{sign}
+
+\title{The optimal harvesting threshold\\ under a bounded harvesting rate is unique}
+\author{Sebastian Senge\\Independent Researcher}
+\date{}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+A population in a random environment is harvested at a rate that cannot exceed a given capacity, and the goal is
+the largest long-run average yield. For the stochastic logistic model it is known that an optimal strategy
+harvests at full capacity above a threshold and not at all below it, and it was conjectured that the optimal
+threshold is unique. We prove this.
+
+For the stochastic logistic model the long-run yield is unimodal for all parameters under which the
+unharvested population persists, so the optimal threshold exists and is unique. This includes the regime in which
+harvesting at full capacity all the time does not let the population persist.
+
+For one-dimensional diffusions whose total growth rate first increases and then decreases, and for a harvesting
+capacity that may depend on the population size, a known down-crossing argument shows that the long-run yield of
+a threshold strategy has at most one critical point; we state it without conditions on the boundary types.
+
+The yield has a closed form in incomplete gamma functions, and bisection on an explicit sign function computes
+the optimal threshold; it depends on two dimensionless numbers only.
+
+For the logistic model, uniqueness, existence and unimodality, and with them the statement of the conjecture
+about the yield function, are machine-checked in Lean~4 with Mathlib.
+\end{abstract}
+
+\section{Introduction}
+
+Hunting and fishing remove animals from populations that fluctuate for reasons no manager controls: weather,
+food supply, disease. Most harvest rules in practice combine two ingredients. One is a limit on effort or on the
+quota, since the number of hunters, boats or licences is finite. The other is a population level below which
+harvesting stops. In German game management, for instance, hoofed game other than wild boar may only be shot
+under a cull plan that the authorities confirm or set, and the plan must be fulfilled \cite{bjagdg}; roe deer, red deer and
+wild boar together account for close to two million animals per year \cite{djv}. Threshold rules of this kind
+have a long history in the theory of fluctuating populations. In \cite{lande95} it was shown with
+diffusion approximations that the strategies maximizing cumulative yield before extinction harvest at the
+maximum possible rate above a threshold, and that a limited harvesting capacity puts that threshold below the
+carrying capacity; threshold harvesting with uncertain population estimates was studied in \cite{lande97}.
+
+A clean mathematical version of the question was posed in \cite{hening19}. The population follows the stochastic
+logistic equation
+\begin{equation}\label{eq:model}
+  \dd X_t = X_t(\mu - \kappa X_t - h_t)\dd t + \sigma X_t \dd B_t ,\qquad 0 \le h_t \le M,
+\end{equation}
+where $\mu$ is the growth rate at low density, $\mu/\kappa$ the carrying capacity, $\sigma$ the strength of the
+environmental noise, $h_t$ the per capita harvesting rate and $M$ its cap. The yield up to time $T$ is
+$\int_0^T h_t X_t \dd t$, and the goal is the largest long-run average yield. When $\mu > \sigma^2/2$, which is
+the condition for the unharvested population to persist, an optimal strategy is of threshold type
+\cite[Theorem~2.1]{hening19}: it harvests at the full rate $M$ when $X_t$ exceeds a threshold $\eta$ and does not
+harvest below it. The long-run yield $H(\eta)$ of the threshold $\eta$ is an explicit ratio of integrals
+\cite[eq.~(4.4)]{hening19}. Whether the optimal threshold is unique was left open: it was conjectured in
+\cite[Conjecture~4.1]{hening19}, with numerical support, that $H'(\eta) = 0$ has exactly one solution.
+
+A related model with a harvesting quota that depends on the population size and an ergodic criterion in
+expectation was studied in \cite{ekstrom26}, for diffusions with a natural boundary at $\infty$ and a cap that
+does not decrease with the population size. There the first-order condition for the threshold has a unique root
+\cite[Lemma~5.4]{ekstrom26}; uniqueness follows from a down-crossing argument, and existence uses an
+integrability assumption that, for the logistic model with the cap $Mx$, amounts to $\mu - M > \sigma^2/2$. In
+the logistic model $\infty$ is an entrance boundary \cite[Section~4]{hening19}, and the regime
+$\mu - M \le \sigma^2/2$, in which harvesting at full capacity all the time does not let the population persist,
+includes the example of Figure~1 of \cite{hening19}.
+Related work treats a discounted criterion with a capped rate \cite{alvarez98}, unbounded harvesting
+\cite{alvarezhening22}, harvesting combined with seeding \cite{heningtran20}, and discrete time
+\cite{hening21}.
+
+\paragraph{Contributions.}
+\begin{itemize}
+\item For the stochastic logistic model \eqref{eq:model}, Conjecture~4.1 of \cite{hening19} holds for all
+$\mu > \sigma^2/2$, $\kappa > 0$, $M > 0$: the long-run yield has exactly one critical point $\eta^*$, it
+increases strictly before $\eta^*$ and decreases strictly after it, and $\eta^*$ is the optimal threshold
+(Theorem~\ref{thm:logistic}). The existence of the critical point when $\mu - M \le \sigma^2/2$ needs an
+argument of its own (Lemma~\ref{lem:exist}).
+\item The uniqueness argument of \cite{ekstrom26} holds for one-dimensional diffusions with drift $f$, noise
+coefficient $v$ and a positive cap $k$ whenever $f$ first increases and then decreases, with no condition on the
+types of the boundaries and no monotonicity of $k$, as long as the relevant integrals are finite and two boundary
+terms vanish (Theorem~\ref{thm:general}).
+\item The yield has a closed form in incomplete gamma functions. The optimal threshold equals
+$\eta^* = \sigma^2\xi/(2\kappa)$, where $\xi$ depends only on $a = 2\mu/\sigma^2$ and $\beta = 2M/\sigma^2$, and
+bisection on an explicit sign function finds $\xi$ (Proposition~\ref{prop:bisection}).
+\item Three properties useful in practice: the optimal threshold scales with the carrying capacity, a constant
+bias in the population estimate shifts it by the same factor, and no threshold strategy drives the population
+extinct (Section~\ref{sec:remarks}).
+\item Simulations of \eqref{eq:model} confirm the exact yield and illustrate the risk of low thresholds and the
+loss from annual hunting seasons (Section~\ref{sec:numerics}).
+\item For the logistic model, the uniqueness, existence and unimodality, and the statement of Conjecture~4.1
+about the yield function, are proved in Lean~4 with Mathlib, with the yield written exactly as in
+\cite[eq.~(4.4)]{hening19}; so is the abstract form of the uniqueness argument (Section~\ref{sec:lean}).
+\end{itemize}
+
+\section{Threshold strategies for one-dimensional diffusions}\label{sec:general}
+
+Let the population follow
+\begin{equation}\label{eq:general}
+  \dd X_t = \bigl(f(X_t) - h_t\bigr)\dd t + v(X_t)\dd B_t ,\qquad 0 \le h_t \le k(X_t),
+\end{equation}
+on $(0,\infty)$, with continuous $f$, continuous $v > 0$ and continuous $k > 0$. Here $f$ is the total growth rate
+of the population, and $k(x)$ the largest harvest per unit time at population size $x$; the logistic model has
+$f(x) = x(\mu - \kappa x)$, $v(x) = \sigma x$ and $k(x) = Mx$. The threshold strategy with threshold $\eta > 0$
+harvests $h_t = k(X_t)\mathbf 1\{X_t > \eta\}$. Fix $x_1 > 0$ and write
+\[
+  m(x) = \frac{1}{v(x)^2}\exp\Bigl(\int_{x_1}^x \frac{2f}{v^2}\Bigr),\qquad
+  m_0(x) = m(x)\exp\Bigl(-\int_{x_1}^x \frac{2k}{v^2}\Bigr),\qquad
+  \lambda(\eta) = \frac{m(\eta)}{m_0(\eta)} .
+\]
+Up to a constant factor, $m$ is the speed density of the unharvested process and $m_0$ that of the process
+harvested at full capacity everywhere. The speed density of the threshold process is $m$ on $(0,\eta]$ and
+$\lambda(\eta)m_0$ on $(\eta,\infty)$, since both are solutions of the same first-order equation and agree at
+$\eta$. Let
+\[
+  A = \int_0^\eta m,\quad B = \int_\eta^\infty m_0,\quad P = \int_0^\eta f m,\quad
+  Q = \int_\eta^\infty f m_0,\quad R = \int_\eta^\infty k m_0 ,
+\]
+all as functions of $\eta$.
+
+\begin{assumption}\label{ass:general}
+For every $\eta > 0$ the integrals $\int_0^\eta m$, $\int_0^\eta |f| m$, $\int_\eta^\infty m_0$,
+$\int_\eta^\infty |f| m_0$ and $\int_\eta^\infty k m_0$ are finite, and $v^2 m \to 0$ as $x \to 0$ and
+$v^2 m_0 \to 0$ as $x \to \infty$. There is $x_p \in [0,\infty]$ such that $f$ is strictly increasing on
+$(0,x_p] \cap (0,\infty)$ and strictly decreasing on $[x_p,\infty) \cap (0,\infty)$.
+\end{assumption}
+
+Under Assumption~\ref{ass:general} the function
+\begin{equation}\label{eq:H}
+  H(\eta) = \frac{\lambda(\eta) R(\eta)}{A(\eta) + \lambda(\eta)B(\eta)} .
+\end{equation}
+is well defined. If the threshold process is positive recurrent, for instance when its scale function diverges at
+$0$ and at $\infty$, its stationary density is proportional to $m$ on $(0,\eta]$ and to $\lambda(\eta)m_0$ on
+$(\eta,\infty)$, and $H(\eta)$ is its stationary mean harvest and almost surely its long-run average yield, by the
+ergodic theorem for one-dimensional diffusions; for the logistic model see \cite[Remark~2.2 and
+eq.~(4.4)]{hening19}. The results below are statements about the function $H$.
+
+\begin{lemma}[the yield is the mean growth]\label{lem:mean}
+$H(\eta) = \dfrac{P + \lambda Q}{A + \lambda B}$.
+\end{lemma}
+
+\begin{proof}
+By definition $(v^2 m)' = 2fm$ and $(v^2 m_0)' = 2(f - k)m_0$. Integrating over $(0,\eta)$ and $(\eta,\infty)$
+and using the boundary conditions of Assumption~\ref{ass:general} gives $2P = v(\eta)^2 m(\eta)$ and
+$2(Q - R) = -v(\eta)^2 m_0(\eta)$. Multiply the second identity by $\lambda$ and add it to the first; since
+$\lambda m_0(\eta) = m(\eta)$, this gives $P + \lambda Q = \lambda R$.
+\end{proof}
+
+So the long-run yield equals the stationary mean of the total growth. Write
+\[
+  G = P/A, \qquad K = Q/B, \qquad D = K - G
+\]
+for the mean growth below and above the threshold, and their difference.
+
+\begin{lemma}[sign of the derivative]\label{lem:sign}
+$H$ is differentiable, and
+$H'(\eta) = \lambda'(\eta)\,A B\,D(\eta)/(A + \lambda B)^2$ with $\lambda' = 2\lambda k/v^2 > 0$. Hence
+$\sign H' = \sign D$.
+\end{lemma}
+
+\begin{proof}
+$A' = m(\eta)$, $B' = -m_0(\eta)$, $P' = f(\eta)m(\eta)$ and $Q' = -f(\eta)m_0(\eta)$. Since $\lambda m_0(\eta) =
+m(\eta)$, the terms from the moving endpoint cancel: $(P + \lambda Q)' = \lambda' Q$ and $(A + \lambda B)' =
+\lambda' B$. The quotient rule gives the formula.
+\end{proof}
+
+\begin{lemma}[strict down-crossings]\label{lem:cross}
+At every zero of $D$, $D' < 0$.
+\end{lemma}
+
+\begin{proof}
+From the derivatives above, $G' = (m/A)(f - G)$ and $K' = (m_0/B)(K - f)$. At a zero of $D$ with common value
+$G = K = c$,
+\[
+  D' = \bigl(c - f(\eta)\bigr)\Bigl(\frac{m_0(\eta)}{B} + \frac{m(\eta)}{A}\Bigr).
+\]
+If $\eta \le x_p$, then $f$ is strictly increasing on $(0,\eta]$, so its mean $G$ under $m$ is below $f(\eta)$.
+If $\eta > x_p$, then $f$ is strictly decreasing on $[\eta,\infty)$, so its mean $K$ under $m_0$ is below
+$f(\eta)$. In both cases $c < f(\eta)$ and $D' < 0$.
+\end{proof}
+
+A differentiable function whose derivative is negative at every zero has at most one zero: between two
+consecutive zeros it would have to change sign from negative to positive. This down-crossing step is the
+uniqueness argument in the proof of \cite[Lemma~5.4]{ekstrom26}, there under the assumptions of that paper.
+
+\begin{theorem}\label{thm:general}
+Under Assumption~\ref{ass:general}, the yield $H$ of \eqref{eq:H} has at most one critical point in $(0,\infty)$,
+and a critical point is a strict local maximum. If $H$ attains its supremum over $(0,\infty)$ at $\eta^*$, then
+$\eta^*$ is the only maximizer and the only critical point, $H$ is strictly increasing on $(0,\eta^*]$ and strictly
+decreasing on $[\eta^*,\infty)$.
+\end{theorem}
+
+\begin{proof}
+By Lemma~\ref{lem:sign} the critical points of $H$ are the zeros of $D$, and by Lemma~\ref{lem:cross} $D$ has at
+most one zero, at which it changes sign from positive to negative. A maximizer is a critical point. If $\eta^*$ is
+the zero of $D$, then $D$ has no zero on $(0,\eta^*)$ or on $(\eta^*,\infty)$, so by continuity $D > 0$ on the
+first and $D < 0$ on the second, and the mean value theorem gives the monotonicity.
+\end{proof}
+
+\begin{remark}
+If $f > 0$ on $(0,x_0)$ and $f < 0$ on $(x_0,\infty)$ for some $x_0$, then $P(x_0) > 0 > Q(x_0)$, so
+$D(x_0) < 0$ and $H$ decreases at $x_0$. A maximizer then exists as soon as $H(\eta) < H(x_0)$ for some
+$\eta < x_0$, by the intermediate value theorem applied to $D$.
+\end{remark}
+
+\section{The stochastic logistic model}\label{sec:logistic}
+
+For \eqref{eq:model} we use the notation
+\[
+  s = \frac{2}{\sigma^2},\quad a = s\mu,\quad \beta = sM,\quad \alpha = a - \beta,\quad c = s\kappa,
+\]
+so that, up to constant factors, $m(y) = y^{a-2}e^{-cy}$, $m_0(y) = y^{\alpha-2}e^{-cy}$ and
+$\lambda(\eta) = \eta^{\beta}$. The condition $\mu > \sigma^2/2$ is $a > 1$. Assumption~\ref{ass:general} holds:
+$\int_0 m < \infty$ because $a > 1$, the tail integrals over $(\eta,\infty)$ are finite for every real $\alpha$
+because of the exponential factor, $y^2 m = y^a e^{-cy} \to 0$ at $0$, $y^2 m_0 \to 0$ at $\infty$, and
+$f(y) = y(\mu - \kappa y)$ increases up to $\mu/(2\kappa)$ and decreases after it. Multiplying both branches of
+the stationary density \cite[eq.~(4.3)]{hening19} by the same constant shows that \eqref{eq:H} is exactly the
+yield \cite[eq.~(4.4)]{hening19}. Note that $\alpha$ may be negative or zero: there is no condition on
+$\mu - M$.
+
+\begin{lemma}[a critical point exists]\label{lem:exist}
+There is $\eta < \mu/\kappa$ with $D(\eta) > 0$, and $D(\mu/\kappa) < 0$.
+\end{lemma}
+
+\begin{proof}
+Write $x_0 = \mu/\kappa$, the zero of $f$. By the remark above, $D(x_0) < 0$. For the first claim we use two
+bounds, valid for every $\eta > 0$. First, $e^{-cy} \ge e^{-c\eta}$ on $(0,\eta)$ gives
+$A \ge e^{-c\eta}\eta^{a-1}/(a-1)$, and $sP = \eta^a e^{-c\eta}$ from the proof of Lemma~\ref{lem:mean}; hence
+$sG \le (a-1)\eta$. Second, $sQ = \beta R_1 - \eta^\alpha e^{-c\eta}$ with $R_1 = \int_\eta^\infty y\,m_0(y)\dd y$,
+by the same proof.
+
+\emph{Case $\alpha > 1$.} Then $B_0 = \int_0^\infty m_0 < \infty$, so $B(\eta) \le B_0$; also $R_1(\eta) \ge
+R_1(1)$ for $\eta \le 1$, and $\eta^\alpha e^{-c\eta} \le \eta$. Hence
+$sQ - (a-1)\eta B \ge \beta R_1(1) - \eta\bigl(1 + (a-1)B_0\bigr)$, which is positive for every
+$\eta \le \min(1, x_0/2)$ with $\eta(1 + (a-1)B_0) \le \beta R_1(1)/2$. For such $\eta$,
+$sK > (a-1)\eta \ge sG$.
+
+\emph{Case $\alpha \le 1$.} By \eqref{eq:H}, $H(\eta) \le M R_1(\eta)/B(\eta)$. For $0 < \eta < \varepsilon$,
+splitting the integral at $\varepsilon$ gives $R_1(\eta) \le \varepsilon B(\eta) + R_1(\varepsilon)$. For
+$\eta < 1$, $y^{\alpha-2} \ge y^{-1}$ and $e^{-cy} \ge e^{-c}$ on $(\eta,1)$, so
+$B(\eta) \ge e^{-c}\log(1/\eta)$, which tends to infinity. Take $\varepsilon \le H(x_0)/(2M)$; then for small
+$\eta$ the bound gives $H(\eta) < H(x_0)$, and by the mean value theorem $H' > 0$, hence $D > 0$, somewhere in
+$(\eta, x_0)$.
+\end{proof}
+
+\begin{theorem}[Conjecture~4.1 of \cite{hening19}]\label{thm:logistic}
+For all $\mu > \sigma^2/2$, $\kappa > 0$ and $M > 0$, the yield $H$ of the threshold strategy in \eqref{eq:model}
+has exactly one critical point $\eta^* \in (0,\infty)$. It lies below $\mu/\kappa$, $H$ is strictly increasing on
+$(0,\eta^*]$ and strictly decreasing on $[\eta^*,\infty)$, and $\eta^*$ is the unique optimal threshold.
+Harvesting at rate $M$ above $\eta^*$ and not below it is an optimal strategy among all admissible strategies.
+\end{theorem}
+
+\begin{proof}
+Lemma~\ref{lem:exist} and the intermediate value theorem give a zero of $D$ in $(0,\mu/\kappa)$, and
+Theorem~\ref{thm:general} gives the rest of the statement about $H$. By \cite[Theorem~2.1]{hening19} an
+optimal strategy is a threshold strategy; its threshold maximizes $H$ and is therefore $\eta^*$.
+\end{proof}
+
+The case $\mu - M \le \sigma^2/2$ deserves a comment. There the population harvested at full rate everywhere
+does not persist, $\int_0 m_0 = \infty$, and both mean growths $G$ and $K$ tend to $0$ as $\eta \to 0$, so a
+comparison of their limits at $0$ decides nothing. The second case of Lemma~\ref{lem:exist} uses instead that
+$H(\eta) \to 0$ as $\eta \to 0$ while $H(\mu/\kappa) > 0$.
+
+\section{Closed form and an algorithm}\label{sec:closed}
+
+Let $x = c\eta = 2\kappa\eta/\sigma^2$, and let $\gamma(\cdot,x)$ and $\Gamma(\cdot,x)$ be the lower and upper
+incomplete gamma functions. Substituting $y = x'/c$ in $A$, $B$ and $R_1$ gives
+\begin{equation}\label{eq:closed}
+  H(\eta) = \frac{M\sigma^2}{2\kappa}\,h(x), \qquad
+  h(x) = \frac{x^\beta\,\Gamma(\alpha,x)}{\gamma(a-1,x) + x^\beta\,\Gamma(\alpha-1,x)} .
+\end{equation}
+The function $\Gamma(s,x)$ is defined for every real $s$ when $x > 0$, so \eqref{eq:closed} covers $\alpha \le 1$.
+It is elementary when $a$ and $\alpha$ are integers with $a, \alpha \ge 2$, and involves the exponential
+integral when $\alpha$ is an integer below $2$. For a small cap ($\beta \to 0$ with $a > 1$ fixed), $h(\xi) - (\alpha - 1) \to 0$: the optimal yield
+approaches $M(\mu - M - \sigma^2/2)/\kappa$, the yield of harvesting at the constant rate $M$.
+
+With the recurrences $\gamma(s+1,x) = s\gamma(s,x) - x^se^{-x}$ and $\Gamma(s+1,x) = s\Gamma(s,x) + x^se^{-x}$, the
+sign of $D$ becomes the sign of
+\begin{equation}\label{eq:S}
+  S(x) = \bigl(\beta\,\Gamma(\alpha,x) - x^\alpha e^{-x}\bigr)\gamma(a-1,x) - x^a e^{-x}\,\Gamma(\alpha-1,x).
+\end{equation}
+So $\eta^* = \sigma^2\xi/(2\kappa)$, where $\xi = \xi(a,\beta)$ is the unique zero of $S$. Equivalently
+\begin{equation}\label{eq:ratio}
+  \frac{\eta^*}{\mu/\kappa} = \frac{\xi(a,\beta)}{a} ,
+\end{equation}
+so the optimal threshold, as a fraction of the carrying capacity, depends only on $2\mu/\sigma^2$ and
+$2M/\sigma^2$.
+
+\begin{proposition}\label{prop:bisection}
+$S(a) < 0$ and $S > 0$ on $(0,\xi)$. Let $j \ge 1$ be the first index with $S(a/2^j) > 0$, and start with
+$\mathrm{lo} = a/2^j$ and $\mathrm{hi} = 2\,\mathrm{lo}$; then halve the bracket according to the sign of $S$ at
+its midpoint. After $j + \lceil\log_2(1/\epsilon)\rceil$ evaluations of $S$, the bracket contains $\xi$ and
+$(\mathrm{hi} - \mathrm{lo})/\mathrm{lo} \le \epsilon$.
+\end{proposition}
+
+\begin{proof}
+$x = a$ corresponds to $\eta = \mu/\kappa$, where $D < 0$ by Lemma~\ref{lem:exist}; so $\xi < a$. By
+Theorem~\ref{thm:logistic}, $D$ and hence $S$ are positive on $(0,\xi)$ and negative on $(\xi,\infty)$, so the
+search for $j$ terminates, $S(\mathrm{hi}) \le 0$ by the choice of $j$, and bisection keeps $\xi$ inside the
+bracket. Its initial relative width is $1$, the width halves at each step, and $\mathrm{lo}$ never decreases.
+\end{proof}
+
+Each evaluation of $S$ needs three incomplete gamma functions. For $\epsilon = 10^{-12}$ this means $40 + j$ evaluations, with $j \le 3$ in all cases of Table~\ref{tab:xi}.
+
+\begin{table}[t]
+\centering
+\begin{tabular}{rrrrr}
+\toprule
+$a = 2\mu/\sigma^2$ & $\beta = 2M/\sigma^2$ & $\xi$ & $\eta^*/(\mu/\kappa)$ & $h(\xi)$\\
+\midrule
+1.25 & 1 & 0.492788 & 0.3942 & 0.082387\\
+2 & 0.5 & 0.390607 & 0.1953 & 0.638548\\
+2 & 2 & 0.928659 & 0.4643 & 0.281628\\
+3 & 1 & 0.773581 & 0.2579 & 1.175154\\
+5 & 2 & 1.564222 & 0.3128 & 2.207911\\
+10 & 4 & 3.374603 & 0.3375 & 5.130319\\
+\bottomrule
+\end{tabular}
+\caption{Optimal scaled threshold $\xi$, the threshold as a fraction of the carrying capacity, and the scaled
+optimal yield $h(\xi) = H^*/(M\sigma^2/(2\kappa))$. The row $a = \beta = 2$ is the example of Figure~1 of
+\cite{hening19}.}
+\label{tab:xi}
+\end{table}
+
+\paragraph{Worked example.}
+Measure the population in units of its carrying capacity, so that $\kappa = \mu$. A growth rate of
+$\mu = 0.14$ per year was estimated for a reintroduced ibex population \cite{saether02}, and an environmental
+variance of $\sigma^2 = 0.007$ per year for a harvested wild reindeer population \cite{kvalnes24}. With these
+values, and with the larger variances $0.02$ and $0.05$ as illustrative cases, Table~\ref{tab:example} lists the
+optimal threshold and yield for several caps. The deterministic optimum of the capped logistic model is
+$M(1 - M/\mu)$ for $M \le \mu/2$ and $\mu/4$ for $M \ge \mu/2$, attained at the population level
+$\max(1 - M/\mu,\, 1/2)$. With noise the optimal
+threshold in these examples lies below half the carrying capacity and approaches one half as the cap grows.
+
+\begin{table}[t]
+\centering
+\begin{tabular}{rrrrrr}
+\toprule
+$\sigma^2$ & $M$ & $\alpha$ & $\eta^*$ & $H^*$ & deterministic optimum\\
+\midrule
+0.007 & 0.05 & 25.71 & 0.3417 & 0.03090 & 0.03214\\
+0.007 & 0.10 & 11.43 & 0.4787 & 0.03469 & 0.03500\\
+0.007 & 0.14 & 0 & 0.4992 & 0.03486 & 0.03500\\
+0.02 & 0.05 & 9 & 0.3212 & 0.02872 & 0.03214\\
+0.02 & 0.10 & 4 & 0.4583 & 0.03350 & 0.03500\\
+0.05 & 0.05 & 3.6 & 0.2937 & 0.02436 & 0.03214\\
+0.05 & 0.10 & 1.6 & 0.4324 & 0.02995 & 0.03500\\
+0.05 & 0.14 & 0 & 0.4877 & 0.03127 & 0.03500\\
+\bottomrule
+\end{tabular}
+\caption{Optimal threshold and long-run yield per year for $\mu = \kappa = 0.14$ (population in units of the
+carrying capacity). The value $\mu = 0.14$ is taken from \cite{saether02} and $\sigma^2 = 0.007$ from
+\cite{kvalnes24}; the other variances are illustrative. The rows with $\alpha = 0$ have $M = \mu$, where
+harvesting at full rate everywhere drives the population extinct.}
+\label{tab:example}
+\end{table}
+
+\section{Three properties for practice}\label{sec:remarks}
+
+\begin{proposition}[scaling]\label{prop:scale}
+For fixed $a$ and $\beta$, the optimal threshold is proportional to the carrying capacity $\mu/\kappa$, by
+\eqref{eq:ratio}. If the carrying capacity is misjudged by a factor $\theta$, the threshold used is
+$\theta\eta^*$ and the yield is $H(\theta\eta^*)$; the relative loss $1 - h(\theta\xi)/h(\xi)$ depends only on
+$\theta$, $a$ and $\beta$.
+\end{proposition}
+
+\begin{proposition}[biased population estimates]\label{prop:bias}
+Suppose decisions use an estimate $\hat X_t = \theta X_t$ with a constant factor $\theta > 0$. A threshold $b$ on
+$\hat X$ is the threshold $b/\theta$ on $X$, with yield $H(b/\theta)$. The best threshold on the estimate is
+$\theta\eta^*$, and it achieves the optimal yield.
+\end{proposition}
+
+Both statements follow directly from the definitions and from \eqref{eq:closed}. Random errors in the population
+estimate are a different matter; see Section~\ref{sec:scope}.
+
+\begin{proposition}[persistence]\label{prop:persist}
+For every threshold $\eta > 0$ the harvested population in \eqref{eq:model} is positive recurrent on
+$(0,\infty)$; in particular it neither goes extinct nor explodes. This holds also when $\mu - M \le \sigma^2/2$.
+\end{proposition}
+
+\begin{proof}
+The speed density of the threshold process is integrable on $(0,\infty)$, since $\int_0 m < \infty$ for $a > 1$
+and the tail decays exponentially. Its scale density is proportional to $y^{-a}e^{cy}$ near $0$ and to
+$y^{-\alpha}e^{cy}$ near $\infty$, so the scale function diverges at both ends, and both boundaries are
+inaccessible \cite[Chapter~15]{karlin81}; in fact $0$ is natural and $\infty$ is entrance
+\cite[Section~4]{hening19}. A regular diffusion with inaccessible boundaries and finite speed
+measure is positive recurrent.
+\end{proof}
+
+Below the threshold the process is the unharvested one, which is pushed away from $0$ when $\mu > \sigma^2/2$.
+In the model, a low threshold therefore does not cause extinction, but it does make low population levels
+more frequent; Figure~\ref{fig:risk} shows the probability of falling below one percent of the carrying capacity
+within ten time units.
+
+\section{Simulations}\label{sec:numerics}
+
+We simulate \eqref{eq:model} with the parameters of Figure~1 of \cite{hening19}, $\mu = M = \kappa = \sigma^2 = 1$,
+for which $\eta^* = 0.4643297$ and $H(\eta^*) = 0.1408139$. To keep the population positive we use the Euler
+scheme for $Y = \log X$,
+\[
+  Y_{t+\Delta} = Y_t + \bigl(\mu - \kappa e^{Y_t} - M\mathbf 1\{e^{Y_t} > \eta\} - \sigma^2/2\bigr)\Delta
+  + \sigma\sqrt{\Delta}\,Z_t ,
+\]
+with independent standard normal $Z_t$ and step $\Delta = 0.01$. On the same Brownian paths, halving the step
+changes the time-averaged yield at $\eta^*$ by $0.14\%$ (averages over 180 time units after a burn-in of 20,
+100 paths). All runs use fixed seeds,
+and the scripts check their results with assertions.
+
+Figure~\ref{fig:paths} shows sample paths at $\eta^*/2$, $\eta^*$ and $2\eta^*$ on the same noise. With $\sigma^2 = 1$ the noise is strong, and all
+three paths spend long periods far below the carrying capacity. The low threshold harvests in every recovery
+and keeps the population small, while the high threshold harvests only at the peaks. Figure~\ref{fig:yield}
+compares the exact yield \eqref{eq:closed} with time averages over $270$ time units after a burn-in of $30$,
+for 200 paths per threshold. All seven estimates agree with the exact value within four standard errors plus
+$0.003$ for the bias of the time step.
+
+\begin{figure}[t]
+\centering
+\input{fig/paths}
+\caption{Sample paths of \eqref{eq:model} with $\mu = M = \kappa = \sigma^2 = 1$ under three thresholds (dashed),
+driven by the same noise. Shaded: periods of harvesting.}
+\label{fig:paths}
+\end{figure}
+
+\begin{figure}[t]
+\centering
+\input{fig/yield}
+\caption{Exact long-run yield $H(\eta)$ and simulated time averages with 95\% confidence intervals, for
+$\mu = M = \kappa = \sigma^2 = 1$.}
+\label{fig:yield}
+\end{figure}
+
+Figure~\ref{fig:sens} shows the optimal threshold and yield for $\mu = \kappa = 1$ as functions of the cap $M$ for
+five noise levels, computed with Proposition~\ref{prop:bisection}. The dot on each curve marks $M = \mu -
+\sigma^2/2$; to its right lies the regime that is outside the assumptions of \cite[Lemma~5.4]{ekstrom26}. The
+curves pass through it smoothly. On this grid, larger noise lowers the optimal yield at every cap. Its effect on the
+optimal threshold depends on the cap: it lowers $\eta^*$ for $M \le 1.2$, raises it for $M \ge 1.9$, and is not
+monotone in between.
+
+\begin{figure}[t]
+\centering
+\input{fig/sensitivity}
+\caption{Optimal threshold $\eta^*$ (left) and optimal yield $H^*$ (right) against the cap $M$, for $\mu = \kappa = 1$
+and five values of $\sigma^2$. Dots: $M = \mu - \sigma^2/2$.}
+\label{fig:sens}
+\end{figure}
+
+\begin{figure}[t]
+\centering
+\input{fig/risk}
+\caption{Probability that the population falls below $0.01$ within ten time units, starting at the carrying
+capacity $1$, against the threshold; $2000$ paths per threshold, 95\% intervals, $\mu = M = \kappa = \sigma^2 = 1$.
+Monitoring at the time step slightly underestimates the probability.}
+\label{fig:risk}
+\end{figure}
+
+\paragraph{Annual hunting seasons.}
+Hunting usually takes place in seasons, not continuously. In a simple seasonal variant the population grows
+without harvest during each year, and at the end of the year, if $X > \eta$, either the fraction
+$u = 1 - e^{-M}$ of the population is taken (the fraction a constant rate $M$ would remove in one year without
+growth), or the surplus $X - \eta$, at most $uX$. Figure~\ref{fig:seasons} compares the resulting long-run yields
+per year (200 paths, averages over 270 years after a burn-in of 30) with the continuous optimum. At their best
+thresholds on the grid the seasonal rules lose about 13.5 percent (proportional rule) and 9.5 percent (surplus rule)
+of the continuous optimal yield. The best threshold of the
+proportional rule lies near $0.5$, slightly above $\eta^*$, and that of the surplus rule near $0.3$. The theory of Section~\ref{sec:general} does not cover these discrete rules.
+
+\begin{figure}[t]
+\centering
+\input{fig/seasons}
+\caption{Long-run yield per year of two annual-season rules against the threshold, with 95\% intervals, and the
+exact yield of continuous harvesting, for $\mu = M = \kappa = \sigma^2 = 1$.}
+\label{fig:seasons}
+\end{figure}
+
+\section{Scope}\label{sec:scope}
+
+The results concern one population in continuous time with a known model. Several features of real game
+management lie outside this setting.
+\begin{itemize}
+\item \emph{Seasons and annual quotas.} Discrete-time harvesting has no explicit stationary density, and the
+proofs above do not apply; for discrete-time stochastic population models see \cite{hening21}.
+\item \emph{Age and sex structure.} Cull plans usually prescribe numbers per age and sex class. A structured
+population is a multidimensional diffusion, again without an explicit stationary density.
+\item \emph{Movement between hunting districts.} Two coupled populations with separate owners lead to a
+two-dimensional problem and, with separate objectives, to a game.
+\item \emph{Parameter uncertainty and random measurement error.} Proposition~\ref{prop:scale} describes the
+effect of a misjudged carrying capacity. An expected yield over a distribution of parameters is a mixture of
+unimodal functions and need not be unimodal. For random errors in the population estimate, the optimal strategy
+need not be of threshold type; numerical studies are in \cite{memarzadeh18}.
+\end{itemize}
+
+\section{Formal verification}\label{sec:lean}
+
+\begin{sloppypar}
+The following statements are proved in Lean~4 (toolchain v4.36.0-rc1) with Mathlib (revision
+\texttt{d875a8de}), in the folder \texttt{laif/bounded-harvesting-threshold/lean} of
+\url{https://github.com/ssenge/LAIF}. Every theorem depends only on the standard axioms \texttt{propext},
+\texttt{Classical.choice} and \texttt{Quot.sound}.
+\end{sloppypar}
+\begin{itemize}
+\item \texttt{Crossing.lean}: a function on $(0,\infty)$ whose derivative is negative at every zero has at most
+one zero; the derivative formula of Lemma~\ref{lem:sign}; and the abstract form of Theorem~\ref{thm:general}
+(\texttt{critical\_point\_unique}): for differentiable $A, B, P, Q, \lambda$ with the derivative relations of
+Lemma~\ref{lem:sign}, positive $A, B, \lambda, \lambda', m, m_0$, $m = \lambda m_0$, and $G < f$ or $K < f$ at every
+point, the quotient $(P + \lambda Q)/(A + \lambda B)$ has at most one critical point.
+\item \texttt{Model.lean}: the logistic model with the yield defined literally as \cite[eq.~(4.4)]{hening19},
+including the normalizing constant of the density \cite[eq.~(4.3)]{hening19}; Lemma~\ref{lem:mean}; the
+derivative of the yield; uniqueness of the critical point for all parameters
+(\texttt{yieldH\_critical\_point\_unique}).
+\item \texttt{General.lean}: the general model of Section~\ref{sec:general} with $m$, $m_0$ and $\lambda$
+defined from $f$, $v$, $k$, Assumption~\ref{ass:general}, Lemma~\ref{lem:mean}, the derivative of $H$ and the
+uniqueness part of Theorem~\ref{thm:general} (\texttt{Diffusion.Assumption.critical\_point\_unique}); an example
+with drift $1 - x$, noise $\sqrt{2x}$ and cap $x/2$ satisfies all of Assumption~\ref{ass:general}, so its
+hypotheses can hold together (\texttt{Diffusion.Example.nonvacuous}).
+\item \texttt{Existence.lean}: Lemma~\ref{lem:exist}, strict monotonicity on both sides of the critical point,
+and Conjecture~4.1 of \cite{hening19} in the form: there is exactly one $x^* > 0$ with $H'(x^*) = 0$, and it
+maximizes $H$ over all thresholds (\texttt{conjecture\_4\_1\_unconditional}), for all $\mu > \sigma^2/2$,
+$\kappa > 0$, $M > 0$, with no further hypothesis.
+\end{itemize}
+The statement that the threshold strategy is optimal among all admissible strategies uses
+\cite[Theorem~2.1]{hening19} and is not formalized, nor is the identity between \eqref{eq:H} and the long-run
+average yield. The second part of Theorem~\ref{thm:general}, the closed form \eqref{eq:closed},
+Proposition~\ref{prop:bisection} and Section~\ref{sec:remarks} are proved on paper. The closed form, the
+bisection and the simulations are checked numerically by the scripts in \texttt{sim/} of the same folder, which
+also confirm unimodality of $H$ on 400 random parameter sets, 188 of them with $\mu - M \le \sigma^2/2$.
+
+\section{Use of AI}
+Claude Opus~5.5 (Anthropic) was used throughout this work: to explore approaches, to develop and check the
+proofs, to write the Lean formalization and the scripts, and to draft the text.
+
+\begin{thebibliography}{99}
+\bibitem{hening19} A. Hening, D. H. Nguyen, S. C. Ungureanu, T. K. Wong. Asymptotic harvesting of populations in
+random environments. \emph{J. Math. Biol.} 78 (2019) 293--329. arXiv:1710.01221.
+\bibitem{ekstrom26} E. Ekstr\"om, D. Mata, H. Saarinen. Resource extraction from a stochastic population with
+harvesting quotas. arXiv:2608.17778 (2026).
+\bibitem{lande95} R. Lande, S. Engen, B.-E. S\ae ther. Optimal harvesting of fluctuating populations with a risk
+of extinction. \emph{Am. Nat.} 145(5) (1995) 728--745.
+\bibitem{lande97} R. Lande, B.-E. S\ae ther, S. Engen. Threshold harvesting for sustainability of fluctuating
+resources. \emph{Ecology} 78(5) (1997) 1341--1350.
+\bibitem{alvarez98} L. H. R. Alvarez, L. A. Shepp. Optimal harvesting of stochastically fluctuating populations.
+\emph{J. Math. Biol.} 37(2) (1998) 155--177.
+\bibitem{alvarezhening22} L. H. R. Alvarez E., A. Hening. Optimal sustainable harvesting of populations in random
+environments. \emph{Stoch. Proc. Appl.} 150 (2022) 678--698.
+\bibitem{heningtran20} A. Hening, K. Tran. Harvesting and seeding of stochastic populations: analysis and
+numerical approximation. \emph{J. Math. Biol.} 81 (2020) 65--112. arXiv:1911.00734.
+\bibitem{hening21} A. Hening. Coexistence, extinction, and optimal harvesting in discrete-time stochastic
+population models. \emph{J. Nonlinear Sci.} 31 (2021). arXiv:1911.08398.
+\bibitem{memarzadeh18} M. Memarzadeh, C. Boettiger. Resolving the measurement uncertainty paradox in ecological
+management. arXiv:1812.11184 (2018).
+\bibitem{saether02} B.-E. S\ae ther, S. Engen, F. Filli, R. Aanes, W. Schr\"oder, R. Andersen. Stochastic
+population dynamics of an introduced Swiss population of the ibex. \emph{Ecology} 83(12) (2002) 3457--3465.
+\bibitem{kvalnes24} T. Kvalnes, \O. Flagstad, J. V\aa ge, O. Strand, H. Viljugrein, B.-E. S\ae ther. Harvest and
+decimation affect genetic drift and the effective population size in wild reindeer. \emph{Evol. Appl.} 17(4)
+(2024) e13684.
+\bibitem{karlin81} S. Karlin, H. M. Taylor. \emph{A Second Course in Stochastic Processes}. Academic Press, 1981.
+\bibitem{bjagdg} Bundesjagdgesetz, \S~21 Abs.~2. \url{https://www.gesetze-im-internet.de/bjagdg/__21.html}.
+\bibitem{djv} Deutscher Jagdverband. Jahresstrecken, hunting year 2024/25. Handbuch 2026.
+\end{thebibliography}
+
+\end{document}

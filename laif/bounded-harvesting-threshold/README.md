@@ -2,6 +2,8 @@
 
 Written 25 Nov 2026.
 
+Paper: [paper/main.pdf](paper/main.pdf) (LaTeX source and pgfplots figures in `paper/`, data in `sim/data/`).
+
 **Setting.** A population in a random environment follows the stochastic logistic equation of [1],
 dX = X(μ − κX − h) dt + σX dB, with growth rate μ, competition κ, noise σ and a harvesting rate h(t) ∈ [0, M]
 that is capped at M, as hunting or fishing effort is in practice. The goal is the largest long-run average yield
