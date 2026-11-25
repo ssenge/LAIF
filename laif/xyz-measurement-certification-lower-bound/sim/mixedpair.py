@@ -85,3 +85,24 @@ for lam in (0.1, 0.5):
         assert abs(tot - 1) < 1e-10
         assert 1 - aff <= bound * (1 + 1e-9), (lam, 1 - aff, bound)                   # (3)
 print("adaptive trees at n = 4: bound holds for 400 random trees")
+
+# (5) exact optimum over all adaptive one-copy trees, by dynamic programming over the counts of the six
+# (axis, outcome) types: tau_pm are permutation invariant, so the leaf law depends only on these counts,
+# and the qubit chosen next does not matter.
+from functools import lru_cache
+amps = [amp[(c, x)] for c in 'XYZ' for x in (0, 1)]
+def adaptive_h2(n, lam):
+    d = 2 ** n
+    @lru_cache(None)
+    def f(cnt):   # least affinity sum over the subtree below a node
+        if sum(cnt) == n:
+            A = np.prod([amps[k][0] ** cnt[k] for k in range(6)]); B = np.prod([amps[k][1] ** cnt[k] for k in range(6)])
+            return np.sqrt(((1 - lam) / d + lam * abs(A + B) ** 2 / 2) * ((1 - lam) / d + lam * abs(A - B) ** 2 / 2))
+        return min(sum(f(tuple(c + (1 if k == 2 * ax + x else 0) for k, c in enumerate(cnt))) for x in (0, 1)) for ax in range(3))
+    return 1 - f((0,) * 6)
+worst = 0.0
+for n in range(1, 15):
+    for lam in (0.2, 0.5):
+        h, b = adaptive_h2(n, lam), lam ** 2 * (2 / 3) ** n / (1 - lam)
+        assert h <= b * (1 + 1e-9); worst = max(worst, h / b)
+print(f"exact optimum over adaptive one-copy trees, n <= 14: largest ratio to the bound {worst:.4f}")
