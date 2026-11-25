@@ -1,0 +1,4 @@
+{"run": "std_lewm", "variant": "LeWM", "distractor": 0.0, "train_seed": 3072, "steps": 4000, "successes": 50, "episodes": 50}
+{"run": "dis_lewm", "variant": "LeWM", "distractor": 1.0, "train_seed": 3072, "steps": 4000, "successes": 17, "episodes": 50}
+{"run": "dis_inv", "variant": "inverse dynamics", "distractor": 1.0, "train_seed": 3072, "steps": 4000, "successes": 20, "episodes": 50}
+{"run": "dis_invcov", "variant": "inverse dynamics and T", "distractor": 1.0, "train_seed": 3072, "steps": 4000, "successes": 37, "episodes": 50}
