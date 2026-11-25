@@ -1,0 +1,2 @@
+kappa=0.001: c=25.7203 C=26.0000  t_A=0.707107  K_A=8  K_B=0  M=3.3273 rho=0.01
+delta exponent 2 ln10/ln c = 1.4182
