@@ -5,7 +5,8 @@ following the settings of the reference code (bin/tutorial_storerecall_with_LSNN
 sequences. The network state starts from zero in every batch (the reference code carries it over between
 training batches).
 
-usage: sr_train.py SETTING SEED [N] [ITERS]     e.g. sr_train.py "2 s" 0
+usage: sr_train.py SETTING SEED [N] [ITERS] [REG]     e.g. sr_train.py "2 s" 0      (REG: coefficient of the rate
+       regularization, 1 by default, 0 switches it off)
 """
 import json, sys, time
 import numpy as np
@@ -55,7 +56,7 @@ class Net(torch.nn.Module):
         return torch.stack(steps, 1), rate.mean(0) / T
 
 
-def main(setting, seed, n=60, iters=400, batch=64):
+def main(setting, seed, n=60, iters=400, reg=1.0, batch=64):
     torch.set_num_threads(1)
     seq_len, tau_char, seq_delay = TABLE1[setting]
     gen = torch.Generator().manual_seed(seed)
@@ -69,7 +70,7 @@ def main(setting, seed, n=60, iters=400, batch=64):
         x, sym, target, _ = make_batch(batch, seq_len, tau_char, seq_delay, 10_000_000 + seed * 100_000 + it)
         out, rate = net(x, tau_char)
         m = torch.from_numpy(sym == RECALL)
-        loss = torch.nn.functional.cross_entropy(out[m], torch.from_numpy(target)[m]) + ((rate - 0.01) ** 2).sum()
+        loss = torch.nn.functional.cross_entropy(out[m], torch.from_numpy(target)[m]) + reg * ((rate - 0.01) ** 2).sum()
         opt.zero_grad(); loss.backward(); opt.step()
         curve.append(round((out[m].argmax(1).numpy() == target[m.numpy()]).mean().item(), 3))
     hits, rates = [], []
@@ -80,11 +81,11 @@ def main(setting, seed, n=60, iters=400, batch=64):
             m = sym == RECALL
             hits.append(out.argmax(2).numpy()[m] == target[m]); rates.append(rate.mean().item() * 1000)
     hit = np.concatenate(hits)
-    return dict(model="LIF trained", setting=setting, seed=seed, n=n, iters=iters, recalls=len(hit), acc=float(hit.mean()),
+    return dict(model="LIF trained", setting=setting, seed=seed, n=n, iters=iters, reg=reg, recalls=len(hit), acc=float(hit.mean()),
                 rate_hz_per_neuron=float(np.mean(rates)), train_acc_last20=float(np.mean(curve[-20:])),
                 seconds=round(time.time() - t0))
 
 
 if __name__ == "__main__":
     a = sys.argv[1:]
-    print(json.dumps(main(a[0], int(a[1]), *(int(v) for v in a[2:4]))), flush=True)
+    print(json.dumps(main(a[0], int(a[1]), *(int(v) for v in a[2:4]), *(float(v) for v in a[4:5]))), flush=True)

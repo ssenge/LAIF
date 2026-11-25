@@ -77,6 +77,7 @@ Seven weight values.
 | `sim/sr20.py` | port of the 20-dimensional task and the 81-neuron circuit |
 | `sim/twelve_ax.py` | port of 12AX and the 25-neuron circuit |
 | `sim/sr_train.py` | 60 LIF neurons trained with backpropagation through time in the setting of [1] |
+| `sim/sr_finetune.py` | the same training, started from the programmed circuit with weight noise |
 
 - One-dimensional task: seeds 1 to 5, 2,048 sequences per seed and setting. The weights were chosen on separate
   seeds, in the settings 200 ms and 2 s only.
@@ -91,6 +92,28 @@ Seven weight values.
   167 Hz in 12AX.
 
 Outputs are in `sim/results/`.
+
+## Training from the programmed circuit
+
+`sim/sr_finetune.py` writes the 5-neuron circuit into a network of 60 LIF neurons, adds Gaussian noise to all
+input and recurrent weights, and trains it like the network of `sim/sr_train.py`: one-dimensional STORE-RECALL
+at the 2 s setting, 400 iterations, batch 64. The noise level is given in units of the standard deviation of
+the random initialization. Test accuracy in %, seeds 0, 1, 2:
+
+| Start | Before training | After, learning rate 0.001 | After, learning rate 0.01 |
+|---|---|---|---|
+| Random initialization | 50 | – | 50.5, 49.4, 49.0 |
+| Programmed, no noise | 100, 100, 100 | 99.7, 99.3, 99.1 | 100, 97.2, 53.0 |
+| Programmed, noise 0.15 | 66.1, 54.5, 65.5 | 100, 51.6, 57.0 | 99.6, 90.3, 49.0 |
+| Programmed, noise 0.2 | 56.1, 49.3, 50.8 | 100, 50.2, 97.4 | 99.2, 57.5, 48.0 |
+
+These runs use no rate regularization. With the rate regularization of [1], which pulls every neuron towards
+10 Hz, training switches the latch off and the accuracy falls from 100 to 50.5, 52.2 and 50.1 % (no noise,
+learning rate 0.01): a latch that is on fires at 250 Hz.
+
+So the programmed circuit is kept by gradient training at the small learning rate, at the same size and
+number of iterations at which training from a random initialization stays at chance. Repair of a noisy
+circuit depends on the seed.
 
 ## Lean
 

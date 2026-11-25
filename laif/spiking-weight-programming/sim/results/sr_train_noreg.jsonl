@@ -1,0 +1,3 @@
+{"model": "LIF trained", "setting": "2 s", "seed": 0, "n": 60, "iters": 400, "reg": 0.0, "recalls": 2380, "acc": 0.5046218487394958, "rate_hz_per_neuron": 91.63892734795809, "train_acc_last20": 0.49415000000000003, "seconds": 228}
+{"model": "LIF trained", "setting": "2 s", "seed": 1, "n": 60, "iters": 400, "reg": 0.0, "recalls": 2401, "acc": 0.49354435651811746, "rate_hz_per_neuron": 141.5957696735859, "train_acc_last20": 0.52935, "seconds": 223}
+{"model": "LIF trained", "setting": "2 s", "seed": 2, "n": 60, "iters": 400, "reg": 0.0, "recalls": 2365, "acc": 0.4896405919661734, "rate_hz_per_neuron": 87.4966261908412, "train_acc_last20": 0.5085, "seconds": 221}
