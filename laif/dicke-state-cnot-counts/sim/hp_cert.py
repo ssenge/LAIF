@@ -1,16 +1,18 @@
 """High-precision certificate: refine a double-precision solution by least-squares steps with exact derivatives in mpmath (80 digits), with the
 pinned angles exact, and write the angles to 40 digits. Then an independent check re-simulates the written angles at
-100 digits and reports 1 - fidelity.
+100 digits and reports 1 - fidelity, and encloses 1 - fidelity rigorously with interval arithmetic (mpmath.iv,
+110 digits), taking the listed decimals as the exact angles; it asserts that the upper end is below 1e-77.
 usage: python hp_cert.py n k 'skeleton' x.npy pins out.txt      (pins: i:expr,... with expr in mpmath syntax)
        python hp_cert.py --check out.txt"""
 import ast, math, sys
 import mpmath as mp
 
-def simulate(n, skel, th, dps):
-    mp.mp.dps = dps
-    psi = [mp.mpf(0)] * 2 ** n; psi[0] = mp.mpf(1); j = 0
+def simulate(n, skel, th, dps, L=mp):
+    if L is mp: mp.mp.dps = dps
+    else: L.dps = dps
+    psi = [L.mpf(0)] * 2 ** n; psi[0] = L.mpf(1); j = 0
     def ry(psi, q, t):
-        c, s = mp.cos(t / 2), mp.sin(t / 2); out = list(psi)
+        c, s = L.cos(t / 2), L.sin(t / 2); out = list(psi)
         for i in range(2 ** n):
             if not (i >> (n - 1 - q)) & 1:
                 jj = i | (1 << (n - 1 - q)); out[i] = c * psi[i] - s * psi[jj]; out[jj] = s * psi[i] + c * psi[jj]
@@ -38,7 +40,12 @@ if sys.argv[1] == "--check":
     psi = simulate(n, skel, th, 100); t = target(n, k)
     ov = mp.fsum(a * b for a, b in zip(psi, t))
     print("n=%d k=%d CNOT gates %d, 1 - fidelity = %s" % (n, k, len(skel), mp.nstr(1 - ov ** 2, 5)))
-    assert 1 - ov ** 2 < mp.mpf("1e-70")
+    iv = mp.iv; iv.dps = 110
+    psi = simulate(n, skel, [iv.mpf(v.strip()) for v in lines[2:] if v.strip()], 110, iv)
+    ov = sum((psi[i] for i in range(2 ** n) if bin(i).count("1") == k), iv.mpf(0)) / iv.sqrt(math.comb(n, k))
+    enc = 1 - ov ** 2                        # the circuit is unitary, so this is 1 - fidelity
+    print("interval enclosure of 1 - fidelity:", iv.nstr(enc, 5))
+    assert enc.b < iv.mpf("1e-77")
     sys.exit()
 
 import numpy as np
