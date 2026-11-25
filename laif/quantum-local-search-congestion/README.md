@@ -8,8 +8,9 @@ Written 25 Nov 2026.
 |---|---|---|---|---|
 | Thm 1 | Quantum query complexity of local search on G, for g ≤ n^{2−δ} with a constant δ > 0 | Ω(n^{3/4}/√g) [1, Theorem 1] | Ω_δ(n^{2/3}/g^{1/3}) | Claim |
 | Cor 2 | The same on Δ-regular β-expanders with constant Δ and β | Ω(n^{1/4}/√(log n)) [1, Corollary 2]; upper bound O(n^{1/3}) [5, Theorem 3.2] | Ω((n/log n)^{1/3}), which matches the upper bound up to the factor (log n)^{1/3} | Claim |
+| Cor 3 | The same on vertex-transitive graphs of diameter d ≤ n^{1−δ}/4 and degree Δ | Ω(n^{1/4}/√(d log n)) [6]; upper bound O(n^{1/3} Δ^{1/6}) [5, Theorem 3.2] | Ω_δ((n/d)^{1/3}) | Claim |
 
-**Comparison.** n^{2/3}/g^{1/3} ≥ n^{3/4}/g^{1/2} holds exactly when g ≥ n^{1/2}, so for every graph, since g ≥ n. The bound of [1, Theorem 1] is above a constant only for g < n^{3/2}, and there Theorem 1 applies with δ = 1/2, so its constant does not depend on the graph in that range. Cor 2 follows from Theorem 1 with g = O(n log n) for constant-degree expanders [2, Corollary D.1]. On the hypercube and on grids of dimension at least 6, the bound Θ(N^{1/3}) up to logarithmic factors is known from [3]; that argument uses the product structure of those graphs.
+**Comparison.** n^{2/3}/g^{1/3} ≥ n^{3/4}/g^{1/2} holds exactly when g ≥ n^{1/2}, so for every graph, since g ≥ n. The bound of [1, Theorem 1] is above a constant only for g < n^{3/2}, and there Theorem 1 applies with δ = 1/2, so its constant does not depend on the graph in that range. Cor 2 follows from Theorem 1 with g = O(n log n) for constant-degree expanders [2, Corollary D.1]. Cor 3 follows from Theorem 1 with a path system of congestion at most 2n(D̄ + 1) ≤ 4nd, where D̄ is the mean distance (below). It exceeds the bound of [6] by the factor n^{1/12} d^{1/6} √(log n); Theorem 1 of [1] with the same path system gives Ω(n^{1/4}/√d). For vertex-transitive graphs of polylogarithmic diameter and degree, such as many Cayley graphs, Cor 3 matches the upper bound up to polylogarithmic factors. On the hypercube and on grids of dimension at least 6, the bound Θ(N^{1/3}) up to logarithmic factors is known from [3]; that argument uses the product structure of those graphs.
 
 ## Theorem 1, the proof
 
@@ -29,9 +30,13 @@ since the first new segment has one fixed end and each later one has two indepen
 
 The weight α_k depends on the milestone x_k that the two inputs share, through c_{x_k}(v). Vertices near the shared milestone get a large weight, and the rest a weight of order √(L g)/n.
 
+## Cor 3, the path system
+
+Let G be vertex-transitive, and let D̄ be the mean of dist(u, w) over all ordered pairs (u, w), including u = w. For every pair u ≠ w choose P^{u,w} uniformly among the shortest paths from u to w, independently. An automorphism σ maps the shortest paths from u to w bijectively onto those from σu to σw, so Pr[v ∈ P^{u,w}] = Pr[σv ∈ P^{σu,σw}], and the expected number E c(v) of paths through v is the same for every v. Summing over v gives n · E c(v) = Σ_{u,w} (dist(u, w) + 1) = n²(D̄ + 1), so E c(v) = n(D̄ + 1) ≥ n. Each c(v) is a sum of independent indicators, and the multiplicative tail bound gives Pr[c(v) ≥ 2n(D̄ + 1)] ≤ e^{−n/3}. For n ≥ 9 the union bound over the n vertices leaves a path system with g ≤ 2n(D̄ + 1) ≤ 4nd. If d ≤ n^{1−δ}/4, then g ≤ n^{2−δ}, and Theorem 1 gives Ω_δ(n^{2/3}/(nd)^{1/3}) = Ω_δ((n/d)^{1/3}). ∎
+
 ## Scripts
 
-`sim/check_adv.py` builds Γ and every Γ_v exactly for random 3- and 4-regular graphs with breadth-first path systems (n ≤ 12, L ≤ 3, up to 512 inputs). It asserts that x_{L+1} is the only local minimum of every f_x, that f_x and f_y differ only on the two tails, the bound q_k for every prefix and vertex, and ‖Γ_v‖ ≤ 3 max_z Σ_k α_k(z_k, v) for every v. `sim/scaling.py` computes c_u(v) as subtree sizes of breadth-first trees on random 3-regular graphs with n ≤ 4000, and evaluates g/(n ln n), the worst Φ over sampled staircases, and the explicit bound B of the proof. At these sizes L ≤ 6 and B < 1, so the scripts check the inequalities and the growth of g and Φ, not the asymptotic advantage. Output in `sim/out.txt`:
+`sim/check_adv.py` builds Γ and every Γ_v exactly for random 3- and 4-regular graphs with breadth-first path systems (n ≤ 12, L ≤ 3, up to 512 inputs). It asserts that x_{L+1} is the only local minimum of every f_x, that f_x and f_y differ only on the two tails, the bound q_k for every prefix and vertex, and ‖Γ_v‖ ≤ 3 max_z Σ_k α_k(z_k, v) for every v. `sim/scaling.py` computes c_u(v) as subtree sizes of breadth-first trees on random 3-regular graphs with n ≤ 4000, and evaluates g/(n ln n), the worst Φ over sampled staircases, and the explicit bound B of the proof. At these sizes L ≤ 6 and B < 1, so the scripts check the inequalities and the growth of g and Φ, not the asymptotic advantage. `sim/transitive.py` computes, for hypercubes, tori, circulants and a cycle, the exact probability that a vertex lies on a uniform shortest path, asserts that E c(v) = n(D̄ + 1) at every vertex, draws one random shortest-path system and asserts g ≤ 2n(D̄ + 1); on a path graph, which is not vertex-transitive, the first assert fails, as it should. Output in `sim/out.txt`:
 
 ```
 python sim/check_adv.py
@@ -42,7 +47,7 @@ python sim/scaling.py
 n=  4000 g/(n ln n)=1.575 L=  6 Phi_max=2.148 tail=0.840 B=0.669 B/n^(1/3)=0.0422
 ```
 
-**Not formalized:** the proof of Theorem 1 is written out above and checked numerically on the small cases listed; there is no Lean proof. The adversary bound of [4] and the staircase lemmas of [2] are used as stated there.
+**Not formalized:** the proofs of Theorem 1 and Cor 3 are written out above and checked numerically on the small cases listed; there is no Lean proof. The adversary bound of [4] and the staircase lemmas of [2] are used as stated there.
 
 ## Use of AI
 
@@ -55,3 +60,4 @@ Claude Opus 5.5 (Anthropic) was used throughout this research: to explore approa
 3. S. Zhang. (Almost) tight bounds for randomized and quantum local search on hypercubes and grids. arXiv:quant-ph/0504085, 2005.
 4. P. Høyer, T. Lee, R. Špalek. Negative weights make adversaries stronger. STOC 2007. arXiv:quant-ph/0611054.
 5. S. Aaronson. Lower bounds for local search by quantum arguments. arXiv:quant-ph/0307149, 2003.
+6. H. Dinh, A. Russell. Quantum and randomized lower bounds for local search on vertex-transitive graphs. arXiv:0806.3437, 2008.
