@@ -1,0 +1,6 @@
+n=1: max over states of E[o^2] = 1.5000 = 1.0000 (3/2)^n
+n=2: max over states of E[o^2] = 2.1250 = 0.9444 (3/2)^n
+n=3: max over states of E[o^2] = 2.6250 = 0.7778 (3/2)^n
+n=4: max over states of E[o^2] = 3.9062 = 0.7716 (3/2)^n
+n=5: max over states of E[o^2] = 5.7187 = 0.7531 (3/2)^n
+n=6: max over states of E[o^2] = 8.5703 = 0.7524 (3/2)^n
