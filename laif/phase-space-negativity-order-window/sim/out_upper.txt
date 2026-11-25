@@ -1,0 +1,8 @@
+a=0.55: violated in the limit for t = 0.00149, margin 0.000172
+a=0.6: violated in the limit for t = 0.0155, margin 0.00312
+a=0.75: violated in the limit for t = 0.0721, margin 0.0262
+a=1: violated in the limit for t = 0.133, margin 0.0663
+a=2: violated in the limit for t = 0.235, margin 0.145
+a=inf: violated in the limit for t = 0.353, margin 0.219
+t=0.2 beta=4.243: ln||W||_1=0.2045 (limit 0.2190); Delta_0.75,1,2,inf = [0.2189 0.1612 0.0768 0.0392] limits [0.225  0.163  0.0768 0.0392]
+t=0.05 beta=7.000: ln||W||_1=0.0615 (limit 0.0616); Delta_0.75,1,2,inf = [0.037  0.0174 0.005  0.0025] limits [0.037  0.0174 0.005  0.0025]
