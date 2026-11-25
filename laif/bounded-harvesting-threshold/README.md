@@ -13,7 +13,7 @@ is unique.
 
 | | Problem | Previous best bound | This folder | Status |
 |---|---|---|---|---|
-| Thm 1 | Is the optimal harvesting threshold unique? | Conjectured in [1, Conjecture 4.1]; a uniqueness lemma for harvesting quotas that depend on the population [2, Lemma 5.4] assumes ∫₀ m₀ < ∞, which here means μ − M > σ²/2, and a natural boundary at ∞ | Yes, for all μ > σ²/2, κ > 0, M > 0: H has exactly one critical point η*, it increases before η* and decreases after it, and η* is the optimal threshold. This includes μ − M ≤ σ²/2, the case of Figure 1 of [1] | Lean, for all parameters: exactly one critical point, the yield strictly increasing before it and strictly decreasing after it, and the critical point maximizes H. Optimality among all admissible strategies: from [1, Theorem 2.1] |
+| Thm 1 | Is the optimal harvesting threshold unique? | Conjectured in [1, Conjecture 4.1]. For harvesting quotas that depend on the population, a unique optimal threshold is proved in [2, Lemma 5.4] for diffusions with a natural boundary at ∞ (the logistic model has an entrance boundary there), with existence under ∫₀ m₀ < ∞, which here means μ − M > σ²/2 | Yes, for all μ > σ²/2, κ > 0, M > 0: H has exactly one critical point η*, it increases before η* and decreases after it, and η* is the optimal threshold. This includes μ − M ≤ σ²/2, the case of Figure 1 of [1] | Lean, for all parameters: exactly one critical point, the yield strictly increasing before it and strictly decreasing after it, and the critical point maximizes H. Optimality among all admissible strategies: from [1, Theorem 2.1] |
 | Prop 2 | Computing the optimal threshold | none known to us | H in closed form with incomplete gamma functions; η* = σ²ξ/(2κ), where ξ depends only on a = 2μ/σ² and β = 2M/σ²; bisection on an explicit sign function S finds ξ | Claim; checked by script |
 
 ## 1. The yield as a mean of the growth
@@ -43,7 +43,8 @@ is at most the peak μ/(2κ) of f, then f increases on (0, η], so its mean G is
 f decreases on [η, ∞), so its mean K is below f(η). In both cases v < f(η) and D′ < 0. ∎
 
 A differentiable function whose derivative is negative at every zero has at most one zero, so H has at most one
-critical point.
+critical point. This down-crossing step is the uniqueness argument in the proof of [2, Lemma 5.4]; here it is
+applied to the logistic model, which lies outside the boundary assumptions of [2].
 
 **Lemma 4 (a critical point exists).** D(μ/κ) < 0, since f > 0 below μ/κ and f < 0 above it. It remains to find
 η < μ/κ with D(η) > 0; a zero of D then lies between them, and by Lemma 3 D > 0 before it and D < 0 after it.
@@ -64,7 +65,8 @@ every threshold strategy is admissible, so its threshold maximizes H and equals 
 
 The same argument works for a general growth function whose total growth f is strictly increasing and then
 strictly decreasing, and for harvesting rates capped by a positive function k(X) of the population, as in [2]:
-there λ(η) = exp(∫^η 2k(z)/σ²(z) dz) is again increasing.
+there λ(η) = exp(∫^η 2k(z)/σ²(z) dz) is again increasing. No condition on the type of the boundaries and no
+monotonicity of k is needed for uniqueness, only finite integrals and vanishing boundary terms in Lemma 1.
 
 ## 2. Closed form and algorithm
 
