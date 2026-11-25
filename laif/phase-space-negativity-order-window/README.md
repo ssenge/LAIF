@@ -82,7 +82,7 @@ As β → ∞ the first term tends to 1 + t² and the second and fourth tend to 
 - `sim/upper.py`, output in `sim/out_upper.txt`, finds t with a violation in the limit for a = 0.55, 0.6, 0.75, 1, 2, ∞.
   - It checks the limits on a grid at finite β. At t = 0.2, β = 3√2 it reproduces the values of [1].
   - At t = 0.05, β = 7 it gives ln‖W‖₁ = 0.0615 > Δ_{0.75} = 0.0370, an explicit violation at order 3/4.
-- `sim/order.py`, output in `sim/out_order.txt`, maximizes ln‖W‖₁ − Δ_a over pure states in span{|0⟩, …, |3⟩} from random starts. At a = 0.25 the maximum is positive and attained at a displaced |1⟩, which has the same values as |1⟩. For a = 0.29, 0.32 and 0.36 the maximum is 0, attained at coherent states, and the best non-Gaussian local maximum at a = 0.29 is |1⟩ with a negative value.
+- `sim/order.py`, output in `sim/out_order.txt`, maximizes ln‖W‖₁ − Δ_a over pure states in span{|0⟩, …, |3⟩} from random starts. At a = 0.25 the maximum is positive and agrees with the value at |1⟩ up to grid accuracy. For a = 0.29, 0.32 and 0.36 the maximum is 0, attained at coherent states, and the best non-Gaussian local maximum at a = 0.29 is |1⟩ with a negative value.
 
 ## Scope
 
