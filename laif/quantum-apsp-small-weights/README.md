@@ -2,7 +2,7 @@
 
 Written 25 Nov 2026.
 
-All-pairs shortest paths (APSP) in a directed graph with n vertices and integer edge weights in {−M, …, M}, M constant, and no negative cycles. Classically the best bound is n^{2 + μ} with ω(1, μ, 1) = 1 + 2μ, by bridging sets and rectangular matrix multiplication [2], now n^{2.5275} [5]. Quantum minimum finding gives n^{2.5} for any weights. A quantum algorithm in time n^{2.5 − (2.5 − ω)/(4κ + 2)} for geometrically weighted graphs, which include small integer weights, is given in [1], where the use of rectangular matrix multiplication is suggested as a way to improve such bounds [1, footnote 2].
+All-pairs shortest paths (APSP) in a directed graph with n vertices and integer edge weights in {−M, …, M}, M constant, and no negative cycles. Classically the best bound is n^{2 + μ} with ω(1, μ, 1) = 1 + 2μ, by bridging sets and rectangular matrix multiplication [2], now n^{2.5275} [5]. Quantum minimum finding gives n^{2.5} for any weights. A quantum algorithm in time n^{2.5 − (2.5 − ω)/(4κ + 2)} for geometrically weighted graphs, which include small integer weights, is given in [1], where the use of rectangular matrix multiplication is suggested as a way to improve such bounds [1, footnote 2]. The balance of rectangular multiplication against quantum minimum finding used below was introduced for maximum witnesses of Boolean matrix products, all-pairs bottleneck paths in vertex-weighted graphs and all-pairs lowest common ancestors in [9], with time n^{2 + λ/2} where ω(1, λ, 1) = 1 + 1.5λ. Here it is carried to the bridging sets of [2].
 
 Here ω(1, k, 1) denotes the exponent of multiplying an n × n^k matrix by an n^k × n matrix.
 
@@ -63,6 +63,7 @@ The bound implied by [1] uses square products for paths with at most ℓ = n^l e
 6. OpenAI. An upper bound of 9/4 for the matrix multiplication exponent. 2026, github.com/openai/math.
 7. A. Amanov, M. van den Berg, J. Zuiddam. Multiplying matrices via polynomials: exposition and barriers. arXiv:2610.30054.
 8. P. Uznański. Rectangular matrix multiplication from polynomial products. arXiv:2610.10494.
+9. M. Kowaluk, A. Lingas. Quantum and approximation algorithms for maximum witnesses of Boolean matrix products. International Journal of Foundations of Computer Science, 2024, arXiv:2004.14064.
 
 ## Use of AI
 
