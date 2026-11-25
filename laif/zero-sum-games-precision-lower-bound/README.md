@@ -37,7 +37,7 @@ By symmetry (replace A by −Aᵀ and swap the players), assume m ≥ n. Let c =
 `lean/ZeroSumLB.lean` checks the combinatorial part, with Lean 4.36.0-rc1 and Mathlib revision `d875a8de5222f62cf1c2fafc7984588adadc990a`. It contains no `sorry`, and its theorems use only the standard axioms (`propext`, `Classical.choice`, `Quot.sound`).
 
 - `loss_sum`: the losses over the first c columns sum to the weight on rows that have a 0.
-- `yes_pure`, `no_gap`: the value is 1 on yes instances and at most 1 − 1/c on no instances.
+- `yes_pure`, `no_gap`: on yes instances the pure special row guarantees the row player 1, the largest entry of the matrix, so the value is 1; on no instances every mixed row strategy guarantees at most 1 − 1/c.
 - `yes_identifies`: every ε-approximate equilibrium of a yes instance with cε < 1/2 puts weight more than 1/2 on the special row.
 - `rel_yes`, `left_many`, `right_many`, `left_unique`, `right_unique`: the relation of the adversary bound has the counts m, c, 1 and 1.
 
