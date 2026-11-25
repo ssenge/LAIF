@@ -1,3 +1,8 @@
 'TwelveAX.step_eq' does not depend on any axioms
 'TwelveAX.machine_eq_target_from' does not depend on any axioms
 'TwelveAX.machine_eq_target' does not depend on any axioms
+'Localization.incr_cases' depends on axioms: [propext]
+'Localization.unext_thermo' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Localization.event_thermo' depends on axioms: [propext, Quot.sound]
+'Localization.readout_from' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Localization.readout_eq_label' depends on axioms: [propext, Classical.choice, Quot.sound]

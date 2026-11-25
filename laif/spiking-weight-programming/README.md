@@ -40,6 +40,14 @@ robot ends on the right half-plane. Here the network has the shape of the benchm
 The published models of [4] learn the task from 50,000 examples. The network here is written from the known
 rule of the task.
 
+A fifth benchmark is the evidence accumulation task of [5]: seven cues appear on the left or on the right, and
+after a delay of about one second the side with more cues has to be reported. Task and neuron model are ported
+from the reference code of [5].
+
+| Task | Trained network with adaptation [5] | Trained plain LIF [5] | Programmed plain-LIF circuit |
+|---|---|---|---|
+| Evidence accumulation, 7 cues, trial of 2250 ms | learned to the error criterion of 8 % with 50 LIF and 50 adaptive neurons | not solved, 100 neurons | 10,000 of 10,000 trials, 23 neurons |
+
 A two-neuron solution of the one-dimensional task with hand-set weights and adaptive neurons is shown in
 [1, Figure 1D, E]. The circuits here use neurons without adaptation, and cover the two larger tasks.
 
@@ -94,6 +102,18 @@ per step, a layer sees the layer below in the same step, and the classifier outp
 
 Four weight values, at membrane decay 0.3.
 
+**Evidence accumulation, 23 neurons** (`sim/ea.py`). With seven cues the right side wins exactly when at least
+four cues are on the right, so the circuit counts right cues up to four and ignores the left cues and the
+background input.
+- One relay neuron for the right-cue input and one for the recall input.
+- Four latches L1 to L4, where Lk is on once k right cues have been seen.
+- Between Lk and L(k+1), two slowly charging latches of about 65 ms each. They pass the state on about 130 ms
+  after Lk switched on, when the cue that switched it on has ended. L(k+1) is a gate of this delayed signal and
+  the relay, so each cue advances the count by exactly one. Any delay between 100 and 200 ms would do.
+- One neuron fires at recall when L4 is off. The readout takes L4 as "right" and this neuron as "left".
+
+Eight weight values, taken from the design calculation without adjustment on data.
+
 ## Measurements
 
 | Script | What it runs |
@@ -104,6 +124,8 @@ Four weight values, at membrane decay 0.3.
 | `sim/twelve_ax.py` | port of 12AX and the 25-neuron circuit |
 | `sim/sr_train.py` | 60 LIF neurons trained with backpropagation through time in the setting of [1] |
 | `sim/sr_finetune.py` | the same training, started from the programmed circuit with weight noise |
+| `sim/ea.py` | port of the evidence accumulation task and the 23-neuron circuit |
+| `sim/ea_train.py` | 100 neurons trained with backpropagation through time in the tutorial setting of [5], with and without adaptation |
 | `sim/al.py` | the AL task and the programmed three-layer network |
 | `sim/al_reference_check.py` | the same network on sequences from the generator of [4] |
 | `sim/al_train.py` | recurrent LIF network of [4] trained with backpropagation through time on AL |
@@ -122,6 +144,12 @@ Four weight values, at membrane decay 0.3.
 - Trained recurrent LIF network of `sim/al_train.py` on AL, 50,000 training sequences, best test accuracy over
   the epochs as in [4]: 53.5 % after 20 epochs at decay 0.5 (56.50 % after 100 epochs in [4]); 50.6 % after
   10 epochs at decay 0.3.
+- Evidence accumulation: seeds 1 to 5, 2,000 trials each, in the setting of the reference tutorial of [5]
+  (cues every 150 ms, recall in the last 150 ms of a 2250 ms trial, so the delay is fixed at about one second).
+  Mean firing rate 108 Hz per neuron; a latch that is on fires at 200 Hz.
+- Trained networks of `sim/ea_train.py` on evidence accumulation: with adaptation the error criterion of 7 % of
+  the tutorial is reached after 240 and 180 iterations, test accuracy 95.3 and 93.8 % (seeds 0, 1); without
+  adaptation the test accuracy is 49.2 and 51.3 % after 2,000 iterations.
 - Mean firing rate per neuron: 35 to 48 Hz (one-dimensional), 27 Hz (20-dimensional), 29 Hz (12AX). A latch
   that is on fires at the highest rate the refractory period allows, 250 Hz in the STORE-RECALL tasks and
   167 Hz in 12AX.
@@ -152,15 +180,28 @@ circuit depends on the seed.
 
 ## Lean
 
-`lean/SpikingCircuits/TwelveAX.lean` (Lean 4, core library only, no axioms; `lean/axioms.txt`).
+`lean/SpikingCircuits/TwelveAX.lean` (Lean 4, core library only, no axioms; all axiom checks are in
+`lean/axioms.txt`).
 
 - `target`: the target function of 12AX, with the last digit and the last relevant letter as state.
 - `machine`: the state machine that the 12AX circuit implements, with four flags: context 1, context 2,
   armed for X, armed for Y.
 - `machine_eq_target`: both give the same outputs on every symbol sequence.
 
-Not formalized: the spiking dynamics. That the latches, gates and the timer realize the four flags under Poisson
-input is covered by the measurements only.
+`lean/SpikingCircuits/Localization.lean` (Lean 4, core library only, standard axioms).
+
+- `finalX`: the final x coordinate of the robot in the AL task for a sequence of actions.
+- `unext`: one step of a thermometer unit, a threshold function of the unit, its two neighbours and the
+  increment. `unext_thermo`: it maps the thermometer code of x to that of the new x.
+- `event`: the output of the two crossing units in one step. `readout`: their sum along a sequence.
+- `readout_eq_label`: for every action sequence the summed readout is 1 if the final x is at least 1 and 0
+  otherwise.
+
+In this file the thermometer code is unbounded and the heading is given directly; the network of `sim/al.py`
+tracks x from -86 to 87 and holds the heading in 16 neurons.
+
+Not formalized: the spiking dynamics. That the latches, gates and timers realize the state machines, with Poisson
+input in the tasks of [1] and [5] and with the membrane decay in AL, is covered by the measurements only.
 
 ## Scope and limits
 
@@ -174,6 +215,8 @@ input is covered by the measurements only.
   recurrent LIF run of [4] uses decay 0.5; decay is set per model there, between 0.3 and 1.
 - In AL the x coordinate is tracked from -86 to 87. Final coordinates up to 114 in absolute value occurred in
   the test sequences and were classified correctly, since the counter saturates far from the decision boundary.
+- The evidence accumulation circuit uses that a trial has exactly seven cues, as in [5]. With another number
+  of cues the count to four would have to change.
 - The delay labels are the nominal settings of [1]. Sequences are cut at their fixed length, so the delays that
   occur are shorter: the mean distance from STORE to RECALL is about 0.2, 1.4, 2.5, 4.6 and 7.3 s in the five
   settings. The generator is the one of [1], so the rows are comparable.
@@ -191,3 +234,6 @@ input is covered by the measurements only.
    arXiv:2611.18114, 2026.
 3. J. B. Aimone, W. Severa, C. M. Vineyard. Composing neural algorithms with Fugu. arXiv:1905.12130, 2019.
 4. Neuromorphic Sequential Arena. arXiv:2505.22035, 2025. Code: github.com/liyc5929/neuroseqbench.
+5. G. Bellec, F. Scherr, A. Subramoney, E. Hajek, D. Salaj, R. Legenstein, W. Maass. A solution to the learning
+   dilemma for recurrent networks of spiking neurons. Nature Communications 11:3625, 2020. Reference code:
+   github.com/IGITUGraz/eligibility_propagation.

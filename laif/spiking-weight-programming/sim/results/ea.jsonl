@@ -1,0 +1,5 @@
+{"task": "evidence accumulation", "neurons": 23, "trials": 2000, "seed": 1, "accuracy": 1.0, "wrong": 0, "rate_hz_per_neuron": 108.31841545893721}
+{"task": "evidence accumulation", "neurons": 23, "trials": 2000, "seed": 2, "accuracy": 1.0, "wrong": 0, "rate_hz_per_neuron": 108.06938164251208}
+{"task": "evidence accumulation", "neurons": 23, "trials": 2000, "seed": 3, "accuracy": 1.0, "wrong": 0, "rate_hz_per_neuron": 108.01860869565216}
+{"task": "evidence accumulation", "neurons": 23, "trials": 2000, "seed": 4, "accuracy": 1.0, "wrong": 0, "rate_hz_per_neuron": 108.32146859903382}
+{"task": "evidence accumulation", "neurons": 23, "trials": 2000, "seed": 5, "accuracy": 1.0, "wrong": 0, "rate_hz_per_neuron": 107.10889855072465}
