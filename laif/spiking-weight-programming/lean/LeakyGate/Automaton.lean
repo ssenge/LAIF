@@ -23,7 +23,8 @@ does not enter.
 `(state before the last symbol, last symbol)` is silent.
 `readout_eq_state`: the linear readout for state `q'` is 1 if the automaton is in `q'` after the word and 0
 otherwise.
-`hot_unique`, `not_hot_init`, `parity_readouts` and `parity_net_ne_or` show that the statement has content: the\nreadout takes both values and differs from the state of another automaton.
+`hot_unique`, `not_hot_init`, `parity_readouts` and `parity_net_ne_or` show that the statement has content: the
+readout takes both values and differs from the state of another automaton.
 -/
 
 namespace LeakyGate.Automaton
