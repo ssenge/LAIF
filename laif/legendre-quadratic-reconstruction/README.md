@@ -46,13 +46,13 @@ Let ψ be a primitive additive character of F and g(χ, ψ) = Σ_k χ(k)ψ(k) th
 
 1. Prepare q^{−1/2} Σ_x |x⟩, query χ(f(x)) into a register, measure whether it is zero (it is not, with probability (q − #roots)/q), and apply the phase χ(f(x)) (for the Legendre symbol a sign, for other characters a phase followed by uncomputing the value with a second query).
 2. Map x ↦ (y, j) with y = h(x) and j the rank of x among the roots of h(X) − y. This is reversible, since x is the j-th root of h(X) − y. It is computed by a randomized root-finding algorithm over F in poly(d, log q) time, run coherently with classically fixed random coins and with every output root checked by evaluating h; by Markov's inequality, for most choices of coins the circuit fails on a fraction of inputs that is exponentially small, which costs only an exponentially small loss of fidelity. Measure j.
-3. The state is now proportional to Σ_{y ∈ H_j} χ(y − D)|y⟩. Apply the Fourier transform |y⟩ ↦ q^{−1/2} Σ_k ψ(ky)|k⟩, multiply by χ(k), apply the inverse transform |k⟩ ↦ q^{−1/2} Σ_z ψ(−kz)|z⟩ and measure.
+3. The state is now proportional to Σ_{y ∈ H_j} χ(y − D)|y⟩. Apply the Fourier transform |y⟩ ↦ q^{−1/2} Σ_k ψ(ky)|k⟩, multiply by χ(k) (on the component k = 0, where χ(0) = 0, a flag is set and the run is discarded), apply the inverse transform |k⟩ ↦ q^{−1/2} Σ_z ψ(−kz)|z⟩ and measure.
 
 The amplitude of the outcome D is q^{−1} times
 
   Σ_k χ(k)ψ(−kD) Σ_y φ(y)ψ(ky) = Σ_y φ(y) Σ_k χ(k)ψ(k(y − D)) = g(χ, ψ) Σ_y φ(y) χ⁻¹(y − D),
 
-using Σ_k χ(k)ψ(ka) = χ⁻¹(a) g(χ, ψ) for every a, including a = 0. With φ(y) = 1_{H_j}(y) χ(y − D) the last sum is |H_j ∖ {D}|, and the norm of φ is √|H_j ∖ {D}|. So, given rank j, the outcome is D with probability |H_j ∖ {D}|/q. The rank j itself is measured with probability |H_j ∖ {D}|/N, where N = Σ_j |H_j ∖ {D}| = #{x : f(x) ≠ 0}, and N/q is the probability of step 1. Multiplying and summing over j gives Σ_j |H_j ∖ {D}|²/q². At most d ranks occur and Σ_j |H_j ∖ {D}| = N ≥ q − d, so by Cauchy-Schwarz the probability is at least (q − d)²/(d q²). A candidate D' is confirmed or rejected by comparing χ(h(x) − D') with the oracle on random points.
+using Σ_k χ(k)ψ(ka) = χ⁻¹(a) g(χ, ψ) for every a, including a = 0. With φ(y) = 1_{H_j}(y) χ(y − D) the last sum is |H_j ∖ {D}|, and the norm of φ is √|H_j ∖ {D}|. So, given rank j, the run is kept and the outcome is D with probability |H_j ∖ {D}|/q. The rank j itself is measured with probability |H_j ∖ {D}|/N, where N = Σ_j |H_j ∖ {D}| = #{x : f(x) ≠ 0}, and N/q is the probability of step 1. Multiplying and summing over j gives Σ_j |H_j ∖ {D}|²/q². At most d ranks occur and Σ_j |H_j ∖ {D}| = N ≥ q − d, so by Cauchy-Schwarz the probability is at least (q − d)²/(d q²). A candidate D' is confirmed or rejected by comparing χ(h(x) − D') with the oracle on random points.
 
 For h = x^d with g = gcd(d, q − 1), H_j is the subgroup of g-th powers (with 0 added for j = 0), so the probability is about 1/g. For a quadratic h in odd characteristic, the fibers have size two except at the vertex, and the probability is about 1/2. In characteristic 2, x² + c is a bijection and the probability is about 1.
 
@@ -151,7 +151,7 @@ This takes seven runs of the even algorithm, each with failure probability δ/7.
 | Theorem 1, success probability \|H ∖ {D}\|/q for the start state 1_H(y)χ(y − D), that is, for each measured rank | `success_probability` |
 | Theorem 2, reflection symmetry and f₁(x) = f₀(x − 2s) | `quad_reflect`, `f1_eq_shift` |
 | Theorem 2, at most q² c^m offset tuples give a non-injective f₀ when each pair agrees on at most c offsets | `card_not_injective_le` |
-| Theorem 3, Gauss sums in odd characteristic: Σ_y ψ(cy²) = χ(c)G, Σ_y ψ(cy² + by) = χ(c)Gψ(−b²/(4c)), Σ_t χ(t)ψ(α/t) = χ(α)G, with the number of square roots 1 + χ(u) for the quadratic character | `sum_psi_sq`, `sum_psi_quad`, `sum_char_psi_inv`, `card_sqrts_quadraticChar`, `psi_sum`, `sum_psi_mul_eq_zero`, `chi_mul_self`, `chi_inv_eq`, `chi_pow_even` |
+| Theorem 3, Gauss sums in odd characteristic: Σ_y ψ(cy²) = χ(c)G and Σ_y ψ(cy² + by) = χ(c)Gψ(−b²/(4c)) for c ≠ 0, Σ_t χ(t)ψ(α/t) = χ(α)G, with the number of square roots 1 + χ(u) for the quadratic character | `sum_psi_sq`, `sum_psi_quad`, `sum_char_psi_inv`, `card_sqrts_quadraticChar`, `psi_sum`, `sum_psi_mul_eq_zero`, `chi_mul_self`, `chi_inv_eq`, `chi_pow_even` |
 | Theorem 3, the identity q Σ_k Σ_{y² = D Q*(k)} ψ(y − k·(x + s)) = G^{n+2} χ(D det A) χ(f(x)) and the Fourier formula (★), for diagonal A and even n | `term_eq`, `dual_cone`, `sum_psi_dot`, `fourier_coeff` |
 | Theorem 3, the coefficients on a line k = λk₀, the amplitude q − 2 of the outcome w after the transform over λ, the linear form of the sample equation, and k₀·s′ = 0, k₀ᵀM′k₀ = 0 when both roots annihilate (s′, M′) | `line_coeff`, `line_peak`, `sample_linear`, `both_signs` |
 

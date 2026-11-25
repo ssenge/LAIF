@@ -147,12 +147,12 @@ This tests the construction on tiny instances, not the exponent. The table and t
 | Lemma 3 | `averaging`, `markov`, `cauchy_classes`, `classes_lower_bound`, `card_prime_divisors_le`, `filter_lemma`, `filter_lists` | `PrimeCount` |
 | Lemma 4 | `cap_lemma`, `card_firstWindow`, `pairFound_of_good` | |
 | Marked fraction, iterations | `marked_fraction`, `grover_average`, `grover_uniform` | |
-| Coin | `coin_success`, `coin_mean`, `coin_mean_minimal`, `coin_mean_empty` | `GroverSuccess` |
+| Coin | `coin_success`, `coin_mean`, `coin_mean_minimal`, `coin_mean_empty` | `GroverSuccess`, `PrimeHit` (from `PrimeCount` by `primeHit_of_primeCount`) |
 | Exponent | `balance`, `balance_optimal`, `total_exponent`, `total_exponent_balanced` | `TableBuild`, `Unranking`, `ClawWindows`, `GroverResidues`, `AmplitudeAmplification` |
 | Empty label | `listExp_empty`, `empty_label_exponent`, `emptyExp_one_third`, `total_exponent_empty` | as above |
 | Probability with cost | `coin_cost` | as above |
 
-**Assuming.** The hypotheses are named in `lean/EqualSubsetSum/Model.lean`. They bound cost functions in a record `Primitives`, with no circuit model, and `hypotheses_satisfiable` shows that those on `Primitives` are consistent. So `coin_cost` links the two bounds numerically, and it does not state that the procedure amplified there is the search of `coin_mean`. A residue is marked in Lean if a pair exists in the windows. The probability of a good partition and the exponent of the lists enter as arguments.
+**Assuming.** The hypotheses are named in `lean/EqualSubsetSum/Model.lean`. They bound cost functions in a record `Primitives`, with no circuit model, and `hypotheses_satisfiable` shows that those on `Primitives` are consistent. So `coin_cost` links the two bounds numerically, and it does not state that the procedure amplified there is the search of `coin_mean`. A residue is marked in Lean if a pair exists in the windows. The probability of a good partition and the exponent of the lists enter as arguments. `PrimeHit`, the fraction of moduli that divide a nonzero difference, also enters `coin_mean` as an argument, and `primeHit_of_primeCount` derives it from `PrimeCount`, a lower bound on the number of primes in [P₀, 2P₀]. `TableBuild` is the dynamic program of [2, Theorem 3.5] in a form with a larger alphabet and counts, derived here from that theorem and taken as a hypothesis.
 
 **Not formalized.** The assembly into Theorem 1, the quantum primitives themselves (including the success of claw finding, the correctness of unranking and coherent coin preparation), the link from the search to the flag, the probability of balanced signs, the outer loop over ε, z and ν, the existence of the integer layout, the reduction to short entries, the case p ≥ 0.99, the monotonicity of S, and the numerical bound 0.4384.
 
