@@ -6,7 +6,7 @@ Input: a graph G on n vertices with edge weights in {1, …, W} and a set K of k
 
 **Theorem 1.** For every δ > 0 there is a constant f(δ) such that Minimum Steiner Tree has a quantum algorithm with bounded error, polynomial space and no quantum random access memory, in time O(2^{(1+δ)k} · n^{f(δ)} · (log W)²).
 
-Status: Claim. Assuming the recurrence of [1, Lemma 4.5], proved there from the separation lemma [1, Lemma 4.3] of [6], and using quantum minimum finding [5], the classical algorithm of [1, Theorem 4.2] and reversible simulation [9] as stated. The exponent of Section 2 is checked by script.
+Status: Claim. Assuming the recurrence of [1, Lemma 4.5], proved there from the separation lemma [1, Lemma 4.3] of [6], and using quantum minimum finding [5], the classical algorithm of [1, Theorem 4.2] and reversible simulation [9] as stated. The exponent of Section 2 is checked by script, and the counting of Section 3 is in Lean.
 
 The gain is for large weights: for W ≤ poly(n), the classical polynomial-space algorithm of [7] in time 2^k · n^{O(1)} · W is faster.
 
@@ -55,7 +55,20 @@ This hints at a possible counting gap in the proof of Theorem 3 of [3]: the squa
 
 Run them with `python nested.py` and `python support.py` in `sim/`. Each exits nonzero on a failed check.
 
-## 5. Limits
+## 5. Lean
+
+`lean/SteinerCount.lean` proves, with only the standard axioms (`lean/axioms.txt`), for k = 2^m terminals, with N(m) the number of index states of the terminal splits under exact halving, N(m + 1) = C(2^{m+1}, 2^m) · N(m)², and S(m) the product of one binomial coefficient per level, S(m + 1) = C(2^{m+1}, 2^m) · S(m):
+
+- `N_eq_factorial`: N(m) = (2^m)!, that is k! index states.
+- `S_le`: S(m) ≤ 4^{2^m}, so the product is at most 2^{2k}.
+- `four_pow_lt_N`: 4^{2^m} < N(m) for m ≥ 4, so the count exceeds 2^{2k} from k = 16 on.
+- `N_three_lt_four_pow`, `S_two`, `N_two`: N(3) = 8! < 4^8, so the range m ≥ 4 of `four_pow_lt_N` is needed and the bound is not met for all m; S(2) = 12 and N(2) = 24 = 4!.
+
+Lean 4 v4.36.0-rc1 with Mathlib at revision d875a8de5222f62cf1c2fafc7984588adadc990a. Run `lake exe cache get` and then `lake build` in `lean/`.
+
+Not formalized: Theorem 1, the comparison of the count with the product for 4 ≤ k < 16 (checked by script), and the correspondence between the state of [3] and the recursion for N.
+
+## 6. Limits
 
 - The recurrence of [1, Lemma 4.5] and the leaf algorithm of [1, Theorem 4.2] are used as stated there. The constants n^{O(1)} of [1, Theorem 4.2] and of the copies enter f(δ) unevaluated, f(δ) is not optimized, and there is no gate count.
 - The gain over [7] is for weights W above poly(n).

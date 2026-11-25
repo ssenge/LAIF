@@ -22,7 +22,7 @@ T_k(…, f_{j−2}, f_{j−1}, χ_w, f_{j+1}, f_{j+2}, …) = T_{k−2}(…, f_{
 
 and therefore T_k = Σ_w f̂_j(w) · T_{k−2}(…, f_{j−2} χ_w, f_{j−1}(· + w) f_{j+1}, f_{j+2}, …) with f̂_j(w) = E_x f_j(x) χ_w(x). For k = 4 the term is f̂₁(w) · E_x f₂(x + w) f₄(x). For k = 5 each term is a 3-cyclic Forrelation of f₁χ_w, f₂(· + w) f₄ and f₅.
 
-Status: Claim. Proposition 2 and the constants are checked by script.
+Status: Claim. The inequality of the proof, its constants and the arithmetic of the bound are in Lean. Proposition 2 and the constants are checked by script.
 
 ## Before and after
 
@@ -49,7 +49,21 @@ For the product sampler, |A| = q^k and the bound of step 3 is the full-overlap t
 
 H D_{χ_w} H is the permutation matrix X_w of the shift x ↦ x + w. So D_{f_{j−1}} H D_{χ_w} H D_{f_{j+1}} = X_w D_{f_{j−1}(·+w)} D_{f_{j+1}}, and H X_w = D_{χ_w} H moves the shift through the Hadamard matrix before it, where it multiplies f_{j−2} by χ_w. Two Hadamard matrices and two diagonals leave the cycle. The expansion follows from f_j = Σ_w f̂_j(w) χ_w and the linearity of T_k in each function.
 
-## 3. Measurements
+## 3. Lean
+
+[`lean/LinearEstimators.lean`](lean/LinearEstimators.lean), with [`lean/LinearEstimatorsAxioms.lean`](lean/LinearEstimatorsAxioms.lean) and its output in [`lean/axioms.txt`](lean/axioms.txt):
+
+- `second_moment_ge`: for a random design with probabilities p, sets A_r and weights w_r whose averages are c, (Σ_t |c(t)|)² ≤ (Σ_r p_r |A_r|) · Σ_r p_r Σ_{t ∈ A_r} w_r(t)² (step 3).
+- `second_moment_ge_of_card_le`: with |A_r| ≤ M and Σ_r p_r = 1, the second moment is at least (Σ_t |c(t)|)²/M.
+- `sum_abs_sq_of_const`: if c(t)² = γ ≥ 0 on a set of m tuples, then (Σ_t |c(t)|)² = m²γ.
+- `cyclic_constant`: (N^k)² · N^{−(k+2)} = N^{k−2} for N > 0 and k ≥ 2.
+- `second_moment_ge_tight` and `cyclic_constant_two_three`: one design that queries both tuples of a two-element set with weights 1 satisfies every hypothesis of `second_moment_ge` and `second_moment_ge_of_card_le`, and both sides of each bound equal 4 (and 2 after division by M = 2), so the hypotheses can hold and the bound is attained; the constant identity holds at N = 2, k = 3.
+
+Lean 4 v4.36.0-rc1, Mathlib rev d875a8de5222f62cf1c2fafc7984588adadc990a.
+
+Not formalized: step 1 (coefficient matching of multilinear monomials), step 2 (orthonormality of products of independent uniform signs), the inequality of arithmetic and geometric means of step 3, and Proposition 2.
+
+## 4. Measurements
 
 [`sim/identities.py`](sim/identities.py) checks, by exact computation with the Hadamard matrices:
 
@@ -59,11 +73,10 @@ H D_{χ_w} H is the permutation matrix X_w of the shift x ↦ x + w. So D_{f_{j�
 
 Run it with `python identities.py` in `sim/`.
 
-## 4. Limits
+## 5. Limits
 
 - Theorem 1 covers estimators that are linear in the products of one answer per function and unbiased on every input, with the error measured as mean squared error. Medians of several runs, thresholds and estimators that use products of several answers of the same function are outside the class.
 - The bound holds for nonadaptive algorithms, where the query sets do not depend on the answers.
-- Not formalized in Lean.
 
 ## References
 

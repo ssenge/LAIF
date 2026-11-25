@@ -1,0 +1,8 @@
+import LinearEstimators
+
+#print axioms LinearEstimators.second_moment_ge
+#print axioms LinearEstimators.second_moment_ge_of_card_le
+#print axioms LinearEstimators.sum_abs_sq_of_const
+#print axioms LinearEstimators.cyclic_constant
+#print axioms LinearEstimators.second_moment_ge_tight
+#print axioms LinearEstimators.cyclic_constant_two_three

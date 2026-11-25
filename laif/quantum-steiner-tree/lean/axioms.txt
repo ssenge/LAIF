@@ -1,0 +1,6 @@
+'SteinerCount.N_eq_factorial' depends on axioms: [propext, Classical.choice, Quot.sound]
+'SteinerCount.S_le' depends on axioms: [propext, Classical.choice, Quot.sound]
+'SteinerCount.four_pow_lt_N' depends on axioms: [propext, Classical.choice, Quot.sound]
+'SteinerCount.N_three_lt_four_pow' depends on axioms: [propext, Classical.choice, Quot.sound]
+'SteinerCount.S_two' depends on axioms: [propext]
+'SteinerCount.N_two' depends on axioms: [propext]
