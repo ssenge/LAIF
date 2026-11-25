@@ -2,7 +2,7 @@
 
 2026-11-25
 
-The symmetric weight-k state D(n, k) is the uniform superposition of all n-qubit basis states of Hamming weight k (called a Dicke state in [1]). The task is exact preparation from |0…0⟩ with arbitrary single-qubit gates and CNOT gates between any two qubits, counting CNOT gates. This is the model of the comparison in [1, Table IV], whose best counts are 6 for D(4, 2), 16 for D(5, 2), 22 for D(6, 2) and 25 for D(6, 3). The counts of [1] are optimal within the gate library used there, which builds a state from single-target rotations controlled by basis states; the circuits below use CNOT placements outside that library. A later method of the same line reports about 33 CNOT gates for D(6, 3) [2, Fig. 3e, read from the plot].
+The symmetric weight-k state D(n, k) is the uniform superposition of all n-qubit basis states of Hamming weight k (called a Dicke state in [1]). The task is exact preparation from |0…0⟩ with arbitrary single-qubit gates and CNOT gates between any two qubits, counting CNOT gates. This is the model of the comparison in [1, Table IV], whose best counts are 6 for D(4, 2), 16 for D(5, 2), 22 for D(6, 2) and 25 for D(6, 3). The counts of [1] are optimal within the gate library used there, which builds a state from single-target rotations controlled by basis states; the circuits below use CNOT placements outside that library. A later method of the same line reports about 33 CNOT gates for D(6, 3) [2, Fig. 3e, read from the plot]. For D(8, 2), an explicit circuit with 27 CNOT gates is given in [3, Fig. 6].
 
 ## Results
 
@@ -12,12 +12,15 @@ The symmetric weight-k state D(n, k) is the uniform superposition of all n-qubit
 | D(5, 2) | 16 CNOT gates [1, Table IV] | 9 CNOT gates |
 | D(6, 2) | 22 CNOT gates [1, Table IV] | 14 CNOT gates |
 | D(6, 3) | 25 CNOT gates [1, Table IV] | 14 CNOT gates |
+| D(8, 2) | 27 CNOT gates [3, Fig. 6] | 25 CNOT gates, fidelity above 1 − 10⁻⁷⁷ |
 
 **Theorem 1.** D(4, 2) can be prepared exactly with 5 CNOT gates and real single-qubit rotations.
 
 **Theorem 2.** D(5, 2) can be prepared exactly with 9 CNOT gates and real single-qubit rotations.
 
 **Theorem 3.** D(6, 2) and D(6, 3) can each be prepared exactly with 14 CNOT gates and real single-qubit rotations.
+
+**Theorem 4.** There is a circuit with 25 CNOT gates and real single-qubit rotations whose output, for the 40-digit angles listed in `sim/hp_8_2.txt`, has fidelity above 1 − 10⁻⁷⁷ with D(8, 2).
 
 ## Circuits
 
@@ -93,9 +96,12 @@ First apply R_y(−3π/2) to qubit 0, R_y(−f − π/2) to qubit 1, R_y(−2π)
 
 In both circuits each CNOT is followed by the two rotations of its row, as above.
 
+**Theorem 4.** The CNOT gates are, in order, 1 → 7, 6 → 7, 1 → 3, 1 → 4, 7 → 6, 5 → 7, 1 → 0, 1 → 2, 1 → 7, 2 → 5, 3 → 4, 6 → 3, 6 → 3, 7 → 0, 0 → 1, 4 → 7, 1 → 5, 4 → 3, 5 → 7, 5 → 7, 7 → 2, 2 → 1, 7 → 2, 6 → 4, 6 → 4. As above, R_y rotations act on all eight qubits first and on the control and target after each CNOT; the 66 angles are listed to 40 digits in `sim/hp_8_2.txt`. Four of them have closed forms: −arccos √(2/3), −2 arccos √(1/3) − 2π, arccos √(1/12) − 2π and −3π/2 (angles 8, 9, 17 and 20 in the file, counted from 0).
+
 ## Scope
 
 - **Exact checks.** Theorems 1 to 3 are checked by exact symbolic elimination. Every half-angle cosine and sine is a polynomial in a few algebraic numbers: cos(t/2), sin(t/2), 1/√2 and 1/√3 for Theorem 1, and the half-angle cosines and sines of a, b, c and π/4 together with √2, √3 and √5 for Theorem 2, and in the same way for Theorem 3 with the square roots of the primes that occur. Each amplitude minus its target value reduces to zero modulo relations that hold at these numbers. For Theorem 3 the check shows that the amplitudes off weight k vanish, that all amplitudes of weight k are equal, and that the square of one of them is 1/C(6, k); this fixes the state up to its global sign.
+- **Theorem 4 is a numerical certificate.** With the four closed-form angles fixed, least-squares refinement with exact derivatives at 80 digits converges quadratically (residual norms 10⁻¹⁶, 10⁻³¹, 10⁻⁶¹, 10⁻⁸¹), and a separate simulation of the listed 40-digit angles at 100 digits gives 1 − fidelity = 1.3 · 10⁻⁷⁸. This indicates an exact solution nearby; closed forms for the other angles are not given.
 - **Not formalized.** No part is in Lean. Minimality is not claimed: the counts are upper bounds.
 
 ## Files
@@ -103,6 +109,7 @@ In both circuits each CNOT is followed by the two rotations of its row, as above
 - `sim/exact_d42.py`: the exact check of Theorem 1, and a floating-point cross-check (`python exact_d42.py`, needs sympy).
 - `sim/exact_d52.py`: the exact check of Theorem 2 (`python exact_d52.py`, needs sympy).
 - `sim/certify.py`: closed-form angles and the exact check for a circuit found by `search.py`; `sim/cert_6_2.txt` and `sim/cert_6_3.txt` hold the certified circuits of Theorem 3 (`python certify.py --check cert_6_3.txt` repeats the exact check from a certificate). `sim/tables.py` prints the circuit tables above from a certificate, and `sim/check_tables.py` simulates the printed tables again in floating point (`python tables.py cert_6_3.txt | python check_tables.py 6 3`).
+- `sim/hp_cert.py`: the high-precision refinement and the check of Theorem 4 (`python hp_cert.py --check hp_8_2.txt`, needs mpmath). `sim/anneal.py` is the local search over CNOT placements that found the circuit of Theorem 4, and `sim/nullgauge.py` and `sim/polish.py` fix its free directions and polish it to double precision before the refinement.
 - `sim/search.py`: numerical search over CNOT placements with real rotations and an exact gradient. It found the circuits of Theorems 1 to 3 (`python search.py 4 2 5 6`; for five and six qubits it samples placements, for example `python search.py 5 2 9 4 4000 6` or `python search.py 6 3 14 3 1500 23`).
 
 ## Use of AI
@@ -113,3 +120,4 @@ The circuits, checks and text were produced with Claude Opus 5.5.
 
 1. H. Wang, B. Tan, J. Cong, G. De Micheli. Quantum state preparation using an exact CNOT synthesis formulation. arXiv:2401.01009.
 2. H. Wang, D. B. Tan, J. Cong. Quantum state preparation circuit optimization exploiting don't cares. ICCAD 2024. arXiv:2409.01418.
+3. A. Bärtschi, S. Eidenbenz. Short-depth circuits for Dicke state preparation. IEEE International Conference on Quantum Computing and Engineering (QCE), 2022, pp. 87–96. arXiv:2207.09998.

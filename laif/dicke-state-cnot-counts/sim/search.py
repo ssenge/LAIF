@@ -86,10 +86,13 @@ if __name__ == "__main__":
     hits = 0
     if len(sys.argv) > 5:   # sampled skeletons: python search.py n k c restarts samples seed
         samples, srng = int(sys.argv[5]), np.random.default_rng(int(sys.argv[6]) if len(sys.argv) > 6 else 1)
-        pairs = list(itertools.permutations(range(n), 2))
+        pairs = list(itertools.permutations(range(n), 2)); first = [(0, 1)]
+        if "EDGES" in __import__("os").environ:   # restricted connectivity, e.g. EDGES="0-1,1-2": both orientations
+            und = [tuple(map(int, e.split("-"))) for e in __import__("os").environ["EDGES"].split(",")]
+            pairs = [(a, b) for (a, b) in und] + [(b, a) for (a, b) in und]; first = pairs
         def sampled():
             for _ in range(samples):
-                s = [(0, 1)]
+                s = [first[srng.integers(len(first))]]
                 while len(s) < c:
                     p = pairs[srng.integers(len(pairs))]
                     if p != s[-1]: s.append(p)

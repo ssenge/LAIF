@@ -16,7 +16,11 @@ QMAX = int(__import__("os").environ.get("QMAX", "40"))
 
 def gauge(n, k, skel, seed):
     rng = np.random.default_rng(seed); target = dicke(n, k); g = gates(n, skel)
-    f, x = solve(n, k, skel, 60, rng); assert f < 1e-12, f
+    if "X0" in __import__("os").environ:      # start from a known solution (npy file)
+        x = np.load(__import__("os").environ["X0"]); f = loss_grad(x, n, gates(n, skel), target)[0]
+    else:
+        f, x = solve(n, k, skel, 60, rng)
+    assert f < 1e-12, f
     fixed = {}
     def opt(x0, fixed):
         free = [i for i in range(len(x0)) if i not in fixed]
