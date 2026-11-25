@@ -1,0 +1,5 @@
+{"task": "AL", "seq_len": 400, "neurons_used": 194, "decay": 0.3, "sequences": 5000, "seed": 1, "accuracy": 1.0, "wrong": 0, "max_abs_final_x": 103, "spikes_per_neuron_per_step": 0.182746234375}
+{"task": "AL", "seq_len": 400, "neurons_used": 194, "decay": 0.3, "sequences": 5000, "seed": 2, "accuracy": 1.0, "wrong": 0, "max_abs_final_x": 107, "spikes_per_neuron_per_step": 0.183015809375}
+{"task": "AL", "seq_len": 400, "neurons_used": 194, "decay": 0.3, "sequences": 5000, "seed": 3, "accuracy": 1.0, "wrong": 0, "max_abs_final_x": 114, "spikes_per_neuron_per_step": 0.18327700416666667}
+{"task": "AL", "seq_len": 400, "neurons_used": 194, "decay": 0.3, "sequences": 5000, "seed": 4, "accuracy": 1.0, "wrong": 0, "max_abs_final_x": 112, "spikes_per_neuron_per_step": 0.18384413854166667}
+{"task": "AL", "seq_len": 400, "neurons_used": 194, "decay": 0.3, "sequences": 5000, "seed": 5, "accuracy": 1.0, "wrong": 0, "max_abs_final_x": 107, "spikes_per_neuron_per_step": 0.18395033854166665}

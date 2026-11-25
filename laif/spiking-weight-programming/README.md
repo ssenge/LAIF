@@ -5,7 +5,7 @@ Written 24 Nov 2026.
 ## Result
 
 Weight-space programming writes the weights of a network directly, as a readable circuit, instead of training
-them [2]. This folder applies it to recurrent networks of spiking neurons. The benchmarks are the three
+them [2]. This folder applies it to recurrent networks of spiking neurons. The first three benchmarks are the
 working-memory tasks of [1]: one-dimensional STORE-RECALL, 20-dimensional STORE-RECALL and 12AX. Tasks, neuron
 model and readout are ported from the reference code of [1] and kept as they are there: leaky integrate-and-fire
 (LIF) neurons with a 20 ms membrane time constant, a 1 ms time step, 1 ms synaptic delay, a refractory period,
@@ -28,6 +28,17 @@ The one-dimensional task at all five delay settings of Table 1 of [1]:
 | Best trained network with adaptation, 60 neurons [1] | 99.92 | 99.9 | 99.7 | 97.8 | 97.1 |
 | Programmed circuit, 5 LIF neurons | 99.97 | 100 | 100 | 100 | 100 |
 | Wrong recalls / recalls, programmed circuit | 4 / 12,315 | 0 / 11,965 | 0 / 12,603 | 0 / 13,001 | 0 / 11,903 |
+
+A fourth benchmark is the AL task (autonomous localization) of [4]: decide from 400 action commands whether a
+robot ends on the right half-plane. Here the network has the shape of the benchmark's recurrent LIF model,
+3-128-176-176-2, and the input is noise-free.
+
+| Task | Previous best result [4] | Trained LIF [4] | Programmed LIF network |
+|---|---|---|---|
+| AL, sequence length 400, test accuracy | 87.42 % (PMSN neurons) | 54.40 % feedforward, 56.50 % recurrent | 25,000 of 25,000 sequences, and 5,000 of 5,000 from the generator of [4]; 194 of the 480 neurons used |
+
+The published models of [4] learn the task from 50,000 examples. The network here is written from the known
+rule of the task.
 
 A two-neuron solution of the one-dimensional task with hand-set weights and adaptive neurons is shown in
 [1, Figure 1D, E]. The circuits here use neurons without adaptation, and cover the two larger tasks.
@@ -68,6 +79,21 @@ clears it as well.
 
 Seven weight values.
 
+**AL, 194 neurons in three layers** (`sim/al.py`). The neuron model of [4] has a hard reset and a membrane decay
+per step, a layer sees the layer below in the same step, and the classifier output is averaged over all steps.
+- Layer 1, 16 neurons: one neuron per pair (heading before the step, action). The heading before a step is a
+  sum of these neurons at the previous step, so each neuron is a gate of that sum with the input.
+- Layer 2, 174 neurons: a thermometer code of the x coordinate, where unit k fires while x is at least k, for
+  k from -86 to 87. One step of this counter is a single threshold function of a unit, its two neighbours and
+  the two layer-1 neurons "straight while facing +x" and "straight while facing -x". Outside the range the
+  counter saturates.
+- Layer 2, 2 more neurons: one fires when x goes from 0 to 1, the other when x goes from 1 to 0.
+- Layer 3, 2 relay neurons. The classifier adds 1 for each spike of the first and subtracts 1 for each spike of
+  the second. Over the whole sequence this sum equals 1 if the final x is at least 1 and 0 otherwise, so the
+  time-averaged readout of [4] decides the label.
+
+Four weight values, at membrane decay 0.3.
+
 ## Measurements
 
 | Script | What it runs |
@@ -78,6 +104,9 @@ Seven weight values.
 | `sim/twelve_ax.py` | port of 12AX and the 25-neuron circuit |
 | `sim/sr_train.py` | 60 LIF neurons trained with backpropagation through time in the setting of [1] |
 | `sim/sr_finetune.py` | the same training, started from the programmed circuit with weight noise |
+| `sim/al.py` | the AL task and the programmed three-layer network |
+| `sim/al_reference_check.py` | the same network on sequences from the generator of [4] |
+| `sim/al_train.py` | recurrent LIF network of [4] trained with backpropagation through time on AL |
 
 - One-dimensional task: seeds 1 to 5, 2,048 sequences per seed and setting. The weights were chosen on separate
   seeds, in the settings 200 ms and 2 s only.
@@ -87,6 +116,12 @@ Seven weight values.
 - 12AX: seeds 1 to 5, 2,000 episodes each, as many per seed as the test of [1].
 - Trained LIF network of `sim/sr_train.py`: 98.5, 98.3 and 97.1 % at 200 ms for seeds 0 to 2 (96.7 % in [1]);
   50.3, 49.1 and 49.4 % at 2 s (51 % in [1]); 50.5 % at 4 s for seed 0 (50 % in [1]).
+- AL: seeds 1 to 5, 5,000 sequences each (the test size of [4]) from `sim/al.py`, and 5,000 sequences from the
+  unmodified generator of [4]. Labels are balanced (49.5 % positive). On average 18 % of the 480 neurons fire
+  per step.
+- Trained recurrent LIF network of `sim/al_train.py` on AL, 50,000 training sequences, best test accuracy over
+  the epochs as in [4]: 53.5 % after 20 epochs at decay 0.5 (56.50 % after 100 epochs in [4]); 50.6 % after
+  10 epochs at decay 0.3.
 - Mean firing rate per neuron: 35 to 48 Hz (one-dimensional), 27 Hz (20-dimensional), 29 Hz (12AX). A latch
   that is on fires at the highest rate the refractory period allows, 250 Hz in the STORE-RECALL tasks and
   167 Hz in 12AX.
@@ -131,10 +166,14 @@ input is covered by the measurements only.
 
 - The weights are written by hand for each task. Nothing here is learned, and the comparison says nothing
   about learning rules, which are the subject of [1].
-- The tasks have small finite state, so circuits of this kind exist in principle. What is measured is their
+- The tasks of [1] have small finite state, so circuits of this kind exist in principle. What is measured is their
   size and their accuracy under the Poisson input noise of the benchmark.
 - The accuracies are measured on the stated numbers of random sequences. The Lean file covers the logic of the
   12AX state machine, not the spiking dynamics.
+- The AL network works at membrane decay 0.2 and 0.3 with the stated weights, and not at 0.35 or above. The
+  recurrent LIF run of [4] uses decay 0.5; decay is set per model there, between 0.3 and 1.
+- In AL the x coordinate is tracked from -86 to 87. Final coordinates up to 114 in absolute value occurred in
+  the test sequences and were classified correctly, since the counter saturates far from the decision boundary.
 - The delay labels are the nominal settings of [1]. Sequences are cut at their fixed length, so the delays that
   occur are shorter: the mean distance from STORE to RECALL is about 0.2, 1.4, 2.5, 4.6 and 7.3 s in the five
   settings. The generator is the one of [1], so the rows are comparable.
@@ -151,3 +190,4 @@ input is covered by the measurements only.
 2. Interpretable weight-space programming builds transparent transformers and brain encoding models.
    arXiv:2611.18114, 2026.
 3. J. B. Aimone, W. Severa, C. M. Vineyard. Composing neural algorithms with Fugu. arXiv:1905.12130, 2019.
+4. Neuromorphic Sequential Arena. arXiv:2505.22035, 2025. Code: github.com/liyc5929/neuroseqbench.
