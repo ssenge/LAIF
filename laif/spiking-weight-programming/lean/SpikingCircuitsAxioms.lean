@@ -12,3 +12,8 @@ import SpikingCircuits
 #print axioms Localization.label_one
 #print axioms Localization.label_zero
 #print axioms Localization.readoutUp_ne_label
+#print axioms BinaryAdding.step_hot
+#print axioms BinaryAdding.run_hot
+#print axioms BinaryAdding.network_eq_label
+#print axioms BinaryAdding.class_units_differ
+#print axioms BinaryAdding.ten_ones_no_class

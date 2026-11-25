@@ -1,2 +1,3 @@
 import SpikingCircuits.TwelveAX
 import SpikingCircuits.Localization
+import SpikingCircuits.BinaryAdding

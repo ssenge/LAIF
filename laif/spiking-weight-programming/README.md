@@ -57,6 +57,19 @@ has the shape 2-128-128-10 and the membrane decay 0.5 and threshold 0.5 of the b
 |---|---|---|---|
 | Binary adding, length 100, test accuracy | 100 % (three neuron models with slower or richer dynamics) | 53.35 % recurrent, 29.60 % feedforward | 10,000 of 10,000 sequences, and 2,000 of 2,000 from the generator of [6]; 41 of the 256 neurons used |
 
+The same network, unchanged, at the longer sequences of the length comparison of [6] (its Fig. 8, which compares
+five trained spiking neuron models and two non-spiking models; the values of [6] are read from the bars of
+the figure, to about 2 points):
+
+| Sequence length | 200 | 400 | 600 | 800 | 1200 | 1600 | 2400 |
+|---|---|---|---|---|---|---|---|
+| Best trained spiking neuron model in [6] | 100 % | 100 % | 100 % | 100 % | about 99 % | about 95 % | about 80 % |
+| Trained non-spiking models in [6] | 100 % | 100 % | 100 % | 100 % | 100 % | 100 % | 100 % |
+| Programmed LIF network, 41 neurons | 2,000 of 2,000 | 2,000 of 2,000 | 2,000 of 2,000 | 2,000 of 2,000 | 2,000 of 2,000 | 2,000 of 2,000 | 2,000 of 2,000 |
+
+The count is held by which gate is silent, so the sequence length does not enter, and the gate logic is checked
+in Lean for sequences of every length (below).
+
 A two-neuron solution of the one-dimensional task with hand-set weights and adaptive neurons is shown in
 [1, Figure 1D, E]. The circuits here use neurons without adaptation, and cover the two larger tasks.
 
@@ -180,7 +193,8 @@ All weights are multiples of 0.75, and the always-firing neuron has bias 1. The 
   adaptation the test accuracy is 49.2 and 51.3 % after 2,000 iterations.
 - Binary adding: seeds 1 to 5, 2,000 sequences each with balanced classes (the test size of [6]) from
   `sim/badd.py`, and 2,000 test sequences drawn with the unmodified generator of [6], all at decay 0.5. On average
-  12 % of the 256 neurons fire per step.
+  12 % of the 256 neurons fire per step. Lengths 100 to 2400: 2,000 sequences each, seed 7, the fourth argument
+  of `sim/badd.py` (`sim/results/badd_lengths.jsonl`).
 - Trained recurrent LIF network of `sim/badd_train.py` on binary adding, in the setting of [6] (50,000 training
   sequences, 50 epochs): best test accuracy over the epochs 56.6 % (53.35 % in [6]), 53.2 % after the last epoch.
 - Mean firing rate per neuron: 35 to 47 Hz (one-dimensional), 27 Hz (20-dimensional), 29 Hz (12AX). A latch
@@ -239,6 +253,19 @@ In this file the thermometer code is unbounded, the heading is given directly an
 Boolean formula; the network of `sim/al.py` tracks x from -86 to 87, holds the heading in 16 neurons and has
 extra terms for the first step.
 
+`lean/SpikingCircuits/BinaryAdding.lean` (core Lean, standard axioms).
+
+- `gate`: a gate with drive 3/4 times the number of its conditions that fail, against the threshold 1/2, stated
+  in integers. `step`: the 30 gates of the first layer, where the count before a step is read from the silent
+  gate of the previous step. `classUnit`: the units of the second layer.
+- `network_eq_label`: for every non-empty sequence of masks and bits, of any length, in which at most nine steps
+  have mask and bit on, class unit j fires after the last step exactly when j is the number of such steps.
+- `class_units_differ` and `ten_ones_no_class`: the answer depends on the input, and with ten counted steps no
+  class unit fires, so the statement has content and the bound of nine is needed.
+
+This file states the logic of the gates with integer drives. A gate that does not fire has drive 0 and a gate that
+fires is reset, so no potential is carried between steps.
+
 `lean/LeakyGate/Basic.lean` (Lean 4 with Mathlib, standard axioms).
 
 - Neuron model of [4]: the potential after an input x is d * c + x, where c is the potential carried over (0 after
@@ -259,7 +286,8 @@ Lean version and Mathlib revision are fixed in `lean/lean-toolchain` and `lean/l
 
 Not formalized: that the drives of the neurons of `sim/al.py` lie in the ranges used above (asserted on sampled
 sequences by `sim/al_drive_ranges.py`), the composition of
-the three AL statements into one theorem about the network, the binary adding network, and the spiking dynamics
+the three AL statements into one theorem about the network, the floating-point arithmetic of the binary adding
+network, and the spiking dynamics
 of the other circuits (that the latches, gates and timers realize the state machines under the random input
 spikes of the tasks of [1] and [5]). These points are covered by the measurements only.
 

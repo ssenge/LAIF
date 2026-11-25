@@ -18,7 +18,7 @@ has drive exactly 0, and a gate that fires is reset, so no potential is carried 
   layer 2: c[j], j = 0..9, fires iff the count after the step is j (one of two or three n-neurons is silent).
   readout: class j reads c[j].
 
-usage: badd.py [N_SEQUENCES] [SEED] [DECAY]
+usage: badd.py [N_SEQUENCES] [SEED] [DECAY] [SEQ_LEN]
 """
 import json, sys
 import numpy as np
@@ -97,19 +97,20 @@ def run(x, c, decay):
     return y2 @ c["cls"].T + c["cb"], spikes / B
 
 
-def evaluate(n, seed, decay=0.5):
+def evaluate(n, seed, decay=0.5, seq_len=T):
     rng = np.random.default_rng(seed)
-    x, y = make_batch(n, rng)
+    x, y = make_batch(n, rng, seq_len)
     out, spikes = run(x, circuit(), decay)
     pred = out.argmax(1).numpy()
     one_hot = bool(((out > 0).sum(1) == 1).all())
-    return dict(task="binary adding", seq_len=T, neurons_used=41, decay=decay, sequences=n, seed=seed,
+    return dict(task="binary adding", seq_len=seq_len, neurons_used=41, decay=decay, sequences=n, seed=seed,
                 accuracy=float((pred == y).mean()), wrong=int((pred != y).sum()), exactly_one_class_unit=one_hot,
-                spikes_per_neuron_per_step=spikes / T / (N1 + N2))
+                spikes_per_neuron_per_step=spikes / seq_len / (N1 + N2))
 
 
 if __name__ == "__main__":
     torch.set_num_threads(1)
     a = sys.argv[1:]
     print(json.dumps(evaluate(int(a[0]) if a else 2000, int(a[1]) if len(a) > 1 else 0,
-                              float(a[2]) if len(a) > 2 else 0.5)), flush=True)
+                              float(a[2]) if len(a) > 2 else 0.5,
+                              int(a[3]) if len(a) > 3 else T)), flush=True)
