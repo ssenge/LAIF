@@ -9,6 +9,9 @@ and at n = 4, by brute force on state vectors:
       the qubits, chosen from earlier outcomes of the same copy);
   (4) fidelity gap <cat|s0|cat> - <cat|s1|cat> = lam.
 Prints max_b H^2 / (lam^2 (2/3)^n) and the implied copy bound.
+  (5) the exact optimum over all adaptive one-copy trees (dynamic programming), n <= 14, below the bound of (2);
+  (6) stored copies: for random fully adaptive trees on all nT qubits, |c|/b <= rho per copy and leaf, and
+      affinity >= (1 - rho^2)^(T/2), rho = lam (2/3)^(n/2)/(1 - lam).
 """
 import itertools, numpy as np
 from math import comb
@@ -106,3 +109,45 @@ for n in range(1, 15):
         h, b = adaptive_h2(n, lam), lam ** 2 * (2 / 3) ** n / (1 - lam)
         assert h <= b * (1 + 1e-9); worst = max(worst, h / b)
 print(f"exact optimum over adaptive one-copy trees, n <= 14: largest ratio to the bound {worst:.4f}")
+
+# (6) stored copies: random fully adaptive trees on all nT qubits of T copies (next qubit from any copy, axis
+# from the outcomes so far); assert the pointwise ratio |c|/b <= rho per copy and the affinity bound
+# sum_leaves sqrt(P+ P-) >= (1 - rho^2)^(T/2), rho = lam (2/3)^(n/2)/(1 - lam), with both laws from tau^(x)T.
+def stored_check(n, T, lam, trials, rng):
+    d = 2 ** n
+    A1 = a; B1 = ab
+    for _ in range(n - 1): A1 = np.kron(A1, a); B1 = np.kron(B1, ab)
+    c1, c2 = (A1 + B1) / np.sqrt(2), (A1 - B1) / np.sqrt(2)
+    tp = (1 - lam) * np.eye(d) / d + lam * np.outer(c1, c1.conj()); tm = (1 - lam) * np.eye(d) / d + lam * np.outer(c2, c2.conj())
+    rho = lam * (2 / 3) ** (n / 2) / (1 - lam); worst = 0.0; N = n * T
+    for _ in range(trials):
+        tree = {}
+        def leaves(hist, done):
+            if len(done) == N:
+                yield hist; return
+            if hist not in tree:
+                free = [q for q in range(N) if q not in done]
+                tree[hist] = (free[rng.integers(len(free))], 'XYZ'[rng.integers(3)])
+            q, c = tree[hist]
+            for x in (0, 1): yield from leaves(hist + ((q, c, x),), done | {q})
+        aff = 0.0; tot = 0.0
+        for leaf in leaves((), frozenset()):
+            vec = [None] * N
+            for q, c, x in leaf: vec[q] = AX[c][:, x]
+            pp = pm = 1.0
+            for t in range(T):
+                e = vec[t * n]
+                for v in vec[t * n + 1:(t + 1) * n]: e = np.kron(e, v)
+                gp, gm = np.real(e.conj() @ tp @ e), np.real(e.conj() @ tm @ e)
+                assert abs(gp - gm) / (gp + gm) <= rho * (1 + 1e-9)   # |c|/b with g = b +- c
+                pp *= gp; pm *= gm
+            aff += np.sqrt(pp * pm); tot += pp
+        assert abs(tot - 1) < 1e-10
+        assert aff >= (1 - rho ** 2) ** (T / 2) - 1e-12, (n, T, lam, aff)
+        worst = max(worst, (1 - aff) / (1 - (1 - rho ** 2) ** (T / 2)))
+    return worst
+rng = np.random.default_rng(2); w = 0.0
+for n, T in ((1, 2), (1, 4), (2, 2), (2, 3), (3, 2)):
+    for lam in (0.2, 0.5):
+        w = max(w, stored_check(n, T, lam, 30, rng))
+print(f"stored copies, random fully adaptive trees: bound holds; largest (1 - affinity)/(1 - bound) = {w:.4f}")

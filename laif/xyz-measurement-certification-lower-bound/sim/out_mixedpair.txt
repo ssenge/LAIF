@@ -15,3 +15,4 @@ n=14 lam=0.2: max_b H^2 = 5.7359e-05, bound = 1.7127e-04, ratio = 0.335, copies 
 largest ratio max_b H^2 / bound: 0.4811
 adaptive trees at n = 4: bound holds for 400 random trees
 exact optimum over adaptive one-copy trees, n <= 14: largest ratio to the bound 0.4401
+stored copies, random fully adaptive trees: bound holds; largest (1 - affinity)/(1 - bound) = 0.5971
