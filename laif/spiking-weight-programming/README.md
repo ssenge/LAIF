@@ -82,9 +82,11 @@ and a readout that is linear in the spikes, with a bias, gives the state after e
 so the construction holds for every value of the decay d. This is proved in Lean
 (`lean/LeakyGate/Automaton.lean`) and checked numerically on 300 random automata (`sim/lif_automaton.py`).
 Recurrent networks of threshold units without leak are classically known to realize finite automata, and
-automata have been built from cell assemblies of spiking neurons [7]. At decay 0 the neuron is a threshold unit
-and the statement is the classical one. The contribution here is an explicit construction in the leaky neuron
-model with hard reset that is valid at every decay, with a machine-checked proof; to our knowledge this form has
+automata of spiking neurons with proofs exist for continuous-time neurons in synfire graphs [8] and for cell
+assemblies [7]. At decay 0 the neuron is a threshold unit
+and the statement is the classical one. The contribution here is an explicit construction in the discrete-time
+leaky neuron model with hard reset of the benchmarks, with |Q| * |A| + 1 neurons, that is valid at every decay,
+with a machine-checked proof; to our knowledge this form has
 not been stated.
 
 ## The circuits
@@ -375,3 +377,5 @@ spikes of the tasks of [1] and [5]). These points are covered by the measurement
    Code: github.com/liyc5929/neuroseqbench.
 7. J. Cabessa, G. Horcholle-Bossavit, B. Quenet. Neural computation with spiking neural networks composed of
    synfire rings. ICANN 2017, LNCS 10613, pp. 245-253.
+8. Synfire graphs: from spike patterns to automata of spiking neurons. Report, University of Ulm, 1998.
+   doi:10.18725/oparu-2497.
