@@ -31,7 +31,7 @@ for step in range(steps):
     if new == skel: continue
     L2, x2 = opt(new, x)              # the rotations keep their slots, so x is a warm start
     if L2 < 1e-12:
-        print("HIT", new, L2, "step", step, flush=True); break
+        print("HIT", new, L2, "step", step, flush=True); np.save("hit_%d_%d_%d.npy" % (n, k, c), x2); break
     if math.log(L2 + 1e-16) < math.log(L + 1e-16) or rng.random() < math.exp(-(math.log(L2 + 1e-16) - math.log(L + 1e-16)) / T):
         skel, L, x = new, L2, x2
     T = max(0.05, T * 0.997)

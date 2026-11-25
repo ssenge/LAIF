@@ -31,6 +31,10 @@ if sys.argv[1] == "--check":
     skel = ast.literal_eval(lines[0].split("skeleton=")[1])
     mp.mp.dps = 100; th = [mp.mpf(v) for v in lines[2:] if v.strip()]
     assert len(th) == n + 2 * len(skel)
+    if "edges=" in lines[1]:                 # restricted connectivity: every CNOT acts on an allowed pair
+        edges = ast.literal_eval(lines[1].split("edges=")[1])
+        assert all((a, b) in edges or (b, a) in edges for a, b in skel)
+        print("all CNOT gates act on the %d allowed pairs" % len(edges))
     psi = simulate(n, skel, th, 100); t = target(n, k)
     ov = mp.fsum(a * b for a, b in zip(psi, t))
     print("n=%d k=%d CNOT gates %d, 1 - fidelity = %s" % (n, k, len(skel), mp.nstr(1 - ov ** 2, 5)))
