@@ -4,7 +4,7 @@ Bridging-set iteration of [2], scale s = n^l, bridging set of n^{1-l} vertices, 
   quantum minimum finding [4] over the bridging set for each pair: n^{2 + (1-l)/2},
 so tau = max over l in [0, 1] of the minimum. w(1, k, 1) is convex in k and at least 2, so the lower convex
 hull of published points is an upper bound for it.
-Asserts: tau = 2.413455 with the bounds of [5, Table 1]; tau = 19/8 if w = 9/4 and alpha >= 1/2 [6]; tau = 7/3 if w = 2;
+Asserts: tau = 2.413455 with the bounds of [5, Table 1]; tau = 19/8 on the segment from (1/2, 2) to (1, 9/4), so tau <= 19/8 if w <= 9/4 and w(1, 1/2, 1) = 2 [6, 7, 8]; tau = 7/3 if w = 2;
 tau below the quantum bound (5 + w)/3 implied by [1] and below the classical 2 + mu of [2].
 Run: python exponent.py
 """
@@ -37,7 +37,7 @@ cases = {
     "published": [(0.0, 2.0), (0.33, 2.000092), (0.34, 2.000520), (0.35, 2.001243), (0.40, 2.009280),
                   (0.50, 2.042776), (0.5275, 2.054999), (0.60, 2.092351), (0.70, 2.152770), (0.80, 2.220639),
                   (0.90, 2.293941), (1.0, 2.371177)],
-    # condition: w = 9/4 and alpha >= 1/2 [6]
+    # condition: w <= 9/4 and w(1, 1/2, 1) = 2 [6, 7, 8]; by convexity w(1, k, 1) lies on or below this segment
     "omega 9/4": [(0.0, 2.0), (0.5, 2.0), (1.0, 2.25)],
     "omega 2": [(0.0, 2.0), (1.0, 2.0)],
 }
