@@ -6,3 +6,4 @@ import RingMulticast.Structure
 import RingMulticast.Main
 import RingMulticast.Play
 import RingMulticast.Mirror
+import RingMulticast.Content

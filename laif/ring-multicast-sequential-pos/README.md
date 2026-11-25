@@ -76,7 +76,8 @@ Run with `python proof_certs.py`, `python checkrelax.py 2000` and `python crossc
 library only).
 
 - **Lean** (`lean/`, Lean v4.36.0-rc1, Mathlib d875a8de5222, only the standard axioms, output in `lean/axioms.txt`).
-  `two_orders` proves the theorem from the game itself: for every outcome of myopic sequential play in A and in B,
+  Edge costs are rational. `two_orders` proves the theorem from the game itself: for every outcome of myopic
+  sequential play in A and in B,
   with ties broken either way, 3 min(cost_A, cost_B) ≤ 4 OPT, for general n and o in the orientation of the
   theorem. `sequential_pos` gives the price of stability for every ring: there is an arrival order such that every
   outcome of myopic sequential play, with ties broken either way, costs at most 4/3 of every network, and such an
@@ -92,9 +93,13 @@ library only).
   - `Mirror.lean`: the ring read clockwise (edge k to n − k, player j to n − 1 − j), with `myopic_mir` and
     `netCost_mir` (myopic play and the network cost carry over), `oriented_order` (A or B works for every tie
     choice) and `sequential_pos`.
+  - `Content.lean`: `order_matters`, on the instance 6, 10, 3, 10 the order 0, 1, 2 has an outcome of cost 26
+    against 19 for every player going left, and 3 · 26 > 4 · 19, so the bound does not hold for every order.
   - `Play.lean`: `exists_myopic`, every order has an outcome of myopic sequential play (`play`, ties broken to the
     right, by recursion on the arrival time).
-  - `Cases.lean`: the bounds on z, from the best-response conditions as hypotheses, with a general optimum OPT.
+  - `Cases.lean`: the bounds on z, from the best-response conditions as hypotheses, with a general optimum OPT. On
+    the game these give z ≤ OPT/3 in every case (OPT/5 for q ≥ p); the finer values of the table are the optima of
+    the relaxed linear programs in `Basic.lean`, whose relaxation steps are checked by `sim/checkrelax.py`.
     `tail_le` and `after_eq`, the weakening of the far terms of a right path and the mass after p;
     `cond_A` and `left_share`, the weakened condition of player p; `bound_p_zero`, `bound_succ` (q + 1 = p),
     `bound_ge` (q ≥ p), `bound_d2`, `bound_d2_none` and `bound_d3_none` (q = −1).

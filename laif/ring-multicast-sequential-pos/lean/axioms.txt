@@ -66,3 +66,7 @@
 'RingMulticast.mirT_injOn' depends on axioms: [propext, Quot.sound]
 'RingMulticast.oriented_order' depends on axioms: [propext, Classical.choice, Quot.sound]
 'RingMulticast.sequential_pos' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RingMulticast.myopic_c26' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RingMulticast.netCost_c26' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RingMulticast.netCost_left' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RingMulticast.order_matters' depends on axioms: [propext, Classical.choice, Quot.sound]
