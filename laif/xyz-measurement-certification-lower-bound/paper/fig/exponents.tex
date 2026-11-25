@@ -1,0 +1,37 @@
+% Panel a: exponents of the copy count in d = 2^n for fidelity estimation with X, Y, Z measurements.
+% Panel b: one-copy squared Hellinger distance of the pair of Theorem thm:low at lambda = 0.2 (data: h2.csv, sim/figdata.py).
+\begin{tikzpicture}[font=\scriptsize]
+\begin{scope}
+  \def\L{6.2}
+  \node[font=\footnotesize\bfseries, anchor=west] at (-0.55, 2.05) {a};
+  \draw[line width=0.6pt, -{Stealth[length=4pt]}] (0,0) -- (\L+0.25,0) node[right] {$\alpha$};
+  \foreach \x/\t in {0/0, 0.25/0.25, 0.5/0.5, 0.75/0.75, 1/1} {
+    \draw[line width=0.5pt] ({\x*\L},0.07) -- ({\x*\L},-0.07) node[below=1pt] {\t};
+  }
+  % known interval of the worst-case exponent
+  \fill[black!12] ({0.58496*\L},-0.05) rectangle ({0.7716*\L},0.05);
+  \draw[line width=1.6pt, Okabe1] ({0.29248*\L},0.35) -- ({0.29248*\L},0.75);
+  \node[Okabe1, align=center, anchor=south] at ({0.29248*\L},0.78) {$0.2924$\\Thms \ref{thm:cert}, \ref{thm:half}};
+  \draw[line width=1.6pt, Okabe2] ({0.58496*\L},0.35) -- ({0.58496*\L},0.75);
+  \node[Okabe2, align=center, anchor=south] at ({0.58496*\L},0.78) {$0.5849$\\Thm \ref{thm:low}};
+  \draw[line width=1.6pt, Okabe3, dashed] ({0.7716*\L},0.35) -- ({0.7716*\L},0.75);
+  \node[Okabe3, align=center, anchor=south] at ({0.7716*\L},0.78) {$0.7716$\\upper [5]};
+  \draw[line width=1.6pt, black!55, dotted] ({0.9675*\L},0.35) -- ({0.9675*\L},1.25);
+  \node[black!55, align=center, anchor=south] at ({0.9675*\L},1.28) {$0.9675$\\upper [1]};
+  \node[anchor=north, align=center] at ({0.68*\L},-0.42) {worst-case exponent};
+\end{scope}
+\begin{scope}[xshift=8.6cm, yshift=-0.55cm]
+  \node[font=\footnotesize\bfseries, anchor=west] at (-1.35, 2.6) {b};
+  \begin{axis}[
+      width=6.4cm, height=4.4cm, ymode=log, ymin=2e-6, ymax=8e-2, xmin=0.5, xmax=14.5, xtick={2,4,...,14},
+      xlabel={$n$}, ylabel={$H^2$, one copy}, tick label style={font=\scriptsize},
+      label style={font=\scriptsize}, legend style={font=\scriptsize, draw=none, fill=none, at={(0.02,0.03)}, anchor=south west},
+      legend cell align=left, axis line style={line width=0.5pt}, every tick/.style={line width=0.5pt},
+      at={(0,0)}]
+    \addplot[Okabe2, line width=0.9pt, mark=none] table[x=n, y=bound, col sep=comma] {fig/h2.csv};
+    \addlegendentry{bound $\lambda^2(2/3)^n/(1-\lambda)$}
+    \addplot[Okabe1, line width=0.6pt, mark=o, mark size=1.6pt, only marks] table[x=n, y=adaptive, col sep=comma] {fig/h2.csv};
+    \addlegendentry{exact, best adaptive tree}
+  \end{axis}
+\end{scope}
+\end{tikzpicture}

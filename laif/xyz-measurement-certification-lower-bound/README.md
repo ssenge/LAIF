@@ -2,6 +2,8 @@
 
 2026-11-25
 
+The results are also written up as a paper, [paper/main.pdf](paper/main.pdf) (source `paper/main.tex`, figure `paper/fig/`). There Theorem 4 is Theorem 1, Proposition 5 is Proposition 2, Theorems 1 and 2 are Theorems 3 and 5, Lemma 1 is Lemma 4 and Corollary 3 is Corollary 6.
+
 ## Problem
 
 A known pure target state |ψ⟩ on n qubits is to be certified, or its fidelity with an unknown lab state σ estimated, from copies of σ. With arbitrary measurements, Θ(1/ε) copies certify and Θ(1/ε²) copies estimate the fidelity to ±ε. Many experiments measure each qubit only along the axes X, Y or Z. In that model, the classical-shadow estimator with uniformly random axes estimates the fidelity with O(d^{0.7716}/ε²) copies, d = 2^n, for every target ([5]; earlier o(d^{0.9675})/ε² [1]). For almost all targets, X, Y, Z measurements certify with O(1/ε²) copies [6] and estimate the fidelity efficiently [7]. Without the axis restriction, adaptive single-qubit measurements certify every pure state from O(n/ε) copies [2], while algorithms with little adaptivity need 2^{Ω(n)} copies for some target [2, Theorem 2]. Whether every pure state can be certified with few single-qubit measurements was the main open question of [3]; for general axes the answer is yes [2]. With X, Y, Z axes only, the target ψ_n below needs exponentially many copies. For measurements of single X, Y, Z strings, fidelity estimation is studied in [4], and the cost of such estimators grows exponentially with the nonstabilizerness of the target [8].

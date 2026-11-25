@@ -1,0 +1,302 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{microtype}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{arrows.meta}
+\definecolor{Okabe1}{RGB}{0,114,178}
+\definecolor{Okabe2}{RGB}{213,94,0}
+\definecolor{Okabe3}{RGB}{0,158,115}
+\usepackage[hidelinks]{hyperref}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+
+\newcommand{\eps}{\varepsilon}
+\newcommand{\ket}[1]{|#1\rangle}
+\newcommand{\bra}[1]{\langle #1|}
+\newcommand{\abar}{\bar a}
+\newcommand{\E}{\mathbb{E}}
+
+\title{Single-qubit $X$, $Y$, $Z$ measurements: certifying a cat state needs $(3/2)^{n/2}/\eps$ copies and estimating its fidelity $(3/2)^n/\eps^2$}
+\author{Sebastian Senge\\Independent Researcher}
+\date{25 November 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+A known pure $n$-qubit target state is to be certified, or its fidelity with an unknown state estimated, from copies of that state, when every qubit can only be measured along the axes $X$, $Y$ or $Z$. With random axes, the fidelity of every target can be estimated to $\pm\eps$ from $O(d^{0.7716}/\eps^2)$ copies, $d = 2^n$, and with arbitrary single-qubit axes and adaptivity every target can be certified from $O(n/\eps)$ copies. We give an explicit target, the cat state of two orthogonal magic product states, together with lower bounds that hold for every adaptive strategy, even one that holds all copies at once and measures their qubits in any order:\\
+estimating its fidelity to $\pm\eps$ needs $\ln(9/8)\,(3/2)^n/(41\eps^2) = \Omega(d^{0.5849}/\eps^2)$ copies, for $\eps\le 1/6$;\\
+random-axis classical shadows estimate it with $\lceil 13.5\,(3/2)^n/\eps^2\rceil$ copies, so its copy count is $\Theta((3/2)^n/\eps^2)$;\\
+certifying it against states of fidelity $1-\eps$ needs $\ln(5/3)\,(3/2)^{n/2}/(2\eps)$ copies;\\
+estimating fidelities near $1/2$ needs $\ln(3/2)\,(3/2)^{n/2}/(16\eps^2)$ copies, for $\eps<1/4$.\\
+So the worst-case exponent of fidelity estimation with $X$, $Y$, $Z$ measurements lies between $0.5849$ and $0.7716$. For any finite set of axes, not all parallel, the same bounds hold with $\kappa^{2n}$ and $\kappa^n$ in place of $(2/3)^n$ and $(2/3)^{n/2}$, where $\kappa<1$ is a covering constant of the axis set. The scalar inequalities behind the certification bounds are checked in Lean.
+\end{abstract}
+
+\section{Introduction}
+
+Certification asks whether a lab state $\sigma$ is close to a known pure target $\ket\psi$; fidelity estimation asks for $\bra\psi\sigma\ket\psi$ to additive error $\eps$. With arbitrary measurements both are cheap: measuring the projector onto $\ket\psi$ certifies with $\Theta(1/\eps)$ copies and estimates the fidelity with $\Theta(1/\eps^2)$ copies. Many experiments, however, measure each qubit separately and only along the three axes $X$, $Y$ and $Z$, the setting of direct fidelity estimation [10] and classical shadows [9].
+
+In this model the classical-shadow estimator with uniformly random axes estimates the fidelity of every target from $o(d^{0.9675})/\eps^2$ copies, $d = 2^n$, as shown in [1], and a sharper analysis of its variance gives $O(d^{0.7716}/\eps^2)$ [5]. For almost all targets far fewer copies suffice: $X$, $Y$, $Z$ measurements certify with $O(1/\eps^2)$ copies [6], and the fidelity can be estimated efficiently [7]; the cost of estimators built from single Pauli strings is studied in [4] and grows exponentially with the nonstabilizerness of the target [8]. Without the axis restriction, adaptive single-qubit measurements certify every pure state from $O(n/\eps)$ copies, while algorithms with little adaptivity need $2^{\Omega(n)}$ copies for some target [2, Theorem 2]. Whether every pure state can be certified with few single-qubit measurements was the main open question of [3], and for general axes the answer is yes [2]. With $X$, $Y$, $Z$ axes only, the answer is no: the target below needs exponentially many copies.
+
+We give such a target for $X$, $Y$, $Z$ measurements, and lower bounds that hold for every strategy in the strongest single-qubit model: all copies are held at once, and the next qubit, from any copy, and its axis may depend on all earlier outcomes. Let $\ket a$ be the single-qubit state whose expectation values of $X$, $Y$ and $Z$ are all $1/\sqrt3$, and $\ket\abar$ an orthogonal state. The target is
+\[
+\ket{\psi_n} = \tfrac{1}{\sqrt2}\bigl(\ket a^{\otimes n} + \ket\abar^{\otimes n}\bigr),
+\]
+the cat state $(\ket0^{\otimes n}+\ket1^{\otimes n})/\sqrt2$ with one fixed single-qubit unitary applied to every qubit. Table~\ref{tab:results} summarizes the bounds.
+
+\begin{table}[h]
+\centering
+\small
+\begin{tabular}{@{}>{\raggedright\arraybackslash}p{0.28\textwidth}>{\raggedright\arraybackslash}p{0.30\textwidth}>{\raggedright\arraybackslash}p{0.36\textwidth}@{}}
+\toprule
+ & certification ($1$ against $1-\eps$) & fidelity estimation to $\pm\eps$ \\
+\midrule
+Upper bound, every target & & $O(d^{0.7716}/\eps^2)$ [5] \\
+Upper bound, target $\psi_n$ (Proposition~\ref{prop:tight}) & & $13.5\,(3/2)^n/\eps^2$ \\
+Previous best bound, worst-case target & $\Omega(1/\eps)$; $2^{\Omega(n)}$ with little adaptivity [2] & $\Omega(1/\eps^2)$; $2^{\Omega(n)}$ with little adaptivity, implied by [2] \\
+Theorem~\ref{thm:low} (low fidelity) & & $\ln(9/8)\,(3/2)^n/(41\eps^2) = \Omega(d^{0.5849}/\eps^2)$, $\eps\le1/6$ \\
+Theorem~\ref{thm:cert} & $\ln(5/3)\,(3/2)^{n/2}/(2\eps)$ & \\
+Theorem~\ref{thm:half} (fidelity near $1/2$) & & $\ln(3/2)\,(3/2)^{n/2}/(16\eps^2)$, $\eps<1/4$ \\
+\bottomrule
+\end{tabular}
+\caption{Copy counts with single-qubit $X$, $Y$, $Z$ measurements in the worst case over pure targets. Our lower bounds are proved for the target $\psi_n$ and hold for every adaptive strategy on stored copies; Proposition~\ref{prop:tight} is an upper bound for $\psi_n$ only. The bound $2^{\Omega(n)}$ of [2] holds for some target and algorithms with little adaptivity in arbitrary single-qubit bases, hence also with $X$, $Y$, $Z$ axes, with an unspecified constant in the exponent; for the target $\psi_n$ itself, the previous bounds are those for arbitrary measurements.}
+\label{tab:results}
+\end{table}
+
+\paragraph{Results.}
+\begin{itemize}
+\item Theorem~\ref{thm:low}: estimating $\bra{\psi_n}\sigma\ket{\psi_n}$ to $\pm\eps$ for every $\sigma$ needs $\ln(9/8)(3/2)^n/(41\eps^2)$ copies, for $\eps\le1/6$. Since $(3/2)^n = d^{\log_2(3/2)}$ and $\log_2(3/2) = 0.58496\ldots$, the worst-case exponent of fidelity estimation with $X$, $Y$, $Z$ measurements lies between $0.5849$ and $0.7716$ (Figure~\ref{fig:main}a).
+\item Proposition~\ref{prop:tight}: random-axis classical shadows estimate this fidelity with $\lceil13.5(3/2)^n/\eps^2\rceil$ copies. So for $\psi_n$ the copy count is $\Theta((3/2)^n/\eps^2)$ in every model from non-adaptive random axes to adaptive strategies on stored copies.
+\item Theorem~\ref{thm:cert}: telling $\psi_n$ from states of fidelity $1-\eps$ needs $\ln(5/3)(3/2)^{n/2}/(2\eps)$ copies.
+\item Theorem~\ref{thm:half}: estimating fidelities near $1/2$ needs $\ln(3/2)(3/2)^{n/2}/(16\eps^2)$ copies, for $\eps<1/4$.
+\item Corollary~\ref{cor:axes}: for any finite set $S$ of axes, the same holds with a covering constant $\kappa(S)<1$ in place of $\sqrt{2/3}$, provided the axes of $S$ are not all parallel.
+\end{itemize}
+
+\paragraph{Technique.} The single-qubit fact behind all bounds is that the outcome probabilities of $\ket a$ along $X$, $Y$ and $Z$ are $(1\pm1/\sqrt3)/2$, the same for every axis, so that for every allowed outcome vector $\ket e$
+\[
+|\langle e|a\rangle|\,|\langle e|\abar\rangle| = 6^{-1/2},\qquad \sum_{e} |\langle e|a\rangle|\,|\langle e|\abar\rangle| = \sqrt{2/3}.
+\]
+No choice of axes, adaptive or not, can make the cross terms between the two branches of $\psi_n$ more visible than this. For certification, the hard alternative is the dephased state, as in the cross-term approach of [2, Section 3]; the distance is bounded by induction on the measurement tree. For estimation near fidelity $1/2$, a product of per-copy likelihood ratios is a supermartingale along the tree. For low fidelity, both hypotheses carry a maximally mixed background, which makes the ratio of the two outcome laws close to $1$ at every outcome of every copy, so the bound holds for stored copies in one line.
+
+\begin{figure}[t]
+\centering
+\input{fig/exponents.tex}
+\caption{\textbf{a}, Exponent $\alpha$ of the copy count $d^\alpha/\eps^2$ for fidelity estimation with $X$, $Y$, $Z$ measurements: the lower bounds of Theorem~\ref{thm:half} (Theorem~\ref{thm:cert} gives the same exponent for certification, with $1/\eps$) and of Theorem~\ref{thm:low}, and the upper bounds of [1] and [5]. The grey interval contains the worst-case exponent. \textbf{b}, One-copy squared Hellinger distance between the two states of Theorem~\ref{thm:low} at $\lambda = 0.2$: the bound of Theorem~\ref{thm:low}(a) and the exact value for the best adaptive measurement of one copy, computed by dynamic programming over outcome types (Section~\ref{sec:num}). For every $n\le14$ the best adaptive tree does no better than the best fixed setting.}
+\label{fig:main}
+\end{figure}
+
+\section{Setting}\label{sec:setting}
+
+Let $\ket a$ be the single-qubit state with $\ket a\bra a = (I + r\cdot\vec\sigma)/2$, $r = (1,1,1)/\sqrt3$, $\vec\sigma = (X, Y, Z)$, and let $\ket\abar$ be orthogonal to it, with any phase. Besides $\psi_n$ we use the dephased state, an orthogonal cat state, and mixtures:
+\[
+\rho_n = \tfrac12\bigl(\ket a\bra a^{\otimes n} + \ket\abar\bra\abar^{\otimes n}\bigr),\qquad
+\ket{\tilde\psi_n} = \tfrac{1}{\sqrt2}\bigl(\ket a^{\otimes n} - \ket\abar^{\otimes n}\bigr),
+\]
+so $\bra{\psi_n}\rho_n\ket{\psi_n} = 1/2$ and $\langle\psi_n|\tilde\psi_n\rangle = 0$. For $0\le s\le1$ let $\rho_s = (1-s)\rho_n + s\ket{\psi_n}\bra{\psi_n}$, of fidelity $(1+s)/2$, and for $0<\eps\le1/2$ let $\sigma_\eps = (1-2\eps)\ket{\psi_n}\bra{\psi_n} + 2\eps\rho_n$, of fidelity $1-\eps$. Write $q = (2/3)^{n/2}$.
+
+\paragraph{Model.} A strategy receives $T$ copies of the lab state. It measures single qubits one at a time, each in the eigenbasis of $X$, $Y$ or $Z$. Which qubit is measured next, from which copy, along which axis, and whether to stop may depend on all earlier outcomes and on classical randomness. At the end it outputs a decision or an estimate. After an outcome $e$ a qubit is left in $\ket e$, uncorrelated with the other qubits, so measuring it again gives an outcome whose law is fixed by $e$ and the same under every hypothesis; this adds only classical randomness, and we may assume that each qubit is measured at most once. Strategies that measure the copies one after another, or that fix all axes in advance, are special cases.
+
+\paragraph{Trees.} Given its random coins, a strategy is a decision tree: each node measures one qubit not yet measured. A random strategy is a mixture of trees; recording the coins as part of the outcome, the total variation distance, the chi-square divergence and the affinity $\sum_\ell\sqrt{P(\ell)Q(\ell)}$ of the two outcome laws are averages over the coins of their values for single trees, so bounds for every tree hold for the mixture. Measuring the remaining qubits at a leaf refines the outcome, which can only increase the total variation distance and the chi-square divergence and decrease the affinity (data processing). So we may assume that every leaf $\ell$ has measured every qubit, with outcome vectors $\ket{e_j}$, each an eigenvector of the chosen axis. The event of reaching $\ell$ is then the projector onto the product vector $\ket{e_\ell} = \bigotimes_j\ket{e_j}$, and $P_\sigma(\ell) = \bra{e_\ell}\sigma^{\otimes T}\ket{e_\ell}$.
+
+\paragraph{The per-qubit factor.} Along $X$, $Y$ or $Z$ the outcome probabilities of $\ket a$ are $(1\pm1/\sqrt3)/2$ and those of $\ket\abar$ are $(1\mp1/\sqrt3)/2$. Hence for every allowed outcome vector $\ket e$,
+\begin{equation}\label{eq:factor}
+|\langle e|a\rangle|\,|\langle e|\abar\rangle| = \tfrac12\sqrt{(1+1/\sqrt3)(1-1/\sqrt3)} = 6^{-1/2},\qquad \sum_{e} |\langle e|a\rangle|\,|\langle e|\abar\rangle| = \sqrt{2/3},
+\end{equation}
+with the sum over the two outcomes of one axis. In addition, $\sum_e \langle e|a\rangle\langle\abar|e\rangle = \langle\abar|a\rangle = 0$ in every basis.
+
+\section{Fidelity estimation at low fidelity}\label{sec:low}
+
+\begin{theorem}\label{thm:low}
+For $0<\lambda<1$ let
+\[
+\tau_+ = (1-\lambda)\frac Id + \lambda\ket{\psi_n}\bra{\psi_n},\qquad \tau_- = (1-\lambda)\frac Id + \lambda\ket{\tilde\psi_n}\bra{\tilde\psi_n}.
+\]
+\begin{enumerate}
+\item[(a)] For one copy and every strategy, $H^2(P_{\tau_+}, P_{\tau_-}) \le \lambda^2(2/3)^n/(1-\lambda)$, where
+\[H^2 = 1-\sum_\ell\sqrt{P_{\tau_+}(\ell)P_{\tau_-}(\ell)}.\]
+\item[(b)] For $T$ copies and every strategy, the affinity $\sum_\ell \sqrt{P_{\tau_+}(\ell)P_{\tau_-}(\ell)}$ is at least $(1-\beta^2)^{T/2}$, where $\beta = \lambda(2/3)^{n/2}/(1-\lambda)$, whenever $\beta<1$.
+\item[(c)] For $0<\eps\le1/6$, a strategy that estimates $\bra{\psi_n}\sigma\ket{\psi_n}$ to $\pm\eps$ with probability at least $2/3$ for every state $\sigma$ uses at least $\ln(9/8)\,(3/2)^n/(41\eps^2)$ copies.
+\end{enumerate}
+\end{theorem}
+
+\begin{proof}
+(a) Take a single tree whose $2^n$ leaves measure every qubit. With $A_\ell = \langle e_\ell|a^{\otimes n}\rangle$ and $B_\ell = \langle e_\ell|\abar^{\otimes n}\rangle$,
+\[
+P_{\tau_\pm}(\ell) = \frac{1-\lambda}{d} + \frac\lambda2\,|A_\ell\pm B_\ell|^2,
+\]
+so $P_{\tau_+}(\ell)-P_{\tau_-}(\ell) = 2\lambda\,\mathrm{Re}(A_\ell\bar B_\ell)$ and $P_{\tau_+}(\ell)+P_{\tau_-}(\ell)\ge 2(1-\lambda)/d$. By \eqref{eq:factor}, $|A_\ell\bar B_\ell| = 6^{-n/2}$ at every leaf. Since $(\sqrt x-\sqrt y)^2\le(x-y)^2/(x+y)$,
+\[
+H^2 = \frac12\sum_\ell\Bigl(\sqrt{P_{\tau_+}(\ell)}-\sqrt{P_{\tau_-}(\ell)}\Bigr)^2 \le \frac12\cdot 2^n\cdot 4\lambda^2 6^{-n}\cdot\frac{d}{2(1-\lambda)} = \frac{\lambda^2(2/3)^n}{1-\lambda}.
+\]
+
+(b) Take a single tree whose leaves measure all $nT$ qubits. The leaf vector is a product over the copies, $\ket{e_\ell} = \bigotimes_t\ket{e_{\ell,t}}$, so $P_{\tau_\pm}(\ell) = \prod_t g_\pm(e_{\ell,t})$ with $g_\pm(e) = \bra e\tau_\pm\ket e$. Write $g_\pm = b\pm c$, where $b(e) = \bra e\bar\tau\ket e$ for $\bar\tau = (\tau_++\tau_-)/2 = (1-\lambda)I/d + \lambda\rho_n$. As in (a), $b\ge(1-\lambda)/d$ and $|c| = \lambda|\mathrm{Re}(A\bar B)|\le\lambda6^{-n/2}$, so
+\[
+\frac{|c|}{b}\le\frac{\lambda\, d\, 6^{-n/2}}{1-\lambda} = \beta
+\]
+at every leaf and every copy. Hence $\sqrt{g_+g_-} = b\sqrt{1-c^2/b^2}\ge b\sqrt{1-\beta^2}$, and
+\[
+\sum_\ell\sqrt{P_{\tau_+}(\ell)P_{\tau_-}(\ell)} \ge (1-\beta^2)^{T/2}\sum_\ell\prod_t b(e_{\ell,t}) = (1-\beta^2)^{T/2},
+\]
+because $\sum_\ell\prod_t b(e_{\ell,t})$ is the total probability of the leaves under $\bar\tau^{\otimes T}$.
+
+(c) Take $\lambda = 3\eps\le1/2$. The fidelities $\bra{\psi_n}\tau_+\ket{\psi_n} = \lambda+(1-\lambda)/d$ and $\bra{\psi_n}\tau_-\ket{\psi_n} = (1-\lambda)/d$ differ by $3\eps>2\eps$, so comparing an estimate with the midpoint tells $\tau_+$ from $\tau_-$ with probability at least $2/3$ under each, and the total variation distance of the two outcome laws is at least $1/3$. It is at most $\sqrt{1-A^2}$ for the affinity $A$ [11, Section 2.4], so by (b) $(1-\beta^2)^T\le8/9$ and
+\[
+T\ge\frac{\ln(9/8)}{\ln(1/(1-\beta^2))}\ge\ln(9/8)\,\frac{1-\beta^2}{\beta^2}.
+\]
+Here $\beta^2\le4\lambda^2(2/3)^n = 36\eps^2(2/3)^n$. If $\ln(9/8)(3/2)^n/(41\eps^2)\le1$ there is nothing to prove. Otherwise $36\eps^2(2/3)^n<36\ln(9/8)/41<0.104$, so $\beta^2<0.104$ and $T\ge 0.896\ln(9/8)/(36\eps^2(2/3)^n)\ge\ln(9/8)(3/2)^n/(41\eps^2)$.
+\end{proof}
+
+The bound exceeds one copy for every $\eps\le1/6$ once $n\ge6$; at $\eps = 1/6$ and $n = 6$ it is $1.178$ copies. Numerically, Theorem~\ref{thm:low}(a) is attained up to a constant: with $\ket a = (\cos(\theta/2), e^{i\pi/4}\sin(\theta/2))$, $\cos\theta = 1/\sqrt3$, and $\ket\abar = (-e^{-i\pi/4}\sin(\theta/2), \cos(\theta/2))$ in the computational basis, $\lambda = 0.2$ and $n\le14$, the best adaptive one-copy tree reaches between $0.30$ and $0.44$ of the bound (Figure~\ref{fig:main}b). The two states have fidelity at most $3\eps+1/d$ with $\psi_n$, so the theorem concerns estimation at low fidelity; near fidelity $1/2$ and $1$, Theorems~\ref{thm:half} and \ref{thm:cert} apply.
+
+\begin{proposition}\label{prop:tight}
+Measure every qubit of each copy along a uniformly random axis from $X$, $Y$, $Z$, and set $o = \bra{\psi_n}\bigotimes_j(3\ket{e_j}\bra{e_j}-I)\ket{\psi_n}$ for the outcome vectors $\ket{e_j}$. Then $\E[o] = \bra{\psi_n}\sigma\ket{\psi_n}$ and $\E[o^2]\le4.5\,(3/2)^n$ for every state $\sigma$. Hence the mean of $o$ over $\lceil13.5(3/2)^n/\eps^2\rceil$ copies is within $\eps$ of the fidelity with probability at least $2/3$.
+\end{proposition}
+
+\begin{proof}
+Unbiasedness is the defining property of this estimator [9]: per qubit, $\frac13\sum_b\sum_s\bra{e_{b,s}}\sigma\ket{e_{b,s}}(3\ket{e_{b,s}}\bra{e_{b,s}}-I) = \sigma$ for every single-qubit operator $\sigma$, and this extends to products and hence to all $n$-qubit $\sigma$ by linearity. Write $\ket{\psi_n}\bra{\psi_n} = \frac12(K_{aa}+K_{\abar\abar}+K_{a\abar}+K_{\abar a})$ with $K_{xy} = (\ket x\bra y)^{\otimes n}$, so that $o = (o_{aa}+o_{\abar\abar})/2+\mathrm{Re}\,o_{a\abar}$ with $o_{xy} = \prod_j\bra y(3\ket{e_j}\bra{e_j}-I)\ket x$. Per qubit, $|\bra\abar(3\ket e\bra e-I)\ket a|^2 = 9|\langle\abar|e\rangle|^2|\langle e|a\rangle|^2 = 3/2$ by \eqref{eq:factor}, so $|o_{a\abar}|^2 = (3/2)^n$. For the diagonal terms, $(3|\langle e|a\rangle|^2-1)^2 = 1+(\sqrt3/2)s$ for the outcome $s = \pm1$, and averaging over the axes gives the per-qubit operator $I+(r\cdot\vec\sigma)/2$, whose largest eigenvalue is $3/2$; so $\E[o_{aa}^2]\le(3/2)^n$, and likewise for $\abar$. With $(x+y+z)^2\le3(x^2+y^2+z^2)$, $\E[o^2]\le3((3/2)^n/4+(3/2)^n/4+(3/2)^n) = 4.5\,(3/2)^n$, and Chebyshev's inequality gives the copy count.
+\end{proof}
+
+The exact largest value of $\E[o^2]$ over all states is $0.75$ to $1$ times $(3/2)^n$ for $n\le6$.
+
+\section{Certification}\label{sec:cert}
+
+\begin{theorem}\label{thm:cert}
+For every $n\ge1$, with $q = (2/3)^{n/2}$:
+\begin{enumerate}
+\item[(a)] a strategy that tells $\psi_n$ from $\rho_n$ with success probability at least $2/3$ under each hypothesis uses $T\ge\ln(5/3)/\ln(1+q)\ge\ln(5/3)(3/2)^{n/2}$ copies;
+\item[(b)] a strategy that accepts $\psi_n$ and rejects $\sigma_\eps$, each with probability at least $2/3$, uses
+\[T\ge\frac{\ln(5/3)}{\ln(1+2\eps q)}\ge\frac{\ln(5/3)\,(3/2)^{n/2}}{2\eps}\ \text{copies.}\]
+\end{enumerate}
+\end{theorem}
+
+The proof rests on a bound for the overlap of two vectors that differ only on product factors.
+
+\begin{lemma}\label{lem:tree}
+Let $\Phi = \varphi\otimes\chi$ and $\Phi' = \varphi'\otimes\chi$ be unit vectors, where $\varphi = \bigotimes_{j\in Q}\varphi_j$ and $\varphi' = \bigotimes_{j\in Q}\varphi'_j$ are product vectors on a set $Q$ of qubits and $\chi$ is any vector of the other qubits, the same in both. Then for every tree,
+\[
+\sum_\ell|\langle e_\ell|\Phi\rangle|\,|\langle e_\ell|\Phi'\rangle|\le\prod_{j\in Q}\kappa_j,
+\]
+where $\kappa_j$ is the largest value over the three axes of $\sum_e|\langle e|\varphi_j\rangle||\langle e|\varphi'_j\rangle|$.
+\end{lemma}
+
+\begin{proof}
+Induction on the tree. If the root measures a qubit $j\in Q$ with outcome $e$, both amplitudes split off the factor $\langle e|\varphi_j\rangle$ or $\langle e|\varphi'_j\rangle$, and the rest is a tree on vectors of the same form with $Q\setminus\{j\}$ in place of $Q$; summing over $e$ gives at most $\kappa_j$ times the largest subtree bound. If it measures a qubit outside $Q$, both vectors leave the same unnormalized vector $\langle e|\chi\rangle$ of squared norm $p_e$ on the other qubits, with $\sum_ep_e = 1$; both amplitudes scale by $\sqrt{p_e}$, so the sum is $\sum_ep_e$ times the subtree sums, at most the largest of them. Note $\kappa_j = 1$ when $\varphi_j = \varphi'_j$.
+\end{proof}
+
+\begin{proof}[Proof of Theorem~\ref{thm:cert}]
+For a pattern $s\in\{0,1\}^T$ let $p_s$ be the product vector of $T$ copies in which copy $t$ is $\ket a^{\otimes n}$ if $s_t = 0$ and $\ket\abar^{\otimes n}$ if $s_t = 1$, so $\psi_n^{\otimes T} = 2^{-T/2}\sum_s\ket{p_s}$. For a set $A$ of copies let $\tau_A$ be $\psi_n^{\otimes T}$ with the copies in $A$ replaced by $\rho_n$. With $\Phi_r = p_r\otimes\psi_n^{\otimes(T\setminus A)}$ for patterns $r$ on $A$, the leaf probabilities are
+\[
+P_\psi(\ell) = 2^{-|A|}\Bigl|\sum_r\langle e_\ell|\Phi_r\rangle\Bigr|^2,\qquad P_{\tau_A}(\ell) = 2^{-|A|}\sum_r|\langle e_\ell|\Phi_r\rangle|^2,
+\]
+so $P_\psi-P_{\tau_A} = 2^{-|A|}\sum_{r\ne r'}\langle e_\ell|\Phi_r\rangle\langle\Phi_{r'}|e_\ell\rangle$. By Lemma~\ref{lem:tree}, with the factor $\sqrt{2/3}$ of \eqref{eq:factor} on the $n$ qubits of each copy where $r$ and $r'$ differ, $\sum_\ell|\langle e_\ell|\Phi_r\rangle||\langle e_\ell|\Phi_{r'}\rangle|\le q^{\mathrm{d}(r,r')}$, with $\mathrm{d}$ the number of differing entries. Hence
+\[
+\sum_\ell|P_\psi(\ell)-P_{\tau_A}(\ell)|\le2^{-|A|}\sum_{r\ne r'}q^{\mathrm d(r,r')} = (1+q)^{|A|}-1.
+\]
+Success probability $2/3$ under both hypotheses forces this sum to be at least $2/3$. For (a) take $A$ to be all copies, so $(1+q)^T\ge5/3$. For (b), $\sigma_\eps^{\otimes T}$ is the mixture of the $\tau_A$ in which $A$ contains each copy independently with probability $2\eps$, so the sum is at most $\E[(1+q)^{|A|}]-1 = (1+2\eps q)^T-1$, and $(1+2\eps q)^T\ge5/3$. Finally $\ln(1+x)\le x$.
+\end{proof}
+
+The rate is close to the truth for this pair. For one fixed phase of $\ket\abar$ (the per-copy information depends on the phase, and vanishes for some phases) and all axes along $Z$, an exact computation up to $n = 320$ shows numerically that the per-copy chi-square divergence between $\psi_n$ and $\rho_n$ equals $(2/3)^{n/2}$ up to a factor of order $n^{-1/2}$. The likelihood ratio $1+c_\ell/m_\ell$ lies in $[0,2]$, so one minus the affinity is at least $\chi^2/(2(1+\sqrt2)^2)$ per copy, and a likelihood-ratio test on all-$Z$ data tells $\psi_n$ from $\rho_n$ with $O(\sqrt n\,(3/2)^{n/2})$ copies. So for this pair and phase the rate $(3/2)^{n/2}$ of Theorem~\ref{thm:cert}(a) cannot be improved by more than a factor of order $\sqrt n$.
+
+\section{Fidelity estimation near fidelity one half}\label{sec:half}
+
+\begin{theorem}\label{thm:half}
+For $0\le s\le1$ and every strategy, $\chi^2(P_{\rho_s}\,\|\,P_{\rho_n})\le(1+s^2q)^T-1$ for the outcome laws on $T$ copies. Hence for $0<\eps<1/4$ a strategy that estimates $\bra{\psi_n}\sigma\ket{\psi_n}$ to $\pm\eps$ with probability at least $2/3$ for every state $\sigma$ uses at least $\ln(3/2)/(16\eps^2q) = \ln(3/2)(3/2)^{n/2}/(16\eps^2)$ copies.
+\end{theorem}
+
+\begin{proof}
+Fix a tree on all $nT$ qubits. For a leaf $\ell$ and a copy $t$, let $u_t$ and $v_t$ be the products of $\langle e_j|a\rangle$ and of $\langle e_j|\abar\rangle$ over the qubits $j$ of copy $t$, $m_t = (|u_t|^2+|v_t|^2)/2$ and $c_t = \mathrm{Re}(u_t\bar v_t)$. Since $\rho_s^{\otimes T}$ is a product over copies and each copy of $\rho_s$ has leaf weight $m_t+sc_t$,
+\[
+P_{\rho_s}(\ell) = P_{\rho_n}(\ell)\prod_t(1+s\,r_t),\qquad r_t = c_t/m_t.
+\]
+Run the tree under $\rho_n^{\otimes T}$. At a node that measures a qubit of copy $t$, let $u'$ and $v'$ be the products over the qubits of copy $t$ measured so far and $m' = (|u'|^2+|v'|^2)/2$. The outcome $e$ has conditional probability $m'_e/m'$, where $m'_e$ is $m'$ with $u'\langle e|a\rangle$ and $v'\langle e|\abar\rangle$ in place of $u'$ and $v'$; it depends on the past only through copy $t$. Nodes with $m' = 0$ are reached with probability zero under both laws, since $|c_t|\le m_t$. Let $\kappa = \sqrt{2/3}$, $h_t = |u'||v'|/m'$, $R_t$ the number of unmeasured qubits of copy $t$, $g_t = h_t\kappa^{R_t}$, and
+\[
+Z = \prod_{t\text{ finished}}(1+s\,r_t)^2\cdot\prod_{t\text{ unfinished}}(1+s^2g_t).
+\]
+At the root every $g_t$ equals $\kappa^n = q$, so $Z = (1+s^2q)^T$, and at a leaf $Z = (P_{\rho_s}/P_{\rho_n})^2$. At each node only the factor of the measured copy changes, and its conditional expectation does not increase:
+\begin{itemize}
+\item If the qubit is not the last of copy $t$: $\E[h_t\text{ after}] = \sum_e(m'_e/m')\,|u'||v'||\langle e|a\rangle||\langle e|\abar\rangle|/m'_e = \kappa h_t$ by \eqref{eq:factor}, and $R_t$ drops by one, so $\E[g_t\text{ after}] = g_t$.
+\item If it is the last ($R_t = 1$): with $c_e = \mathrm{Re}(u'\bar v'\langle e|a\rangle\langle\abar|e\rangle)$ the new value is $r_t = c_e/m'_e$. Since $\sum_e\langle e|a\rangle\langle\abar|e\rangle = 0$, $\E[r_t] = \sum_ec_e/m' = 0$. Since $|c_e|\le|u'||v'||\langle e|a\rangle||\langle e|\abar\rangle|\le m'_e$, $\E[r_t^2] = \sum_ec_e^2/(m'm'_e)\le\kappa h_t = g_t$. So $\E[(1+s\,r_t)^2] = 1+s^2\E[r_t^2]\le1+s^2g_t$.
+\end{itemize}
+Hence $\chi^2(P_{\rho_s}\|P_{\rho_n})+1 = \E[Z\text{ at the leaf}]\le(1+s^2q)^T$. If an event has probability at least $2/3$ under one law and at most $1/3$ under the other, the chi-square divergence of the two-outcome coarse graining, and hence $\chi^2$, is at least $(1/3)^2/((1/3)(2/3)) = 1/2$, so $(1+s^2q)^T\ge3/2$. For $s>4\eps$ the states $\rho_n$ and $\rho_s$ have fidelities $1/2$ and $1/2+s/2$ with $\psi_n$, more than $2\eps$ apart, so an estimate to $\pm\eps$ tells them apart. With $\ln(1+x)\le x$ this gives $T\ge\ln(3/2)/(s^2q)$ for every $s\in(4\eps,1]$, hence $T\ge\ln(3/2)/(16\eps^2q)$.
+\end{proof}
+
+At one copy and $n = 1$ the chi-square bound is attained up to a factor $0.8165$ for one fixed phase of $\ket\abar$. Theorem~\ref{thm:low} gives the larger rate $(3/2)^n$, but at low fidelity; Theorem~\ref{thm:half} covers fidelities near $1/2$ and gives the larger bound for $n\le10$.
+
+\section{Other sets of axes}\label{sec:axes}
+
+\begin{corollary}\label{cor:axes}
+Let $S$ be a finite set of unit vectors of $\mathbb{R}^3$, and
+\[
+\kappa(S) = \min_{|r| = 1}\max_{b\in S}\sqrt{1-(r\cdot b)^2}.
+\]
+Then $\kappa(S)<1$, since finitely many great circles do not cover the sphere. Let $\ket a\bra a = (I+r\cdot\vec\sigma)/2$ for a minimizing $r$ and $\ket\abar$ orthogonal to it. For strategies that measure every qubit along an axis of $S$, Theorems~\ref{thm:cert} and \ref{thm:half} hold with $q = \kappa(S)^n$, and, if the axes of $S$ span $\mathbb{R}^3$, Theorem~\ref{thm:low} holds with $\kappa(S)^{2n}$ in place of $(2/3)^n$.
+\end{corollary}
+
+\begin{proof}
+Along an axis $b$ the outcome probabilities are $(1\pm r\cdot b)/2$ for $\ket a$ and $(1\mp r\cdot b)/2$ for $\ket\abar$, so $\sum_e|\langle e|a\rangle||\langle e|\abar\rangle| = \sqrt{1-(r\cdot b)^2}\le\kappa(S)$ and $|\langle e|a\rangle||\langle e|\abar\rangle|\le\kappa(S)/2$ for every outcome. The proofs above use the per-qubit factors only through these upper bounds: in Lemma~\ref{lem:tree}; in Theorem~\ref{thm:half}, where $\E[h_t\text{ after}]\le\kappa(S)h_t$ and $\E[r_t^2]\le\kappa(S)h_t$; and in Theorem~\ref{thm:low}, where $|A_\ell\bar B_\ell|\le(\kappa(S)/2)^n$ gives $\kappa(S)^{2n}$ in (a), $\beta = \lambda\kappa(S)^n/(1-\lambda)$ in (b), and the same case distinction in (c). The identity $\sum_e\langle e|a\rangle\langle\abar|e\rangle = 0$ holds in every basis.
+\end{proof}
+
+For $S = \{X,Y,Z\}$, $\kappa = \sqrt{2/3}$. For $S = \{X,Z\}$, $\kappa = 1/\sqrt2$ at $r = (1,0,1)/\sqrt2$, which gives a target with real amplitudes, for a real choice of $\ket\abar$, and the certification bound $\Omega(d^{1/2}/\eps)$. Local minimization gives $\kappa\le0.9428$ for $X$, $Y$, $Z$ together with the four diagonals $(\pm1,\pm1,1)/\sqrt3$, and $\kappa\le0.9849$ for the thirteen axes through the faces, edges and corners of a cube.
+
+\begin{remark}
+When the axes of $S$ lie in one plane, the lower bounds of Corollary~\ref{cor:axes} still hold but say little, since fidelity estimation can be impossible. For $S = \{X,Z\}$, the target above and $n\ge3$, the states $(I/4\pm Y\otimes Y/4)\otimes\omega$, with $\omega$ an eigenvector, for an eigenvalue of largest modulus, of the partial trace of $(Y\otimes Y\otimes I)\ket{\psi_n}\bra{\psi_n}$ over the first two qubits, give identical outcome laws for every strategy along $X$ and $Z$, since $Y\otimes Y$ has zero overlap with every product of $X$ and $Z$ eigenprojectors; their fidelities with $\psi_n$ differ by $1/4$. So no number of copies suffices to estimate the fidelity to $\pm\eps$ for any $\eps<1/8$.
+\end{remark}
+
+\section{Numerical checks}\label{sec:num}
+
+The scripts build $\psi_n$, $\rho_n$ and $\tau_\pm$ from state vectors and density matrices and assert the statements on test instances.
+\begin{itemize}
+\item For $n\le6$ and all $3^n$ fixed settings: the leaf formulas, $\sum_\ell|A_\ell||B_\ell| = (2/3)^{n/2}$, the per-copy bounds of Theorems~\ref{thm:cert} and \ref{thm:half}; for $n\le5$ the same on $200$ random adaptive trees each.
+\item For stored copies, $(n,T)$ up to $(3,2)$ and $(1,4)$: random fully adaptive trees on all $nT$ qubits, with the next qubit chosen from any copy, satisfy Lemma~\ref{lem:tree}, the bounds of Theorem~\ref{thm:cert}, the product form and chi-square bound of Theorem~\ref{thm:half}, and the pointwise bound $|c|/b\le\beta$ and affinity bound of Theorem~\ref{thm:low}(b). The largest ratio of the two sides is $0.8165$ for Theorem~\ref{thm:half}, and the largest ratio of one minus the affinity to $1-(1-\beta^2)^{T/2}$ is $0.60$ for Theorem~\ref{thm:low}(b).
+\item Theorem~\ref{thm:low}(a) for all fixed settings with $n\le14$ and $\lambda = 0.05$, $0.2$, $0.5$, summing over outcome types with multiplicities, and for the best adaptive one-copy tree, computed by dynamic programming over the counts of the six (axis, outcome) types; this is exact because $\tau_\pm$ are invariant under permutations of the qubits, so the qubit measured next does not matter. At $\lambda = 0.2$ the best adaptive tree is no better than the best fixed setting (Figure~\ref{fig:main}b).
+\item Proposition~\ref{prop:tight} for $n\le6$: unbiasedness, the per-qubit identities, and $\E[o^2]\le4.5(3/2)^n$ for every state via the largest eigenvalue of the second-moment operator.
+\item The exact optimum of the non-adaptive two-point problem, the smallest largest Hellinger distance over pairs of states with a given fidelity gap, for permutation-invariant targets up to $n = 14$, by reducing both states to their blocks in the coupled spin basis. The reduction is checked against state vectors at $n = 4$.
+\end{itemize}
+These checks cover small $n$ and $T$ and random or exhaustive families of trees; they do not replace the proofs.
+
+\section{Formal verification}\label{sec:lean}
+
+The scalar facts behind Theorems~\ref{thm:cert} and \ref{thm:half} are checked in Lean~4 (toolchain \texttt{v4.36.0-rc1}) with Mathlib at revision \texttt{d875a8de5222}, with no \texttt{sorry} and only the standard axioms \texttt{propext}, \texttt{Classical.choice} and \texttt{Quot.sound}: the per-axis factor $\sqrt{2/3}$ in \eqref{eq:factor}; the leaf term $c^2/m\le\sqrt{xy}$ for $c^2\le xy$ and $m = (x+y)/2$; the mixture identity $\sum_jC(T,j)(p(1+q))^j(1-p)^{T-j} = (1+pq)^T$ of Theorem~\ref{thm:cert}(b); the step from $(1+x)^T\ge c$ to $T\ge\ln c/x$ with the constants of Theorems~\ref{thm:cert} and \ref{thm:half}; and the coarse-graining bound $\chi^2\ge1/2$. Each has a companion lemma showing that the inequality is attained or that its hypothesis can hold and fail. The measurement model, Lemma~\ref{lem:tree}, the tree arguments of Theorems~\ref{thm:cert}, \ref{thm:half} and \ref{thm:low}, Proposition~\ref{prop:tight} and Corollary~\ref{cor:axes} are proved on paper only.
+
+\section{Discussion}\label{sec:disc}
+
+The worst-case exponent of fidelity estimation with $X$, $Y$, $Z$ measurements lies between $0.5849$ and $0.7716$. For the target $\psi_n$ the lower end is tight by Proposition~\ref{prop:tight}, so a larger lower bound would need a different target.
+
+The hardness comes from the axis restriction alone. After the single-qubit rotation that maps $\psi_n$ to $(\ket0^{\otimes n}+\ket1^{\otimes n})/\sqrt2$, measurements along the rotated axes of random elements of its stabilizer group accept with probability $(1+F)/2$ at fidelity $F$, which certifies $\psi_n$ with $O(1/\eps)$ copies; and with arbitrary single-qubit axes $O(n/\eps)$ copies certify every target [2]. The bounds do not cover joint measurements of several qubits or of several copies.
+
+\section*{Use of AI}
+
+The results, the proofs, the scripts and this text were developed with Claude Opus 5.5 (Anthropic), under the direction of the author.
+
+\section*{Code}
+
+The scripts and the Lean files are in the repository \url{https://github.com/ssenge/LAIF}, in the folder
+\begin{center}\texttt{laif/xyz-measurement-certification-lower-bound}\end{center}
+They are \texttt{sim/check.py}, \texttt{inter.py}, \texttt{stored2.py} and \texttt{allz.py} for Theorems~\ref{thm:cert} and \ref{thm:half}, \texttt{mixedpair.py} for Theorem~\ref{thm:low}, \texttt{tight.py} for Proposition~\ref{prop:tight}, \texttt{figdata.py} for Figure~\ref{fig:main}b, \texttt{axes.py} for Corollary~\ref{cor:axes}, \texttt{schur.py} for the exact two-point problem, and \texttt{lean/AxisCert} for the Lean part. They need numpy, scipy and, for \texttt{schur.py}, cvxpy.
+
+\section*{References}
+
+\begin{enumerate}
+\item[{[1]}] J. Acharya, A. Dharmavarapu, Y. Liu, N. Yu. Sublinear copies suffice for fidelity estimation with Pauli measurements. arXiv:2609.35547 (2026).
+\item[{[2]}] M. Gupta, W. He, R. O'Donnell. Few single-qubit measurements suffice to certify any quantum state. STOC 2026. arXiv:2506.11355.
+\item[{[3]}] H.-Y. Huang, J. Preskill, M. Soleimanifar. Certifying almost all quantum states with few single-qubit measurements. arXiv:2404.07281.
+\item[{[4]}] O. Fawzi, A. Oufkir, R. Salzmann. Optimal fidelity estimation from binary measurements for discrete and continuous variable systems. arXiv:2409.04189.
+\item[{[5]}] S. Senge. Shadow norm under random Pauli measurements: the exact worst case over observables. \url{https://github.com/ssenge/LAIF}, folder \texttt{laif/pauli-shadow-norm} (2026).
+\item[{[6]}] A. Coladangelo, J. Li, J. Slote. Robust quantum state certification and uncertainty principles for total influence. arXiv:2607.27184 (2026).
+\item[{[7]}] M. Sun, G. Waite, M. Bremner, C. Ferrie. Efficient fidelity estimation with few local Pauli measurements. arXiv:2510.08155 (2025).
+\item[{[8]}] L. Leone, S. F. E. Oliviero, A. Hamma. Nonstabilizerness determining the hardness of direct fidelity estimation. Physical Review A 107, 022429 (2023). arXiv:2204.02995.
+\item[{[9]}] H.-Y. Huang, R. Kueng, J. Preskill. Predicting many properties of a quantum system from very few measurements. Nature Physics 16, 1050 (2020).
+\item[{[10]}] S. T. Flammia, Y.-K. Liu. Direct fidelity estimation from few Pauli measurements. Physical Review Letters 106, 230501 (2011).
+\item[{[11]}] A. B. Tsybakov. Introduction to Nonparametric Estimation. Springer (2009).
+\end{enumerate}
+
+\end{document}
