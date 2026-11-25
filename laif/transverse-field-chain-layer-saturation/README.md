@@ -1,4 +1,4 @@
-# Layer saturation of the variational transverse-field spin chain ansatz fails for every even chain length
+# Layer saturation of the variational transverse-field spin chain ansatz fails for every even chain length L ≥ 4
 
 2026-11-25
 
@@ -8,7 +8,7 @@ On a ring of L qubits let H_X = −Σ_i X_i and H_ZZ = −Σ_i Z_i Z_{i+1} (peri
 
 |Ψ(γ, β)⟩ = e^{−iβ_p H_X} e^{−iγ_p H_ZZ} ⋯ e^{−iβ_1 H_X} e^{−iγ_1 H_ZZ} |+ ⋯ +⟩,  γ, β ∈ ℝ^p.
 
-The strong form of the saturation conjecture of [1] states: for even L, every state that the ansatz prepares at some depth is also prepared at depth L/2. In [2] it fails at L = 4: an explicit state needs depth 3. The weak form (ground states of the transverse-field chain at depth L/2) is a separate statement and is not addressed here.
+The strong form of the saturation conjecture of [1] states: for even L, every state that the ansatz prepares at some depth is also prepared at depth L/2. In [2] it fails at L = 4: an explicit state needs depth 3. At L = 2 it holds, since one layer reaches every state of the single pseudospin. Below depth L/2 the ansatz on the ring is studied in [8, 9], and the depth needed for ground states in [7]. The weak form (ground states of the transverse-field chain at depth L/2) is a separate statement and is not addressed here.
 
 | chain length | depth needed by a state beyond depth L/2 |
 |---|---|
@@ -20,7 +20,7 @@ So the strong form fails for every even L ≥ 4.
 
 ## Setting: pseudospins
 
-The free-fermion solution of the chain [3, 4] splits the ansatz into L/2 independent two-level systems, one for each momentum k_j = (2j − 1)π/L, j = 1, …, L/2. Write the state of pseudospin j as a unit direction vector w_j ∈ ℝ³. All of them start at e_x = (1, 0, 0). One layer acts on w_j by the rotation by 4γ about n_j = (cos k_j, 0, sin k_j), followed by the rotation by 4β about e_x. The overlap of two ansatz states is the product of the pseudospin overlaps (1 + w_j · w_j′)/2. So two ansatz states agree up to a phase exactly when all their direction vectors agree.
+The free-fermion solution of the chain [3, 4] splits the ansatz into L/2 independent two-level systems, one for each momentum k_j = (2j − 1)π/L, j = 1, …, L/2. Write the state of pseudospin j as a unit direction vector w_j ∈ ℝ³. All of them start at e_x = (1, 0, 0). One layer acts on w_j by the rotation by 4γ about n_j = (cos k_j, 0, sin k_j), followed by the rotation by 4β about e_x. The squared overlap |⟨Ψ|Ψ′⟩|² of two ansatz states is the product of the pseudospin terms (1 + w_j · w_j′)/2. So two ansatz states agree up to a phase exactly when all their direction vectors agree.
 
 **Definition.** For even L ≥ 4, ψ_L is the ansatz state with w_j = e_x for j < L/2 and w_{L/2} = −e_x. It exists by Theorem 1(a). It is unique up to a phase by the overlap identity.
 
@@ -34,13 +34,13 @@ where all sites other than i and j are |+⟩. This is asserted to 10⁻⁹ for L
 
 **Theorem 1.** Let L ≥ 4 be even and k* = k_{L/2} = (L − 1)π/L.
 
-(a) ψ_L is prepared by the ansatz at some finite depth.
+(a) ψ_L is prepared by the ansatz at some finite depth. This follows from the algebra of the ansatz computed in [6]; a short proof is included below.
 
 (b) Let p ≤ L/2. Suppose a depth-p circuit brings the pseudospin of k* to −e_x. Then p = L/2, and 4γ_j ≡ π (mod 2π) for every j and 4β_j ≡ π (mod 2π) for every j < p. Every such circuit prepares |− ⋯ −⟩, the state with all w_j = −e_x.
 
 In particular ψ_L is not prepared at any depth p ≤ L/2.
 
-**Proposition 2 (numerical).** For L = 4, 6, 8, 10, ψ_L is prepared at depth L/2 + 1. The angles are listed in `sim/out_family.txt`, with residual below 2·10⁻¹⁵ in the direction vectors. With Theorem 1(b), the minimal depth of ψ_L is L/2 + 1 for these L.
+**Proposition 2 (numerical).** For L = 4, 6, 8, 10, ψ_L is prepared at depth L/2 + 1. The angles are listed in `sim/out_family.txt`, with residual below 2·10⁻¹⁵ in the direction vectors before rounding; the printed angles, rounded to 9 digits, reproduce the target to 5·10⁻⁸. With Theorem 1(b), the minimal depth of ψ_L is L/2 + 1 for these L.
 
 ## Proof
 
@@ -63,10 +63,10 @@ The start has f(e_x) = π, so after p layers f ≥ π − 2pa = π(1 − 2p/L). 
 1. [A, B] is a multiple of Σ sin k_j y_j, and [A, Σ sin k_j y_j] is a multiple of D = Σ sin k_j z_j.
 2. So E = B − D = Σ cos k_j x_j lies in the generated algebra.
 3. Repeated brackets with E, and one more bracket with A for odd powers, give Σ_j cos^m(k_j) sin(k_j) z_j for every m ≥ 0.
-4. The values cos k_j are distinct and sin k_j > 0, so the matrix (cos^m k_j) is invertible. Hence each z_j lies in the generated algebra.
-5. Brackets with A then give y_j and x_j.
+4. The values cos k_j are distinct and sin k_j > 0, so the square matrix (cos^m k_j), m = 0, …, L/2 − 1, is invertible. Hence each z_j lies in the generated algebra.
+5. A bracket with A gives y_j, and [y_j, z_j] gives x_j.
 
-So A and B generate the full algebra of SO(3)^{L/2}. Both one-parameter groups e^{tA} and e^{tB} are periodic, so negative times are not needed. Products of these one-parameter groups therefore make up all of the connected compact group SO(3)^{L/2} [5]. Any element is a finite product, which is an ansatz circuit of finite depth. In particular, so is the element that rotates only pseudospin L/2 by π about the y-axis.
+So A and B generate the full algebra of SO(3)^{L/2}, as also shown in [6]. Both one-parameter groups e^{tA} and e^{tB} are periodic, so the products with nonnegative times already form a group. It is the connected subgroup whose algebra is generated by A and B [5], hence all of SO(3)^{L/2}. Any element is a finite product, which is an ansatz circuit of finite depth. In particular, so is the element that rotates only pseudospin L/2 by π about the y-axis.
 
 ## Check
 
@@ -79,6 +79,7 @@ So A and B generate the full algebra of SO(3)^{L/2}. Both one-parameter groups e
 
 ## Scope
 
+- Part (a) of Theorem 1 is due to [6]; part (b) is the contribution here.
 - Theorem 1 uses the free-fermion reduction of [3, 4] as stated. It is checked numerically for L ≤ 8 by `sim/reduce.py`.
 - Proposition 2 and the closed form of ψ_L are numerical. For L ≥ 12 the minimal depth of ψ_L is not determined here; Theorem 1 gives at least L/2 + 1.
 - The weak form of the conjecture of [1] is not covered.
@@ -91,6 +92,10 @@ So A and B generate the full algebra of SO(3)^{L/2}. Both one-parameter groups e
 3. Z. Wang, S. Hadfield, Z. Jiang, E. G. Rieffel. Quantum approximate optimization algorithm for MaxCut: a fermionic view. Physical Review A 97, 022304 (2018).
 4. G. B. Mbeng, A. Russomanno, G. E. Santoro. The quantum Ising chain for beginners (2020).
 5. V. Jurdjevic, H. J. Sussmann. Control systems on Lie groups. Journal of Differential Equations 12, 313 (1972).
+6. G. Matos, C. N. Self, Z. Papić, K. Meichanetzidis, H. Dreyer. Characterization of variational quantum algorithms using free fermions. Quantum 7, 966 (2023). arXiv:2206.06400.
+7. V. R. Arezzo, R. Wang, K. Thengil, G. Pecci, G. E. Santoro. Digital controllability of transverse-field Ising chains. Physical Review A 113, 012610 (2026). arXiv:2509.17754.
+8. K. Marwaha. The QAOA on the ring of disagrees. arXiv:2606.29562 (2026).
+9. U. Kol, M. Ben-Shahar, K. Sulimany, D. Englund. A machine-verified proof of a quantum-optimization conjecture. arXiv:2606.29687 (2026).
 
 ## Use of AI
 
