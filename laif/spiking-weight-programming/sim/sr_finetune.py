@@ -1,5 +1,5 @@
 """Programmed circuit as initialization: the 5-neuron STORE-RECALL circuit is written into the first 5 of 60
-LIF neurons, all weights are perturbed with Gaussian noise, and the network is then trained exactly as the
+LIF neurons, all weights are perturbed with normally distributed noise, and the network is then trained exactly as the
 network of sr_train.py (same optimizer, schedule, loss, 400 iterations, batch 64).
 
 usage: sr_finetune.py SETTING SEED SIGMA [ITERS] [REG] [LR]

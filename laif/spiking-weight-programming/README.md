@@ -9,7 +9,7 @@ them [2]. This folder applies it to recurrent networks of spiking neurons. The f
 working-memory tasks of [1]: one-dimensional STORE-RECALL, 20-dimensional STORE-RECALL and 12AX. Tasks, neuron
 model and readout are ported from the reference code of [1] and kept as they are there: leaky integrate-and-fire
 (LIF) neurons with a 20 ms membrane time constant, a 1 ms time step, 1 ms synaptic delay, a refractory period,
-no self-connections, Poisson input spikes and a linear readout.
+no self-connections, random input spikes at fixed rates and a linear readout.
 
 All circuits below use plain LIF neurons, with no spike-frequency adaptation and no training. Each row is
 measured on sequences from seeds that were not used to choose the weights.
@@ -68,7 +68,7 @@ Weights are given in units of the firing threshold. Every circuit is built from 
 
 **One-dimensional STORE-RECALL, 5 neurons** (`sim/sr_circuit.py`). A set detector (STORE without value 0) switches
 the latch on, a reset detector (STORE without value 1) switches it off, and a fifth neuron fires at RECALL when
-the latch is off. The readout takes the latch as "1" and the fifth neuron as "0". Five weight values.
+the latch is off. The readout takes the latch as "1" and the fifth neuron as "0". Five weight parameters.
 
 **20-dimensional STORE-RECALL, 81 neurons** (`sim/sr20.py`). The same set detector, reset detector and latch for
 each of the 20 bits, and one relay neuron for RECALL that serves as the reference level of the bias-free readout.
@@ -76,7 +76,7 @@ each of the 20 bits, and one relay neuron for RECALL that serves as the referenc
 **12AX, 25 neurons** (`sim/twelve_ax.py`). The target of the task is a small state machine: answer R at an X
 that follows 1 ... A ..., or at a Y that follows 2 ... B ..., where a digit clears the letter and an X or Y
 clears it as well.
-- Six relay neurons, one per relevant symbol, turn the Poisson input into regular spike trains and ignore the
+- Six relay neurons, one per relevant symbol, turn the random input spikes into regular spike trains and ignore the
   2 Hz background.
 - Two latches hold the context (last digit 1 or 2).
 - Two latches are armed by a gate: A in context 1, and B in context 2. Digits and the other letter clear them.
@@ -150,7 +150,7 @@ Eight weight values, taken from the design calculation without adjustment on dat
 - Trained networks of `sim/ea_train.py` on evidence accumulation: with adaptation the error criterion of 7 % of
   the tutorial is reached after 240 and 180 iterations, test accuracy 95.3 and 93.8 % (seeds 0, 1); without
   adaptation the test accuracy is 49.2 and 51.3 % after 2,000 iterations.
-- Mean firing rate per neuron: 35 to 48 Hz (one-dimensional), 27 Hz (20-dimensional), 29 Hz (12AX). A latch
+- Mean firing rate per neuron: 35 to 47 Hz (one-dimensional), 27 Hz (20-dimensional), 29 Hz (12AX). A latch
   that is on fires at the highest rate the refractory period allows, 250 Hz in the STORE-RECALL tasks and
   167 Hz in 12AX.
 
@@ -158,14 +158,14 @@ Outputs are in `sim/results/`.
 
 ## Training from the programmed circuit
 
-`sim/sr_finetune.py` writes the 5-neuron circuit into a network of 60 LIF neurons, adds Gaussian noise to all
+`sim/sr_finetune.py` writes the 5-neuron circuit into a network of 60 LIF neurons, adds normally distributed noise to all
 input and recurrent weights, and trains it like the network of `sim/sr_train.py`: one-dimensional STORE-RECALL
 at the 2 s setting, 400 iterations, batch 64. The noise level is given in units of the standard deviation of
 the random initialization. Test accuracy in %, seeds 0, 1, 2:
 
 | Start | Before training | After, learning rate 0.001 | After, learning rate 0.01 |
 |---|---|---|---|
-| Random initialization | 50 | – | 50.5, 49.4, 49.0 |
+| Random initialization | – | – | 50.5, 49.4, 49.0 |
 | Programmed, no noise | 100, 100, 100 | 99.7, 99.3, 99.1 | 100, 97.2, 53.0 |
 | Programmed, noise 0.15 | 66.1, 54.5, 65.5 | 100, 51.6, 57.0 | 99.6, 90.3, 49.0 |
 | Programmed, noise 0.2 | 56.1, 49.3, 50.8 | 100, 50.2, 97.4 | 99.2, 57.5, 48.0 |
@@ -174,9 +174,10 @@ These runs use no rate regularization. With the rate regularization of [1], whic
 10 Hz, training switches the latch off and the accuracy falls from 100 to 50.5, 52.2 and 50.1 % (no noise,
 learning rate 0.01): a latch that is on fires at 250 Hz.
 
-So the programmed circuit is kept by gradient training at the small learning rate, at the same size and
-number of iterations at which training from a random initialization stays at chance. Repair of a noisy
-circuit depends on the seed.
+So gradient training at the small learning rate keeps the accuracy of the programmed circuit, at the same size
+and number of iterations at which training from a random initialization (run at learning rate 0.01) stays at
+chance. At learning rate 0.01 one of three seeds loses the circuit. Repair of a noisy circuit depends on the
+seed. Only the accuracy is measured, not the distance of the weights from the circuit.
 
 ## Lean
 
@@ -197,24 +198,28 @@ circuit depends on the seed.
 - `readout_eq_label`: for every action sequence the summed readout is 1 if the final x is at least 1 and 0
   otherwise.
 
-In this file the thermometer code is unbounded and the heading is given directly; the network of `sim/al.py`
-tracks x from -86 to 87 and holds the heading in 16 neurons.
+In this file the thermometer code is unbounded, the heading is given directly and the crossing units are a
+Boolean formula; the network of `sim/al.py` tracks x from -86 to 87, holds the heading in 16 neurons and has
+extra terms for the first step.
 
-Not formalized: the spiking dynamics. That the latches, gates and timers realize the state machines, with Poisson
-input in the tasks of [1] and [5] and with the membrane decay in AL, is covered by the measurements only.
+Not formalized: the spiking dynamics. That the latches, gates and timers realize the state machines, with random
+input spikes in the tasks of [1] and [5] and with the membrane decay in AL, is covered by the measurements only.
 
 ## Scope and limits
 
 - The weights are written by hand for each task. Nothing here is learned, and the comparison says nothing
   about learning rules, which are the subject of [1].
 - The tasks of [1] have small finite state, so circuits of this kind exist in principle. What is measured is their
-  size and their accuracy under the Poisson input noise of the benchmark.
+  size and their accuracy under the random input spikes of the benchmark.
 - The accuracies are measured on the stated numbers of random sequences. The Lean file covers the logic of the
   12AX state machine, not the spiking dynamics.
-- The AL network works at membrane decay 0.2 and 0.3 with the stated weights, and not at 0.35 or above. The
+- The AL results are at membrane decay 0.3. With the same weights the network is also right on 2,000 of 2,000
+  sequences at decay 0.2, and it fails at decay 0.35, 0.4 and 0.5 (2,000 sequences each, 51 to 53 %). The
   recurrent LIF run of [4] uses decay 0.5; decay is set per model there, between 0.3 and 1.
 - In AL the x coordinate is tracked from -86 to 87. Final coordinates up to 114 in absolute value occurred in
   the test sequences and were classified correctly, since the counter saturates far from the decision boundary.
+  A sequence that leaves this range and later returns to the boundary would be miscounted; this needs about
+  176 moves in one direction.
 - The evidence accumulation circuit uses that a trial has exactly seven cues, as in [5]. With another number
   of cues the count to four would have to change.
 - The delay labels are the nominal settings of [1]. Sequences are cut at their fixed length, so the delays that

@@ -4,7 +4,7 @@
 files bin/tutorial_storerecall_utils.py, bin/tutorial_storerecall_with_LSNN.py, lsnn/spiking_models.py).
 
 Task: a sequence of seq_len symbols, each shown for tau_char ms. 40 input neurons in 4 groups of 10
-(value 0, value 1, STORE, RECALL) fire Poisson spikes at 50 Hz while their group is active.
+(value 0, value 1, STORE, RECALL) fire random spikes at 50 Hz while their group is active.
 At a STORE step the value to remember is shown together with the STORE group. At a RECALL step only
 the RECALL group is active and the network has to report the last stored value.
 Network: LIF, tau_m = 20 ms, threshold 0.01, reset by subtraction, 3 ms refractory, 1 ms delay, dt = 1 ms.

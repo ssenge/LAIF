@@ -3,7 +3,7 @@ circuit: 25 neurons, no adaptation, no self-connections, no training.
 
 Task and network model are ported from the public reference code (12AX_task/symltl/dataset.py, sym-ltl.py and
 lsnn/spiking_models.py of github.com/IGITUGraz/Spike-Frequency-Adaptation-Supports-Network-Computations, MIT
-licence): episodes of 90 symbols from {1,2,A,B,C,X,Y,Z}, 500 ms per symbol, 5 Poisson input neurons per symbol
+licence): episodes of 90 symbols from {1,2,A,B,C,X,Y,Z}, 500 ms per symbol, 5 input neurons with random spikes per symbol
 at 200 Hz when shown and 2 Hz otherwise; LIF with tau_m = 20 ms, threshold 0.03, 5 ms refractory, 1 ms delay;
 readout = weights times the mean activity in each 500 ms window plus bias, argmax over (L, R).
 An episode counts as solved when all 90 outputs are right.
