@@ -35,9 +35,10 @@ The quantum part follows from the log-free composition of bounded-error algorith
 
 ## Scope
 
-- **Claim.** Theorems 1 and 2 are written proofs.
+- **Lean.** The elementary steps of Theorem 1: the error bounds of the inner and outer decisions (`BernoulliCounting.inner_err_lt`, `BernoulliCounting.ae_threshold`), the success probability 8/π² > 4/5 (`BernoulliCounting.eight_div_pi_sq_gt`), one stage of the refinement (`BernoulliCounting.refine_contains`), and the total cost and error probability of all stages (`BernoulliCounting.refinement_cost`, `BernoulliCounting.sum_delta_le`). Only the standard axioms are used (`lean/axioms.txt`).
+- **Claim.** The composition and orientation steps of Theorem 1, and Theorem 2, are written proofs on top of the results assumed below.
 - **Assuming.** The error bound of amplitude estimation [4, Theorem 12]. The purifier and the log-free composition of [3, Theorems 13.1 and 13.4], used for unitary inner oracles as explained in step 3. The composed adversary lower bound of [1, Theorem 4.8], proved there for sample access, and its transfer to the quantum oracle stated in [1, Sec. 4.1].
-- **Not formalized.** No part is in Lean.
+- **Not formalized.** The quantum steps enter as the assumed results above; they are not stated in Lean.
 - **Constants.** The constant of Theorem 1 is not explicit, since the composition of [3] gives its overhead only up to a constant.
 
 ## Checks
@@ -50,6 +51,7 @@ The quantum part follows from the log-free composition of bounded-error algorith
 ## Files
 
 - `sim/check.py`: the checks above.
+- `lean/BernoulliCounting/Basic.lean`: the elementary steps. `lean/Axioms.lean` prints the axioms of all nine theorems.
 
 ## Use of AI
 

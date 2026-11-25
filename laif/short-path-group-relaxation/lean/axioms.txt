@@ -1,0 +1,5 @@
+'GroupRelaxation.theta_eq' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GroupRelaxation.stability_lower' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GroupRelaxation.mul_div_le_min' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GroupRelaxation.well_lt_max' depends on axioms: [propext, Classical.choice, Quot.sound]
+'GroupRelaxation.alpha_lt' depends on axioms: [propext, Classical.choice, Quot.sound]

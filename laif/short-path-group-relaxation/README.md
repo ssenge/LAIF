@@ -37,14 +37,16 @@ For the product-of-cycles walk of [1, Theorem 9], the entropy-inequality bound a
 
 ## Scope
 
-- **Proved.** Theorem 1 and Corollary 2 are written proofs (Claim).
+- **Lean.** The core of Theorem 1: from the stability condition at an optimum, a well depth η|E*| ≤ M and b < δ/4, the bound on the exponent (`GroupRelaxation.alpha_lt`), with the stability step (`GroupRelaxation.stability_lower`) and the depth of the well from the spectral-density condition (`GroupRelaxation.well_lt_max`). Only the standard axioms are used (`lean/axioms.txt`).
+- **Claim.** The bound δ/(1 − p_0) ≤ 1 + 1/(|K| − 1), the step η|E*| ≤ (16/15)Γ, the entropy-inequality version and Corollary 2 are written proofs.
 - **Checked.** `sim/alpha_bounds.py` tests them exactly on 126 random small instances: |K| up to about 1000, moves by sparse generators or random elements, holding probability 0, 1/3 and 1/2, five values of η and 25 shifts each, 10 962 pairs of η and shift in all. It computes the smallest valid Δ_P from [1, Definition 6] at every point and the exact spectral gap. The largest ratio of the exponent to the bound of Theorem 1 is 0.996.
 - **Runtime bound only.** The bounds apply to the runtime guarantees of [2, Theorems 4.2 and 4.3]. The true runtime of the short-path algorithm with the expander walk may be smaller.
-- **Not formalized.** No part is in Lean.
+- **Not formalized.** The runtime theorems of [2] and the conditions of [1] enter in the form stated there.
 
 ## Files
 
 - `sim/alpha_bounds.py`: exact checks of the steps and the bound of Theorem 1, the mean cyclic weight of random elements, and M = 2Γ on the family of [1, Theorem 10] (`python -I alpha_bounds.py`).
+- `lean/GroupRelaxation/Basic.lean`: the core of Theorem 1. `lean/Axioms.lean` prints the axioms of all five theorems.
 
 ## Use of AI
 
