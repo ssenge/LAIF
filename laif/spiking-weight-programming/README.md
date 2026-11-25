@@ -50,7 +50,8 @@ from the reference code of [5].
 
 A sixth benchmark is binary adding at sequence length 100 from the neuron comparison of [6]: a random bit and a
 mask with nine ones arrive in every sequence, and the number of masked ones is the label (10 classes). The network
-has the shape 2-128-128-10 and the membrane decay 0.5 and threshold 0.5 of the benchmark's recurrent LIF run.
+has the shape 2-128-128-10 and the membrane decay 0.5 and threshold 0.5 of the benchmark's recurrent LIF run
+(its feedforward LIF run uses another decay).
 
 | Task | Best published models [6] | Trained LIF [6] | Programmed LIF network |
 |---|---|---|---|
@@ -73,9 +74,9 @@ Weights are given in units of the firing threshold. The circuits are built from 
 - **Gate.** A neuron that receives two regular spike trains with a weight below threshold for one train and
   above threshold for both fires only when both are present.
 - **Timer.** A chain of latches in which each stage charges the next one slowly, about 60 ms per stage.
-- **NAND gate** (binary adding). A neuron that fires unless all of its inputs are present, with drive w times the
-  number of missing inputs and w = 0.6 against a threshold of 0.5. A silent neuron has drive 0 and a firing one
-  is reset, so no potential is carried to the next step, whatever the membrane decay is.
+- **NAND gate** (binary adding). A neuron that fires unless all of its conditions hold, with drive w times the
+  number of conditions that fail and w = 0.75 against a threshold of 0.5. A silent neuron has drive exactly 0
+  and a firing one is reset, so no potential is carried to the next step, whatever the membrane decay is.
 
 **One-dimensional STORE-RECALL, 5 neurons** (`sim/sr_circuit.py`). A set detector (STORE without value 0) switches
 the latch on, a reset detector (STORE without value 1) switches it off, and a fifth neuron fires at RECALL when
@@ -125,7 +126,8 @@ background input.
 
 Eight weight values, taken from the design calculation without adjustment on data.
 
-**Binary adding, 41 neurons in two layers** (`sim/badd.py`). Every neuron is a NAND gate.
+**Binary adding, 41 neurons in two layers** (`sim/badd.py`): 40 NAND gates and one neuron that fires at every
+step. A condition of a gate is an input, its complement, or "the count before the step is i".
 - Layer 1, 30 neurons: for each count i from 0 to 9 and each of the three input cases (mask 0; mask 1 and bit 0;
   mask 1 and bit 1) one neuron that is silent exactly when the count before the step is i and the input is that
   case. Exactly one of the 30 is silent at every step, and "the count before the step is i" is a linear function
@@ -133,7 +135,8 @@ Eight weight values, taken from the design calculation without adjustment on dat
 - Layer 2, 10 neurons: neuron j fires when the count after the step is j. The classifier reads them at the last
   step.
 
-One weight value. The result is the same at decay 0, 0.5, 0.9 and 1.
+All weights are multiples of 0.75, and the always-firing neuron has bias 1. The result is the same at decay 0,
+0.3, 0.5, 0.9 and 1 (2,000 sequences each).
 
 ## Measurements
 
@@ -175,7 +178,7 @@ One weight value. The result is the same at decay 0, 0.5, 0.9 and 1.
   the tutorial is reached after 240 and 180 iterations, test accuracy 95.3 and 93.8 % (seeds 0, 1); without
   adaptation the test accuracy is 49.2 and 51.3 % after 2,000 iterations.
 - Binary adding: seeds 1 to 5, 2,000 sequences each with balanced classes (the test size of [6]) from
-  `sim/badd.py`, and the 2,000 test sequences of the unmodified generator of [6], all at decay 0.5. On average
+  `sim/badd.py`, and 2,000 test sequences drawn with the unmodified generator of [6], all at decay 0.5. On average
   12 % of the 256 neurons fire per step.
 - Trained recurrent LIF network of `sim/badd_train.py` on binary adding, in the setting of [6] (50,000 training
   sequences, 50 epochs): best test accuracy over the epochs 56.6 % (53.35 % in [6]), 53.2 % after the last epoch.
@@ -239,13 +242,17 @@ extra terms for the first step.
 
 - Neuron model of [4]: the potential after an input x is d * c + x, where c is the potential carried over (0 after
   a spike), and the neuron spikes when it exceeds the threshold.
-- `spikes_eq`: if every input is low, in [lo, L], or high, at least F, and the conditions `Margins` hold, the
-  neuron spikes exactly at the high inputs, for input sequences of any length.
+- `spikes_eq`: if every input is low, in [lo, L], or high, at least F, the conditions `Margins` hold, and the
+  carried potential starts in the range [m, M] of `Margins` (for example at 0), the neuron spikes exactly at the
+  high inputs, for input sequences of any length.
 - `and_gate`, `counter_unit`, `crossing_unit`, `relay_unit`: `Margins` holds at decay 3/10 and threshold 1/2 for
-  the drive ranges of the four kinds of neurons of the AL network, so the hypotheses of `spikes_eq` can be met.
+  the exact drive values of the four kinds of neurons of the AL network, so the hypotheses of `spikes_eq` can be
+  met. The simulation computes the drives in 32-bit floating point, which differs from these values by about
+  1e-7.
 - `and_gate_outcomes`, `low_inputs_fire_at_decay_half`, `no_and_gate_margins_at_decay_half`: both outcomes occur;
   at decay 1/2 the same neuron fires at a repeated low input; and the conditions for the gate cannot be met at
-  decay 1/2. So the statement has content, and it fails without the margins.
+  decay 1/2. So the statement has content, and its conclusion fails in a case where the margins do not hold. `Margins` is a
+  sufficient condition.
 
 Lean version and Mathlib revision are fixed in `lean/lean-toolchain` and `lean/lake-manifest.json`.
 

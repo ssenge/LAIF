@@ -8,9 +8,9 @@ balanced). The classifier reads the last layer at the last step.
 Network model of the benchmark (as in al.py): v[t] = decay * v[t-1] * (1 - y[t-1]) + input[t], y[t] = (v[t] > 0.5);
 the first layer also receives its own spikes of the previous step.
 
-Circuit (41 of the 256 neurons are used). Every neuron is a NAND gate: it fires unless all of its inputs are
-present, with drive w * (number of missing inputs), w = 0.6. A neuron that does not fire has drive 0, and a neuron
-that fires is reset, so no potential is carried over and the decay does not matter.
+Circuit (41 of the 256 neurons are used): 40 gates and one neuron that fires at every step. A gate fires unless
+all of its conditions hold, with drive w * (number of conditions that fail), w = 0.75. A gate that does not fire
+has drive exactly 0, and a gate that fires is reset, so no potential is carried over and the decay does not matter.
   layer 1: G fires at every step. For each count i = 0..9 three neurons n[i][c], one for each input case c
            (mask 0; mask 1 and bit 0; mask 1 and bit 1): n[i][c] is silent iff the count before the step is i
            and the input case is c. Exactly one of the 30 is silent at every step. "The count before the step is
@@ -24,7 +24,7 @@ import json, sys
 import numpy as np
 import torch
 
-T, N1, N2, THR, W = 100, 128, 128, 0.5, 0.6
+T, N1, N2, THR, W = 100, 128, 128, 0.5, 0.75      # 0.75 and its multiples are exact in binary
 M0, M1B0, M1B1 = 0, 1, 2
 
 

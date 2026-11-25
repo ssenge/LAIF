@@ -1,0 +1,4 @@
+{"task": "binary adding", "seq_len": 100, "neurons_used": 41, "decay": 0.0, "sequences": 2000, "seed": 0, "accuracy": 1.0, "wrong": 0, "exactly_one_class_unit": true, "spikes_per_neuron_per_step": 0.12109375}
+{"task": "binary adding", "seq_len": 100, "neurons_used": 41, "decay": 0.3, "sequences": 2000, "seed": 0, "accuracy": 1.0, "wrong": 0, "exactly_one_class_unit": true, "spikes_per_neuron_per_step": 0.12109375}
+{"task": "binary adding", "seq_len": 100, "neurons_used": 41, "decay": 0.9, "sequences": 2000, "seed": 0, "accuracy": 1.0, "wrong": 0, "exactly_one_class_unit": true, "spikes_per_neuron_per_step": 0.12109375}
+{"task": "binary adding", "seq_len": 100, "neurons_used": 41, "decay": 1.0, "sequences": 2000, "seed": 0, "accuracy": 1.0, "wrong": 0, "exactly_one_class_unit": true, "spikes_per_neuron_per_step": 0.12109375}
