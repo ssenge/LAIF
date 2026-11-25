@@ -19,3 +19,6 @@
 'SmallCut.scan_certificate' depends on axioms: [propext, Classical.choice, Quot.sound]
 'SmallCut.card_found_le' depends on axioms: [propext, Classical.choice, Quot.sound]
 'SmallCut.sum_found_le' depends on axioms: [propext, Classical.choice, Quot.sound]
+'SmallCut.certificate_needs_hmax' depends on axioms: [propext, Classical.choice, Quot.sound]
+'SmallCut.triangle_scan_rule' depends on axioms: [propext, Classical.choice, Quot.sound]
+'SmallCut.triangle_forest_one_adj' depends on axioms: [propext, Classical.choice, Quot.sound]

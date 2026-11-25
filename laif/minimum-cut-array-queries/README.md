@@ -58,7 +58,7 @@ Theorem 1 and Corollary 2 are checked in `lean/MinCutArray/`, with Lean 4.36.0-r
 
 `CountDegree → ∃ c > 0, ∀ t τ T S (q : QAlg (Vx t) T S), 1 ≤ τ → τ ≤ t → q.Computes τ → c · n √n √τ ≤ T + 1`, with n = 4t.
 
-**The one hypothesis** is `CountDegree`: a real multilinear polynomial of degree D on N bits with values in [0, 1], at least 2/3 on Hamming weight k + 1 and at most 1/3 on Hamming weight k − 1, where 1 ≤ k and 2k + 1 ≤ N, has D = Ω(√(Nk)). This follows from [4, Theorem 1.1] with Δ = 2: the term √(n/Δ) covers k = 1, and the term √(m(n − m))/Δ with m = k − 1 covers k ≥ 2.
+**The one hypothesis** is `CountDegree`: a real multilinear polynomial of degree D on N bits with values in [0, 1], at least 2/3 on Hamming weight k + 1 and at most 1/3 on Hamming weight k − 1, where 1 ≤ k and 2k + 1 ≤ N, has D = Ω(√(Nk)). This follows from [4, Theorem 1.1] with Δ = 2: the term √(n/Δ) covers k = 1, and the term √(m(n − m))/Δ with m = k − 1 covers k ≥ 2. `MinCutArray.not_countDegreeWith_two` (in `lean/MinCutArray/NonVacuity.lean`) shows that the hypothesis is a real constraint: the bound fails with the constant 2, since the indicator of a nonzero input on three bits has degree 3 and separates Hamming weight 2 from Hamming weight 0, while 2√3 > 3.
 
 **Not machine-checked:** the upper bound of [1], which is cited, and Theorems 3 and 4.
 

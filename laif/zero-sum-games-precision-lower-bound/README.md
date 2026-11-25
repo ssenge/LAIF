@@ -40,6 +40,7 @@ By symmetry (replace A by −Aᵀ and swap the players), assume m ≥ n. Let c =
 - `yes_pure`, `no_gap`: on yes instances the pure special row guarantees the row player 1, the largest entry of the matrix, so the value is 1; on no instances every mixed row strategy guarantees at most 1 − 1/c.
 - `yes_identifies`: every ε-approximate equilibrium of a yes instance with cε < 1/2 puts weight more than 1/2 on the special row.
 - `rel_yes`, `left_many`, `right_many`, `left_unique`, `right_unique`: the relation of the adversary bound has the counts m, c, 1 and 1.
+- `rowPay_le_one`, `yes_has_NE`, `rel_nonempty`, `no_gap_uniform` (content of the statements): every yes instance has an exact equilibrium, so the hypotheses of `yes_identifies` hold together; the relation of the adversary bound is not empty; and on a no instance with c = 2 the uniform row strategy leaves a column of payoff exactly 1/2.
 
 **Not machine-checked:** the relational adversary bound [5], quantum search, and the symmetry and padding steps.
 

@@ -1,0 +1,3 @@
+'GirthQuantum.cdist_le_half' depends on axioms: [propext, Quot.sound]
+'GirthQuantum.edge_on_cycle' depends on axioms: [propext, Quot.sound]
+'GirthQuantum.round_cost' depends on axioms: [propext, Classical.choice, Quot.sound]

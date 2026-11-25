@@ -39,6 +39,8 @@ The packing baselines are the values of [2, Section 4.7], and 30.82 is 1.7707^6 
 - `hamiltonicity_cost`: 4^L C(6t, 3t) ≤ ((3/2)(3t + 1))² (8/3)^{6t} C(3t − 1, 2t − 1)², which is 4^L/P ≤ poly(t) (8/3)^n with the P above.
 - `kpath_cost`: 4^L 2^{6t} ≤ (3/2)(3t + 1)² (8/3)^{6t} C(3t + 1, 2t) C(3t − 1, t), the same for k-path.
 - `choose_lower`: (27/4)^t ≤ (3t + 1) C(3t, t).
+- `choose_sq_le`, `hamiltonicity_prob_le_one`, `kpath_prob_le_one` (content of the statements): the probabilities P in the two bounds are at most 1, through C(a, b)² ≤ C(2a, a).
+- `hamiltonicity_cost_not_five_halves`, `kpath_cost_not_five_halves`: the base 8/3 cannot be replaced by 5/2, since the two inequalities then fail at t = 16 and t = 11.
 
 **Not machine-checked:** BBHT, the reductions of [1] and [2] (including that P is a lower bound on the probability that a random choice is admissible), the cases of n and k not divisible by 6, the choice of the minimizing parameter (an upper bound at one parameter value suffices), the reversible implementation, the TSP threshold test, and the set packing exponents, which are numerical.
 

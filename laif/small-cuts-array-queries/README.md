@@ -96,7 +96,8 @@ The library `SmallCut` in `lean/` (Lean 4, Mathlib at the revision pinned in `le
 - `SmallCut.scan_run`: a stretch of the scan with no new run is connected in forest i;
 - `SmallCut.scan_parent_unique`: each vertex has at most one earlier neighbour in forest i (that F_i has no cycle follows from this as in the proof of Lemma 4, and is not stated in Lean);
 - `SmallCut.scan_certificate`: Lemma 1 for the scan;
-- `SmallCut.sum_found_le`: the scan finds at most k·|V| entries in total.
+- `SmallCut.sum_found_le`: the scan finds at most k·|V| entries in total;
+- `SmallCut.certificate_needs_hmax`, `SmallCut.triangle_scan_rule`, `SmallCut.triangle_forest_one_adj` (content of the statements, in `lean/SmallCut/NonVacuity.lean`): without the hypothesis on the edges outside earlier forests, the bound of `certificate` fails for a single edge and empty forests; the scan rule `hscan` holds on the triangle with k = 2, and forest 1 of that scan has an edge, so `scan_hmax` at i = 1 is about a non-empty forest.
 
 **Not formalized:** the query algorithms and their costs (Theorems 1, 4 and 5), the link between the counters r(w) and `scanF`, the bound a ≥ d + 1 of Phase 1, the charging argument of [1], Grover search, and the max-flow min-cut theorem used for Theorem 3.
 

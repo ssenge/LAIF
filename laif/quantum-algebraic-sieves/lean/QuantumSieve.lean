@@ -183,4 +183,62 @@ theorem kpath_cost (t : ℕ) (ht : 1 ≤ t) :
 theorem base_values : ((8 : ℝ) / 3) < 1.633 ^ 2 ∧ (1.633 : ℝ) < 1.656 ∧ (1.633 : ℝ) < 1.727 := by
   norm_num
 
+/-! ### Non-vacuity -/
+
+/-- `C(a, b) ^ 2 ≤ C(2a, a)`, one term of the identity `C(2a, a) = Σ_i C(a, i) ^ 2`. -/
+theorem choose_sq_le (a b : ℕ) (hb : b ≤ a) : a.choose b ^ 2 ≤ (2 * a).choose a := by
+  rw [two_mul, Nat.add_choose_eq]
+  have hmem : (b, a - b) ∈ (Finset.HasAntidiagonal.antidiagonal a : Finset (ℕ × ℕ)) := by
+    rw [Finset.HasAntidiagonal.mem_antidiagonal]; omega
+  calc a.choose b ^ 2 = a.choose b * a.choose (a - b) := by
+        rw [Nat.choose_symm hb, sq]
+    _ ≤ _ := Finset.single_le_sum (f := fun ij : ℕ × ℕ => a.choose ij.1 * a.choose ij.2)
+        (fun _ _ => Nat.zero_le _) hmem
+
+/-- The success probability `C(3t - 1, 2t - 1) ^ 2 / C(6t, 3t)` of `hamiltonicity_cost` is at most `1`. -/
+theorem hamiltonicity_prob_le_one (t : ℕ) (ht : 1 ≤ t) :
+    (3 * t - 1).choose (2 * t - 1) ^ 2 ≤ (6 * t).choose (3 * t) := by
+  have h1 := choose_sq_le (3 * t - 1) (2 * t - 1) (by omega)
+  have e : 2 * (3 * t - 1) = 6 * t - 2 := by omega
+  rw [e] at h1
+  calc _ ≤ (6 * t - 2).choose (3 * t - 1) := h1
+    _ ≤ (6 * t - 1).choose (3 * t - 1) := by
+        rw [show 6 * t - 1 = (6 * t - 2) + 1 by omega]; exact Nat.choose_le_succ _ _
+    _ ≤ (6 * t - 1).choose (3 * t - 1) + (6 * t - 1).choose (3 * t) := Nat.le_add_right _ _
+    _ = (6 * t).choose (3 * t) := by
+        rw [show 6 * t = (6 * t - 1) + 1 by omega, show 3 * t = (3 * t - 1) + 1 by omega,
+          Nat.choose_succ_succ]; congr 2
+
+/-- The k-path success probability `2 ^ (-6t) C(3t + 1, 2t) C(3t - 1, t)` is at most `1`. -/
+theorem kpath_prob_le_one (t : ℕ) :
+    (3 * t + 1).choose (2 * t) * (3 * t - 1).choose t ≤ 2 ^ (6 * t) := by
+  rcases Nat.eq_zero_or_pos t with rfl | ht
+  · simp
+  calc _ ≤ 2 ^ (3 * t + 1) * 2 ^ (3 * t - 1) :=
+        Nat.mul_le_mul (Nat.choose_le_two_pow _ _) (Nat.choose_le_two_pow _ _)
+    _ = 2 ^ (6 * t) := by rw [← pow_add]; congr 1; omega
+
+theorem choose_96_48 : (96 : ℕ).choose 48 = 6435067013866298908421603100 := by
+  rw [Nat.choose_eq_factorial_div_factorial (by norm_num)]; rfl
+theorem choose_47_31 : (47 : ℕ).choose 31 = 1503232609098 := by
+  rw [Nat.choose_eq_factorial_div_factorial (by norm_num)]; rfl
+theorem choose_34_22 : (34 : ℕ).choose 22 = 548354040 := by
+  rw [Nat.choose_eq_factorial_div_factorial (by norm_num)]; rfl
+theorem choose_32_11 : (32 : ℕ).choose 11 = 129024480 := by
+  rw [Nat.choose_eq_factorial_div_factorial (by norm_num)]; rfl
+
+/-- The base `8/3` of `hamiltonicity_cost` cannot be replaced by `5/2`: the inequality fails at `t = 16`. -/
+theorem hamiltonicity_cost_not_five_halves :
+    ¬ ((4 : ℝ) ^ (4 * 16) * ((6 * 16).choose (3 * 16) : ℝ)
+      ≤ (3 / 2 * (3 * ((16 : ℕ) : ℝ) + 1)) ^ 2 * ((5 : ℝ) / 2) ^ (6 * 16)
+        * ((3 * 16 - 1).choose (2 * 16 - 1) : ℝ) ^ 2) := by
+  norm_num [choose_96_48, choose_47_31]
+
+/-- The base `8/3` of `kpath_cost` cannot be replaced by `5/2`: the inequality fails at `t = 11`. -/
+theorem kpath_cost_not_five_halves :
+    ¬ ((4 : ℝ) ^ (4 * 11) * 2 ^ (6 * 11)
+      ≤ (3 / 2 * (3 * ((11 : ℕ) : ℝ) + 1) ^ 2) * ((5 : ℝ) / 2) ^ (6 * 11)
+        * (((3 * 11 + 1).choose (2 * 11) : ℝ) * ((3 * 11 - 1).choose 11 : ℝ))) := by
+  norm_num [choose_34_22, choose_32_11]
+
 end QuantumSieve

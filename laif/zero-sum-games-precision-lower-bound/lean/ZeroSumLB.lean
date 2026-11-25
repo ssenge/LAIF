@@ -176,4 +176,31 @@ theorem right_unique (y x1 x2 : Fin m → Option (Fin c)) (i : Fin m) (l : Fin c
   · rw [ht, ← e, a1, a2]
   · rw [r1 t ht, r2 t ht]
 
+/-! ### Non-vacuity -/
+
+/-- Every row payoff against a mixed column strategy is at most `1`. -/
+theorem rowPay_le_one (p : Fin m → Option (Fin c)) (y : Fin c ⊕ Fin k → ℝ) (hy : Simplex y)
+    (i : Fin m) : rowPay p y i ≤ 1 := by
+  calc rowPay p y i ≤ ∑ l, y l := Finset.sum_le_sum fun l _ => by
+        have hA : A p i l ≤ 1 := by rcases l with l | l <;> simp only [A] <;> (try split_ifs) <;> norm_num
+        exact mul_le_of_le_one_left (hy.1 l) hA
+    _ = 1 := hy.2
+
+/-- Every yes instance has an exact equilibrium (`ε = 0`), so the hypotheses of `yes_identifies`
+can hold together. -/
+theorem yes_has_NE (p : Fin m → Option (Fin c)) (j : Fin m) (hj : p j = none)
+    (y : Fin c ⊕ Fin k → ℝ) (hy : Simplex y) : ApproxNE p 0 (Pi.single j 1) y :=
+  ⟨⟨fun i => by by_cases h : i = j <;> simp [Pi.single_apply, h], by simp⟩, hy,
+   fun i l => by rw [yes_pure p j hj l]; linarith [rowPay_le_one p y hy i]⟩
+
+/-- The relation of the adversary bound is not empty: a no instance and the yes instance obtained by
+removing one zero. -/
+theorem rel_nonempty : Rel (m := 2) (c := 2) (fun _ => some 0) (Function.update (fun _ => some 0) 0 none) :=
+  ⟨fun _ => by simp, 0, rfl⟩
+
+/-- The gap of `no_gap` is real: on a no instance with `c = 2` the uniform row strategy leaves a
+column of payoff exactly `1/2 < 1`. -/
+theorem no_gap_uniform : colPay (k := 0) (fun i : Fin 2 => some i) (fun _ => 1 / 2) (Sum.inl 0) = 1 / 2 := by
+  simp [colPay, A, Fin.sum_univ_two]
+
 end ZeroSumLB

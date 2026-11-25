@@ -1,5 +1,6 @@
 import SmallCut.Certificate
 import SmallCut.Scan
+import SmallCut.NonVacuity
 
 #print axioms SmallCut.mem_cross
 #print axioms SmallCut.cross_mono
@@ -22,3 +23,6 @@ import SmallCut.Scan
 #print axioms SmallCut.scan_certificate
 #print axioms SmallCut.card_found_le
 #print axioms SmallCut.sum_found_le
+#print axioms SmallCut.certificate_needs_hmax
+#print axioms SmallCut.triangle_scan_rule
+#print axioms SmallCut.triangle_forest_one_adj
