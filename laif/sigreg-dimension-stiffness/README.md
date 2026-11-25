@@ -116,6 +116,8 @@ The population value averages over all directions, so it does not depend on the 
 - `cluster_bounds.py`: the moment identities, the bound of Theorem 5 for the SIGReg profile, Theorem 6 (i) and (iii) for t = 1, 2, 4, and the bound on E e^{λa₁}, for K up to 256, with the separation margins of Theorem 6 at K = 1024.
 - `linear_rank.py`, `linear_rank_mean.py`: local minimizers of F with 6000 sampled directions, checked against Theorems 2 and 3, for both normalizations. With fixed μ the rank stays between 3 and 6 for all K tested; with μ = 2K the fraction of active directions falls from 0.31 at K = 64 to 0.10 at K = 512.
 
+Related work: that SIGReg falls short of its isotropic normal target in practice, and a regularizer of the marginal laws of the magnitude and the direction of the features instead, are in [7].
+
 ## References
 
 1. R. Balestriero, Y. LeCun. LeJEPA: provable and scalable self-supervised learning without the heuristics. arXiv:2511.08544, 2025.
@@ -124,6 +126,7 @@ The population value averages over all directions, so it does not depend on the 
 4. A. W. Marshall, I. Olkin, B. C. Arnold. Inequalities: Theory of Majorization and Its Applications, 2nd edition. Springer, 2011.
 5. L. Nicollier, E. Meinhardt-Llopis, M. Dunitz, M. Pic, P. Musé, G. Facciolo. Expanding SPHERE-JEPA: a family of statistical regularizers for the hypersphere. arXiv:2606.17603, 2026.
 6. T. Wang, P. Isola. Understanding contrastive representation learning through alignment and uniformity on the hypersphere. ICML 2020, arXiv:2005.10242.
+7. R. Das, P. Chaudhari. LeJEPA features are not isotropic, and should not be. arXiv:2611.31216, 2026.
 
 ## Use of AI
 

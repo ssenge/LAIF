@@ -112,6 +112,8 @@ Scripts in [`sim/`](sim/), run with NumPy and SciPy, with asserts, on one core.
 - `quadrature_moments.py`: the formulas of Proposition 5 against the closed forms of Propositions 1 and 2 (a fine grid for the integral, to 10⁻⁹, also at r = 0.37). For both quadratures in use: the r² coefficient 2S₂² at N = 2, 64 and 4096, the mean, the variance of one slice and the covariance of two slices with r = 0.6 at N = 32 (40000 batches, within 6 % and 10 %), the exact average E F(r) at K = 16, 128 and 1024, and Var S for K = 16, M = 8 against part (c) (6000 batches, within 3 %).
 - `alt_variance.py`: Proposition 6 with the quadrature of the code of [1], K = 16 and Δ with eigenvalues ±0.3: the variance of S for M = 4 and 16 and N = 64, 256 and 1024 against the prediction (3000 batches each, ratios between 0.99 and 1.06), G₁ against a finite difference in s, and the spread of δ² against the closed form for ρ (1.207 and 1.206).
 
+Related work: that SIGReg falls short of its isotropic normal target in practice, with an excess that grows with the batch size, and a regularizer of the marginal laws of the magnitude and the direction of the features instead, are in [8].
+
 ## References
 
 1. R. Balestriero, Y. LeCun. LeJEPA: provable and scalable self-supervised learning without the heuristics. arXiv:2511.08544, 2025.
@@ -121,6 +123,7 @@ Scripts in [`sim/`](sim/), run with NumPy and SciPy, with asserts, on one core.
 5. E. Zimmermann, H. Wiltzer, J. Szeto, D. Alvarez-Melis, L. Mackey. KerJEPA: kernel discrepancies for Euclidean self-supervised learning. arXiv:2512.19605, 2025.
 6. L. Nicollier, E. Meinhardt-Llopis, M. Dunitz, M. Pic, P. Musé, G. Facciolo. Expanding SPHERE-JEPA: a family of statistical regularizers for the hypersphere. arXiv:2606.17603, 2026.
 7. R. J. Serfling. Approximation Theorems of Mathematical Statistics. Wiley, 1980.
+8. R. Das, P. Chaudhari. LeJEPA features are not isotropic, and should not be. arXiv:2611.31216, 2026.
 
 ## Use of AI
 
