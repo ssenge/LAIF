@@ -75,14 +75,17 @@ A two-neuron solution of the one-dimensional task with hand-set weights and adap
 
 **Every finite automaton, at every decay.** The gates of the binary adding network give a general construction in
 the neuron model of [4] and [6] (potential d * c + x with hard reset, threshold 0.5). For an automaton with
-states Q, input symbols A and any transition function, one recurrent layer of |Q| * |A| + 1 neurons with
-weights 0.75 tracks the state: the gate (q, a) is silent exactly when the automaton is in state q and reads a,
-and a linear readout gives the state after every step. A silent gate has drive 0 and a gate that fires is reset,
+states Q, input symbols A (one symbol per step, as a one-hot vector) and any transition function, one
+recurrent layer of |Q| * |A| + 1 neurons tracks the state. Its weights and biases are integer multiples of 0.75,
+apart from one bias of 1: the gate (q, a) is silent exactly when the automaton is in state q and reads a,
+and a readout that is linear in the spikes, with a bias, gives the state after every step. A silent gate has drive 0 and a gate that fires is reset,
 so the construction holds for every value of the decay d. This is proved in Lean
 (`lean/LeakyGate/Automaton.lean`) and checked numerically on 300 random automata (`sim/lif_automaton.py`).
 Recurrent networks of threshold units without leak are classically known to realize finite automata, and
-automata have been built from cell assemblies of spiking neurons [7]; to our knowledge the statement for single
-leaky neurons with hard reset at every decay, with a machine-checked proof, is new.
+automata have been built from cell assemblies of spiking neurons [7]. At decay 0 the neuron is a threshold unit
+and the statement is the classical one. The contribution here is an explicit construction in the leaky neuron
+model with hard reset that is valid at every decay, with a machine-checked proof; to our knowledge this form has
+not been stated.
 
 ## The circuits
 
@@ -349,6 +352,12 @@ spikes of the tasks of [1] and [5]). These points are covered by the measurement
   the state over between training batches.
 - Composable hand-built spiking circuits are an established idea, for example in [3]. The contribution here is
   the measurement on these benchmarks.
+- The automaton construction is exact for the stated weights, which are exact in binary floating point. With
+  perturbed weights a silent gate carries a small potential from step to step. In a test on the parity automaton
+  with a bias error of 0.001 on every gate and a word that keeps the same gate silent
+  (`sim/lif_automaton.py perturbed`), no wrong readout occurs in 5,000 steps at decays 0.5, 0.9 and 0.99; at
+  decay 1 the potential adds up and the first wrong readout is at step 501, at decay 1.5 at step 14. The
+  construction needs |Q| * |A| + 1 neurons and one-hot input symbols.
 
 ## References
 
