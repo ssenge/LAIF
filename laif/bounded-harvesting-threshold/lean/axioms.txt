@@ -7,3 +7,8 @@
 'HarvestThreshold.Params.yieldH_deriv_neg_at_zero_of_growth' depends on axioms: [propext, Classical.choice, Quot.sound]
 'HarvestThreshold.Params.conjecture_4_1' depends on axioms: [propext, Classical.choice, Quot.sound]
 'HarvestThreshold.Params.fig1_case' depends on axioms: [propext, Classical.choice, Quot.sound]
+'HarvestThreshold.Params.yieldH_unimodal' depends on axioms: [propext, Classical.choice, Quot.sound]
+'HarvestThreshold.Params.theorem21_holds' depends on axioms: [propext, Classical.choice, Quot.sound]
+'HarvestThreshold.Params.conjecture_4_1_unconditional' depends on axioms: [propext, Classical.choice, Quot.sound]
+'HarvestThreshold.Params.exists_D_pos_of_al_le_one' depends on axioms: [propext, Classical.choice, Quot.sound]
+'HarvestThreshold.Params.exists_D_pos_of_one_lt_al' depends on axioms: [propext, Classical.choice, Quot.sound]

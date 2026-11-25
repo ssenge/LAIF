@@ -13,7 +13,7 @@ is unique.
 
 | | Problem | Previous best bound | This folder | Status |
 |---|---|---|---|---|
-| Thm 1 | Is the optimal harvesting threshold unique? | Conjectured in [1, Conjecture 4.1]; a uniqueness lemma for harvesting quotas that depend on the population [2, Lemma 5.4] assumes ∫₀ m₀ < ∞, which here means μ − M > σ²/2, and a natural boundary at ∞ | Yes, for all μ > σ²/2, κ > 0, M > 0: H has exactly one critical point η*, it increases before η* and decreases after it, and η* is the optimal threshold. This includes μ − M ≤ σ²/2, the case of Figure 1 of [1] | Uniqueness of the critical point: Lean, for all parameters. Existence of the maximizer: Lean assuming [1, Theorem 2.1], and a written proof below (Claim). Monotonicity on each side and optimality among all strategies: Claim |
+| Thm 1 | Is the optimal harvesting threshold unique? | Conjectured in [1, Conjecture 4.1]; a uniqueness lemma for harvesting quotas that depend on the population [2, Lemma 5.4] assumes ∫₀ m₀ < ∞, which here means μ − M > σ²/2, and a natural boundary at ∞ | Yes, for all μ > σ²/2, κ > 0, M > 0: H has exactly one critical point η*, it increases before η* and decreases after it, and η* is the optimal threshold. This includes μ − M ≤ σ²/2, the case of Figure 1 of [1] | Lean, for all parameters: exactly one critical point, the yield strictly increasing before it and strictly decreasing after it, and the critical point maximizes H. Optimality among all admissible strategies: from [1, Theorem 2.1] |
 | Prop 2 | Computing the optimal threshold | none known to us | H in closed form with incomplete gamma functions; η* = σ²ξ/(2κ), where ξ depends only on a = 2μ/σ² and β = 2M/σ²; bisection on an explicit sign function S finds ξ | Claim; checked by script |
 
 ## 1. The yield as a mean of the growth
@@ -45,16 +45,21 @@ f decreases on [η, ∞), so its mean K is below f(η). In both cases v < f(η) 
 A differentiable function whose derivative is negative at every zero has at most one zero, so H has at most one
 critical point.
 
-**Lemma 4 (a maximizer exists).** H > 0 on (0, ∞) and H → 0 as η → ∞. If ∫₀ m₀ < ∞ (μ − M > σ²/2), then G → 0 and
-K → M∫₀^∞ y m₀ / ∫₀^∞ m₀ > 0 as η → 0, so H increases near 0. Otherwise H(η) ≤ M∫_η^∞ y m₀ / ∫_η^∞ m₀, the mean of y
-under m₀ restricted to (η, ∞), which tends to 0 because ∫_η^∞ m₀ → ∞. In both cases H attains its maximum inside
-(0, ∞). ∎
+**Lemma 4 (a critical point exists).** D(μ/κ) < 0, since f > 0 below μ/κ and f < 0 above it. It remains to find
+η < μ/κ with D(η) > 0; a zero of D then lies between them, and by Lemma 3 D > 0 before it and D < 0 after it.
+
+*Proof.* Write α = s(μ − M), β = sM and c = sκ. If α > 1 (that is, μ − M > σ²/2), use
+A(η) ≥ e^{−cη} η^{a−1}/(a − 1), so that sG ≤ (a − 1)η, together with sQ = βR − η^α e^{−cη}, where R = ∫_η^∞ y m₀,
+R(η) ≥ R(1) for η ≤ 1 and B(η) ≤ ∫₀^∞ m₀ < ∞. Then sK > sG for every η ≤ min(1, μ/(2κ)) with
+η(1 + (a − 1)∫₀^∞ m₀) ≤ βR(1)/2. If α ≤ 1, then H(η) ≤ M R(η)/B(η), with R(η) ≤ εB(η) + R(ε) for η < ε, and
+B(η) ≥ e^{−c} log(1/η) for η < 1. So H(η) < H(μ/κ) for a small η, and by the mean value theorem H′ > 0, hence D > 0,
+somewhere in (η, μ/κ). ∎
 
 **Theorem 1.** For all μ > σ²/2, κ > 0 and M > 0, H has exactly one critical point η* ∈ (0, ∞). H increases on
 (0, η*] and decreases on [η*, ∞), η* is the unique optimal threshold, and harvesting at rate M above η* and not
 below is an optimal strategy.
 
-*Proof.* Lemmas 2 to 4. By [1, Theorem 2.1], some threshold strategy is optimal among all admissible strategies;
+*Proof.* Lemmas 2 to 4 and the mean value theorem. By [1, Theorem 2.1], some threshold strategy is optimal among all admissible strategies;
 every threshold strategy is admissible, so its threshold maximizes H and equals η*. ∎
 
 The same argument works for a general growth function whose total growth f is strictly increasing and then
@@ -107,18 +112,24 @@ yield M(μ − M − σ²/2)/κ of harvesting at the constant rate M.
   equation (4.4) of [1] with the density (4.3) and its normalizing constant (`yieldH`), Lemma 1
   (`yieldH_eq_mean`), the derivative of the yield (`yieldH_hasDerivAt`), and Theorem 1:
   - `yieldH_critical_point_unique`: two critical points of the yield (4.4) in (0, ∞) coincide, for all parameters;
-  - `conjecture_4_1`: assuming `Theorem21`, there is exactly one x* > 0 with H′(x*) = 0, and it maximizes H.
+  - `conjecture_4_1`: given a maximizing threshold (`Theorem21`), there is exactly one x* > 0 with H′(x*) = 0, and
+    it maximizes H.
+- `Existence.lean`: Lemma 4 and the shape of H:
+  - `yieldH_unimodal`: for all parameters, H has a critical point x* > 0, is strictly increasing on (0, x*] and
+    strictly decreasing on [x*, ∞);
+  - `theorem21_holds`: `Theorem21` holds for all parameters;
+  - `conjecture_4_1_unconditional`: Conjecture 4.1 of [1], with no hypothesis beyond μ > σ²/2, κ > 0, M > 0:
+    exactly one x* > 0 with H′(x*) = 0, and it maximizes H over all thresholds.
 - Content lemmas: `yieldH_deriv_neg_at_zero_of_growth` (H′ < 0 at η = μ/κ, so H is not flat) and `fig1_case`
   (the parameters of Figure 1 of [1] satisfy the hypotheses and lie in the case μ − M ≤ σ²/2).
 
-**Assuming.** `Theorem21`: some threshold x̂ > 0 maximizes H over all thresholds. This follows from [1, Theorem 2.1],
-which states that an optimal strategy among all admissible ones is a threshold strategy with x̂ ∈ (0, ∞), together
-with two facts stated in [1]: every threshold strategy is an admissible stationary Markov strategy [1, Remark 2.3],
-and its long-run yield is H(η) by ergodicity [1, Remark 2.2 and eq. (4.4)]. Lemma 4 gives the same statement directly.
+The statement about thresholds needs no stochastic input. That the threshold strategy x* is optimal among all
+admissible strategies follows from [1, Theorem 2.1] (an optimal strategy is of threshold type), from the admissibility
+of threshold strategies [1, Remark 2.3], and from the identity between their long-run yield and H [1, Remark 2.2 and
+eq. (4.4)]; these steps are not formalized.
 
-**Not formalized:** Lemma 4 (existence of the maximizer from the limits at 0 and ∞), the monotonicity of H on each
-side of η*, the optimality of the threshold strategy among all admissible strategies (from [1, Theorem 2.1] and
-Theorem 1), the closed form and Proposition 2, and the extension to general growth and state-dependent caps.
+**Not formalized:** the optimality of the threshold strategy among all admissible strategies (from [1, Theorem 2.1]
+and Theorem 1), the closed form and Proposition 2, and the extension to general growth and state-dependent caps.
 
 ## Scripts
 
