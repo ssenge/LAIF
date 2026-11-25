@@ -1,5 +1,13 @@
 name = "spiking"
-defaultTargets = ["SpikingCircuits"]
+defaultTargets = ["SpikingCircuits", "LeakyGate"]
+
+[[require]]
+name = "mathlib"
+scope = "leanprover-community"
+rev = "master"
 
 [[lean_lib]]
 name = "SpikingCircuits"
+
+[[lean_lib]]
+name = "LeakyGate"

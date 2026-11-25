@@ -235,8 +235,24 @@ In this file the thermometer code is unbounded, the heading is given directly an
 Boolean formula; the network of `sim/al.py` tracks x from -86 to 87, holds the heading in 16 neurons and has
 extra terms for the first step.
 
-Not formalized: the spiking dynamics. That the latches, gates and timers realize the state machines, with random
-input spikes in the tasks of [1] and [5] and with the membrane decay in AL, is covered by the measurements only.
+`lean/LeakyGate/Basic.lean` (Lean 4 with Mathlib, standard axioms).
+
+- Neuron model of [4]: the potential after an input x is d * c + x, where c is the potential carried over (0 after
+  a spike), and the neuron spikes when it exceeds the threshold.
+- `spikes_eq`: if every input is low, in [lo, L], or high, at least F, and the conditions `Margins` hold, the
+  neuron spikes exactly at the high inputs, for input sequences of any length.
+- `and_gate`, `counter_unit`, `crossing_unit`, `relay_unit`: `Margins` holds at decay 3/10 and threshold 1/2 for
+  the drive ranges of the four kinds of neurons of the AL network, so the hypotheses of `spikes_eq` can be met.
+- `and_gate_outcomes`, `low_inputs_fire_at_decay_half`, `no_and_gate_margins_at_decay_half`: both outcomes occur;
+  at decay 1/2 the same neuron fires at a repeated low input; and the conditions for the gate cannot be met at
+  decay 1/2. So the statement has content, and it fails without the margins.
+
+Lean version and Mathlib revision are fixed in `lean/lean-toolchain` and `lean/lake-manifest.json`.
+
+Not formalized: that the drives of the neurons of `sim/al.py` lie in the ranges used above, the composition of
+the three AL statements into one theorem about the network, the binary adding network, and the spiking dynamics
+of the other circuits (that the latches, gates and timers realize the state machines under the random input
+spikes of the tasks of [1] and [5]). These points are covered by the measurements only.
 
 ## Scope and limits
 
