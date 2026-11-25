@@ -1,0 +1,10 @@
+name = "wildlife"
+defaultTargets = ["SeasonalEscapement"]
+
+[[require]]
+name = "mathlib"
+scope = "leanprover-community"
+rev = "master"
+
+[[lean_lib]]
+name = "SeasonalEscapement"
