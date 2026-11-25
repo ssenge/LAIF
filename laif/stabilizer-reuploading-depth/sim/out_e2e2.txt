@@ -1,0 +1,4 @@
+delta=0.2: 22 F-steps + 4 A-steps + 3 B-steps, encoding calls 10^51; max |n_z - 1/sqrt2| = 1.33e-15
+delta=0.05: 22 F-steps + 4 A-steps + 3 B-steps, encoding calls 10^51; max |n_z - 1/sqrt2| = 1.44e-15
+delta=0.01: 22 F-steps + 4 A-steps + 3 B-steps, encoding calls 10^51; max |n_z - 1/sqrt2| = 1.44e-15
+delta=0.002: 23 F-steps + 4 A-steps + 3 B-steps, encoding calls 10^53; max |n_z - 1/sqrt2| = 1.33e-15

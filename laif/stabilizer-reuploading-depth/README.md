@@ -1,4 +1,4 @@
-# Stabilizer-only data re-uploading: encoding depth O(D δ^{-1.42} polylog(D/ε)), and the lower bound Ω(D + 1/δ + log(1/ε))
+# Stabilizer-only data re-uploading: encoding depth O(D δ^{-1.371} polylog(D/ε)), and the lower bound Ω(D + 1/δ + log(1/ε))
 
 2026-11-25
 
@@ -15,7 +15,7 @@ By [1, Theorem 4], stabilizer-only circuits approximate every continuous g: [−
 | | encoding depth for error ε on δ ≤ \|x\| ≤ 1 |
 |---|---|
 | Previous best bound, implied by [1, Lemma F.1 and proof of Theorem 4] | O((D + 1)³ δ^{−4} ε^{−2} polylog((D + 1)/ε)) |
-| Theorem 1 | O((D + 1) δ^{−1.4182} log^{c₀ + 3.33}((D + 1)/ε)), c₀ the exponent of gate-set approximation [2] |
+| Theorem 1 | O((D + 1) δ^{−1.3705} log^{c₀ + 3.33}((D + 1)/ε)), c₀ the exponent of gate-set approximation [2] |
 | Theorem 2, every stabilizer-only circuit | Ω(D + 1/δ + log(1/ε)) for suitable targets, ε ≤ r/4, δ ≤ 1/2 |
 
 ## Results
@@ -26,11 +26,17 @@ m(δ, η) ≤ 10^{10} · (1/δ²)^{ln 10/ln 25.72} · max{1, ln(1/η)}^{log₂ 1
 
 encoding calls such that the axis n(x) of U(x) S U(x)† satisfies |n_z(x) − 1/√2| ≤ η whenever δ ≤ |x| ≤ 1. Here S = R_z(π/2).
 
+**Lemma 1′ (a composite word).** The same holds with
+
+m′(δ, η) ≤ 10^{51} · (1/δ²)^{ln 100/ln 829.21} · max{1, ln(1/η)}^{log₂ 10} = O(δ^{−1.3705} log^{3.33}(1/η))
+
+encoding calls. Theorem 1 uses the shorter of the two words. The bound of Lemma 1′ is the smaller one only for δ below about 10^{−860}.
+
 **Theorem 1 (upper bound).** Let g be the model function of a circuit with D encoding calls and arbitrary gates, and let ε, δ ∈ (0, 1). Then there is a stabilizer-only circuit with |f(x) − g(x)| ≤ ε for δ ≤ |x| ≤ 1 and encoding depth
 
-L ≤ D + 2(D + 1) N m(δ, η/(2N)),  η = ε/(4(D + 1)),
+L ≤ D + 2(D + 1) N min{m, m′}(δ, η/(2N)),  η = ε/(4(D + 1)),
 
-where N = N(η) = O(log^{c₀}(1/η)) is the length of the gate-set approximation by recursive refinement [2]. So L = O((D + 1) δ^{−1.4182} log^{c₀ + 3.33}((D + 1)/ε)).
+where N = N(η) = O(log^{c₀}(1/η)) is the length of the gate-set approximation by recursive refinement [2]. So L = O((D + 1) δ^{−1.3705} log^{c₀ + 3.33}((D + 1)/ε)).
 
 **Theorem 2 (lower bounds).** For every stabilizer-only circuit with L encoding calls:
 
@@ -38,7 +44,7 @@ where N = N(η) = O(log^{c₀}(1/η)) is the length of the gate-set approximatio
 - (b) if every constant target c ∈ [−r, r] has an approximation within ε by some circuit of depth L, then L ≥ log₂₄(r/ε) − 1;
 - (c) if |f(x) − r cos(Dx)| < r on δ ≤ x ≤ 1, then L ≥ (⌊D(1 − δ)/π⌋ − 1)/2.
 
-The targets r/2, c and r cos(Dx) are model functions of circuits with arbitrary gates, using D = 0, 0 and D encoding calls. A model function with D′ < D encoding calls is also one with D calls: extra encoding calls placed before V_0 act trivially, since R_z(x) commutes with ρ_r. So, for ε ≤ r/4 and δ ≤ 1/2, the optimal depth over targets with D encoding calls lies between Ω(D + 1/δ + log(1/ε)) and O((D + 1) δ^{−1.4182} polylog((D + 1)/ε)).
+The targets r/2, c and r cos(Dx) are model functions of circuits with arbitrary gates, using D = 0, 0 and D encoding calls. A model function with D′ < D encoding calls is also one with D calls: extra encoding calls placed before V_0 act trivially, since R_z(x) commutes with ρ_r. So, for ε ≤ r/4 and δ ≤ 1/2, the optimal depth over targets with D encoding calls lies between Ω(D + 1/δ + log(1/ε)) and O((D + 1) δ^{−1.3705} polylog((D + 1)/ε)).
 
 ## Proof
 
@@ -58,7 +64,21 @@ The targets r/2, c and r cos(Dx) are model functions of circuits with arbitrary 
 
 **Lemma 1.** Start from U_0 = R_y(x), a word with one encoding call, so that t_0 = cos x ∈ [cos 1, cos δ]. If 1 − t_0 < κ, each step of A multiplies 1 − t by at least 25.72 as long as t ≥ 1 − κ. Since 1 − t_0 ≥ 2δ²/5, after k_1 = max{0, ⌈ln(5κ/(2δ²))/ln 25.72⌉} steps t has left [1 − κ, 1], and it lands in [1 − Cκ, 1 − κ] ⊆ [cos 1, 1 − κ]. After 8 more steps it lies in J_A, and J_A is invariant, so one common number k_1 + 8 of A-steps works for all x. Then j steps of B give |t − 1/√2| ≤ M^{−1}(Mρ)^{2^j} ≤ η once 2^j ≥ ln(1/(Mη))/ln(1/(Mρ)). The word has 10^{k_1 + 8 + j} encoding calls. Here 10^{k_1} ≤ 10(1/δ²)^{ln 10/ln 25.72}, and, since M > 1 and ln(1/(Mρ)) > 1, the least such j has 10^j ≤ 10 max{1, ln(1/η)}^{log₂ 10}. This gives the bound.
 
-**Theorem 1.** This is the proof of [1, Theorem 4], with the word of Lemma 1 in place of [1, Lemma F.1]. The target axis z-component is the same value 1/√2. Each V_j is approximated within η by a product of at most N quarter-turns S^{±1}, S_{n*}^{±1} with n* = (e_x + e_z)/√2, which generate a dense subgroup of SU(2) [1, proof of Theorem 4]. Every S_{n*} is replaced by U(x)SU(x)†. The common azimuth of n(x) cancels as in [1]. The accuracy η/(2N) of Lemma 1 gives the error bound of [1]. Each replaced factor costs 2m encoding calls.
+**Lemma 1′.** Let P = S_n S² S_n² S² S_n² S² S_n S S_n³ and Q = S_n² S² S_n S³ S_n³ S² S_n² S² S_n², each with 10 copies, and let F be the step U ↦ Q(P(U)), with 100 copies and G_F = G_Q ∘ G_P. Here
+
+- G_P(t) = 32t¹⁰ − 48t⁸ − 16t⁷ + 18t⁶ + 28t⁵ − 2t⁴ − 14t³ + t² + 2t, with G_P′(1) = 26;
+- G_Q(t) = 64t¹⁰ − 128t⁸ + 80t⁶ − 15t⁴ − 2t³ + 2t, with G_Q′(1) = 32;
+
+so G_F(1) = 1 and G_F′(1) = 832. G_F has an attracting fixed point t_F = 0.455424 with G_F′(t_F) = −0.6529. `sim/certify2.py` checks with the same interval arithmetic, for κ = 10⁻⁵:
+
+1. 829.21 ≤ (1 − G_F(t))/(1 − t) ≤ 832 on [1 − κ, 1], evaluated as P_P(t) P_Q(G_P(t)) with 1 − G_W(t) = (1 − t)P_W(t), and 1 − 832κ > cos 1;
+2. J_F = [t_F − 0.002, t_F + 0.002] satisfies G_F(J_F) ⊆ J_F;
+3. every t ∈ [cos 1, 1 − κ] lands in J_F within 22 steps of F;
+4. J_F lands in J_A within 4 steps of A.
+
+The proof of Lemma 1 then applies with k′_1 = max{0, ⌈ln(5κ/(2δ²))/ln 829.21⌉} + 22 steps of F, 4 steps of A and j steps of B. That makes 100^{k′_1 + 22} 10^{4 + j} encoding calls, with 100^{k′_1} ≤ 100 (1/δ²)^{ln 100/ln 829.21}.
+
+**Theorem 1.** This is the proof of [1, Theorem 4], with the word of Lemma 1 or Lemma 1′ in place of [1, Lemma F.1]. The target axis z-component is the same value 1/√2. Each V_j is approximated within η by a product of at most N quarter-turns S^{±1}, S_{n*}^{±1} with n* = (e_x + e_z)/√2, which generate a dense subgroup of SU(2) [1, proof of Theorem 4]. Every S_{n*} is replaced by U(x)SU(x)†. The common azimuth of n(x) cancels as in [1]. The accuracy η/(2N) of Lemma 1 gives the error bound of [1]. Each replaced factor costs 2m encoding calls.
 
 **Theorem 2.** Every rotation O(V_j) and every R_z(x) contributes entries of degree at most 1 in cos x and sin x. So f is a real trigonometric polynomial of degree at most L with |f| ≤ r. At x = 0 the circuit is a stabilizer gate, so f(0) ∈ {0, ±r}.
 
@@ -71,7 +91,8 @@ The target r cos(Dx) comes from V_0 = R_y(π/2), D encoding calls and V_D = R_y(
 ## Check
 
 - `sim/poly.py` derives G_A, G_B and the map of [1] exactly. It checks G_A(1) = 1, G_A′(1) = 26, G_B(1/√2) = 1/√2 and G_B′(1/√2) = 0, and that the map of [1] matches [1, Eq. (F.2)].
-- `sim/certify.py`, output in `sim/out_certify.txt`, gives the certificate above.
+- `sim/certify.py`, output in `sim/out_certify.txt`, gives the certificate above; `sim/certify2.py`, output in `sim/out_certify2.txt`, gives that of Lemma 1′.
+- `sim/e2e2.py`, output in `sim/out_e2e2.txt`, builds the words of Lemma 1′ as 2 × 2 unitaries for 330 inputs per δ ∈ {0.2, 0.05, 0.01, 0.002}, with both signs of x; the axis z-component ends within η = 10⁻¹² of 1/√2 (in fact within 2·10⁻¹⁵).
 - `sim/e2e.py`, output in `sim/out_e2e.txt`, builds the words of Lemma 1 with its step counts as 2 × 2 unitaries for 450 inputs per δ ∈ {0.2, 0.05, 0.01}, with both signs of x.
   - The axis z-component of U S U† matches the iterated polynomials.
   - After the A- and B-steps it equals 1/√2 within η = 10⁻¹² for every input (in fact within 2·10⁻¹⁵).
@@ -82,8 +103,8 @@ The target r cos(Dx) comes from V_0 = R_y(π/2), D encoding calls and V_D = R_y(
 
 ## Scope
 
-- The exponent 1.4182 of δ comes from the best word found among the words with at most 10 copies whose attracting axis component is usable. Words with the attracting value n_z = 0 expand faster near 1 (G′(1) = 82 with 10 copies), but an equatorial axis together with S generates only a finite group, up to the common azimuth.
-- The gap between the bounds is a factor of order min{D, 1/δ} δ^{−0.42} polylog((D + 1)/ε), so δ^{−0.42} polylog(1/ε) for fixed D. The constants of Lemma 1 are large, about 10^{10}.
+- The exponent 1.4182 of δ comes from the best word found among the words with at most 10 copies whose attracting axis component is usable, and 1.3705 from a composite of two such words with 100 copies. Words with the attracting value n_z = 0 expand faster near 1 (G′(1) = 82 with 10 copies), but an equatorial axis together with S generates only a finite group, up to the common azimuth.
+- The gap between the bounds is a factor of order min{D, 1/δ} δ^{−0.371} polylog((D + 1)/ε), so δ^{−0.371} polylog(1/ε) for fixed D. The constants are large, about 10^{10} in Lemma 1 and 10^{51} in Lemma 1′.
 - Theorem 1 uses the gate-set approximation of [2] with its exponent c₀, and the density argument of [1] as stated. The statements are Claims with the listed checks; the interval certificate is computer-assisted.
 
 ## References
