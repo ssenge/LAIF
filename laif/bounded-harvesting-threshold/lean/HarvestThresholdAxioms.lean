@@ -1,4 +1,5 @@
 import HarvestThreshold.Existence
+import HarvestThreshold.General
 
 #print axioms HarvestThreshold.zero_unique_of_deriv_neg
 #print axioms HarvestThreshold.ratio_hasDerivAt
@@ -14,3 +15,7 @@ import HarvestThreshold.Existence
 #print axioms HarvestThreshold.Params.conjecture_4_1_unconditional
 #print axioms HarvestThreshold.Params.exists_D_pos_of_al_le_one
 #print axioms HarvestThreshold.Params.exists_D_pos_of_one_lt_al
+#print axioms HarvestThreshold.Diffusion.Assumption.critical_point_unique
+#print axioms HarvestThreshold.Diffusion.Assumption.yieldH_eq_mean
+#print axioms HarvestThreshold.Diffusion.Assumption.yieldH_hasDerivAt
+#print axioms HarvestThreshold.Diffusion.Example.nonvacuous

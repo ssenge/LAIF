@@ -133,6 +133,9 @@ def main():
             rows.append((s2, Mc, float(e), float(Hs), int(1.0 - Mc > s2 / 2)))
         rows.append(())
     write("sensitivity.csv", ["s2", "M", "eta", "H", "caseI"], rows)
+    for s2 in ("0.2", "0.6", "1.0", "1.4", "1.8"):  # one file per noise level for the figure
+        write("sens_%s.csv" % s2, ["M", "eta", "H", "caseI"],
+              [r[1:] for r in rows if r and abs(r[0] - float(s2)) < 1e-9])
     print("sensitivity grid done")
 
 

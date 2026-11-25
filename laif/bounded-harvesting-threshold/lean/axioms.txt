@@ -12,3 +12,7 @@
 'HarvestThreshold.Params.conjecture_4_1_unconditional' depends on axioms: [propext, Classical.choice, Quot.sound]
 'HarvestThreshold.Params.exists_D_pos_of_al_le_one' depends on axioms: [propext, Classical.choice, Quot.sound]
 'HarvestThreshold.Params.exists_D_pos_of_one_lt_al' depends on axioms: [propext, Classical.choice, Quot.sound]
+'HarvestThreshold.Diffusion.Assumption.critical_point_unique' depends on axioms: [propext, Classical.choice, Quot.sound]
+'HarvestThreshold.Diffusion.Assumption.yieldH_eq_mean' depends on axioms: [propext, Classical.choice, Quot.sound]
+'HarvestThreshold.Diffusion.Assumption.yieldH_hasDerivAt' depends on axioms: [propext, Classical.choice, Quot.sound]
+'HarvestThreshold.Diffusion.Example.nonvacuous' depends on axioms: [propext, Classical.choice, Quot.sound]

@@ -82,11 +82,12 @@ So the optimal threshold is η* = σ²ξ/(2κ), where ξ = ξ(a, β) is the uniq
 (Mσ²/(2κ)) h(a, β). H and S are elementary when a and α are integers with a ≥ 2 and α ≥ 2; for integer α ≤ 1 the
 exponential integral enters.
 
-**Proposition 2.** S(a) < 0, and S > 0 on (0, ξ). Starting from hi = a and lo = a/2^k for the first k with S(lo) > 0,
-bisection on the sign of S finds ξ to relative accuracy ε with ⌈log₂(1/ε)⌉ + k evaluations of S.
+**Proposition 2.** S(a) < 0, and S > 0 on (0, ξ). Let j ≥ 1 be the first index with S(a/2^j) > 0, start with
+lo = a/2^j and hi = 2 lo, and halve the bracket according to the sign of S at its midpoint. After
+j + ⌈log₂(1/ε)⌉ evaluations of S the bracket contains ξ and (hi − lo)/lo ≤ ε.
 
 *Proof.* At x = a, that is η = μ/κ, the growth f is positive below and negative above, so K < 0 < G. By Theorem 1,
-D has exactly one zero, and D > 0 before it. ∎
+D has exactly one zero, and D > 0 before it; so S(hi) ≤ 0 by the choice of j, and the initial relative width is 1. ∎
 
 Some values of ξ and h (rows from `sim/data/xi_table.csv`):
 
@@ -100,8 +101,8 @@ Some values of ξ and h (rows from `sim/data/xi_table.csv`):
 | 10 | 4 | 3.374603 | 5.130319 |
 
 For the parameters of Figure 1 of [1] (μ = M = κ = σ² = 1), η* = 0.4643297 and the optimal yield is 0.1408139, within
-the bounds (μ − σ²/2)²/(4κ) ≤ ρ* ≤ μ²/(4κ) of [1, Theorem 2.1]. For a small cap, h approaches α − 1, which is the
-yield M(μ − M − σ²/2)/κ of harvesting at the constant rate M.
+the bounds (μ − σ²/2)²/(4κ) ≤ ρ* ≤ μ²/(4κ) of [1, Theorem 2.1]. For a small cap, h(ξ) approaches α − 1, which gives the
+yield M(μ − M − σ²/2)/κ of harvesting at the constant rate M (h(ξ) − (α − 1) → 0 as β → 0 with a fixed).
 
 ## Lean
 
@@ -122,6 +123,11 @@ yield M(μ − M − σ²/2)/κ of harvesting at the constant rate M.
   - `theorem21_holds`: `Theorem21` holds for all parameters;
   - `conjecture_4_1_unconditional`: Conjecture 4.1 of [1], with no hypothesis beyond μ > σ²/2, κ > 0, M > 0:
     exactly one x* > 0 with H′(x*) = 0, and it maximizes H over all thresholds.
+- `General.lean`: the general model dX = (f(X) − h) dt + v(X) dB with 0 ≤ h ≤ k(X), with m, m₀ and λ defined from
+  f, v and k, the assumptions as a structure (finite integrals, vanishing boundary terms v²m at 0 and v²m₀ at ∞,
+  growth below its value at η on one side of every η), Lemma 1 (`Diffusion.Assumption.yieldH_eq_mean`), the
+  derivative of the yield, and uniqueness of the critical point (`Diffusion.Assumption.critical_point_unique`).
+  `Diffusion.Example.nonvacuous`: drift 1 − x, noise √(2x) and cap x/2 satisfy all assumptions.
 - Content lemmas: `yieldH_deriv_neg_at_zero_of_growth` (H′ < 0 at η = μ/κ, so H is not flat) and `fig1_case`
   (the parameters of Figure 1 of [1] satisfy the hypotheses and lie in the case μ − M ≤ σ²/2).
 
@@ -131,7 +137,7 @@ of threshold strategies [1, Remark 2.3], and from the identity between their lon
 eq. (4.4)]; these steps are not formalized.
 
 **Not formalized:** the optimality of the threshold strategy among all admissible strategies (from [1, Theorem 2.1]
-and Theorem 1), the closed form and Proposition 2, and the extension to general growth and state-dependent caps.
+and Theorem 1), the closed form and Proposition 2.
 
 ## Scripts
 

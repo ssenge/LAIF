@@ -9,7 +9,7 @@ with gamma, Gamma the lower and upper incomplete gamma functions.
 Sign rule: sign H'(eta) = sign S(x), where
     S(x) = (beta Gamma(alpha, x) - x^alpha e^-x) gamma(a - 1, x) - x^a e^-x Gamma(alpha - 1, x).
 S > 0 on (0, xi) and S < 0 on (xi, inf) for a unique xi < a; the optimal threshold is eta* = sigma^2 xi / (2 kappa).
-Bisection: hi = a (S(a) < 0); lo = a / 2^k for the first k with S > 0; then halve the bracket.
+Bisection: lo = a / 2^j for the first j with S > 0, hi = 2 lo; then halve the bracket (j + ceil(log2(1/eps)) evaluations).
 
 Run: python optimal_threshold.py   (a few seconds, 1 core). Writes the table to data/xi_table.csv.
 """
@@ -43,13 +43,13 @@ def S(x, a, beta):
 def xi_opt(a, beta, tol=mp.mpf(10) ** -12):
     """Unique root of S in (0, a), by bisection. Returns (xi, number of S evaluations)."""
     a, beta = mp.mpf(a), mp.mpf(beta)
-    hi = a
-    assert S(hi, a, beta) < 0
+    assert S(a, a, beta) < 0  # check of S(a) < 0, not counted
     lo, n = a / 2, 1
     while S(lo, a, beta) <= 0:
         lo /= 2; n += 1
         assert n < 2000
-    while hi - lo > tol * hi:
+    hi = 2 * lo  # S(hi) <= 0 by the choice of lo (hi = a if lo = a/2)
+    while hi - lo > tol * lo:
         mid = (lo + hi) / 2; n += 1
         if S(mid, a, beta) > 0: lo = mid
         else: hi = mid
