@@ -55,7 +55,8 @@ def check(name, adj, rng):
                 pred = [a for a in adj[v] if D[u][a] == D[u][v] - 1]
                 v = rng.choices(pred, weights=[C[u][a] for a in pred])[0]; load[v] += 1
     g = max(load)
-    assert g <= 2 * n * (dbar + 1), (name, g, n * (dbar + 1))
+    diam = max(map(max, D))
+    assert g <= 2 * n * (dbar + 1) <= 4 * n * diam, (name, g, n * (dbar + 1), diam)
     print(f"{name:22s} N={n:4d} Dbar={dbar:6.3f} E c(v)={Ec[0]:9.1f} g={g:6d} g/(N(Dbar+1))={g / Ec[0]:.3f}")
 
 if __name__ == "__main__":
@@ -65,7 +66,10 @@ if __name__ == "__main__":
     check("torus 5x5x5", torus(5, 3), rng)
     check("circulant Z_211 {1,13,61}", cayley(211, [1, 13, 61]), rng)
     check("circulant Z_401 {1,20,97}", cayley(401, [1, 20, 97]), rng)
-    check("cycle C_150", cayley(150, [1]), rng)
+    petersen = [[(i + 1) % 5, (i - 1) % 5, i + 5] for i in range(5)] + \
+               [[5 + (i + 2) % 5, 5 + (i - 2) % 5, i] for i in range(5)]
+    check("Petersen (not Cayley)", petersen, rng)
+    check("cycle C_150 (d > n/4)", cayley(150, [1]), rng)
     # mutation: on a graph that is not vertex-transitive (a path) the equal-load assert must fail
     try:
         check("path P_30 (mutation)", [[b for b in (a - 1, a + 1) if 0 <= b < 30] for a in range(30)], rng)

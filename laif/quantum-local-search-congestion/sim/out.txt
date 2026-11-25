@@ -19,6 +19,7 @@ torus 9x9              N=  81 Dbar= 4.444 E c(v)=    441.0 g=   469 g/(N(Dbar+1)
 torus 5x5x5            N= 125 Dbar= 3.600 E c(v)=    575.0 g=   608 g/(N(Dbar+1))=1.057
 circulant Z_211 {1,13,61} N= 211 Dbar= 4.246 E c(v)=   1107.0 g=  1169 g/(N(Dbar+1))=1.056
 circulant Z_401 {1,20,97} N= 401 Dbar= 5.182 E c(v)=   2479.0 g=  2570 g/(N(Dbar+1))=1.037
-cycle C_150            N= 150 Dbar=37.500 E c(v)=   5775.0 g=  5795 g/(N(Dbar+1))=1.003
+Petersen (not Cayley)  N=  10 Dbar= 1.500 E c(v)=     25.0 g=    25 g/(N(Dbar+1))=1.000
+cycle C_150 (d > n/4)  N= 150 Dbar=37.500 E c(v)=   5775.0 g=  5790 g/(N(Dbar+1))=1.003
 mutation (path P_30, not transitive) caught
 all asserts passed
