@@ -2,7 +2,7 @@
 
 Written 24 Nov 2026.
 
-**Setting.** For n > 2 let (Z/nZ)^× be the unit group. The bound on small non-members says: every proper subgroup of (Z/nZ)^× misses the residue of some positive integer a ≤ B(n) (a is not a unit modulo n, or its residue lies outside the subgroup). Under the hypothesis that the L-functions of all Dirichlet characters have no zeros with Re s > 1/2, this holds with B(n) = O(log² n) [1, 2], with explicit constants in [2]. That hypothesis is proved in Lean in [3], for every modulus and imprimitive characters included. The classical results below, proved in [6, 2, 8] under that hypothesis, therefore hold without further hypotheses, given the bound of [2] and the Lean proof in [3]. The contribution of this folder is a Lean proof of the algebraic reduction from the bound on small non-members to each of them.
+**Setting.** For n > 2 let (Z/nZ)^× be the unit group. The bound on small non-members says: every proper subgroup of (Z/nZ)^× misses the residue of some positive integer a ≤ B(n) (a is not a unit modulo n, or its residue lies outside the subgroup). Under the hypothesis that all character L-functions have no zeros with Re s > 1/2, this holds with B(n) = O(log² n) [1, 2], with explicit constants in [2]. That hypothesis is proved in Lean in [3], for every modulus and imprimitive characters included. The classical results below, proved in [6, 2, 8] under that hypothesis, therefore hold without further hypotheses, given the bound of [2] and the Lean proof in [3]. The contribution of this folder is a Lean proof of the algebraic reduction from the bound on small non-members to each of them.
 
 | | Problem | Previous best bound (unconditional, deterministic) | This folder | Status |
 |---|---|---|---|---|
