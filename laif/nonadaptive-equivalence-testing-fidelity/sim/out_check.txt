@@ -1,0 +1,8 @@
+1 ok: instance valid, 1 - F >= eps/1700 on E
+2 ok: P(Beta(D,D) > 3/4) <= (D/2)(3/4)^(D-1); D >= 60 + 4 ln(1/eps) suffices
+3 ok: net constants; D >= 16: all 300 draws in E
+4 ok D=3 N=5 aligned=0 eps=0.1: ||A||/N=2.67 trA/(ND)=1.77 bad tr/N=2.42 MC=1.1111 exact=1.1104
+4 ok D=3 N=5 aligned=2 eps=0.05: ||A||/N=8.41 trA/(ND)=7.57 bad tr/N=20.95 MC=1.1736 exact=1.1744
+4 ok D=4 N=6 aligned=3 eps=0.01: ||A||/N=35.32 trA/(ND)=34.82 bad tr/N=136.99 MC=1.2910 exact=1.2859
+4 ok D=4 N=6 aligned=6 eps=0.2: ||A||/N=4.58 trA/(ND)=4.58 bad tr/N=18.32 MC=1.3244 exact=1.3232
+5 ok: N <= 3 D^(3/2)/eps^2 gives TV <= 0.05 + 0.5 sqrt(e^(441 c0^4)/P(E)^2 - 1) < 1/3
