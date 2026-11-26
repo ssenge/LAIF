@@ -11,7 +11,7 @@ Here the quantum enumeration of [1] is carried to AE-MonoEq, and the reductions 
 1. With the published bound ω < 2.371177 [3, Table 1; 6], the time is n^{2.45706}.
 2. If ω ≤ 9/4, as claimed in [5], the time is at most n^{29/12} = n^{2.4167}.
 
-Status: Claim. The exponents are evaluated by script with asserts.
+Status: Claim. The exponents are evaluated by script with asserts, and the cost sum and the balance are checked in Lean.
 
 ## Before and after
 
@@ -43,12 +43,24 @@ The searches cost Õ(n^{2 + f/2}). A Boolean product of shape a × m × b with a
 
 [`sim/exponent.py`](sim/exponent.py) computes (5 + ω)/3 and the bound n^{(5−γ)/2} of [1, Theorem 4.1], with γ + 2ω(1 + γ, 1 + γ, 1) = 5, from the lower convex hull of the points of [3, Table 1]. It asserts that the bound of this work lies below the one of [1] for the published bounds, under ω ≤ 9/4 with ω(1, 1/2, 1) = 2, and for ω = 2 (7/3 against 2.4), and that the formula of [1] with the 2013 constants stays below 2.473. Run it with `python exponent.py` in `sim/`.
 
-## 4. Limits
+## 4. Lean
+
+[`lean/MaxMinExponent.lean`](lean/MaxMinExponent.lean), with [`lean/MaxMinExponentAxioms.lean`](lean/MaxMinExponentAxioms.lean) and its output in [`lean/axioms.txt`](lean/axioms.txt). The cost of a Boolean product by square blocks enters as the expression x · y · z^{ω−2}.
+
+- `colour_cost_le`: for 0 ≤ x, z ≤ n, 0 ≤ y ≤ m/n^f, n ≥ 1 and ω ≥ 2, x · y · z^{ω−2} ≤ n^{1−f} · m · n^{ω−2} (one colour, Section 2).
+- `total_cost_le`: summed over colours with Σ m_c ≤ 4n², the products cost at most 4 n^{ω+1−f}.
+- `balance`: with f = 2(ω − 1)/3, both 2 + f/2 and ω + 1 − f equal (5 + ω)/3.
+- `exponent_published`, `exponent_nine_fourths`: (5 + 2.371177)/3 ≤ 2.45706 and (5 + 9/4)/3 = 29/12.
+- `colour_cost_tight`, `balance_example`: the bound of `colour_cost_le` is attained at x = z = n, y = m/n^f, and at ω = 2.371177 the threshold f lies in (0, 1).
+
+Lean 4 v4.36.0-rc1, Mathlib rev d875a8de5222f62cf1c2fafc7984588adadc990a.
+
+## 5. Limits
 
 - Memory is classical memory readable in superposition, with unit cost per access, as in [1]. It holds the input, the lists built in preprocessing and the set of pairs already found, which is updated classically between searches.
 - Faster rectangular multiplication does not lower the exponent of this scheme: its worst case has n^{1−f} colours with n^{1+f} edges each, where every product is square.
 - Part 2 holds under the claim of [5].
-- Not formalized in Lean.
+- Not formalized: the algorithm, the quantum search and enumeration costs, and the reductions of [2]; Lean covers the cost sum and the exponent arithmetic of Section 2.
 
 ## References
 

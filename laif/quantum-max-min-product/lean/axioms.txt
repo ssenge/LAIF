@@ -1,0 +1,7 @@
+'MaxMinExponent.colour_cost_le' depends on axioms: [propext, Classical.choice, Quot.sound]
+'MaxMinExponent.total_cost_le' depends on axioms: [propext, Classical.choice, Quot.sound]
+'MaxMinExponent.balance' depends on axioms: [propext, Classical.choice, Quot.sound]
+'MaxMinExponent.exponent_published' depends on axioms: [propext, Classical.choice, Quot.sound]
+'MaxMinExponent.exponent_nine_fourths' depends on axioms: [propext, Classical.choice, Quot.sound]
+'MaxMinExponent.colour_cost_tight' depends on axioms: [propext, Classical.choice, Quot.sound]
+'MaxMinExponent.balance_example' depends on axioms: [propext, Classical.choice, Quot.sound]

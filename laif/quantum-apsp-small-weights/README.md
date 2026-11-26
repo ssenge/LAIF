@@ -14,7 +14,7 @@ Here ω(1, k, 1) denotes the exponent of multiplying an n × n^k matrix by an n^
 2. If ω ≤ 9/4 and ω(1, 1/2, 1) = 2, as claimed in [6, 7, 8], then τ ≤ 19/8.
 3. For every value of the exponents, τ ≥ 7/3, with equality if ω = 2.
 
-Status: Claim. The exponent τ is evaluated by script with asserts.
+Status: Claim. The exponent τ is evaluated by script with asserts, and its arithmetic is checked in Lean.
 
 ## Before and after
 
@@ -44,14 +44,26 @@ The bound implied by [1] uses square products for paths with at most ℓ = n^l e
 
 [`sim/exponent.py`](sim/exponent.py) evaluates τ on a grid of 200,001 values of l. It asserts τ = 2.413455 for the published bounds, 19/8 on the segment from (1/2, 2) to (1, 9/4), 7/3 for ω = 2, and that τ lies below (5 + ω)/3 and below the classical 2 + μ. Run it with `python exponent.py` in `sim/` (NumPy needed).
 
-## 4. Limits
+## 4. Lean
+
+[`lean/ApspExponent.lean`](lean/ApspExponent.lean), with [`lean/ApspExponentAxioms.lean`](lean/ApspExponentAxioms.lean) and its output in [`lean/axioms.txt`](lean/axioms.txt). The convexity of k ↦ ω(1, k, 1) and the values of [5, Table 1] enter as hypotheses on a function w.
+
+- `le_chord`: a convex function on [a, b] with w(a) ≤ A and w(b) ≤ B lies below the chord from (a, A) to (b, B).
+- `tau_published`: if w is convex on [4/5, 1] with w(4/5) ≤ 2.220639, w(9/10) ≤ 2.293941 and w(1) ≤ 2.371177, then min{l + w(1 − l), 5/2 − l/2} ≤ 2.41346 for every l ∈ [0, 1] (part 1).
+- `tau_nine_fourths`: if w is convex on [1/2, 1] with w(1/2) ≤ 2 and w(1) ≤ 9/4, the same minimum is at most 19/8 (part 2).
+- `tau_ge_seven_thirds`: if w ≥ 2, the scale l = 1/3 costs at least 7/3 (part 3, lower bound).
+- `published_hyps_hold`, `nine_fourths_hyps_hold`: affine functions satisfy the hypotheses of both bounds; `published_not_trivial`: for that function the scale l = 0.173 costs more than 2.41; `bounds_can_fail`: for w = 3 both bounds fail.
+
+Lean 4 v4.36.0-rc1, Mathlib rev d875a8de5222f62cf1c2fafc7984588adadc990a.
+
+## 5. Limits
 
 - The weights are integers of constant absolute value. The cost of the rectangular method grows linearly in M.
 - Negative cycles are assumed absent; they show up as negative diagonal entries after the last scale.
 - Memory is classical memory readable in superposition, with unit cost per access, as in [1].
 - Part 2 holds under the claims of [6, 7, 8].
 - If ω = 2, the bound 7/3 equals the bound (5 + ω)/3 implied by [1].
-- Not formalized in Lean.
+- Not formalized: the algorithm and the cost of each scale (Section 1); Lean covers the exponent arithmetic of Section 2.
 
 ## References
 
