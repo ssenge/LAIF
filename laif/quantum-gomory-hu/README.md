@@ -12,7 +12,7 @@ adjacency-array queries, whichever is smaller. More generally, for every thresho
 
 **Theorem 2 (adjacency matrix).** Every bounded-error quantum algorithm that outputs all values λ(u, v) from the adjacency matrix makes Ω(n²) queries. The same holds for the values λ(r, v) from a single fixed source r, and therefore for Gomory-Hu trees. The bound holds on graphs with at least n²/16 edges in which every value equals min(deg u, deg v), so these problems cost Θ(n²) matrix queries.
 
-Status: Claim for both theorems. The lemmas, the star model and the hard family are checked by script.
+Status: Claim for both theorems. The lemmas, the star model and the hard family are checked by script, and Lemma 4 is proved in Lean.
 
 ## Before and after
 
@@ -75,13 +75,21 @@ The proof uses only that degrees are expensive in the adjacency-matrix model. In
 - `sim/matrix_lb.py` (output in `sim/out_matrix_lb.txt`) checks Lemma 4 by brute force over all cuts for n = 16, computes Gomory-Hu trees for random B at n = 20, 26 and 40, asserts that every value equals min(d_u, d_v) and that |B| is recovered from the single-source values, and checks that the claim fails once the block L₂ × R₂ is removed.
 - `sim/trivial_fraction.py` (output in `sim/out_trivial_fraction.txt`) shows that on random dense graphs every edge of the Gomory-Hu tree has the value min(d_u, d_v) of its endpoints.
 
+## Lean
+
+The library `GHMatrix` in `lean/` (Lean 4, Mathlib at the revision pinned in `lean/lakefile.toml`) proves Lemma 4 with only the standard axioms (`lean/axioms.txt`):
+
+- `GHMatrix.lemma4`: for any graph on a finite vertex set split into `L` and `R` with `h + s` vertices each, both cliques, with `L₂ ⊆ L` and `R₂ ⊆ R` of size `h` completely joined and any further edges, and `3 ≤ s < h`, every cut with at least two vertices on each side has at least `2h + s − 1` crossing edges;
+- `GHMatrix.arith`: the arithmetic core, over the counts `|S ∩ L|`, `|S ∩ R|`, `|S ∩ L₂|`, `|S ∩ R₂|`;
+- content of the statement, in `lean/GHMatrix/NonVacuity.lean`: the family with `h = 4`, `s = 3` and `B = ∅` on 14 vertices satisfies all hypotheses, a cut with two vertices of `L₁` on one side has exactly `10 = 2h + s − 1` crossing edges, so the bound is attained, and a cut with one vertex on one side has 6.
+
 ## Open questions
 
 - Whether Gomory-Hu trees of all dense simple graphs, with arbitrary degrees, can be computed with Õ(n^{3/2}) adjacency-array queries, matching the lower bound for global minimum cut.
 
 ## Not formalized
 
-Theorems 1 and 2, Lemmas 3 and 4 and the star model are written proofs, not checked in Lean. The sparsifier of [4], amplitude estimation and Grover search enter with their published query bounds.
+Theorems 1 and 2, Lemma 3 and the star model are written proofs, not checked in Lean. The sparsifier of [4], amplitude estimation and Grover search enter with their published query bounds.
 
 ## References
 
