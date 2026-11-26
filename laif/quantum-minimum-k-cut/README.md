@@ -2,16 +2,16 @@
 
 Written 26 Nov 2026.
 
-In the minimum k-cut problem, an undirected graph G with n vertices and nonnegative integer edge weights is split into at least k connected components by deleting edges of least total weight λ_k. For fixed k the best classical algorithm runs in time n^k (log n)^{O(k²)} [1, Theorem 3], which is optimal up to a factor n^{o(k)} if max-weight clique needs n^{(1−o(1))k} time [1]. For k ≤ 6 there is also a bound of O(m n^{k−2} log³ n) for graphs with m edges [2]. For k = 2, the minimum cut, the quantum query and time complexity in the adjacency matrix model is Õ(n^{3/2} √τ) for weights in [1, τ], and Ω(τ n) quantum queries are needed for 1 ≤ τ ≤ n [3].
+In the minimum k-cut problem, an undirected graph G with n vertices and nonnegative integer edge weights is split into at least k connected components by deleting edges of least total weight λ_k. For fixed k, recursive contraction runs in time n^k (log n)^{O(k²)} [1, Theorem 3], and a reduction from max-weight (k − 1)-clique is noted in [1]. On graphs with m edges, the bound is n^{k−2}(m + n)(log n)^{O(k²)} [7]. On dense graphs it is k^{O(k²)} n^{k−1} log² n [8], which is n² log² n for k = 3. For k ≤ 6 there is also a bound of O(m n^{k−2} log³ n) [2]. For k = 2, the minimum cut, the quantum query and time complexity in the adjacency matrix model is Õ(n^{3/2} √τ) for weights in [1, τ], and Ω(n^{3/2} √τ) quantum queries are needed for integers 1 ≤ τ ≤ n [3].
 
 Here the recursive contraction of [1] is run with fixed-point amplitude amplification [4] at every level. A minimum k-cut survives contraction from n to i vertices with probability about (i/n)^k, and amplification pays only the square root of its inverse. The level sizes are chosen so that every level costs the same.
 
-**Theorem 1.** Let k ≥ 3 be fixed, and let the weight matrix of G, with integer entries in {0, …, W}, be given by a quantum oracle. A quantum circuit with no quantum random access memory computes λ_k with probability at least 1 − 1/n using
+**Theorem 1.** Let k ≥ 3 be fixed, and let the weight matrix of G, with integer entries in {0, …, W}, be given by a quantum oracle. A quantum circuit with no quantum random access memory makes n² queries and computes λ_k with probability at least 1 − 1/n using
 
-1. n^{k/2} (log n)^{O_k(1)} poly(log W) gates and queries if k ≥ 5, and
-2. n^{2+o(1)} poly(log W) gates and queries if k = 3 or k = 4.
+1. n^{k/2} (log n)^{O_k(1)} poly(log W) gates if k ≥ 5, and
+2. n^{2+o(1)} poly(log W) gates if k = 3 or k = 4.
 
-**Theorem 2.** For every k ≥ 2, computing λ_k for graphs with n vertices and weights in {0} ∪ [1, n] in the adjacency matrix model needs Ω(n²) quantum queries. So part 2 of Theorem 1 is optimal up to a factor n^{o(1)} for such weights.
+**Theorem 2.** For every fixed k ≥ 2, computing λ_k for graphs with n vertices and weights in {0, 1, n} in the adjacency matrix model needs Ω(n²) quantum queries, and so Ω(n²) time. So part 2 of Theorem 1 is optimal up to a factor n^{o(1)} for such weights.
 
 Status: Claim. The cost exponent of the level schedule is evaluated by a script with asserts.
 
@@ -19,8 +19,8 @@ Status: Claim. The cost exponent of the level schedule is evaluated by a script 
 
 | Problem | Previous best bound | This work |
 |---|---|---|
-| Minimum k-cut, weighted, fixed k ≥ 5 | n^k (log n)^{O(k²)} [1]; for k = 5, 6 also O(m n^{k−2} log³ n) [2] | n^{k/2} (log n)^{O_k(1)} |
-| Minimum 3-cut and 4-cut, weighted | O(m n log³ n) and O(m n² log³ n) [2] | n^{2+o(1)}, with Ω(n²) queries needed for weights up to n |
+| Minimum k-cut, weighted, fixed k ≥ 5 | k^{O(k²)} n^{k−1} log² n [8]; n^{k−2}(m + n)(log n)^{O(k²)} [7] | n^{k/2} (log n)^{O_k(1)} |
+| Minimum 4-cut, weighted | n³ polylog n [8]; O(m n² log³ n) [2] | n^{2+o(1)}, optimal up to n^{o(1)} for weights up to n |
 
 ## 1. Contraction by exponential clocks
 
@@ -28,20 +28,20 @@ The Contraction Algorithm to i vertices contracts a uniformly random edge of a m
 
 Give each edge e an independent key x_e with the exponential distribution of rate w_e, which is the minimum of w_e unit-rate clocks on its parallel copies. The order of the copies by their clocks is a uniformly random permutation. Kruskal's process runs through this order and joins the two components of a copy whenever they differ. Given its history, the next copy it uses is uniform among the remaining copies between different components, which is the rule of the Contraction Algorithm. Stopped at i components, Kruskal's process on the keys is therefore the Contraction Algorithm to i vertices.
 
-The keys are computed from uniformly random seed bits with b = O(k log n + k² log k + log W) bits of precision. Then ties and rounding change the probability of any event by less than half of the bound in the next paragraph.
+The keys are computed from uniformly random seed bits with b = O(k log n + k² log k + log W) bits of precision, and ties are broken by the index of the edge. Two keys of rates at most n² W change their order by rounding with probability O(n² W 2^{−b}). Over the at most n⁴ pairs, this changes the probability of any event by less than half of the bound in the next paragraph.
 
 **Survival** [1, Lemma 17]. Let K be a minimum k-cut and n ≥ i ≥ 8k² + 2k. Then no edge of K is contracted down to i vertices with probability at least (n/i)^{−k} ψ_k, where ψ_k = k^{−O(k²)}.
 
 ## 2. One contraction as a circuit
 
-Let c be the number of components of G and i ≥ c the target. Each step below reads and writes registers at fixed positions, so the circuit needs no quantum random access memory.
+Let c be the number of components of G and i ≥ c the target. Pairs of weight 0 get the key +∞ and are never chosen. Keys are compared as pairs (key, edge index), so they are distinct. Each step below reads and writes registers at fixed positions, so the circuit needs no quantum random access memory.
 
-1. Compute a minimum spanning forest F for the keys by Borůvka's algorithm in O(log n) rounds. In each round, every vertex scans its row for the edge of least key to a vertex with another label, and every label keeps the least of these edges over its vertices. The kept edges hook the labels, which are then merged by O(log n) steps of pointer jumping. Distinct keys make the kept edges a forest. The per-label minima and the pointer steps use sorting networks [5] on n records.
-2. Sort the n − c edges of F by key, and let θ be the key of the (n − i)-th lightest.
+1. Compute a minimum spanning forest F for the keys by Borůvka's algorithm in O(log n) rounds. In each round, every vertex scans its row for the edge of least key to a vertex with another label, and every label keeps the least of these edges over its vertices. Each label points to the label at the other end of its kept edge. Since keys are distinct, the only cycles are pairs of labels that kept the same edge, and in each pair the smaller label becomes the root. The labels are then merged by O(log n) steps of pointer jumping, and each kept edge is recorded once in F. The per-label minima and the pointer steps use sorting networks [5] on n records. F is stored as n − 1 records, padded with key +∞.
+2. Sort the records of F by key, and let θ be the key of the (n − i)-th lightest.
 3. Compute the components of the edges with key at most θ, by the connectivity part of step 1. Kruskal's process joins exactly the edges of F, in key order, so these are its i components after n − i joins.
 4. Number the components 1, …, i. Sort the n² triples (component of u, component of v, w_uv) and add up equal pairs by a segmented prefix sum. The result is the weight matrix of the contracted graph.
 
-The circuit has O(n² polylog n · poly(b)) gates. On G itself it makes n² queries. On a contracted graph it makes none, since that graph is held in registers.
+The circuit has O(n² polylog n · poly(b)) gates. It makes no queries, since the weight matrix of G is read into registers once, with n² queries, before the recursion starts, and every contracted graph is held in registers too.
 
 ## 3. The recursion
 
@@ -66,15 +66,13 @@ For a graph H on n_ℓ vertices and a threshold Λ, the procedure A_ℓ(H, Λ) i
 - *k ≥ 5.* Here n_{ℓ+1}^{k/2} ≥ n_ℓ², so every term is at most C^{ℓ+1} n^{k/2} polylog. With T = O(log log n / log(k/4)) levels, C^T = (log n)^{O_k(1)}.
 - *k = 3, 4.* Here n_ℓ = n^a with a ≤ 1, and the term has exponent k/2 + a(2 − k/2 + kε/2) ≤ 2 + kε/2. There are T = O((log log n)²) levels, so C^T = 2^{O_k((log log n)²)}. Both C^T and n^{kε/2} are n^{o(1)}.
 
-Only the contractions at level 0 query the oracle, n² times each. There are O(q_0^{−1/2}) polylog of them, so the query count is n² (n/n_1)^{k/2} polylog. That is at most n^{k/2} polylog for k ≥ 5 and n^{2+o(1)} for k = 3, 4.
-
 The schedule matters. With the schedule n_{ℓ+1} = n_ℓ^{2/k} of the classical recursion [1, Theorem 20], the term at ℓ = 0 is n^{k/2+1}.
 
 ## 4. Proof of Theorem 2
 
 Add k − 2 isolated vertices to G. A partition into k parts that keeps all of V(G) in one part would need k − 1 more nonempty parts made of isolated vertices, and there are only k − 2 of them. So every such partition splits V(G) and costs at least the minimum cut λ_2(G). A minimum cut of G together with the k − 2 singletons costs exactly λ_2(G). Hence λ_k of the padded graph equals λ_2(G).
 
-The padded graph has n + k − 2 vertices, and each of its queries is answered by at most one query to G. The bound Ω(τ n) of [3] for dense graphs with τ = n then gives Ω(n²).
+The padded graph has n + k − 2 vertices, and each of its queries is answered by at most one query to G. In the adjacency matrix model, [3] shows that Ω(n^{3/2} √τ) quantum queries are needed for minimum cut on graphs with edge weights 1 and τ, for integers 1 ≤ τ ≤ n. With τ = n and k fixed, this gives Ω(n²). Time is at least the number of queries.
 
 ## 5. Measurements
 
@@ -89,7 +87,7 @@ Run it with `python recursion.py` in `sim/`.
 ## 6. Limits
 
 - k is fixed. The factor per level, k^{O(k²)}, is not explicit in [1], and the exponent of the polylogarithmic factor grows like k² log k / log(k/4).
-- For k = 3 on graphs with n^{1+o(1)} edges, the classical bound O(m n log³ n) of [2] is as good.
+- For k = 3, the classical bound n² log² n of [8] is at least as good as part 2 of Theorem 1.
 - Weights are integers, so rational weights are scaled first. The gate count grows polynomially in log W.
 - The table compares weighted graphs. For simple unweighted graphs, faster classical algorithms are known [6].
 - Not formalized: the algorithm, its analysis and Theorem 2.
@@ -102,6 +100,8 @@ Run it with `python recursion.py` in `sim/`.
 4. T. J. Yoder, G. H. Low, I. L. Chuang. Fixed-point quantum search with an optimal number of queries. Physical Review Letters 113, 210501 (2014), arXiv:1409.3305.
 5. K. E. Batcher. Sorting networks and their applications. AFIPS Spring Joint Computer Conference, 1968.
 6. J. Li. Faster minimum k-cut of a simple graph. FOCS 2019.
+7. Faster minimum k-cut I: simple and sparse weighted graphs. arXiv:2609.27781.
+8. Faster minimum k-cut II: improved randomized and deterministic algorithms for weighted graphs. arXiv:2609.27797.
 
 ## Use of AI
 
