@@ -1,0 +1,2 @@
+(a) 902 pairs, (b) 72 graphs, (c) 2232 sets, (d) 808 minimizers, (e) 566 sinks: all asserts passed
+mutations: (a) without common neighbours wrong on 864 pairs, (c) without a_C wrong on 1209 sets
