@@ -16,7 +16,7 @@ queries. In particular it makes Ω(√((m + n)/ε)) queries when min(m, n) ≥ 1
 |---|---|
 | Previous best lower bound | Ω(√(m + n)) for constant ε [3] |
 | This folder | Ω(√(max(m, n) · min(m, n, 1/ε))) |
-| Best upper bound | Õ(√(m + n) · ε^{−2.5} + ε^{−3}) [1], also [4]; Õ(√(m + n) · ε^{−3}) earlier [2] |
+| Best upper bound | Õ(√(m + n) · ε^{−2.5}) [4] (quantum time, so also queries); Õ(√(m + n) · ε^{−2.5} + ε^{−3}) [1]; Õ(√(m + n) · ε^{−3}) earlier [2] |
 
 When min(m, n) ≥ 1/ε, the gap to the term √(m + n) · ε^{−2.5} shrinks from a factor ε^{−2.5} to ε^{−2}. For square games with n ≈ 1/ε, the bound is Ω(1/ε).
 
