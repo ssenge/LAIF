@@ -12,7 +12,7 @@ Here the k-strong partition is replaced by the classes of k-edge-connectivity of
 
 with adjacency-list access to G, and in time Õ(n^{11/6} W^{1/3}) + (n^{5/3} W^{2/3})^{1+o(1)} with adjacency-matrix access. On simple graphs both are Õ(n^{11/6}).
 
-Status: Claim. The contraction step is checked by a script with asserts on random small graphs.
+Status: Claim. The boundary bound of Lemma 1 is checked in Lean, and the contraction step by a script with asserts on random small graphs.
 
 ## Before and after
 
@@ -59,13 +59,27 @@ With ε = (nW)^{−1/3}, steps 2 and 5 cost Õ(√m n^{5/6} W^{1/3}), or Õ(n^{1
 
 [`sim/gh_classes.py`](sim/gh_classes.py) draws 4000 random simple graphs on 5 to 10 vertices, reweights each edge by a factor in [0.85, 1.15], and computes the exact sparsifier error ε of this reweighting H over all cuts. It runs steps 3 and 4 with k = 3εn, and asserts that no minimum s-t cut of G splits a part, that the contracted graph has the same minimum s-t cut value, and that Lemma 1 holds. In 2609 of the instances the contraction is nontrivial. Run it with `python gh_classes.py` in `sim/` (NetworkX needed).
 
-## 6. Limits
+## 6. Lean
+
+[`lean/StCutClasses.lean`](lean/StCutClasses.lean), with [`lean/StCutClassesAxioms.lean`](lean/StCutClassesAxioms.lean) and its output in [`lean/axioms.txt`](lean/axioms.txt). A rooted tree is given by a root, a parent map and a depth that drops along every parent edge; the side of the edge from v to its parent is the set of vertices below v, and v is light if the weight of the ordered pairs leaving its side is below k. The parts are the fibres of rep, where rep u is the first vertex on the way from u to the root that is the root or light.
+
+- `anc_iff`, `eq_root_of_iterate_eq`, `rep_spec`: the ancestors of u are its iterated parents, only the root lies on a cycle of the parent map, and rep u is the first root or light vertex on the way up.
+- `sep`: if rep x ≠ rep y, the side of rep x or of rep y is light and separates x from y (the path argument of Lemma 1).
+- `crossing_eq`: the crossing weight is the sum over the parts of the weight of the ordered pairs leaving them.
+- `image_rep`, `boundary_le`: there is one part per light vertex plus one, and for symmetric weights the crossing weight is at most 2(k − 1)(t − 1) over ordered pairs, which is Lemma 1 for integer weights.
+- `boundary_tight` (non-vacuity): on two vertices joined by an edge of weight one, with k = 2, the vertex 1 is light, t = 2, and the crossing weight 2 attains the bound.
+
+For a Gomory-Hu tree the weight of a side equals the weight of its tree edge, so light vertices are the tree edges of weight below k. This property, and the fact that the parts are then the classes of λ_{H′}(u, v) ≥ k, are taken from [3] and are not formalized.
+
+Lean 4 v4.36.0-rc1, Mathlib rev d875a8de5222f62cf1c2fafc7984588adadc990a.
+
+## 7. Limits
 
 - Memory is classical memory readable in superposition, with unit cost per access, as in [1].
 - The weights are integers polynomial in n, as required by [3] and [5].
 - The output is the value and a shore of a minimum cut, not a maximum flow of G.
 - On simple graphs the query bound Õ(n^{3/2}) of [7] stays below the time bound here.
-- Not formalized: the whole algorithm and its analysis.
+- Not formalized: the algorithm, its correctness and time analysis, and the properties of Gomory-Hu trees; Lean covers Lemma 1 on a given rooted tree.
 
 ## References
 
