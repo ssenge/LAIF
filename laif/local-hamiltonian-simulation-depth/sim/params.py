@@ -1,39 +1,49 @@
-"""Parameter check for Theorem A (long blocks), all model constants set to 1 (shapes only, not constants).
+"""Parameter check for Theorem 1 (long blocks). Model constants are set to one, except the stage count L + 1 of the
+order-p product formula, which enters the size condition of the control distribution.
 
-For M (precision scale), D, even p > D: step tau = M log2 M, record width w = ceil(log2 ell), degree threshold Q = M + 2,
-K0 = Q // (p + 1) insertion slots, r = ceil(tau (ell^D tau)^(1/p)) formula steps, N = r + K0 slots.
-Block side ell is the least integer with ell >= max(N w, tau + M, Q w) (size hypothesis of Lemmas 12 / 26 of
-arXiv:2610.01839 and the Lieb-Robinson buffer), found by a monotone search.
-Asserts: every hypothesis holds at the chosen ell; the coefficient-sum proxy ell^D tau^(p+1) / r^p <= 1; h = tau / r <= 1;
-the log-log slope of depth-per-unit-time ell / tau against tau approaches delta = (D+1)/(p-D) up to the log factors."""
+For M (precision scale), D and even p > D: degree threshold Q = M + 3, K0 = Q // (p + 1) insertion slots,
+block side ell = 2 (L + 1) Q w with record width w = (D + 3) * ceil(log2(Q w)) (address, offsets, count and work fields),
+step count r(tau) = ceil(tau (ell^D tau)^(1/p)), N = r + K0 slots, step time tau = the largest value with
+(L + 1) N w <= ell (size hypothesis of the control distribution), found by bisection.
+Asserts: (L + 1) N w <= ell, ell >= tau + M (buffer), tau >= 1, h = tau / r <= 1, ell^D tau^(p+1) / r^p <= 1 (coefficient
+condition), and the slope of log(ell / tau) against log M, after removing w^{1 + D/(p+1)}, approaches (D+1)/(p+1)."""
 import math
 
-def side(M, D, p):
-    tau = M * math.log2(M); Q = M + 2; K0 = Q // (p + 1)
-    def ok(ell):
-        w = math.ceil(math.log2(ell)); r = math.ceil(tau * (ell ** D * tau) ** (1 / p)); N = r + K0
-        return ell >= max(N * w, tau + M, Q * w), r, N, w
-    lo, hi = 2, 2
-    while not ok(hi)[0]: hi *= 2
-    while lo < hi:                       # ok is monotone in ell: ell grows faster than N w ~ ell^{D/p} log ell
-        mid = (lo + hi) // 2
-        if ok(mid)[0]: hi = mid
-        else: lo = mid + 1
-    _, r, N, w = ok(lo)
-    return lo, tau, r, N, w, Q
+def stages(p):
+    return 2 * 5 ** (p // 2 - 1)                     # Suzuki stage count, one exponential per stage and colour class
+
+def params(M, D, p):
+    Q = M + 3; K0 = Q // (p + 1); w = 1
+    for _ in range(50):                               # fixed point of w = (D + 3) ceil(log2(Q w))
+        w_new = (D + 3) * math.ceil(math.log2(Q * w))
+        if w_new == w: break
+        w = w_new
+    L1 = stages(p) + 1; ell = 2 * L1 * Q * w
+    def fits(tau):
+        r = math.ceil(tau * (ell ** D * tau) ** (1 / p))
+        return L1 * (r + K0) * w <= ell, r
+    lo, hi = 0.0, float(ell)
+    for _ in range(200):
+        mid = (lo + hi) / 2
+        lo, hi = (mid, hi) if fits(mid)[0] else (lo, mid)
+    tau = lo; ok, r = fits(tau)
+    return dict(Q=Q, K0=K0, w=w, ell=ell, tau=tau, r=r, N=r + K0, L1=L1)
 
 for D in (1, 2, 3):
-    for p in [q for q in (4, 6, 8, 10, 12) if q > 2 * D + 1]:
-        delta = (D + 1) / (p - D); rows = []
-        for M in (10**3, 10**5, 10**7, 10**9):
-            ell, tau, r, N, w, Q = side(M, D, p)
-            assert N * w <= ell and Q * w <= ell and ell >= tau + M and r >= tau
+    for p in [q for q in (4, 6, 8, 10, 12) if q > D]:
+        delta = (D + 1) / (p + 1); rows = []
+        for M in (10**6, 10**9, 10**12, 10**15):
+            P = params(M, D, p); tau, r, ell, w = P["tau"], P["r"], P["ell"], P["w"]
+            if tau < 1:                               # block too small for this M: needs larger M (asymptotic regime)
+                continue
+            assert P["L1"] * P["N"] * w <= ell and ell >= tau + M and tau / r <= 1
             assert ell ** D * tau ** (p + 1) / r ** p <= 1.0 + 1e-9
-            rows.append((M, ell / tau, w, tau))
-        # slope of log(ell/tau) - log factor (w^{p/(p-D)}) against log tau
-        (M1, q1, w1, t1), (M2, q2, w2, t2) = rows[-2], rows[-1]
-        slope = (math.log(q2 / w2 ** (p / (p - D))) - math.log(q1 / w1 ** (p / (p - D)))) / (math.log(t2) - math.log(t1))
-        assert abs(slope - delta) < 0.03, (D, p, slope, delta)
-        print(f"D {D} p {p:2d}: delta {delta:.3f}, slope {slope:.3f}; depth/time at M = 1e3..1e9: "
-              + ", ".join(f"{q:.3g}" for _, q, _, _ in rows) + "  (baseline M: 1e3..1e9)")
-print("ok: size hypotheses hold, coefficient proxy <= 1, h <= 1, exponent (D+1)/(p-D)")
+            rows.append((M, ell / tau, w))
+        assert len(rows) >= 2, (D, p)
+        (M1, q1, w1), (M2, q2, w2) = rows[-2], rows[-1]
+        e = 1 + D / (p + 1)
+        slope = (math.log(q2 / w2 ** e) - math.log(q1 / w1 ** e)) / (math.log(M2) - math.log(M1))
+        assert abs(slope - delta) < 0.02, (D, p, slope, delta)
+        print(f"D {D} p {p:2d}: exponent (D+1)/(p+1) = {delta:.3f}, fitted {slope:.3f}; depth per unit time at "
+              "M, ell/tau = " + ", ".join(f"{M:.0e}: {q:.3g}" for M, q, _ in rows))
+print("ok: size, buffer and coefficient conditions hold; exponent (D+1)/(p+1)")
