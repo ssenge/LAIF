@@ -1,0 +1,3 @@
+instances 182, minimum cuts checked 7090, lemma violations 0, star mismatches 0
+mutation with margin 0: lemma violations 724, star mismatches 17
+all asserts passed

@@ -1,0 +1,9 @@
+G(60,0.2): nontrivial GH values 0/59
+G(60,0.5): nontrivial GH values 0/59
+SBM(60; 0.6/0.15): nontrivial GH values 0/59
+G(120,0.2): nontrivial GH values 0/119
+G(120,0.5): nontrivial GH values 0/119
+SBM(120; 0.6/0.15): nontrivial GH values 0/119
+G(200,0.2): nontrivial GH values 0/199
+G(200,0.5): nontrivial GH values 0/199
+SBM(200; 0.6/0.15): nontrivial GH values 0/199

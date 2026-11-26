@@ -1,0 +1,6 @@
+n=42 m=398 δ=16 nontrivial pairs=440 c_max=15 core sizes=[20, 20] edges outside cores=34 star mismatches=0
+n=42 m=401 δ=16 nontrivial pairs=440 c_max=15 core sizes=[20, 20] edges outside cores=34 star mismatches=0
+n=42 m=389 δ=16 nontrivial pairs=440 c_max=15 core sizes=[20, 20] edges outside cores=34 star mismatches=0
+n=42 m=397 δ=16 nontrivial pairs=440 c_max=15 core sizes=[20, 20] edges outside cores=34 star mismatches=0
+mutation without shaving: star model wrong on 4 of 4 instances
+all asserts passed
