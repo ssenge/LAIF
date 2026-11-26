@@ -236,7 +236,7 @@ the two hypotheses easier to tell apart. It is a tree as in Theorem 2, with ε r
 c = t′/t ∈ [0, 1] fixed before each measurement, E₀[c(dP − I) | past] = c(dΣ_f p₀(f)S_f − I) = 0, Λ = c²I/d and
 λ = c²/d. With Σc² ≤ Σt′/t = n/t ≤ B = δd^{3/2}/(ε₀t)², Theorem 2 gives TV(p₀, E_G q_G) ≤ 0.109.
 
-*Higher orders.* Each ⟨f|G_J|f⟩ with G on the copies J has modulus at most ‖G‖_op^{|J|} ≤ 5^{|J|}, so with x = 5ε₀t′ ≤ 10⁻³ (by the condition on ε),
+*Higher orders.* Each ⟨f|G_J|f⟩ with G on the copies J has modulus at most ‖G‖_op^{|J|} ≤ 5^{|J|}, so with x = 5ε₀t′ ≤ 3.5·10⁻³ (by the condition on ε),
 |r_f − ℓ_f| ≤ (1 + 5ε₀)^{t′} − 1 − x ≤ e^x − 1 − x ≤ 0.51x². The χ² divergence of one step is
 Σ_f p₀(f)(r_f − ℓ_f)²/ℓ_f ≤ 2(0.51·25)²ε₀⁴t′⁴ ≤ 330ε₀⁴t′⁴. By the chain rule and KL ≤ χ², for every G in U,
 KL(p_G ‖ q_G) ≤ 330ε₀⁴t³Σt′ = 330ε₀⁴t³n, and since TV ≤ (KL/2)^{1/2}, TV(p_G, q_G) ≤ (165ε₀⁴t³n)^{1/2}. For
@@ -251,22 +251,23 @@ replaced by tε, and the condition on ε pays for the terms of higher order.
 **Theorem 5.** There are absolute constants c, C > 0 such that for d ≥ C, 1 ≤ t ≤ d²/C and
 0 < ε ≤ c t^{−3/2} d^{−3/4}, every adaptive tester with measurements on at most t copies each uses at least
 
-    n ≥ c · d^{3/2} / (ε² (t^{1/4} + (t/d)^{1/2}))
+    n ≥ c · d^{3/2} / (t^{1/4} ε²)
 
-copies. For t ≤ d² this is Ω(d^{3/2}/(t^{1/4}ε²)), the order of the non-adaptive bound [3, Thm 1.2], here for
-adaptive testers and for a wider range of ε. It is above Ω(d/ε²) for t ≤ d²/C, and for t ≤ d it leaves a factor
+copies. This is the order of the non-adaptive bound [3, Thm 1.2], here for adaptive testers and for a wider range
+of ε. The non-adaptive bound is proved in [3, Sec. 6] from the one-measurement bounds of Lemmas 6 and 7 below; the
+proof of Theorem 5 combines them with the adaptive martingale of Theorem 2. It is above Ω(d/ε²) for t ≤ d²/C, and for t ≤ d it leaves a factor
 t^{1/4} to the upper bound O(d^{3/2}/ε²).
 
 Theorem 5 keeps the mixed directions S_f instead of refining them. Two facts about one measurement on t′ ≤ t copies
 replace the refinement. Write S̃ = S − I/d, A_X = Σ_j X_(j) (X acting on copy j), and E₀ for the null average over
 the outcome given the past.
 
-**Lemma 6 (variance of one measurement).** For every traceless Hermitian X, E₀⟨S̃_f, X⟩² ≤ ‖X‖_F²/(t′d).
+**Lemma 6 (variance of one measurement; [3, Lemma 6.15]).** For every traceless Hermitian X, E₀⟨S̃_f, X⟩² ≤ ‖X‖_F²/(t′d).
 
 *Proof.* ⟨S_f, X⟩ = ⟨f|A_X|f⟩/t′ and ⟨f|A_X|f⟩² ≤ ⟨f|A_X²|f⟩, so E₀⟨S̃_f, X⟩² ≤ tr(A_X²)/(t′²d^{t′}). The cross
 terms of A_X² have trace (tr X)²d^{t′−2} = 0, so tr(A_X²) = t′d^{t′−1}‖X‖_F². ∎
 
-**Lemma 7 (average purity).** E₀‖S_f‖_F² ≤ μ_{t′}/t′, where μ_{t′} is the mean length of a longest weakly
+**Lemma 7 (average purity; [3, Lemma 6.13 and Claim 6.14]).** E₀‖S_f‖_F² ≤ μ_{t′}/t′, where μ_{t′} is the mean length of a longest weakly
 increasing subsequence of a uniformly random word in {1, …, d}^{t′}, and μ_{t′} ≤ μ := 2e√t + 4e²t/d + 1.
 
 *Proof.* R_f = t′S_f has entries (R_f)_{ba} = ⟨f|J_{ab}|f⟩ with J_{ab} = Σ_j (|a⟩⟨b|)_(j), the action of the Lie
@@ -297,9 +298,11 @@ replacements:
   4ε²‖Γ‖_op/d ≤ 1/2. All exponents are O(ε₀²Nμ/(δd) + α²ε₀²Nμ/d) = O((μd)^{1/2}), below 0.1d for t ≤ d²/C.
 - Lemma 4: unchanged, |r_i − 1| ≤ 11εc_i.
 - Lemma 5: H_S − K_S = Σ_j c_j(r_j − 1) d S̃_j, and for any coefficients b, ‖Σ_j c_j b_j S̃_j‖_F ≤ ‖Γ_S‖^{1/2}‖b‖₂.
-  The first stage gives ‖H_S‖_F ≤ ξ₀ = 1.01A + 11εd(gN)^{1/2}. In each later stage |r_j − 1| ≤ 2ε²c_j|⟨S̃_j, H′⟩|/d²,
-  so ‖b‖₂ ≤ (2ε²/d²)⟨H′, Γ H′⟩^{1/2} and ‖H_S − K_S‖_F ≤ (2ε²g/d)ξ, a contraction since 2ε²g/d = O(ε₀²N/d² +
-  ε²ln(d/δ)/d) is small. With D = ⌈ln(4 + ξ₀/A)⌉ = O(ln(d/ε)) stages, ‖H‖_F ≤ 3A.
+  The first stage gives ‖H_S‖_F ≤ ξ₀ = 1.01A + 11εd(gN)^{1/2}. In each later stage |r_j − 1| ≤ 2ε²c_j|⟨S̃_j, H′_j⟩|/d²
+  with H′_j = H_{S∖j}, so |r_j − 1| ≤ 2ε²c_j‖S̃_j‖_F ξ/d², ‖b‖₂ ≤ (2ε²ξ/d²)(tr Γ_S)^{1/2} and
+  ‖H_S − K_S‖_F ≤ (2ε²/d)(‖Γ_S‖_op tr Γ_S)^{1/2} ξ. On 𝒢 this factor is at most (2ε²/d)(gP̄/δ)^{1/2}; the part 2γ̄ of g
+  gives exactly 2(2δ)^{1/2}, since ε⁴γ̄P̄/(δd²) = δ for N = δd^{3/2}/(ε₀²√μ), and the part 8 ln(d²/δ) is O(ln d/d²).
+  So the factor is below 1/e. With D = ⌈ln(4 + ξ₀/A)⌉ = O(ln(d/ε)) stages, ‖H‖_F ≤ 3A.
 
 By Lemma 6 the supermartingale step becomes E[(Ψ_t/Ψ_{t−1})² | past] ≤ 1 + 9ε⁴c²A²/(t′d⁵), and the product over all
 measurements is at most exp(9ε₀⁴t²A²N/d⁵) = exp(9α²ε₀⁴μN²/d³). For N = δd^{3/2}/(ε₀²√μ) this is e^{9δ}, and the
@@ -324,6 +327,7 @@ and asserts them (output in `sim/out_constants_iv.txt`).
 
 - Theorem 4 holds for ε ≤ 0.07 t^{−1} d^{−3/4} and has a factor 1/t that the upper bound does not have.
 - Theorem 5 is stated with absolute constants that are not computed; for t ≤ d it leaves a factor t^{1/4} to the upper bound.
+  A sharper bound E λ₁ ≤ t/d + 2√t is used in [3]; the cruder μ of Lemma 7 changes only constants.
 - Theorem 3 has a factor ln d_out that Theorem 1 does not have; it comes from the outcomes with large weight in
   the ancilla-assisted case.
 - The constants are far from optimal.
