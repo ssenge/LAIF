@@ -26,8 +26,8 @@ Status: Claim. The contraction step is checked by a script with asserts on rando
 This is Algorithm 1 of [1], which follows the cut-query algorithm of [6], with one step changed. Let ε = (nW)^{−1/3} and k = 3εnW.
 
 1. Find the largest weight W by quantum maximum finding [9].
-2. Compute an ε-cut sparsifier H of G with Õ(n/ε²) edges and integer weights at most O(ε²nW) by the quantum algorithm of [4], as in [1, Theorem 4].
-3. Compute a maximum s-t flow F in H that is integral and has no flow cycles, and let H′ have the weights w_H(e) − F(e). These are integers in [0, O(ε²nW)].
+2. Compute an ε-cut sparsifier H of G with Õ(n/ε²) edges and integer weights at most Õ(ε²nW) by the quantum algorithm of [4], as in [1, Theorem 4].
+3. Compute a maximum s-t flow F in H that is integral and has no flow cycles, and let H′ have the weights w_H(e) − F(e). These are integers in [0, Õ(ε²nW)].
 4. **(Changed.)** Compute a Gomory-Hu tree T of H′ (edges of weight 0 dropped), delete the tree edges of weight below k, and let P = {A_1, …, A_t} be the vertex sets of the remaining components. Then u and v lie in the same part exactly when λ_{H′}(u, v) ≥ k.
 5. Contract every part of P in G to get G′, learn the edges of G that join different parts by quantum enumeration, and compute a minimum a-b cut of G′, where a and b are the parts of s and t. Return its value and the union of the parts on the side of a.
 
@@ -43,15 +43,15 @@ Let X be the shore of a minimum s-t cut of G. The proof of [1, Claim 12] shows t
 
 *Proof.* Call a tree edge light if its weight is below k. Removing a light edge e from T splits V into S_e and V \ S_e, with w_{H′}(δ S_e) = w_T(e) < k. Take an edge xy of H′ with x ∈ A_i and y ∉ A_i. The path from x to y in T leaves A_i through a light edge e incident to A_i, and e separates x from y in T, so xy ∈ δ S_e. Hence δ A_i lies in the union of the cuts δ S_e over the light edges e incident to A_i, and w_{H′}(δ A_i) < k times their number. There are t − 1 light edges, and each is incident to two parts. ∎
 
-This bound takes the place of [1, Theorem 10], which gives k(t − 1) for a k-strong partition. With t ≤ n, the proof of [1, Claim 14] gives Σ_i w_G(δ A_i) = O(εn²W): the H′ part is O(kn) = O(εn²W), and the flow part is at most 10 n √(λ_st(H) W_H) = O(εn²W) by [6, Lemma 5.4], which holds for any flow without cycles and any partition. So G′ has O(εn²W) edges.
+This bound takes the place of [1, Theorem 10], which gives k(t − 1) for a k-strong partition. With t ≤ n, the proof of [1, Claim 14] gives Σ_i w_G(δ A_i) = Õ(εn²W): the H′ part is O(kn) = O(εn²W), and the flow part is at most 10 n √(λ_st(H) W_H) = Õ(εn²W) by [6, Lemma 5.4], which holds for any flow without cycles and any partition. So G′ has Õ(εn²W) edges.
 
 ## 4. Time
 
 1. Step 1 takes Õ(√m) time, or Õ(n) with the matrix.
 2. Step 2 takes Õ(√(mn)/ε) time, or Õ(n^{3/2}/ε) with the matrix [4].
 3. Step 3 is a maximum flow on Õ(n/ε²) edges with polynomial integer weights, in (n/ε²)^{1+o(1)} time [5]. Cycles of an integral flow are cancelled in O(m log n) time with dynamic trees [8].
-4. Step 4 builds a Gomory-Hu tree of a graph with Õ(n/ε²) edges and integer weights in [1, O(ε²nW)], which are polynomial in n, in (n/ε²)^{1+o(1)} time [3, Theorem 1.1]. The parts follow in O(n) time.
-5. In step 5 the n part labels are stored in classical memory readable in superposition. An edge slot is marked if it joins two parts. Two label lookups answer a query to the mark. Quantum enumeration with an abort above O(εn²W) marks, as in [1, Theorem 2], finds all marked slots in Õ(n√(mεW)) time, or Õ(n²√(εW)) with the matrix. G′ is then built in O(εn²W) time, and its minimum a-b cut takes (εn²W)^{1+o(1)} time [5].
+4. Step 4 builds a Gomory-Hu tree of a graph with Õ(n/ε²) edges and integer weights in [1, Õ(ε²nW)], which are polynomial in n, in (n/ε²)^{1+o(1)} time [3, Theorem 1.1]. The parts follow in O(n) time.
+5. In step 5 the n part labels are stored in classical memory readable in superposition. An edge slot is marked if it joins two parts. Two label lookups answer a query to the mark. Quantum enumeration with an abort above Õ(εn²W) marks, as in [1, Theorem 2], finds all marked slots in Õ(n√(mεW)) time, or Õ(n²√(εW)) with the matrix. G′ is then built in Õ(εn²W) time, and its minimum a-b cut takes (εn²W)^{1+o(1)} time [5].
 
 With ε = (nW)^{−1/3}, steps 2 and 5 cost Õ(√m n^{5/6} W^{1/3}), or Õ(n^{11/6} W^{1/3}) with the matrix. Steps 3 to 5 also cost (n^{5/3} W^{2/3})^{1+o(1)}, which is n^{5/3+o(1)} for W = 1.
 
