@@ -75,6 +75,10 @@ The proof uses only that degrees are expensive in the adjacency-matrix model. In
 - `sim/matrix_lb.py` (output in `sim/out_matrix_lb.txt`) checks Lemma 4 by brute force over all cuts for n = 16, computes Gomory-Hu trees for random B at n = 20, 26 and 40, asserts that every value equals min(d_u, d_v) and that |B| is recovered from the single-source values, and checks that the claim fails once the block L₂ × R₂ is removed.
 - `sim/trivial_fraction.py` (output in `sim/out_trivial_fraction.txt`) shows that on random dense graphs every edge of the Gomory-Hu tree has the value min(d_u, d_v) of its endpoints.
 
+## Open questions
+
+- Whether Gomory-Hu trees of all dense simple graphs, with arbitrary degrees, can be computed with Õ(n^{3/2}) adjacency-array queries, matching the lower bound for global minimum cut.
+
 ## Not formalized
 
 Theorems 1 and 2, Lemmas 3 and 4 and the star model are written proofs, not checked in Lean. The sparsifier of [4], amplitude estimation and Grover search enter with their published query bounds.
