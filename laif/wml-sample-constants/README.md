@@ -10,8 +10,9 @@ Wave matrix Lindbladization (WML) simulates the Lindbladian with one jump operat
 | Copies needed by WML for time t and error ε, ‖L‖∞ ≤ 1 | at most (2d+3)/8 · t²/ε [1, Theorem 3] | at most (d/2 + e^{1/d}) t²/ε for n > 2dt (Theorem 2) |
 | Copies needed by WML in the worst case over L, as ε → 0 | at least d/32 · t²/ε [1, Theorem 10] | at least (d−1)/4 · t²/ε for every t, and (2d−3)/4 · t²/ε as t → 0 (Theorem 3) |
 | Copies needed by any regular memoryless protocol with a bounded number of fresh copies per step and comparable step sizes, as n → ∞ | at least 10⁻⁴ · t²/ε, for every protocol [2] | at least (d−1)/4 · t²/ε, with the same constant as WML on the witness L = \|0⟩⟨0\| (Theorem 4) |
+| One-copy error of any channel from S ⊗ P to S, worst case over L, as t → 0 | | at least (d−1)/4 · t² − O(t³) (Theorem 5) |
 
-The first three rows are about the WML protocol, as in [1, Theorem 10]. The last row covers the class of Theorem 4. None of them bounds the minimum over all protocols, for which the lower bound 10⁻⁴ · t²/ε of [2] holds for every d.
+The first three rows are about the WML protocol, as in [1, Theorem 10]. The fourth row covers the class of Theorem 4, and the last row every channel that uses one copy. None of them bounds the minimum over all protocols, for which the lower bound 10⁻⁴ · t²/ε of [2] holds for every d.
 
 ## Setting
 
@@ -74,12 +75,26 @@ Let ε be the error on L = |0⟩⟨0| with input |0⟩⟨0|, in normalized trace
 
 Protocols with memory across steps, steps far from Tr_P, or step sizes that do not shrink with n are outside the class. The bound is asymptotic in n: rescaling WML to Λ_Δ = Φ_{Δ(1−Δ/Δ₀)} with Δ₀ = t/n satisfies (H), (R) and (S), and every step of size Δ₀ is then Tr_P, which has zero error on this witness for that n.
 
+**Theorem 5 (every channel that uses one copy).** For every d ≥ 2 there is a constant K_d such that every channel Λ from S ⊗ P to S and every t ∈ (0, 1] satisfy
+
+sup_L ½ ‖Λ(· ⊗ π_L) − e^{tℒ_L}‖⋄ ≥ (d−1)/4 · t² − K_d t³,
+
+with the supremum over all L with ‖L‖₂ = 1. No step structure, expansion or regularity in t is assumed. The supremum may be restricted to finitely many operators: L = |0⟩⟨0| together with any finite set whose program states span all operators on P.
+
+*Proof.* Let ε be the supremum, A = Λ − Tr_P and G the forced map of Theorem 4, step 1, and set B = A − tG.
+1. **B is small on every input.** For every L, B(ρ ⊗ π_L) = (e^{tℒ_L} − id − tℒ_L)(ρ) + (Λ(ρ ⊗ π_L) − e^{tℒ_L}(ρ)). Since ‖ℒ_L‖⋄ ≤ 2, this has diamond norm at most 2e²t² + 2ε. Fix finitely many L_k whose π_{L_k} span the operators on P. Every matrix unit of S ⊗ P is then a fixed combination of products Y ⊗ π_{L_k}, so every entry of the Choi matrix C_B of B is at most κ_d (t² + ε).
+2. **Positivity.** The Choi matrix of Λ is C₀ + tC₁ + C_B ≥ 0, with C₀ and C₁ as in Theorem 4. For L = |0⟩⟨0| and e_i = |0⟩|L⟩ ⊗ |i⟩, i ≠ 0, test it with e_i + tf, f = −C₀⁺C₁e_i. The terms of order t² give −t²/4, as in Theorem 4. The terms that involve C_B give e_i†C_B e_i plus at most κ′_d t(t² + ε). The term t³ f†C₁f is O(t³). Hence e_i†C_B e_i ≥ t²/4 − κ″_d t(t² + ε).
+3. **The witness.** For L = |0⟩⟨0|, ℒ_L(|0⟩⟨0|) = 0, so e^{tℒ_L} fixes |0⟩⟨0| and e_i†C_B e_i = ⟨i|Λ(|0⟩⟨0| ⊗ π_L)|i⟩. Summed over i ≠ 0 this is the population that leaves |0⟩, which is at most the trace distance to |0⟩⟨0|, hence at most ε.
+4. **Conclusion.** Together, ε ≥ (d−1)t²/4 − (d−1)κ″_d t(t² + ε). If ε > (d−1)t²/4 there is nothing to prove; otherwise ε ≤ dt², and the claim follows with K_d = 2d(d−1)κ″_d. ∎
+
+So even an unrestricted channel that uses one copy has the leading constant (d−1)/4. The optimal one-copy channel, computed by an exact semidefinite program over all channels, approaches this constant: over the operators of step 1 its error divided by t² is 0.2374, 0.2437 and 0.2470 for t = 0.04, 0.02 and 0.01 at d = 2, and 0.4667, 0.4834 and 0.4924 at d = 3.
+
 **Numerical supremum.** The supremum of the leading constant over all L, computed with an exact semidefinite program for the diamond norm and local search over L, is about 0.300 at d = 2 and 0.750 at d = 3. At d = 3 this equals (2d−3)/4.
 
 ## Scope
 
 - Theorems 1 and 3 are exact statements about explicit operators, checked numerically with plain-state certificates and with diamond norms from a semidefinite program.
-- Theorems 2 and 4 are written proofs (Claim). Every coefficient identity of Theorem 2 is checked against the matrix exponential to 1e-12, and the Schur-complement value of Theorem 4 is checked exactly for d = 2, 3, 4 with one copy per step and for (d, k) = (2, 2), (3, 2), (4, 2), (2, 3), (3, 3).
+- Theorems 2, 4 and 5 are written proofs (Claim). The constant K_d of Theorem 5 is not made explicit. Every coefficient identity of Theorem 2 is checked against the matrix exponential to 1e-12, and the Schur-complement value of Theorem 4 is checked exactly for d = 2, 3, 4 with one copy per step and for (d, k) = (2, 2), (3, 2), (4, 2), (2, 3), (3, 3).
 - The step of WML is built twice: from the transfer matrix of [1, App. B], and directly from [1, Eq. (15)] on the full system and program space. The two agree to 1e-16 for d = 2, 3.
 - The supremum over L for d ≥ 4 is not computed. Nothing here bounds the sample complexity over all protocols.
 
@@ -92,6 +107,7 @@ Protocols with memory across steps, steps far from Tr_P, or step sizes that do n
 - `sim/class_bound.py`: the forced leak of Theorem 4 with one copy per step, from the full Choi matrices, with asserts for d = 2, 3, 4.
 - `sim/kcopies.py`: the forced leak with k copies per step, (d−1)/(4k), and its attainment by k WML steps, with asserts for (d, k) up to (4, 2) and (3, 3).
 - `sim/scan.py`, `sim/supL.py`: rank-one scan and the numerical supremum over L.
+- `sim/opt.py`, `sim/opt2.py`: the optimal channel with n copies over all channels, as an exact semidefinite program on covariant Choi matrices (partially transposed permutation operators, block-diagonalized for n = 2); `sim/check_conv.py` checks its conventions against the full WML channel; `sim/frame_check.py` gives the numbers after Theorem 5.
 
 ## References
 
