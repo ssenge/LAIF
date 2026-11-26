@@ -80,7 +80,7 @@ N = 13D^{3/2}/ε² = 13(d_A d_C)^{3/2}/(2√2 ε²)
 
 copies of ρ_AC. In terms of ε_F = ε/3800: N > 9.0·10⁻⁷ · (d_A d_C/2)^{3/2}/ε_F². For odd d_A, use d_A − 1.
 
-**Corollary 3** (mutual information). The relative entropy is at least the order-1/2 sandwiched divergence, so D(ρ‖σ) ≥ −2 ln F(ρ, σ) ≥ 2(1 − F). Every alternative of Theorem 2 therefore has I(A:C) = D(ρ_AC‖ρ_A ⊗ ρ_C) ≥ ε/1900. Hence testing I(A:C) = 0 against I(A:C) ≥ ε/1900 with the same kind of tester needs more than 13D^{3/2}/ε² copies.
+**Corollary 3** (mutual information). The relative entropy is at least the order-1/2 sandwiched divergence, so D(ρ‖σ) ≥ −2 ln F(ρ, σ) ≥ 2(1 − F). Every alternative of Theorem 2 therefore has I(A:C) = D(ρ_AC‖ρ_A ⊗ ρ_C) ≥ ε/1900. Hence testing I(A:C) = 0 against I(A:C) ≥ ε/1900 with the same kind of tester needs more than 13D^{3/2}/ε² copies. For comparison, adaptive single-copy testers use Õ(min{(d_A d_C)^{3/2}/ε², d_A^{9/4} d_C^{3/4}/ε}) copies [1, Thm 1.3], and measurements on many copies at once use Õ(d^{2.5}/ε) copies for d_A = d_C = d [6].
 
 *Non-vacuity.* Every alternative is a state whose two marginals are those of the null state, at fidelity at most 1 − ε/3705 from it, and the good event has probability at least 1 − 2·10⁻³. `sim/check_indep.py` asserts both on random draws (D_A = 3, d_C = 2). Its trace distance is of order ε, so the tester of [2, 3] decides the instance with Õ((d_A d_C)^{3/2}/ε²) copies.
 
@@ -116,10 +116,11 @@ copies of ρ_AC. In terms of ε_F = ε/3800: N > 9.0·10⁻⁷ · (d_A d_C/2)^{3
 ## References
 
 1. J. Seyfried, S. Sen, M. Tomamichel. On the power of adaptivity in testing quantum states in fidelity. arXiv:2609.08733 (2026).
-2. S. Bubeck, S. Chen, J. Li. Entanglement is necessary for optimal quantum property testing. FOCS 2020.
-3. S. Chen, J. Li, R. O'Donnell. Toward instance-optimal state certification with incoherent measurements. COLT 2022.
-4. S. Chen, J. Li, B. Huang, A. Liu. Tight bounds for quantum state certification with incoherent measurements. FOCS 2022.
+2. S. Bubeck, S. Chen, J. Li. Entanglement is necessary for optimal quantum property testing. FOCS 2020, arXiv:2004.07869.
+3. S. Chen, J. Li, R. O'Donnell. Toward instance-optimal state certification with incoherent measurements. COLT 2022, arXiv:2102.13098.
+4. S. Chen, B. Huang, J. Li, A. Liu. Tight bounds for quantum state certification with incoherent measurements. FOCS 2022, arXiv:2204.07155.
 5. N. Yu. Sample efficient identity testing and independence testing of quantum states. ITCS 2021.
+6. S. T. Flammia, R. O'Donnell. Quantum chi-squared tomography and mutual information testing. arXiv:2305.18519.
 
 ## Use of AI
 

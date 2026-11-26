@@ -650,8 +650,8 @@ The folders `exact-planar-bipartite-matching`, `exact-shortest-paths-and-flows-o
 365. M. S. Levine. Algorithms for connectivity problems in undirected graphs: maximum flow and minimum k-way cut. PhD thesis, Massachusetts Institute of Technology, 2002.
 366. T. J. Yoder, G. H. Low, I. L. Chuang. Fixed-point quantum search with an optimal number of queries. Physical Review Letters 113, 210501 (2014), arXiv:1409.3305.
 367. J. Seyfried, S. Sen, M. Tomamichel. On the power of adaptivity in testing quantum states in fidelity. arXiv:2609.08733 (2026).
-368. S. Bubeck, S. Chen, J. Li. Entanglement is necessary for optimal quantum property testing. FOCS 2020.
-369. S. Chen, J. Li, B. Huang, A. Liu. Tight bounds for quantum state certification with incoherent measurements. FOCS 2022.
+368. S. Bubeck, S. Chen, J. Li. Entanglement is necessary for optimal quantum property testing. FOCS 2020, arXiv:2004.07869.
+369. S. Chen, B. Huang, J. Li, A. Liu. Tight bounds for quantum state certification with incoherent measurements. FOCS 2022, arXiv:2204.07155.
 370. J. Li, T. Vaughn. Faster minimum k-cut I: simple and sparse weighted graphs. arXiv:2609.27781.
 371. T. Vaughn. Faster minimum k-cut II: improved randomized and deterministic algorithms for weighted graphs. arXiv:2609.27797.
 372. J. Friedman. A proof of Alon's second eigenvalue conjecture and related problems. Memoirs of the AMS 195 (2008). arXiv:cs/0405020.
