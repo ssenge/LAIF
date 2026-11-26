@@ -8,7 +8,7 @@ so the stopped part is d_{t+1} I and C_{t+1} = G_{t+1} - d_{t+1} I must stay PSD
 each query). Termination: C_T = 0. Prints min E[queries] / ((pi/4) sqrt N) and compares with 1/2 + 1/pi = 0.8183.
 usage: bss.py N [T]"""
 import os, sys
-for _v in ("OMP_NUM_THREADS", "OPENBLAS_NUM_THREADS", "MKL_NUM_THREADS", "VECLIB_MAXIMUM_THREADS"): os.environ[_v] = "1"
+for _v in ("RAYON_NUM_THREADS", "OMP_NUM_THREADS", "OPENBLAS_NUM_THREADS", "MKL_NUM_THREADS", "VECLIB_MAXIMUM_THREADS"): os.environ[_v] = "1"
 import numpy as np, cvxpy as cp
 
 def psd2(x, z, y):          # [[x, z], [z, y]] >= 0 as a second-order cone

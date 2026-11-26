@@ -10,7 +10,7 @@ w* = pi/2 - theta/2, K = 1/(2 theta_m).
 (4) Closed-form bound <= exact SDP optimum (bss.py), and the ratio to (pi/4) sqrt N tends to 1/2 + 1/pi.
 (5) Along the optimal SDP trajectory: Phi_t - Phi_{t+1} <= a_t (query) and Phi does not drop at stops."""
 import os
-for _v in ("OMP_NUM_THREADS", "OPENBLAS_NUM_THREADS", "MKL_NUM_THREADS", "VECLIB_MAXIMUM_THREADS"): os.environ[_v] = "1"
+for _v in ("RAYON_NUM_THREADS", "OMP_NUM_THREADS", "OPENBLAS_NUM_THREADS", "MKL_NUM_THREADS", "VECLIB_MAXIMUM_THREADS"): os.environ[_v] = "1"
 import numpy as np
 import warnings; warnings.filterwarnings("ignore")
 import parallel, bss

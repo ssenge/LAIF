@@ -84,12 +84,15 @@ For tuples drawn uniformly, f = 1 with probability p = (1 − (1 − 2k/N)^m)/2,
 
 - The lower bound covers every algorithm in the setting above, with intermediate measurements, classical control and any workspace, and every N, m and k. Theorem 1 holds at every finite N. The constant 1/2 + 1/π in Corollary 2 and Proposition 3 is asymptotic in N for fixed m and k.
 - The results concern finding one marked item (Find-Any). Finding all k marked items is not covered.
-- The optima in the table come from a semidefinite program in double precision. The bounds of Theorem 1 have written proofs. Lemma 3, Lemma 4 and the potential steps are checked numerically: on random instances, through the exact one-round program, on fine grids for N up to 10⁶, and along the optimal trajectories.
+- The optima in the table come from a semidefinite program in double precision. Lemma 3, Lemma 4 and the potential steps are also checked numerically: on random instances, through the exact one-round program, on fine grids for N up to 10⁶, and along the optimal trajectories.
+- Lean 4 with Mathlib (folder `lean/`, only the standard axioms) checks Lemma 3 for every finite family of vectors in a real inner product space and every family of orthogonal projections with Σ_y ‖Π_y v‖² ≤ m‖v‖² (`angle_step`, both directions in `angle_step_abs`). Complex states are covered by viewing the complex space as a real one, with the real part of the inner product. Lean also checks the halting condition on both branches (`halting_left`, `halting_right`), Lemma 4 (`round_step`, `halting_mono`, `halting_mono'`), and the telescoping step (`lower_bound`): every trajectory of states (a_t, b_t) from a = b = 1 to a_T = 0, whose rounds move ω by at most δ and whose halting steps lower a and keep the state feasible, has π/4 + 1/2 − θ ≤ δ Σ_t a_t. On paper only: the normal form of an algorithm as such a trajectory (relabelling, the real off-diagonal b, the identity ‖ψ̄‖² = (a + (N − 1)b)/N), the limit T → ∞ for algorithms without a bound on the number of rounds, Corollary 2 and Proposition 3.
+- Non-vacuity in Lean: a one-dimensional family with N = 4 and m = 1 attains the bound of Lemma 3 exactly (the angle moves from 0 to π/3 = 2 arcsin(1/2)), and exact Grover search at N = 4 is a trajectory that satisfies every hypothesis of `lower_bound`, whose conclusion has π/4 + 1/2 − θ > 0 (`cc_pos`).
 
 ## Files
 
 - `sim/bss.py`: the semidefinite program over Gram matrices for m = k = 1. It covers all algorithms with at most T rounds, with halting, and prints the optimal expected number of queries.
 - `sim/parallel.py`: the exact one-round program for at most m parallel queries (set phases with |A| ≤ m), and the largest change of ω.
+- `lean/`: the Lean library `ZeroErrorSearch` (`Basic.lean`: the scalar inequalities, the halting condition and Lemma 3; `Potential.lean`: the potential, Lemma 4 and the telescoping bound), `Axioms.lean` and its output `axioms.txt`.
 - `sim/check_lb.py`: asserts for Lemma 3 (random families of vectors and the one-round program), for the halting condition of Lemma 4 (N from 2 to 10⁶), for Theorem 1 against the optimum, and for the potential along the optimal trajectories.
 
 ## References

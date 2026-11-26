@@ -5,7 +5,7 @@ a = sum (R1 + R2), b = sum (S1 + 2Q + S2), b' = sum (S1 - 2Q + S2), PSD: (R1/(N-
 R1 (j-1) >= (N-1) S1, R2 (N-1-j) >= (N-1) S2, R1/(N-1)+S1 >= 0, R2/(N-1)+S2 >= 0 (j = 0: R1 = S1 = Q = 0; j = 1: S1 = 0).
 Prints max |d omega| / (2 arcsin sqrt(m/N)), omega = arccos(|mean state| / sqrt a), |mean state|^2 = (a + (N-1) b)/N."""
 import os, sys
-for _v in ("OMP_NUM_THREADS", "OPENBLAS_NUM_THREADS"): os.environ[_v] = "1"
+for _v in ("RAYON_NUM_THREADS", "OMP_NUM_THREADS", "OPENBLAS_NUM_THREADS"): os.environ[_v] = "1"
 import numpy as np, cvxpy as cp
 
 def omega(N, a, b):
