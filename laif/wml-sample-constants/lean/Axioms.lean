@@ -1,3 +1,4 @@
+import OneCopyStep
 import WmlCoefficients
 import ConjugationBound
 #print axioms ConjugationBound.D_pos
@@ -40,3 +41,14 @@ import ConjugationBound
 #print axioms WmlCoefficients.step_bound
 #print axioms WmlCoefficients.step_bound_satisfiable
 #print axioms WmlCoefficients.phi_half_lt
+#print axioms OneCopyStep.form_nonneg
+#print axioms OneCopyStep.form_fails_d2
+#print axioms OneCopyStep.square_coeffs
+#print axioms OneCopyStep.square_coeffs_id
+#print axioms OneCopyStep.pstar_bound
+#print axioms OneCopyStep.copies_suffice
+#print axioms OneCopyStep.exp_one_le
+#print axioms OneCopyStep.copies_general
+#print axioms OneCopyStep.copies_rank_one
+#print axioms OneCopyStep.copies_rank_one_satisfiable
+#print axioms OneCopyStep.copies_conclusion_can_fail
