@@ -3,3 +3,4 @@
 3 ok: Haar fourth moment 0.045373376644712804 0.0454920938845311
 4 ok: channel CPTP, diamond >= eps/10, step ratio 1 + eps c x'Gx
 5 ok: ancilla identity (1), martingale identity, Lambda' bound, step ratio, Haar averages of c_f
+6 ok: Haar tail of c_f (rank 1 and 3, m = 60, 200)

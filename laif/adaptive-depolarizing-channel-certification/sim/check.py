@@ -89,3 +89,12 @@ for d2, m2, k in ((3, 4, 3), (4, 3, 5), (2, 6, 4)):
         _, _, c_, _ = stats(unit(m2)); S2 += c_ ** 2; S4 += c_ ** 4
     assert (S2 / T).max() <= 2 / (m2 * (m2 + 1)) * 1.05 and (S4 / T).max() <= 24 / m2 ** 4 * 1.05
 print("5 ok: ancilla identity (1), martingale identity, Lambda' bound, step ratio, Haar averages of c_f")
+# 6. Haar tail of c = phi'Qphi/tr Q: P(c > x/m) <= 3 e^{-0.193 x}, E[c^2 1{c > x/m}] <= 9 e^{-x/11}/m^2 (m > x)
+for m3, r in ((60, 1), (60, 3), (200, 1), (200, 3)):
+    ph = rng.normal(size=(200000, m3)) + 1j * rng.normal(size=(200000, m3)); ph /= np.linalg.norm(ph, axis=1)[:, None]
+    c = (np.abs(ph[:, :r]) ** 2).sum(axis=1) / r                                        # Q = projector of rank r / r
+    for x in (8.0, 15.0, 25.0):
+        if x >= m3: continue
+        hi = c > x / m3
+        assert hi.mean() <= 3 * math.exp(-0.193 * x) and (c ** 2 * hi).mean() <= 9 * math.exp(-x / 11) / m3 ** 2
+print("6 ok: Haar tail of c_f (rank 1 and 3, m = 60, 200)")

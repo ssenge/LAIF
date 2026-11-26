@@ -13,7 +13,7 @@ earlier outcomes (*adaptive*).
 
 | Strategy class | Previous best upper bound | Previous best lower bound |
 |---|---|---|
-| non-adaptive | O(d_in² d_out^{3/2}/ε²), ancilla-free [1, Thm 4.4] | Ω(d_in² d_out^{3/2}/(log²(d_in d_out/ε) ε²)), ancilla-assisted [1, Thm 4.5] |
+| non-adaptive | O(d_in² d_out^{3/2}/ε²), ancilla-free [1, Thm 4.4] | Ω(d_in² d_out^{3/2}/(log²(d_in d_out/ε) ε²)), ancilla-assisted, for d_in ≥ 80, d_out ≥ 10, ε ≤ 1/32 [1, Thm 4.5] |
 | adaptive | O(d_in² d_out^{3/2}/ε²) [1, Thm 4.4] | Ω((d_in² d_out + d_out^{3/2})/ε²), ancilla-assisted [1, Thm 4.6] |
 
 ## Results
@@ -76,9 +76,9 @@ Write ε for ε₀, P_t = x_tx_t†, and let δ = 10⁻⁵, B = δd^{3/2}/ε², 
 
 ### Weighted adaptive mixedness testing
 
-**Theorem 2.** Let d ≥ 10⁴ and ε ≤ 1/10. Consider an adaptive tree on C^d whose step t produces a unit vector
-x_t and a weight c_t ∈ [0, 1] (both functions of the transcript up to step t), with law p₀ under the null and step
-ratio 1 + εc_t x_t†Gx_t under p_G. Let Λ_t = E₀[c_t² P_t | past] and λ_t = inf{‖Λ′‖_op + tr Λ″ : Λ_t = Λ′ + Λ″,
+**Theorem 2.** Let d ≥ 10⁴ and ε ≤ 1/10. Consider an adaptive tree whose step t produces a unit vector x_t ∈ C^d
+and a weight c_t ∈ [0, 1] (both functions of the transcript up to step t, and of a fixed φ), with law p₀ under the
+null and step ratio 1 + εc_t x_t†Gx_t under p_G, where G has the law of the Instance (conditioned on U). Let Λ_t = E₀[c_t² P_t | past] and λ_t = inf{‖Λ′‖_op + tr Λ″ : Λ_t = Λ′ + Λ″,
 Λ′, Λ″ ⪰ 0}. Assume E₀[c_t(dP_t − I) | past] = 0 and, on every path, Σ_t c_t² ≤ B + 1 and Σ_t λ_t ≤ 2B/d.
 Then TV(p₀, E_G p_G) ≤ 0.109.
 
@@ -120,8 +120,8 @@ factors, valid for G ∈ U, is applied to the untruncated likelihood. Lemmas 3 a
 |R| ≤ D + 1, S = [t] ∖ R and i ∈ S. Then ‖K_S‖_F ≤ 1.01A, ‖M_S‖_F ≤ 2√dB + 1.01A, ‖M_S‖_op ≤ 2B + 1.01A, and
 r_i := L(S∖i)/L(S) satisfies |r_i − 1| ≤ 11εc_i.
 
-*Proof.* ‖dP_j − I‖_F, ‖dP_j‖_F ≤ d, and d(D+1) ≤ 0.01A as A/d = d^{3/4}/ε ≥ 100(D+1) for d ≥ 10⁴, so Lemma 3
-applies to S and S∖i. Write r_i − 1 = −Y_i/L(S) with Y_i = L(S) − L(S∖i) = E[Π_{S∖i}(1+u_j) u_i]. On U the
+*Proof.* ‖dP_j − I‖_F, ‖dP_j‖_F ≤ d, and d(D+2) ≤ 0.01A as A/d = d^{3/4}/ε ≥ 100(D+2) for d ≥ 10⁴, so Lemma 3
+applies to S and S∖i (at most D + 2 indices removed). Write r_i − 1 = −Y_i/L(S) with Y_i = L(S) − L(S∖i) = E[Π_{S∖i}(1+u_j) u_i]. On U the
 factors are positive and |u_i| ≤ 5εc_i, so |E[1_U Π_{S∖i}(1+u_j)u_i]| ≤ 5εc_i L̄(S∖i) ≤ 10εc_i L̄(S). By Hölder
 with exponents 4, 2, 4, |E[1_{U^c} Π_{S∖i}(1+u_j)u_i]| ≤ P(U^c)^{1/4} e^{8.1√d} (E u_i⁴)^{1/4}, and
 (E u_i⁴)^{1/4} ≤ 3^{1/4}εc_i/√d since x†Gx is Gaussian with variance below 1/d. Dividing by
@@ -135,8 +135,8 @@ H_S = K_S + Σ_{j∈S} c_j(r_j − 1)(dP_j − I) and Lemma 4, for every S with 
 
     ‖H_S‖_F ≤ 1.01A + 11εQ ≤ (2.2 + 35δd^{1/4})A =: ξ₀,
 
-because 3.1·11ε√dB/A = 34.1δd^{1/4}. If t < D, every S ⊆ [t] misses fewer than D indices, so r_i ≤ 2 and
-directly ‖H‖_F ≤ 2dD ≤ 3A. Otherwise induct on a = 0, …, D over the sets S with |R| = D − a: suppose
+because 3.1·11ε√dB/A = 34.1δd^{1/4}. If t < D, every S ⊆ [t] misses fewer than D indices, so r_i ≤ 1 + 11εc_i ≤ 2.1
+and directly ‖H‖_F ≤ 2.1dD ≤ 3A. Otherwise induct on a = 0, …, D over the sets S with |R| = D − a: suppose
 ‖H_{S′}‖_F ≤ ξ_{a−1} whenever |R′| = D − a + 1. For i ∈ S, Lemma 1 gives |L(S)/L(S∖i) − 1| ≤ ε²c_iξ_{a−1}/d² ≤ 1/2,
 hence |r_i − 1| ≤ 2ε²c_iξ_{a−1}/d². The deviation is proportional to c_i², and
 
@@ -148,7 +148,8 @@ The weights are the point of Lemmas 4 and 5: every deviation of r_i is proportio
 the matrix M enter, never Σc_i, which can be as large as n.
 
 **Proof of Theorem 2.** Let Φ_t = L([t]), τ′ the first t at which the condition of 𝒢 fails, and Ψ_t = Φ_{t∧τ′}.
-By Lemma 1 and the assumption E₀[c_t(dP_t − I) | past] = 0, E[Ψ_t/Ψ_{t−1} | past] = 1, and since
+On {τ′ ≥ t} Lemma 3 gives Ψ_{t−1} = L([t−1]) > 0, and by Lemma 1 and the assumption
+E₀[c_t(dP_t − I) | past] = 0, E[Ψ_t/Ψ_{t−1} | past] = 1, and since
 (x†Hx)² ≤ x†H²x and ⟨H², Λ_t⟩ ≤ λ_t‖H‖_F²,
 
     E[(Ψ_t/Ψ_{t−1})² | past] ≤ 1 + ε⁴λ_t‖H_{[t−1]}‖_F²/d⁴ ≤ 1 + 9ε⁴A²λ_t/d⁴
@@ -204,7 +205,8 @@ for d ≥ 10⁴. With n ≤ 0.0185 m²B/ln d the total is below 1/3, that is, n 
 `sim/check.py` (one core, under a minute) checks the covariance identity, the weighted matching formula and the
 recursion of Lemma 1 against Monte Carlo and exact evaluation, the Haar fourth moment, that the alternatives are
 channels with ‖N − 𝒟‖_⋄ ≥ ε and step ratio 1 + ε₀c x†Gx, and, for random entangled inputs and measurements with
-an ancilla, identity (1), the bound Λ′ ⪯ (κa/d)I and the Haar averages of c_f. Output in `sim/out_check.txt`.
+an ancilla, identity (1), the bound Λ′ ⪯ (κa/d)I, the Haar averages of c_f, and the Haar tail
+P(c_f > x/m) ≤ 3e^{−0.193x} and E[c_f² 1{c_f > x/m}] ≤ 9e^{−x/11}/m² by Monte Carlo for rank-one and rank-three Q_f. Output in `sim/out_check.txt`.
 
 ## Scope
 
