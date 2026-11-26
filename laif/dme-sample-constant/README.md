@@ -9,6 +9,7 @@ In sample-based Hamiltonian simulation a protocol receives n copies of an unknow
 | Copies sufficient for every σ (DME) | at most 4t²/ε [1, Corollary 3] | at most ⌈t²/ε + 3t⌉, for every ε and t (Theorem 1) |
 | Copies needed by every protocol, any joint processing of the n copies | at least 0.032 t²/ε for ε < min{9t/(100π), 1/10} [1, Theorem 5] | at least (1 − 10t)² t²/ε for every ε and every t ≤ 1/10, above the previous bound for t < 0.082 (Theorem 2) |
 | Leading constant of the copy count as t → 0, every d ≥ 2 | between 0.032 and 4 | exactly 1 |
+| Copies for controlled-e^{−itσ} (phase estimation, principal component analysis) | O(t²/ε) [2, Theorem 20]; trace distance about 1.91 t²/n on eigenstate inputs with the control in (|0⟩ + |1⟩)/√2 [1, Appendix E] | at most ⌈t²/ε + 3t⌉ in diamond norm for every input; leading constant exactly 1 as t → 0 (Corollary 3) |
 
 ## Setting
 
@@ -42,6 +43,12 @@ The supremum may be restricted to the pure states σ_v = |v⟩⟨v| with v = cos
 
 No factor d appears: the forced leak runs from one state orthogonal to σ towards σ, and the normalizations of f in d cancel.
 
+**Corollary 3 (controlled simulation).** Let CU_σ = |0⟩⟨0| ⊗ I + |1⟩⟨1| ⊗ e^{−itσ} = e^{−it |1⟩⟨1| ⊗ σ} act on a control qubit and S. Density matrix exponentiation with the program states |1⟩⟨1| ⊗ σ, each made from one copy of σ, implements CU_σ with error at most ε in the normalized diamond distance from ⌈t²/ε + 3t⌉ copies, for every σ, t and ε. Every protocol with a fixed number n of copies has n ε ≥ t²(1 − 10t)² for t ≤ 1/10, and this holds also for the target |0⟩⟨0| ⊗ I + e^{iα} |1⟩⟨1| ⊗ e^{−itσ} with any free phase α. So the leading constant of controlled simulation is also exactly 1 as t → 0.
+
+*Proof.* |1⟩⟨1| ⊗ σ is a state on C² ⊗ C^d, so Theorem 1 applies to it with d replaced by 2d. For the lower bound, fix the control in |1⟩: a protocol for the controlled target then simulates e^{−itσ} (the phase α becomes global) with at most the same error, and Theorem 2 applies. ∎
+
+The controlled partial swap |0⟩⟨0| ⊗ I + |1⟩⟨1| ⊗ e^{−iΔ SWAP}, the other usual construction [2, Appendix C], also has n ε/t² = 0.998 and 0.9995 at n = 10 and 40 for a pure σ, d = 2 and t = 0.2.
+
 **Numerical checks.** The leading-order optimal one-copy step, computed as a semidefinite program over covariant second-order maps with a cutting plane over states σ, has constant 1.00000 at d = 2 and d = 3, the value of DME. The optimal channel with n copies over all channels, an exact semidefinite program on covariant Choi matrices at the pure σ (a single orbit of the unitary group, so the value is the worst case over pure states), gives n ε/t² = 0.9185, 0.9576, 0.9713, 0.9783 for n = 1, 2, 3, 4 at d = 2 and t = 0.05, and the same values for n = 1, 2 at d = 3.
 
 ## Scope
@@ -49,12 +56,14 @@ No factor d appears: the forced leak runs from one state orthogonal to σ toward
 - Theorem 1 is a written proof (Claim). The decomposition Φ = P − N and complete positivity of P and N are checked on 400 random states for d = 2 to 5, and the n-step bound against the matrix exponential for d = 2, 3, t from 0.3 to 3 and n up to 40.
 - Theorem 2 is a written proof (Claim) for protocols with a fixed number n of copies; protocols with a random number of copies are not covered. The constants 1/10 and 10 are not optimized. The test vectors and their overlaps are checked for d = 2, 3 and n = 1 to 3; the target coefficient Y, the value Q(Y) and the identity for Q(X) for d = 2, 3, 5; every inequality of the proof on n DME steps and on the optimal channel for d = 2, n = 1, 2 and t = 0.05.
 - Lean (`lean/DmeConstant`, standard axioms only) checks the scalar steps: the remainder 2.65Δ³ of one step and the copy count of Theorem 1, the eigenvalue bound for P*(I), the value Q(Y) and |Q(Y)| ≥ d sin t, the bound δ_n ≤ 14t³ for every n ≥ 1, and the final inequality of Theorem 2, each with a lemma that its hypotheses can hold. The complete positivity, diamond-norm, Choi-matrix and Bernstein steps are not formalized.
+- Corollary 3 follows from Theorems 1 and 2. The controlled partial swap is checked numerically only, at a pure σ.
 - The semidefinite programs are numerical, at a fixed small t.
 
 ## Files
 
 - `sim/dme_check.py`: Theorem 1 (decomposition, complete positivity, n-step error) and the test vectors of Theorem 2, with asserts.
 - `sim/thm2_check.py`: the steps of the proof of Theorem 2 and its constants, with asserts.
+- `sim/ctrl_check.py`: Corollary 3 (n-step error of the controlled simulation for d = 2) and the controlled partial swap.
 - `lean/DmeConstant/Basic.lean`: the scalar steps of Theorems 1 and 2.
 - `sim/lead_dme.py`: the leading-order optimal one-copy step.
 - `sim/opt_dme.py`: the optimal channel with n copies over all channels.
