@@ -1,0 +1,13 @@
+exact d=2 t=2: purity bound E[sum l^2]/t^2 = 0.8750, E[l1] = 1.750
+exact d=3 t=2: purity bound E[sum l^2]/t^2 = 0.8333, E[l1] = 1.667
+exact d=2 t=3: purity bound E[sum l^2]/t^2 = 0.7778, E[l1] = 2.500
+exact d=4 t=2: purity bound E[sum l^2]/t^2 = 0.8125, E[l1] = 1.625
+exact d=2 t=4: purity bound E[sum l^2]/t^2 = 0.7266, E[l1] = 3.188
+exact d=5 t=6: purity bound E[sum l^2]/t^2 = 0.5018, E[l1] = 3.687
+exact d=20 t=12: purity bound E[sum l^2]/t^2 = 0.3094, E[l1] = 5.183
+MC d=10 t=100: E[l1] ~ 24.6  (2 sqrt t + t/d = 30.0, bound 103.1); E[sum l^2]/t ~ 15.7
+MC d=100 t=100: E[l1] ~ 17.7  (2 sqrt t + t/d = 21.0, bound 36.6); E[sum l^2]/t ~ 10.2
+MC d=1000 t=100: E[l1] ~ 17.0  (2 sqrt t + t/d = 20.1, bound 29.9); E[sum l^2]/t ~ 9.8
+MC d=30 t=900: E[l1] ~ 81.6  (2 sqrt t + t/d = 90.0, bound 305.2); E[sum l^2]/t ~ 47.2
+MC d=1000 t=1000: E[l1] ~ 58.9  (2 sqrt t + t/d = 64.2, bound 95.3); E[sum l^2]/t ~ 30.9
+MC d=100 t=10000: E[l1] ~ 287.4  (2 sqrt t + t/d = 300.0, bound 1012.7); E[sum l^2]/t ~ 157.3

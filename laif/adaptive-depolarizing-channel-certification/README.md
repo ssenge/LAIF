@@ -248,6 +248,64 @@ The linear part is the statistics of an adaptive single-copy tester for the stat
 d·p₀(f)s_k y_ky_k† form a POVM on C^d. So the bound is the single-copy bound of [2], in the form of Theorem 2, with ε
 replaced by tε, and the condition on ε pays for the terms of higher order.
 
+**Theorem 5.** There are absolute constants c, C > 0 such that for d ≥ C, 1 ≤ t ≤ d²/C and
+0 < ε ≤ c t^{−3/2} d^{−3/4}, every adaptive tester with measurements on at most t copies each uses at least
+
+    n ≥ c · d^{3/2} / (ε² (t^{1/4} + (t/d)^{1/2}))
+
+copies. For t ≤ d² this is Ω(d^{3/2}/(t^{1/4}ε²)), the order of the non-adaptive bound [3, Thm 1.2], here for
+adaptive testers and for a wider range of ε. It is above Ω(d/ε²) for t ≤ d²/C, and for t ≤ d it leaves a factor
+t^{1/4} to the upper bound O(d^{3/2}/ε²).
+
+Theorem 5 keeps the mixed directions S_f instead of refining them. Two facts about one measurement on t′ ≤ t copies
+replace the refinement. Write S̃ = S − I/d, A_X = Σ_j X_(j) (X acting on copy j), and E₀ for the null average over
+the outcome given the past.
+
+**Lemma 6 (variance of one measurement).** For every traceless Hermitian X, E₀⟨S̃_f, X⟩² ≤ ‖X‖_F²/(t′d).
+
+*Proof.* ⟨S_f, X⟩ = ⟨f|A_X|f⟩/t′ and ⟨f|A_X|f⟩² ≤ ⟨f|A_X²|f⟩, so E₀⟨S̃_f, X⟩² ≤ tr(A_X²)/(t′²d^{t′}). The cross
+terms of A_X² have trace (tr X)²d^{t′−2} = 0, so tr(A_X²) = t′d^{t′−1}‖X‖_F². ∎
+
+**Lemma 7 (average purity).** E₀‖S_f‖_F² ≤ μ_{t′}/t′, where μ_{t′} is the mean length of a longest weakly
+increasing subsequence of a uniformly random word in {1, …, d}^{t′}, and μ_{t′} ≤ μ := 2e√t + 4e²t/d + 1.
+
+*Proof.* R_f = t′S_f has entries (R_f)_{ba} = ⟨f|J_{ab}|f⟩ with J_{ab} = Σ_j (|a⟩⟨b|)_(j), the action of the Lie
+algebra of U(d) on (C^d)^{⊗t′}. In the decomposition (C^d)^{⊗t′} = ⊕_λ V_λ ⊗ M_λ into irreducible representations
+V_λ of U(d) (λ a partition of t′ with at most d parts) and multiplicity spaces M_λ, every J_{ab} is block diagonal and
+acts on V_λ only. So R_f = Σ_λ p_λ R_λ, with p_λ = ⟨f|Π_λ|f⟩ and R_λ the matrix of the normalized component of f.
+In an eigenbasis of R_λ its diagonal is a convex combination of weights of V_λ, all of which are majorized by λ, so
+‖R_λ‖_F² ≤ Σ_iλ_i² ≤ t′λ₁. By convexity ‖R_f‖_F² ≤ Σ_λ p_λ t′λ₁, and averaging over the outcome,
+Σ_f (ω_f/d^{t′}) p_λ = tr Π_λ/d^{t′}. This is the shape distribution of a uniformly random word under row insertion,
+and λ₁ is the length of a longest weakly increasing subsequence, by the classical theorem of Schensted. Hence
+E₀‖R_f‖_F² ≤ t′μ_{t′}. Finally P(λ₁ ≥ k) ≤ C(t,k)C(d+k−1,k)d^{−k} ≤ (e²t/k² + e²t/(dk))^k ≤ 2^{−k} for
+k ≥ 2e√t + 4e²t/d, which gives the bound on μ. ∎
+
+*Proof of Theorem 5.* Use the linear model q_G of Theorem 4 with ε = ε₀t, weights c = t′/t and mixed directions S_f.
+Lemma 1 holds verbatim with x_i†Gx_i replaced by ⟨G, S_i⟩: the covariance is (d⟨S_a, S_b⟩ − 1)/d², and
+
+    L(z)/L(z^{∼i}) = 1 + (ε²c_i/d²) ⟨S̃_i, H(z^{∼i})⟩,   H(w) = Σ_j c_j d S̃_j L(w^{∼j})/L(w).
+
+Let Γ_T = Σ_{j∈T} c_j² |S̃_j⟩⟨S̃_j|, an operator on the real space of traceless Hermitian matrices, on which G is a
+Gaussian vector with covariance I/d. Let N be the largest number of copies considered, P̄ = Nμ/t², γ̄ = N/(t²d),
+A = dα√P̄ and g = 2γ̄ + 8 ln(d²/δ). By Lemma 7 the predictable compensator of tr Γ is at most P̄ and E‖K_t‖_F² ≤ d²P̄;
+by Lemma 6 the compensator of Γ is at most γ̄ I, and its increments have norm at most 1. The good event 𝒢 asks,
+for all t, ‖K_t‖_F ≤ A, ‖Γ_t‖_op ≤ g and tr Γ_t ≤ P̄/δ. By the maximal inequality, the matrix Freedman inequality (in
+dimension d²) and Markov's inequality, P₀(𝒢^c) ≤ 3δ. On 𝒢 the steps of Lemmas 3 to 5 go through with these
+replacements:
+
+- Lemma 3: Σu_i = (ε/d)⟨G, K⟩ as before, and Σu_i² = ε²⟨G, ΓG⟩, so E e^{2Σu_i²} ≤ exp(4ε² tr Γ/d) when
+  4ε²‖Γ‖_op/d ≤ 1/2. All exponents are O(ε₀²Nμ/(δd) + α²ε₀²Nμ/d) = O((μd)^{1/2}), below 0.1d for t ≤ d²/C.
+- Lemma 4: unchanged, |r_i − 1| ≤ 11εc_i.
+- Lemma 5: H_S − K_S = Σ_j c_j(r_j − 1) d S̃_j, and for any coefficients b, ‖Σ_j c_j b_j S̃_j‖_F ≤ ‖Γ_S‖^{1/2}‖b‖₂.
+  The first stage gives ‖H_S‖_F ≤ ξ₀ = 1.01A + 11εd(gN)^{1/2}. In each later stage |r_j − 1| ≤ 2ε²c_j|⟨S̃_j, H′⟩|/d²,
+  so ‖b‖₂ ≤ (2ε²/d²)⟨H′, Γ H′⟩^{1/2} and ‖H_S − K_S‖_F ≤ (2ε²g/d)ξ, a contraction since 2ε²g/d = O(ε₀²N/d² +
+  ε²ln(d/δ)/d) is small. With D = ⌈ln(4 + ξ₀/A)⌉ = O(ln(d/ε)) stages, ‖H‖_F ≤ 3A.
+
+By Lemma 6 the supermartingale step becomes E[(Ψ_t/Ψ_{t−1})² | past] ≤ 1 + 9ε⁴c²A²/(t′d⁵), and the product over all
+measurements is at most exp(9ε₀⁴t²A²N/d⁵) = exp(9α²ε₀⁴μN²/d³). For N = δd^{3/2}/(ε₀²√μ) this is e^{9δ}, and the
+end of the proof of Theorem 2 gives TV(p₀, E_G q_G) ≤ 0.11. The higher-order terms cost
+TV ≤ (165ε₀⁴t³N)^{1/2} = O(ε₀ t^{3/2} d^{3/4}), as in Theorem 4. ∎
+
 ## Check
 
 `sim/check.py` (one core, under a minute) checks the covariance identity, the weighted matching formula and the
@@ -256,12 +314,16 @@ channels with ‖N − 𝒟‖_⋄ ≥ ε and step ratio 1 + ε₀c x†Gx, and,
 an ancilla, identity (1), the bound Λ′ ⪯ (κa/d)I, the Haar averages of c_f, and the Haar tail
 P(c_f > x/m) ≤ 3e^{−0.193x} and E[c_f² 1{c_f > x/m}] ≤ 9e^{−x/11}/m² by Monte Carlo for rank-one and rank-three Q_f, and, for random bases of (C^d)^{⊗t}, the identity Σ_f p₀(f)S_f = I/d,
 the refinement of Theorem 4 and its bounds on |r_f − ℓ_f| and on χ². Output in `sim/out_check.txt`.
+`sim/tcopy_schurweyl.py` computes the bound of Lemma 7 exactly for small d, t and checks the bound on μ by Monte
+Carlo; `sim/tcopy_purity_sdp.py` computes the semidefinite relaxation of the largest average purity
+(X ⪰ 0 on two replicas, Tr₂X = I), which equals the bound of Lemma 7 for (d, t) = (2, 2), (3, 2), (2, 3).
 `sim/constants_iv.py` recomputes the final bounds of Theorems 1 to 3 in interval arithmetic with outward rounding
 and asserts them (output in `sim/out_constants_iv.txt`).
 
 ## Scope
 
 - Theorem 4 holds for ε ≤ 0.07 t^{−1} d^{−3/4} and has a factor 1/t that the upper bound does not have.
+- Theorem 5 is stated with absolute constants that are not computed; for t ≤ d it leaves a factor t^{1/4} to the upper bound.
 - Theorem 3 has a factor ln d_out that Theorem 1 does not have; it comes from the outcomes with large weight in
   the ancilla-assisted case.
 - The constants are far from optimal.
