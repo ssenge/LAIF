@@ -1,6 +1,6 @@
 # Small cuts and flows with adjacency array queries
 
-Written 21 Nov 2026.
+Written 21 Nov 2026, Section 5 added 26 Nov 2026.
 
 **Setting.** G is a simple undirected graph with n vertices and m edges, given in the adjacency array model: a query returns the degree of a vertex, or the i-th entry of the neighbour list of a vertex, in an arbitrary fixed order. Only queries are counted, not time. Write λ for the edge connectivity of G, and f = λ_st for the minimum number of edges whose removal separates two given vertices s and t. Classically, even deciding whether s and t are connected takes Ω(m) queries in this model [4].
 
@@ -11,6 +11,7 @@ Written 21 Nov 2026.
 | Thm 2 | edge connectivity λ and a minimum cut | Õ(√(mn)) queries [2] | O(n (λ+1)^{3/2} log n) queries | Claim; Lean for the certificate |
 | Thm 3 | λ_st, a minimum s-t cut and a maximum s-t flow | λ_st: Õ(n + min{m, n^{3/2}}) [3]; λ_st and flow: min{m, Õ((f+1)√(mn)), Õ(n^{7/6}√m)}, implied by [1] and from [8] | O(n (f+1)^{3/2} log n) queries | Claim; Lean for the certificate |
 | Thm 5 | λ_st, a minimum s-t cut and a maximum s-t flow | as for Theorem 3 | Õ(n + √(mn(f+1))) queries | Claim; Lean for Lemma 4 and the certificate |
+| Cor 6 | vertex connectivity κ | min{m, Õ((κ+1)√(mn))} queries, implied by [1] and [11] | Õ(n + √(mn(κ+1))) queries | Claim |
 
 For bounded λ this gives Θ̃(n) queries for edge connectivity, since deciding connectivity already needs Ω(n) queries [1]. For simple graphs Θ̃(n) was suspected in [2] in this model. On dense simple graphs the complexity is Θ̃(n^{3/2}) [3, 6], so the answer depends on λ. Up to logarithmic factors, Theorem 2 uses fewer queries than [2] when λ³ < m/n.
 
@@ -83,6 +84,20 @@ This proof is an instance of the approach of [9, 10]: a classical algorithm that
 
 *Proof.* Run stages j = 0, 1, 2, … with k = 2^j, and stop at the first k with λ_st(H_k) < k, which comes once k > f, so k ≤ 2f + 2. The output is correct as in Theorem 3. Stage j runs the algorithm of Theorem 4 with a cut-off at twice its expected cost E_j. A cut-off is noticed, and then the stage starts again, up to ⌈log₂(10(j + 1)²)⌉ + 1 times. Each attempt exceeds its cut-off with probability at most 1/2, so stage j fails with probability at most 1/(10(j + 1)²), and all stages together with probability below 0.17, plus the small error of the searches. Stage j costs O(E_j log(j + 2)) queries, with E_j = O(n + √(mn2^j) + √(mn) log n). The terms √(mn2^j) form a geometric sum. ∎
 
+## 5. Vertex connectivity
+
+Write κ for the vertex connectivity of G, the least number of vertices whose removal leaves a disconnected graph or a single vertex, so κ(K_n) = n − 1. G is k-vertex-connected if κ ≥ k. A scan-first search of a graph scans its vertices one at a time. Scanning a vertex marks all its unmarked neighbours, and a marked unscanned vertex is scanned whenever one exists; otherwise an unmarked vertex is marked and scanned. The edges by which vertices get marked form a scan-first search forest. It is shown in [11] that if, for i = 1, …, k, F_i is a scan-first search forest of G − (F_1 ∪ … ∪ F_{i−1}), and G is k-vertex-connected, then F_1 ∪ … ∪ F_k is k-vertex-connected. Arbitrary maximal spanning forests do not have this property (`sim/check_vertex.py` has a 2-connected graph with five vertices where the union of two of them has a cut vertex), so the forests of Section 3 are not used here.
+
+**Lemma 5.** For i ≤ k, the forest F_i of the scan of Section 4 is a scan-first search forest of G − (F_1 ∪ … ∪ F_{i−1}), with the vertices scanned in the order of the scan.
+
+*Proof.* Call a vertex marked at level i if it is scanned or has r ≥ i. Each edge is handled at the scan of its first endpoint v. An edge vw with w unscanned and r(w) < i − 1 goes into a forest before F_i. An edge with r(w) = i − 1 goes into F_i and marks w at level i, and every other edge of G − (F_1 ∪ … ∪ F_{i−1}) at v leads to a vertex already marked at level i. So scanning v marks exactly its unmarked neighbours in G − (F_1 ∪ … ∪ F_{i−1}), through edges of F_i. If an unscanned vertex is marked at level i, the largest label is at least i, so the next scanned vertex has r ≥ i and is marked. ∎
+
+**Corollary 6.** With bounded error, k-vertex-connectivity of G can be decided with O(n + √(mnk) + √(mn) log n) queries, and κ can be computed with O((√(mn(κ+1)) + (n + √(mn) log n) log(κ+2)) log log(κ+4)) queries, with no knowledge of κ.
+
+*Proof.* H_k = F_1 ∪ … ∪ F_k is a spanning subgraph of G, so κ(H_k) ≤ κ. If c = min{k, κ}, then G is c-vertex-connected, and by Lemma 5 and [11] so is F_1 ∪ … ∪ F_c ⊆ H_k. Hence min{k, κ} ≤ κ(H_k) ≤ κ, and G is k-vertex-connected exactly when H_k is. For the value, run the stages of the proof of Theorem 5 and stop at the first k with κ(H_k) < k; then κ(H_k) = κ. For k ≥ n every edge enters a forest, since r(w) < deg(w) + 1 ≤ k, so H_k = G and the stages stop by k ≤ 2κ + 2. ∎
+
+Only the value of κ is computed: a set of κ vertices that cuts H_k need not cut G. Corollary 6 uses o(m) queries whenever κ = o(m/n) and m/n grows faster than log⁴ n, and fewer than κ + 1 scan-first search forests built one at a time, by a factor of about √(κ+1) up to logarithmic factors.
+
 ## Lean
 
 The library `SmallCut` in `lean/` (Lean 4, Mathlib at the revision pinned in `lean/lakefile.toml`) proves, with only the standard axioms (`lean/axioms.txt`):
@@ -99,13 +114,15 @@ The library `SmallCut` in `lean/` (Lean 4, Mathlib at the revision pinned in `le
 - `SmallCut.sum_found_le`: the scan finds at most k·|V| entries in total;
 - `SmallCut.certificate_needs_hmax`, `SmallCut.triangle_scan_rule`, `SmallCut.triangle_forest_one_adj` (content of the statements, in `lean/SmallCut/NonVacuity.lean`): without the hypothesis on the edges outside earlier forests, the bound of `certificate` fails for a single edge and empty forests; the scan rule `hscan` holds on the triangle with k = 2, and forest 1 of that scan has an edge, so `scan_hmax` at i = 1 is about a non-empty forest.
 
-**Not formalized:** the query algorithms and their costs (Theorems 1, 4 and 5), the link between the counters r(w) and `scanF`, the bound a ≥ d + 1 of Phase 1, the charging argument of [1], Grover search, and the max-flow min-cut theorem used for Theorem 3.
+**Not formalized:** the query algorithms and their costs (Theorems 1, 4 and 5), Lemma 5, the certificate theorem of [11] and Corollary 6, the link between the counters r(w) and `scanF`, the bound a ≥ d + 1 of Phase 1, the charging argument of [1], Grover search, and the max-flow min-cut theorem used for Theorem 3.
 
 ## Scripts
 
 `sim/check_cert.py` runs Phases 1 and 2 classically on random graphs, pairs of cliques with few joining edges, regular graphs and graphs with hubs, on up to 16 vertices and k ≤ 6. It asserts that every F_i is a maximal spanning forest of G_i, the bound a ≥ d + 1 and the degree bound of Phase 1, λ_st(H_k) ≥ min{k, λ_st(G)} for all pairs, and λ(H_k) = λ(G) when λ(H_k) < k. It also counts the round cost, with √(N_C/t) for a search with t solutions and √N_C for a failed one, and reports it against n + √(2n|H_{i−1}|), together with the totals on graphs with 300 vertices for k up to 16.
 
 `sim/check_scan.py` runs the capped scan of Section 4 with random tie breaking on random graphs, pairs of cliques and graphs with hubs, on up to 16 vertices and k ≤ 5. It asserts Lemma 4 for every i ≤ k and λ_st(H_k) ≥ min{k, λ_st(G)} for all pairs, and reports Σ_v √(deg(v)(t_v + 1)) against √(2mnk) + √(2mn) on graphs with 300 vertices.
+
+`sim/check_vertex.py` runs the capped scan on the same families (connected graphs only) for k ≤ 5. It asserts Lemma 5 (the scan rule at every level and that F_i equals the scan-first search forest of G − (F_1 ∪ … ∪ F_{i−1}) in the scan order), min{k, κ(G)} ≤ κ(H_k) ≤ κ(G), and κ(H_k) = κ(G) when κ(H_k) < k. It also checks the five-vertex graph above, where two maximal spanning forests that are not scan-first lose 2-vertex-connectivity and the scan keeps it.
 
 ## Use of AI
 
@@ -132,3 +149,5 @@ Claude Opus 5.5 (Anthropic) was used throughout this research: to explore approa
 [9] C. Y.-Y. Lin, H.-H. Lin. Upper bounds on quantum query complexity inspired by the Elitzur-Vaidman bomb tester. Theory of Computing 12, 2016. arXiv:1410.0932.
 
 [10] S. Beigi, L. Taghavi. Quantum speedup based on classical decision trees. Quantum 4, 2020. arXiv:1905.13095.
+
+[11] J. Cheriyan, M.-Y. Kao, R. Thurimella. Scan-first search and sparse certificates: an improved parallel algorithm for k-vertex connectivity. SIAM J. Comput. 22(1), 1993.

@@ -1,0 +1,2 @@
+300 capped scans checked: scan-first forests, kappa(H_k) >= min(k, kappa(G))
+mutation (maximal spanning forests that are not scan-first): kappa drops from 2 to 1 on a 5-vertex graph
