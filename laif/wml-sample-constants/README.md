@@ -4,6 +4,8 @@
 
 Wave matrix Lindbladization (WML) simulates the Lindbladian with one jump operator L on a d-dimensional system from copies of a program state that encodes L [1]. Each copy drives one step of time Δ = t/n. The number of copies is set by the leading constant of the one-step error, in the normalized diamond distance and with ‖L‖₂ = 1. This folder pins down that constant up to an additive constant.
 
+The results are also written up as a paper, [paper/main.pdf](paper/main.pdf) (source `paper/main.tex`). There Theorem 8 is Theorems 1 and 3, Theorem 7 is Theorems 2 and 4, Theorems 2 and 3 are Theorems 5 and 6, and Theorem 1 is the remark on [1, Eq. (40)].
+
 | Quantity | Previous bound | Here |
 |---|---|---|
 | One-step error of WML, leading constant, worst case over L | at most (2d+3)/8 · ‖L‖∞² [1, Lemma 4] | between (2d−3)/4 and d/2 + 1 (Theorems 1 and 2) |

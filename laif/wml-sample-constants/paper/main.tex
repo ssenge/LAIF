@@ -1,0 +1,190 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{booktabs}
+\usepackage{hyperref}
+\newtheorem{theorem}{Theorem}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{lemma}[theorem]{Lemma}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+
+\newcommand{\Lind}{\mathcal{L}}
+\newcommand{\dn}[1]{\lVert #1 \rVert_\diamond}
+\newcommand{\tn}[1]{\lVert #1 \rVert_1}
+\newcommand{\ket}[1]{\lvert #1 \rangle}
+\newcommand{\bra}[1]{\langle #1 \rvert}
+\newcommand{\proj}[1]{\lvert #1 \rangle\langle #1 \rvert}
+\newcommand{\Sym}{\mathrm{Sym}}
+
+\title{The dimension factor in sample-based Lindbladian simulation\\is necessary for every protocol}
+\author{Sebastian Senge\\Independent Researcher}
+\date{26 November 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+In sample-based Lindbladian simulation, a jump operator $L$ on a $d$-dimensional system is given through copies of a program state that encodes $L$, and the task is to apply $e^{t\Lind_L}$ to error $\varepsilon$ in diamond distance. The best known protocol uses $O(d\,t^2/\varepsilon)$ copies, while the best known lower bound for all protocols, $\Omega(t^2/\varepsilon)$, does not depend on $d$. We show that the factor $d$ cannot be avoided.\\
+For $d \ge 3$, every protocol, with any number of copies processed jointly, needs at least $(d-2)(1-e^{-t})^2/(32\varepsilon)$ copies whenever $\varepsilon \le (1-e^{-t})/8$; for $t \le 1$ and $\varepsilon \le 0.079\,t$ this is at least $0.0124\,(d-2)\,t^2/\varepsilon$.\\
+For $d \ge 2$ and high accuracy, $\varepsilon \le t^2/(C d\log(2d/t))$ and $t \le c$, every protocol needs at least $\tfrac{d-1}{4}(1-O(t))\,t^2/\varepsilon$ copies, and for $t \le c/d$ this holds at every accuracy up to a factor $1-O(dt)$.\\
+For wave matrix Lindbladization we prove the upper bound $(d/2 + e^{1/d})\,t^2/\varepsilon$ and a worst-case lower bound $\tfrac{d-1}{4}\,t^2/\varepsilon$.\\
+The first bound comes from a dual certificate for universal conjugation: the program of $L = \ket{0}\bra{\psi}$ carries $\bar\psi$, while the target needs $\psi$. The second combines positivity of the Choi matrix with Bernstein's inequality for trigonometric polynomials and a decomposition of the program states into spin components. The scalar steps of the first bound and of the upper bound are checked in Lean.
+\end{abstract}
+
+\section{Introduction}
+
+In sample-based simulation the generator of the dynamics is given as quantum data, not as a circuit. For Hamiltonians, density matrix exponentiation applies $e^{-i\rho t}$ from copies of $\rho$, with a number of copies of order $t^2/\varepsilon$ [2]. For a Lindbladian with one jump operator $L$, wave matrix Lindbladization (WML) encodes $L$ into the program state $\ket{L} = (L \otimes I)\ket{\Gamma}$, $\ket{\Gamma} = \sum_j \ket{j}\ket{j}$, with $\lVert L\rVert_2 = 1$, and applies $e^{t\Lind_L}$, $\Lind_L(\rho) = L\rho L^\dagger - \tfrac12\{L^\dagger L, \rho\}$, by $n$ short interactions with fresh copies (see [4] and the work it extends). Its sample complexity was shown to be $O(d^2 t^2/\varepsilon)$ [2] and then $O(d\,t^2/\varepsilon)$, with leading constant $(2d+3)/8$ [1]. An explicit rank-one operator shows that WML itself needs $\Omega(d\,t^2/\varepsilon)$ copies [1, Theorem 10]. The lower bound for all protocols, however, is $\Omega(t^2/\varepsilon)$ with no dependence on $d$, and the general analysis is restricted to $d = 2$ [2, Theorem 5]. In [1, Sec.~VII] it is conjectured that the dimension dependence cannot be removed by any protocol.
+
+We show that the factor $d$ is necessary for every protocol, for $d \ge 3$ up to the constant, and with the constant $(d-1)/4$ in the high-accuracy regime. A protocol with $n$ copies is any channel $\Lambda$ from $S \otimes P^{\otimes n}$ to $S$, where $S = \mathbb{C}^d$ is the system and $P = \mathbb{C}^d \otimes \mathbb{C}^d$ holds one program state $\pi_L = \proj{L}$. Its error on $L$ is $\tfrac12 \dn{\Lambda(\cdot \otimes \pi_L^{\otimes n}) - e^{t\Lind_L}}$.
+
+\begin{theorem}[conjugation bound]\label{thm:conj}
+Let $d \ge 3$, $n \ge 1$ and $t > 0$. Every channel with error at most $\varepsilon \le (1-e^{-t})/8$ on all $L = \ket{0}\bra{\psi}$ uses
+\[
+n \ \ge\ \frac{(d-2)(1-e^{-t})^2}{32\,\varepsilon}
+\]
+copies. In particular $n \ge 0.0124\,(d-2)\,t^2/\varepsilon$ for $t \le 1$ and $\varepsilon \le 0.079\,t$, and $n \ge 0.0124\,(d-2)/\varepsilon$ for $t \ge 1$ and $\varepsilon \le 0.079$.
+\end{theorem}
+
+\begin{theorem}[sharp constant at high accuracy]\label{thm:sharp}
+There are absolute constants $c, C$ such that for $d \ge 2$ and $t \le c$, every channel with error at most $\varepsilon \le t^2/(C d \log(2d/t))$ on all $L = \ket{0}\bra{\psi}$ uses at least $\tfrac{d-1}{4}(1 - Ct)\,t^2/\varepsilon$ copies. For $t \le c/d$ the same holds for every $\varepsilon$ with $1 - Ct$ replaced by $1 - Cdt$.
+\end{theorem}
+
+Theorem~\ref{thm:conj} covers moderate accuracy and every time, with a small constant and the factor $d-2$. Theorem~\ref{thm:sharp} gives the constant $(d-1)/4$ at high accuracy or short times, for every $d \ge 2$; this is also the error constant of WML on the operator $\proj{0}$ (Theorem~\ref{thm:wmllower}). Neither result assumes any structure of the protocol: the $n$ copies may be processed jointly, with any ancilla.
+
+The mechanism of Theorem~\ref{thm:conj} is conjugation. For $L = \ket{0}\bra{\psi}$ the program is $\ket{0} \otimes \ket{\bar\psi}$, while the coherence that $e^{t\Lind_L}$ creates on the input $\proj{0}$ points along $\psi$. A protocol therefore has to conjugate the $d-1$ amplitudes of $\psi$ orthogonal to $\ket{0}$, and a twirled dual certificate turns the cost of universal conjugation into the bound. Theorem~\ref{thm:sharp} uses a different argument. On the Choi matrix of $\Lambda$, a $2\times 2$ positivity test captures the population that leaves $\ket{0}$, and Bernstein's inequality bounds the derivatives that enter it by the worst-case error. The degree of the trigonometric polynomials involved is reduced from $2n$ to about $\sqrt{n\log(n/t)}$ by a decomposition of $\pi_v^{\otimes n}$ into spin components.
+
+For WML itself we give the per-step bound $\Delta^2\lVert L\rVert_\infty^2 (d/2 + e^{1/d}\lVert L\rVert_\infty^2)$, so $(d/2 + e^{1/d})\,t^2/\varepsilon$ copies suffice, and an operator whose one-step error exceeds the bound of [1, Lemma 4] for $d \ge 5$ (Remark~\ref{rem:gap}). The worst-case leading constant of WML lies between $d/2 - 3/4$ and $d/2 + 1$.
+
+\paragraph{Formal verification.} The scalar steps of Theorems~\ref{thm:conj} and~\ref{thm:wmlupper} are proved in Lean 4 (toolchain v4.36.0-rc1, Mathlib revision \texttt{d875a8de}), with only the standard axioms, in the folder \path{laif/wml-sample-constants/lean} of the repository \url{https://github.com/ssenge/LAIF}. These are the dimension and binomial identities, positivity of the $2\times 2$ blocks, the trace of the certificate, the optimization over the multiplier and the constants of the corollaries; for Theorem~\ref{thm:wmlupper} the properties of $\varphi$, the coefficient bounds, the tail inequality and their sum. The block decomposition of the certificate from the Haar moments, the coherence bound in the proof of Theorem~\ref{thm:conjtheta}, the diamond-norm estimates and all of Theorem~\ref{thm:sharp} are proved on paper only. Scripts with asserts in the same folder check the remaining steps numerically for small $d$ and $n$.
+
+\section{The conjugation bound}\label{sec:conj}
+
+We prove a form of Theorem~\ref{thm:conj} with a free angle. Write $c = \cos\theta$, $s = \sin\theta$, $a = 1 - e^{-t/2}$ and $\gamma = a(1 - ac^2)$. For a unit vector $u \perp \ket{0}$ let $\psi_u = c\ket{0} + s\bar u$, where $\bar u$ is the entrywise conjugate in the computational basis, and let $\varepsilon_\theta$ be the worst case over $u$ of the error of $\Lambda$ on $L_u = \ket{0}\bra{\psi_u}$.
+
+\begin{theorem}\label{thm:conjtheta}
+For $d \ge 3$, $n \ge 1$, $t > 0$, $\theta \in (0, \pi/2)$ and every channel $\Lambda$,
+\[
+n\,\varepsilon_\theta \ \ge\ (d-2)\,\bigl(c\gamma - \varepsilon_\theta/s\bigr)_+^2 .
+\]
+The bound holds already for the trace-norm error on the single input $\proj{0}$.
+\end{theorem}
+
+\begin{proof}
+\emph{Reduction.} Fix the input $\proj{0}$. Then $T = \Lambda(\proj{0} \otimes \cdot)$ is a channel on $(\mathbb{C}^d)^{\otimes n}$, here identified with the second factors of the programs, with $\tfrac12\tn{T(\phi_u^{\otimes n}) - \sigma_u} \le \varepsilon_\theta$, where $\sigma_u = e^{t\Lind_{L_u}}(\proj{0})$ and the program is $\ket{L_u} = \sum_j L_u\ket{j}\ket{j} = \ket{0} \otimes \ket{\phi_u}$ with $\phi_u = c\ket{0} + s u$. The program carries $u$; the target carries $\bar u$.
+
+\emph{The target coherence.} The state $\sigma_u$ is supported on $\mathrm{span}\{\ket{0}, \bar u\}$ and its coherence $q = \bra{\bar u}\sigma_u\ket{0}$ is real. Every jump resets the state to $\ket{0}$, and the evolution without jumps maps $\ket{0}$ to $(1-ac^2)\ket{0} - acs\,\ket{\bar u}$. Hence $q = q_0 + c^2\int_0^t e^{-\tau} q(t-\tau)\,d\tau$ with $q_0 = -cs\gamma$, where $c^2e^{-\tau}$ is the density of the first jump. Iterating gives $q \le q_0 < 0$, so $\lvert q\rvert \ge cs\gamma$.
+
+\emph{Two tests.} Let $W_u = -(\ket{0}\bra{\bar u} + \ket{\bar u}\bra{0})$ and $\Pi_u = I - \proj{0} - \proj{\bar u}$, let $u$ be Haar distributed on the unit sphere of $\ket{0}^\perp$, and set $X = \mathbb{E}_u \operatorname{Tr} W_u T(\phi_u^{\otimes n})$ and $Y = \mathbb{E}_u \operatorname{Tr} \Pi_u T(\phi_u^{\otimes n})$. Since $\lVert W_u\rVert_\infty = 1$, $\operatorname{Tr} W_u\sigma_u = -2q$ and $\operatorname{Tr}\Pi_u\sigma_u = 0$, we have $X \ge 2cs\gamma - 2\varepsilon_\theta$ and $Y \le \varepsilon_\theta$.
+
+\emph{A dual certificate.} Let $J_T = \sum_{ij} T(\ket{i}\bra{j}) \otimes \ket{i}\bra{j}$, so that $\operatorname{Tr} M\,T(\rho) = \operatorname{Tr} J_T(M \otimes \rho^{\mathsf T})$, $J_T \ge 0$ and $\operatorname{Tr}_{\mathrm{out}} J_T = I$. The transpose maps $\phi_u$ to $\chi_v = c\ket{0} + s v$ with $v = \bar u$, which is again Haar distributed. So for every $\lambda > 0$,
+\[
+X - \lambda Y = \operatorname{Tr} J_T\,\Omega, \qquad \Omega = \mathbb{E}_v\bigl[(-\ket{0}\bra{v} - \ket{v}\bra{0} - \lambda\Pi_v) \otimes \proj{\chi_v}^{\otimes n}\bigr].
+\]
+This is where the conjugation enters: both factors of $\Omega$ now carry $v$. Let $H_k \subset (\mathbb{C}^d)^{\otimes n}$ be the span of the normalized symmetric states $\ket{k;v}$ with $k$ factors $v$ and $n-k$ factors $\ket{0}$; then $H_k \cong \Sym^k(\mathbb{C}^{d-1})$, with projector $\Pi_k$ and dimension $D_k = \binom{k+d-2}{k}$. We have $\chi_v^{\otimes n} = \sum_k \sqrt{b_k}\,\ket{k;v}$ with the binomial weights $b_k = \binom{n}{k}s^{2k}c^{2(n-k)}$, and $\mathbb{E}_v (vv^\dagger)^{\otimes k} = \Pi_{\Sym^k}/D_k$. Averaging over the phase $v \mapsto e^{i\alpha}v$ leaves only the cross terms $\ket{0}\bra{v} \otimes \ket{k;v}\bra{k-1;v}$, their adjoints, and terms diagonal in $k$, and $\Omega$ vanishes on $\ket{0}\otimes H_0$ and outside $\bigoplus_k \mathbb{C}^d \otimes H_k$. The cross term maps the copy of $\Sym^k(\mathbb{C}^{d-1})$ inside $\mathbb{C}^{d-1} \otimes H_{k-1}$ isometrically onto $\ket{0} \otimes H_k$ with weight $g_k = \sqrt{b_k b_{k-1}}/D_k$. On $\mathbb{C}^{d-1}\otimes H_{k-1}$ the term $\lambda\Pi_v$ acts as $\lambda h_{k-1}$ on that copy, with
+\[
+h_{k-1} = b_{k-1}\Bigl(\frac{1}{D_{k-1}} - \frac{1}{D_k}\Bigr) = \frac{b_{k-1}(d-2)}{D_{k-1}(k+d-2)},
+\]
+and as $\lambda b_{k-1}/D_{k-1}$ on its complement. For $d \ge 3$, $h_{k-1} > 0$. With $X_{\mathrm{op}} = \sum_{k\ge 1} x_k \Pi_k$ and $x_k = g_k^2/(\lambda h_{k-1})$, the operator $I \otimes X_{\mathrm{op}} - \Omega$ consists of the blocks
+\[
+\begin{pmatrix} x_k & g_k \\ g_k & x_{k-1} + \lambda h_{k-1}\end{pmatrix}, \qquad k = 1, \dots, n,
+\]
+each tensored with the identity on $\Sym^k(\mathbb{C}^{d-1})$, and is diagonal and non-negative elsewhere. Each block is positive semidefinite, since $x_k \cdot \lambda h_{k-1} = g_k^2$ and $x_{k-1} \ge 0$. Therefore
+\[
+X - \lambda Y \ \le\ \operatorname{Tr} J_T (I \otimes X_{\mathrm{op}}) = \operatorname{Tr} X_{\mathrm{op}} = \sum_{k=1}^n D_k x_k = \sum_{k=1}^n \frac{k\,b_k}{\lambda(d-2)} = \frac{n s^2}{\lambda(d-2)},
+\]
+using $D_k/D_{k-1} = (k+d-2)/k$ and $\sum_k k b_k = ns^2$.
+
+\emph{Conclusion.} If $c\gamma \le \varepsilon_\theta/s$ there is nothing to prove. Otherwise $X > 0$, and $\lambda = 2ns^2/(X(d-2))$ gives $X^2(d-2) \le 4ns^2 Y$. With the two tests this is $(d-2)\,s^2(c\gamma - \varepsilon_\theta/s)^2 \le ns^2\varepsilon_\theta$.
+\end{proof}
+
+\begin{proof}[Proof of Theorem~\ref{thm:conj}]
+Let $\varepsilon \ge \varepsilon_\theta$ be the worst case over the whole family; the right-hand side of Theorem~\ref{thm:conjtheta} decreases in $\varepsilon_\theta$. At $\theta = \pi/4$, $\gamma = a(1-a/2) = (1-e^{-t})/2$ and $c\gamma - \varepsilon/s = (\gamma/2 - \varepsilon)\sqrt{2}$, so $n\varepsilon \ge 2(d-2)(\gamma/2 - \varepsilon)^2 \ge (d-2)\gamma^2/8$ for $\varepsilon \le \gamma/4$. By convexity of the exponential, $1 - e^{-t} \ge (1 - e^{-1})\,t \ge 0.632\,t$ for $t \le 1$, and $1 - e^{-t} \ge 0.632$ for $t \ge 1$; the constants follow.
+\end{proof}
+
+\begin{remark}
+With $\beta_t = e^{-t/2}(1-e^{-t/2}) \le \gamma$ and $\sin\theta = (\varepsilon/2\beta_t)^{1/3}$, Theorem~\ref{thm:conjtheta} also gives $n\varepsilon \ge (d-2)\beta_t^2(1 - 3(\varepsilon/2\beta_t)^{2/3})_+^2$, whose constant tends to $(d-2)/4$ as $t \to 0$ and $\varepsilon/t \to 0$. The bound is the cost of universal conjugation of the program; compare the optimal fidelity $(n+1)/(n+d)$ of estimating a pure state of dimension $d$ from $n$ copies [3].
+\end{remark}
+
+\section{The sharp constant}\label{sec:sharp}
+
+Write $\ell = \ket{L}$ for $L = \proj{0}$, $q_i = \ket{0}\ket{i}\in P$ and $v = \cos\theta\,\ell + e^{i\phi}\sin\theta\, q_i$, so that $\pi_v = \proj{v}$ is the program of $L_v = \ket{0}\bra{\psi}$ with $\psi = \cos\theta\ket{0} + e^{-i\phi}\sin\theta\ket{i}$. Let $\varepsilon$ be the worst-case error of $\Lambda$ over this family, for all $\theta$, $\phi$ and $i = 1, \dots, d-1$.
+
+\begin{theorem}\label{thm:sharpfull}
+There is an absolute constant $C$ such that for all $d \ge 2$, $n \ge 1$, $t \in (0, 1/2]$ and every channel $\Lambda$ from $S\otimes P^{\otimes n}$ to $S$,
+\[
+n\,\varepsilon \ \ge\ \frac{d-1}{4}\, t^2 \Bigl(1 - Ct\bigl(1 + d\,\min\{1, \sqrt{\log(2n/t)/n}\}\bigr)\Bigr).
+\]
+\end{theorem}
+
+\begin{proof}
+\emph{The Choi matrix.} Let $G$ be the map $\rho \otimes \ket{L}\bra{L'} \mapsto L\rho L'^\dagger - \tfrac12(L'^\dagger L\rho + \rho L'^\dagger L)$ on one copy, averaged over the copies with the trace on the others; on $L(S) \otimes L(\Sym^n P)$ it is the first-order part that every protocol must have, since the operators $\pi_v^{\otimes n}$ span $L(\Sym^n P)$. Let $C_0$, $C_1$ be the Choi matrices of $\operatorname{Tr}_P$ and $G$, and $B = \Lambda - \operatorname{Tr}_P - tG$, so the Choi matrix of $\Lambda$ is $C = C_0 + tC_1 + C_B \ge 0$.
+
+\emph{Two test vectors.} Take $e = \ket{0}\ket{\ell}^{\otimes n}\ket{i}$ and $f = -C_0^+C_1 e = (2d\sqrt n)^{-1}\sum_m \ket{m}\ket{\hat\tau}\ket{m}$ with $\hat\tau = n^{-1/2}\sum_j \ket{\ell\cdots q_i\cdots\ell}$ ($q_i$ in copy $j$). Then $e^\dagger C_0 e = e^\dagger C_1 e = 0$, so $e^\dagger C e$ is the population $\bra{i}\Lambda(\proj{0}\otimes\pi_\ell^{\otimes n})\ket{i}$ that leaves $\ket{0}$, which is at most $\varepsilon$ after summing over $i$ since $e^{t\Lind}$ fixes $\proj{0}$. Further $f^\dagger C_0 f = 1/(4n)$, $e^\dagger C_1 f = -1/(4n)$ and $f^\dagger C_1 f = -(d-1+1/n)/(4d^2 n) \le 0$. Positivity of the $2\times 2$ compression gives $e^\dagger C e \ge \lvert e^\dagger C f\rvert^2 / f^\dagger C f$.
+
+\emph{Spin components.} Let $W = \mathrm{span}\{\ell, q_i\}$. The states $\pi_v^{\otimes n}$ lie in $L(\Sym^n W)$, on which $SU(2)$ acting on $W$ decomposes the operators into spins $k = 0,\dots,n$. Write $\pi_v^{\otimes n} = \sum_k O_k(v)$. Each $O_k(v)$ is a rotation of $O_k(\ell)$, with $\lVert O_k\rVert_2^2 = (2k+1)\,n!^2/((n-k)!(n+k+1)!)$, and
+\[
+\frac{(n+1)\lVert O_k\rVert_2^2}{2k+1} = \prod_{j<k}\frac{n-j}{n+j+2} \le e^{-k(k+1)/(2n+1)} \le e^{-k^2/(2n)} .
+\]
+Since $O_k$ has rank at most $n+1$, $\tn{O_k(v)} \le \sqrt{2k+1}\,e^{-k^2/(4n)}$ for every $v$. The map $\Lambda(\cdot\otimes O_k(v))$ has diamond norm at most $\tn{O_k}$, and its entries are spherical harmonics of degree $k$ on the Bloch sphere of $W$, whose polar angle is $2\theta$; so they are trigonometric polynomials of degree $2k$ in $\theta$. The Taylor polynomial of order $k_0$ of $e^{t\Lind_v}$ has degree at most $2k_0$ in $\theta$, since $\Lind_v$ is linear in $\proj{v}$.
+
+\emph{Bernstein's inequality.} Let $k_0 = \min\{n+1, \lceil\sqrt{24 n\log(2n/t)}\rceil\}$ and consider $F = \sum_{k \le k_0}\Lambda(\cdot\otimes O_k(v))$ minus the Taylor polynomial of order $k_0$, a trigonometric polynomial of degree at most $2k_0$. It lies within $2\varepsilon + O(t^2/n)$ of zero for all $\theta, \phi$: the discarded spin components and their first two $\theta$-derivatives are bounded by $\sum_{k>k_0}(2k)^r\tn{O_k} \le t^2/n$, $r = 0,1,2$, and the Taylor remainder by $O(t^2(2t)^{k_0}/(k_0+2)!)$. By Bernstein's inequality its first and second $\theta$-derivatives are at most $2k_0$ and $4k_0^2$ times that bound. At $\theta = 0$, the first derivative at two phases and the second derivative averaged over $\phi$ are $B$ applied to $\ket{\hat\tau}\bra{\ell^{\otimes n}}$ (times $\sqrt n$) and to $\proj{\hat\tau}$ (times $2n$, minus $2n\pi_\ell^{\otimes n}$), up to the smooth part of the exponential, which is $O(t^2)$. With $\beta d = 1/(2\sqrt n)$ and $\beta^2 d^2 = 1/(4n)$ for the coefficient $\beta$ of $f$, this gives $\lvert e^\dagger C_B f\rvert \le 2k_0\varepsilon/n + O(t^2/n)$ and $f^\dagger C_B f \le O(k_0^2\varepsilon/n + \varepsilon + t^2)/(4n)$; the factors of $d$ cancel.
+
+\emph{Conclusion.} With $e^\dagger C f = -t/(4n) + e^\dagger C_B f$, the leak towards $\ket{i}$ is at least $\tfrac{t^2}{4n}(1 - O(k_0\varepsilon/t + t))$, where the denominator contributes $O(k_0^2\varepsilon/n + \varepsilon + t^2) \le O(k_0\varepsilon/t + t^2)$ relative to $1/(4n)$. Summing over $i$ bounds $\varepsilon$ from below. If $n\varepsilon > (d-1)t^2/4$ there is nothing to prove; otherwise $k_0\varepsilon/t \le (d-1)t\,k_0/(4n)$, and $k_0/n \le C\min\{1, \sqrt{\log(2n/t)/n}\}$.
+\end{proof}
+
+\begin{proof}[Proof of Theorem~\ref{thm:sharp}]
+For $t \le c/d$ use $k_0/n \le C$. For the high-accuracy statement, discarding copies shows that the optimal error does not increase with $n$. A protocol with fewer than $N_0 = \lceil A d^2 \log(2d/t)\rceil$ copies therefore has error at least the bound at $N_0$, where $d\sqrt{\log(2N_0/t)/N_0} \le 1$; this exceeds $t^2/(Cd\log(2d/t))$ for a suitable $C$. For $n \ge N_0$ the bound of Theorem~\ref{thm:sharpfull} applies directly.
+\end{proof}
+
+\begin{remark}
+For $k_0 = n+1$ the argument is the plain Bernstein bound with degree $2n+2$, which gives the statement for $t \le c/d$. The spin decomposition improves on it for $n \gtrsim d^2\log(2n/t)$. On WML's own channel, which uses its $n$ copies in $n$ steps of time $t/n$, the $2\times 2$ bound captures $99.0\%$ to $99.9\%$ of the true leak for $n \le 3$, $d \le 3$ and $t \in [0.0125, 0.05]$. Protocols that use a random number of copies are not covered.
+\end{remark}
+
+\section{Constants of wave matrix Lindbladization}\label{sec:wml}
+
+One WML step applies $\exp(\Delta M)$ to $\rho\otimes\pi_L$ for the fixed Lindbladian $M$ of [1, Eqs.~(14), (15)] and traces out the program. By the transfer matrix of [1, App.~B] it equals
+\[
+\Phi_\Delta = \mathrm{id} + \Delta\Lind + c_J J + c_A A + c_D D_1\circ J,
+\]
+with $J = L\cdot L^\dagger$, $A = \{L^\dagger L, \cdot\}/2$, $D_1 = (I/d)\operatorname{Tr}$, and
+$c_A = \tfrac{2}{d}u^2\varphi(u)$, $c_D = \tfrac{du^2}{d^2-2}\bigl[\tfrac{4(d^2-1)}{d^2}\varphi(v) - 2\varphi(u)\bigr]$, $c_J = -\Delta^2\tfrac{d^2-1}{d}\varphi(v) - \tfrac{2}{d^2}c_D$, where $u = \Delta d/2$, $v = \Delta(d - 1/d)$ and $\varphi(z) = (e^{-z} - 1 + z)/z^2$.
+
+\begin{theorem}[upper bound]\label{thm:wmlupper}
+For every $L$ with $\lVert L\rVert_2 = 1$, every $d \ge 2$ and every $\Delta \le 1/(2d)$,
+$\tfrac12\dn{e^{\Delta\Lind} - \Phi_\Delta} \le \Delta^2\lVert L\rVert_\infty^2\bigl(d/2 + e^{1/d}\lVert L\rVert_\infty^2\bigr)$. Hence $n \ge \max\{2dt, (d/2 + e^{1/d})t^2/\varepsilon\}$ copies suffice for $\lVert L\rVert_\infty \le 1$.
+\end{theorem}
+
+\begin{proof}
+The function $\varphi$ is decreasing on $(0,\infty)$ with values in $(0, 1/2]$, and $u \le v \le 1/2$. This gives $0 < c_A, c_D \le d\Delta^2/4$, using $\varphi(v) \ge \varphi(1/2) > 1/3$ for the sign of $c_D$, and $0 < -c_J \le d\Delta^2/2$. The maps $J$ and $D_1\circ J$ are completely positive with adjoint value $L^\dagger L$ at the identity, and $A$ is bounded by $\lVert L^\dagger L\rVert$, so each has diamond norm at most $\kappa = \lVert L\rVert_\infty^2$, and $\dn{\Lind} \le 2\kappa$. The exponential series gives $\dn{e^{\Delta\Lind} - \mathrm{id} - \Delta\Lind} \le e^x - 1 - x \le x^2e^x/2$ with $x = 2\Delta\kappa \le 1/d$. Summing, $\tfrac12\dn{e^{\Delta\Lind} - \Phi_\Delta} \le \tfrac12(d\Delta^2\kappa + 2\Delta^2\kappa^2 e^{1/d})$.
+\end{proof}
+
+\begin{theorem}[lower bound for WML]\label{thm:wmllower}
+For $L = \proj{0}$ and input $\proj{0}$, the state is fixed by $e^{t\Lind}$, each WML step leaks $\Delta^2(d-1)/4$ in trace distance at leading order, and these errors add up without decay. Hence $n\cdot\mathrm{error}/t^2 \to (d-1)/4$ as $n\to\infty$, for every $t$. For $L = \ket{0}\bra{1}$ and input $\proj{1}$ the one-step error is $\Delta^2(2d-3)/4 + O(\Delta^3)$.
+\end{theorem}
+
+So WML needs at least $(\tfrac{d-1}{4} - o(1))\,t^2/\varepsilon$ copies in the worst case as $\varepsilon \to 0$, which is at least $8(d-1)/d \ge 4$ times the constant $d/32$ of [1, Theorem 10], and its worst-case leading constant lies between $d/2 - 3/4$ and $d/2 + 1$. Numerically, the supremum over $L$ of the one-step constant is about $0.300$ at $d = 2$ and $0.750 = (2d-3)/4$ at $d = 3$.
+
+\begin{remark}\label{rem:gap}
+For $L = \ket{0}\bra{1}$ and $d \ge 5$, the one-step error $\Delta^2(2d-3)/4$ exceeds $\Delta^2(2d+3)/8$, the bound of [1, Lemma 4], by $7\%$ at $d = 5$ and by a factor approaching $2$ as $d$ grows. This hints at a possible gap in [1, Eq.~(40)]: to leading order $\tilde L - L = (\Delta d/4)A - (\Delta d/2)J$, whose diamond norm for this $L$ is $3\Delta d/4$ rather than $\Delta d/4$. The scaling $O(d\,t^2/\varepsilon)$ of [1] is not affected.
+\end{remark}
+
+\section{Checks and limits}
+
+The scripts in \path{laif/wml-sample-constants/sim} check, with asserts, the program convention and the coherence bound of Theorem~\ref{thm:conjtheta} for $t$ from $0.01$ to $12$, positivity and trace of its certificate from exact Haar moments for $(d,n)$ up to $(3,4)$, $(4,3)$, $(5,2)$ and $(6,2)$, the spin decomposition of Theorem~\ref{thm:sharpfull} ($\lVert O_k\rVert_2$ exactly for $n \le 100$, the tails beyond $k_0$ for $n \le 2000$, and the degree of each component under a random channel), the identities and the $2\times 2$ bound behind its first form, and every coefficient identity of WML against the matrix exponential. The constants of Theorem~\ref{thm:sharpfull} are not optimized. Theorem~\ref{thm:conj} has the factor $d-2$ and says nothing at $d = 2$, where Theorem~\ref{thm:sharp} applies; its constant $0.0124$ is far below $(d-1)/4$. Between the accuracies $t^2/(Cd\log(2d/t))$ and $(1-e^{-t})/8$ for $c/d < t \le c$, the factor $d$ follows from Theorem~\ref{thm:conj} but the constant $(d-1)/4$ is open.
+
+\section*{Use of AI}
+The results, proofs, scripts and Lean files were developed with the help of an AI system (Claude Opus 5.5), which also checked them. The author takes responsibility for the content.
+
+\section*{Code}
+Scripts and Lean files: \url{https://github.com/ssenge/LAIF}, folder \path{laif/wml-sample-constants}.
+
+\section*{References}
+\begin{enumerate}
+\item[{[1]}] S.~Park, Y.~Seo, B.~Go, D.~Patel, M.~M.~Wilde, H.~Kwon. Improved sample complexity bound for sample-based Lindbladian simulation. arXiv:2605.30301 (2026).
+\item[{[2]}] B.~Go, H.~Kwon, S.~Park, D.~Patel, M.~M.~Wilde. Sample-based Hamiltonian and Lindbladian simulation: non-asymptotic analysis of sample complexity. arXiv:2412.02134.
+\item[{[3]}] D.~Bru{\ss}, C.~Macchiavello. Optimal state estimation for $d$-dimensional quantum systems. Phys.\ Lett.\ A 253, 249 (1999).
+\item[{[4]}] Wave matrix Lindbladization II: general Lindbladians, linear combinations, and polynomials. arXiv:2309.14453 (2023).
+\end{enumerate}
+
+\end{document}
