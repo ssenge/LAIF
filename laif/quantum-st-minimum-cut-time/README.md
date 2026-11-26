@@ -85,6 +85,7 @@ Lean 4 v4.36.0-rc1, Mathlib rev d875a8de5222f62cf1c2fafc7984588adadc990a.
 ## 8. Limits
 
 - Memory is classical memory readable in superposition, with unit cost per access, as in [1].
+- On simple graphs, a Gomory-Hu tree in quantum time min(m√Δ/δ, √(mn)Δ^{1/4}) · n^{o(1)} ≤ n^{7/4+o(1)} [11] also gives λ_st and a minimum s-t cut, below the bound of Theorem 1 up to the factor n^{o(1)}; Theorem 1 covers integer weights in [1, W] and has only polylogarithmic factors in its first term.
 - The weights are integers polynomial in n, as required by [3] and [5].
 - Theorem 1 outputs the value and a shore of a minimum cut, not a maximum flow of G; Theorem 2 outputs a flow but is below n² on dense graphs only for f ≤ n^{1−δ}.
 - On simple graphs the query bound Õ(n^{3/2}) of [7] stays below the time bound here.
@@ -102,6 +103,7 @@ Lean 4 v4.36.0-rc1, Mathlib rev d875a8de5222f62cf1c2fafc7984588adadc990a.
 8. D. D. Sleator, R. E. Tarjan. A data structure for dynamic trees. Journal of Computer and System Sciences, 1983.
 9. C. Dürr, P. Høyer. A quantum algorithm for finding the minimum. arXiv:quant-ph/9607014.
 10. Small cuts and flows with adjacency-array queries. [`laif/small-cuts-array-queries`](../small-cuts-array-queries/), 21 Nov 2026.
+11. Quantum time for Gomory-Hu trees of simple graphs. [`laif/quantum-gomory-hu-time`](../quantum-gomory-hu-time/), 26 Nov 2026.
 
 ## Use of AI
 
