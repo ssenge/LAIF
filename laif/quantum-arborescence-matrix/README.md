@@ -40,9 +40,9 @@ A cycle of several supernodes is merged by absorbing them one by one into the la
 
 **Batches.** A group g with column set C, of size s, hands out rows in increasing order of key_C, skipping the rows inside its supernode X, in batches of sizes 1, 2, 4, and so on. A batch of b rows is the b rows of least key_C among the rows outside X that g has not handed out yet.
 
-- It is found with the k-minimum finding of [1] over the n rows. Each key is evaluated by minimum finding over s columns.
+- It is found with the k-minimum finding of [1] over the n rows. Handing out vertices in doubling batches of least keys is also how the single-source shortest path algorithm of [1] proceeds. Each key is evaluated by minimum finding over s columns.
 - The cost is O(√(n b s)) queries per batch, up to a logarithmic factor that reduces the error of the inner calls.
-- Rows of the current batch that have joined X are dropped. The head of g is the first row that remains, and a new batch is fetched only when the current one is empty. A search that comes back empty is charged like a batch, and after it g hands out nothing more.
+- Rows of the current batch that have joined X are dropped. The head of g is the first row that remains, and a new batch is fetched only when the current one is empty. A fetch that comes back empty is charged like a batch, and after it g hands out nothing more.
 - The value key_C of a new head is found by minimum finding over the s columns, at a cost of O(√s) per head.
 - Ties are broken by the pair (key, row index), so every order is strict.
 - The pick of X compares the heads of its groups by key_C(u) − Δ_g, which is classical work. It then finds the column of the chosen row by minimum finding over C, at a cost of O(√n), and reads one entry.
@@ -80,7 +80,7 @@ So the batches cost O(n^{3/2} log^{3/2} n) queries, counted with exact subroutin
 
 Errors. There are O(n log² n) batches and head evaluations and O(n) picks. Each outer call is repeated O(log n) times and the majority answer is taken; the answer is unique, since the order is strict. This brings the error of each outer call to n^{−3}. Inside an outer call, every inner minimum finding is reduced to error n^{−c} for a constant c large enough that the at most n² inner calls change the final state by at most n^{−3} in norm. Both reductions cost a factor O(log n), so the total is O(n^{3/2} log^{7/2} n), and the failure probability is O(n^{−1}).
 
-If no finite arc enters the head X, then X does not contain r, no vertex of X is reachable from r, and no arborescence exists. ∎
+If no group of the head X has a row of finite key left, no finite arc enters X. Then X does not contain r, no vertex of X is reachable from r, and no arborescence exists. ∎
 
 ## Scripts
 
@@ -94,12 +94,26 @@ All scripts are in `sim/` and run with Python 3 and networkx, using fixed seeds.
   - h_g ≤ 2d_g + 1 for every group (Lemma 4).
   - At most 2n − 2 picks, and "no arborescence" exactly when some vertex is unreachable from r.
 
-  The cost counts the batches, the empty searches, the values of new heads and the picks, each with one factor log₂ n + 1. Up to n = 257, the cost divided by n^{3/2}(log₂ n + 1)² stays below 1.41 on every family.
+  The cost counts the batches, the empty fetches, the values of new heads and the picks, each with one factor log₂ n + 1. Up to n = 257, the cost divided by n^{3/2}(log₂ n + 1)² stays below 1.41 on every family.
 - `grouped_cost.py`, `hard_families.py`, `big_n.py`, `hill_adv.py`: a variant with plain binomial merging, block chains up to n = 513, and a hill-climbing search for weight matrices of high cost (n ≤ 96). On these, the cost stays near n^{3/2} log² n.
+
+## Lean
+
+The folder `lean/` holds the library `ArbGroups` (Lean 4, Mathlib revision d875a8de). `axioms.txt` lists only the standard axioms for every theorem.
+
+- `ArbGroups/Basic.lean`:
+  - `cls_mono`, `cls_double` and `cls_merge`: the class steps (a), (b) and (c) of Lemma 2.
+  - `card_le_of_distinct_cls`: groups of distinct classes and total size n number at most log₂ n + 1.
+  - `count_strict`, `count_double` and `doublings_le_log`: counting along a sequence.
+  - `lemma2`: a vertex changes its group at most 2 log₂ n times.
+  - `lemma3`: the bound on drops per row, given its event and group counts.
+  - `lemma4_rows` and `lemma4_cost`: doubling batches hand out at most 2d + 1 rows and cost at most (2 + √2)√(n s (d + 1)).
+  - `total_cost`: the Cauchy-Schwarz step of Theorem 1.
+- `ArbGroups/NonVacuity.lean`: every bound above is attained on an instance with satisfiable hypotheses. These are groups of sizes 1, 2 and 4; a vertex with 4 = 2 log₂ 4 group changes; batches 1 and 2 after one drop; and one group for the total.
 
 ## Not formalized
 
-Theorems and lemmas above are a written proof (Claim). The k-minimum finding of [1], its composition with inner minimum finding, and the correctness of the contraction algorithm [2, 3, 4] are used as known results.
+Theorem 1 and the reduction of the algorithm to these counting lemmas are a written proof (Claim): the order invariance, which events change a group, and the link of drops to absorptions. The k-minimum finding of [1], its composition with inner minimum finding, and the correctness of the contraction algorithm [2, 3, 4] are used as known results.
 
 ## References
 
