@@ -1,1 +1,5 @@
+Petersen       n= 10 d=3 girth=5: recurrence, Chebyshev form, (N1) ok
+Heawood        n= 14 d=3 girth=6: recurrence, Chebyshev form, (N1) ok
+K44            n=  8 d=4 girth=4: recurrence, Chebyshev form, (N1) ok
+Tutte 8-cage   n= 30 d=3 girth=8: recurrence, Chebyshev form, (N1) ok
 mutation (spectral term dropped) caught; all asserts passed
