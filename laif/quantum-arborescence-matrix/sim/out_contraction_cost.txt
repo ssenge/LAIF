@@ -1,0 +1,6 @@
+random  n=  40 steps=  42 contractions=   3 max|X|=   5 cost/n^1.5=  1.08 cost/n^2=0.171
+random  n=  80 steps=  80 contractions=   1 max|X|=   3 cost/n^1.5=  1.00 cost/n^2=0.112
+random  n= 160 steps= 164 contractions=   5 max|X|=  18 cost/n^1.5=  1.08 cost/n^2=0.086
+chain   n=  40 steps=  77 contractions=  38 max|X|=  39 cost/n^1.5=  3.41 cost/n^2=0.539
+chain   n=  80 steps= 157 contractions=  78 max|X|=  79 cost/n^1.5=  4.48 cost/n^2=0.500
+chain   n= 160 steps= 317 contractions= 158 max|X|= 159 cost/n^1.5=  5.95 cost/n^2=0.470

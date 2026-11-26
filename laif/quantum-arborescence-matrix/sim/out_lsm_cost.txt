@@ -1,0 +1,25 @@
+random   n=  33 cost/(n^1.5 L^2)= 0.160 max groups per vertex=  1 max deletions per row=  0 picks/n=0.97
+random   n=  65 cost/(n^1.5 L^2)= 0.201 max groups per vertex=  6 max deletions per row=  1 picks/n=1.09
+random   n= 129 cost/(n^1.5 L^2)= 0.391 max groups per vertex=  8 max deletions per row=  2 picks/n=1.33
+random   n= 257 cost/(n^1.5 L^2)= 0.177 max groups per vertex=  9 max deletions per row=  1 picks/n=1.07
+chain    n=  33 cost/(n^1.5 L^2)= 1.009 max groups per vertex=  7 max deletions per row=  4 picks/n=1.91
+chain    n=  65 cost/(n^1.5 L^2)= 1.086 max groups per vertex=  8 max deletions per row=  5 picks/n=1.95
+chain    n= 129 cost/(n^1.5 L^2)= 1.149 max groups per vertex=  9 max deletions per row=  6 picks/n=1.98
+chain    n= 257 cost/(n^1.5 L^2)= 1.200 max groups per vertex= 10 max deletions per row=  7 picks/n=1.99
+hier     n=  33 cost/(n^1.5 L^2)= 0.551 max groups per vertex=  5 max deletions per row=  2 picks/n=1.91
+hier     n=  65 cost/(n^1.5 L^2)= 0.485 max groups per vertex=  6 max deletions per row=  2 picks/n=1.95
+hier     n= 129 cost/(n^1.5 L^2)= 0.429 max groups per vertex=  7 max deletions per row=  2 picks/n=1.98
+hier     n= 257 cost/(n^1.5 L^2)= 0.382 max groups per vertex=  8 max deletions per row=  2 picks/n=1.99
+symrand  n=  33 cost/(n^1.5 L^2)= 0.414 max groups per vertex=  5 max deletions per row=  1 picks/n=1.64
+symrand  n=  65 cost/(n^1.5 L^2)= 0.399 max groups per vertex=  5 max deletions per row=  1 picks/n=1.68
+symrand  n= 129 cost/(n^1.5 L^2)= 0.564 max groups per vertex=  8 max deletions per row=  2 picks/n=1.90
+symrand  n= 257 cost/(n^1.5 L^2)= 0.255 max groups per vertex=  7 max deletions per row=  1 picks/n=1.55
+blocks2  n=  33 cost/(n^1.5 L^2)= 0.719 max groups per vertex=  7 max deletions per row=  3 picks/n=1.91
+blocks2  n=  65 cost/(n^1.5 L^2)= 0.764 max groups per vertex=  8 max deletions per row=  4 picks/n=1.95
+blocks2  n= 129 cost/(n^1.5 L^2)= 0.802 max groups per vertex=  9 max deletions per row=  5 picks/n=1.98
+blocks2  n= 257 cost/(n^1.5 L^2)= 0.836 max groups per vertex= 10 max deletions per row=  6 picks/n=1.99
+blocks8  n=  33 cost/(n^1.5 L^2)= 0.308 max groups per vertex=  8 max deletions per row=  1 picks/n=1.18
+blocks8  n=  65 cost/(n^1.5 L^2)= 0.358 max groups per vertex=  9 max deletions per row=  2 picks/n=1.22
+blocks8  n= 129 cost/(n^1.5 L^2)= 0.445 max groups per vertex= 10 max deletions per row=  3 picks/n=1.23
+blocks8  n= 257 cost/(n^1.5 L^2)= 0.518 max groups per vertex= 11 max deletions per row=  3 picks/n=1.24
+all invariants hold
