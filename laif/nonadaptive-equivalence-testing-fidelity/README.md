@@ -8,7 +8,7 @@ Two unknown states ρ and σ on C^d are given through copies, and each copy is m
 
 | | copies of σ |
 |---|---|
-| Previous best bound, non-adaptive, upper [2, 3] | O(d^{3/2}/ε²), from the trace-distance tester |
+| Previous best bound, non-adaptive, upper [2, 3] | O(d^{3/2}/ε²), from the trace-distance tester, since ½‖ρ − σ‖₁ ≥ 1 − F ≥ ε |
 | Previous best bound, non-adaptive, lower [1, Thm 1.4] | Ω̃(1/ε²) |
 | Theorem 1, non-adaptive, lower | Ω(d^{3/2}/ε²) for ε ≤ 1/3400 and d ≥ 120 + 8 ln(1/ε) |
 
@@ -24,7 +24,7 @@ N = 3D^{3/2}/ε² = 3d^{3/2}/(2√2 ε²)
 
 copies of σ. In terms of ε_F = ε/1700: N > 3.6·10⁻⁷ · d^{3/2}/ε_F² for ε_F ≤ 1/3400 and d ≥ 120 + 8 ln(1/(1700 ε_F)). For odd d, use d − 1. The constants are not optimized.
 
-Together with the trace-distance tester [2, 3] the copy count is Θ(d^{3/2}/ε²) in this range.
+Both bounds refer to the same problem. If F(ρ, σ) ≤ 1 − ε_F, then ½‖ρ − σ‖₁ ≥ 1 − F ≥ ε_F, so the trace-distance tester [2, 3] decides ρ = σ against F ≤ 1 − ε_F with O(d^{3/2}/ε_F²) copies. With Theorem 1, the copy count for this problem is Θ(d^{3/2}/ε_F²) for ε_F ≤ 1/3400 and d ≥ 120 + 8 ln(1/ε_F), where the Θ hides absolute constants, 3.6·10⁻⁷ in the lower bound.
 
 *Non-vacuity.* Both hypotheses of the two-point argument are realized by explicit states. Every alternative σ_G is a state at fidelity at most 1 − ε/1700 from ρ (Lemma 1), and the good event E of the random perturbation has probability at least 1 − 10⁻²⁸ for D ≥ 60 (Lemma 2). The instance is solvable: its trace distance is of order ε, so the tester of [2, 3] decides it with O(d^{3/2}/ε²) copies, and the bound is tight on it. `sim/check.py` asserts Lemma 1 on random draws for D = 8, 16, 32, the tail and dimension bounds of Section 4, and the identities of Lemmas 3 to 5 on small cases.
 
