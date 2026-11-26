@@ -8,9 +8,12 @@
     some s_i lies on the larger side of a minimum cut, and is never below kappa(G).
 (c) cluster formula of Lemma 5: |N(L)| = a_C + b_C(L) for all nonempty L inside a vertex set C.
 (d) Lemma 4: in a minimum t-sink cut (L, S, R), |N(u) ^ N(v)| <= 2|L| for u, v in L.
-(e) end to end: min of Phase 1 (sources sampled) and Phase 2 (clusters from approximate differences)
-    equals the minimum t-sink cut.
-Mutations: (a) without the common neighbours, (c) without the term a_C, both must fail.
+(e) both phases: Phase 1 (three sampled sources) is never below the minimum t-sink cut and attains it
+    when a source lies in a minimizer; Phase 2 (closed neighbourhoods of the exact difference graph with
+    threshold 2 l0, l0 = 2, as clusters) is never below it and attains it when a minimizer has at most l0
+    vertices.
+Mutations: (a) without the common neighbours, (b) with B_i joined to the copies of all neighbours,
+(c) without the term a_C; each must fail.
 """
 import itertools, random
 import networkx as nx
@@ -40,7 +43,7 @@ def min_sink_cut(G, t):
     U = [v for v in G if v != t and v not in G[t]]
     return min(nx.node_connectivity(G, v, t) for v in U) if U else None
 
-def combined(G, sinks):
+def combined(G, sinks, printed=False):
     G2 = nx.Graph(); G2.add_node("s*")
     for v in G:
         G2.add_edge("s*", ("c", v))
@@ -51,7 +54,7 @@ def combined(G, sinks):
             for u in G[v]:
                 if u in Bi:
                     G2.add_edge((i, v), (i, u))
-                else:   # u in N(s_i): the copy of u in V'
+                if printed or u not in Bi:   # u in N(s_i): the copy of u in V'
                     G2.add_edge((i, v), ("c", u))
     return G2
 
@@ -73,11 +76,7 @@ def graphs(rng, N):
 
 def phase2(G, t, l0, rng):
     U = [v for v in G if v != t and v not in G[t]]
-    n = len(G); p = min(1.0, 3.0 / l0)
-    T = [x for x in G if rng.random() < p]
-    row = {u: {x: G.has_edge(u, x) for x in T} for u in U}
-    # approximate difference graph: here an exact threshold 2 l0 is used for correctness (sketch error is
-    # a probability statement); the sketch estimate is reported, not asserted
+    # difference graph with the exact threshold 2 l0 (the sketch is a probability statement, not simulated)
     Gd = nx.Graph(); Gd.add_nodes_from(U)
     for u, v in itertools.combinations(U, 2):
         if len(set(G[u]) ^ set(G[v])) <= 2 * l0:
@@ -99,7 +98,7 @@ def phase2(G, t, l0, rng):
     return best
 
 def main():
-    rng = random.Random(2); na = nb = nc = nd = ne = 0; mut_a = mut_c = 0
+    rng = random.Random(2); na = nb = nc = nd = ne = 0; mut_a = mut_b = mut_c = 0
     for G in graphs(rng, 40):
         if not nx.is_connected(G) or G.number_of_edges() == len(G) * (len(G) - 1) // 2:
             continue
@@ -115,6 +114,8 @@ def main():
         Ls = [v for v in G2 if v != "s*" and v[0] != "c"]
         val = min(nx.node_connectivity(G2, v, "s*") for v in Ls)
         assert val == kg, (val, kg); nb += 1
+        Gp = combined(G, list(G), printed=True)
+        mut_b += min(nx.node_connectivity(Gp, v, "s*") for v in Ls) != kg
         G3 = combined(G, rng.sample(list(G), 2))
         Ls3 = [v for v in G3 if v != "s*" and v[0] != "c"]
         if Ls3:
@@ -136,7 +137,7 @@ def main():
             m = min_sink_cut(G, t)
             for k in range(1, len(U) + 1):
                 for L in itertools.combinations(U, k):
-                    if len(NL(G, L)) == m and nx.is_connected(G.subgraph(L)):
+                    if len(NL(G, L)) == m:
                         for u, v in itertools.combinations(L, 2):
                             assert len(set(G[u]) ^ set(G[v])) <= 2 * len(L)
                         nd += 1
@@ -144,6 +145,9 @@ def main():
             P = rng.sample(U, min(len(U), 3))
             ph1 = min(nx.node_connectivity(G, v, t) for v in P)
             assert ph1 >= m
+            if any(len(NL(G, L)) == m for k in range(1, len(U) + 1) for L in itertools.combinations(U, k)
+                   if set(L) & set(P)):
+                assert ph1 == m
             # minimizers with |L| > l0 must be hit by P for Phase 1; record whether a small minimizer exists
             small = any(len(NL(G, L)) == m for k in range(1, l0 + 1) for L in itertools.combinations(U, k))
             ph2 = phase2(G, t, l0, rng)
@@ -151,9 +155,9 @@ def main():
             if small:
                 assert ph2 == m
             ne += 1
-    assert mut_a > 0 and mut_c > 0, "mutation survived"
+    assert mut_a > 0 and mut_b > 0 and mut_c > 0, "mutation survived"
     print(f"(a) {na} pairs, (b) {nb} graphs, (c) {nc} sets, (d) {nd} minimizers, (e) {ne} sinks: all asserts passed")
-    print(f"mutations: (a) without common neighbours wrong on {mut_a} pairs, (c) without a_C wrong on {mut_c} sets")
+    print(f"mutations: (a) without common neighbours wrong on {mut_a} pairs, (b) as printed in [3] wrong on {mut_b} graphs, (c) without a_C wrong on {mut_c} sets")
 
 if __name__ == "__main__":
     main()
