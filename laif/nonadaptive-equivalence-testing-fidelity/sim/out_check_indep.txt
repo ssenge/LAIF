@@ -1,0 +1,10 @@
+1 ok: K = 7.5, c0 = 0.1, gap 1/3704 >= 1/3800
+2 ok: Beta(D,D) tail bound for D < 400
+3 ok DA=6 dC=2: P(t>3/4) MC 0.0045 <= 0.3139; MGF 1.620
+3 ok DA=8 dC=3: P(t>3/4) MC 0.0000 <= 0.1858; MGF 1.604
+3 ok DA=12 dC=2: P(t>3/4) MC 0.0000 <= 0.0668; MGF 3.426
+4 ok DA=16 dC=2: max ||G|| 1.78 <= 7.5, min ||G||_F^2/D 0.665 >= 1/2
+4 ok DA=24 dC=2: max ||G|| 1.78 <= 7.5, min ||G||_F^2/D 0.693 >= 1/2
+4 ok DA=12 dC=4: max ||G|| 2.09 <= 7.5, min ||G||_F^2/D 0.877 >= 1/2
+5 ok: exponent 0.2704, TV < 1/3; dimension condition
+6 ok: projection, marginals, product of marginals = null, 1 - F >= eps/3800

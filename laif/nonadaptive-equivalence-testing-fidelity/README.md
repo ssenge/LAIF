@@ -1,10 +1,10 @@
-# Non-adaptive equivalence testing in fidelity needs Ω(d^{3/2}/ε²) copies
+# Non-adaptive equivalence and independence testing in fidelity need Ω(d^{3/2}/ε²) copies
 
 2026-11-26
 
 ## Problem
 
-Two unknown states ρ and σ on C^d are given through copies, and each copy is measured on its own. The task is to decide whether ρ = σ or F(ρ, σ) ≤ 1 − ε, with success probability at least 2/3. In the trace distance, the same task needs Θ̃(d^{3/2}/ε²) copies, and adaptivity does not help [2, 3, 4]. In the fidelity, certification of a known σ needs only Õ(d^{3/2}/ε) copies, and adaptive equivalence testing uses Õ(min{d^{3/2}/ε², d^{9/4}/ε}) copies [1, Thms 1.1, 1.2]. For non-adaptive measurements, Ω̃(1/ε²) copies are needed already for qubits [1, Thm 1.4]. It is asked in [1, Sec. 1.2] whether non-adaptive equivalence testing in the fidelity has an asymptotic advantage over the trace distance, and conjectured there that it needs Ω̃(d^{3/2}/ε²) copies.
+Two unknown states ρ and σ on C^d are given through copies, and each copy is measured on its own. The task is to decide whether ρ = σ or F(ρ, σ) ≤ 1 − ε, with success probability at least 2/3. In the trace distance, the same task needs Θ̃(d^{3/2}/ε²) copies, and adaptivity does not help [2, 3, 4]. In the fidelity, certification of a known σ needs only Õ(d^{3/2}/ε) copies, and adaptive equivalence testing uses Õ(min{d^{3/2}/ε², d^{9/4}/ε}) copies [1, Thms 1.1, 1.2]. For non-adaptive measurements, Ω̃(1/ε²) copies are needed already for qubits [1, Thm 1.4]. It is asked in [1, Sec. 1.2] whether non-adaptive equivalence testing in the fidelity has an asymptotic advantage over the trace distance, and conjectured there that it needs Ω̃(d^{3/2}/ε²) copies. The same question is asked for independence testing: given copies of a state ρ_AC on C^{d_A} ⊗ C^{d_C}, decide whether ρ_AC = ρ_A ⊗ ρ_C or F(ρ_AC, ρ_A ⊗ ρ_C) ≤ 1 − ε. There the trace-distance tester uses Õ((d_A d_C)^{3/2}/ε²) copies [2, 3], which is optimal in the trace distance [5], and an adaptive tester in the fidelity is given in [1].
 
 | | copies of σ |
 |---|---|
@@ -12,7 +12,12 @@ Two unknown states ρ and σ on C^d are given through copies, and each copy is m
 | Previous best bound, non-adaptive, lower [1, Thm 1.4] | Ω̃(1/ε²) |
 | Theorem 1, non-adaptive, lower | Ω(d^{3/2}/ε²) for ε ≤ 1/3400 and d ≥ 120 + 8 ln(1/ε) |
 
-So, to our knowledge, the fidelity gives no asymptotic advantage over the trace distance for non-adaptive equivalence testing, which settles the equivalence-testing part of the first open question of [1, Sec. 1.2] in this range of d.
+So, to our knowledge, the fidelity gives no asymptotic advantage over the trace distance for non-adaptive equivalence testing, which settles the equivalence-testing part of the first open question of [1, Sec. 1.2] in this range of d. Theorem 2 below settles the independence-testing part in the same way.
+
+| | copies of ρ_AC, independence testing |
+|---|---|
+| Previous best bound, non-adaptive, upper [2, 3, 5] | Õ((d_A d_C)^{3/2}/ε²), from the trace-distance tester |
+| Theorem 2, non-adaptive, lower | Ω((d_A d_C)^{3/2}/ε²) for d_A ≥ 112 and d_A ≥ 2 + 8 ln(21 d_A d_C/ε) |
 
 ## Result
 
@@ -37,7 +42,7 @@ Let c₀ = 3/20, ρ₀ = ((1 − ε)/D) I_D ⊕ (ε/D) I_D, W a Haar-random unit
 
 **Lemma 1.** For G ∈ E, σ_G is a state, σ_G ≥ ε/(4D) on the light block, F(ρ, σ_G) ≤ 1 − εc₀²‖G‖_F²/(8(7/4)^{3/2}D) ≤ 1 − ε/1700, and ½‖ρ − σ_G‖₁ = (εc₀/(2D))‖G‖₁.
 
-*Proof.* tr G = 0 gives tr σ_G = 1. On the light block σ_G = (ε/D)(I + c₀G) ≥ (ε/D)(1 − 5c₀) = ε/(4D). The states commute, so with g_k the eigenvalues of G, F = (1 − ε) + (ε/D) Σ_k √(1 + c₀g_k). For |x| ≤ 3/4, √(1 + x) ≤ 1 + x/2 − x²/(8(7/4)^{3/2}) by the Taylor remainder. With Σ g_k = 0 and Σ g_k² ≥ D/2 this gives 1 − F ≥ εc₀²/(16(7/4)^{3/2}) = ε/1646. ∎
+*Proof.* tr G = 0 gives tr σ_G = 1. On the light block σ_G = (ε/D)(I + c₀G) ≥ (ε/D)(1 − 5c₀) = ε/(4D). The states commute, so with g_k the eigenvalues of G, F = (1 − ε) + (ε/D) Σ_k √(1 + c₀g_k). For |x| ≤ 3/4, √(1 + x) ≤ 1 + x/2 − x²/(8(7/4)^{3/2}) by the Taylor remainder. With Σ g_k = 0 and Σ g_k² ≥ D/2 this gives 1 − F ≥ εc₀²/(16(7/4)^{3/2}) ≥ ε/1647. ∎
 
 **Lemma 2.** P(E^c) ≤ 2e^{−1.13D} + 2e^{−D²/32} + e^{−(D²−1)/36}.
 
@@ -67,6 +72,27 @@ Let u_ij be the light-block part of v_ij, t_ij = ‖u_ij‖², û_ij = u_ij/√t
 
 The bound needs the measurements on σ to be fixed before W is drawn. That a fixed schedule rarely aligns with a random hidden direction is also the mechanism of the qubit bound [1, Lemma 7.2]. If the measurement basis is aligned with the two blocks, then t ∈ {0, 1}, A = (N/ε)I, and the exponent becomes of order ε²N²/D³, which only gives Ω(D^{3/2}/ε). This is the copy count of certification with a known σ [1, Thm 1.1].
 
+## Independence testing
+
+**Theorem 2.** Let 0 < ε ≤ 1/2, d_A = 2D_A, d_C ≥ 2 and D = D_A d_C, with D_A ≥ 56 and D_A ≥ 1 + 4 ln(41 D_A d_C/ε). Consider a tester that measures copies of ρ_AC one at a time, with the measurements and the number of copies fixed in advance (random choices are allowed if they are independent of the state). It may also use any number of copies of ρ_A ⊗ ρ_C, measured in any way, as in [1]. If it accepts with probability at least 2/3 when ρ_AC = ρ_A ⊗ ρ_C and rejects with probability at least 2/3 when F(ρ_AC, ρ_A ⊗ ρ_C) ≤ 1 − ε/3800, then it uses more than
+
+N = 13D^{3/2}/ε² = 13(d_A d_C)^{3/2}/(2√2 ε²)
+
+copies of ρ_AC. In terms of ε_F = ε/3800: N > 9.0·10⁻⁷ · (d_A d_C/2)^{3/2}/ε_F². For odd d_A, use d_A − 1.
+
+**Corollary 3** (mutual information). The relative entropy is at least the order-1/2 sandwiched divergence, so D(ρ‖σ) ≥ −2 ln F(ρ, σ) ≥ 2(1 − F). Every alternative of Theorem 2 therefore has I(A:C) = D(ρ_AC‖ρ_A ⊗ ρ_C) ≥ ε/1900. Hence testing I(A:C) = 0 against I(A:C) ≥ ε/1900 with the same kind of tester needs more than 13D^{3/2}/ε² copies.
+
+*Non-vacuity.* Every alternative is a state whose two marginals are those of the null state, at fidelity at most 1 − ε/3705 from it, and the good event has probability at least 1 − 2·10⁻³. `sim/check_indep.py` asserts both on random draws (D_A = 3, d_C = 2). Its trace distance is of order ε, so the tester of [2, 3] decides the instance with Õ((d_A d_C)^{3/2}/ε²) copies.
+
+*Instance.* Let c₀ = 1/10, ρ_A = W[((1 − ε)/D_A)I ⊕ (ε/D_A)I]W† with W Haar-random on C^{d_A}, and null ρ_AC = ρ_A ⊗ I/d_C. The light block is now L = (light block of A) ⊗ C^{d_C}, of dimension D. Let H = g/√D be Gaussian on the Hermitian matrices on L as before, and G = H − tr_C H ⊗ I/d_C − I ⊗ tr_A H/D_A + (tr H)I/D, the orthogonal projection of H to the matrices with tr_A G = 0 and tr_C G = 0. Let E be the event that ‖G‖_op ≤ 15/2 and ‖G‖_F² ≥ D/2. The alternative is σ_G = ρ_AC + (εc₀/D)(W ⊗ I)(0 ⊕ G)(W ⊗ I)†, with G drawn from the law of G given E. Its marginals are ρ_A and I/d_C, so the product of its marginals is the null state, and Lemma 1 gives F ≤ 1 − εc₀²/(16(7/4)^{3/2}) ≤ 1 − ε/3705.
+
+*Proof.* The changes against Theorem 1 are as follows.
+- The good event. tr_C H and tr_A H are Gaussian on the Hermitian matrices of dimension D_A and d_C, with entries of variance 1/D_A and 1/d_C. The net bound gives ‖H‖_op ≤ 4.75, ‖tr_C H‖_op ≤ 4.75 and ‖tr_A H‖_op ≤ 5.6, except with probabilities 2e^{−1.13D}, 2e^{−1.13D_A} and 2·21^{2d_C}e^{−d_C·4.48²/2} ≤ 7.6·10⁻⁴. So ‖G‖_op ≤ 4.75 + 4.75/2 + 5.6/56 + 1/4 ≤ 7.5, and c₀‖G‖_op ≤ 3/4. The projection has rank k = (D_A² − 1)(d_C² − 1) ≥ 0.75(1 − D_A⁻²)D², and the chi-square lower tail at x = k/64 gives ‖G‖_F² ≥ D/2.
+- Reduction to a fixed W. The copies of ρ_A ⊗ ρ_C have the null state under both hypotheses, so the argument of Theorem 1 applies.
+- Lemmas 3 to 5 hold as stated, with u_ij the part of v_ij in L. Lemma 5 uses only that P is an orthogonal projection.
+- Aligned elements. A measurement vector v may be entangled between A and C. With its Schmidt form v = Σ_k s_k a_k ⊗ b_k, which is fixed before W, t = Σ_k s_k² t_k, where each t_k = ⟨a_k|W Π W†|a_k⟩ has the Beta(D_A, D_A) distribution. With x = t_k − 1/2, the density satisfies (t_k(1 − t_k))^{D_A−1}/B(D_A, D_A) ≤ 2√(D_A/π) e^{−4(D_A−1)x²}, since 1/B(D, D) ≤ 2√(D/π) 4^{D−1}. So E e^{λ(t_k − 1/2)} ≤ √(D_A/(D_A − 1)) e^{λ²/(16(D_A−1))}. By convexity of the exponential the same bound holds for t, and λ = 2(D_A − 1) gives P(t > 3/4) ≤ √(D_A/(D_A − 1)) e^{−(D_A−1)/4}. The measurement weights sum to 2ND, so by the Markov inequality, with probability at least 19/20 over W, the aligned weight is at most εN under the dimension condition. Then ‖A‖_op ≤ 4N and tr A ≤ 4ND.
+- Count. For N ≤ 13D^{3/2}/ε² the exponent is at most 16·169c₀⁴ = 0.2704, and the total variation distance is at most 1/20 + ½√(e^{0.2704}/(1 − 2·10⁻³)² − 1) < 1/3. ∎
+
 ## Check
 
 `sim/check.py` (output `sim/out_check.txt`, about a minute on one core) asserts:
@@ -76,11 +102,15 @@ The bound needs the measurements on σ to be fixed before W is drawn. That a fix
 - for D = 3, 4 with random and nearly aligned bases, the χ² identity and Lemma 4. It also checks the exact product formula of Lemma 5 against Monte Carlo;
 - the final constants.
 
+`sim/check_indep.py` (output `sim/out_check_indep.txt`) asserts the constants of Theorem 2, the Beta tail bound for D < 400 and the bound on the binomial coefficient, the tail bound for entangled vectors by Monte Carlo, the norms of the projected Gaussian, and, at D_A = 3 and d_C = 2, that the projection is orthogonal with the stated rank, that the product of the marginals of every alternative is the null state, and the fidelity gap.
+
+`sim/constants_iv.py` (output `sim/out_constants_iv.txt`) recomputes the final constants of both theorems with exact rationals and interval arithmetic with outward rounding: the fidelity gaps ε/1647 and ε/3705, the probabilities of the good events, and the final total variation bounds 0.3001 and 0.3295, both below 1/3.
+
 ## Scope
 
 - The measurements on the copies of σ are single-copy and fixed in advance. Measurements acting jointly on a copy of ρ and a copy of σ are not covered, as in [1].
 - The dimension condition d ≥ 120 + 8 ln(1/ε) is used in the Markov step. For smaller d, the qubit bound Ω̃(1/ε²) of [1, Thm 1.4] applies, for testers whose measurements on both states are fixed in advance.
-- The analogous question for independence testing [1, Sec. 1.2] is not covered.
+- Theorem 2 needs d_C ≥ 2 and the dimension condition on d_A (the roles of A and C can be swapped). When both dimensions are of order ln(1/ε) or smaller, it gives nothing.
 - The constants are far from optimal: the alternative is at infidelity ε/1700, and the instance has trace distance about 0.06ε.
 
 ## References
@@ -89,6 +119,7 @@ The bound needs the measurements on σ to be fixed before W is drawn. That a fix
 2. S. Bubeck, S. Chen, J. Li. Entanglement is necessary for optimal quantum property testing. FOCS 2020.
 3. S. Chen, J. Li, R. O'Donnell. Toward instance-optimal state certification with incoherent measurements. COLT 2022.
 4. S. Chen, J. Li, B. Huang, A. Liu. Tight bounds for quantum state certification with incoherent measurements. FOCS 2022.
+5. N. Yu. Sample efficient identity testing and independence testing of quantum states. ITCS 2021.
 
 ## Use of AI
 
