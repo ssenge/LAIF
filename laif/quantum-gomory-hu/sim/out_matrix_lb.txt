@@ -1,0 +1,11 @@
+n=16 B=6: min cut with both sides >= 2 is 15 >= Δ = 12
+n=16 B=6: min cut with both sides >= 2 is 15 >= Δ = 12
+n=16 B=6: min cut with both sides >= 2 is 15 >= Δ = 12
+n=16 B=5: min cut with both sides >= 2 is 14 >= Δ = 12
+n=16 B=5: min cut with both sides >= 2 is 14 >= Δ = 12
+n=16 B=3: min cut with both sides >= 2 is 13 >= Δ = 12
+n=20: all λ(u,v) = min(deg u, deg v) and |B| recovered, 5 random B
+n=26: all λ(u,v) = min(deg u, deg v) and |B| recovered, 5 random B
+n=40: all λ(u,v) = min(deg u, deg v) and |B| recovered, 5 random B
+mutation without the L2 x R2 block: nontrivial values appear, as expected
+all asserts passed
