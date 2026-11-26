@@ -11,8 +11,9 @@ Wave matrix Lindbladization (WML) simulates the Lindbladian with one jump operat
 | Copies needed by WML in the worst case over L, as ε → 0 | at least d/32 · t²/ε [1, Theorem 10] | at least (d−1)/4 · t²/ε for every t, and (2d−3)/4 · t²/ε as t → 0 (Theorem 3) |
 | Copies needed by any regular memoryless protocol with a bounded number of fresh copies per step and comparable step sizes, as n → ∞ | at least 10⁻⁴ · t²/ε, for every protocol [2] | at least (d−1)/4 · t²/ε, with the same constant as WML on the witness L = \|0⟩⟨0\| (Theorem 4) |
 | One-copy error of any channel from S ⊗ P to S, worst case over L, as t → 0 | | at least (d−1)/4 · t² − O(t³) (Theorem 5) |
+| Copies needed by every protocol (any number of copies, joint processing allowed), for t ≤ c/d | at least 10⁻⁴ · t²/ε [2] | at least (d−1)/4 · (1 − O(dt)) · t²/ε (Theorem 6) |
 
-The first three rows are about the WML protocol, as in [1, Theorem 10]. The fourth row covers the class of Theorem 4, and the last row every channel that uses one copy. None of them bounds the minimum over all protocols, for which the lower bound 10⁻⁴ · t²/ε of [2] holds for every d.
+The first three rows are about the WML protocol, as in [1, Theorem 10]. The fourth row covers the class of Theorem 4, the fifth every channel that uses one copy, and the last every protocol, for short times t ≤ c/d. For t of order one the lower bound for all protocols remains 10⁻⁴ · t²/ε [2].
 
 ## Setting
 
@@ -87,16 +88,30 @@ with the supremum over all L with ‖L‖₂ = 1. No step structure, expansion o
 3. **The witness.** For L = |0⟩⟨0|, ℒ_L(|0⟩⟨0|) = 0, so e^{tℒ_L} fixes |0⟩⟨0| and e_i†C_B e_i = ⟨i|Λ(|0⟩⟨0| ⊗ π_L)|i⟩. Summed over i ≠ 0 this is the population that leaves |0⟩, which is at most the trace distance to |0⟩⟨0|, hence at most ε.
 4. **Conclusion.** Together, ε ≥ (d−1)t²/4 − (d−1)κ″_d t(t² + ε). If ε > (d−1)t²/4 there is nothing to prove; otherwise ε ≤ dt², and the claim follows with K_d = 2d(d−1)κ″_d. ∎
 
-So even an unrestricted channel that uses one copy has the leading constant (d−1)/4. The optimal one-copy channel, computed by an exact semidefinite program over all channels, approaches this constant: over the operators of step 1 its error divided by t² is 0.2374, 0.2437 and 0.2470 for t = 0.04, 0.02 and 0.01 at d = 2, and 0.4667, 0.4834 and 0.4924 at d = 3.
+Theorem 5 is a lower bound. Over the operators of step 1, the optimal one-copy channel, computed by an exact semidefinite program over all channels, has error divided by t² equal to 0.2374, 0.2437 and 0.2470 for t = 0.04, 0.02 and 0.01 at d = 2, and 0.4667, 0.4834 and 0.4924 at d = 3. These are lower bounds on the worst case over all L, and they approach (d−1)/4 with a deficit of order t, as the proof predicts.
+
+**Theorem 6 (every protocol, any number of copies, short times).** There is an absolute constant K such that for every d ≥ 2, every n ≥ 1, every t ∈ (0, 1/2] and every channel Λ from S ⊗ P^{⊗n} to S, with any joint processing of the n copies,
+
+sup_L ½ ‖Λ(· ⊗ π_L^{⊗n}) − e^{tℒ_L}‖⋄ ≥ (d−1)/(4n) · t² · (1 − K d t).
+
+The supremum may be restricted to L = |0⟩⟨ψ| with ψ = cos θ |0⟩ + e^{−iφ} sin θ |i⟩, over all θ, φ and i = 1, …, d − 1. Hence for t ≤ c/d with an absolute constant c, every protocol, sequential or collective, needs at least ((d−1)/4)(1 − O(dt)) t²/ε copies. In this regime the factor d of the WML bound is necessary, and WML has the same constant (d−1)/4 on the witness L = |0⟩⟨0| (Theorem 3).
+
+*Proof sketch.* Let ε be the supremum. Write ℓ = |L⟩ for L = |0⟩⟨0|, q_i = |0⟩|i⟩ ∈ P, v = cos θ ℓ + e^{iφ} sin θ q_i, and τ̂ = n^{−1/2} Σ_j |ℓ … q_i … ℓ⟩ (q_i in copy j).
+1. **The Choi matrix.** Let G be the average over the copies of the one-copy map of Theorem 4 (step 1), with the trace on the other copies, and B = Λ − Tr_P − tG. The Choi matrix of Λ is C₀ + tC₁ + C_B ≥ 0.
+2. **Two test vectors.** Take e = |0⟩|ℓ⟩^{⊗n}|i⟩ and f = −C₀⁺C₁e = (2d√n)^{−1} Σ_m |m⟩|τ̂⟩|m⟩. Then e†C₀e = e†C₁e = 0, so e†Ce is the population ⟨i|Λ(|0⟩⟨0| ⊗ π_ℓ^{⊗n})|i⟩ that leaves |0⟩ towards |i⟩. Also f†C₀f = 1/(4n), e†C₁f = −1/(4n) and f†C₁f ≤ 0. Positivity of the 2 × 2 compression gives e†Ce ≥ |e†Cf|²/f†Cf.
+3. **Bernstein's inequality.** The map (θ, φ) ↦ Λ(· ⊗ π_v^{⊗n}) is a trigonometric polynomial of degree 2n in θ. So is the Taylor polynomial of e^{tℒ_v} of order n + 1, whose remainder is at most 4e²t²(2t)^n/(n+2)!. Their difference is therefore within 2ε + 4e²t²(2t)^n/(n+2)! of zero for all θ, φ. By Bernstein's inequality its first and second θ-derivatives are at most 4n and 16n² times that bound. At θ = 0 these derivatives, the first at two phases and the second averaged over φ, are B applied to |τ̂⟩⟨ℓ^{⊗n}| (times √n) and to |τ̂⟩⟨τ̂| (times 2n, minus 2n π_ℓ^{⊗n}), up to the smooth part of the exponential, which is O(t²). This gives |e†C_B f| ≤ 2ε + O(t²/n) and f†C_B f ≤ O(ε + t²/n), uniformly in n.
+4. **Conclusion.** With e†Cf = −t/(4n) + e†C_B f, the leak towards |i⟩ is at least t²/(4n) · (1 − O(nε/t + t)). Summing over the d − 1 states |i⟩ bounds ε from below. If nε > (d−1)t²/4 there is nothing to prove; otherwise nε/t ≤ dt/4, and the claim follows. ∎
+
+The correction O(dt) comes from the term nε/t, and Theorem 6 says nothing for t ≳ 1/d. On the collective WML channel, which uses its n copies in n steps of time t/n, the bound of step 4 captures 99.0% to 99.9% of the true leak for n ≤ 3, d ≤ 3 and t between 0.0125 and 0.05.
 
 **Numerical supremum.** The supremum of the leading constant over all L, computed with an exact semidefinite program for the diamond norm and local search over L, is about 0.300 at d = 2 and 0.750 at d = 3. At d = 3 this equals (2d−3)/4.
 
 ## Scope
 
 - Theorems 1 and 3 are exact statements about explicit operators, checked numerically with plain-state certificates and with diamond norms from a semidefinite program.
-- Theorems 2, 4 and 5 are written proofs (Claim). The constant K_d of Theorem 5 is not made explicit. Every coefficient identity of Theorem 2 is checked against the matrix exponential to 1e-12, and the Schur-complement value of Theorem 4 is checked exactly for d = 2, 3, 4 with one copy per step and for (d, k) = (2, 2), (3, 2), (4, 2), (2, 3), (3, 3).
+- Theorems 2, 4, 5 and 6 are written proofs (Claim). The constant K_d of Theorem 5 and the absolute constant K of Theorem 6 are not optimized. Every coefficient identity of Theorem 2 is checked against the matrix exponential to 1e-12, and the Schur-complement value of Theorem 4 is checked exactly for d = 2, 3, 4 with one copy per step and for (d, k) = (2, 2), (3, 2), (4, 2), (2, 3), (3, 3).
 - The step of WML is built twice: from the transfer matrix of [1, App. B], and directly from [1, Eq. (15)] on the full system and program space. The two agree to 1e-16 for d = 2, 3.
-- The supremum over L for d ≥ 4 is not computed. Nothing here bounds the sample complexity over all protocols.
+- The supremum over L for d ≥ 4 is not computed. Theorem 6 bounds the sample complexity over all protocols only for t ≤ c/d.
 
 ## Files
 
@@ -108,6 +123,7 @@ So even an unrestricted channel that uses one copy has the leading constant (d�
 - `sim/kcopies.py`: the forced leak with k copies per step, (d−1)/(4k), and its attainment by k WML steps, with asserts for (d, k) up to (4, 2) and (3, 3).
 - `sim/scan.py`, `sim/supL.py`: rank-one scan and the numerical supremum over L.
 - `sim/opt.py`, `sim/opt2.py`: the optimal channel with n copies over all channels, as an exact semidefinite program on covariant Choi matrices (partially transposed permutation operators, block-diagonalized for n = 2); `sim/check_conv.py` checks its conventions against the full WML channel; `sim/frame_check.py` gives the numbers after Theorem 5.
+- `sim/thm6_check.py`: the derivative identities, the trigonometric degree and the test vectors of Theorem 6, and the 2 × 2 bound on the collective WML channel, with asserts.
 
 ## References
 
