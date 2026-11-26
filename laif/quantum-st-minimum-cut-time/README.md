@@ -12,6 +12,8 @@ Here the k-strong partition is replaced by the classes of k-edge-connectivity of
 
 with adjacency-list access to G, and in time Õ(n^{11/6} W^{1/3}) + (n^{5/3} W^{2/3})^{1+o(1)} with adjacency-matrix access. On simple graphs both are Õ(n^{11/6}).
 
+**Theorem 2.** On simple graphs with adjacency-list access, in the same model, λ_st(G), the shore of a minimum s-t cut and a maximum s-t flow of G can be computed with high probability in time Õ(n + √(mn(f + 1))) + (n(f + 1))^{1+o(1)}, where f = λ_st(G). On dense graphs this is n^{3/2}√(f + 1) · polylog n + (nf)^{1+o(1)}, which is below n² whenever f ≤ n^{1−δ} for a constant δ > 0, and below the bound of Theorem 1 when f ≤ n^{1/3−δ}.
+
 Status: Claim. The boundary bound of Lemma 1 is checked in Lean, and the contraction step by a script with asserts on random small graphs.
 
 ## Before and after
@@ -20,6 +22,7 @@ Status: Claim. The boundary bound of Lemma 1 is checked in Lean, and the contrac
 |---|---|---|
 | Exact s-t minimum cut, simple graphs with m = Θ(n²), time | m^{1+o(1)} = n^{2+o(1)} classically [5]; quantum Õ(n^{11/6}) [1] and Õ(n^{3/2}) [7] queries, with time left open [1, 2] | quantum time Õ(n^{11/6}) |
 | Exact s-t minimum cut, integer weights in [1, W], adjacency list, time | m^{1+o(1)} classically [5] | quantum time Õ(√m n^{5/6} W^{1/3}) + (n^{5/3} W^{2/3})^{1+o(1)}, below m^{1+o(1)} when m ≥ n^{5/3+δ} W^{2/3} for a constant δ > 0 |
+| Maximum s-t flow (the flow itself), simple graphs, adjacency list, f = λ_st, time | m^{1+o(1)} classically [5]; quantum Õ(n + √(mn(f + 1))) queries [10] | quantum time Õ(n + √(mn(f + 1))) + (n(f + 1))^{1+o(1)}, below n² on dense graphs for f ≤ n^{1−δ} |
 
 ## 1. The algorithm
 
@@ -55,11 +58,17 @@ This bound takes the place of [1, Theorem 10], which gives k(t − 1) for a k-st
 
 With ε = (nW)^{−1/3}, steps 2 and 5 cost Õ(√m n^{5/6} W^{1/3}), or Õ(n^{11/6} W^{1/3}) with the matrix. Steps 3 to 5 also cost (n^{5/3} W^{2/3})^{1+o(1)}, which is n^{5/3+o(1)} for W = 1.
 
-## 5. Measurements
+## 5. Proof of Theorem 2
+
+The query algorithm of [10, Theorem 5] builds the forests F_1, …, F_k of a scan-first search with labels capped at k, for k = 1, 2, 4, …, and stops at the first k with λ_st(H_k) < k, where H_k = F_1 ∪ … ∪ F_k has at most kn edges. Then λ_st(H_k) = f, and a maximum s-t flow of H_k is one of G, since the certificate preserves every cut of value below k [10, Lemma 1]. Its query bound is Õ(n + √(mn(f + 1))), and k ≤ 2f + 2.
+
+Each query step of [10, Theorem 4] is a Grover search over the list of the scanned vertex for entries that are not yet found and lead to an unscanned vertex w with r(w) < k. The scan state (the flags, the counters r and, per vertex, the sorted list of found positions) is kept in classical memory readable in superposition and updated classically after each Grover search, so one evaluation of the predicate costs one neighbour query and O(log n) time. The choice of the next vertex, one of largest label, takes O(log n) time with a heap. So the forests take the query bound times O(log n) in time. At stage k the test λ_st(H_k) < k and the flow are computed by an exact maximum flow on H_k, in (kn)^{1+o(1)} time [5]. Summing over the O(log f) stages gives the bound of Theorem 2.
+
+## 6. Measurements
 
 [`sim/gh_classes.py`](sim/gh_classes.py) draws 4000 random simple graphs on 5 to 10 vertices, reweights each edge by a factor in [0.85, 1.15], and computes the exact sparsifier error ε of this reweighting H over all cuts. It runs steps 3 and 4 with k = 3εn, and asserts that no minimum s-t cut of G splits a part, that the contracted graph has the same minimum s-t cut value, and that Lemma 1 holds. In 2609 of the instances the contraction is nontrivial. Run it with `python gh_classes.py` in `sim/` (NetworkX needed).
 
-## 6. Lean
+## 7. Lean
 
 [`lean/StCutClasses.lean`](lean/StCutClasses.lean), with [`lean/StCutClassesAxioms.lean`](lean/StCutClassesAxioms.lean) and its output in [`lean/axioms.txt`](lean/axioms.txt). A rooted tree is given by a root, a parent map and a depth that drops along every parent edge; the side of the edge from v to its parent is the set of vertices below v, and v is light if the weight of the ordered pairs leaving its side is below k. The parts are the fibres of rep, where rep u is the first vertex on the way from u to the root that is the root or light.
 
@@ -73,13 +82,13 @@ For a Gomory-Hu tree the weight of a side equals the weight of its tree edge, so
 
 Lean 4 v4.36.0-rc1, Mathlib rev d875a8de5222f62cf1c2fafc7984588adadc990a.
 
-## 7. Limits
+## 8. Limits
 
 - Memory is classical memory readable in superposition, with unit cost per access, as in [1].
 - The weights are integers polynomial in n, as required by [3] and [5].
-- The output is the value and a shore of a minimum cut, not a maximum flow of G.
+- Theorem 1 outputs the value and a shore of a minimum cut, not a maximum flow of G; Theorem 2 outputs a flow but is below n² on dense graphs only for f ≤ n^{1−δ}.
 - On simple graphs the query bound Õ(n^{3/2}) of [7] stays below the time bound here.
-- Not formalized: the algorithm, its correctness and time analysis, and the properties of Gomory-Hu trees; Lean covers Lemma 1 on a given rooted tree.
+- Not formalized: the algorithms, their correctness and time analysis, and the properties of Gomory-Hu trees; Lean covers Lemma 1 on a given rooted tree.
 
 ## References
 
@@ -92,6 +101,7 @@ Lean 4 v4.36.0-rc1, Mathlib rev d875a8de5222f62cf1c2fafc7984588adadc990a.
 7. T. Lu, R. Ren, S. Liu. Tight quantum query bounds for minimum cut and multicut on dense graphs. arXiv:2611.17845.
 8. D. D. Sleator, R. E. Tarjan. A data structure for dynamic trees. Journal of Computer and System Sciences, 1983.
 9. C. Dürr, P. Høyer. A quantum algorithm for finding the minimum. arXiv:quant-ph/9607014.
+10. Small cuts and flows with adjacency-array queries. [`laif/small-cuts-array-queries`](../small-cuts-array-queries/), 21 Nov 2026.
 
 ## Use of AI
 
