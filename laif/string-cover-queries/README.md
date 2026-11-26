@@ -119,7 +119,7 @@ The fitted exponents at n ≤ 2¹⁸ are 0.36 to 0.87. The 0.36 is an artefact o
 
 ## 10. Formal verification
 
-`lean/` builds with `lake build` (Lean 4 v4.36.0-rc1, Mathlib `d875a8de`), with no `sorry` and no `axiom` declaration. `lake env lean Covers/Axioms.lean` prints the axioms of 73 theorems: only `propext`, `Classical.choice` and `Quot.sound`, and subsets of those.
+`lean/` builds with `lake build` (Lean 4 v4.36.0-rc1, Mathlib `d875a8de`), with no `sorry` and no `axiom` declaration. `lake env lean Covers/Axioms.lean` prints the axioms of 73 theorems: only `propext`, `Classical.choice` and `Quot.sound`, and subsets of those. Its output is in [`lean/axioms.txt`](lean/axioms.txt).
 
 | Part | Theorems |
 |---|---|

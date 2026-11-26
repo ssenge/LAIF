@@ -139,7 +139,7 @@ These runs are weaker than they look. In `scaling.log` the family `chain` has 0 
 
 ## 8. Formal verification
 
-`lean/` builds with `lake build` (Lean 4 v4.36.0-rc1, Mathlib `d875a8de`), with no `sorry` and no `axiom` declaration. `lake env lean Arborescence/Axioms.lean` prints the axioms of 36 theorems: only `propext`, `Classical.choice` and `Quot.sound`.
+`lean/` builds with `lake build` (Lean 4 v4.36.0-rc1, Mathlib `d875a8de`), with no `sorry` and no `axiom` declaration. `lake env lean Arborescence/Axioms.lean` prints the axioms of 36 theorems: only `propext`, `Classical.choice` and `Quot.sound`. Its output is in [`lean/axioms.txt`](lean/axioms.txt).
 
 | Part | Theorems |
 |---|---|

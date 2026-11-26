@@ -119,7 +119,7 @@ This is a natural pair of recognition problems where a quadratic classical cost 
 
 ## 9. Formal verification
 
-`lean/` builds with `lake build` (Lean 4 v4.36.0-rc1, Mathlib `d875a8de`), with no `sorry`, `axiom` or `native_decide` in the sources. `lake env lean GraphClasses/Axioms.lean` prints the axioms of 49 theorems: only `propext`, `Classical.choice` and `Quot.sound`, and subsets of those.
+`lean/` builds with `lake build` (Lean 4 v4.36.0-rc1, Mathlib `d875a8de`), with no `sorry`, `axiom` or `native_decide` in the sources. `lake env lean GraphClasses/Axioms.lean` prints the axioms of 49 theorems: only `propext`, `Classical.choice` and `Quot.sound`, and subsets of those. Its output is in [`lean/axioms.txt`](lean/axioms.txt).
 
 | Part | Theorems | Hypotheses |
 |---|---|---|

@@ -136,7 +136,7 @@ Totally monotone search is a standard classical tool (SMAWK is used for all-fart
 
 ## 9. Formal verification
 
-`lean/` builds with `lake build` (Lean 4 v4.36.0-rc1, Mathlib `d875a8de`), with no `sorry`. `lake env lean Monge/Axioms.lean` prints the axioms of 45 theorems: only `propext`, `Classical.choice` and `Quot.sound`, and subsets of those.
+`lean/` builds with `lake build` (Lean 4 v4.36.0-rc1, Mathlib `d875a8de`), with no `sorry`. `lake env lean Monge/Axioms.lean` prints the axioms of 45 theorems: only `propext`, `Classical.choice` and `Quot.sound`, and subsets of those. Its output is in [`lean/axioms.txt`](lean/axioms.txt).
 
 **Proved outright**
 - Total monotonicity: `InverseMonge.totallyMonotone`, `TotallyMonotone.rowMax_monotone`, `TotallyMonotone.window`.
