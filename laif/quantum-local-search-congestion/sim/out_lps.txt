@@ -1,0 +1,4 @@
+X^5,13: n=2184 d=6 bipartite, lambda2=4.2497 <= 2sqrt(p)=4.4721: True; girth=8 (LPS bound 5.51); (2/3)log_p n=3.18
+T=13: NB max_v Phi over sampled walks: mean 1.402 max 1.752
+X^5,17: n=4896 d=6 bipartite, lambda2=4.3089 <= 2sqrt(p)=4.4721: True; girth=8 (LPS bound 6.18); (2/3)log_p n=3.52
+T=17: NB max_v Phi over sampled walks: mean 1.518 max 1.895

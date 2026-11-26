@@ -1,7 +1,7 @@
 """Theorem 5 input: on a d-regular graph whose eigenvalues other than ±d have |mu| <= lam < d, put
 lam_* = max(sqrt(d-1), (lam + sqrt(max(lam^2 - 4(d-1), 0)))/2). Then for every t >= 1
   A_t(x, y) <= 2 d (d-1)^{t-1} / n + 2 (t+1) lam_*^t        (W1')
-Brute-force check on non-Ramanujan regular graphs (random, circulants, prism, torus), with a mutation (lam_* replaced by sqrt(d-1)) that must fail."""
+Brute-force check on regular graphs (random, torus, and two with lam > 2 sqrt(d-1): a prism and a circulant), with a mutation (lam_* replaced by sqrt(d-1)) that must fail."""
 import numpy as np, networkx as nx
 
 def At_list(A, d, tmax):

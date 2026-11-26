@@ -1,5 +1,5 @@
-"""Checks of input (0): NB walk counts A_t by brute force against the recurrence and the Chebyshev form,
-and the entry bound (N1) on Ramanujan graphs (Petersen, Heawood, K_{4,4}, McGee-free small cages via networkx)."""
+"""Checks of the walk counts of Theorem 4: A_t by brute force against the recurrence and the Chebyshev form,
+and the entry bound (W1) on Ramanujan graphs (Petersen, Heawood, K_{4,4}, the Tutte 8-cage)."""
 import itertools, numpy as np, networkx as nx
 from numpy.polynomial import chebyshev as C
 
@@ -33,9 +33,9 @@ for name, G in [("Petersen", nx.petersen_graph()), ("Heawood", nx.heawood_graph(
         cheb = (d - 1) ** (t / 2) * (U(t, X) - U(t - 2, X) / (d - 1))
         assert np.allclose(cheb, At[t]), (name, t)                                                # Chebyshev form
         bound = 2 * d * (d - 1) ** (t - 1) / n + 2 * (t + 1) * (d - 1) ** (t / 2)
-        assert At[t].max() <= bound + 1e-9, (name, t, At[t].max(), bound)                         # (N1)
-    print(f"{name:14s} n={n:3d} d={d} girth={nx.girth(G)}: recurrence, Chebyshev form, (N1) ok")
-# mutation: (N1) without its spectral term must fail (bipartite K44)
+        assert At[t].max() <= bound + 1e-9, (name, t, At[t].max(), bound)                         # (W1)
+    print(f"{name:14s} n={n:3d} d={d} girth={nx.girth(G)}: recurrence, Chebyshev form, (W1) ok")
+# mutation: (W1) without its spectral term must fail (bipartite K44)
 G = nx.complete_bipartite_graph(4, 4); A = nx.to_numpy_array(G); At = [np.eye(8), A, A @ A - 4 * np.eye(8)]
 for t in range(3, 9): At.append(A @ At[-1] - 3 * At[-2])
 assert any(At[t].max() > 4 * 3 ** (t - 1) / 8 + 0.0 * t for t in range(2, 9)), "mutation survived"

@@ -1,0 +1,9 @@
+d=3 n=  1000 T=10 s=2: H fails in 0.530 of walks; annealed bound N^2/(nd) = 23.23
+d=3 n=  8000 T=20 s=2: H fails in 0.235 of walks; annealed bound N^2/(nd) = 10.58
+d=3 n= 64000 T=40 s=2: H fails in 0.130 of walks; annealed bound N^2/(nd) = 5.04
+d=3 n=256000 T=63 s=2: H fails in 0.105 of walks; annealed bound N^2/(nd) = 3.07
+d=4 n=  1000 T=10 s=2: H fails in 1.000 of walks; annealed bound N^2/(nd) = 352.84
+d=4 n=  8000 T=20 s=2: H fails in 0.985 of walks; annealed bound N^2/(nd) = 160.74
+d=4 n= 64000 T=40 s=2: H fails in 0.830 of walks; annealed bound N^2/(nd) = 76.59
+d=4 n=256000 T=63 s=2: H fails in 0.620 of walks; annealed bound N^2/(nd) = 46.66
+mutation (torus, girth 4) caught
