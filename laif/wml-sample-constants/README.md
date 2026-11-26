@@ -16,7 +16,7 @@ The results are also written up as a paper, [paper/main.pdf](paper/main.pdf) (so
 | Copies needed by every protocol (any number of copies, joint processing allowed), for t ≤ c/d | at least 10⁻⁴ · t²/ε [2] | at least (d−1)/4 · (1 − O(dt)) · t²/ε (Theorem 6) |
 | Copies needed by every protocol in the high-accuracy regime ε ≤ t²/(C′ d log(2d/t)), for t ≤ c | at least 10⁻⁴ · t²/ε [2] | at least (d−1)/4 · (1 − O(t)) · t²/ε (Theorem 7) |
 | Copies needed by every protocol at moderate accuracy, d ≥ 3 | at least 10⁻⁴ · t²/ε [2] | at least (d−2)(1 − e^{−t})²/(32ε) for ε ≤ (1 − e^{−t})/8; for t ≤ 1 and ε ≤ 0.079 t this is at least 0.0124 (d−2) t²/ε (Theorem 8) |
-| Copies sufficient for every L, with one program copy per step | at most (2d+3)/8 · t²/ε for WML [1, Theorem 3]; at most (d/2 + e^{1/d}) t²/ε (Theorem 2) | at most (d/4 + 1) t²/ε + 2t for ε ≤ t, by a new one-copy step (Theorem 9); its leading constant is (d−1)/4 for d = 2, 3, 4, 5 on all operators tested |
+| Copies sufficient for every L, with one program copy per step | at most (2d+3)/8 · t²/ε for WML [1, Theorem 3]; at most (d/2 + e^{1/d}) t²/ε (Theorem 2) | at most ((d+1)/4 + 1/d) t²/ε + 2t for ε ≤ t, by a new one-copy step (Theorem 9); its leading constant is (d−1)/4 for d = 2, 3, 4, 5 on all operators tested |
 
 The first three rows are about the WML protocol, as in [1, Theorem 10]. The fourth row covers the class of Theorem 4, the fifth every channel that uses one copy, and the last every protocol, for short times t ≤ c/d. For t of order one the lower bound for all protocols remains 10⁻⁴ · t²/ε [2].
 
@@ -150,14 +150,14 @@ The mechanism is universal conjugation of the program state; compare the optimal
 - A_{ac} |s⟩|a′⟩|b⟩ = δ_{aa′} (δ_{cb} |s⟩ − (Δ/2) δ_{bs} |c⟩) for a, c = 1, …, d,
 - A_J |s⟩|a⟩|b⟩ = √(Δ(1 − dΔ/4)) δ_{bs} |a⟩.
 
-Then Λ_Δ(ρ ⊗ π_L) = ρ + Δ ℒ(ρ) + Δ² E_L(ρ) exactly, with E_L(ρ) = ¼ Tr(ρK) I − (d/4) LρL† and K = L†L. Applying Λ_{t/n} n times, each time with a fresh copy, gives error at most t² e_L/n + (2/3) t³ e^{2t/n}/n² for every L with ‖L‖₂ = 1, where e_L = ½‖E_L − ℒ²/2‖⋄ ≤ (d − 1/d)‖K‖/4 + ‖K‖² ≤ d/4 + 1. Hence n = ⌈(d/4 + 1) t²/ε + 2t⌉ copies give error at most ε, for every ε ≤ t.
+Then Λ_Δ(ρ ⊗ π_L) = ρ + Δ ℒ(ρ) + Δ² E_L(ρ) exactly, with E_L(ρ) = ¼ Tr(ρK) I − (d/4) LρL† and K = L†L. Applying Λ_{t/n} n times, each time with a fresh copy, gives error at most t² e_L/n + (2/3) t³ e^{2t/n}/n² for every L with ‖L‖₂ = 1, where e_L = ½‖E_L − ℒ²/2‖⋄ ≤ (d+1)/4 + 1/d. Hence n = ⌈((d+1)/4 + 1/d) t²/ε + 2t⌉ copies give error at most ε, for every ε ≤ t.
 
 Proof sketch.
 1. **Kraus form.** With the rows r_a = Σ_b L_{ab} ⟨b|, the operators A_{ac} act on ρ ⊗ π_L as L_{ac} I − (Δ/2)|c⟩ r_a. Summing over a and c gives Tr(K) ρ − (Δ/2){K, ρ} + (Δ²/4) Tr(ρK) I, since Σ_a r_a† r_a = K. The jump operator adds (Δ − dΔ²/4) LρL†, and Tr K = 1. Trace preservation follows from the trace of the expansion.
-2. **Error map.** Write E_L − ℒ²/2 = Φ₁ − ℒ²/2 with Φ₁(ρ) = ¼(Tr(ρK) I − d LρL†). The Kraus operators |i⟩ r_a of Tr(ρK) I, rotated by a unitary on the index (i, a) that takes the unit vector δ_{ia}/√d to the first basis vector, contain L/√d, so Tr(ρK) I − LρL†/d is completely positive. Hence Φ₁ is the difference of the completely positive maps ¼(Tr(ρK) I − LρL†/d) and ¼(d − 1/d) LρL†, both with adjoint value ¼(d − 1/d) K at the identity, and ½‖Φ₁‖⋄ ≤ (d − 1/d)‖K‖/4. Also ‖ℒ‖⋄ ≤ 2‖K‖.
-3. **Steps.** ½‖Λ_Δ(· ⊗ π_L) − e^{Δℒ}‖⋄ ≤ Δ² e_L + ½ Σ_{j≥3} (2Δ)^j/j!, and the errors of the n steps add. With n ≥ 2t the remainder is at most (2e/3) t³/n², which is at most 2tε/n when n ≥ (d/4 + 1)t²/ε; and ε ≤ t gives n ≥ dt/4. ∎
+2. **Error map.** With J(ρ) = LρL†, Z = LK + KL and y = 1/8, put Y(ρ) = yρ + ZρZ†/(4d) + K²ρK²/(64y), P(ρ) = ¼ Tr(ρK) I + Y(ρ) and N = (d/4) J + ℒ²/2 + Y, so that E_L − ℒ²/2 = P − N. Expanding ℒ²/2 = ½ L²ρL†² + ¼ KρK − ¼(ZρL† + LρZ†) + ⅛(K²ρ + ρK²) gives N(ρ) = (aL − bZ)ρ(aL − bZ)† + (√y I + βK²)ρ(√y I + βK²)† + ½ L²ρL†² + ¼ KρK with a = √d/2, b = 1/(2√d) and β = 1/(8√y), so N is completely positive, and so is P. Since E_L − ℒ²/2 annihilates the trace, P*(I) = N*(I) and ½‖E_L − ℒ²/2‖⋄ ≤ ‖P*(I)‖ = ‖(d/4) K + yI + Z†Z/(4d) + K⁴/(64y)‖ ≤ d/4 + 1/8 + 1/d + 1/8, using ‖K‖ ≤ ‖L‖₂² = 1 and ‖Z‖ ≤ 2. Also ‖ℒ‖⋄ ≤ 2‖K‖ ≤ 2.
+3. **Steps.** ½‖Λ_Δ(· ⊗ π_L) − e^{Δℒ}‖⋄ ≤ Δ² e_L + ½ Σ_{j≥3} (2Δ)^j/j!, and the errors of the n steps add. With n ≥ 2t the remainder is at most (2e/3) t³/n², which is at most 2tε/n when n ≥ ((d+1)/4 + 1/d)t²/ε; and ε ≤ t gives n ≥ dt/4. ∎
 
-The constant d/4 + 1 is half of the constant d/2 + e^{1/d} of Theorem 2 for WML, and with Theorem 7 the optimal leading constant for every protocol lies between (d−1)/4 and d/4 + 1 in the regime where both apply: t ≤ c and ε ≤ min{t, t²/(C′ d log(2d/t))}. On the step itself the leading constant is attained at L = |0⟩⟨0| with input |0⟩⟨0|, where E_L(|0⟩⟨0|) = ¼(I − d|0⟩⟨0|) has trace distance (d−1)/4 from 0 and ℒ² vanishes. Numerically, sup_L e_L = (d−1)/4 exactly: a cutting-plane search over L with an exact semidefinite program for the diamond norm gives 0.25000, 0.50000 and 0.75000 for d = 2, 3, 4, and structured and random operators give at most 1.00000 for d = 5. At leading order and for d = 2, 3, the minimax over all covariant one-copy steps with the forced first-order term is also (d−1)/4.
+The constant (d+1)/4 + 1/d is about half of the constant d/2 + e^{1/d} of Theorem 2 for WML, and with Theorem 7 the optimal leading constant for every protocol lies between (d−1)/4 and (d+1)/4 + 1/d in the regime where both apply: t ≤ c and ε ≤ min{t, t²/(C′ d log(2d/t))}. On the step itself the leading constant is attained at L = |0⟩⟨0| with input |0⟩⟨0|, where E_L(|0⟩⟨0|) = ¼(I − d|0⟩⟨0|) has trace distance (d−1)/4 from 0 and ℒ² vanishes. Numerically, sup_L e_L = (d−1)/4 exactly: a cutting-plane search over L with an exact semidefinite program for the diamond norm gives 0.25000, 0.50000 and 0.75000 for d = 2, 3, 4, and structured and random operators give at most 1.00000 for d = 5. At leading order and for d = 2, 3, the minimax over all covariant one-copy steps with the forced first-order term is also (d−1)/4.
 
 ## Scope
 
@@ -180,7 +180,7 @@ The constant d/4 + 1 is half of the constant d/2 + e^{1/d} of Theorem 2 for WML,
 - `sim/thm6_check.py`: the derivative identities, the trigonometric degree and the test vectors of Theorem 6, and the 2 × 2 bound on the collective WML channel, with asserts.
 - `sim/thm7_check.py`: the spin decomposition of Theorem 7 (Hilbert-Schmidt norms exactly for n ≤ 100, trace-norm tails beyond k₀ for n ≤ 2000) and the degree 2k of each spin part under a random channel, with asserts.
 - `sim/thm8_check.py`: the program convention, the target coherence and the dual certificate of Theorem 8, with asserts.
-- `sim/step_kraus.py`, `sim/step_check.py`: the Kraus operators of Theorem 9, its exact expansion, the bound on e_L, and the n-step error, with asserts.
+- `sim/step_kraus.py`, `sim/step_check.py`: the Kraus operators of Theorem 9, its exact expansion, and the n-step error, with asserts; `sim/step_split.py`: the decomposition P − N of step 2, complete positivity of both maps and the bound on P*(I), with asserts.
 - `lean/WmlCoefficients/Basic.lean`, `lean/ConjugationBound/Basic.lean`: the Lean proofs of the scalar steps of Theorems 2 and 8; `lean/Axioms.lean` prints the axioms of each theorem.
 
 ## References
