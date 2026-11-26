@@ -5,7 +5,7 @@
 ## Problem
 
 An unknown quantum channel N maps d_in × d_in matrices to d_out × d_out matrices. The tester must decide
-whether N equals the completely depolarizing channel 𝒟(ρ) = Tr(ρ) I/d_out or satisfies ‖N − 𝒟‖_⋄ > ε,
+whether N equals the completely depolarizing channel 𝒟(ρ) = Tr(ρ) I/d_out or satisfies ‖N − 𝒟‖_⋄ ≥ ε,
 with success probability at least 2/3 in both cases. An *incoherent ancilla-free* strategy uses the channel
 once per step: it prepares an input state ρ_t on C^{d_in}, applies N, measures the output, and may choose
 ρ_t and the measurement from all earlier outcomes (adaptive).
@@ -19,7 +19,7 @@ once per step: it prepares an input state ρ_t on C^{d_in}, applies N, measures 
 
 **Theorem 1.** There are absolute constants c, C₀, d₀ > 0 such that the following holds for 0 < ε ≤ 1/100,
 d_out ≥ d₀ and d_out ≥ C₀ ln(d_in/ε). Every adaptive, incoherent, ancilla-free tester for 𝒟 against
-‖N − 𝒟‖_⋄ > ε uses at least
+‖N − 𝒟‖_⋄ ≥ ε uses at least
 
     n ≥ c · d_in² d_out^{3/2} / ε²
 
@@ -27,6 +27,8 @@ channel uses. The proof gives c = 7·10⁻⁹, d₀ = 10⁴, C₀ = 100 (not opt
 
 With [1, Thm 4.4] this gives Θ(d_in² d_out^{3/2}/ε²) for ancilla-free strategies, adaptive or not, and
 removes the logarithmic factor of the non-adaptive lower bound for them. For d_in = 1 it is the bound of [2].
+The alternatives are ε-far already on a pure input without ancilla, ‖N(φφ†) − 𝒟(φφ†)‖₁ ≥ ε, so the same bound
+holds for testing in the input-wise trace distance, where the tester of [1, Thm 4.4] also applies.
 
 **On the condition d_out ≥ C₀ ln(d_in/ε).** The proof treats trees with n ≤ e^{d_out/20} steps. This is no loss:
 under the condition, c d_in² d_out^{3/2}/ε² ≤ e^{d_out/20}, so a tester below the bound has fewer than
@@ -111,9 +113,12 @@ conditioned on U. On U every factor lies in [1/2, 3/2], E_ν u_i = 0 by symmetry
 |u| ≤ 1/2, so Jensen gives L̄ ≥ P(U) exp(−Σ E_ν u_i²) ≥ P(U) e^{−2ε²B/d} ≥ ½ e^{−2δ√d}, using
 E(z†Gz)² = (d−1)/d². With P(U^c)^{1/2} ≤ 3e^{−0.56d} the claim follows. ∎
 
+This comparison hints at a possible gap in the ratio step of [2, Lemma 6.13], where the range [1/2, 3/2] of the
+factors, valid for G ∈ U, is applied to the untruncated likelihood. Lemmas 3 and 4 give that step here.
+
 **Lemma 4 (one removed index).** Let z = x_{≤t} with ‖K(z)‖_F, ‖K₂(z)‖_F ≤ A, R ⊆ [t] with |R| ≤ D + 1 where D = ⌈ln(4 + d^{1/4})⌉,
 S = [t] ∖ R and i ∈ S. Then ‖K(z^S)‖_F, ‖K₂(z^S)‖_F ≤ A + d(D+1) ≤ 1.01A, and
-r_i := L(z^{S∖i})/L(z^S) satisfies |r_i − 1| ≤ 11εc_i + 3η.
+r_i := L(z^{S∖i})/L(z^S) satisfies |r_i − 1| ≤ 11εc_i + 5η.
 
 *Proof.* ‖dP_j − I‖_F ≤ d, and d(D+1) ≤ 0.01A as A/d = d^{3/4}/ε ≥ 100(D+1) for d ≥ 10⁴. On U the factors of
 L̄ are positive and the factor of index i lies in [1 − 5εc_i, 1 + 5εc_i], so L̄(z^S)/L̄(z^{S∖i}) lies there too.
@@ -125,9 +130,10 @@ Lemma 3 applies to z^S and z^{S∖i}, and |η| ≤ 10⁻¹⁰⁰⁰. ∎
 pairwise inner products are nonnegative. With H_S = H(z^S) = K(z^S) + Σ_{j∈S} c_j(r_j − 1)(dP_j − I) and
 Σ_{j∈S} c_j²dP_j = K₂(z^S) + (Σ c_j²)I, this gives, for every set S of Lemma 4 with |R| ≤ D,
 
-    ‖H_S‖_F ≤ ‖K(z^S)‖_F + 11ε(‖K₂(z^S)‖_F + 2√d B) + 3ηdn ≤ (3.3 + 22δd^{1/4})A =: ξ₀,
+    ‖H_S‖_F ≤ ‖K(z^S)‖_F + 11ε(‖K₂(z^S)‖_F + 2√d B) + 5ηdn ≤ (3.3 + 22δd^{1/4})A =: ξ₀,
 
-because 22ε√dB/A = 22δd^{1/4} and 3ηdn ≤ A for n ≤ e^{d/20}. If t < D, then directly ‖H‖_F ≤ 2dD ≤ 3A.
+because 22ε√dB/A = 22δd^{1/4} and 5ηdn ≤ A for n ≤ e^{d/20}. If t < D, every S ⊆ [t] misses fewer than D indices, so Lemma 4 gives r_i ≤ 2
+and directly ‖H‖_F ≤ 2dD ≤ 3A.
 Otherwise induct on a = 0, …, D over the sets S with |R| = D − a: suppose ‖H_{S'}‖_F ≤ ξ_{a−1} whenever
 |R'| = D − a + 1. For i ∈ S, Lemma 1 gives |L(z^S)/L(z^{S∖i}) − 1| ≤ ε²c_iξ_{a−1}/d² ≤ 1/2, hence
 |r_i − 1| ≤ 2ε²c_iξ_{a−1}/d². The deviation is now proportional to c_i², and
@@ -137,7 +143,7 @@ Otherwise induct on a = 0, …, D over the sets S with |R| = D − a: suppose �
 So ξ_a = 1.01A + ξ_{a−1}/e, and ξ_D ≤ 1.6A + e^{−D}ξ₀ ≤ 3A by the choice of D. The case a = D is S = [t]. ∎
 
 The weights are the point of Lemma 5: the deviation of r_i is proportional to c_i, so only Σc_i² ≤ B enters.
-The sum Σc_i, which can be as large as n, appears only in the term 3ηdn.
+The sum Σc_i, which can be as large as n, appears only in the term 5ηdn.
 
 **Proof of Theorem 2.** Let Φ_t = L(x_{≤t}) and τ' the first t at which the condition of 𝒢 fails, and
 Ψ_t = Φ_{t∧τ'}. By Lemma 1 and tr H = 0, E[Ψ_t/Ψ_{t−1} | x_{<t}] = 1, and since Σ_xω_x(x†Hx)² ≤ ‖H‖_F²/d,
