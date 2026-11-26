@@ -6,9 +6,9 @@ A Gomory-Hu tree of an undirected graph G on n vertices is a weighted tree on th
 
 **Theorem 1 (adjacency array).** A bounded-error quantum algorithm outputs a Gomory-Hu tree of G with
 
-Õ(m √Δ / δ)
+Õ(m √Δ / δ) and Õ(√(mn) · Δ^{1/4})
 
-adjacency-array queries. The bound counts queries only; the offline computation between queries is not bounded. This is Õ(√(mn)) when Δ = O(δ), and Õ(n^{3/2}/ε) when δ ≥ εn. Because a Gomory-Hu tree gives the global minimum cut, the lower bound of [2] for (n/3 − 1)-regular graphs makes the bound tight up to polylogarithmic factors there: Gomory-Hu trees of dense near-regular graphs cost Θ̃(n^{3/2}) queries, the same as one global minimum cut.
+adjacency-array queries, whichever is smaller. More generally, for every threshold D ≥ √Δ the algorithm uses Õ(vol(L_D) + √(mn) + m √Δ / D) queries, where vol(L_D) is the sum of the degrees below D. The bound counts queries only; the offline computation between queries is not bounded. This is Õ(√(mn)) when Δ = O(δ), Õ(n^{3/2}/ε) when δ ≥ εn, and Õ(n^{7/4}) on every graph with n vertices, the exponent of the classical cut-query algorithm of [3]. Because a Gomory-Hu tree gives the global minimum cut, the lower bound of [2] for (n/3 − 1)-regular graphs makes the bound tight up to polylogarithmic factors there: Gomory-Hu trees of dense near-regular graphs cost Θ̃(n^{3/2}) queries, the same as one global minimum cut.
 
 **Theorem 2 (adjacency matrix).** Every bounded-error quantum algorithm that outputs all values λ(u, v) from the adjacency matrix makes Ω(n²) queries. The same holds for the values λ(r, v) from a single fixed source r, and therefore for Gomory-Hu trees. The bound holds on graphs with at least n²/16 edges in which every value equals min(deg u, deg v), so these problems cost Θ(n²) matrix queries.
 
@@ -18,7 +18,7 @@ Status: Claim for both theorems. The lemmas, the star model and the hard family 
 
 | Problem | Previous best bound | This work |
 |---|---|---|
-| Gomory-Hu tree, adjacency array, simple graphs | O(m) by reading the graph; no quantum algorithm known to us; Ω(n^{3/2}) on dense graphs from global minimum cut [2]; Õ(n^{7/4}) classical cut queries, in the cut-query model [3] | Õ(m√Δ/δ); Θ̃(n^{3/2}) on dense near-regular graphs |
+| Gomory-Hu tree, adjacency array, simple graphs | O(m) by reading the graph; no quantum algorithm known to us; Ω(n^{3/2}) on dense graphs from global minimum cut [2]; Õ(n^{7/4}) classical cut queries, in the cut-query model [3] | Õ(min(m√Δ/δ, √(mn) Δ^{1/4})), so Õ(n^{7/4}) on every graph; Θ̃(n^{3/2}) on dense near-regular graphs |
 | All-pairs and single-source minimum cut values, Gomory-Hu tree, adjacency matrix | O(n²) by reading the matrix; no quantum lower bound for all pairs known to us | Ω(n²), so Θ(n²), on dense graphs |
 
 ## Theorem 1: the algorithm
@@ -46,7 +46,7 @@ Let φ = 200 Δ/δ² and fix the constants below.
 
 *Cost.* Let W = Σ_x out_x, which counts each edge from both endpoints, with out_x = d_x for x ∈ Z_C. Then W ≤ Σ_C (|∂_G C| + 2 vol(Z_C)) ≤ 5.4 Σ_C |∂_G C|, and Σ_C |∂_G C| is at most 2/0.9 times the inter-cluster weight of H, which is O(φ m log n). So W = O(Δ m log n/δ²), and by Cauchy-Schwarz step 4 costs Õ(√(Σ_x d_x · W) + √(mn)) = Õ(m √Δ/δ). The other steps cost Õ(√(mn)) and O(n log n), and m √Δ/δ ≥ √(mn/2) always. If φ ≥ 1, the bound is Ω(m) and the algorithm reads the graph instead.
 
-The degree ratio Δ/δ is the price of the argument. For graphs with very different degrees, for example when a single vertex has degree below √Δ, Theorem 1 gives no improvement over reading the graph.
+*Low degrees.* For a threshold D ≥ √Δ, let L_D be the vertices of degree below D. The algorithm reads all their neighbours, vol(L_D) queries, and runs steps 2 to 5 on V ∖ L_D: the decomposition of step 2 is a decomposition of the vertex set V ∖ L_D, still with the full weighted degrees as volumes, and φ = 200 Δ/D². Every set X in the proof of Lemma 3 now lies in V ∖ L_D, so |X| ≤ vol_G(X)/D < 0.01 D ≤ 0.01 d_x, and the proof goes through with neighbours in L_D counted as outside C. Edges at L_D are known, so step 4 searches only for neighbours outside the core and outside L_D, and the vertices of Z_C, whose volume is at most 2.2 (|∂C| + e(C, L_D)), are read in full. The cost is Õ(vol(L_D) + √(mn) + m √Δ/D + Δ m/D²), and the last term is at most the third for D ≥ √Δ. With D = δ this is the first bound. Since vol(L_D) ≤ nD, the choice D = (m √Δ/n)^{1/2} gives Õ(√(mn) Δ^{1/4}) whenever m ≥ n √Δ; for smaller m this exceeds m, and reading the graph is cheaper.
 
 ## Theorem 2: the hard family
 
