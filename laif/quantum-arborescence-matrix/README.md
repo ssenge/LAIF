@@ -4,9 +4,11 @@
 
 ## Result
 
-**Theorem 1.** Let G be a digraph on n vertices, given by its weighted adjacency matrix (entry W[u][v] is the weight of the arc u→v, or ∞ if there is no arc), and fix a root r. A quantum algorithm computes a minimum-weight spanning arborescence rooted at r, or reports that none exists, with Õ(n^{3/2}) queries and success probability at least 2/3. Precisely, O(n^{3/2} log^{7/2} n) queries suffice.
+**Theorem 1.** Let G be a digraph on n vertices, given by its weighted adjacency matrix (entry W[u][v] is the weight of the arc u→v, or ∞ if there is no arc), and fix a root r. A quantum algorithm computes a minimum-weight spanning arborescence rooted at r, or reports that none exists, with Õ(n^{3/2}) queries and success probability at least 2/3. Precisely, O(n^{3/2} log^{5/2} n) queries suffice.
 
-Theorem 1 is tight up to the polylogarithmic factor. On a symmetric matrix, every spanning tree oriented away from r is an arborescence, so the minimum arborescence has the weight of a minimum spanning tree, and the bound Ω(n^{3/2}) for minimum spanning trees in the matrix model [1] applies.
+**Theorem 2.** If G is instead given in the adjacency array model of [1] with in-arcs (the in-degrees are known, and a query (v, i) returns the i-th arc entering v with its weight) and has m ≥ n − 1 arcs, the same algorithm computes a minimum-weight spanning arborescence with Õ(√(nm)) queries, precisely O(√(nm) log^{5/2} n).
+
+Theorems 1 and 2 are tight up to polylogarithmic factors. On a symmetric matrix, every spanning tree oriented away from r is an arborescence, so the minimum arborescence has the weight of a minimum spanning tree. The bounds Ω(n^{3/2}) in the matrix model and Ω(√(nm)) in the adjacency array model for minimum spanning trees [1] apply.
 
 ### Before and after
 
@@ -14,6 +16,8 @@ Theorem 1 is tight up to the polylogarithmic factor. On a symmetric matrix, ever
 |---|---|---|
 | Minimum spanning tree, undirected | Θ(n^{3/2}) [1] | |
 | Minimum-weight arborescence (directed minimum spanning tree) | O(n²) by reading the matrix and running the algorithm of [2, 3]; Ω(n^{3/2}), implied by [1] | Õ(n^{3/2}), Theorem 1 |
+| Minimum spanning tree, undirected, adjacency arrays | Θ(√(nm)) [1] | |
+| Minimum-weight arborescence, in-adjacency arrays | O(m) by reading the lists; Ω(√(nm)), implied by [1] | Õ(√(nm)), Theorem 2 |
 
 For comparison, a directed minimum spanning tree in the Quantum CONGEST-CLIQUE model is given in [6]; that is a different model with a different cost measure.
 
@@ -40,12 +44,11 @@ A cycle of several supernodes is merged by absorbing them one by one into the la
 
 **Batches.** A group g with column set C, of size s, hands out rows in increasing order of key_C, skipping the rows inside its supernode X, in batches of sizes 1, 2, 4, and so on. A batch of b rows is the b rows of least key_C among the rows outside X that g has not handed out yet.
 
-- It is found with the k-minimum finding of [1] over the n rows. Handing out vertices in doubling batches of least keys is also how the single-source shortest path algorithm of [1] proceeds. Each key is evaluated by minimum finding over s columns.
-- The cost is O(√(n b s)) queries per batch, up to a logarithmic factor that reduces the error of the inner calls.
+- It is found by the search for the b smallest values of distinct types [1, Theorem 6], over the N = ns entries (u, v) with v ∈ C. The value of an entry is W[u][v] − off_g[v], with the frozen offsets, and its type is the row u. Entries in rows inside X or in rows already handed out get the value ∞, which costs no query. The search returns, for each of the b rows, its least entry and the value.
+- The cost is O(√(n s b)) queries per batch, with bounded error. One query gives one value, so there are no inner subroutines. Handing out vertices in doubling batches of least keys is also how the single-source shortest path algorithm of [1] proceeds.
 - Rows of the current batch that have joined X are dropped. The head of g is the first row that remains, and a new batch is fetched only when the current one is empty. A fetch that comes back empty is charged like a batch, and after it g hands out nothing more.
-- The value key_C of a new head is found by minimum finding over the s columns, at a cost of O(√s) per head.
 - Ties are broken by the pair (key, row index), so every order is strict.
-- The pick of X compares the heads of its groups by key_C(u) − Δ_g, which is classical work. It then finds the column of the chosen row by minimum finding over C, at a cost of O(√n), and reads one entry.
+- The pick of X compares the heads of its groups by key_C(u) − Δ_g. This is classical work, since each head comes with its entry and value.
 
 **Correctness.** Each batch is a prefix of the order by key_C among the rows outside X, and that order is fixed (Lemma 1). So the head of g is the row of least key_C outside X, and the least head over the groups gives the arc picked by [2, 3].
 
@@ -76,11 +79,21 @@ The consumed row u of a pick stays in its batch. Either the path is finished, an
 - Σ_g s_g = O(n log n), by Lemma 2;
 - Σ_g h_g ≤ 2 Σ_g d_g + #groups = O(n log² n), by Lemmas 2 and 3.
 
-So the batches cost O(n^{3/2} log^{3/2} n) queries, counted with exact subroutines. The values of new heads cost Σ_g h_g √(s_g) ≤ Σ_g √(n s_g h_g), and the 2n − 2 picks add O(n^{3/2}).
+So the batches cost O(n^{3/2} log^{3/2} n) queries, counted with error-free searches. The picks need no further queries.
 
-Errors. There are O(n log² n) batches and head evaluations and O(n) picks. Each outer call is repeated O(log n) times and the majority answer is taken; the answer is unique, since the order is strict. This brings the error of each outer call to n^{−3}. Inside an outer call, every inner minimum finding is reduced to error n^{−c} for a constant c large enough that the at most n² inner calls change the final state by at most n^{−3} in norm. Both reductions cost a factor O(log n), so the total is O(n^{3/2} log^{7/2} n), and the failure probability is O(n^{−1}).
+Errors. There are O(n log² n) batch searches, counting the empty ones. Each is repeated O(log n) times and the majority answer is taken. The answer is unique, since the order is strict, and the error of each search drops to n^{−3}. The total is O(n^{3/2} log^{5/2} n), and the failure probability is O(n^{−1}).
 
 If no group of the head X has a row of finite key left, no finite arc enters X. Then X does not contain r, no vertex of X is reachable from r, and no arborescence exists. ∎
+
+## Adjacency arrays
+
+*Proof of Theorem 2.* The groups, offsets and picks are the same as in Theorem 1. Only the batch search changes. For a group g with column set C, let D_g be the number of arcs entering C. A batch of b rows is now found among these D_g arcs: the b arcs of least reduced weight with pairwise distinct tails outside X, excluding the tails handed out before. This is again the search for the b smallest values of distinct types [1, Theorem 6], now over N = D_g arcs, with the tail as the type. It costs O(√(D_g b)) queries.
+
+Lemmas 2 to 4 count rows and groups, so they hold unchanged. In place of Σ_g s_g, the sum Σ_g D_g appears. By Lemma 2, every arc enters a vertex that lies in at most 2⌊log₂ n⌋ + 1 groups, so Σ_g D_g ≤ m(2 log₂ n + 1). Then Cauchy-Schwarz gives
+
+Σ_g √(D_g h_g) ≤ √(Σ_g D_g · Σ_g h_g) = O(√(m log n · n log² n)) = O(√(nm) log^{3/2} n).
+
+The error reduction is the same as in Theorem 1. ∎
 
 ## Scripts
 
@@ -94,7 +107,8 @@ All scripts are in `sim/` and run with Python 3 and networkx, using fixed seeds.
   - h_g ≤ 2d_g + 1 for every group (Lemma 4).
   - At most 2n − 2 picks, and "no arborescence" exactly when some vertex is unreachable from r.
 
-  The cost counts the batches, the empty fetches, the values of new heads and the picks, each with one factor log₂ n + 1. Up to n = 257, the cost divided by n^{3/2}(log₂ n + 1)² stays below 1.41 on every family.
+  The cost counts the batches and the empty fetches, each with one factor log₂ n + 1. Up to n = 257, the cost divided by n^{3/2}(log₂ n + 1)² stays below 1.21 on every family.
+- `list_cost.py`: the algorithm with in-adjacency arrays, where a batch from group g costs √(D_g b). It runs random sparse digraphs with a planted arborescence, of average in-degree 4 to 64, and the chain family of the matrix model thinned to in-degree 8 and 32, up to n = 257. The weight is asserted against networkx, every pick is checked by brute force for n ≤ 65, and the lemma asserts hold. The cost divided by √(nm)(log₂ n + 1)² stays below 0.8.
 - `grouped_cost.py`, `hard_families.py`, `big_n.py`, `hill_adv.py`: a variant with plain binomial merging, block chains up to n = 513, and a hill-climbing search for weight matrices of high cost (n ≤ 96). On these, the cost stays near n^{3/2} log² n.
 
 ## Lean
@@ -113,7 +127,7 @@ The folder `lean/` holds the library `ArbGroups` (Lean 4, Mathlib revision d875a
 
 ## Not formalized
 
-Theorem 1 and the reduction of the algorithm to these counting lemmas are a written proof (Claim): the order invariance, which events change a group, and the link of drops to absorptions. The k-minimum finding of [1], its composition with inner minimum finding, and the correctness of the contraction algorithm [2, 3, 4] are used as known results.
+Theorem 1 and the reduction of the algorithm to these counting lemmas are a written proof (Claim): the order invariance, which events change a group, and the link of drops to absorptions. The search for the b smallest values of distinct types [1, Theorem 6] and the correctness of the contraction algorithm [2, 3, 4] are used as known results.
 
 ## References
 

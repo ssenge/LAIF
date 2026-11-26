@@ -1,0 +1,25 @@
+random d=  4 n=  65 m=   312 cost/(sqrt(nm) L^2)= 0.147
+random d=  4 n= 129 m=   692 cost/(sqrt(nm) L^2)= 0.313
+random d=  4 n= 257 m=  1278 cost/(sqrt(nm) L^2)= 0.116
+random d= 16 n=  65 m=  1048 cost/(sqrt(nm) L^2)= 0.282
+random d= 16 n= 129 m=  2157 cost/(sqrt(nm) L^2)= 0.200
+random d= 16 n= 257 m=  4352 cost/(sqrt(nm) L^2)= 0.259
+random d= 64 n=  65 m=  4021 cost/(sqrt(nm) L^2)= 0.218
+random d= 64 n= 129 m=  8210 cost/(sqrt(nm) L^2)= 0.201
+random d= 64 n= 257 m= 16398 cost/(sqrt(nm) L^2)= 0.300
+chain  d=  4 n=  65 m=   317 cost/(sqrt(nm) L^2)= 0.139
+chain  d=  4 n= 129 m=   660 cost/(sqrt(nm) L^2)= 0.122
+chain  d=  4 n= 257 m=  1303 cost/(sqrt(nm) L^2)= 0.108
+chain  d= 16 n=  65 m=  1062 cost/(sqrt(nm) L^2)= 0.140
+chain  d= 16 n= 129 m=  2153 cost/(sqrt(nm) L^2)= 0.124
+chain  d= 16 n= 257 m=  4385 cost/(sqrt(nm) L^2)= 0.110
+chain  d= 64 n=  65 m=  4026 cost/(sqrt(nm) L^2)= 0.141
+chain  d= 64 n= 129 m=  8100 cost/(sqrt(nm) L^2)= 0.124
+chain  d= 64 n= 257 m= 16647 cost/(sqrt(nm) L^2)= 0.111
+thinned chain d=  8 n=  65 m=   635 cost/(sqrt(nm) L^2)= 0.725 groups/vertex=8
+thinned chain d=  8 n= 129 m=  1300 cost/(sqrt(nm) L^2)= 0.672 groups/vertex=9
+thinned chain d=  8 n= 257 m=  2539 cost/(sqrt(nm) L^2)= 0.695 groups/vertex=10
+thinned chain d= 32 n=  65 m=  2121 cost/(sqrt(nm) L^2)= 0.789 groups/vertex=8
+thinned chain d= 32 n= 129 m=  4280 cost/(sqrt(nm) L^2)= 0.764 groups/vertex=9
+thinned chain d= 32 n= 257 m=  8620 cost/(sqrt(nm) L^2)= 0.729 groups/vertex=10
+all invariants hold

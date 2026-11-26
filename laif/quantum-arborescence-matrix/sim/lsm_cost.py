@@ -8,7 +8,7 @@ group of A keeps its rows and batches.
 Asserts: (i) the arborescence weight equals the networkx optimum (n <= 129); (ii) every vertex lies
 in at most 2 log2 n + 2 groups over the run, so the group sizes sum to at most n (2 log2 n + 2);
 (iii) every row is deleted from batches at most L log2 n times in total; (iv) every group hands
-out at most 2 (deletions in it) + 1 rows; (v) at most 2n - 1 picks.
+out at most 2 (deletions in it) + 1 rows; (v) at most 2n - 2 picks; (vi) every pick against brute force when check is set.
 Prints cost / (n^{1.5} L^2) with L = log2 n + 1, the cost of a batch of b rows from s columns
 being sqrt(n s b) L.
 """
@@ -21,11 +21,12 @@ class G:
     def __init__(s, cols, W, off, n, stats):
         s.cols = list(cols); s.delta = 0.0; s.growth = 0; s.consumed = 0; s.handed = 0; s.deleted = 0
         s.key = [min((W[u][v] - off[v] for v in s.cols if v != u), default=math.inf) for u in range(n)]
-        s.order = sorted(range(n), key=lambda u: s.key[u]); s.pos = 0; s.batch = []; s.next_b = 1; s.exhausted = False; s.last_head = None
+        s.indeg = sum(1 for v in s.cols for u in range(n) if u != v and W[u][v] < math.inf)
+        s.order = sorted(range(n), key=lambda u: s.key[u]); s.pos = 0; s.batch = []; s.next_b = 1; s.exhausted = False
         stats["size_sum"] += len(s.cols); stats["groups"].append(s)
         for v in s.cols: stats["memb"][v] += 1
 
-def run(W, r=0, check=False):
+def run(W, r=0, check=False, model="matrix"):
     n = len(W); off = [0.0] * n; L = math.log2(n) + 1
     stats = {"size_sum": 0, "groups": [], "cost": 0.0, "memb": [0] * n, "rowdel": [0] * n, "picks": 0}
     parent = list(range(n)); members = {v: [v] for v in range(n)}
@@ -38,15 +39,14 @@ def run(W, r=0, check=False):
             while g.batch and find(g.batch[0]) == X:
                 g.deleted += 1; stats["rowdel"][g.batch.pop(0)] += 1
             if g.batch:
-                if g.batch[0] != g.last_head:        # value of a new head: minimum finding over the columns
-                    stats["cost"] += math.sqrt(len(g.cols)) * L; g.last_head = g.batch[0]
                 return g.batch[0]
             if g.exhausted: return None
             b = g.next_b; got = []
             while g.pos < n and len(got) < b:
                 u = g.order[g.pos]; g.pos += 1
                 if find(u) != X and g.key[u] < math.inf: got.append(u)
-            stats["cost"] += math.sqrt(n * len(g.cols) * b) * L   # charged also when the search comes back empty
+            space = n * len(g.cols) if model == "matrix" else max(1, g.indeg)   # matrix entries, or in-arcs of C
+            stats["cost"] += math.sqrt(space * b) * L   # charged also when the search comes back empty
             if not got: g.exhausted = True; return None
             g.handed += len(got); g.batch = got; g.next_b = 2 * b
     def pick(X):
@@ -56,7 +56,7 @@ def run(W, r=0, check=False):
             if u is not None and (best is None or g.key[u] - g.delta < best[0]): best = (g.key[u] - g.delta, u, g)
         if best is None: return None
         c, u, g = best; g.consumed += 1; stats["picks"] += 1
-        stats["cost"] += math.sqrt(len(g.cols)) * L + 1          # column of the chosen row, and one entry
+        # the batch search returns the entry (u, v) and its value, so the pick costs no further queries
         if check:                                                # brute force: least reduced in-arc of X
             bf = min((W[a][v] - off[v] for v in members[X] for a in range(n) if find(a) != X), default=math.inf)
             assert abs(bf - c) < 1e-9 * max(1.0, abs(c)), ("pick", bf, c)
