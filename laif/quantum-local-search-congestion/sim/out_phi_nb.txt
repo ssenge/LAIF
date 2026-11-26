@@ -1,0 +1,6 @@
+d=3 n=  1000 T= 10  NB max_v Phi: mean 2.49 max 3.23  floor T^1.5/sqrt(n)=1.00  SRW mean 5.77
+d=3 n=  4000 T= 16  NB max_v Phi: mean 2.77 max 3.60  floor T^1.5/sqrt(n)=1.01  SRW mean 8.76
+d=3 n= 16000 T= 25  NB max_v Phi: mean 2.93 max 3.66  floor T^1.5/sqrt(n)=0.99  SRW mean 14.14
+d=3 n= 64000 T= 40  NB max_v Phi: mean 2.97 max 3.25  floor T^1.5/sqrt(n)=1.00
+
+[exited with code 0]
