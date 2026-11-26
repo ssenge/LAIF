@@ -4,29 +4,29 @@
 
 ## Problem
 
-Two unknown states ρ and σ on C^d are given through copies, and each copy is measured on its own. The task is to decide whether ρ = σ or F(ρ, σ) ≤ 1 − ε, with success probability at least 2/3. In the trace distance, the same task needs Θ(d^{3/2}/ε²) copies, and adaptivity does not help [2, 3, 4]. In the fidelity, certification of a known σ needs only Õ(d^{3/2}/ε) copies, and adaptive equivalence testing uses Õ(min{d^{3/2}/ε², d^{9/4}/ε}) copies [1, Thms 1.1, 1.2]. For non-adaptive measurements, Ω̃(1/ε²) copies are needed already for qubits [1, Thm 1.4]. It is asked in [1, Sec. 1.2] whether non-adaptive equivalence testing in the fidelity has an asymptotic advantage over the trace distance, and conjectured there that it needs Ω̃(d^{3/2}/ε²) copies.
+Two unknown states ρ and σ on C^d are given through copies, and each copy is measured on its own. The task is to decide whether ρ = σ or F(ρ, σ) ≤ 1 − ε, with success probability at least 2/3. In the trace distance, the same task needs Θ̃(d^{3/2}/ε²) copies, and adaptivity does not help [2, 3, 4]. In the fidelity, certification of a known σ needs only Õ(d^{3/2}/ε) copies, and adaptive equivalence testing uses Õ(min{d^{3/2}/ε², d^{9/4}/ε}) copies [1, Thms 1.1, 1.2]. For non-adaptive measurements, Ω̃(1/ε²) copies are needed already for qubits [1, Thm 1.4]. It is asked in [1, Sec. 1.2] whether non-adaptive equivalence testing in the fidelity has an asymptotic advantage over the trace distance, and conjectured there that it needs Ω̃(d^{3/2}/ε²) copies.
 
 | | copies of σ |
 |---|---|
-| Previous best bound, non-adaptive, upper [2, 3] | O(d^{3/2}/ε²), from the trace-distance tester, since ½‖ρ − σ‖₁ ≥ 1 − F ≥ ε |
+| Previous best bound, non-adaptive, upper [2, 3, 4] | Õ(d^{3/2}/ε²), from the trace-distance tester, since ½‖ρ − σ‖₁ ≥ 1 − F ≥ ε |
 | Previous best bound, non-adaptive, lower [1, Thm 1.4] | Ω̃(1/ε²) |
 | Theorem 1, non-adaptive, lower | Ω(d^{3/2}/ε²) for ε ≤ 1/3400 and d ≥ 120 + 8 ln(1/ε) |
 
-So, to our knowledge, the fidelity gives no asymptotic advantage over the trace distance for non-adaptive equivalence testing, which answers the first open question of [1, Sec. 1.2] in this range of d.
+So, to our knowledge, the fidelity gives no asymptotic advantage over the trace distance for non-adaptive equivalence testing, which settles the equivalence-testing part of the first open question of [1, Sec. 1.2] in this range of d.
 
 ## Result
 
 F(ρ, σ) = ‖√ρ√σ‖₁ is the (root) fidelity, as in [1]. Theorem 1 also holds for the squared fidelity F², since 1 − F² ≥ 1 − F. For F² the matching upper bound below loses a factor 2 in the gap, since ½‖ρ − σ‖₁ ≥ 1 − F ≥ (1 − F²)/2.
 
-**Theorem 1.** Let 0 < ε ≤ 1/2, d = 2D and D ≥ 60 + 4 ln(1/ε). Consider a tester that measures copies of ρ and σ one at a time, where the measurements on the copies of σ are fixed in advance (random choices are allowed if they are independent of the states). The copies of ρ may be measured in any way, even adaptively among themselves. If the tester accepts with probability at least 2/3 when ρ = σ and rejects with probability at least 2/3 when F(ρ, σ) ≤ 1 − ε/1700, then it uses more than
+**Theorem 1.** Let 0 < ε ≤ 1/2, d = 2D and D ≥ 60 + 4 ln(1/ε). Consider a tester that measures copies of ρ and σ one at a time, where the measurements on the copies of σ are fixed in advance (random choices are allowed if they are independent of the states). The number of copies of σ is fixed too. The copies of ρ may be measured in any way, even adaptively, depending on all earlier outcomes. If the tester accepts with probability at least 2/3 when ρ = σ and rejects with probability at least 2/3 when F(ρ, σ) ≤ 1 − ε/1700, then it uses more than
 
 N = 3D^{3/2}/ε² = 3d^{3/2}/(2√2 ε²)
 
 copies of σ. In terms of ε_F = ε/1700: N > 3.6·10⁻⁷ · d^{3/2}/ε_F² for ε_F ≤ 1/3400 and d ≥ 120 + 8 ln(1/(1700 ε_F)). For odd d, use d − 1. The constants are not optimized.
 
-Both bounds refer to the same problem. If F(ρ, σ) ≤ 1 − ε_F, then ½‖ρ − σ‖₁ ≥ 1 − F ≥ ε_F, so the trace-distance tester [2, 3] decides ρ = σ against F ≤ 1 − ε_F with O(d^{3/2}/ε_F²) copies. With Theorem 1, the copy count for this problem is Θ(d^{3/2}/ε_F²) for ε_F ≤ 1/3400 and d ≥ 120 + 8 ln(1/ε_F), where the Θ hides absolute constants, 3.6·10⁻⁷ in the lower bound.
+Both bounds refer to the same problem. If F(ρ, σ) ≤ 1 − ε_F, then ½‖ρ − σ‖₁ ≥ 1 − F ≥ ε_F, so the trace-distance tester [2, 3, 4] decides ρ = σ against F ≤ 1 − ε_F with Õ(d^{3/2}/ε_F²) copies. Theorem 1 matches this up to logarithmic factors for ε_F ≤ 1/3400 and d ≥ 120 + 8 ln(1/ε_F), with the absolute constant 3.6·10⁻⁷ in the lower bound.
 
-*Non-vacuity.* Both hypotheses of the two-point argument are realized by explicit states. Every alternative σ_G is a state at fidelity at most 1 − ε/1700 from ρ (Lemma 1), and the good event E of the random perturbation has probability at least 1 − 10⁻²⁸ for D ≥ 60 (Lemma 2). The instance is solvable: its trace distance is of order ε, so the tester of [2, 3] decides it with O(d^{3/2}/ε²) copies, and the bound is tight on it. `sim/check.py` asserts Lemma 1 on random draws for D = 8, 16, 32, the tail and dimension bounds of Section 4, and the identities of Lemmas 3 to 5 on small cases.
+*Non-vacuity.* Both hypotheses of the two-point argument are realized by explicit states. Every alternative σ_G is a state at fidelity at most 1 − ε/1700 from ρ (Lemma 1), and the good event E of the random perturbation has probability at least 1 − 10⁻²⁸ for D ≥ 60 (Lemma 2). The instance is solvable: its trace distance is of order ε, so the tester of [2, 3, 4] decides it with Õ(d^{3/2}/ε²) copies, and the bound is tight on it up to logarithmic factors. `sim/check.py` asserts Lemma 1 on random draws for D = 8, 16, 32, the tail and dimension bounds of Section 4, and the identities of Lemmas 3 to 5 on small cases.
 
 ## Instance
 
@@ -45,7 +45,7 @@ Let c₀ = 3/20, ρ₀ = ((1 − ε)/D) I_D ⊕ (ε/D) I_D, W a Haar-random unit
 
 ## Proof
 
-**Reduction to a fixed W.** Fix the measurements on the copies of σ, rank-one without loss of generality: in step i a measurement {c_ij|v_ij⟩⟨v_ij|}_j with Σ_j c_ij|v_ij⟩⟨v_ij| = I. Given W, the outcomes on the copies of ρ have the same law under both hypotheses and are independent of the outcomes on the copies of σ. Hence the total variation distance between the two hypotheses is at most E_W of the distance between the laws of the σ-outcomes, Q₀ under the null and the mixture E_{μ_E}Q_G under the alternative [1, Sec. 7]. From here W is fixed, and we may take W = I after replacing v_ij by W†v_ij.
+**Reduction to a fixed W.** Fix the measurements on the copies of σ, rank-one without loss of generality: in step i a measurement {c_ij|v_ij⟩⟨v_ij|}_j with Σ_j c_ij|v_ij⟩⟨v_ij| = I. Given W and the outcomes on the copies of σ, the outcomes on the copies of ρ have the same conditional law under both hypotheses, since ρ is the same. Hence, by data processing, the total variation distance between the two hypotheses is at most E_W of the distance between the laws of the σ-outcomes, Q₀ under the null and the mixture E_{μ_E}Q_G under the alternative [1, Sec. 7]. From here W is fixed, and we may take W = I after replacing v_ij by W†v_ij. Elements with t_ij = 0 do not depend on G and are dropped below.
 
 Let u_ij be the light-block part of v_ij, t_ij = ‖u_ij‖², û_ij = u_ij/√t_ij and φ(t) = t/((1 − ε)(1 − t) + εt). In step i the null probability of outcome j is q_i(j) = (c_ij/D) t_ij/φ(t_ij), and under σ_G it is q_i(j)(1 + g_ij) with g_ij = εc₀φ(t_ij)⟨û_ij|G|û_ij⟩. Since Σ_j c_ij|u_ij⟩⟨u_ij| = I_D and tr G = 0, Σ_j q_i(j)g_ij = 0. On E, |g_ij| ≤ 3/4.
 
@@ -65,7 +65,7 @@ Let u_ij be the light-block part of v_ij, t_ij = ‖u_ij‖², û_ij = u_ij/√t
 
 **Count.** For such W and N ≤ 3D^{3/2}/ε², the condition of Lemma 5 holds, and 1 + χ² ≤ P(E)⁻² exp(49c₀⁴ε⁴N²/D³) ≤ P(E)⁻² e^{0.2233}. So the total variation distance is at most 1/20 + ½√(e^{0.2233}/P(E)² − 1) ≤ 0.30 < 1/3, and no tester succeeds with probability 2/3 on both hypotheses. ∎
 
-The bound needs the measurements on σ to be fixed before W is drawn. If the measurement basis is aligned with the two blocks, then t ∈ {0, 1}, A = (N/ε)I, and the exponent becomes of order ε²N²/D³, which only gives Ω(D^{3/2}/ε). This is the copy count of certification with a known σ [1, Thm 1.1].
+The bound needs the measurements on σ to be fixed before W is drawn. That a fixed schedule rarely aligns with a random hidden direction is also the mechanism of the qubit bound [1, Lemma 7.2]. If the measurement basis is aligned with the two blocks, then t ∈ {0, 1}, A = (N/ε)I, and the exponent becomes of order ε²N²/D³, which only gives Ω(D^{3/2}/ε). This is the copy count of certification with a known σ [1, Thm 1.1].
 
 ## Check
 
@@ -79,7 +79,8 @@ The bound needs the measurements on σ to be fixed before W is drawn. If the mea
 ## Scope
 
 - The measurements on the copies of σ are single-copy and fixed in advance. Measurements acting jointly on a copy of ρ and a copy of σ are not covered, as in [1].
-- The dimension condition d ≥ 120 + 8 ln(1/ε) is used in the Markov step. For smaller d, the qubit bound of [1, Thm 1.4] applies.
+- The dimension condition d ≥ 120 + 8 ln(1/ε) is used in the Markov step. For smaller d, the qubit bound Ω̃(1/ε²) of [1, Thm 1.4] applies, for testers whose measurements on both states are fixed in advance.
+- The analogous question for independence testing [1, Sec. 1.2] is not covered.
 - The constants are far from optimal: the alternative is at infidelity ε/1700, and the instance has trace distance about 0.06ε.
 
 ## References
