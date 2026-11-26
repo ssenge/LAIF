@@ -13,7 +13,13 @@ Here the recursive contraction of [1] is run with fixed-point amplitude amplific
 
 **Theorem 2.** For every fixed k ≥ 2, computing λ_k for graphs with n vertices and weights in {0, 1, n} in the adjacency matrix model needs Ω(n²) quantum queries, and so Ω(n²) time. So part 2 of Theorem 1 is optimal up to a factor n^{o(1)} for such weights.
 
-Status: Claim. The cost exponent of the level schedule is evaluated by a script with asserts, and the level-cost inequalities and the padding identity of Section 4 are checked in Lean.
+**Hypothesis H_r** (quantum max-weight clique). For a fixed r ≥ 2 there is a constant c such that no quantum algorithm with classical memory readable in superposition computes the largest weight of an r-clique in graphs with N vertices and integer edge weights in {0, …, N^c} in time O(N^{r/2 − δ}) for any δ > 0.
+
+Quantum search over the r-sets meets this bound up to logarithmic factors.
+
+**Theorem 3.** Let k ≥ 6. Under H_{k−1}, no quantum algorithm with classical memory readable in superposition computes λ_k for graphs with n vertices and integer weights in {0, …, n^{c+4}} in time O(n^{(k−1)/2 − δ}) for any δ > 0. For k = 5, Theorem 2 gives Ω(n²) = Ω(n^{(k−1)/2}) without a hypothesis. So the exponent k/2 of part 1 of Theorem 1 is within 1/2 of optimal for every k ≥ 5, under H_{k−1} for k ≥ 6.
+
+Status: Claim. The cost exponent of the level schedule is evaluated by a script with asserts, and the level-cost inequalities and the padding identity of Section 4 are checked in Lean. The gadget of Section 5 is checked by brute force on small graphs.
 
 ## Before and after
 
@@ -74,7 +80,19 @@ Add k − 2 isolated vertices to G. A partition into k parts that keeps all of V
 
 The padded graph has n + k − 2 vertices, and each of its queries is answered by at most one query to G. In the adjacency matrix model, [3] shows that Ω(n^{3/2} √τ) quantum queries are needed for minimum cut on graphs with edge weights 1 and τ, for integers 1 ≤ τ ≤ n. With τ = n and k fixed, this gives Ω(n²). Time is at least the number of queries.
 
-## 5. Measurements
+## 5. Proof of Theorem 3
+
+The reduction from max-weight (k − 1)-clique to k-cut noted in [1] is carried out here with one extra vertex. Let H have N vertices and weights w(u, v). Add M = 1 + (total weight of H) to the weight of every edge of H. A (k − 1)-set then has the largest shifted weight inside it exactly when it is a clique of largest weight, whenever H has a (k − 1)-clique. Let Δ be the largest weighted degree after the shift, and set D = kΔ + 1. The graph G has the vertices of H, the shifted weights, and one hub b with w(v, b) = D − deg(v).
+
+In a partition of G into k parts, the k − 1 parts without b contain t ≥ k − 1 vertices of H. If t ≥ k, the hub edges alone cost at least k(D − Δ) > (k − 1)D. If t = k − 1, the parts are singletons {v} for v in a set S, and the cut contains the hub edges of S and every edge of H at S. Since the degrees in S count each edge inside S twice, the cost is
+
+Σ_{v∈S} (D − deg v) + Σ_{v∈S} deg v − w(S) = (k − 1)D − w(S),
+
+where w(S) is the weight inside S. This is at most (k − 1)D, so λ_k(G) = (k − 1)D − max over (k − 1)-sets S of w(S), and the largest clique weight follows by subtracting the shift.
+
+G has n = N + 1 vertices and weights polynomial in N, at most N^{c+4} once N is large, since M ≤ N^{c+2}, Δ ≤ 2N^{c+3} and D ≤ 2kN^{c+3} + 1. Its weight matrix is answered by one query to H, together with a table of the N degrees. The table is computed in O(N²) time and held in classical memory readable in superposition. An algorithm for λ_k in time O(n^{(k−1)/2 − δ}) would therefore find the largest (k − 1)-clique weight in time O(N² + N^{(k−1)/2 − δ}). For k ≥ 6 this is O(N^{(k−1)/2 − δ'}) for some δ' > 0, which H_{k−1} excludes.
+
+## 6. Measurements
 
 [`sim/recursion.py`](sim/recursion.py) evaluates the largest per-level exponent, the maximum over ℓ of (1 − e_{ℓ+1}) k/2 + e_ℓ c, where n_ℓ = n^{e_ℓ} and c is the exponent of one contraction. It asserts the following:
 
@@ -84,7 +102,9 @@ The padded graph has n + k − 2 vertices, and each of its queries is answered b
 
 Run it with `python recursion.py` in `sim/`.
 
-## 6. Lean
+[`sim/clique_gadget.py`](sim/clique_gadget.py) builds the graph G of Section 5 for 300 random graphs H with 3 to 6 vertices and k = 3, 4. It asserts that the minimum k-cut of G, by brute force over all partitions, equals (k − 1)D minus the largest weight inside a (k − 1)-set, and that after the shift this largest weight is attained by a largest (k − 1)-clique whenever one exists.
+
+## 7. Lean
 
 [`lean/KCutExponent.lean`](lean/KCutExponent.lean), with [`lean/KCutExponentAxioms.lean`](lean/KCutExponentAxioms.lean) and its output in [`lean/axioms.txt`](lean/axioms.txt). A level that contracts x = n_ℓ vertices to y = n_{ℓ+1} enters with the cost (n/y)^{k/2} x², and a partition is a map into Fin k whose cost is the weight of the ordered pairs it separates.
 
@@ -95,13 +115,14 @@ Run it with `python recursion.py` in `sim/`.
 
 Lean 4 v4.36.0-rc1, Mathlib rev d875a8de5222f62cf1c2fafc7984588adadc990a.
 
-## 7. Limits
+## 8. Limits
 
 - k is fixed. The factor per level, k^{O(k²)}, is not explicit in [1], and the exponent of the polylogarithmic factor grows like k² log k / log(k/4).
 - For k = 3, the classical bound n² log² n of [8] is at least as good as part 2 of Theorem 1.
 - Weights are integers, so rational weights are scaled first. The gate count grows polynomially in log W.
 - The table compares weighted graphs. For simple unweighted graphs, faster classical algorithms are known [6].
-- Not formalized: the algorithm, the survival bound of [1], the quantum costs, and the bound of [3]; Lean covers the level-cost arithmetic of Section 3 and the padding identity of Section 4.
+- Theorem 3 is conditional on H_{k−1}, a hypothesis on quantum algorithms for weighted cliques. Its model has classical memory readable in superposition, which is more than Theorem 1 uses.
+- Not formalized: the algorithm, the survival bound of [1], the quantum costs, the bound of [3] and the gadget of Section 5; Lean covers the level-cost arithmetic of Section 3 and the padding identity of Section 4.
 
 ## References
 
