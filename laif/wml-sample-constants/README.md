@@ -146,6 +146,7 @@ The mechanism is universal conjugation of the program state; compare the optimal
 
 - Theorems 1 and 3 are exact statements about explicit operators, checked numerically with plain-state certificates and with diamond norms from a semidefinite program.
 - Theorems 2, 4, 5, 6, 7 and 8 are written proofs (Claim). The constant K_d of Theorem 5 and the absolute constants of Theorems 6 and 7 are not optimized. For Theorem 8, the program convention, the coherence bound |q| ≥ csγ for t from 0.01 to 12, and the positivity and trace of the dual certificate for (d, n) up to (3, 4), (4, 3), (5, 2) and (6, 2) are checked numerically. For Theorem 7, the spin decomposition, the trace-norm tail and the degree of each spin part are checked numerically. Every coefficient identity of Theorem 2 is checked against the matrix exponential to 1e-12, and the Schur-complement value of Theorem 4 is checked exactly for d = 2, 3, 4 with one copy per step and for (d, k) = (2, 2), (3, 2), (4, 2), (2, 3), (3, 3).
+- Lean (`lean/`, library `ConjugationBound`, standard axioms only, listed in `lean/axioms.txt`) checks the scalar steps of Theorem 8: the dimension identities D_{k+1}(k+1) = D_k(k+d−1) and 1/D_k − 1/D_{k+1} = (d−2)/(D_k(k+d−1)) for D_k = dim Sym^k(C^{d−1}), the binomial mean Σ k b_k = n s², positivity of the 2 × 2 blocks, the trace n s²/(λ(d−2)) of the certificate, step 5, and the constants of the corollary at θ = π/4 (1 − e^{−t} ≥ 0.632 t on [0, 1], hence n ≥ 0.0124 (d−2) t²/ε for ε ≤ 0.079 t). The block decomposition of Ω from the Haar moments and step 2 are not formalized. `step5_satisfiable` gives an instance of the hypotheses of step 5 with a positive right-hand side, and `step5_conclusion_can_fail` shows that its conclusion is not automatic.
 - The step of WML is built twice: from the transfer matrix of [1, App. B], and directly from [1, Eq. (15)] on the full system and program space. The two agree to 1e-16 for d = 2, 3.
 - The supremum over L for d ≥ 4 is not computed. Over all protocols, Theorem 6 covers t ≤ c/d, and Theorem 7 covers t ≤ c at accuracies ε ≤ t²/(C′ d log(2d/t)). Theorem 8 covers d ≥ 3 at accuracies ε ≤ (1 − e^{−t})/8 for every t, with the factor d − 2.
 
@@ -162,6 +163,7 @@ The mechanism is universal conjugation of the program state; compare the optimal
 - `sim/thm6_check.py`: the derivative identities, the trigonometric degree and the test vectors of Theorem 6, and the 2 × 2 bound on the collective WML channel, with asserts.
 - `sim/thm7_check.py`: the spin decomposition of Theorem 7 (Hilbert-Schmidt norms exactly for n ≤ 100, trace-norm tails beyond k₀ for n ≤ 2000) and the degree 2k of each spin part under a random channel, with asserts.
 - `sim/thm8_check.py`: the program convention, the target coherence and the dual certificate of Theorem 8, with asserts.
+- `lean/ConjugationBound/Basic.lean`: the Lean proofs of the scalar steps of Theorem 8; `lean/Axioms.lean` prints the axioms of each theorem.
 
 ## References
 
