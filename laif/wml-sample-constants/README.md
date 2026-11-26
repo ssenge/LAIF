@@ -12,6 +12,7 @@ Wave matrix Lindbladization (WML) simulates the Lindbladian with one jump operat
 | Copies needed by any regular memoryless protocol with a bounded number of fresh copies per step and comparable step sizes, as n → ∞ | at least 10⁻⁴ · t²/ε, for every protocol [2] | at least (d−1)/4 · t²/ε, with the same constant as WML on the witness L = \|0⟩⟨0\| (Theorem 4) |
 | One-copy error of any channel from S ⊗ P to S, worst case over L, as t → 0 | | at least (d−1)/4 · t² − O(t³) (Theorem 5) |
 | Copies needed by every protocol (any number of copies, joint processing allowed), for t ≤ c/d | at least 10⁻⁴ · t²/ε [2] | at least (d−1)/4 · (1 − O(dt)) · t²/ε (Theorem 6) |
+| Copies needed by every protocol in the high-accuracy regime ε ≤ t²/(C′ d log(2d/t)), for t ≤ c | at least 10⁻⁴ · t²/ε [2] | at least (d−1)/4 · (1 − O(t)) · t²/ε (Theorem 7) |
 
 The first three rows are about the WML protocol, as in [1, Theorem 10]. The fourth row covers the class of Theorem 4, the fifth every channel that uses one copy, and the last every protocol, for short times t ≤ c/d. For t of order one the lower bound for all protocols remains 10⁻⁴ · t²/ε [2].
 
@@ -104,14 +105,31 @@ The supremum may be restricted to L = |0⟩⟨ψ| with ψ = cos θ |0⟩ + e^{�
 
 The correction O(dt) comes from the term nε/t, and Theorem 6 says nothing for t ≳ 1/d. The bound is not claimed tight for WML: on the family of Theorem 6, which contains L = |0⟩⟨1|, the worst-case constant of WML is (2d−3)/4. Protocols with a random number of copies are not covered. On the collective WML channel, which uses its n copies in n steps of time t/n, the bound of step 4 captures 99.0% to 99.9% of the true leak for n ≤ 3, d ≤ 3 and t between 0.0125 and 0.05.
 
+**Theorem 7 (every protocol, high accuracy).** There is an absolute constant C such that for every d ≥ 2, every n ≥ 1, every t ∈ (0, 1/2] and every channel Λ from S ⊗ P^{⊗n} to S,
+
+n · sup_L ½ ‖Λ(· ⊗ π_L^{⊗n}) − e^{tℒ_L}‖⋄ ≥ (d−1)/4 · t² · (1 − C t (1 + d · min{1, √(log(2n/t)/n)})),
+
+with the supremum over the family of Theorem 6.
+
+**Corollary.** There are absolute constants c and C′ such that for t ≤ c and ε ≤ t²/(C′ d log(2d/t)), every protocol with error at most ε on this family uses at least ((d−1)/4)(1 − C′t) t²/ε copies. In the high-accuracy regime the factor d of the WML bound is therefore necessary for every protocol at every time t ≤ c, with c independent of d, and the leading constant is (d−1)/4.
+
+*Proof sketch.* Only step 3 of Theorem 6 changes: the degree 2n + 2 in Bernstein's inequality is replaced by an effective degree k₀.
+1. **Harmonic split.** Let W = span{ℓ, q_i}. The states π_v^{⊗n} lie in L(Sym^n W), on which SU(2) acting on W gives the operators of spin k = 0, …, n. Write π_v^{⊗n} = Σ_k O_k(v) with O_k(v) of spin k. Each O_k(v) is a rotation of O_k(ℓ), and ‖O_k‖₂² = (2k+1) n!²/((n−k)!(n+k+1)!).
+2. **Trace-norm tail.** (n+1)‖O_k‖₂²/(2k+1) = ∏_{j<k} (n−j)/(n+j+2) ≤ e^{−k(k+1)/(2n+1)} ≤ e^{−k²/(2n)}, and O_k has rank at most n + 1. Hence ‖O_k(v)‖₁ ≤ √(2k+1) e^{−k²/(4n)} for every v.
+3. **Degrees.** Λ(· ⊗ O_k(v)) has diamond norm at most ‖O_k‖₁, and its entries are spherical harmonics of degree k on the Bloch sphere of W, whose polar angle is 2θ. So it is a trigonometric polynomial of degree 2k in θ. Since ℒ_v is linear in |v⟩⟨v|, the Taylor polynomial of order k₀ of e^{tℒ_v} has degree at most 2k₀ in θ.
+4. **Truncated Bernstein.** Let k₀ = min{n + 1, ⌈√(24 n log(2n/t))⌉}, and apply step 3 of Theorem 6 to Σ_{k ≤ k₀} Λ(· ⊗ O_k(v)) minus the Taylor polynomial of order k₀, a trigonometric polynomial of degree at most 2k₀. The discarded parts and their first two θ-derivatives are bounded by Σ_{k > k₀} (2k)^r ‖O_k‖₁ ≤ t²/n for r = 0, 1, 2. Bernstein's factors become 2k₀ and 4k₀² in place of 4n and 16n², so |e†C_B f| ≤ 2k₀ε/n + O(t²/n) and f†C_B f ≤ O(k₀²ε/n + ε + t²)/(4n).
+5. **Conclusion.** As in step 4 of Theorem 6, the leak towards |i⟩ is at least t²/(4n) · (1 − O(k₀ε/t + t)), where the denominator f†Cf contributes O(k₀²ε/n + ε + t²) ≤ O(k₀ε/t + t²) relative to 1/(4n). If nε > (d−1)t²/4 there is nothing to prove; otherwise k₀ε/t ≤ (d−1) t k₀/(4n), and k₀/n ≤ C min{1, √(log(2n/t)/n)}. For the corollary, discarding copies makes the optimal error non-increasing in n, so a protocol with fewer than N₀ = ⌈A d² log(2d/t)⌉ copies has error at least the bound at N₀, where d √(log(2N₀/t)/N₀) ≤ 1. ∎
+
+For k₀ = n + 1, Theorem 7 is Theorem 6; it improves on it for n ≳ d² log(2n/t). Moderate accuracies between t²/(C′ d log(2d/t)) and order one are covered only by Theorem 6, for t ≤ c/d.
+
 **Numerical supremum.** The supremum of the leading constant over all L, computed with an exact semidefinite program for the diamond norm and local search over L, is about 0.300 at d = 2 and 0.750 at d = 3. At d = 3 this equals (2d−3)/4.
 
 ## Scope
 
 - Theorems 1 and 3 are exact statements about explicit operators, checked numerically with plain-state certificates and with diamond norms from a semidefinite program.
-- Theorems 2, 4, 5 and 6 are written proofs (Claim). The constant K_d of Theorem 5 and the absolute constant K of Theorem 6 are not optimized. Every coefficient identity of Theorem 2 is checked against the matrix exponential to 1e-12, and the Schur-complement value of Theorem 4 is checked exactly for d = 2, 3, 4 with one copy per step and for (d, k) = (2, 2), (3, 2), (4, 2), (2, 3), (3, 3).
+- Theorems 2, 4, 5, 6 and 7 are written proofs (Claim). The constant K_d of Theorem 5 and the absolute constants of Theorems 6 and 7 are not optimized. For Theorem 7, the spin decomposition, the trace-norm tail and the degree of each spin part are checked numerically. Every coefficient identity of Theorem 2 is checked against the matrix exponential to 1e-12, and the Schur-complement value of Theorem 4 is checked exactly for d = 2, 3, 4 with one copy per step and for (d, k) = (2, 2), (3, 2), (4, 2), (2, 3), (3, 3).
 - The step of WML is built twice: from the transfer matrix of [1, App. B], and directly from [1, Eq. (15)] on the full system and program space. The two agree to 1e-16 for d = 2, 3.
-- The supremum over L for d ≥ 4 is not computed. Theorem 6 bounds the sample complexity over all protocols only for t ≤ c/d.
+- The supremum over L for d ≥ 4 is not computed. Over all protocols, Theorem 6 covers t ≤ c/d, and Theorem 7 covers t ≤ c at accuracies ε ≤ t²/(C′ d log(2d/t)).
 
 ## Files
 
@@ -124,6 +142,7 @@ The correction O(dt) comes from the term nε/t, and Theorem 6 says nothing for t
 - `sim/scan.py`, `sim/supL.py`: rank-one scan and the numerical supremum over L.
 - `sim/opt.py`, `sim/opt2.py`: the optimal channel with n copies over all channels, as an exact semidefinite program on covariant Choi matrices (partially transposed permutation operators, block-diagonalized for n = 2); `sim/check_conv.py` checks its conventions against the full WML channel; `sim/frame_check.py` gives the numbers after Theorem 5.
 - `sim/thm6_check.py`: the derivative identities, the trigonometric degree and the test vectors of Theorem 6, and the 2 × 2 bound on the collective WML channel, with asserts.
+- `sim/thm7_check.py`: the spin decomposition of Theorem 7 (Hilbert-Schmidt norms exactly for n ≤ 100, trace-norm tails beyond k₀ for n ≤ 2000) and the degree 2k of each spin part under a random channel, with asserts.
 
 ## References
 
