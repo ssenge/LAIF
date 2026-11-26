@@ -7,8 +7,8 @@ In sample-based Hamiltonian simulation a protocol receives n copies of an unknow
 | Quantity | Previous bound | Here |
 |---|---|---|
 | Copies sufficient for every σ (DME) | at most 4t²/ε [1, Corollary 3] | at most t²/ε + 3t, for every ε and t (Theorem 1) |
-| Copies needed by every protocol, any joint processing of the n copies | at least 0.032 t²/ε for ε < min{9t/(100π), 1/10} [1, Theorem 5] | at least (1 − Kt) t²/ε for every ε and every t ≤ c, with absolute constants c and K (Theorem 2) |
-| Leading constant of the copy count, t ≤ c, every d ≥ 2 | between 0.032 and 4 | exactly 1 |
+| Copies needed by every protocol, any joint processing of the n copies | at least 0.032 t²/ε for ε < min{9t/(100π), 1/10} [1, Theorem 5] | at least (1 − 19t) t²/ε for every ε and every t ≤ 1/10 (Theorem 2) |
+| Leading constant of the copy count as t → 0, every d ≥ 2 | between 0.032 and 4 | exactly 1 |
 
 ## Setting
 
@@ -25,17 +25,20 @@ S = C^d is the system and P = C^d holds one copy of σ. A protocol with n copies
 
 At a pure σ and an input orthogonal to σ the leading term is attained: the target fixes the input, while each step moves the population sin²Δ towards σ. So the constant 1 of Theorem 1 is the worst case of DME.
 
-**Theorem 2 (every protocol needs t²/ε copies).** There are absolute constants c and K such that for every d ≥ 2, every n ≥ 1, every t ∈ (0, c] and every channel Λ from S ⊗ P^{⊗n} to S, with any joint processing of the n copies,
+**Theorem 2 (every protocol needs t²/ε copies).** For every d ≥ 2, every n ≥ 1, every t ∈ (0, 1/10] and every channel Λ from S ⊗ P^{⊗n} to S, with any joint processing of the n copies,
 
-n · sup_σ ½‖Λ(· ⊗ σ^{⊗n}) − 𝒰_σ‖⋄ ≥ t² (1 − Kt).
+n · sup_σ ½‖Λ(· ⊗ σ^{⊗n}) − 𝒰_σ‖⋄ ≥ t² (1 − 19t).
 
-The supremum may be restricted to the pure states σ_v = |v⟩⟨v| with v = cos θ |0⟩ + e^{iφ} sin θ |1⟩. Hence every protocol with error ε uses at least (1 − Kt) t²/ε copies, at every accuracy ε.
+The supremum may be restricted to the pure states σ_v = |v⟩⟨v| with v = cos θ |0⟩ + e^{iφ} sin θ |1⟩. Hence every protocol that uses a fixed number n of copies and has error at most ε on these states has n ≥ (1 − 19t) t²/ε, at every accuracy ε.
 
-*Proof sketch.* The argument follows the forced-leak bound for one jump operator of [this repository, `laif/wml-sample-constants`, Theorem 6]. Let ε be the supremum and τ = n^{−1/2} Σ_j |0 … 1 … 0⟩ (|1⟩ in copy j).
-1. **Choi matrix.** Let G = (1/n) Σ_j (−i[X_j, ·]), where X_j is the j-th copy of the program, and B = Λ − Tr_P − tG. The Choi matrix of Λ is C₀ + tC₁ + C_B ≥ 0, with C₀ and C₁ the Choi matrices of Tr_P and G.
-2. **Test vectors.** Take e = |1⟩|0⟩^{⊗n}|0⟩ (input |1⟩ with program |0…0⟩, output |0⟩) and f = −C₀⁺C₁e = −i (d√n)^{−1} Σ_m |m⟩|τ⟩|m⟩. Then e†C₀e = e†C₁e = 0, so e†Ce is the population ⟨0|Λ(|1⟩⟨1| ⊗ |0⟩⟨0|^{⊗n})|0⟩, which the target 𝒰_{|0⟩⟨0|} leaves at 0. Also f†C₀f = 1/n, e†C₁f = −1/n and f†C₁f = 0. Positivity of the 2 × 2 compression gives e†Ce ≥ |e†Cf|²/f†Cf.
-3. **Bernstein's inequality.** The map (θ, φ) ↦ Λ(· ⊗ σ_v^{⊗n}) is a trigonometric polynomial of degree 2n in θ, and the Taylor polynomial of 𝒰_{σ_v} of order n + 1 in t has degree 2n + 2, with remainder at most (2t)^{n+2} e^{2t}/(n+2)!. Their difference lies within 2ε plus that remainder of zero for all θ, φ, so its first and second θ-derivatives are at most 2n + 2 and (2n + 2)² times that bound. At θ = 0 these derivatives are B applied to √n |τ⟩⟨0…0| and its adjoint, and to 2n(|τ⟩⟨τ| − |0…0⟩⟨0…0|), up to the smooth part of the target, which is O(t²). This gives |e†C_B f| ≤ O(ε) + O(t²/n) and f†C_B f ≤ O(ε + t²/n), uniformly in d and n.
-4. **Conclusion.** With e†Cf = −t/n + e†C_B f and f†Cf = 1/n + f†C_B f, the population leaving |1⟩ is at least (t²/n)(1 − O(nε/t + t)). It is a lower bound on the error at σ = |0⟩⟨0|. If nε > t² there is nothing to prove; otherwise nε/t ≤ t, and nε ≥ t²(1 − Kt). ∎
+*Proof.* Let ε be the supremum over the states σ_v, Λ_v(ρ) = Λ(ρ ⊗ σ_v^{⊗n}) and 𝒰_v = 𝒰_{σ_v}, so ‖Λ_v − 𝒰_v‖⋄ ≤ 2ε for all θ, φ. Let C = Σ_{a,b} |a⟩⟨b| ⊗ Λ(|a⟩⟨b|) ≥ 0 be the Choi matrix of Λ, with ⟨a|⟨x| C |b⟩|y⟩ = ⟨x|Λ(|a⟩⟨b|)|y⟩, and let |τ⟩ = n^{−1/2} Σ_j |0 … 1 … 0⟩ (|1⟩ in copy j).
+1. **Test vectors.** Let e = |1⟩|0⟩^{⊗n}|0⟩ (input |1⟩, program |0…0⟩, output |0⟩) and f = c Σ_m |m⟩|τ⟩|m⟩ with c = −i/(d√n). Positivity of C gives |e†Cf|² ≤ (e†Ce)(f†Cf).
+2. **The leak is at most ε.** e†Ce = ⟨0|Λ_0(|1⟩⟨1|)|0⟩ with Λ_0 = Λ_v at θ = 0, that is σ = |0⟩⟨0|. The target 𝒰_0 fixes |1⟩⟨1|, so e†Ce = tr(|0⟩⟨0| (Λ_0 − 𝒰_0)(|1⟩⟨1|)) ≤ ε, since the difference of two states has trace zero.
+3. **f has weight at most 1/n.** f†Cf = |c|² Σ_{m,m′} ⟨m|Λ_τ(|m⟩⟨m′|)|m′⟩ with the channel Λ_τ(ρ) = Λ(ρ ⊗ |τ⟩⟨τ|). The sum is d² times the entanglement fidelity of Λ_τ, which is at most 1, so f†Cf ≤ 1/n. With steps 1 and 2, ε ≥ n |e†Cf|².
+4. **The cross term is a θ-derivative.** Let M(ρ) = Λ(ρ ⊗ |0^n⟩⟨τ|) and Q(X) = Σ_m ⟨0|X(|1⟩⟨m|)|m⟩ for a linear map X on operators of S. Then e†Cf = c Q(M). Since |v⟩^{⊗n} = |0^n⟩ + θ e^{iφ} √n |τ⟩ + O(θ²), the coefficient of e^{−iφ} in ∂_θ Λ_v at θ = 0 is √n M. Also Q(X) = ⟨0 0|(X ⊗ id)(|1 0⟩⟨Ω|)|Ω⟩ with |Ω⟩ = Σ_m |m⟩|m⟩, so |Q(X)| ≤ d ‖X‖⋄.
+5. **The target.** With a = e^{−it} − 1 and W = e^{−it|0⟩⟨0|}, the coefficient of e^{−iφ} in ∂_θ 𝒰_v at θ = 0 is Y(ρ) = a |0⟩⟨1| ρ W† + ā W ρ |0⟩⟨1|, because e^{−itσ_v} = I + aσ_v. A direct computation gives Q(Y) = a tr W† = −(d − 2)(1 − cos t) − i d sin t, so |Q(Y)| ≥ d sin t.
+6. **Bernstein's inequality.** Let T_v = Σ_{k ≤ n+1} t^k ad_{σ_v}^k/k! be the Taylor polynomial of 𝒰_v = e^{t ad_{σ_v}}. The entries of σ_v^{⊗n} and of ad_{σ_v}^k are trigonometric polynomials in θ of degrees 2n and 2k, so Λ_v − T_v is a trigonometric polynomial of degree at most 2n + 2 in θ, with values in maps of diamond norm at most 2ε + R, where R = Σ_{k ≥ n+2} (2t)^k/k! (since ‖ad_σ‖⋄ ≤ 2). Bernstein's inequality, applied through bounded linear functionals, bounds its θ-derivative by (2n + 2)(2ε + R). The θ-derivative of 𝒰_v − T_v is at most R′ = Σ_{k ≥ n+2} (2t)^k/(k − 1)!, since ‖∂_θ ad_{σ_v}^k‖⋄ ≤ k 2^k at θ = 0. Taking the coefficient of e^{−iφ}, √n M = Y + E with ‖E‖⋄ ≤ 4(n + 1)ε + δ_n and δ_n = (2n + 2)R + R′.
+7. **Conclusion.** By steps 4 to 6, n |e†Cf| = |Q(Y) + Q(E)|/d ≥ sin t − 4(n + 1)ε − δ_n. For t ≤ 1/10 and n ≥ 1, δ_n ≤ 12t³. Write x = nε, so 4(n + 1)ε ≤ 8x. If x ≥ t² there is nothing to prove. Otherwise sin t − 8x − δ_n ≥ t − t³/6 − 8t² − 12t³ ≥ t(1 − 9.22t) > 0, and step 3 gives x ≥ n²|e†Cf|² ≥ t²(1 − 9.22t)² ≥ t²(1 − 19t). ∎
 
 No factor d appears: the forced leak runs from one state orthogonal to σ towards σ, and the normalizations of f in d cancel.
 
@@ -44,12 +47,13 @@ No factor d appears: the forced leak runs from one state orthogonal to σ toward
 ## Scope
 
 - Theorem 1 is a written proof (Claim). The decomposition Φ = P − N and complete positivity of P and N are checked on 400 random states for d = 2 to 5, and the n-step bound against the matrix exponential for d = 2, 3, t from 0.3 to 3 and n up to 40.
-- Theorem 2 is a written proof sketch (Claim), with c and K not optimized. The test vectors and their overlaps are checked for d = 2, 3 and n = 1 to 3. Protocols with a random number of copies are not covered.
+- Theorem 2 is a written proof (Claim) for protocols with a fixed number n of copies; protocols with a random number of copies are not covered. The constants 1/10 and 19 are not optimized. The test vectors and their overlaps are checked for d = 2, 3 and n = 1 to 3; the target coefficient Y, the value Q(Y) and the identity for Q(X) for d = 2, 3, 5; every inequality of the proof on n DME steps and on the optimal channel for d = 2, n = 1, 2 and t = 0.05; and the bound δ_n ≤ 12t³ for n < 60 on a grid of t ≤ 1/10.
 - The semidefinite programs are numerical, at a fixed small t.
 
 ## Files
 
 - `sim/dme_check.py`: Theorem 1 (decomposition, complete positivity, n-step error) and the test vectors of Theorem 2, with asserts.
+- `sim/thm2_check.py`: the steps of the proof of Theorem 2 and its constants, with asserts.
 - `sim/lead_dme.py`: the leading-order optimal one-copy step.
 - `sim/opt_dme.py`: the optimal channel with n copies over all channels.
 
