@@ -6,7 +6,7 @@ Each round applies the one-copy step of Theorem 9 once for every operator, with 
     for m >= max(2.5 K t, d t).
 (c) phi <= ((d+1)/4 + 1/d) kappa, kappa = ||sum_k L_k^+ L_k||, through the split F = P - N with P, N completely positive and
     P*(I) <= ((d+1)/4 + 1/d) kappa I (one shared term in G = sum_k K_k^2), and phi <= sum_k e_{L_k}.
-(d) N err/t^2 -> K phi (N = K m copies), and for the decay family L_k = |0><k| at d = 5, phi stays 3/4 for K = 1..4."""
+(d) N err/t^2 -> K phi (N = K m copies), and for the decay family L_k = |0><k|, phi = (d-2)/4 for d = 3, 4, 5 and K <= d-1."""
 import os, itertools
 for _v in ("OMP_NUM_THREADS", "OPENBLAS_NUM_THREADS", "MKL_NUM_THREADS", "VECLIB_MAXIMUM_THREADS"): os.environ[_v] = "1"
 import numpy as np, cvxpy as cp
@@ -118,7 +118,8 @@ for name, d, Ls in cases:
     assert abs(lead - K * phi) <= 0.03 * K * phi, (name, lead, K * phi)
     print("%-30s phi = %.4f, sum e_L = %.4f, ((d+1)/4+1/d) kappa = %.4f, N err/t^2 at t=0.02 = %.4f vs K phi = %.4f"
           % (name, phi, sum(e_single), ((d + 1) / 4 + 1 / d) * kappa, lead, K * phi), flush=True)
-for K in (1, 2, 3, 4):
-    phi = half_dia(F_of(decay(5, K), 5), 5); assert abs(phi - 0.75) < 1e-5, (K, phi)
-print("(d) decay family d=5: phi = 3/4 for K = 1, 2, 3, 4")
+for d in (3, 4, 5):
+    for K in range(1, d):
+        phi = half_dia(F_of(decay(d, K), d), d); assert abs(phi - (d - 2) / 4) < 1e-5, (d, K, phi)
+print("(d) decay family: phi = (d-2)/4 for d = 3, 4, 5 and K = 1, ..., d-1")
 print("ok")
