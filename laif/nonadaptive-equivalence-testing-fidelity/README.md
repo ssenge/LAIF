@@ -16,7 +16,7 @@ So, to our knowledge, the fidelity gives no asymptotic advantage over the trace 
 
 ## Result
 
-F(ρ, σ) = ‖√ρ√σ‖₁ is the fidelity of [1]. Since 1 − F² ≥ 1 − F, everything below holds for the squared fidelity too.
+F(ρ, σ) = ‖√ρ√σ‖₁ is the (root) fidelity, as in [1]. Theorem 1 also holds for the squared fidelity F², since 1 − F² ≥ 1 − F. For F² the matching upper bound below loses a factor 2 in the gap, since ½‖ρ − σ‖₁ ≥ 1 − F ≥ (1 − F²)/2.
 
 **Theorem 1.** Let 0 < ε ≤ 1/2, d = 2D and D ≥ 60 + 4 ln(1/ε). Consider a tester that measures copies of ρ and σ one at a time, where the measurements on the copies of σ are fixed in advance (random choices are allowed if they are independent of the states). The copies of ρ may be measured in any way, even adaptively among themselves. If the tester accepts with probability at least 2/3 when ρ = σ and rejects with probability at least 2/3 when F(ρ, σ) ≤ 1 − ε/1700, then it uses more than
 
