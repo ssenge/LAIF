@@ -23,7 +23,7 @@ Status: Claim. The query count of the classical part and the cut structure behin
 | Problem | Previous best bound | This work |
 |---|---|---|
 | Maximum s-t flow, simple directed graph, adjacency matrix | O(n²) by reading the matrix; Õ((f+1) n^{3/2}) by f + 1 searches for augmenting paths, each a directed reachability search with O(n^{3/2}) queries [1]; Ω(n^{3/2}) [1] | Õ(n^{3/2} √(min{f, n^{2/3}} + 1)), so Õ(n^{11/6}) |
-| Maximum s-t flow, simple undirected graph, adjacency matrix | Õ((f+1) n^{3/2}) as above; Õ(n^{11/6}) for the value f and a minimum cut, not the flow [3] | the same bound for the flow |
+| Maximum s-t flow, simple undirected graph, adjacency matrix | Õ((f+1) n^{3/2}) as above; for the value f and a minimum cut, not the flow: Õ(n^{11/6}) [3], and Õ(n^{3/2}) with adjacency array queries [8] | the same bound for the flow |
 | Edge connectivity λ, simple directed graph, adjacency matrix | O(n²) by reading the matrix; Ω(n^{3/2}) from strong connectivity [1]; for undirected graphs Θ̃(n^{3/2}) [7] | Õ(n² √(min{λ+1, n^{2/3}}/δ)), δ ≥ 1 the least degree |
 
 The quantum algorithm of [4] for directed maximum flow uses adjacency lists, and on dense graphs its bound is above n². For the adjacency array model see [`small-cuts-array-queries`](../small-cuts-array-queries/), and for running time [`quantum-st-minimum-cut-time`](../quantum-st-minimum-cut-time/), Theorem 2.
@@ -74,7 +74,7 @@ A run stopped at value k has at most k phases, and by Lemmas 2 to 4 with f repla
 ## Remarks
 
 - The same bound follows from the decision-tree method of [6] with T ≤ n² queries and G = Õ(n · min{f + 1, n^{2/3}}) wrong guesses (guess "no arc" for every pair).
-- Up to logarithmic factors, the bound improves on f + 1 augmenting path searches by the factor √(f + 1) for f ≤ n^{2/3}, and it is below n² for every f. For undirected graphs it equals the bound of [3] for the value when f ≥ n^{2/3}, and is smaller for smaller f.
+- Up to logarithmic factors, the bound improves on f + 1 augmenting path searches by the factor √(f + 1) for f ≤ n^{2/3}, and it is below n² for every f. For undirected graphs the value f alone is easier: [8] computes it and a minimum cut with Õ(n^{3/2}) adjacency array queries, and Theorem 1 matches this for bounded f while also giving the flow.
 - Theorem 2 is below n² when δ is larger than min{λ + 1, n^{2/3}} by more than a polylogarithmic factor; for λ close to δ it gives n² up to logarithmic factors.
 - Only the classical algorithm uses unbounded computation; the bound is a query bound.
 
@@ -106,6 +106,7 @@ Theorems 1 and 2, Lemmas 1 and 2, and the parts of Lemmas 3 and 4 outside the Le
 5. E. A. Dinic. Algorithm for solution of a problem of maximum flow in networks with power estimation. Soviet Math. Doklady 11, 1970. S. Even, R. E. Tarjan. Network flow and testing graph connectivity. SIAM J. Comput. 4(4), 1975.
 6. C. Y.-Y. Lin, H.-H. Lin. Upper bounds on quantum query complexity inspired by the Elitzur-Vaidman bomb tester. CCC 2015. arXiv:1410.0932. S. Beigi, L. Taghavi. Quantum speedup based on classical decision trees. Quantum 4, 2020. arXiv:1905.13095.
 7. S. Apers, T. Lee. Quantum complexity of minimum cut. CCC 2021. arXiv:2011.09823.
+8. T. Lu, R. Ren, S. Liu. Tight quantum query bounds for minimum cut and multicut on dense graphs. arXiv:2611.17845.
 
 ## Use of AI
 
