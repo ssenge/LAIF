@@ -2,12 +2,12 @@
 
 2026-11-26
 
-In sample-based Hamiltonian simulation a protocol receives n copies of an unknown state σ on C^d and must apply e^{−itσ} to a system, up to error ε in the normalized diamond distance. Density matrix exponentiation (DME) [3] does this with one copy per step: each step applies e^{−iΔ SWAP} to the system and a fresh copy and discards the copy, with Δ = t/n. The number of copies is of order t²/ε, and this order is optimal [2]. With explicit constants, DME needs at most 4t²/ε copies and every protocol needs at least 0.032 t²/ε copies, for ε < min{9t/(100π), 1/10} [1, Corollary 3 and Theorem 5]. Here the leading constant is pinned down: it is 1, for every d, and DME attains it.
+In sample-based Hamiltonian simulation a protocol receives n copies of an unknown state σ on C^d and must apply e^{−itσ} to a system, up to error ε in the normalized diamond distance. Density matrix exponentiation (DME) [3] does this with one copy per step: each step applies e^{−iΔ SWAP} to the system and a fresh copy and discards the copy, with Δ = t/n. The number of copies is of order t²/ε, and this order is optimal [2]. With explicit constants, DME needs at most 4t²/ε copies and every protocol needs at least 0.032 t²/ε copies, for ε < min{9t/(100π), 1/10} [1, Corollary 3 and Theorem 5]. Here the leading constant is pinned down: as t → 0 it is 1, for every d, and DME attains it.
 
 | Quantity | Previous bound | Here |
 |---|---|---|
-| Copies sufficient for every σ (DME) | at most 4t²/ε [1, Corollary 3] | at most t²/ε + 3t, for every ε and t (Theorem 1) |
-| Copies needed by every protocol, any joint processing of the n copies | at least 0.032 t²/ε for ε < min{9t/(100π), 1/10} [1, Theorem 5] | at least (1 − 19t) t²/ε for every ε and every t ≤ 1/10 (Theorem 2) |
+| Copies sufficient for every σ (DME) | at most 4t²/ε [1, Corollary 3] | at most ⌈t²/ε + 3t⌉, for every ε and t (Theorem 1) |
+| Copies needed by every protocol, any joint processing of the n copies | at least 0.032 t²/ε for ε < min{9t/(100π), 1/10} [1, Theorem 5] | at least (1 − 10t)² t²/ε for every ε and every t ≤ 1/10, above the previous bound for t < 0.082 (Theorem 2) |
 | Leading constant of the copy count as t → 0, every d ≥ 2 | between 0.032 and 4 | exactly 1 |
 
 ## Setting
@@ -27,9 +27,9 @@ At a pure σ and an input orthogonal to σ the leading term is attained: the tar
 
 **Theorem 2 (every protocol needs t²/ε copies).** For every d ≥ 2, every n ≥ 1, every t ∈ (0, 1/10] and every channel Λ from S ⊗ P^{⊗n} to S, with any joint processing of the n copies,
 
-n · sup_σ ½‖Λ(· ⊗ σ^{⊗n}) − 𝒰_σ‖⋄ ≥ t² (1 − 19t).
+n · sup_σ ½‖Λ(· ⊗ σ^{⊗n}) − 𝒰_σ‖⋄ ≥ t² (1 − 10t)².
 
-The supremum may be restricted to the pure states σ_v = |v⟩⟨v| with v = cos θ |0⟩ + e^{iφ} sin θ |1⟩. Hence every protocol that uses a fixed number n of copies and has error at most ε on these states has n ≥ (1 − 19t) t²/ε, at every accuracy ε.
+The supremum may be restricted to the pure states σ_v = |v⟩⟨v| with v = cos θ |0⟩ + e^{iφ} sin θ |1⟩. Hence every protocol that uses a fixed number n of copies and has error at most ε on these states has n ≥ (1 − 10t)² t²/ε, at every accuracy ε. For t ≥ 0.082 the bound 0.032 t²/ε of [1, Theorem 5] is the stronger one.
 
 *Proof.* Let ε be the supremum over the states σ_v, Λ_v(ρ) = Λ(ρ ⊗ σ_v^{⊗n}) and 𝒰_v = 𝒰_{σ_v}, so ‖Λ_v − 𝒰_v‖⋄ ≤ 2ε for all θ, φ. Let C = Σ_{a,b} |a⟩⟨b| ⊗ Λ(|a⟩⟨b|) ≥ 0 be the Choi matrix of Λ, with ⟨a|⟨x| C |b⟩|y⟩ = ⟨x|Λ(|a⟩⟨b|)|y⟩, and let |τ⟩ = n^{−1/2} Σ_j |0 … 1 … 0⟩ (|1⟩ in copy j).
 1. **Test vectors.** Let e = |1⟩|0⟩^{⊗n}|0⟩ (input |1⟩, program |0…0⟩, output |0⟩) and f = c Σ_m |m⟩|τ⟩|m⟩ with c = −i/(d√n). Positivity of C gives |e†Cf|² ≤ (e†Ce)(f†Cf).
@@ -38,7 +38,7 @@ The supremum may be restricted to the pure states σ_v = |v⟩⟨v| with v = cos
 4. **The cross term is a θ-derivative.** Let M(ρ) = Λ(ρ ⊗ |0^n⟩⟨τ|) and Q(X) = Σ_m ⟨0|X(|1⟩⟨m|)|m⟩ for a linear map X on operators of S. Then e†Cf = c Q(M). Since |v⟩^{⊗n} = |0^n⟩ + θ e^{iφ} √n |τ⟩ + O(θ²), the coefficient of e^{−iφ} in ∂_θ Λ_v at θ = 0 is √n M. Also Q(X) = ⟨0 0|(X ⊗ id)(|1 0⟩⟨Ω|)|Ω⟩ with |Ω⟩ = Σ_m |m⟩|m⟩, so |Q(X)| ≤ d ‖X‖⋄.
 5. **The target.** With a = e^{−it} − 1 and W = e^{−it|0⟩⟨0|}, the coefficient of e^{−iφ} in ∂_θ 𝒰_v at θ = 0 is Y(ρ) = a |0⟩⟨1| ρ W† + ā W ρ |0⟩⟨1|, because e^{−itσ_v} = I + aσ_v. A direct computation gives Q(Y) = a tr W† = −(d − 2)(1 − cos t) − i d sin t, so |Q(Y)| ≥ d sin t.
 6. **Bernstein's inequality.** Let T_v = Σ_{k ≤ n+1} t^k ad_{σ_v}^k/k! be the Taylor polynomial of 𝒰_v = e^{t ad_{σ_v}}. The entries of σ_v^{⊗n} and of ad_{σ_v}^k are trigonometric polynomials in θ of degrees 2n and 2k, so Λ_v − T_v is a trigonometric polynomial of degree at most 2n + 2 in θ, with values in maps of diamond norm at most 2ε + R, where R = Σ_{k ≥ n+2} (2t)^k/k! (since ‖ad_σ‖⋄ ≤ 2). Bernstein's inequality, applied through bounded linear functionals, bounds its θ-derivative by (2n + 2)(2ε + R). The θ-derivative of 𝒰_v − T_v is at most R′ = Σ_{k ≥ n+2} (2t)^k/(k − 1)!, since ‖∂_θ ad_{σ_v}^k‖⋄ ≤ k 2^k at θ = 0. Taking the coefficient of e^{−iφ}, √n M = Y + E with ‖E‖⋄ ≤ 4(n + 1)ε + δ_n and δ_n = (2n + 2)R + R′.
-7. **Conclusion.** By steps 4 to 6, n |e†Cf| = |Q(Y) + Q(E)|/d ≥ sin t − 4(n + 1)ε − δ_n. For t ≤ 1/10 and n ≥ 1, δ_n ≤ 12t³. Write x = nε, so 4(n + 1)ε ≤ 8x. If x ≥ t² there is nothing to prove. Otherwise sin t − 8x − δ_n ≥ t − t³/6 − 8t² − 12t³ ≥ t(1 − 9.22t) > 0, and step 3 gives x ≥ n²|e†Cf|² ≥ t²(1 − 9.22t)² ≥ t²(1 − 19t). ∎
+7. **Conclusion.** By steps 4 to 6, n |e†Cf| = |Q(Y) + Q(E)|/d ≥ sin t − 4(n + 1)ε − δ_n. For t ≤ 1/10 and n ≥ 1, δ_n ≤ 14t³, by the bound e^y − Σ_{k<m} y^k/k! ≤ y^m (m + 1)/(m! m) for 0 ≤ y ≤ 1. Write x = nε, so 4(n + 1)ε ≤ 8x. If x ≥ t² there is nothing to prove. Otherwise sin t − 8x − δ_n ≥ t − t³/6 − 8t² − 14t³ ≥ t(1 − 10t) ≥ 0, and step 3 gives x ≥ n²|e†Cf|² ≥ t²(1 − 10t)². ∎
 
 No factor d appears: the forced leak runs from one state orthogonal to σ towards σ, and the normalizations of f in d cancel.
 
@@ -47,13 +47,15 @@ No factor d appears: the forced leak runs from one state orthogonal to σ toward
 ## Scope
 
 - Theorem 1 is a written proof (Claim). The decomposition Φ = P − N and complete positivity of P and N are checked on 400 random states for d = 2 to 5, and the n-step bound against the matrix exponential for d = 2, 3, t from 0.3 to 3 and n up to 40.
-- Theorem 2 is a written proof (Claim) for protocols with a fixed number n of copies; protocols with a random number of copies are not covered. The constants 1/10 and 19 are not optimized. The test vectors and their overlaps are checked for d = 2, 3 and n = 1 to 3; the target coefficient Y, the value Q(Y) and the identity for Q(X) for d = 2, 3, 5; every inequality of the proof on n DME steps and on the optimal channel for d = 2, n = 1, 2 and t = 0.05; and the bound δ_n ≤ 12t³ for n < 60 on a grid of t ≤ 1/10.
+- Theorem 2 is a written proof (Claim) for protocols with a fixed number n of copies; protocols with a random number of copies are not covered. The constants 1/10 and 10 are not optimized. The test vectors and their overlaps are checked for d = 2, 3 and n = 1 to 3; the target coefficient Y, the value Q(Y) and the identity for Q(X) for d = 2, 3, 5; every inequality of the proof on n DME steps and on the optimal channel for d = 2, n = 1, 2 and t = 0.05.
+- Lean (`lean/DmeConstant`, standard axioms only) checks the scalar steps: the remainder 2.65Δ³ of one step and the copy count of Theorem 1, the eigenvalue bound for P*(I), the value Q(Y) and |Q(Y)| ≥ d sin t, the bound δ_n ≤ 14t³ for every n ≥ 1, and the final inequality of Theorem 2, each with a lemma that its hypotheses can hold. The complete positivity, diamond-norm, Choi-matrix and Bernstein steps are not formalized.
 - The semidefinite programs are numerical, at a fixed small t.
 
 ## Files
 
 - `sim/dme_check.py`: Theorem 1 (decomposition, complete positivity, n-step error) and the test vectors of Theorem 2, with asserts.
 - `sim/thm2_check.py`: the steps of the proof of Theorem 2 and its constants, with asserts.
+- `lean/DmeConstant/Basic.lean`: the scalar steps of Theorems 1 and 2.
 - `sim/lead_dme.py`: the leading-order optimal one-copy step.
 - `sim/opt_dme.py`: the optimal channel with n copies over all channels.
 

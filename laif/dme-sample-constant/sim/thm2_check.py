@@ -6,8 +6,8 @@
 (c) The chain of the proof on two channels with n copies (d = 2, t = 0.05): n DME steps, and the optimal covariant
     channel of opt_dme.py. Both are covariant, so eps is the error at sigma = |0><0|. Checked: e+Ce <= eps,
     0 < f+Cf <= 1/n, n |e+Cf| >= sin t - 4(n+1) eps - delta_n, n eps >= (sin t - 4(n+1) eps - delta_n)^2.
-(d) Constants: delta_n <= 12 t^3 for n >= 1 and t <= 1/10, and x >= (sin t - 8x - 12 t^3)^2 with x < t^2 forces
-    x >= t^2 (1 - 19 t) (exact root of the quadratic on a grid)."""
+(d) Constants: delta_n <= 14 t^3 for n >= 1 and t <= 1/10 (on a grid; the Lean file proves it for every n),
+    and x >= (sin t - 8x - 14 t^3)^2 forces x >= t^2 (1 - 10 t)^2 (exact root of the quadratic on a grid)."""
 import os, sys
 for _v in ("OMP_NUM_THREADS", "OPENBLAS_NUM_THREADS", "MKL_NUM_THREADS", "VECLIB_MAXIMUM_THREADS"): os.environ[_v] = "1"
 import math, itertools
@@ -118,10 +118,10 @@ def delta_n(n, t):
     return sum((2 * t) ** k / math.factorial(k - 1) for k in range(n + 2, 80)) + (2 * n + 2) * sum((2 * t) ** k / math.factorial(k) for k in range(n + 2, 80))
 for t in np.linspace(1e-3, 0.1, 200):
     for n in range(1, 60):
-        assert delta_n(n, t) <= 12 * t ** 3
+        assert delta_n(n, t) <= 14 * t ** 3
     # smallest x in [0, t^2) with sqrt(x) >= sin t - 8x - 12 t^3: root of sqrt(x) + 8x = b, b = sin t - 12 t^3 > 0
-    b = np.sin(t) - 12 * t ** 3; assert b > 0
+    b = np.sin(t) - 14 * t ** 3; assert b > 0
     r = ((-1 + np.sqrt(1 + 32 * b)) / 16) ** 2
-    assert r >= t * t * (1 - 19 * t), (t, r / t ** 2)
-print("(d) delta_n <= 12 t^3 and n eps >= t^2 (1 - 19 t) for t <= 1/10")
+    assert r >= t * t * (1 - 10 * t) ** 2, (t, r / t ** 2)
+print("(d) delta_n <= 14 t^3 and n eps >= t^2 (1 - 10 t)^2 for t <= 1/10")
 print("ok")
