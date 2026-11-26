@@ -13,7 +13,7 @@ Here the recursive contraction of [1] is run with fixed-point amplitude amplific
 
 **Theorem 2.** For every fixed k ≥ 2, computing λ_k for graphs with n vertices and weights in {0, 1, n} in the adjacency matrix model needs Ω(n²) quantum queries, and so Ω(n²) time. So part 2 of Theorem 1 is optimal up to a factor n^{o(1)} for such weights.
 
-Status: Claim. The cost exponent of the level schedule is evaluated by a script with asserts.
+Status: Claim. The cost exponent of the level schedule is evaluated by a script with asserts, and the level-cost inequalities and the padding identity of Section 4 are checked in Lean.
 
 ## Before and after
 
@@ -84,13 +84,24 @@ The padded graph has n + k − 2 vertices, and each of its queries is answered b
 
 Run it with `python recursion.py` in `sim/`.
 
-## 6. Limits
+## 6. Lean
+
+[`lean/KCutExponent.lean`](lean/KCutExponent.lean), with [`lean/KCutExponentAxioms.lean`](lean/KCutExponentAxioms.lean) and its output in [`lean/axioms.txt`](lean/axioms.txt). A level that contracts x = n_ℓ vertices to y = n_{ℓ+1} enters with the cost (n/y)^{k/2} x², and a partition is a map into Fin k whose cost is the weight of the ordered pairs it separates.
+
+- `schedule_hyp`, `level_cost_le`: if y ≥ x^{4/k}, then x² ≤ y^{k/2}, and then (n/y)^{k/2} x² ≤ n^{k/2}, so every level of the schedule for k ≥ 5 costs at most n^{k/2} (Section 3).
+- `level_cost_eq`, `level_cost_can_fail`: the bound is attained when x² = y^{k/2}, and it fails for k = 4, n = x = 2, y = 1, where the hypothesis fails.
+- `small_k_exponent`: for 0 ≤ k ≤ 4, a ≤ 1 and ε ≥ 0, k/2 + a(2 − k/2 + kε/2) ≤ 2 + kε/2 (Section 3, k = 3, 4).
+- `pad_ge`, `pad_le`: after adding k − 2 vertices of weight zero, every surjective map into Fin k costs at least some surjective map of the old vertices into Fin 2, and every surjective map into Fin 2 extends to a surjective map into Fin k of the same cost (Section 4). `cost_pad` computes the cost on the padded graph, and `cost_example` shows that a cost can be positive.
+
+Lean 4 v4.36.0-rc1, Mathlib rev d875a8de5222f62cf1c2fafc7984588adadc990a.
+
+## 7. Limits
 
 - k is fixed. The factor per level, k^{O(k²)}, is not explicit in [1], and the exponent of the polylogarithmic factor grows like k² log k / log(k/4).
 - For k = 3, the classical bound n² log² n of [8] is at least as good as part 2 of Theorem 1.
 - Weights are integers, so rational weights are scaled first. The gate count grows polynomially in log W.
 - The table compares weighted graphs. For simple unweighted graphs, faster classical algorithms are known [6].
-- Not formalized: the algorithm, its analysis and Theorem 2.
+- Not formalized: the algorithm, the survival bound of [1], the quantum costs, and the bound of [3]; Lean covers the level-cost arithmetic of Section 3 and the padding identity of Section 4.
 
 ## References
 
