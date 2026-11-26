@@ -1,0 +1,6 @@
+random 3-reg 200       n= 200 d=3 lam=2.783 lam*=1.414 theta=0.707: (W1') ok for t <= 40
+random 4-reg 150       n= 150 d=4 lam=3.456 lam*=1.732 theta=0.577: (W1') ok for t <= 40
+prism C30 x K2         n=  60 d=3 lam=2.956 lam*=1.908 theta=0.954: (W1') ok for t <= 40
+torus 8x8              n=  64 d=4 lam=3.414 lam*=1.732 theta=0.577: (W1') ok for t <= 40
+circulant Z_101 {1,7}  n= 101 d=4 lam=3.952 lam*=2.927 theta=0.976: (W1') ok for t <= 40
+mutation (lam* -> sqrt(d-1)) caught on a non-Ramanujan graph; all asserts passed

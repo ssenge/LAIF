@@ -1,6 +1,6 @@
 # Quantum lower bounds for local search via vertex congestion
 
-Written 25 Nov 2026, Theorem 4 added 26 Nov 2026.
+Written 25 Nov 2026, Theorems 4 and 5 added 26 Nov 2026.
 
 **Setting.** As in [1]: G = (V, E) is a connected undirected graph with n vertices, and f : V → ℝ is given by an oracle that answers |v, a⟩ ↦ |v, a ⊕ f(v)⟩. The task is to find a local minimum, a vertex v with f(v) ≤ f(u) for every neighbour u, with success probability at least 2/3 for every f. An all-pairs path system P = {P^{u,w}} assigns a simple path from u to w to every ordered pair (u, w), with P^{u,u} = (u). Its vertex congestion is the largest number of paths of P that contain a vertex; g denotes the least vertex congestion over all such systems. Every vertex lies on the n paths that start at it, so g ≥ n, and g ≤ n².
 
@@ -10,6 +10,7 @@ Written 25 Nov 2026, Theorem 4 added 26 Nov 2026.
 | Cor 2 | The same on Δ-regular β-expanders with constant Δ and β | Ω(n^{1/4}/√(log n)) [1, Corollary 2]; upper bound O(n^{1/3}) [5, Theorem 3.2] | Ω((n/log n)^{1/3}), which matches the upper bound up to the factor (log n)^{1/3} | Claim |
 | Cor 3 | The same on vertex-transitive graphs of diameter d ≤ n^{1−δ}/4 and degree Δ | Ω(n^{1/4}/√d), implied by [1, Theorem 1] with the path system below; Ω(n^{1/4}/√(d log n)) [6]; upper bound O(n^{1/3} Δ^{1/6}) [5, Theorem 3.2] | Ω_δ((n/d)^{1/3}) | Claim |
 | Thm 4 | The same on connected d-regular Ramanujan graphs, d ≥ 3, of girth g ≥ (2/3 + ε) log_{d−1} n with a constant ε > 0, among them the bipartite graphs X^{p,q} of [9] | Ω(n^{1/4}/√(log n)) [1, Corollary 2]; Ω((n/log n)^{1/3}) by Cor 2; upper bound O(n^{1/3} d^{1/6}) [5, Theorem 3.2] | Ω_{d,ε}(n^{1/3}), so Θ(n^{1/3}) for constant d | Claim |
+| Thm 5 | The same on connected d-regular graphs, d ≥ 3, whose adjacency eigenvalues other than ±d have absolute value at most λ < d, with θ as below and girth g ≥ (1/3 + ε) log_{1/θ} n | as for Thm 4 | Ω_{d,λ,ε}(n^{1/3}), so Θ(n^{1/3}) for constant d; in general Ω(min(n^{1/3}, θ^{−g}/(log n)^C)) | Claim |
 
 **Comparison.** n^{2/3}/g^{1/3} ≥ n^{3/4}/g^{1/2} holds exactly when g ≥ n^{1/2}, so for every graph, since g ≥ n. The bound of [1, Theorem 1] is above a constant only for g < n^{3/2}, and there Theorem 1 applies with δ = 1/2, so its constant does not depend on the graph in that range. Cor 2 follows from Theorem 1 with g = O(n log n) for constant-degree expanders [2, Corollary D.1]. Cor 3 follows from Theorem 1 with a path system of congestion at most 2n(D̄ + 1) ≤ 4nd, where D̄ is the mean distance (below). Theorem 1 of [1] with the same path system gives Ω(n^{1/4}/√d), which Cor 3 exceeds by the factor n^{1/12} d^{1/6}; the bound of [6] is lower by a further factor √(log n). The bound of [6] holds for every vertex-transitive graph but exceeds a constant only for d < n^{1/2}, and there Cor 3 applies with δ = 1/4 for n large enough. The congestion of a path system is, up to the paths that end at a vertex, its vertex-forwarding index; see [7] for known bounds. For vertex-transitive graphs of polylogarithmic diameter and degree, such as many Cayley graphs, Cor 3 matches the upper bound up to polylogarithmic factors. On the hypercube and on grids of dimension at least 6, the bound Θ(N^{1/3}) up to logarithmic factors is known from [3]; the lower bound technique of [8] applies to every graph that contains a product graph, which covers graphs containing such grids, among them tori of dimension at least 6, where it is stronger than Cor 3.
 
@@ -59,6 +60,18 @@ A non-backtracking walk on the directed edge e = (u, w) that takes t further uni
 
 The walks are non-backtracking because a simple random walk stays near a vertex for about log T steps; for simple random walks the corresponding sum grows with n (`sim/phi_nb.py`).
 
+## Theorem 5, the general form
+
+**Statement.** Let G be a connected d-regular graph with n vertices, d ≥ 3, whose adjacency eigenvalues other than ±d have absolute value at most λ < d. Put λ_* = max(√(d−1), (λ + √(max(λ² − 4(d−1), 0)))/2) and θ = λ_*/(d−1), so θ < 1. If the girth g satisfies g ≥ (1/3 + ε) log_{1/θ} n for a constant ε > 0, then the quantum query complexity of local search on G is Ω_{d,λ,ε}(n^{1/3}), hence Θ(n^{1/3}) for constant d by [5, Theorem 3.2]. For every girth, the bound is Ω(min(n^{1/3}, θ^{−g}/(log n)^C)) for a constant C. For Ramanujan graphs, θ = (d−1)^{−1/2} and log_{1/θ} n = 2 log_{d−1} n, which is Theorem 4.
+
+**Proof.** The proof of Theorem 4 goes through with (d−1)^{−1/2} replaced by θ in the walk counts. For an eigenvalue μ with 2√(d−1) < |μ| ≤ λ, write |μ| = 2√(d−1) cosh φ; then |U_t(μ/(2√(d−1)))| = sinh((t+1)φ)/sinh φ ≤ (t + 1)e^{tφ}, and √(d−1) e^{φ} is the larger root of x² − |μ|x + (d−1), at most λ_*. So
+
+(W1′) A_t(x, y) ≤ 2d(d−1)^{t−1}/n + 2(t + 1)λ_*^t,
+
+and (W2) holds with λ_*^t in place of (d−1)^{t/2}. A walk on a directed edge is then at y after t further steps with probability at most 2d/n + 4d(t + 2)θ^t. The scales become ρ = ⌈5 log_{d−1} log n⌉, s = max(2ρ, ⌈6 log_{1/θ} log n⌉) and L = ⌈2 log_{1/θ} n⌉; all are O(log n), and g > 2s for n large. The middle part does not use the spectrum. The late part needs Σ_{t≥s} (t + 2)θ^t ≤ (log n)^{−5}, which holds by the choice of s. The block step needs p_L ≤ 6π, which holds by the choice of L. In the near part, the probability of two runs for the same vertex is at most (log n)^{O(1)}(T²/n + Tθ^{g}). It is o(1) when T ≤ n^{1/3} and θ^{−g} ≥ T(log n)^C, which the girth condition gives at T = ⌊n^{1/3}⌋. Two branches of length m ≥ g/2 end at the same vertex with probability at most 2d/n + 4d(m + 2)θ^m = o(1). ∎
+
+`sim/check_nb_gap.py` asserts (W1′) for t ≤ 40 on five regular graphs that are not all Ramanujan (random 3- and 4-regular graphs, a prism, a torus, a circulant), with a mutation (λ_* replaced by √(d−1)) that fails on a graph with λ > 2√(d−1).
+
 ## Scripts
 
 `sim/check_adv.py` builds Γ and every Γ_v exactly for random 3- and 4-regular graphs with breadth-first path systems (n ≤ 12, L ≤ 3, up to 512 inputs). It asserts that x_{L+1} is the only local minimum of every f_x, that f_x and f_y differ only on the two tails, the bound q_k for every prefix and vertex, and ‖Γ_v‖ ≤ 3 max_z Σ_k α_k(z_k, v) for every v. `sim/scaling.py` computes c_u(v) as subtree sizes of breadth-first trees on random 3-regular graphs with n ≤ 4000, and evaluates g/(n ln n), the worst Φ over sampled staircases, and the explicit bound B of the proof. At these sizes L ≤ 6 and B < 1, so the scripts check the inequalities and the growth of g and Φ, not the asymptotic advantage. `sim/transitive.py` computes, for hypercubes, tori, circulants and a cycle, the exact probability that a vertex lies on a uniform shortest path, asserts that E c(v) = n(D̄ + 1) at every vertex, draws one random shortest-path system and asserts g ≤ 2n(D̄ + 1) ≤ 4nd; the Petersen graph is included as a vertex-transitive graph that is not a Cayley graph, and the cycle lies outside the range of Cor 3. On a path graph, which is not vertex-transitive, the first assert fails, as it should. Output in `sim/out.txt`:
@@ -79,7 +92,7 @@ d=3 n=  1000 T= 10  NB max_v Phi: mean 2.49 max 3.23  floor T^1.5/sqrt(n)=1.00  
 d=3 n= 64000 T= 40  NB max_v Phi: mean 2.97 max 3.25  floor T^1.5/sqrt(n)=1.00
 ```
 
-**Not formalized:** the proofs of Theorems 1 and 4 and Cor 3 are written out above and checked numerically on the small cases listed; there is no Lean proof. The adversary bound of [4], the staircase lemmas of [2], the walk-count identity of [9] and the multiplicative Chernoff bound for martingales are used as stated there.
+**Not formalized:** the proofs of Theorems 1, 4 and 5 and Cor 3 are written out above and checked numerically on the small cases listed; there is no Lean proof. The adversary bound of [4], the staircase lemmas of [2], the walk-count identity of [9] and the multiplicative Chernoff bound for martingales are used as stated there.
 
 ## Use of AI
 
