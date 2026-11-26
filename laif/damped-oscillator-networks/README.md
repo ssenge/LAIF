@@ -126,7 +126,7 @@ Up to γt ≈ 2 the signal falls like e^{−2γt}, as for the walled network of 
 
 ## 9. Formal verification
 
-[`lean/`](lean/) is a Lean 4 library `DampedOsc` on Mathlib with 25 theorems, no `sorry`, and only the standard axioms (propext, Classical.choice, Quot.sound), as listed by `lean/DampedOsc/Axioms.lean`. Build with `lake build` in `lean/`.
+[`lean/`](lean/) is a Lean 4 library `DampedOsc` on Mathlib with 25 theorems, no `sorry`, and only the standard axioms (propext, Classical.choice, Quot.sound), as listed by `lean/DampedOsc/Axioms.lean`. Build with `lake build` in `lean/`. Its output is in [`lean/axioms.txt`](lean/axioms.txt).
 
 | Part | Theorems |
 |---|---|

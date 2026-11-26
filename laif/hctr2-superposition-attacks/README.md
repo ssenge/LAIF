@@ -122,7 +122,7 @@ The post-processing is Gaussian elimination on D ≤ 3n bits and a few field ope
 
 ## 8. Formal verification
 
-[`lean/`](lean/) is a Lean 4 library `SimonHCTR` on Mathlib, with 38 main theorems, no `sorry`, and only the standard axioms (propext, Classical.choice, Quot.sound), listed by `lean/SimonHCTR/Axioms.lean`. Build with `lake build` in `lean/`.
+[`lean/`](lean/) is a Lean 4 library `SimonHCTR` on Mathlib, with 38 main theorems, no `sorry`, and only the standard axioms (propext, Classical.choice, Quot.sound), listed by `lean/SimonHCTR/Axioms.lean`. Build with `lake build` in `lean/`. Its output is in [`lean/axioms.txt`](lean/axioms.txt).
 
 | Part | Theorems |
 |---|---|

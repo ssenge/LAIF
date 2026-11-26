@@ -94,7 +94,7 @@ The Chernoff step above is argued here and not in Lean.
 
 ## 7. Formal verification
 
-`lean/` builds with `lake build` (Lean 4 v4.36.0-rc1, Mathlib `d875a8de`), with no `sorry` and no `axiom` declaration. `lake env lean LPType/Axioms.lean` prints the axioms of 54 theorems: only `propext`, `Classical.choice` and `Quot.sound`.
+`lean/` builds with `lake build` (Lean 4 v4.36.0-rc1, Mathlib `d875a8de`), with no `sorry` and no `axiom` declaration. `lake env lean LPType/Axioms.lean` prints the axioms of 54 theorems: only `propext`, `Classical.choice` and `Quot.sound`. Its output is in [`lean/axioms.txt`](lean/axioms.txt).
 
 | Part | Theorems |
 |---|---|

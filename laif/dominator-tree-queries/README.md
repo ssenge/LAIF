@@ -96,7 +96,7 @@ For bridges of a flow graph: the gadget above does not work, since v₀ → a_v 
 
 ## 8. Formal verification
 
-`lean/` builds with `lake build` (Lean 4 v4.36.0-rc1, Mathlib `d875a8de`), with no `sorry` and no `axiom` declaration. `lake env lean Dominators/Axioms.lean` prints the axioms of 77 theorems: only `propext`, `Classical.choice` and `Quot.sound`.
+`lean/` builds with `lake build` (Lean 4 v4.36.0-rc1, Mathlib `d875a8de`), with no `sorry` and no `axiom` declaration. `lake env lean Dominators/Axioms.lean` prints the axioms of 77 theorems: only `propext`, `Classical.choice` and `Quot.sound`. Its output is in [`lean/axioms.txt`](lean/axioms.txt).
 
 | Part | Theorems |
 |---|---|
