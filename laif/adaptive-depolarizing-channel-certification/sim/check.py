@@ -57,3 +57,35 @@ for d2, m2 in ((6, 3), (10, 4)):
         s = unit(m2); xx = unit(d2); cc = abs(np.vdot(f, s)) ** 2
         assert abs(d2 * np.vdot(xx, N(np.outer(s, s.conj())) @ xx).real - (1 + e2 * cc * np.vdot(xx, Gs @ xx).real)) < 1e-12
 print("4 ok: channel CPTP, diamond >= eps/10, step ratio 1 + eps c x'Gx")
+# 5. ancilla: identity (1) sum_f w_f w_f^dag = a I, martingale identity, Lambda' <= (kappa a/d) I, Haar averages of c_f
+def haar_u(n):
+    q, r = np.linalg.qr(rng.normal(size=(n, n)) + 1j * rng.normal(size=(n, n))); return q * (np.diag(r) / abs(np.diag(r)))
+for d2, m2, k in ((3, 4, 3), (4, 3, 5), (2, 6, 4)):
+    psi = rng.normal(size=(m2, k)) + 1j * rng.normal(size=(m2, k)); psi /= np.linalg.norm(psi)   # psi[a, b]
+    rhoB = psi.T @ psi.conj()                                                          # Tr_A |psi><psi|
+    F = haar_u(d2 * k)                                                                 # orthonormal basis f of C^d (x) C^k, omega_f = 1
+    def stats(phi):
+        v = phi.conj() @ psi                                                           # v = (<phi| (x) I) psi
+        W, cs, X = [], [], []
+        for j in range(d2 * k):
+            f = F[:, j].reshape(d2, k); w = f @ v.conj(); q = np.vdot(F[:, j], np.kron(np.eye(d2), rhoB) @ F[:, j]).real
+            W.append(w); cs.append(np.vdot(w, w).real / q); X.append(q / d2)
+        return v, np.array(W), np.array(cs), np.array(X)
+    phi = unit(m2); v, W, cs, p0 = stats(phi); a = np.vdot(v, v).real
+    assert abs(p0.sum() - 1) < 1e-12 and cs.max() <= 1 + 1e-12 and abs(np.vdot(phi, (psi @ psi.conj().T) @ phi).real - a) < 1e-12
+    assert np.allclose(sum(np.outer(w, w.conj()) for w in W), a * np.eye(d2))
+    assert np.allclose(sum(p * c * np.outer(w, w.conj()) / np.vdot(w, w).real for p, c, w in zip(p0, cs, W)), a / d2 * np.eye(d2))
+    kap = np.median(cs); Lp = sum(p * c * c * np.outer(w, w.conj()) / np.vdot(w, w).real for p, c, w in zip(p0, cs, W) if c <= kap)
+    assert np.linalg.eigvalsh(kap * a / d2 * np.eye(d2) - Lp).min() > -1e-12
+    # alternative probabilities = p0 (1 + eps c x'Gx) for the bipartite output
+    Gs = gue0(d2)[0]; e2 = 0.05
+    out = np.kron(np.eye(d2) / d2, rhoB) + e2 / d2 * np.kron(Gs, np.outer(v, v.conj()))
+    for j in range(d2 * k):
+        w = W[j]; x = w / np.linalg.norm(w)
+        assert abs(np.vdot(F[:, j], out @ F[:, j]).real - p0[j] * (1 + e2 * cs[j] * np.vdot(x, Gs @ x).real)) < 1e-12
+    # Haar averages over phi for fixed outcomes: E c^2 <= 2/m^2, E c^4 <= 24/m^4
+    S2, S4 = np.zeros(d2 * k), np.zeros(d2 * k); T = 20000
+    for _ in range(T):
+        _, _, c_, _ = stats(unit(m2)); S2 += c_ ** 2; S4 += c_ ** 4
+    assert (S2 / T).max() <= 2 / (m2 * (m2 + 1)) * 1.05 and (S4 / T).max() <= 24 / m2 ** 4 * 1.05
+print("5 ok: ancilla identity (1), martingale identity, Lambda' bound, step ratio, Haar averages of c_f")
