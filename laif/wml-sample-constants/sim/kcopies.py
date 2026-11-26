@@ -33,6 +33,20 @@ def w_vector(d, k, i, which="sym"):
         w[n] = acc / len(copies)
     return w
 
+def admissible(d, k, i):
+    """C1 e lies in range(C0) = span{sum_m |m, p>|m>}: <y|Gsym(|m, p><0, L^k|)|i> vanishes for y != m and does not
+    depend on m for y = m (C0 e = 0 holds since the output i differs from the system input 0)."""
+    P = d * d; L = unit(d, 0)
+    for p in itertools.product(range(P), repeat=k):
+        col = np.zeros((d, d), complex)          # col[m, y]
+        for j in range(k):
+            if any(p[l] != 0 for l in range(k) if l != j): continue
+            for m in range(d):
+                rho = np.zeros((d, d)); rho[m, 0] = 1
+                col[m] += G1(rho, unit(d, p[j]), L)[:, i] / k
+        if np.abs(col - np.diag(np.diag(col))).max() > 1e-12 or np.ptp(np.diag(col)) > 1e-12: return False
+    return True
+
 def sym_projector(P, k):
     N = P**k; Pi = np.zeros((N, N))
     idx = {p: n for n, p in enumerate(itertools.product(range(P), repeat=k))}
@@ -46,6 +60,7 @@ for d, k in ((2, 1), (3, 1), (2, 2), (3, 2), (4, 2), (2, 3), (3, 3)):
     assert np.abs(Pi @ Pi - Pi).max() < 1e-12
     leak = 0.0
     for i in range(1, d):
+        assert admissible(d, k, i)
         ws, wf = w_vector(d, k, i, "sym"), w_vector(d, k, i, "first")
         a, b = np.linalg.norm(Pi @ ws)**2 / d**2, np.linalg.norm(Pi @ wf)**2 / d**2
         assert abs(a - b) < 1e-12                    # the forced part does not depend on the representative of G
