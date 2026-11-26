@@ -53,12 +53,12 @@ The classical algorithm is the blocking-flow method of [5]. It keeps an integral
 ## Remarks
 
 - The same bound follows from the decision-tree method of [6] with T ≤ n² queries and G = Õ(n · min{f + 1, n^{2/3}}) wrong guesses (guess "no arc" for every pair).
-- The bound improves on f + 1 augmenting path searches for every f ≥ 1, and it is below n² for every f.
+- Up to logarithmic factors, the bound improves on f + 1 augmenting path searches by the factor √(f + 1) for f ≤ n^{2/3}, and it is below n² for every f. For undirected graphs it equals the bound of [3] for the value when f ≥ n^{2/3}, and is smaller for smaller f.
 - Only the classical algorithm uses unbounded computation; the bound is a query bound.
 
 ## Scripts
 
-[`sim/maxflow_or.py`](sim/maxflow_or.py) (output in [`sim/out_maxflow_or.txt`](sim/out_maxflow_or.txt)) runs the algorithm of Section 2 on 96 random digraphs with up to 45 vertices. It asserts that the flow value equals that of a shortest-augmenting-path computation on the full matrix, that the number of phases is at most min{f, 3n^{2/3} + 1}, and that the number of found arcs plus "no" answers is at most 3(Pn + n√(f + 1)) for P phases (largest ratio 1.70). A mutation that keeps dead ends alive is caught. Run it with `python maxflow_or.py` in `sim/`.
+[`sim/maxflow_or.py`](sim/maxflow_or.py) (output in [`sim/out_maxflow_or.txt`](sim/out_maxflow_or.txt)) runs the algorithm of Section 2 on 96 random digraphs with up to 45 vertices, and on 12 digraphs made of s-t paths of lengths 1, ..., L with extra arcs that create no shorter path, which force L phases (up to 18). It asserts that the output is a feasible 0/1 flow (capacities, conservation, no flow on both arcs of a pair) whose value equals that of a shortest-augmenting-path computation on the full matrix, that the number of phases is at most min{f, 3n^{2/3} + 1}, and that the number of found arcs plus "no" answers is at most 3(Pn + n√(f + 1)) for P phases (largest ratio 1.70). A mutation that keeps dead ends alive is caught. Run it with `python maxflow_or.py` in `sim/`.
 
 ## Not formalized
 

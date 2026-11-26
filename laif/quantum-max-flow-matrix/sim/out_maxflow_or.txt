@@ -1,2 +1,3 @@
-96 digraphs: flow values equal to the reference; max (found+no)/(P n + n sqrt(f+1)) = 1.698
+96 random digraphs: feasible flows of the reference value; max (found+no)/(P n + n sqrt(f+1)) = 1.698
+12 chain digraphs (up to 18 phases): feasible maximum flows; max ratio = 1.599
 mutation (dead ends not removed) caught
