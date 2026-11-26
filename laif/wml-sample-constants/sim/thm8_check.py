@@ -1,6 +1,7 @@
 """Checks for Theorem 8 (conjugation bound).
 (1) The program state of L = |0><psi_u|, psi_u = c|0> + s ubar, is |0> (x) (c|0> + s u), and the WML step agrees with lind(L).
-(2) The coherence q = <ubar| e^{t Lind}(|0><0|) |0> is real with q <= q0 < 0 and |q| >= c s beta_t, beta_t = e^{-t/2}(1-e^{-t/2}),
+(2) The coherence q = <ubar| e^{t Lind}(|0><0|) |0> is real with q <= q0 = -c s gamma < 0, gamma = a(1 - a c^2), a = 1 - e^{-t/2},
+    and |q| >= c s beta_t, beta_t = e^{-t/2}(1-e^{-t/2}),
     for d = 3, 5, 8 and t from 0.01 to 12; ||W|| = 1, Tr W sigma = -2q, Tr Pi sigma = 0.
 (3) The dual certificate 1 (x) X_op >= Omega with Tr X_op = n s^2/(lam (d-2)), built from exact Haar moments
     E[v^(x)k vbar^(x)k] = P_Sym/D_k, for (d, n) = (3, 1..4), (4, 1..3), (5, 1..2), (6, 2)."""
@@ -125,4 +126,9 @@ def cert(d, n):
 
 for d, n in ((3, 1), (3, 2), (3, 3), (3, 4), (4, 1), (4, 2), (4, 3), (5, 1), (5, 2), (6, 2)):
     cert(d, n)
+# corollary constants: theta = pi/4 gives gamma = (1 - e^{-t})/2 >= 0.316 t on (0, 1]
+tt = np.linspace(1e-7, 1, 400001)
+assert np.allclose(np.sqrt(.5) * (1 - np.exp(-tt/2)) * (1 - (1 - np.exp(-tt/2)) / 2) * np.sqrt(2), (1 - np.exp(-tt)) / 2)
+assert np.all(1 - np.exp(-tt) >= 0.632 * tt) and 0.632 / 8 >= 0.079 and (0.632 / 2)**2 / 8 >= 0.0124
+print("corollary constants ok")
 print("all ok")
