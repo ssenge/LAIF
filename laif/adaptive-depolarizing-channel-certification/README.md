@@ -160,7 +160,7 @@ likelihood ratio is L* = L̄([n])/P(U) = L([n])/((1+η)P(U)) ≥ (1 − s)/(1 + 
 
     TV(p₀, E_G p_G) = E₀(1 − L*)₊ ≤ s + |η| + 16δ + 19δ/s²,
 
-which is at most 0.109 for s = (38δ)^{1/3}. ∎
+which is at most 0.109 for s = 0.0724. ∎
 
 ### Proof of Theorem 1
 
@@ -174,8 +174,8 @@ leaf with τ > n, so TV(p_φ, p̃_φ) ≤ P_{p̃_φ}(τ ≤ n) ≤ P₀(τ ≤ n
 
     TV(p₀, p_φ) ≤ 2 TV(p₀, p̃_φ) + P₀(τ ≤ n),   E_φ P₀(τ ≤ n) ≤ E_φ E₀ Σ_t c_t²/B ≤ 2n/(m²B).
 
-With n ≤ 0.0575 m²B the total is at most 0.218 + 0.115 < 1/3, so no tester with n uses succeeds. In terms of ε
-this is n ≥ 5.75·10⁻⁹ m² d^{3/2}/ε². ∎
+With n ≤ 0.05 m²B the total is at most 0.218 + 0.1 < 1/3, so no tester with n uses succeeds. In terms of ε
+this is n ≥ 5·10⁻⁹ m² d^{3/2}/ε². ∎
 
 ### Proof of Theorem 3
 
@@ -198,7 +198,8 @@ before TV(p₀, p_φ) ≤ 2·0.109 + P₀(stop), with
 
     E_φ P₀(stop) ≤ 2n/(m²B) + n(11 ln d + 9)/(2m²B) ≤ 6.21 n ln d/(m²B)
 
-for d ≥ 10⁴. With n ≤ 0.0185 m²B/ln d the total is below 1/3, that is, n ≥ 1.85·10⁻⁹ m² d^{3/2}/(ε² ln d). ∎
+for d ≥ 10⁴. With n ≤ 0.015 m²B/ln d the total is at most 0.218 + 0.094 < 1/3, that is,
+n ≥ 1.5·10⁻⁹ m² d^{3/2}/(ε² ln d). ∎
 
 ## Check
 
@@ -207,6 +208,8 @@ recursion of Lemma 1 against Monte Carlo and exact evaluation, the Haar fourth m
 channels with ‖N − 𝒟‖_⋄ ≥ ε and step ratio 1 + ε₀c x†Gx, and, for random entangled inputs and measurements with
 an ancilla, identity (1), the bound Λ′ ⪯ (κa/d)I, the Haar averages of c_f, and the Haar tail
 P(c_f > x/m) ≤ 3e^{−0.193x} and E[c_f² 1{c_f > x/m}] ≤ 9e^{−x/11}/m² by Monte Carlo for rank-one and rank-three Q_f. Output in `sim/out_check.txt`.
+`sim/constants_iv.py` recomputes the final bounds of Theorems 1 to 3 in interval arithmetic with outward rounding
+and asserts them (output in `sim/out_constants_iv.txt`).
 
 ## Scope
 

@@ -1,0 +1,1 @@
+TV Thm 2 <= 0.106903; Thm 1 total <= 0.313805 (margin 0.0195); Thm 3 total <= 0.306891 (margin 0.0264); constants 5e-9, 1.5e-9 ok
