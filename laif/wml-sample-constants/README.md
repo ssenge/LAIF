@@ -9,7 +9,7 @@ Wave matrix Lindbladization (WML) simulates the Lindbladian with one jump operat
 | One-step error of WML, leading constant, worst case over L | at most (2d+3)/8 · ‖L‖∞² [1, Lemma 4] | between (2d−3)/4 and d/2 + 1 (Theorems 1 and 2) |
 | Copies needed by WML for time t and error ε, ‖L‖∞ ≤ 1 | at most (2d+3)/8 · t²/ε [1, Theorem 3] | at most (d/2 + e^{1/d}) t²/ε for n > 2dt (Theorem 2) |
 | Copies needed by WML in the worst case over L, as ε → 0 | at least d/32 · t²/ε [1, Theorem 10] | at least (d−1)/4 · t²/ε for every t, and (2d−3)/4 · t²/ε as t → 0 (Theorem 3) |
-| Copies needed by any regular protocol with one fresh copy per step and comparable step sizes, as ε → 0 | at least 10⁻⁴ · t²/ε, for every protocol [2] | at least (d−1)/4 · t²/ε, with the same constant as WML on the witness L = \|0⟩⟨0\| (Theorem 4) |
+| Copies needed by any regular memoryless protocol with a bounded number of fresh copies per step and comparable step sizes, as ε → 0 | at least 10⁻⁴ · t²/ε, for every protocol [2] | at least (d−1)/4 · t²/ε, with the same constant as WML on the witness L = \|0⟩⟨0\| (Theorem 4) |
 
 The first three rows are about the WML protocol, as in [1, Theorem 10]. The last row covers the class of Theorem 4. None of them bounds the minimum over all protocols, for which the lower bound 10⁻⁴ · t²/ε of [2] holds for every d.
 
@@ -58,28 +58,28 @@ Summing these over n steps, the error after n > 2dt steps is at most (d/2 + e^{1
 
 Hence n · error/t² tends to (d−1)/4 as n → ∞, for every t. For L = |0⟩⟨1| the same limit tends to (2d−3)/4 as t → 0. The number of copies WML needs in the worst case over L is therefore at least (max{(d−1)/4, c(t)} − o(1)) t²/ε as ε → 0, where c(t) is the limit for L = |0⟩⟨1|. This is at least 8(d−1)/d ≥ 4 times the constant d/32 of [1, Theorem 10], for every t.
 
-**Theorem 4 (lower bound for regular one-copy protocols).** Consider protocols that are sequential and memoryless and use one fresh copy of the program state per step: step k applies a channel Λ⁽ᵏ⁾_{Δ_k} from S ⊗ P to S, with Δ₁ + … + Δ_n = t. Each family Λ_Δ is assumed to
+**Theorem 4 (lower bound for regular protocols with fresh copies in each step).** Consider protocols that are sequential and memoryless and use fresh copies of the program state in each step: step j uses k_j ≤ k_max copies and applies a channel Λ⁽ʲ⁾_{Δ_j} from S ⊗ P^{⊗k_j} to S, with Δ₁ + … + Δ_m = t and n = k₁ + … + k_m copies in all. Each family Λ_Δ is assumed to
 
-- (H) agree with the target to first order: Λ_Δ(ρ ⊗ π_L) = ρ + Δℒ_L(ρ) + O(Δ²) for all ρ and L;
+- (H) agree with the target to first order: Λ_Δ(ρ ⊗ π_L^{⊗k}) = ρ + Δℒ_L(ρ) + O(Δ²) for all ρ and L;
 - (R) be regular: Λ_Δ = Tr_P + ΔG + Δ²E + R_Δ with ‖E‖⋄ ≤ K and ‖R_Δ‖⋄ ≤ KΔ³ for Δ ≤ Δ₀, with one constant K for all steps;
-- (S) use comparable step sizes: Δ_k ≤ c·t/n for a fixed constant c ≥ 1, as WML does with c = 1.
+- (S) use comparable step sizes: Δ_j ≤ c·k_j·t/n for a fixed constant c ≥ 1, as WML does with k_j = 1 and c = 1.
 
-Let ε be the error on L = |0⟩⟨0| with input |0⟩⟨0|, in normalized trace distance; it is at most the worst-case diamond error. Then ε ≥ (d−1)/4 · S · (1 − O(√S + max_k Δ_k)) with S = Δ₁² + … + Δ_n² ≥ t²/n, the constants depending on K, c and d. Hence every such protocol needs at least ((d−1)/4 − o(1)) t²/ε copies as ε → 0, for every fixed t. WML belongs to the class and its error on this witness is (d−1)/4 · t²/n to leading order (Theorem 3), so the constant cannot be raised for this witness.
+Let ε be the error on L = |0⟩⟨0| with input |0⟩⟨0|, in normalized trace distance; it is at most the worst-case diamond error. Then ε ≥ (d−1)/4 · S · (1 − O(√(t·max_j Δ_j) + max_j Δ_j)) with S = Δ₁²/k₁ + … + Δ_m²/k_m ≥ t²/n, the constants depending on K, c, k_max and d. Hence every such protocol needs at least ((d−1)/4 − o(1)) t²/ε copies as ε → 0, for every fixed t. Several copies per step do not lower the constant per copy. WML, with one copy per step, belongs to the class and its error on this witness is (d−1)/4 · t²/n to leading order (Theorem 3), so the constant cannot be raised for this witness.
 
 *Proof sketch.*
-1. **The map G is forced.** By linearity, Λ₀ = Tr_P, and (H) fixes G: it is the linear extension of ρ ⊗ |L⟩⟨L′| ↦ Lρ L′† − ½(L′†L ρ + ρ L′†L). Hence every family has the same Choi matrix C₁ of G. The Choi matrix of Tr_P is C₀ = d P_Γ ⊗ I_P.
-2. **Positivity bounds E.** The Choi matrix of Λ_Δ is positive for Δ ∈ [0, Δ₀). For a vector e with C₀e = 0 and C₁e in the range of C₀, test it with e + Δf, f = −C₀⁺C₁e. This gives e†C₂e ≥ e†C₁C₀⁺C₁e, where C₂ is the Choi matrix of E.
-3. **The forced leak.** For L = |0⟩⟨0| and the vector e_i = |0⟩|L⟩ ⊗ |i⟩, i ≠ 0, the right-hand side equals 1/4. So ⟨i|E(|0⟩⟨0| ⊗ π_L)|i⟩ ≥ 1/4 for each of the d − 1 states |i⟩ ≠ |0⟩.
-4. **Accumulation.** The exact evolution keeps |0⟩⟨0| fixed. Population that has left |0⟩ returns only at order Δ², because ⟨0|X|0⟩ = 0 and ⟨0|ℒ_L(X)|0⟩ = 0 for the part X of the state outside |0⟩⟨0|. The coherences between |0⟩ and its complement are at most the square root of the population outside |0⟩, so the return per step is O(KΔ_k²(p + √p)) for an outside population p. Summing over the steps, the error is at least (d−1)/4 · S · (1 − O(√S + max_k Δ_k)). Under (S), S ≤ c²t²/n and max_k Δ_k ≤ ct/n both tend to 0 as n grows. ∎
+1. **The map G is forced where it matters.** By linearity, Λ₀ = Tr_P. The operators |v⟩⟨v|^{⊗k} with unit v span all operators on the symmetric subspace Sym^k(P), so (H) fixes G on L(S) ⊗ L(Sym^k(P)). There it equals the average over the copies of the one-copy map ρ ⊗ |L⟩⟨L′| ↦ Lρ L′† − ½(L′†L ρ + ρ L′†L), with the trace on the other copies. The Choi matrix of Tr_P is C₀ = |Γ⟩⟨Γ| ⊗ I.
+2. **Positivity bounds E.** The Choi matrix of Λ_Δ is positive for Δ ∈ [0, Δ₀). For a vector e with C₀e = 0 and e†C₁e = 0, positivity at first order puts C₁e in the range of C₀. Testing with e + Δf, f = −C₀⁺C₁e, gives e†C₂e ≥ e†C₁C₀⁺C₁e, where C₂ is the Choi matrix of E. The right-hand side is at least its part on Sym^k(P), which step 1 fixes.
+3. **The forced leak.** For L = |0⟩⟨0| and the vector e_i = |0⟩|L⟩^{⊗k} ⊗ |i⟩, i ≠ 0, the symmetric part equals 1/(4k). So a step with k copies moves at least (d−1)Δ²/(4k) out of |0⟩ at second order. Running k steps of WML with time Δ/k each attains this.
+4. **Accumulation.** The exact evolution keeps |0⟩⟨0| fixed. Population that has left |0⟩ returns only at order Δ², because ⟨0|X|0⟩ = 0 and ⟨0|ℒ_L(X)|0⟩ = 0 for the part X of the state outside |0⟩⟨0|. The coherences between |0⟩ and its complement are at most the square root of the population outside |0⟩, so the return in step j is O(KΔ_j²(p + √p)) for an outside population p. Summing over the steps gives the bound on ε. By the Cauchy-Schwarz inequality, S ≥ (Δ₁ + … + Δ_m)²/(k₁ + … + k_m) = t²/n, and under (S), max_j Δ_j ≤ c·k_max·t/n tends to 0 as n grows. ∎
 
-Protocols with memory across steps, several copies per step, steps far from Tr_P, or step sizes that do not shrink with n are outside the class. Without (S) the bound fails: rescaling WML to Λ_Δ = Φ_{Δ(1−Δ/Δ₀)} satisfies (H) and (R), and with steps of size exactly Δ₀ every step is Tr_P, which has zero error on this witness.
+Protocols with memory across steps, steps far from Tr_P, or step sizes that do not shrink with n are outside the class. Without (S) the bound fails: rescaling WML to Λ_Δ = Φ_{Δ(1−Δ/Δ₀)} satisfies (H) and (R), and with steps of size exactly Δ₀ every step is Tr_P, which has zero error on this witness.
 
 **Numerical supremum.** The supremum of the leading constant over all L, computed with an exact semidefinite program for the diamond norm and local search over L, is about 0.300 at d = 2 and 0.750 at d = 3. At d = 3 this equals (2d−3)/4.
 
 ## Scope
 
 - Theorems 1 and 3 are exact statements about explicit operators, checked numerically with plain-state certificates and with diamond norms from a semidefinite program.
-- Theorems 2 and 4 are written proofs (Claim). Every coefficient identity of Theorem 2 is checked against the matrix exponential to 1e-12, and the Schur-complement value of Theorem 4 is checked exactly for d = 2, 3, 4.
+- Theorems 2 and 4 are written proofs (Claim). Every coefficient identity of Theorem 2 is checked against the matrix exponential to 1e-12, and the Schur-complement value of Theorem 4 is checked exactly for d = 2, 3, 4 with one copy per step and for (d, k) = (2, 2), (3, 2), (4, 2), (2, 3), (3, 3).
 - The step of WML is built twice: from the transfer matrix of [1, App. B], and directly from [1, Eq. (15)] on the full system and program space. The two agree to 1e-16 for d = 2, 3.
 - The supremum over L for d ≥ 4 is not computed. Nothing here bounds the sample complexity over all protocols.
 
@@ -89,7 +89,8 @@ Protocols with memory across steps, several copies per step, steps far from Tr_P
 - `sim/check_gap.py`, `sim/nstep.py`: Theorem 1, one step and n steps, with asserts (`check_gap.py --brute` adds the step from the definition at d = 5, about 8 GB).
 - `sim/check_bound.py`: Theorem 2 against exact diamond norms on random and structured L.
 - `sim/projector.py`: Theorem 3.
-- `sim/class_bound.py`: the forced leak of Theorem 4, with asserts for d = 2, 3, 4.
+- `sim/class_bound.py`: the forced leak of Theorem 4 with one copy per step, from the full Choi matrices, with asserts for d = 2, 3, 4.
+- `sim/kcopies.py`: the forced leak with k copies per step, (d−1)/(4k), and its attainment by k WML steps, with asserts for (d, k) up to (4, 2) and (3, 3).
 - `sim/scan.py`, `sim/supL.py`: rank-one scan and the numerical supremum over L.
 
 ## References
