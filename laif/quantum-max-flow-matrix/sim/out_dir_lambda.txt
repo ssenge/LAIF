@@ -1,0 +1,2 @@
+240 digraphs (n <= 10, half of them two dense blocks): structure of minimum cuts and the root sampling step hold; 40 with lambda < delta
+mutation (sides >= delta + 2) caught
