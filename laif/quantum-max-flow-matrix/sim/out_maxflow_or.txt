@@ -1,0 +1,2 @@
+96 digraphs: flow values equal to the reference; max (found+no)/(P n + n sqrt(f+1)) = 1.698
+mutation (dead ends not removed) caught
