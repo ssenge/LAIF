@@ -2,7 +2,7 @@
 
 Written 26 Nov 2026.
 
-A Gomory-Hu tree of an undirected graph G on n vertices is a weighted tree on the same vertices such that, for every pair u, v, the smallest edge weight on the tree path from u to v equals λ(u, v), the value of a minimum u-v cut, and the two sides left after removing that edge form a minimum u-v cut. Here G is simple, with m edges, minimum degree δ and maximum degree Δ, and it is given in the adjacency-array model (degree and neighbour queries). Classically a Gomory-Hu tree takes m^{1+o(1)} time [2], and a randomized classical algorithm needs Ω(m) queries already for the global minimum cut [3]. A quantum algorithm with Õ(min(m√Δ/δ, √(mn)Δ^{1/4})) queries, so Õ(n^{7/4}) on every graph, is given in [1] ([`quantum-gomory-hu`](../quantum-gomory-hu/)), with its offline computation left unbounded.
+A Gomory-Hu tree of an undirected graph G on n vertices is a weighted tree on the same vertices such that, for every pair u, v, the smallest edge weight on the tree path from u to v equals λ(u, v), the value of a minimum u-v cut, and the two sides left after removing that edge form a minimum u-v cut. Here G is simple, with m edges, minimum degree δ and maximum degree Δ, and it is given in the adjacency-array model (degree and neighbour queries). Classically a Gomory-Hu tree takes m^{1+o(1)} time [2], and the classical randomized query complexity of the global minimum cut alone is Θ̃(m) [3]. A quantum algorithm with Õ(min(m√Δ/δ, √(mn)Δ^{1/4})) queries, so Õ(n^{7/4}) on every graph, is given in [1] ([`quantum-gomory-hu`](../quantum-gomory-hu/)), with its offline computation left unbounded.
 
 Here the offline steps of [1] are carried out in almost-linear time. The cluster decomposition becomes a deterministic weighted expander decomposition with vertex demands [4], and the final tree a deterministic almost-linear Gomory-Hu tree [2].
 
@@ -18,15 +18,15 @@ Status: Claim. The reduction to a tree on the original vertices is checked by a 
 
 | Problem | Previous best bound | This work |
 |---|---|---|
-| Gomory-Hu tree of a simple graph, adjacency array, time | m^{1+o(1)} classically [2], n^{2+o(1)} on dense graphs; quantum Õ(n^{7/4}) queries [1] | quantum time n^{7/4+o(1)} on every graph; n^{3/2+o(1)} on dense near-regular graphs |
+| Gomory-Hu tree of a simple graph, adjacency array, time | m^{1+o(1)} classically [2], n^{2+o(1)} on dense graphs; quantum Õ(n^{7/4}) queries [1] | quantum time n^{7/4+o(1)} on every graph, below m^{1+o(1)} when m ≥ n^{7/4+δ}; n^{3/2+o(1)} on dense near-regular graphs |
 
 ## 1. The algorithm
 
 The algorithm is Theorem 1 of [1] with steps 2 and 5 made explicit. Let φ = 200Δ/δ² (or 200Δ/D² for the threshold version), and let γ = n^{o(1)} be the approximation factor of [4, Corollary 2.5] with r chosen so that (mU)^{O(1/r)} and (log m)^{O(r⁴)} are both n^{o(1)}.
 
 1. Query all degrees and compute a (1 ± 1/10) spectral sparsifier H of G with Õ(n) edges by the quantum algorithm of [6], in time Õ(√(mn)). Its weights are positive integers bounded by a polynomial in n, as in [7, Theorem 4].
-2. **(Explicit.)** Give every vertex x the demand d(x) = d_H(x), its full weighted degree in H, and compute a (γφ, φ)-expander decomposition of H by [4, Corollary 2.5], separately in every connected component. For every cluster C, H[C] then has d|_C-sparsity at least φ, that is, e_H(X, C ∖ X) ≥ φ · min(vol_H(X), vol_H(C ∖ X)) for every X ⊆ C with full volumes vol_H, which is the condition of step 2 of [1]. The weight between clusters is at most γφ · vol_H(V). This takes Õ(n) · n^{o(1)} time. If γφ > 1, the algorithm reads the graph instead.
-3. Store the cluster label of every vertex in classical memory readable in superposition. Estimate d_C(x)/d_x for every vertex by amplitude estimation, as in [1], and form the cores C″ = C ∖ Z_C.
+2. **(Explicit.)** Give every vertex x the demand d(x) = d_H(x), its full weighted degree in H, and compute a (γφ, φ)-expander decomposition of H by [4, Corollary 2.5], separately in every connected component, and split every cluster into its connected components. For every cluster C, H[C] then has d|_C-sparsity at least φ, that is, e_H(X, C ∖ X) ≥ φ · min(vol_H(X), vol_H(C ∖ X)) for every X ⊆ C with full volumes vol_H, which is the condition of step 2 of [1]. The weight between clusters is at most γφ · vol_H(V). This takes Õ(n) · n^{o(1)} time. If γφ > 1, the algorithm reads the graph instead.
+3. Store the cluster label of every vertex in classical memory readable in superposition. Estimate d_C(x)/d_x for every vertex by amplitude estimation, as in [1], form the cores C″ = C ∖ Z_C, and store the core label of every vertex (none for the vertices of Z_C).
 4. For every vertex x, find all neighbours outside the core of x by Grover search, as in [1]; each query to the predicate costs one neighbour query and two label lookups.
 5. **(Explicit.)** Build the star model G̃ of [1] and compute a Gomory-Hu tree T of G̃ on all its vertices, including one extra vertex K per core, in m̃^{1+o(1)} time [2, Theorem 1.1], where m̃ is the number of edges of G̃. Then merge every node of T that holds no vertex of V into its neighbour along its heaviest tree edge, until every node holds exactly one vertex of V. The result is a Gomory-Hu tree of G̃ for the terminals V, and by [1] one of G.
 
@@ -55,6 +55,7 @@ The sum is (m √Δ/δ) · n^{o(1)}, using m√Δ/δ ≥ √(mn/2). The threshol
 ## 5. Limits
 
 - Memory is classical memory readable in superposition, with unit cost per access, as for the sparsifier of [6].
+- The time is below m, the cost of reading the graph, when m√Δ/δ or √(mn)Δ^{1/4} is below m up to the factor n^{o(1)}, for example when m ≥ n^{7/4+δ} for a constant δ > 0; on sparser graphs it matches reading the graph up to that factor.
 - The factor n^{o(1)} comes from the approximation factor of [4] and the time bounds of [2, 4].
 - In the adjacency-matrix model a Gomory-Hu tree needs Ω(n²) queries [1, Theorem 2].
 - Not formalized: the algorithm and its analysis.
