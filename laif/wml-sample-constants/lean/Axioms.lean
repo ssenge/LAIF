@@ -1,3 +1,4 @@
+import WmlCoefficients
 import ConjugationBound
 #print axioms ConjugationBound.D_pos
 #print axioms ConjugationBound.D_succ_nat
@@ -17,3 +18,25 @@ import ConjugationBound
 #print axioms ConjugationBound.small_t_accuracy
 #print axioms ConjugationBound.step5_satisfiable
 #print axioms ConjugationBound.step5_conclusion_can_fail
+#print axioms WmlCoefficients.nonneg_of_hasDerivAt
+#print axioms WmlCoefficients.exp_neg_le_quad
+#print axioms WmlCoefficients.exp_tail
+#print axioms WmlCoefficients.pade_lower
+#print axioms WmlCoefficients.phi_pos
+#print axioms WmlCoefficients.phi_le_half
+#print axioms WmlCoefficients.phi_hasDerivAt
+#print axioms WmlCoefficients.phi_antitoneOn
+#print axioms WmlCoefficients.phi_half_gt
+#print axioms WmlCoefficients.u_pos
+#print axioms WmlCoefficients.u_le_v
+#print axioms WmlCoefficients.v_le_half
+#print axioms WmlCoefficients.cA_pos
+#print axioms WmlCoefficients.cA_le
+#print axioms WmlCoefficients.bracket_pos
+#print axioms WmlCoefficients.cD_pos
+#print axioms WmlCoefficients.cD_le
+#print axioms WmlCoefficients.cJ_neg
+#print axioms WmlCoefficients.neg_cJ_le
+#print axioms WmlCoefficients.step_bound
+#print axioms WmlCoefficients.step_bound_satisfiable
+#print axioms WmlCoefficients.phi_half_lt

@@ -1,5 +1,5 @@
 name = "PracticalQuantumAlgos"
-defaultTargets = ["ConjugationBound"]
+defaultTargets = ["ConjugationBound", "WmlCoefficients"]
 
 [[require]]
 name = "mathlib"
@@ -8,3 +8,6 @@ rev = "master"
 
 [[lean_lib]]
 name = "ConjugationBound"
+
+[[lean_lib]]
+name = "WmlCoefficients"
