@@ -2,7 +2,7 @@
 
 Written 26 Nov 2026.
 
-In the minimum k-cut problem, an undirected graph G with n vertices and nonnegative integer edge weights is split into at least k connected components by deleting edges of least total weight λ_k. For fixed k, recursive contraction runs in time n^k (log n)^{O(k²)} [1, Theorem 3], and a reduction from max-weight (k − 1)-clique is noted in [1]. On graphs with m edges, the bound is n^{k−2}(m + n)(log n)^{O(k²)} [7]. On dense graphs it is k^{O(k²)} n^{k−1} log² n [8], which is n² log² n for k = 3. For k ≤ 6 there is also a bound of O(m n^{k−2} log³ n) [2]. For k = 2, the minimum cut, the quantum query and time complexity in the adjacency matrix model is Õ(n^{3/2} √τ) for weights in [1, τ], and Ω(n^{3/2} √τ) quantum queries are needed for integers 1 ≤ τ ≤ n [3].
+In the minimum k-cut problem, an undirected graph G with n vertices and nonnegative integer edge weights is split into at least k connected components by deleting edges of least total weight λ_k. For fixed k, recursive contraction runs in time n^k (log n)^{O(k²)} [1, Theorem 3], and a reduction from max-weight (k − 1)-clique is noted in [1]. On graphs with m edges, the bound is k^{O(k²)} n^{k−2}(m + n) log³ n [7]. On dense graphs it is k^{O(k²)} n^{k−1} log² n [8], which is n² log² n for k = 3. For k ≤ 6 there is also a bound of O(m n^{k−2} log³ n) [2]. For k = 2, the minimum cut, the quantum query and time complexity in the adjacency matrix model is Õ(n^{3/2} √τ) for weights in [1, τ], and Ω(n^{3/2} √τ) quantum queries are needed for integers 1 ≤ τ ≤ n [3].
 
 Here the recursive contraction of [1] is run with fixed-point amplitude amplification [4] at every level. A minimum k-cut survives contraction from n to i vertices with probability about (i/n)^k, and amplification pays only the square root of its inverse. The level sizes are chosen so that every level costs the same.
 
@@ -25,7 +25,7 @@ Status: Claim. The cost exponent of the level schedule is evaluated by a script 
 
 | Problem | Previous best bound | This work |
 |---|---|---|
-| Minimum k-cut, weighted, fixed k ≥ 5 | k^{O(k²)} n^{k−1} log² n [8]; n^{k−2}(m + n)(log n)^{O(k²)} [7] | n^{k/2} (log n)^{O_k(1)} |
+| Minimum k-cut, weighted, fixed k ≥ 5 | k^{O(k²)} n^{k−1} log² n [8]; k^{O(k²)} n^{k−2}(m + n) log³ n [7] | n^{k/2} (log n)^{O_k(1)} |
 | Minimum 4-cut, weighted | n³ polylog n [8]; O(m n² log³ n) [2] | n^{2+o(1)}, optimal up to n^{o(1)} for weights up to n |
 
 ## 1. Contraction by exponential clocks
@@ -120,7 +120,7 @@ Lean 4 v4.36.0-rc1, Mathlib rev d875a8de5222f62cf1c2fafc7984588adadc990a.
 - k is fixed. The factor per level, k^{O(k²)}, is not explicit in [1], and the exponent of the polylogarithmic factor grows like k² log k / log(k/4).
 - For k = 3, the classical bound n² log² n of [8] is at least as good as part 2 of Theorem 1.
 - Weights are integers, so rational weights are scaled first. The gate count grows polynomially in log W.
-- The table compares weighted graphs. For simple unweighted graphs, faster classical algorithms are known [6].
+- The table compares weighted graphs. For simple unweighted graphs, faster classical algorithms are known [6, 7], with Õ(n^{55/19}) for k = 4 and Õ(n^{4.112007}) for k = 5 [7]; Theorem 1 is below these as well.
 - Theorem 3 is conditional on H_{k−1}, a hypothesis on quantum algorithms for weighted cliques. Its model has classical memory readable in superposition, which is more than Theorem 1 uses.
 - Not formalized: the algorithm, the survival bound of [1], the quantum costs, the bound of [3] and the gadget of Section 5; Lean covers the level-cost arithmetic of Section 3 and the padding identity of Section 4.
 
@@ -132,8 +132,8 @@ Lean 4 v4.36.0-rc1, Mathlib rev d875a8de5222f62cf1c2fafc7984588adadc990a.
 4. T. J. Yoder, G. H. Low, I. L. Chuang. Fixed-point quantum search with an optimal number of queries. Physical Review Letters 113, 210501 (2014), arXiv:1409.3305.
 5. K. E. Batcher. Sorting networks and their applications. AFIPS Spring Joint Computer Conference, 1968.
 6. J. Li. Faster minimum k-cut of a simple graph. FOCS 2019.
-7. Faster minimum k-cut I: simple and sparse weighted graphs. arXiv:2609.27781.
-8. Faster minimum k-cut II: improved randomized and deterministic algorithms for weighted graphs. arXiv:2609.27797.
+7. J. Li, T. Vaughn. Faster minimum k-cut I: simple and sparse weighted graphs. arXiv:2609.27781.
+8. T. Vaughn. Faster minimum k-cut II: improved randomized and deterministic algorithms for weighted graphs. arXiv:2609.27797.
 
 ## Use of AI
 
