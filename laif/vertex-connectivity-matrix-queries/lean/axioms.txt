@@ -1,0 +1,5 @@
+'VertexConn.nbhd_singleton' depends on axioms: [propext, Classical.choice, Quot.sound]
+'VertexConn.card_sdiffs_add' depends on axioms: [propext, Classical.choice, Quot.sound]
+'VertexConn.twin_bound' depends on axioms: [propext, Classical.choice, Quot.sound]
+'VertexConn.cluster_outside' depends on axioms: [propext, Classical.choice, Quot.sound]
+'VertexConn.cluster_card' depends on axioms: [propext, Classical.choice, Quot.sound]

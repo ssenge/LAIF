@@ -6,7 +6,7 @@ Written 26 Nov 2026.
 
 | | Problem | Previous best bound | This folder | Status |
 |---|---|---|---|---|
-| Thm 1 | κ(G) in the adjacency matrix model | O(n²) queries for general κ (read the matrix); Õ((κ+1) n^{3/2}) by scan-first search forests, implied by [1] and [9]; Ω(n^{3/2}), implied by [1] | Õ(n^{7/4}) queries | Claim |
+| Thm 1 | κ(G) in the adjacency matrix model | O(n²) queries for general κ (read the matrix); Õ((κ+1) n^{3/2}) by scan-first search forests, implied by [1] and [9]; Ω(n^{3/2}), implied by [1] | Õ(n^{7/4}) queries | Claim; Lean for Lemmas 4 and 5 |
 
 To our knowledge no o(n²) quantum query algorithm for vertex connectivity was known in this model. The lower bound Ω(n^{3/2}) holds because, for n ≥ 2, κ(G) ≥ 1 exactly when G is connected, and connectivity needs Ω(n^{3/2}) queries [1]. For edge connectivity the complexity in this model is Θ̃(n^{3/2}) [7]; whether vertex connectivity needs more is open. In two-party communication, global vertex connectivity needs Θ̃(n^{3/2}) bits while s-t vertex connectivity needs Õ(n) [3]. For small κ, the capped scan of [8, Section 5] also runs on the rows of the matrix: scanning v, the marked entries of its row are found with O(√(n t_v) + √n log n) queries, so k-vertex-connectivity is decided with O(n^{3/2}(√k + log n)) queries, which is below n^{7/4} for κ < √n. In the adjacency array model, see Corollary 6 of [8].
 
@@ -53,11 +53,20 @@ Since δ ≥ κ(G), the two sides of a minimum cut have n − κ(G) ≥ n − δ
 
 Only the value of κ(G) is computed.
 
+## Lean
+
+The library `VertexConn` in `lean/` (Lean 4, Mathlib at the revision pinned in `lean/lakefile.toml`) proves, with only the standard axioms (`lean/axioms.txt`), for a graph given by a neighbourhood function `N : V → Finset V` and `nbhd N L = (⋃_{v∈L} N v) ∖ L`:
+
+- `VertexConn.twin_bound` (Lemma 4): if `N` has no loops, `L ⊆ U` is nonempty and `|nbhd N L|` is least among the nonempty subsets of `U`, then `|N u △ N v| ≤ 2|L|` for all `u, v ∈ L`;
+- `VertexConn.cluster_outside` and `VertexConn.cluster_card` (Lemma 5): for a set `C`, a vertex `c` and `D = ⋃_{v∈C} (N c △ N v)`, every nonempty `L ⊆ C` has `nbhd N L ∖ (D ∪ C) = N c ∖ (D ∪ C)`, so `|nbhd N L| = a_C + |nbhd N L ∩ (D ∪ C)|`;
+- `VertexConn.nbhd_singleton`, `VertexConn.card_sdiffs_add`: the neighbourhood of a single vertex, and the count of a symmetric difference;
+- content of the statements, in `lean/VertexConn/NonVacuity.lean`: on the path with four vertices the hypotheses of `twin_bound` hold; on the star with six vertices a non-minimal set violates the bound, so the minimality hypothesis is needed; and the term `a_C` of `cluster_card` can be positive.
+
 ## Scripts
 
 `sim/check_pipeline.py` runs the steps classically on random graphs with 6 to 12 vertices and on dense graphs with a planted small side. It asserts Lemma 2 on every non-adjacent pair, Lemma 3 with all vertices as sinks (equality) and with two random sinks (lower bound), Lemma 5 on all subsets of random 5-vertex sets, Lemma 4 on every minimizer of every sink, and, for every sink t, that both phases are never below the minimum t-sink cut, that Phase 1 attains it when a sampled source lies in a minimizer, and that Phase 2 attains it when a minimizer is small. Phase 2 runs on exact differences (the sketch is a probability statement and is not simulated) with closed G_d-neighbourhoods as clusters. Three mutations must fail: Lemma 2 without the common neighbours, Lemma 3 with B_i joined to the copies of all neighbours, and Lemma 5 without the term a_C.
 
-**Not formalized:** everything in this folder. The algorithm of [2], minimum finding [5], search for all marked items [6] and sparse neighbourhood covers [4] are used as stated there.
+**Not formalized:** Lemmas 2 and 3, the algorithm and its query count. The algorithm of [2], minimum finding [5], search for all marked items [6] and sparse neighbourhood covers [4] are used as stated there.
 
 ## Use of AI
 
