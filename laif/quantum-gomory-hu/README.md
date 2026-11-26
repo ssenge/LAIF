@@ -30,7 +30,7 @@ Two facts about a minimum u-v cut (S, T) of value c drive the algorithm.
 
 Let φ = 200 Δ/δ² and fix the constants below.
 
-1. Query all degrees, n queries. Compute a (1 ± 1/10) spectral sparsifier H of G with Õ(√(mn)) queries [4]. Every cut of H has weight within a factor 1 ± 1/10 of the same cut of G, and so has every weighted degree.
+1. Query all degrees, n queries. Compute a (1 ± 1/10) spectral sparsifier H of G with Õ(√(mn)) queries [4, Theorem 1], which uses only degree and neighbour queries and needs m ≥ 10n (for smaller m the algorithm reads the graph). Every cut of H has weight within a factor 1 ± 1/10 of the same cut of G, and so has every weighted degree.
 2. Offline, decompose H into clusters such that for every cluster C and every X ⊆ C,
    e_H(X, C ∖ X) ≥ φ · min(vol_H(X), vol_H(C ∖ X)),
    where vol_H is the sum of weighted degrees in H (not in H[C]). Splitting a cluster along any cut that violates this inequality, and charging the cut to the side of smaller volume, gives such a decomposition with total inter-cluster weight O(φ vol_H(V) log n), since each vertex is on the smaller side at most O(log n) times.
