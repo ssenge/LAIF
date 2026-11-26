@@ -13,6 +13,7 @@ Wave matrix Lindbladization (WML) simulates the Lindbladian with one jump operat
 | One-copy error of any channel from S ⊗ P to S, worst case over L, as t → 0 | | at least (d−1)/4 · t² − O(t³) (Theorem 5) |
 | Copies needed by every protocol (any number of copies, joint processing allowed), for t ≤ c/d | at least 10⁻⁴ · t²/ε [2] | at least (d−1)/4 · (1 − O(dt)) · t²/ε (Theorem 6) |
 | Copies needed by every protocol in the high-accuracy regime ε ≤ t²/(C′ d log(2d/t)), for t ≤ c | at least 10⁻⁴ · t²/ε [2] | at least (d−1)/4 · (1 − O(t)) · t²/ε (Theorem 7) |
+| Copies needed by every protocol at moderate accuracy, d ≥ 3 | at least 10⁻⁴ · t²/ε [2] | at least (d−2) β_t²/(8ε) for ε ≤ β_t/4, with β_t = e^{−t/2}(1 − e^{−t/2}); for t ≤ 1 and ε ≤ 0.059 t this is at least 0.0071 (d−2) t²/ε (Theorem 8) |
 
 The first three rows are about the WML protocol, as in [1, Theorem 10]. The fourth row covers the class of Theorem 4, the fifth every channel that uses one copy, and the last every protocol, for short times t ≤ c/d. For t of order one the lower bound for all protocols remains 10⁻⁴ · t²/ε [2].
 
@@ -122,14 +123,29 @@ with the supremum over the family of Theorem 6.
 
 For k₀ = n + 1, Theorem 7 is Theorem 6; it improves on it for n ≳ d² log(2n/t). Moderate accuracies between t²/(C′ d log(2d/t)) and order one are covered only by Theorem 6, for t ≤ c/d.
 
+**Theorem 8 (every protocol, moderate accuracy).** Let d ≥ 3, n ≥ 1, t > 0 and θ ∈ (0, π/2), and write c = cos θ, s = sin θ and β_t = e^{−t/2}(1 − e^{−t/2}). Let ε_θ be the worst-case error of a channel Λ from S ⊗ P^{⊗n} to S over L = |0⟩⟨ψ_u| with ψ_u = c|0⟩ + s ū and u a unit vector orthogonal to |0⟩. Then
+
+n · ε_θ ≥ (d−2) · (β_t c − ε_θ/s)₊².
+
+**Corollary.** With ε the worst case over the whole family, every protocol with ε ≤ β_t/4 uses at least (d−2) β_t²/(8ε) copies, and n ε ≥ (d−2) β_t² (1 − 3(ε/2β_t)^{2/3})₊². For t ≤ 1 one has β_t ≥ 0.2386 t, so ε ≤ 0.059 t gives n ≥ 0.0071 (d−2) t²/ε. The factor d is therefore necessary for every protocol at every time t ≤ 1 and every accuracy ε ≤ 0.059 t, with a constant that is smaller than that of Theorems 6 and 7 and tends to (d−2)/4 as t and ε/t tend to 0.
+
+*Proof sketch.* The program state of L = |0⟩⟨ψ_u| is |0⟩ ⊗ φ_u with φ_u = c|0⟩ + s u, while the output of the target carries ū: the protocol has to conjugate the d − 1 amplitudes of u.
+1. **Reduction.** Fix the input |0⟩⟨0|. Then T = Λ(|0⟩⟨0| ⊗ ·) is a channel on (C^d)^{⊗n} with ½ ‖T(φ_u^{⊗n}) − σ_u‖₁ ≤ ε_θ, where σ_u = e^{tℒ}(|0⟩⟨0|).
+2. **The target coherence.** The coherence q = ⟨ū|σ_u|0⟩ satisfies the renewal equation q = q₀ + c² ∫₀ᵗ e^{−τ} q(t − τ) dτ, with q₀ = −cs a(1 − ac²) from the no-jump evolution and a = 1 − e^{−t/2}. The kernel is the density of the first jump and q₀ < 0, so q ≤ q₀ and |q| ≥ cs β_t.
+3. **Two tests.** With W_u = −(|0⟩⟨ū| + |ū⟩⟨0|) and Π_u = 1 − |0⟩⟨0| − |ū⟩⟨ū|, and u Haar-distributed, set X = E_u Tr W_u T(φ_u^{⊗n}) and Y = E_u Tr Π_u T(φ_u^{⊗n}). Since ‖W_u‖∞ = 1, Tr W_u σ_u = −2q and Tr Π_u σ_u = 0, one has X ≥ 2csβ_t − 2ε_θ and Y ≤ ε_θ.
+4. **A dual certificate.** For every λ > 0, X − λY = Tr[J_T Ω] with Ω = E_v[(−|0⟩⟨v| − |v⟩⟨0| − λΠ_v) ⊗ χ_v^{⊗n}] and χ_v = c|0⟩ + s v. Expand χ_v^{⊗n} = Σ_k √b_k |k; v⟩ by the number k of excitations, with b_k the Binomial(n, s²) weights, and use E_v (v v†)^{⊗k} = Π_{Sym^k}/D_k with D_k = dim Sym^k(C^{d−1}). The phase average leaves only the terms |0⟩⟨v| ⊗ |k; v⟩⟨k−1; v| and the terms diagonal in k. The first map the symmetric part of C^{d−1} ⊗ Sym^{k−1} to |0⟩ ⊗ Sym^k with weight g_k = √(b_k b_{k−1})/D_k, and on that part the Π_v term equals λ h_{k−1} with h_{k−1} = b_{k−1}(d−2)/(D_{k−1}(k+d−2)); on the remaining part it is negative. With X_op = Σ_{k≥1} g_k²/(λh_{k−1}) Π_k, every block of 1 ⊗ X_op − Ω is positive semidefinite, and Tr X_op = Σ_k k b_k/(λ(d−2)) = n s²/(λ(d−2)). Since Tr_out J_T = 1, X − λY ≤ n s²/(λ(d−2)).
+5. **Conclusion.** Optimizing over λ gives Y ≥ (d−2) X²/(4 n s²), hence n ε_θ ≥ (d−2)(β_t c − ε_θ/s)₊². The corollary takes θ = π/4, and sin θ = (ε/2β_t)^{1/3} with √(1 − x²) ≥ 1 − x². ∎
+
+The mechanism is universal conjugation of the program state; compare the optimal fidelity (n + 1)/(n + d) of state estimation from n copies [3]. For large t the factor β_t² decays like e^{−t}, so Theorem 8 gives no t² scaling there.
+
 **Numerical supremum.** The supremum of the leading constant over all L, computed with an exact semidefinite program for the diamond norm and local search over L, is about 0.300 at d = 2 and 0.750 at d = 3. At d = 3 this equals (2d−3)/4.
 
 ## Scope
 
 - Theorems 1 and 3 are exact statements about explicit operators, checked numerically with plain-state certificates and with diamond norms from a semidefinite program.
-- Theorems 2, 4, 5, 6 and 7 are written proofs (Claim). The constant K_d of Theorem 5 and the absolute constants of Theorems 6 and 7 are not optimized. For Theorem 7, the spin decomposition, the trace-norm tail and the degree of each spin part are checked numerically. Every coefficient identity of Theorem 2 is checked against the matrix exponential to 1e-12, and the Schur-complement value of Theorem 4 is checked exactly for d = 2, 3, 4 with one copy per step and for (d, k) = (2, 2), (3, 2), (4, 2), (2, 3), (3, 3).
+- Theorems 2, 4, 5, 6, 7 and 8 are written proofs (Claim). The constant K_d of Theorem 5 and the absolute constants of Theorems 6 and 7 are not optimized. For Theorem 8, the program convention, the coherence bound for t from 0.01 to 12, and the positivity and trace of the dual certificate for (d, n) up to (3, 4), (4, 3), (5, 2) and (6, 2) are checked numerically. For Theorem 7, the spin decomposition, the trace-norm tail and the degree of each spin part are checked numerically. Every coefficient identity of Theorem 2 is checked against the matrix exponential to 1e-12, and the Schur-complement value of Theorem 4 is checked exactly for d = 2, 3, 4 with one copy per step and for (d, k) = (2, 2), (3, 2), (4, 2), (2, 3), (3, 3).
 - The step of WML is built twice: from the transfer matrix of [1, App. B], and directly from [1, Eq. (15)] on the full system and program space. The two agree to 1e-16 for d = 2, 3.
-- The supremum over L for d ≥ 4 is not computed. Over all protocols, Theorem 6 covers t ≤ c/d, and Theorem 7 covers t ≤ c at accuracies ε ≤ t²/(C′ d log(2d/t)).
+- The supremum over L for d ≥ 4 is not computed. Over all protocols, Theorem 6 covers t ≤ c/d, and Theorem 7 covers t ≤ c at accuracies ε ≤ t²/(C′ d log(2d/t)). Theorem 8 covers d ≥ 3 at accuracies ε ≤ β_t/4 for every t, with the factor d − 2.
 
 ## Files
 
@@ -143,11 +159,13 @@ For k₀ = n + 1, Theorem 7 is Theorem 6; it improves on it for n ≳ d² log(2n
 - `sim/opt.py`, `sim/opt2.py`: the optimal channel with n copies over all channels, as an exact semidefinite program on covariant Choi matrices (partially transposed permutation operators, block-diagonalized for n = 2); `sim/check_conv.py` checks its conventions against the full WML channel; `sim/frame_check.py` gives the numbers after Theorem 5.
 - `sim/thm6_check.py`: the derivative identities, the trigonometric degree and the test vectors of Theorem 6, and the 2 × 2 bound on the collective WML channel, with asserts.
 - `sim/thm7_check.py`: the spin decomposition of Theorem 7 (Hilbert-Schmidt norms exactly for n ≤ 100, trace-norm tails beyond k₀ for n ≤ 2000) and the degree 2k of each spin part under a random channel, with asserts.
+- `sim/thm8_check.py`: the program convention, the target coherence and the dual certificate of Theorem 8, with asserts.
 
 ## References
 
 1. S. Park, Y. Seo, B. Go, D. Patel, M. M. Wilde, H. Kwon. Improved sample complexity bound for sample-based Lindbladian simulation. arXiv:2605.30301 (2026).
 2. B. Go, H. Kwon, S. Park, D. Patel, M. M. Wilde. Sample-based Hamiltonian and Lindbladian simulation: non-asymptotic analysis of sample complexity. arXiv:2412.02134.
+3. D. Bruß, C. Macchiavello. Optimal state estimation for d-dimensional quantum systems. Phys. Lett. A 253, 249 (1999).
 
 ## Use of AI
 
