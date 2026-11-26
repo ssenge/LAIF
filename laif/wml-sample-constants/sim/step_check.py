@@ -1,4 +1,4 @@
-"""Checks for the one-copy protocol of route 36 (step of sim/kraus.py, E_L(rho) = tr(rho K) I/4 - (d/4) L rho L+).
+"""Checks for the one-copy protocol (0: the step channel is CP and TP for d <= 6) of route 36 (step of sim/kraus.py, E_L(rho) = tr(rho K) I/4 - (d/4) L rho L+).
 (1) The per-step leading error e_L = (1/2)||E_L - Lind_L^2/2||_diamond obeys e_L <= (d - 1/d)k/4 + k^2, k = ||L+L||,
     and e_L <= (d-1)/4 on random and structured L (d = 2..5).
 (2) tr(rho K) I - (1/d) L rho L+ is completely positive (Choi PSD).
@@ -33,6 +33,14 @@ def maps(L):
     E = sop(lambda r: np.trace(r @ K) * np.eye(d) / 4 - d / 4 * L @ r @ Ld, d)
     return lind, E, np.linalg.norm(K, 2)
 
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from step_kraus import kraus, choi_full
+for d in (2, 3, 4, 5, 6):                       # (0) the step channel itself: CP and TP on S (x) P
+    for D in (4.0 / d, 1.0 / d, 0.01):
+        ops = kraus(d, D); J = choi_full(ops, d)
+        assert np.linalg.eigvalsh(J).min() > -1e-10
+        assert np.abs(J.reshape(d ** 3, d, d ** 3, d).trace(axis1=1, axis2=3) - np.eye(d ** 3)).max() < 1e-12
+print("step channel: completely positive and trace preserving for d = 2..6", flush=True)
 rng = np.random.default_rng(8)
 for d in (2, 3, 4, 5):
     Ls = [np.diag([1.0] + [0] * (d - 1)).astype(complex), np.eye(d, dtype=complex) / np.sqrt(d)]
