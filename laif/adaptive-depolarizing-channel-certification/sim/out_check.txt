@@ -4,3 +4,4 @@
 4 ok: channel CPTP, diamond >= eps/10, step ratio 1 + eps c x'Gx
 5 ok: ancilla identity (1), martingale identity, Lambda' bound, step ratio, Haar averages of c_f
 6 ok: Haar tail of c_f (rank 1 and 3, m = 60, 200)
+7 ok: t-copy linearization, refinement to single-copy statistics, chi^2 per step

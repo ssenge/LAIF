@@ -40,6 +40,8 @@ For d_in = 1 the problem is mixedness testing and Theorem 1 is the bound of [2].
 ε-far already on a pure input without ancilla, so the bounds hold as well for testing in the input-wise trace
 distance, where the tester of [1, Thm 4.4] also applies.
 
+Theorem 4 below treats mixedness testing with measurements on t copies at once.
+
 **Non-vacuity.** The alternatives below are channels (completely positive, trace preserving) with
 ‖N − 𝒟‖_⋄ ≥ ε, and the ancilla-free tester of [1, Thm 4.4] attains the order of Theorem 1.
 
@@ -201,18 +203,65 @@ before TV(p₀, p_φ) ≤ 2·0.109 + P₀(stop), with
 for d ≥ 10⁴. With n ≤ 0.015 m²B/ln d the total is at most 0.218 + 0.094 < 1/3, that is,
 n ≥ 1.5·10⁻⁹ m² d^{3/2}/(ε² ln d). ∎
 
+## Mixedness testing with t-copy measurements
+
+Here an unknown state ρ on C^d is given as n copies, and each measurement acts jointly on at most t of them (an
+arbitrary POVM on (C^d)^{⊗t'}, t' ≤ t), chosen adaptively from earlier outcomes. The task is ρ = I/d against
+‖ρ − I/d‖₁ ≥ ε.
+
+| | Previous best upper bound | Previous best lower bound |
+|---|---|---|
+| non-adaptive | O(d^{3/2}/ε²) for every t (single-copy measurements); O(max{d²/(√t ε²), d/ε²}) [3, Thm 1.3] | Ω(max{d^{3/2}/(t^{1/4}ε²), d/ε²}) for ε ≤ O(1/(d^{3/2}t^{7/4})) [3, Thm 1.2] |
+| adaptive | as above | Ω(d^{4/3}/(tε²)) for t ≤ O(min{d^{2/3}, √d/ε, 1/ε²}) [4]; Ω(d/ε²) [5] |
+
+**Theorem 4.** Let d ≥ 10⁴, t ≥ 1 and 0 < ε ≤ 0.07 t^{−1} d^{−3/4}. Every adaptive tester with measurements on at
+most t copies each uses at least
+
+    n ≥ 10⁻⁷ · d^{3/2} / (t ε²)
+
+copies. For t = O(1) this gives Θ(d^{3/2}/ε²) together with the upper bound above. In the range of ε where both
+apply, it improves the adaptive bound of [4] by a factor d^{1/6}; it is above Ω(d/ε²) for t ≤ 10⁻⁷√d, and it leaves
+a factor t to the upper bound O(d^{3/2}/ε²).
+
+*Proof.* Take ρ_G = (I + ε₀G)/d with ε₀ = 10ε and G as in the Instance; then ‖ρ_G − I/d‖₁ = ε₀‖G‖₁/d ≥ ε. As before
+we may take rank-one POVMs {ω_f ff†} on (C^d)^{⊗t'}. Under I/d an outcome has probability p₀(f) = ω_f/d^{t'}, under ρ_G
+it has probability p₀(f) r_f(G) with r_f(G) = ⟨f|(I + ε₀G)^{⊗t'}|f⟩. Let S_f = (1/t′)Σ_j Tr_{≠j} ff†, a density matrix, and
+ℓ_f(G) = 1 + ε₀t′⟨G, S_f⟩, the part of r_f of first order in G. Since Σ_f ω_f ff† = I we have Σ_f p₀(f) S_f = I/d, so
+Σ_f p₀(f)ℓ_f(G) = 1, and ℓ_f ≥ 1/2 as 5ε₀t ≤ 1/2. So q_G, the adaptive law with step probabilities p₀(f)ℓ_f(G), is a
+law of the same tester.
+
+*Linear part.* Write S_f = Σ_k s_k y_ky_k† in eigenvectors and split each outcome f into outcomes (f, k) with null
+probability p₀(f)s_k and step ratio 1 + ε₀t (t′/t) y_k†Gy_k. This finer tree has q_G as its image, so it can only make
+the two hypotheses easier to tell apart. It is a tree as in Theorem 2, with ε replaced by ε₀t ≤ 1/10, weights
+c = t′/t ∈ [0, 1] fixed before each measurement, E₀[c(dP − I) | past] = c(dΣ_f p₀(f)S_f − I) = 0, Λ = c²I/d and
+λ = c²/d. With Σc² ≤ Σt′/t = n/t ≤ B = δd^{3/2}/(ε₀t)², Theorem 2 gives TV(p₀, E_G q_G) ≤ 0.109.
+
+*Higher orders.* Each ⟨f|G_J|f⟩ with G on the copies J has modulus at most ‖G‖_op^{|J|} ≤ 5^{|J|}, so with x = 5ε₀t′ ≤ 10⁻³ (by the condition on ε),
+|r_f − ℓ_f| ≤ (1 + 5ε₀)^{t′} − 1 − x ≤ e^x − 1 − x ≤ 0.51x². The χ² divergence of one step is
+Σ_f p₀(f)(r_f − ℓ_f)²/ℓ_f ≤ 2(0.51·25)²ε₀⁴t′⁴ ≤ 330ε₀⁴t′⁴. By the chain rule and KL ≤ χ², for every G in U,
+KL(p_G ‖ q_G) ≤ 330ε₀⁴t³Σt′ = 330ε₀⁴t³n, and since TV ≤ (KL/2)^{1/2}, TV(p_G, q_G) ≤ (165ε₀⁴t³n)^{1/2}. For
+n ≤ tB = 10⁻⁵d^{3/2}/(ε₀²t) this is at most 0.041 ε₀t d^{3/4} ≤ 0.029.
+
+So TV(p₀, E_G p_G) ≤ 0.109 + 0.029 < 1/3 whenever n ≤ 10⁻⁵d^{3/2}/(ε₀²t) = 10⁻⁷d^{3/2}/(ε²t). ∎
+
+The linear part is the statistics of an adaptive single-copy tester for the state (I + tε₀G)/d: the effects
+d·p₀(f)s_k y_ky_k† form a POVM on C^d. So the bound is the single-copy bound of [2], in the form of Theorem 2, with ε
+replaced by tε, and the condition on ε pays for the terms of higher order.
+
 ## Check
 
 `sim/check.py` (one core, under a minute) checks the covariance identity, the weighted matching formula and the
 recursion of Lemma 1 against Monte Carlo and exact evaluation, the Haar fourth moment, that the alternatives are
 channels with ‖N − 𝒟‖_⋄ ≥ ε and step ratio 1 + ε₀c x†Gx, and, for random entangled inputs and measurements with
 an ancilla, identity (1), the bound Λ′ ⪯ (κa/d)I, the Haar averages of c_f, and the Haar tail
-P(c_f > x/m) ≤ 3e^{−0.193x} and E[c_f² 1{c_f > x/m}] ≤ 9e^{−x/11}/m² by Monte Carlo for rank-one and rank-three Q_f. Output in `sim/out_check.txt`.
+P(c_f > x/m) ≤ 3e^{−0.193x} and E[c_f² 1{c_f > x/m}] ≤ 9e^{−x/11}/m² by Monte Carlo for rank-one and rank-three Q_f, and, for random bases of (C^d)^{⊗t}, the identity Σ_f p₀(f)S_f = I/d,
+the refinement of Theorem 4 and its bounds on |r_f − ℓ_f| and on χ². Output in `sim/out_check.txt`.
 `sim/constants_iv.py` recomputes the final bounds of Theorems 1 to 3 in interval arithmetic with outward rounding
 and asserts them (output in `sim/out_constants_iv.txt`).
 
 ## Scope
 
+- Theorem 4 holds for ε ≤ 0.07 t^{−1} d^{−3/4} and has a factor 1/t that the upper bound does not have.
 - Theorem 3 has a factor ln d_out that Theorem 1 does not have; it comes from the outcomes with large weight in
   the ancilla-assisted case.
 - The constants are far from optimal.
@@ -224,6 +273,9 @@ and asserts them (output in `sim/out_constants_iv.txt`).
    COLT 2023, arXiv:2303.01188.
 2. S. Chen, B. Huang, J. Li, A. Liu. Tight bounds for quantum state certification with incoherent measurements.
    FOCS 2022, arXiv:2204.07155.
+3. C. Wadhwa, S. Chen. Optimal quantum state testing even with limited entanglement. arXiv:2604.07460.
+4. S. Chen, J. Cotler, H.-Y. Huang, J. Li. A hierarchy for replica quantum advantage. arXiv:2111.05874.
+5. R. O'Donnell, J. Wright. Quantum spectrum testing. STOC 2015.
 
 ## Use of AI
 

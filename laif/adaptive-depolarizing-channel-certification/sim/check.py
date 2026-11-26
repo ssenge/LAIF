@@ -98,3 +98,28 @@ for m3, r in ((60, 1), (60, 3), (200, 1), (200, 3)):
         hi = c > x / m3
         assert hi.mean() <= 3 * math.exp(-0.193 * x) and (c ** 2 * hi).mean() <= 9 * math.exp(-x / 11) / m3 ** 2
 print("6 ok: Haar tail of c_f (rank 1 and 3, m = 60, 200)")
+# 7. t-copy measurements: E_0 S_f = I/d, linearized statistics = single-copy statistics of (I + t eps G)/d after refinement,
+#    |r_f - l_f| <= 0.51 (5 eps t)^2 and per-step chi^2 <= 330 eps^4 t^4 (for G with ||G||_op <= 5)
+from scipy.linalg import expm
+for d4, t4 in ((2, 3), (3, 2), (2, 4)):
+    N4 = d4 ** t4; Z = rng.normal(size=(N4, N4)) + 1j * rng.normal(size=(N4, N4)); U4 = expm(1j * (Z + Z.conj().T))
+    G4 = gue0(d4)[0]; G4 *= 2.0 / max(1.0, np.linalg.norm(G4, 2)); e4 = 0.004
+    rho4 = (np.eye(d4) + e4 * G4) / d4; R = rho4
+    for _ in range(t4 - 1): R = np.kron(R, rho4)
+    def red(f, j):
+        T = np.moveaxis(f.reshape([d4] * t4), j, 0).reshape(d4, -1); return T @ T.conj().T
+    Ssum = np.zeros((d4, d4), complex); chi = 0.0; ref = np.zeros((d4, d4), complex)
+    for c in range(N4):
+        f = U4[:, c]; S = sum(red(f, j) for j in range(t4)) / t4; p0 = 1 / N4; Ssum += p0 * S
+        r = d4 ** t4 * np.vdot(f, R @ f).real; l = 1 + e4 * t4 * np.trace(G4 @ S).real
+        assert abs(r - l) <= 0.51 * (5 * e4 * t4) ** 2 * (np.linalg.norm(G4, 2) / 5) ** 2 + 1e-15 and l >= 0.5
+        chi += p0 * (r - l) ** 2 / l
+        w, V = np.linalg.eigh(S)                                                     # refinement into eigenvectors of S_f
+        for s, y in zip(w, V.T):
+            if s > 1e-14:
+                E = p0 * s * d4 * np.outer(y, y.conj()); ref += E                  # refined effect
+                assert abs(np.trace(E @ (np.eye(d4) + e4 * t4 * G4) / d4).real - p0 * s * (1 + e4 * t4 * np.vdot(y, G4 @ y).real)) < 1e-14
+        assert abs(sum(p0 * s * (1 + e4 * t4 * np.vdot(y, G4 @ y).real) for s, y in zip(w, V.T)) - p0 * l) < 1e-14
+    assert np.allclose(Ssum, np.eye(d4) / d4) and chi <= 330 * e4 ** 4 * t4 ** 4
+    assert np.allclose(ref, np.eye(d4))                                             # refined effects form a POVM on C^d
+print("7 ok: t-copy linearization, refinement to single-copy statistics, chi^2 per step")
