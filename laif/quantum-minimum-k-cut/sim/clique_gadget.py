@@ -1,4 +1,4 @@
-"""Check of the hub gadget (README, Theorem 3) by brute force on small graphs.
+"""Check of the hub gadget (README, Theorem 3) by brute force on small graphs, k = 3, 4, 5.
 H has N vertices and nonnegative integer weights; Delta is its largest weighted degree and D = k*Delta + 1.
 G adds one hub b with w(v, b) = D - deg_H(v). Asserted: the minimum k-cut of G equals (k-1) D - max over
 (k-1)-sets S of w_H(S), the weight of the edges inside S; also with the clique shift w + M on edges,
@@ -30,7 +30,9 @@ random.seed(1)
 cases = 0
 for trial in range(300):
     N = random.randint(3, 6)
-    k = random.choice([3, 4])
+    k = random.choice([3, 4, 5])
+    if k - 1 > N or (k == 5 and N > 5):
+        N = min(N, 5)
     if k - 1 > N:
         continue
     p = random.random()

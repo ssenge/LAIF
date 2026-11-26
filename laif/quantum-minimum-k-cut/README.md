@@ -13,11 +13,11 @@ Here the recursive contraction of [1] is run with fixed-point amplitude amplific
 
 **Theorem 2.** For every fixed k ≥ 2, computing λ_k for graphs with n vertices and weights in {0, 1, n} in the adjacency matrix model needs Ω(n²) quantum queries, and so Ω(n²) time. So part 2 of Theorem 1 is optimal up to a factor n^{o(1)} for such weights.
 
-**Hypothesis H_r** (quantum max-weight clique). For a fixed r ≥ 2 there is a constant c such that no quantum algorithm with classical memory readable in superposition computes the largest weight of an r-clique in graphs with N vertices and integer edge weights in {0, …, N^c} in time O(N^{r/2 − δ}) for any δ > 0.
+**Hypothesis H_r** (quantum max-weight clique). For a fixed r ≥ 5 there is a constant c such that no quantum algorithm with classical memory readable in superposition computes, for a complete graph with N vertices and integer edge weights in {0, …, N^c} given by an oracle, the largest total weight of the edges inside an r-set of vertices in time O(N^{r/2 − δ}) for any δ > 0.
 
-Quantum search over the r-sets meets this bound up to logarithmic factors.
+Quantum search over the r-sets meets this bound up to logarithmic factors, and to our knowledge no faster quantum algorithm is known. Edges of weight 0 play the role of non-edges, so the problem contains max-weight r-clique after adding a large constant to the weights of the edges.
 
-**Theorem 3.** Let k ≥ 6. Under H_{k−1}, no quantum algorithm with classical memory readable in superposition computes λ_k for graphs with n vertices and integer weights in {0, …, n^{c+4}} in time O(n^{(k−1)/2 − δ}) for any δ > 0. For k = 5, Theorem 2 gives Ω(n²) = Ω(n^{(k−1)/2}) without a hypothesis. So the exponent k/2 of part 1 of Theorem 1 is within 1/2 of optimal for every k ≥ 5, under H_{k−1} for k ≥ 6.
+**Theorem 3.** Let k ≥ 6. Under H_{k−1}, no quantum algorithm with classical memory readable in superposition computes λ_k for graphs with n vertices and integer weights in {0, …, n^{c+3}} in time O(n^{(k−1)/2 − δ}) for any δ > 0. For k = 5, Theorem 2 gives Ω(n²) = Ω(n^{(k−1)/2}) without a hypothesis. So the exponent k/2 of part 1 of Theorem 1 is within 1/2 of optimal for every k ≥ 5, under H_{k−1} for k ≥ 6.
 
 Status: Claim. The cost exponent of the level schedule is evaluated by a script with asserts, and the level-cost inequalities and the padding identity of Section 4 are checked in Lean. The gadget of Section 5 is checked by brute force on small graphs.
 
@@ -82,15 +82,15 @@ The padded graph has n + k − 2 vertices, and each of its queries is answered b
 
 ## 5. Proof of Theorem 3
 
-The reduction from max-weight (k − 1)-clique to k-cut noted in [1] is carried out here with one extra vertex. Let H have N vertices and weights w(u, v). Add M = 1 + (total weight of H) to the weight of every edge of H. A (k − 1)-set then has the largest shifted weight inside it exactly when it is a clique of largest weight, whenever H has a (k − 1)-clique. Let Δ be the largest weighted degree after the shift, and set D = kΔ + 1. The graph G has the vertices of H, the shifted weights, and one hub b with w(v, b) = D − deg(v).
+The reduction from max-weight (k − 1)-clique to k-cut noted in [1] is carried out here with one extra vertex. Let H be a complete graph with N vertices and weights w(u, v) in {0, …, N^c}. Let Δ be its largest weighted degree, and set D = kΔ + 1. The graph G has the vertices and weights of H and one hub b with w(v, b) = D − deg(v), which is at least (k − 1)Δ + 1.
 
 In a partition of G into k parts, the k − 1 parts without b contain t ≥ k − 1 vertices of H. If t ≥ k, the hub edges alone cost at least k(D − Δ) > (k − 1)D. If t = k − 1, the parts are singletons {v} for v in a set S, and the cut contains the hub edges of S and every edge of H at S. Since the degrees in S count each edge inside S twice, the cost is
 
 Σ_{v∈S} (D − deg v) + Σ_{v∈S} deg v − w(S) = (k − 1)D − w(S),
 
-where w(S) is the weight inside S. This is at most (k − 1)D, so λ_k(G) = (k − 1)D − max over (k − 1)-sets S of w(S), and the largest clique weight follows by subtracting the shift.
+where w(S) is the weight inside S. This is at most (k − 1)D, so λ_k(G) = (k − 1)D − max over (k − 1)-sets S of w(S).
 
-G has n = N + 1 vertices and weights polynomial in N, at most N^{c+4} once N is large, since M ≤ N^{c+2}, Δ ≤ 2N^{c+3} and D ≤ 2kN^{c+3} + 1. Its weight matrix is answered by one query to H, together with a table of the N degrees. The table is computed in O(N²) time and held in classical memory readable in superposition. An algorithm for λ_k in time O(n^{(k−1)/2 − δ}) would therefore find the largest (k − 1)-clique weight in time O(N² + N^{(k−1)/2 − δ}). For k ≥ 6 this is O(N^{(k−1)/2 − δ'}) for some δ' > 0, which H_{k−1} excludes.
+G has n = N + 1 vertices and weights at most D ≤ kN^{c+1} + 1 ≤ n^{c+3} once N is large. An entry of its weight matrix is answered by one query to H or, for a hub entry, by a lookup in a table of the N degrees. The table is computed in O(N²) time and held in classical memory readable in superposition, so an algorithm for λ_k that uses only oracle access to its input can be run on G. An algorithm for λ_k in time O(n^{(k−1)/2 − δ}) would therefore find the largest (k − 1)-clique weight in time O(N² + N^{(k−1)/2 − δ}). For k ≥ 6 this is O(N^{(k−1)/2 − δ'}) for some δ' > 0, which H_{k−1} excludes.
 
 ## 6. Measurements
 
@@ -102,7 +102,7 @@ G has n = N + 1 vertices and weights polynomial in N, at most N^{c+4} once N is 
 
 Run it with `python recursion.py` in `sim/`.
 
-[`sim/clique_gadget.py`](sim/clique_gadget.py) builds the graph G of Section 5 for 300 random graphs H with 3 to 6 vertices and k = 3, 4. It asserts that the minimum k-cut of G, by brute force over all partitions, equals (k − 1)D minus the largest weight inside a (k − 1)-set, and that after the shift this largest weight is attained by a largest (k − 1)-clique whenever one exists.
+[`sim/clique_gadget.py`](sim/clique_gadget.py) builds the graph G of Section 5 for 276 random graphs H with 3 to 6 vertices and k = 3, 4, 5 (at most 5 vertices for k = 5). It asserts that the minimum k-cut of G, by brute force over all partitions, equals (k − 1)D minus the largest weight inside a (k − 1)-set.
 
 ## 7. Lean
 
