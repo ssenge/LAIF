@@ -1,11 +1,11 @@
 <div align="center">
 
-<img src="assets/logo.gif" alt="Barbarossa, a red-bearded 1980s computer nerd at his home computer, with low hanging fruits on the screen" width="240">
+<img src="assets/logo.png" alt="A colourful parrot picking the low hanging fruit of a tree, with golden fruits out of reach at the top" width="240">
 
 <h1><img src="assets/title.svg" alt="Low hAngIng Fruits (LAIF) Project" width="720"></h1>
 
 **Why waste AI slop on social media?**<br>
-*Rapid prototyping of low hanging fruits: new bounds and faster algorithms for open problems in algorithms and complexity, which no human will ever read 😉*
+*Autoresearch for Open Computational Problems*
 
 [![Lean 4](https://img.shields.io/badge/proofs-Lean%204%20%2B%20Mathlib-8a2be2.svg)](https://leanprover-community.github.io/)
 [![Issues](https://img.shields.io/badge/questions-open%20an%20issue-orange.svg)](https://github.com/ssenge/LAIF/issues)
