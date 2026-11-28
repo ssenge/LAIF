@@ -178,7 +178,7 @@ col.c-date { width: 112px; } col.c-cat { width: 150px; } col.c-st { width: 170px
           <label class="field"><span>Posted from</span><input type="date" id="from"></label>
           <label class="field"><span>Posted until</span><input type="date" id="to"></label>
         </div>
-        <div class="chips"><span id="kinds" class="grp"></span><span class="sep" aria-hidden="true"></span><span id="tags" class="grp"></span></div>
+        <div class="chips"><span id="tags" class="grp"></span></div>
         <p class="legnote">Hover over a tag to see what it means. Several tags on one row refer to different parts of the result. Example: "Lean for the lower bound, assuming a classical theorem; Claim for the upper bound" gets Lean, Assuming and Claim. The status text under the tags says which part is which.</p>
       </div>
     </details>
@@ -270,7 +270,7 @@ function load(md) {
     kind: "Main", category: o.category || "", problem: o.problem || "", before: o.before || "",
     after: o.after || "", status: o.status || "", posted: o.posted || "", score: o.score || "", details: o.details || "" }));
   const minor = tables(md, "## Minor results").map(o => ({
-    kind: "Minor", category: o.category || "Minor result", problem: o.problem || "", before: o.before || "",
+    kind: "Minor", category: o.category || "", problem: o.problem || "", before: o.before || "",
     after: o.result || o.after || "", status: o.status || "", posted: o.posted || "", score: o.score || "", details: o.details || "" }));
   let last = null;
   data = [...main, ...minor].map(d => {
@@ -296,8 +296,6 @@ function chip(label, n, color, set, key) {
 function build() {
   const cats = [...new Set(data.map(d => d.category))].sort();
   $("#cat").innerHTML = '<option value="">All categories</option>' + cats.map(c => `<option>${esc(c)}</option>`).join("");
-  const K = $("#kinds"); K.innerHTML = "";
-  [["Main", "var(--accent)"], ["Minor", "var(--minor)"]].forEach(([k, c]) => K.append(chip(k === "Main" ? "Main results" : "Minor results", data.filter(d => d.kind === k).length, c, st.kinds, k)));
   const T = $("#tags"); T.innerHTML = "";
   TAGS.forEach(([n, , c]) => { const k = data.filter(d => d.tags.includes(n)).length; if (k) T.append(chip(n, k, c, st.tags, n)); });
   stats(); render();
@@ -334,12 +332,11 @@ function scoreDetails(sc, avg, med) {
   const best = top.filter(d => d.scoreN === sc.at(-1)), low = S.filter(d => d.scoreN === sc[0]);
   const bins = Array.from({ length: 11 }, (_, i) => S.filter(d => Math.floor(d.scoreN) === i).length), bm = Math.max(...bins);
   const cats = Object.entries(S.reduce((g, d) => ((g[d.category] ??= []).push(d), g), {})).map(([c, r]) => [c, avgOf(r), r.length]).sort((a, b) => b[1] - a[1]);
-  const main = S.filter(d => d.kind === "Main"), minor = S.filter(d => d.kind === "Minor");
   $("#sdet").innerHTML = `
     <div class="sgrid">
       <div><b>${sc.length}</b>scored results</div><div><b>${f(avg)}</b>average</div><div><b>${f(med)}</b>median</div>
       <div><b>${f(sd)}</b>standard deviation</div><div><b>${f(sc[0])}</b>lowest</div><div><b>${f(sc.at(-1))}</b>highest</div>
-      <div><b>${f(q(.25))} to ${f(q(.75))}</b>middle half</div><div><b>${f(avgOf(main))}</b>average, main results</div><div><b>${f(avgOf(minor))}</b>average, minor results</div>
+      <div><b>${f(q(.25))} to ${f(q(.75))}</b>middle half</div>
     </div>
     <div><span class="cat">Distribution (scores rounded down)</span>
       <div class="hist">${bins.map((n, i) => `<div style="height:${n / bm * 100}%" data-tip="Score ${i}${i < 10 ? ` to ${i}.5` : ""}: ${n} result${n === 1 ? "" : "s"}"></div>`).join("")}</div>
@@ -356,7 +353,7 @@ function render() {
   let rows = data.filter(d =>
     q.every(w => d.text.includes(w)) && (!st.cat || d.category === st.cat) &&
     (!st.from || d.posted.slice(0, 10) >= st.from) && (!st.to || d.posted.slice(0, 10) <= st.to) &&
-    (!st.kinds.size || st.kinds.has(d.kind)) && (!st.tags.size || d.tags.some(t => st.tags.has(t))));
+    (!st.tags.size || d.tags.some(t => st.tags.has(t))));
   const k = st.sort;
   const num = x => isNaN(x.scoreN) ? -Infinity : x.scoreN;
   rows.sort((a, b) => (k === "score" ? st.dir * (num(a) - num(b)) : st.dir * plain(a[k]).localeCompare(plain(b[k]), "en", { numeric: true })) || b.posted.localeCompare(a.posted));
@@ -371,7 +368,7 @@ function render() {
   $("#rows").innerHTML = rows.length ? rows.map((d, i) => `
     <tr class="r" data-i="${i}" tabindex="0" aria-expanded="false">
       <td data-l="Posted"><span class="date">${esc(d.posted.slice(0, 10))}</span>${d.posted.length > 10 ? `<br><span class="date" style="color:var(--faint)">${esc(d.posted.slice(11))}</span>` : ""}</td>
-      <td data-l="Category"><div class="cat">${esc(d.category)}</div><span class="kind ${d.kind.toLowerCase()}" data-tip="${esc(DEF[d.kind])}">${d.kind}</span></td>
+      <td data-l="Category"><div class="cat">${esc(d.category)}</div></td>
       <td data-l="Problem"><div class="clamp">${inline(d.problem)}</div></td>
       <td data-l="Previous best"><div class="clamp">${inline(d.before) || '<span style="color:var(--faint)">–</span>'}</div></td>
       <td data-l="Result"><div class="clamp after">${inline(d.after)}</div></td>
@@ -403,7 +400,6 @@ function render() {
 function initState() {
   const p = new URLSearchParams(location.search);
   st.q = p.get("q") || ""; st.cat = p.get("cat") || ""; st.from = p.get("from") || ""; st.to = p.get("to") || "";
-  (p.get("kind") || "").split(",").filter(Boolean).forEach(k => st.kinds.add(k));
   (p.get("tag") || "").split(",").filter(Boolean).forEach(k => st.tags.add(k));
   const s = p.get("sort"); if (s) { st.dir = s.startsWith("-") ? -1 : 1; st.sort = s.replace(/^-/, ""); }
   $("#q").value = st.q; $("#from").value = st.from; $("#to").value = st.to;
